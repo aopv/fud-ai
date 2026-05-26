@@ -3,6 +3,7 @@ package com.apoorvdarshan.calorietracker.ui.home
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -396,6 +397,138 @@ internal fun SheetNutritionRow(label: String, value: String, unit: String, dim: 
             fontSize = 16.sp,
             fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.onSurface
+        )
+        Spacer(Modifier.width(6.dp))
+        Text(
+            unit,
+            fontSize = 14.sp,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
+            modifier = Modifier.width(36.dp)
+        )
+    }
+}
+
+@Composable
+internal fun SheetEditableNutritionRow(
+    label: String,
+    baseValue: Double?,
+    scale: Double,
+    unit: String,
+    dim: Boolean = false,
+    onBaseValueChange: (Double?) -> Unit
+) {
+    var text by remember { mutableStateOf(baseValue?.let { com.apoorvdarshan.calorietracker.models.MacroValueFormatter.string(it * scale) } ?: "") }
+    
+    LaunchedEffect(baseValue, scale) {
+        val scaled = baseValue?.let { it * scale }
+        if (scaled != null) {
+            val currentParsed = text.toDoubleOrNull()
+            if (currentParsed == null || Math.abs(currentParsed - scaled) > 0.05) {
+                text = com.apoorvdarshan.calorietracker.models.MacroValueFormatter.string(scaled)
+            }
+        } else {
+            if (text.isNotEmpty()) text = ""
+        }
+    }
+
+    Row(
+        Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            label,
+            fontSize = 16.sp,
+            color = if (dim) MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                    else MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.weight(1f)
+        )
+        BasicTextField(
+            value = text,
+            onValueChange = { newText ->
+                text = newText
+                if (newText.isEmpty()) {
+                    onBaseValueChange(null)
+                } else {
+                    val parsed = newText.toDoubleOrNull()
+                    if (parsed != null && scale > 0) {
+                        onBaseValueChange(parsed / scale)
+                    }
+                }
+            },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+            textStyle = TextStyle(
+                color = MaterialTheme.colorScheme.onSurface,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.SemiBold,
+                textAlign = TextAlign.End
+            ),
+            cursorBrush = SolidColor(AppColors.Calorie),
+            modifier = Modifier.widthIn(min = 32.dp, max = 80.dp)
+        )
+        Spacer(Modifier.width(6.dp))
+        Text(
+            unit,
+            fontSize = 14.sp,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
+            modifier = Modifier.width(36.dp)
+        )
+    }
+}
+
+@Composable
+internal fun SheetEditableNutritionRowInt(
+    label: String,
+    baseValue: Int,
+    scale: Double,
+    unit: String,
+    dim: Boolean = false,
+    onBaseValueChange: (Int) -> Unit
+) {
+    var text by remember { mutableStateOf(Math.round(baseValue * scale).toString()) }
+    
+    LaunchedEffect(baseValue, scale) {
+        val scaled = Math.round(baseValue * scale).toDouble()
+        val currentParsed = text.toDoubleOrNull()
+        if (currentParsed == null || Math.abs(currentParsed - scaled) > 0.5) {
+            text = Math.round(scaled).toString()
+        }
+    }
+
+    Row(
+        Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            label,
+            fontSize = 16.sp,
+            color = if (dim) MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                    else MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.weight(1f)
+        )
+        BasicTextField(
+            value = text,
+            onValueChange = { newText ->
+                text = newText
+                if (newText.isEmpty()) {
+                    onBaseValueChange(0)
+                } else {
+                    val parsed = newText.toDoubleOrNull()
+                    if (parsed != null && scale > 0) {
+                        onBaseValueChange(Math.round(parsed / scale).toInt())
+                    }
+                }
+            },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+            textStyle = TextStyle(
+                color = MaterialTheme.colorScheme.onSurface,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.SemiBold,
+                textAlign = TextAlign.End
+            ),
+            cursorBrush = SolidColor(AppColors.Calorie),
+            modifier = Modifier.widthIn(min = 32.dp, max = 80.dp)
         )
         Spacer(Modifier.width(6.dp))
         Text(

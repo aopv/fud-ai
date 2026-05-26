@@ -37,7 +37,7 @@ struct FoodResultView: View {
     let baseVitaminK: Double?
     let baseFolate: Double?
     let baseOmega3: Double?
-    let servingUnitOptions: [ServingUnitOption]
+    @State private var servingUnitOptions: [ServingUnitOption]
 
     @State var name: String
     @State var servingSizeGrams: Double
@@ -46,6 +46,7 @@ struct FoodResultView: View {
     @State private var quantityFocusRequest = 0
     @State private var isQuantityEditing = false
     @State var mealType: MealType = .currentMeal
+    @State private var showingAddCustomPortion = false
 
     let logDate: Date
     var onLog: (FoodEntry) -> Void
@@ -166,7 +167,7 @@ struct FoodResultView: View {
         self.baseVitaminK = vitaminK
         self.baseFolate = folate
         self.baseOmega3 = omega3
-        self.servingUnitOptions = normalizedServingUnitOptions
+        self._servingUnitOptions = State(initialValue: normalizedServingUnitOptions)
         self._name = State(initialValue: name)
         self._servingSizeGrams = State(initialValue: servingSizeGrams)
         self._servingSizeText = State(initialValue: ServingUnitOption.initialQuantityText(
@@ -197,8 +198,9 @@ struct FoodResultView: View {
                                 Spacer()
                                 Image(uiImage: image)
                                     .resizable()
-                                    .scaledToFit()
-                                    .frame(maxHeight: 200)
+                                    .scaledToFill()
+                                    .frame(width: 240, height: 240)
+                                    .clipped()
                                     .clipShape(RoundedRectangle(cornerRadius: 12))
                                 Spacer()
                             }
@@ -252,6 +254,17 @@ struct FoodResultView: View {
                                 Text("~\(Self.formatGrams(servingSizeGrams)) g")
                                     .foregroundStyle(.secondary)
                             }
+                        }
+
+                        Button {
+                            showingAddCustomPortion = true
+                        } label: {
+                            HStack {
+                                Image(systemName: "plus.circle.fill")
+                                Text("Custom Portion Size")
+                            }
+                            .font(.subheadline)
+                            .foregroundStyle(AppColors.calorie)
                         }
                     }
 
@@ -313,6 +326,27 @@ struct FoodResultView: View {
                 .onChange(of: isQuantityEditing) { _, editing in
                     guard editing else { return }
                     scrollQuantityIntoView(scrollProxy)
+                }
+                .sheet(isPresented: $showingAddCustomPortion) {
+                    AddCustomPortionSheet(currentGrams: servingSizeGrams) { name, grams in
+                        let newOption = ServingUnitOption(
+                            unit: name,
+                            gramsPerUnit: grams,
+                            quantity: servingSizeGrams / grams
+                        )
+                        if let index = servingUnitOptions.firstIndex(where: { $0.id == newOption.id }) {
+                            servingUnitOptions[index] = newOption
+                        } else {
+                            servingUnitOptions.append(newOption)
+                        }
+                        if selectedServingUnitID == newOption.id {
+                            let quantity = grams > 0 ? servingSizeGrams / grams : servingSizeGrams
+                            servingSizeText = ServingUnitEditor.formatQuantity(quantity)
+                        } else {
+                            selectedServingUnitID = newOption.id
+                        }
+                    }
+                    .presentationDetents([.fraction(0.35), .medium])
                 }
                 .navigationTitle("Review Food")
                 .navigationBarTitleDisplayMode(.inline)
@@ -570,5 +604,127 @@ struct OptionalNutritionDisplayRow: View {
                 .foregroundStyle(.secondary)
                 .frame(width: 36, alignment: .leading)
         }
+    }
+}
+
+struct NutritionEditRowInt: View {
+    let label: String
+    @Binding var baseValue: Int
+    let scale: Double
+    let unit: String
+
+    @State private var text: String = ""
+
+    var body: some View {
+        HStack {
+            Text(label)
+            Spacer()
+            TextField("0", text: $text)
+                .keyboardType(.decimalPad)
+                .multilineTextAlignment(.trailing)
+                .onChange(of: baseValue) { _, _ in updateText() }
+                .onChange(of: scale) { _, _ in updateText() }
+                .onChange(of: text) { _, newValue in
+                    if newValue.isEmpty {
+                        baseValue = 0
+                    } else if let v = Double(newValue) {
+                        baseValue = Int(round(v / scale))
+                    }
+                }
+            Text(unit)
+                .foregroundStyle(.secondary)
+                .frame(width: 36, alignment: .leading)
+        }
+        .onAppear { updateText() }
+    }
+
+    private func updateText() {
+        let scaled = Double(baseValue) * scale
+        let formatted = String(Int(round(scaled)))
+        if let current = Double(text), abs(current - scaled) < 0.5 { return }
+        text = formatted
+    }
+}
+
+struct NutritionEditRow: View {
+    let label: String
+    @Binding var baseValue: Double
+    let scale: Double
+    let unit: String
+
+    @State private var text: String = ""
+
+    var body: some View {
+        HStack {
+            Text(label)
+            Spacer()
+            TextField("0", text: $text)
+                .keyboardType(.decimalPad)
+                .multilineTextAlignment(.trailing)
+                .onChange(of: baseValue) { _, _ in updateText() }
+                .onChange(of: scale) { _, _ in updateText() }
+                .onChange(of: text) { _, newValue in
+                    if newValue.isEmpty {
+                        baseValue = 0
+                    } else if let v = Double(newValue) {
+                        baseValue = v / scale
+                    }
+                }
+            Text(unit)
+                .foregroundStyle(.secondary)
+                .frame(width: 36, alignment: .leading)
+        }
+        .onAppear { updateText() }
+    }
+
+    private func updateText() {
+        let scaled = baseValue * scale
+        let formatted = MacroValueFormatter.string(scaled)
+        if let current = Double(text), abs(current - scaled) < 0.05 { return }
+        text = formatted
+    }
+}
+
+struct OptionalNutritionEditRow: View {
+    let label: String
+    @Binding var baseValue: Double?
+    let scale: Double
+    let unit: String
+
+    @State private var text: String = ""
+
+    var body: some View {
+        HStack {
+            Text(label)
+                .foregroundStyle(.secondary)
+            Spacer()
+            TextField("—", text: $text)
+                .keyboardType(.decimalPad)
+                .multilineTextAlignment(.trailing)
+                .onChange(of: baseValue) { _, _ in updateText() }
+                .onChange(of: scale) { _, _ in updateText() }
+                .onChange(of: text) { _, newValue in
+                    if newValue.isEmpty {
+                        baseValue = nil
+                    } else if let v = Double(newValue) {
+                        baseValue = v / scale
+                    }
+                }
+            Text(unit)
+                .foregroundStyle(.secondary)
+                .frame(width: 36, alignment: .leading)
+        }
+        .onAppear { updateText() }
+    }
+
+    private func updateText() {
+        guard let base = baseValue else {
+            if !text.isEmpty { text = "" }
+            return
+        }
+        let scaled = base * scale
+        let formatted = String(format: "%.1f", scaled)
+        if let current = Double(text), abs(current - scaled) < 0.05 { return }
+        text = formatted
     }
 }

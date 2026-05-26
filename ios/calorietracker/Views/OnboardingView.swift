@@ -993,8 +993,10 @@ struct OnboardingView: View {
             }
 
             Button {
-                requestNativeReview()
                 hasCompletedOnboarding = true
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                    requestNativeReview()
+                }
             } label: {
                 Text("Rate fud")
                     .font(.system(.body, design: .rounded, weight: .semibold))

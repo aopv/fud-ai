@@ -9,37 +9,11 @@ struct EditFoodEntryView: View {
     @Environment(FoodStore.self) private var foodStore
     @Environment(\.dismiss) private var dismiss
 
-    // Base values (the entry's nutrition at its logged serving size)
-    private let baseCalories: Int
-    private let baseProtein: Double
-    private let baseCarbs: Double
-    private let baseFat: Double
-    private let baseServingSizeGrams: Double
-    private let baseSugar: Double?
-    private let baseAddedSugar: Double?
-    private let baseFiber: Double?
-    private let baseSaturatedFat: Double?
-    private let baseMonounsaturatedFat: Double?
-    private let basePolyunsaturatedFat: Double?
-    private let baseCholesterol: Double?
-    private let baseSodium: Double?
-    private let basePotassium: Double?
-    private let baseTransFat: Double?
-    private let baseCalcium: Double?
-    private let baseIron: Double?
-    private let baseMagnesium: Double?
-    private let baseZinc: Double?
-    private let baseVitaminA: Double?
-    private let baseVitaminC: Double?
-    private let baseVitaminD: Double?
-    private let baseVitaminB12: Double?
-    private let baseVitaminE: Double?
-    private let baseVitaminK: Double?
-    private let baseFolate: Double?
-    private let baseOmega3: Double?
-    private let servingUnitOptions: [ServingUnitOption]
+    @State private var baseEntry: FoodEntry
+    @State private var servingUnitOptions: [ServingUnitOption]
 
     @State private var name: String
+    @State private var showingAddCustomPortion = false
     @State private var servingSizeGrams: Double
     @State private var servingSizeText: String
     @State private var selectedServingUnitID: String
@@ -48,37 +22,39 @@ struct EditFoodEntryView: View {
     @State private var mealType: MealType
     @State private var loggedAt: Date
 
+    private var baseServingSizeGrams: Double { baseEntry.servingSizeGrams ?? 100 }
+
     private var scale: Double {
         guard baseServingSizeGrams > 0 else { return 1 }
         return servingSizeGrams / baseServingSizeGrams
     }
 
-    private var scaledCalories: Int { Int(round(Double(baseCalories) * scale)) }
-    private var scaledProtein: Double { baseProtein * scale }
-    private var scaledCarbs: Double { baseCarbs * scale }
-    private var scaledFat: Double { baseFat * scale }
-    private var scaledSugar: Double? { baseSugar.map { round($0 * scale * 10) / 10 } }
-    private var scaledAddedSugar: Double? { baseAddedSugar.map { round($0 * scale * 10) / 10 } }
-    private var scaledFiber: Double? { baseFiber.map { round($0 * scale * 10) / 10 } }
-    private var scaledSaturatedFat: Double? { baseSaturatedFat.map { round($0 * scale * 10) / 10 } }
-    private var scaledMonounsaturatedFat: Double? { baseMonounsaturatedFat.map { round($0 * scale * 10) / 10 } }
-    private var scaledPolyunsaturatedFat: Double? { basePolyunsaturatedFat.map { round($0 * scale * 10) / 10 } }
-    private var scaledCholesterol: Double? { baseCholesterol.map { round($0 * scale * 10) / 10 } }
-    private var scaledSodium: Double? { baseSodium.map { round($0 * scale * 10) / 10 } }
-    private var scaledPotassium: Double? { basePotassium.map { round($0 * scale * 10) / 10 } }
-    private var scaledTransFat: Double? { baseTransFat.map { round($0 * scale * 10) / 10 } }
-    private var scaledCalcium: Double? { baseCalcium.map { round($0 * scale * 10) / 10 } }
-    private var scaledIron: Double? { baseIron.map { round($0 * scale * 10) / 10 } }
-    private var scaledMagnesium: Double? { baseMagnesium.map { round($0 * scale * 10) / 10 } }
-    private var scaledZinc: Double? { baseZinc.map { round($0 * scale * 10) / 10 } }
-    private var scaledVitaminA: Double? { baseVitaminA.map { round($0 * scale * 10) / 10 } }
-    private var scaledVitaminC: Double? { baseVitaminC.map { round($0 * scale * 10) / 10 } }
-    private var scaledVitaminD: Double? { baseVitaminD.map { round($0 * scale * 10) / 10 } }
-    private var scaledVitaminB12: Double? { baseVitaminB12.map { round($0 * scale * 10) / 10 } }
-    private var scaledVitaminE: Double? { baseVitaminE.map { round($0 * scale * 10) / 10 } }
-    private var scaledVitaminK: Double? { baseVitaminK.map { round($0 * scale * 10) / 10 } }
-    private var scaledFolate: Double? { baseFolate.map { round($0 * scale * 10) / 10 } }
-    private var scaledOmega3: Double? { baseOmega3.map { round($0 * scale * 10) / 10 } }
+    private var scaledCalories: Int { Int(round(Double(baseEntry.calories) * scale)) }
+    private var scaledProtein: Double { baseEntry.protein * scale }
+    private var scaledCarbs: Double { baseEntry.carbs * scale }
+    private var scaledFat: Double { baseEntry.fat * scale }
+    private var scaledSugar: Double? { baseEntry.sugar.map { round($0 * scale * 10) / 10 } }
+    private var scaledAddedSugar: Double? { baseEntry.addedSugar.map { round($0 * scale * 10) / 10 } }
+    private var scaledFiber: Double? { baseEntry.fiber.map { round($0 * scale * 10) / 10 } }
+    private var scaledSaturatedFat: Double? { baseEntry.saturatedFat.map { round($0 * scale * 10) / 10 } }
+    private var scaledMonounsaturatedFat: Double? { baseEntry.monounsaturatedFat.map { round($0 * scale * 10) / 10 } }
+    private var scaledPolyunsaturatedFat: Double? { baseEntry.polyunsaturatedFat.map { round($0 * scale * 10) / 10 } }
+    private var scaledCholesterol: Double? { baseEntry.cholesterol.map { round($0 * scale * 10) / 10 } }
+    private var scaledSodium: Double? { baseEntry.sodium.map { round($0 * scale * 10) / 10 } }
+    private var scaledPotassium: Double? { baseEntry.potassium.map { round($0 * scale * 10) / 10 } }
+    private var scaledTransFat: Double? { baseEntry.transFat.map { round($0 * scale * 10) / 10 } }
+    private var scaledCalcium: Double? { baseEntry.calcium.map { round($0 * scale * 10) / 10 } }
+    private var scaledIron: Double? { baseEntry.iron.map { round($0 * scale * 10) / 10 } }
+    private var scaledMagnesium: Double? { baseEntry.magnesium.map { round($0 * scale * 10) / 10 } }
+    private var scaledZinc: Double? { baseEntry.zinc.map { round($0 * scale * 10) / 10 } }
+    private var scaledVitaminA: Double? { baseEntry.vitaminA.map { round($0 * scale * 10) / 10 } }
+    private var scaledVitaminC: Double? { baseEntry.vitaminC.map { round($0 * scale * 10) / 10 } }
+    private var scaledVitaminD: Double? { baseEntry.vitaminD.map { round($0 * scale * 10) / 10 } }
+    private var scaledVitaminB12: Double? { baseEntry.vitaminB12.map { round($0 * scale * 10) / 10 } }
+    private var scaledVitaminE: Double? { baseEntry.vitaminE.map { round($0 * scale * 10) / 10 } }
+    private var scaledVitaminK: Double? { baseEntry.vitaminK.map { round($0 * scale * 10) / 10 } }
+    private var scaledFolate: Double? { baseEntry.folate.map { round($0 * scale * 10) / 10 } }
+    private var scaledOmega3: Double? { baseEntry.omega3.map { round($0 * scale * 10) / 10 } }
     private var selectedServingOption: ServingUnitOption {
         ServingUnitOption.option(matching: selectedServingUnitID, in: servingUnitOptions)
     }
@@ -95,34 +71,8 @@ struct EditFoodEntryView: View {
             options: normalizedServingUnitOptions,
             defaultToGrams: FoodMeasurementSettings.preferGramsByDefault
         )
-        self.baseCalories = entry.calories
-        self.baseProtein = entry.protein
-        self.baseCarbs = entry.carbs
-        self.baseFat = entry.fat
-        self.baseServingSizeGrams = serving
-        self.baseSugar = entry.sugar
-        self.baseAddedSugar = entry.addedSugar
-        self.baseFiber = entry.fiber
-        self.baseSaturatedFat = entry.saturatedFat
-        self.baseMonounsaturatedFat = entry.monounsaturatedFat
-        self.basePolyunsaturatedFat = entry.polyunsaturatedFat
-        self.baseCholesterol = entry.cholesterol
-        self.baseSodium = entry.sodium
-        self.basePotassium = entry.potassium
-        self.baseTransFat = entry.transFat
-        self.baseCalcium = entry.calcium
-        self.baseIron = entry.iron
-        self.baseMagnesium = entry.magnesium
-        self.baseZinc = entry.zinc
-        self.baseVitaminA = entry.vitaminA
-        self.baseVitaminC = entry.vitaminC
-        self.baseVitaminD = entry.vitaminD
-        self.baseVitaminB12 = entry.vitaminB12
-        self.baseVitaminE = entry.vitaminE
-        self.baseVitaminK = entry.vitaminK
-        self.baseFolate = entry.folate
-        self.baseOmega3 = entry.omega3
-        self.servingUnitOptions = normalizedServingUnitOptions
+        self._baseEntry = State(initialValue: entry)
+        self._servingUnitOptions = State(initialValue: normalizedServingUnitOptions)
         self._name = State(initialValue: entry.name)
         self._servingSizeGrams = State(initialValue: serving)
         self._servingSizeText = State(initialValue: ServingUnitOption.initialQuantityText(
@@ -153,8 +103,9 @@ struct EditFoodEntryView: View {
                                 Spacer()
                                 Image(uiImage: uiImage)
                                     .resizable()
-                                    .scaledToFit()
-                                    .frame(maxHeight: 200)
+                                    .scaledToFill()
+                                    .frame(width: 240, height: 240)
+                                    .clipped()
                                     .clipShape(RoundedRectangle(cornerRadius: 12))
                                 Spacer()
                             }
@@ -209,39 +160,50 @@ struct EditFoodEntryView: View {
                                     .foregroundStyle(.secondary)
                             }
                         }
+
+                        Button {
+                            showingAddCustomPortion = true
+                        } label: {
+                            HStack {
+                                Image(systemName: "plus.circle.fill")
+                                Text("Custom Portion Size")
+                            }
+                            .font(.subheadline)
+                            .foregroundStyle(AppColors.calorie)
+                        }
                     }
 
                     Section("Nutrition") {
-                        NutritionDisplayRow(label: "Calories", value: "\(scaledCalories)", unit: "kcal")
-                        NutritionDisplayRow(label: "Protein", value: MacroValueFormatter.string(scaledProtein), unit: "g")
-                        NutritionDisplayRow(label: "Carbs", value: MacroValueFormatter.string(scaledCarbs), unit: "g")
-                        NutritionDisplayRow(label: "Fat", value: MacroValueFormatter.string(scaledFat), unit: "g")
+                        NutritionEditRowInt(label: "Calories", baseValue: $baseEntry.calories, scale: scale, unit: "kcal")
+                        NutritionEditRow(label: "Protein", baseValue: $baseEntry.protein, scale: scale, unit: "g")
+                        NutritionEditRow(label: "Carbs", baseValue: $baseEntry.carbs, scale: scale, unit: "g")
+                        NutritionEditRow(label: "Fat", baseValue: $baseEntry.fat, scale: scale, unit: "g")
                     }
 
                     Section {
                         DisclosureGroup("More Nutrition") {
-                            OptionalNutritionDisplayRow(label: "Sugar", value: scaledSugar, unit: "g")
-                            OptionalNutritionDisplayRow(label: "Added Sugar", value: scaledAddedSugar, unit: "g")
-                            OptionalNutritionDisplayRow(label: "Fiber", value: scaledFiber, unit: "g")
-                            OptionalNutritionDisplayRow(label: "Saturated Fat", value: scaledSaturatedFat, unit: "g")
-                            OptionalNutritionDisplayRow(label: "Mono Fat", value: scaledMonounsaturatedFat, unit: "g")
-                            OptionalNutritionDisplayRow(label: "Poly Fat", value: scaledPolyunsaturatedFat, unit: "g")
-                            OptionalNutritionDisplayRow(label: "Cholesterol", value: scaledCholesterol, unit: "mg")
-                            OptionalNutritionDisplayRow(label: "Sodium", value: scaledSodium, unit: "mg")
-                            OptionalNutritionDisplayRow(label: "Potassium", value: scaledPotassium, unit: "mg")
-                            OptionalNutritionDisplayRow(label: "Trans Fat", value: scaledTransFat, unit: "g")
-                            OptionalNutritionDisplayRow(label: "Calcium", value: scaledCalcium, unit: "mg")
-                            OptionalNutritionDisplayRow(label: "Iron", value: scaledIron, unit: "mg")
-                            OptionalNutritionDisplayRow(label: "Magnesium", value: scaledMagnesium, unit: "mg")
-                            OptionalNutritionDisplayRow(label: "Zinc", value: scaledZinc, unit: "mg")
-                            OptionalNutritionDisplayRow(label: "Vitamin A", value: scaledVitaminA, unit: "mcg")
-                            OptionalNutritionDisplayRow(label: "Vitamin C", value: scaledVitaminC, unit: "mg")
-                            OptionalNutritionDisplayRow(label: "Vitamin D", value: scaledVitaminD, unit: "mcg")
-                            OptionalNutritionDisplayRow(label: "Vitamin B12", value: scaledVitaminB12, unit: "mcg")
-                            OptionalNutritionDisplayRow(label: "Vitamin E", value: scaledVitaminE, unit: "mg")
-                            OptionalNutritionDisplayRow(label: "Vitamin K", value: scaledVitaminK, unit: "mcg")
-                            OptionalNutritionDisplayRow(label: "Folate", value: scaledFolate, unit: "mcg")
-                            OptionalNutritionDisplayRow(label: "Omega-3", value: scaledOmega3, unit: "g")
+                            OptionalNutritionEditRow(label: "Sugar", baseValue: $baseEntry.sugar, scale: scale, unit: "g")
+                            OptionalNutritionEditRow(label: "Added Sugar", baseValue: $baseEntry.addedSugar, scale: scale, unit: "g")
+                            OptionalNutritionEditRow(label: "Fiber", baseValue: $baseEntry.fiber, scale: scale, unit: "g")
+                            OptionalNutritionEditRow(label: "Saturated Fat", baseValue: $baseEntry.saturatedFat, scale: scale, unit: "g")
+                            OptionalNutritionEditRow(label: "Mono Fat", baseValue: $baseEntry.monounsaturatedFat, scale: scale, unit: "g")
+                            OptionalNutritionEditRow(label: "Poly Fat", baseValue: $baseEntry.polyunsaturatedFat, scale: scale, unit: "g")
+                            OptionalNutritionEditRow(label: "Cholesterol", baseValue: $baseEntry.cholesterol, scale: scale, unit: "mg")
+                            OptionalNutritionEditRow(label: "Sodium", baseValue: $baseEntry.sodium, scale: scale, unit: "mg")
+                            OptionalNutritionEditRow(label: "Potassium", baseValue: $baseEntry.potassium, scale: scale, unit: "mg")
+                            OptionalNutritionEditRow(label: "Trans Fat", baseValue: $baseEntry.transFat, scale: scale, unit: "g")
+                            OptionalNutritionEditRow(label: "Calcium", baseValue: $baseEntry.calcium, scale: scale, unit: "mg")
+                            OptionalNutritionEditRow(label: "Iron", baseValue: $baseEntry.iron, scale: scale, unit: "mg")
+                            OptionalNutritionEditRow(label: "Magnesium", baseValue: $baseEntry.magnesium, scale: scale, unit: "mg")
+                            OptionalNutritionEditRow(label: "Zinc", baseValue: $baseEntry.zinc, scale: scale, unit: "mg")
+                            OptionalNutritionEditRow(label: "Vitamin A", baseValue: $baseEntry.vitaminA, scale: scale, unit: "mcg")
+                            OptionalNutritionEditRow(label: "Vitamin C", baseValue: $baseEntry.vitaminC, scale: scale, unit: "mg")
+                            OptionalNutritionEditRow(label: "Vitamin D", baseValue: $baseEntry.vitaminD, scale: scale, unit: "mcg")
+                            OptionalNutritionEditRow(label: "Vitamin B12", baseValue: $baseEntry.vitaminB12, scale: scale, unit: "mcg")
+                            OptionalNutritionEditRow(label: "Vitamin E", baseValue: $baseEntry.vitaminE, scale: scale, unit: "mg")
+                            OptionalNutritionEditRow(label: "Vitamin K", baseValue: $baseEntry.vitaminK, scale: scale, unit: "mcg")
+                            OptionalNutritionEditRow(label: "Folate", baseValue: $baseEntry.folate, scale: scale, unit: "mcg")
+                            OptionalNutritionEditRow(label: "Omega-3", baseValue: $baseEntry.omega3, scale: scale, unit: "g")
                         }
                         .tint(AppColors.calorie)
                     }
@@ -276,6 +238,27 @@ struct EditFoodEntryView: View {
                 .onChange(of: isQuantityEditing) { _, editing in
                     guard editing else { return }
                     scrollQuantityIntoView(scrollProxy)
+                }
+                .sheet(isPresented: $showingAddCustomPortion) {
+                    AddCustomPortionSheet(currentGrams: servingSizeGrams) { name, grams in
+                        let newOption = ServingUnitOption(
+                            unit: name,
+                            gramsPerUnit: grams,
+                            quantity: servingSizeGrams / grams
+                        )
+                        if let index = servingUnitOptions.firstIndex(where: { $0.id == newOption.id }) {
+                            servingUnitOptions[index] = newOption
+                        } else {
+                            servingUnitOptions.append(newOption)
+                        }
+                        if selectedServingUnitID == newOption.id {
+                            let quantity = grams > 0 ? servingSizeGrams / grams : servingSizeGrams
+                            servingSizeText = ServingUnitEditor.formatQuantity(quantity)
+                        } else {
+                            selectedServingUnitID = newOption.id
+                        }
+                    }
+                    .presentationDetents([.fraction(0.35), .medium])
                 }
                 .navigationTitle("Edit Food")
                 .navigationBarTitleDisplayMode(.inline)

@@ -1,7 +1,5 @@
 # Xcode
-*.xcodeproj/project.xcworkspace/xcuserdata/
-*.xcodeproj/xcuserdata/
-*.xcworkspace/xcuserdata/
+xcuserdata/
 DerivedData/
 build/
 
@@ -12,6 +10,15 @@ local.properties
 .idea/
 *.jks
 .cxx/
+
+# Android Studio / Eclipse
+.project
+.settings/
+.classpath
+
+# Tool caches
+.codegraph/
+.snaprevert/
 
 # Secrets
 ios/calorietracker/Resources/Secrets.plist

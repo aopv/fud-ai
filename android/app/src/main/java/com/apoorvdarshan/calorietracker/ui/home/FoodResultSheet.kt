@@ -2,6 +2,7 @@ package com.apoorvdarshan.calorietracker.ui.home
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -11,6 +12,7 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.UnfoldMore
@@ -22,6 +24,7 @@ import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -77,19 +80,20 @@ fun FoodResultSheet(
         confirmValueChange = { it != SheetValue.Hidden }
     )
     var name by remember { mutableStateOf(analysis.name) }
-    val servingUnitOptions = remember(analysis.servingUnitOptions, analysis.servingSizeGrams) {
-        ServingUnitOption.normalizedOptions(analysis.servingUnitOptions, analysis.servingSizeGrams)
+    var servingUnitOptions by remember {
+        mutableStateOf(ServingUnitOption.normalizedOptions(analysis.servingUnitOptions, analysis.servingSizeGrams))
     }
+    var showAddCustomPortion by remember { mutableStateOf(false) }
     val initialServingUnit = if (preferGramsByDefault) {
         ServingUnitOption.grams.unit
     } else {
         analysis.selectedServingUnit
     }
-    var selectedServingUnitId by remember(analysis, servingUnitOptions, preferGramsByDefault) {
+    var selectedServingUnitId by remember {
         mutableStateOf(ServingUnitOption.initialUnitId(initialServingUnit, servingUnitOptions))
     }
-    var servingGrams by remember(analysis) { mutableStateOf(analysis.servingSizeGrams) }
-    var servingQuantityText by remember(analysis, servingUnitOptions, preferGramsByDefault) {
+    var servingGrams by remember { mutableStateOf(analysis.servingSizeGrams) }
+    var servingQuantityText by remember {
         mutableStateOf(
             ServingUnitOption.initialQuantityText(
                 totalGrams = analysis.servingSizeGrams,
@@ -97,6 +101,25 @@ fun FoodResultSheet(
                 selectedQuantity = analysis.selectedServingQuantity,
                 options = servingUnitOptions
             )
+        )
+    }
+
+    LaunchedEffect(analysis, preferGramsByDefault) {
+        val initialOptions = ServingUnitOption.normalizedOptions(analysis.servingUnitOptions, analysis.servingSizeGrams)
+        servingUnitOptions = initialOptions
+        servingGrams = analysis.servingSizeGrams
+        val newInitialServingUnit = if (preferGramsByDefault) {
+            ServingUnitOption.grams.unit
+        } else {
+            analysis.selectedServingUnit
+        }
+        val newSelectedUnitId = ServingUnitOption.initialUnitId(newInitialServingUnit, initialOptions)
+        selectedServingUnitId = newSelectedUnitId
+        servingQuantityText = ServingUnitOption.initialQuantityText(
+            totalGrams = analysis.servingSizeGrams,
+            selectedUnitId = newSelectedUnitId,
+            selectedQuantity = analysis.selectedServingQuantity,
+            options = initialOptions
         )
     }
     val selectedServingOption = ServingUnitOption.optionMatching(selectedServingUnitId, servingUnitOptions)
@@ -215,6 +238,28 @@ fun FoodResultSheet(
                     onMenuExpandedChange = { servingMenuExpanded = it },
                     gramUnit = stringResource(R.string.unit_g)
                 )
+            }
+            item {
+                androidx.compose.material3.TextButton(
+                    onClick = { showAddCustomPortion = true },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Filled.Add,
+                            contentDescription = null,
+                            tint = AppColors.Calorie,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(Modifier.width(6.dp))
+                        Text(
+                            "Custom Portion Size",
+                            color = AppColors.Calorie,
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
+                }
             }
 
             item { SheetSectionHeader(stringResource(R.string.sheet_nutrition)) }
@@ -338,5 +383,29 @@ fun FoodResultSheet(
                 }
             }
         }
+    }
+
+    if (showAddCustomPortion) {
+        AddCustomPortionDialog(
+            currentGrams = servingGrams,
+            onDismiss = { showAddCustomPortion = false },
+            onAdd = { name, grams ->
+                val newOption = ServingUnitOption(
+                    unit = name,
+                    gramsPerUnit = grams,
+                    quantity = servingGrams / grams
+                )
+                val exists = servingUnitOptions.any { it.id == newOption.id }
+                servingUnitOptions = if (exists) {
+                    servingUnitOptions.map { if (it.id == newOption.id) newOption else it }
+                } else {
+                    servingUnitOptions + newOption
+                }
+                selectedServingUnitId = newOption.id
+                
+                val quantity = if (grams > 0) servingGrams / grams else servingGrams
+                servingQuantityText = ServingUnitOption.formatQuantity(quantity)
+            }
+        )
     }
 }

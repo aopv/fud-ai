@@ -57,7 +57,7 @@ struct ServingUnitEditor: View {
                         Button {
                             selectedUnitID = option.id
                         } label: {
-                            Text(option.displayUnit(for: option.id == selectedUnitID ? selectedQuantity : nil))
+                            Text(option.unit)
                         }
                     }
                 } label: {

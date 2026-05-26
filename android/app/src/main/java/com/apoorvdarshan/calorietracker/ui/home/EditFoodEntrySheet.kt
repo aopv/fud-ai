@@ -13,6 +13,7 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.UnfoldMore
@@ -30,6 +31,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -87,21 +89,23 @@ fun EditFoodEntrySheet(
         skipPartiallyExpanded = true,
         confirmValueChange = { it != SheetValue.Hidden }
     )
+    var baseEntry by remember { mutableStateOf(entry) }
     val baseServing = entry.servingSizeGrams ?: 100.0
-    val servingUnitOptions = remember(entry.servingUnitOptions, baseServing) {
-        ServingUnitOption.normalizedOptions(entry.servingUnitOptions, baseServing)
+    var servingUnitOptions by remember {
+        mutableStateOf(ServingUnitOption.normalizedOptions(entry.servingUnitOptions, baseServing))
     }
+    var showAddCustomPortion by remember { mutableStateOf(false) }
     var name by remember { mutableStateOf(entry.name) }
     val initialServingUnit = if (preferGramsByDefault) {
         ServingUnitOption.grams.unit
     } else {
         entry.selectedServingUnit
     }
-    var selectedServingUnitId by remember(entry, servingUnitOptions, preferGramsByDefault) {
+    var selectedServingUnitId by remember {
         mutableStateOf(ServingUnitOption.initialUnitId(initialServingUnit, servingUnitOptions))
     }
-    var servingGrams by remember(entry, baseServing) { mutableStateOf(baseServing) }
-    var servingQuantityText by remember(entry, servingUnitOptions, preferGramsByDefault) {
+    var servingGrams by remember { mutableStateOf(baseServing) }
+    var servingQuantityText by remember {
         mutableStateOf(
             ServingUnitOption.initialQuantityText(
                 totalGrams = baseServing,
@@ -109,6 +113,25 @@ fun EditFoodEntrySheet(
                 selectedQuantity = entry.selectedServingQuantity,
                 options = servingUnitOptions
             )
+        )
+    }
+
+    LaunchedEffect(entry, preferGramsByDefault) {
+        val initialOptions = ServingUnitOption.normalizedOptions(entry.servingUnitOptions, baseServing)
+        servingUnitOptions = initialOptions
+        servingGrams = baseServing
+        val newInitialServingUnit = if (preferGramsByDefault) {
+            ServingUnitOption.grams.unit
+        } else {
+            entry.selectedServingUnit
+        }
+        val newSelectedUnitId = ServingUnitOption.initialUnitId(newInitialServingUnit, initialOptions)
+        selectedServingUnitId = newSelectedUnitId
+        servingQuantityText = ServingUnitOption.initialQuantityText(
+            totalGrams = baseServing,
+            selectedUnitId = newSelectedUnitId,
+            selectedQuantity = entry.selectedServingQuantity,
+            options = initialOptions
         )
     }
     val selectedServingOption = ServingUnitOption.optionMatching(selectedServingUnitId, servingUnitOptions)
@@ -141,34 +164,34 @@ fun EditFoodEntrySheet(
 
     fun buildUpdated(): FoodEntry = entry.copy(
         name = name.trim().ifEmpty { entry.name },
-        calories = scaledInt(entry.calories),
-        protein = scaledMacro(entry.protein),
-        carbs = scaledMacro(entry.carbs),
-        fat = scaledMacro(entry.fat),
+        calories = scaledInt(baseEntry.calories),
+        protein = scaledMacro(baseEntry.protein),
+        carbs = scaledMacro(baseEntry.carbs),
+        fat = scaledMacro(baseEntry.fat),
         timestamp = loggedDate.atTime(loggedTime).atZone(zone).toInstant(),
         mealType = mealType,
-        sugar = scaledD(entry.sugar),
-        addedSugar = scaledD(entry.addedSugar),
-        fiber = scaledD(entry.fiber),
-        saturatedFat = scaledD(entry.saturatedFat),
-        monounsaturatedFat = scaledD(entry.monounsaturatedFat),
-        polyunsaturatedFat = scaledD(entry.polyunsaturatedFat),
-        cholesterol = scaledD(entry.cholesterol),
-        sodium = scaledD(entry.sodium),
-        potassium = scaledD(entry.potassium),
-        transFat = scaledD(entry.transFat),
-        calcium = scaledD(entry.calcium),
-        iron = scaledD(entry.iron),
-        magnesium = scaledD(entry.magnesium),
-        zinc = scaledD(entry.zinc),
-        vitaminA = scaledD(entry.vitaminA),
-        vitaminC = scaledD(entry.vitaminC),
-        vitaminD = scaledD(entry.vitaminD),
-        vitaminB12 = scaledD(entry.vitaminB12),
-        vitaminE = scaledD(entry.vitaminE),
-        vitaminK = scaledD(entry.vitaminK),
-        folate = scaledD(entry.folate),
-        omega3 = scaledD(entry.omega3),
+        sugar = scaledD(baseEntry.sugar),
+        addedSugar = scaledD(baseEntry.addedSugar),
+        fiber = scaledD(baseEntry.fiber),
+        saturatedFat = scaledD(baseEntry.saturatedFat),
+        monounsaturatedFat = scaledD(baseEntry.monounsaturatedFat),
+        polyunsaturatedFat = scaledD(baseEntry.polyunsaturatedFat),
+        cholesterol = scaledD(baseEntry.cholesterol),
+        sodium = scaledD(baseEntry.sodium),
+        potassium = scaledD(baseEntry.potassium),
+        transFat = scaledD(baseEntry.transFat),
+        calcium = scaledD(baseEntry.calcium),
+        iron = scaledD(baseEntry.iron),
+        magnesium = scaledD(baseEntry.magnesium),
+        zinc = scaledD(baseEntry.zinc),
+        vitaminA = scaledD(baseEntry.vitaminA),
+        vitaminC = scaledD(baseEntry.vitaminC),
+        vitaminD = scaledD(baseEntry.vitaminD),
+        vitaminB12 = scaledD(baseEntry.vitaminB12),
+        vitaminE = scaledD(baseEntry.vitaminE),
+        vitaminK = scaledD(baseEntry.vitaminK),
+        folate = scaledD(baseEntry.folate),
+        omega3 = scaledD(baseEntry.omega3),
         servingSizeGrams = servingGrams,
         servingUnitOptions = servingUnitOptions,
         selectedServingUnit = if (servingUnitOptions.isEmpty()) null else selectedServingOption.unit,
@@ -188,36 +211,10 @@ fun EditFoodEntrySheet(
             onPrimary = { onSave(buildUpdated()) }
         )
 
-        // Hoist string + composition reads above LazyColumn — its lambda has
-        // LazyListScope (not @Composable), so stringResource can't be called
-        // from inside.
+        // Hoist string reads above LazyColumn
         val gUnit = stringResource(R.string.unit_g)
         val mgUnit = stringResource(R.string.unit_mg)
         val mcgUnit = "mcg"
-        val micros = listOf(
-            Triple(stringResource(R.string.sheet_micro_sugar), scaledD(entry.sugar), gUnit),
-            Triple(stringResource(R.string.sheet_micro_added_sugar), scaledD(entry.addedSugar), gUnit),
-            Triple(stringResource(R.string.sheet_micro_fiber), scaledD(entry.fiber), gUnit),
-            Triple(stringResource(R.string.sheet_micro_saturated_fat), scaledD(entry.saturatedFat), gUnit),
-            Triple(stringResource(R.string.sheet_micro_mono_fat), scaledD(entry.monounsaturatedFat), gUnit),
-            Triple(stringResource(R.string.sheet_micro_poly_fat), scaledD(entry.polyunsaturatedFat), gUnit),
-            Triple(stringResource(R.string.sheet_micro_cholesterol), scaledD(entry.cholesterol), mgUnit),
-            Triple(stringResource(R.string.sheet_micro_sodium), scaledD(entry.sodium), mgUnit),
-            Triple(stringResource(R.string.sheet_micro_potassium), scaledD(entry.potassium), mgUnit),
-            Triple("Trans Fat", scaledD(entry.transFat), gUnit),
-            Triple("Calcium", scaledD(entry.calcium), mgUnit),
-            Triple("Iron", scaledD(entry.iron), mgUnit),
-            Triple("Magnesium", scaledD(entry.magnesium), mgUnit),
-            Triple("Zinc", scaledD(entry.zinc), mgUnit),
-            Triple("Vitamin A", scaledD(entry.vitaminA), mcgUnit),
-            Triple("Vitamin C", scaledD(entry.vitaminC), mgUnit),
-            Triple("Vitamin D", scaledD(entry.vitaminD), mcgUnit),
-            Triple("Vitamin B12", scaledD(entry.vitaminB12), mcgUnit),
-            Triple("Vitamin E", scaledD(entry.vitaminE), mgUnit),
-            Triple("Vitamin K", scaledD(entry.vitaminK), mcgUnit),
-            Triple("Folate", scaledD(entry.folate), mcgUnit),
-            Triple("Omega-3", scaledD(entry.omega3), gUnit)
-        )
 
         LazyColumn(
             modifier = Modifier
@@ -299,45 +296,99 @@ fun EditFoodEntrySheet(
                     gramUnit = stringResource(R.string.unit_g)
                 )
             }
+            item {
+                androidx.compose.material3.TextButton(
+                    onClick = { showAddCustomPortion = true },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Filled.Add,
+                            contentDescription = null,
+                            tint = AppColors.Calorie,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(Modifier.width(6.dp))
+                        Text(
+                            "Custom Portion Size",
+                            color = AppColors.Calorie,
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
+                }
+            }
 
             item { SheetSectionHeader(stringResource(R.string.sheet_nutrition)) }
             item {
                 SheetPillCard {
-                    SheetNutritionRow(stringResource(R.string.nutrition_label_calories), "${scaledInt(entry.calories)}", stringResource(R.string.unit_kcal))
+                    SheetEditableNutritionRowInt(stringResource(R.string.nutrition_label_calories), baseEntry.calories, scale, stringResource(R.string.unit_kcal)) { baseEntry = baseEntry.copy(calories = it) }
                     SheetHairline()
-                    SheetNutritionRow(stringResource(R.string.nutrition_label_protein), MacroValueFormatter.string(scaledMacro(entry.protein)), stringResource(R.string.unit_g))
+                    SheetEditableNutritionRow(stringResource(R.string.nutrition_label_protein), baseEntry.protein, scale, stringResource(R.string.unit_g)) { baseEntry = baseEntry.copy(protein = it ?: 0.0) }
                     SheetHairline()
-                    SheetNutritionRow(stringResource(R.string.nutrition_label_carbs), MacroValueFormatter.string(scaledMacro(entry.carbs)), stringResource(R.string.unit_g))
+                    SheetEditableNutritionRow(stringResource(R.string.nutrition_label_carbs), baseEntry.carbs, scale, stringResource(R.string.unit_g)) { baseEntry = baseEntry.copy(carbs = it ?: 0.0) }
                     SheetHairline()
-                    SheetNutritionRow(stringResource(R.string.nutrition_label_fat), MacroValueFormatter.string(scaledMacro(entry.fat)), stringResource(R.string.unit_g))
+                    SheetEditableNutritionRow(stringResource(R.string.nutrition_label_fat), baseEntry.fat, scale, stringResource(R.string.unit_g)) { baseEntry = baseEntry.copy(fat = it ?: 0.0) }
                 }
             }
 
-            // "More Nutrition" — own pill row with chevron-right that flips to
-            // chevron-down when expanded; matches iOS DisclosureGroup behavior.
-            // (gUnit / mgUnit / micros hoisted above the LazyColumn so the
-            // composable reads happen in @Composable scope.)
-            if (micros.any { it.second != null }) {
-                item {
-                    SheetPillRow(onClick = { moreNutritionExpanded = !moreNutritionExpanded }) {
-                        Text(stringResource(R.string.sheet_more_nutrition), fontSize = 17.sp, modifier = Modifier.weight(1f))
-                        Icon(
-                            if (moreNutritionExpanded) Icons.Filled.KeyboardArrowDown
-                            else Icons.Filled.KeyboardArrowRight,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
-                        )
-                    }
+            item {
+                SheetPillRow(onClick = { moreNutritionExpanded = !moreNutritionExpanded }) {
+                    Text(stringResource(R.string.sheet_more_nutrition), fontSize = 17.sp, modifier = Modifier.weight(1f))
+                    Icon(
+                        if (moreNutritionExpanded) Icons.Filled.KeyboardArrowDown
+                        else Icons.Filled.KeyboardArrowRight,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                    )
                 }
-                if (moreNutritionExpanded) {
-                    item {
-                        SheetPillCard {
-                            val present = micros.filter { it.second != null }
-                            present.forEachIndexed { idx, (label, value, unit) ->
-                                if (idx > 0) SheetHairline()
-                                SheetNutritionRow(label, String.format("%.1f", value), unit, dim = true)
-                            }
-                        }
+            }
+            if (moreNutritionExpanded) {
+                item {
+                    SheetPillCard {
+                        SheetEditableNutritionRow(stringResource(R.string.sheet_micro_sugar), baseEntry.sugar, scale, gUnit, dim = true) { baseEntry = baseEntry.copy(sugar = it) }
+                        SheetHairline()
+                        SheetEditableNutritionRow(stringResource(R.string.sheet_micro_added_sugar), baseEntry.addedSugar, scale, gUnit, dim = true) { baseEntry = baseEntry.copy(addedSugar = it) }
+                        SheetHairline()
+                        SheetEditableNutritionRow(stringResource(R.string.sheet_micro_fiber), baseEntry.fiber, scale, gUnit, dim = true) { baseEntry = baseEntry.copy(fiber = it) }
+                        SheetHairline()
+                        SheetEditableNutritionRow(stringResource(R.string.sheet_micro_saturated_fat), baseEntry.saturatedFat, scale, gUnit, dim = true) { baseEntry = baseEntry.copy(saturatedFat = it) }
+                        SheetHairline()
+                        SheetEditableNutritionRow(stringResource(R.string.sheet_micro_mono_fat), baseEntry.monounsaturatedFat, scale, gUnit, dim = true) { baseEntry = baseEntry.copy(monounsaturatedFat = it) }
+                        SheetHairline()
+                        SheetEditableNutritionRow(stringResource(R.string.sheet_micro_poly_fat), baseEntry.polyunsaturatedFat, scale, gUnit, dim = true) { baseEntry = baseEntry.copy(polyunsaturatedFat = it) }
+                        SheetHairline()
+                        SheetEditableNutritionRow(stringResource(R.string.sheet_micro_cholesterol), baseEntry.cholesterol, scale, mgUnit, dim = true) { baseEntry = baseEntry.copy(cholesterol = it) }
+                        SheetHairline()
+                        SheetEditableNutritionRow(stringResource(R.string.sheet_micro_sodium), baseEntry.sodium, scale, mgUnit, dim = true) { baseEntry = baseEntry.copy(sodium = it) }
+                        SheetHairline()
+                        SheetEditableNutritionRow(stringResource(R.string.sheet_micro_potassium), baseEntry.potassium, scale, mgUnit, dim = true) { baseEntry = baseEntry.copy(potassium = it) }
+                        SheetHairline()
+                        SheetEditableNutritionRow("Trans Fat", baseEntry.transFat, scale, gUnit, dim = true) { baseEntry = baseEntry.copy(transFat = it) }
+                        SheetHairline()
+                        SheetEditableNutritionRow("Calcium", baseEntry.calcium, scale, mgUnit, dim = true) { baseEntry = baseEntry.copy(calcium = it) }
+                        SheetHairline()
+                        SheetEditableNutritionRow("Iron", baseEntry.iron, scale, mgUnit, dim = true) { baseEntry = baseEntry.copy(iron = it) }
+                        SheetHairline()
+                        SheetEditableNutritionRow("Magnesium", baseEntry.magnesium, scale, mgUnit, dim = true) { baseEntry = baseEntry.copy(magnesium = it) }
+                        SheetHairline()
+                        SheetEditableNutritionRow("Zinc", baseEntry.zinc, scale, mgUnit, dim = true) { baseEntry = baseEntry.copy(zinc = it) }
+                        SheetHairline()
+                        SheetEditableNutritionRow("Vitamin A", baseEntry.vitaminA, scale, mcgUnit, dim = true) { baseEntry = baseEntry.copy(vitaminA = it) }
+                        SheetHairline()
+                        SheetEditableNutritionRow("Vitamin C", baseEntry.vitaminC, scale, mgUnit, dim = true) { baseEntry = baseEntry.copy(vitaminC = it) }
+                        SheetHairline()
+                        SheetEditableNutritionRow("Vitamin D", baseEntry.vitaminD, scale, mcgUnit, dim = true) { baseEntry = baseEntry.copy(vitaminD = it) }
+                        SheetHairline()
+                        SheetEditableNutritionRow("Vitamin B12", baseEntry.vitaminB12, scale, mcgUnit, dim = true) { baseEntry = baseEntry.copy(vitaminB12 = it) }
+                        SheetHairline()
+                        SheetEditableNutritionRow("Vitamin E", baseEntry.vitaminE, scale, mgUnit, dim = true) { baseEntry = baseEntry.copy(vitaminE = it) }
+                        SheetHairline()
+                        SheetEditableNutritionRow("Vitamin K", baseEntry.vitaminK, scale, mcgUnit, dim = true) { baseEntry = baseEntry.copy(vitaminK = it) }
+                        SheetHairline()
+                        SheetEditableNutritionRow("Folate", baseEntry.folate, scale, mcgUnit, dim = true) { baseEntry = baseEntry.copy(folate = it) }
+                        SheetHairline()
+                        SheetEditableNutritionRow("Omega-3", baseEntry.omega3, scale, gUnit, dim = true) { baseEntry = baseEntry.copy(omega3 = it) }
                     }
                 }
             }
@@ -470,6 +521,30 @@ fun EditFoodEntrySheet(
                 showTimePicker = false
             },
             onDismiss = { showTimePicker = false }
+        )
+    }
+
+    if (showAddCustomPortion) {
+        AddCustomPortionDialog(
+            currentGrams = servingGrams,
+            onDismiss = { showAddCustomPortion = false },
+            onAdd = { name, grams ->
+                val newOption = ServingUnitOption(
+                    unit = name,
+                    gramsPerUnit = grams,
+                    quantity = servingGrams / grams
+                )
+                val exists = servingUnitOptions.any { it.id == newOption.id }
+                servingUnitOptions = if (exists) {
+                    servingUnitOptions.map { if (it.id == newOption.id) newOption else it }
+                } else {
+                    servingUnitOptions + newOption
+                }
+                selectedServingUnitId = newOption.id
+                
+                val quantity = if (grams > 0) servingGrams / grams else servingGrams
+                servingQuantityText = ServingUnitOption.formatQuantity(quantity)
+            }
         )
     }
 }

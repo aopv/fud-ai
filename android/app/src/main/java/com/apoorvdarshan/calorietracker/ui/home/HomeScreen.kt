@@ -1384,7 +1384,7 @@ private fun FoodRow(
                 )
             }
 
-            // Pink kcal · gray serving size.
+            // Pink kcal · gray serving size (mirrors iOS FoodRow.servingText).
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
@@ -1396,11 +1396,23 @@ private fun FoodRow(
                     color = AppColors.Calorie
                 )
                 entry.servingSizeGrams?.takeIf { it > 0 }?.let { grams ->
-                    Text("·", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f))
                     val gramsText = if (grams == grams.toInt().toDouble()) "${grams.toInt()}g"
                                     else String.format("%.1fg", grams)
+                    val servingText: String = run {
+                        val unit = entry.selectedServingUnit
+                        val qty = entry.selectedServingQuantity
+                        if (unit != null && qty != null && qty > 0) {
+                            val option = ServingUnitOption.optionMatching(unit, entry.servingUnitOptions)
+                            if (!option.isGramUnit) {
+                                val qtyText = ServingUnitOption.formatQuantity(qty)
+                                return@run "$qtyText ${option.displayUnit(qty)} (~$gramsText)"
+                            }
+                        }
+                        gramsText
+                    }
+                    Text("·", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f))
                     Text(
-                        gramsText,
+                        servingText,
                         fontSize = 12.sp,
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                     )
