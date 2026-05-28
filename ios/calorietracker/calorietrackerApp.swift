@@ -95,6 +95,9 @@ struct calorietrackerApp: App {
                     notificationManager.rescheduleDataDependentNotifications(
                         foodStore: foodStore, weightStore: weightStore, bodyFatStore: bodyFatStore, profile: profile
                     )
+                    // Restore meal reminders if a Focus filter just deactivated
+                    // (FocusFilterKeys.muteReminders is now false again).
+                    notificationManager.rescheduleMealRemindersFromPreferences()
                 }
                 if hasCompletedOnboarding {
                     wireUpHealthKit()

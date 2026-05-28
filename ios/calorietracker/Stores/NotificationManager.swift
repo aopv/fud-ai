@@ -38,6 +38,11 @@ class NotificationManager {
             "meal.breakfast", "meal.lunch", "meal.dinner"
         ])
 
+        // Honour Focus filter — when "Mute Meal Reminders" is active, cancel
+        // pending reminders and skip scheduling new ones. They will be restored
+        // by rescheduleMealRemindersFromPreferences() on the next app foreground.
+        if UserDefaults.standard.bool(forKey: FocusFilterKeys.muteReminders) { return }
+
         if breakfastEnabled {
             scheduleRepeatingMeal(
                 id: "meal.breakfast",
@@ -64,6 +69,25 @@ class NotificationManager {
                 hour: dinnerHour, minute: dinnerMinute
             )
         }
+    }
+
+    /// Re-apply meal reminders from stored user preferences.
+    /// Call on every app-foreground so that a just-deactivated Focus filter
+    /// (which set focusMuteReminders = false) immediately restores reminders
+    /// without the user needing to re-open Settings.
+    func rescheduleMealRemindersFromPreferences() {
+        let ud = UserDefaults.standard
+        scheduleMealReminders(
+            breakfastEnabled: ud.object(forKey: "breakfastReminderEnabled") as? Bool ?? true,
+            breakfastHour:    ud.object(forKey: "breakfastReminderHour")    as? Int  ?? 8,
+            breakfastMinute:  ud.object(forKey: "breakfastReminderMinute")  as? Int  ?? 0,
+            lunchEnabled:     ud.object(forKey: "lunchReminderEnabled")     as? Bool ?? true,
+            lunchHour:        ud.object(forKey: "lunchReminderHour")        as? Int  ?? 12,
+            lunchMinute:      ud.object(forKey: "lunchReminderMinute")      as? Int  ?? 0,
+            dinnerEnabled:    ud.object(forKey: "dinnerReminderEnabled")    as? Bool ?? true,
+            dinnerHour:       ud.object(forKey: "dinnerReminderHour")       as? Int  ?? 19,
+            dinnerMinute:     ud.object(forKey: "dinnerReminderMinute")     as? Int  ?? 0
+        )
     }
 
     private func scheduleRepeatingMeal(id: String, title: String, body: String, hour: Int, minute: Int) {
