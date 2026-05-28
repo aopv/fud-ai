@@ -602,6 +602,8 @@ private struct MessageBubble: View {
 
 private struct TypingIndicator: View {
     @State private var phase = 0
+    @State private var timer: Timer?
+
     var body: some View {
         HStack(spacing: 5) {
             ForEach(0..<3) { i in
@@ -616,9 +618,13 @@ private struct TypingIndicator: View {
             }
         }
         .onAppear {
-            Timer.scheduledTimer(withTimeInterval: 0.35, repeats: true) { _ in
+            timer = Timer.scheduledTimer(withTimeInterval: 0.35, repeats: true) { _ in
                 phase = (phase + 1) % 3
             }
+        }
+        .onDisappear {
+            timer?.invalidate()
+            timer = nil
         }
     }
 }

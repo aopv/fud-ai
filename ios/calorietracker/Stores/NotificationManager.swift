@@ -1,6 +1,7 @@
 import Foundation
 import UserNotifications
 
+@MainActor
 @Observable
 class NotificationManager {
     var authorizationStatus: UNAuthorizationStatus = .notDetermined
@@ -203,6 +204,10 @@ class NotificationManager {
     // MARK: - Convenience: Reschedule Data-Dependent Notifications
 
     func rescheduleDataDependentNotifications(foodStore: FoodStore, weightStore: WeightStore, bodyFatStore: BodyFatStore, profile: UserProfile) {
+        // Honour Focus filter — when a Focus with "Mute Meal Reminders" is active,
+        // SetFocusFilterIntent.perform() sets this flag; it resets to false on deactivation.
+        if UserDefaults.standard.bool(forKey: FocusFilterKeys.muteReminders) { return }
+
         let streakEnabled = UserDefaults.standard.object(forKey: "streakReminderEnabled") as? Bool ?? true
         let streakHour = UserDefaults.standard.object(forKey: "streakReminderHour") as? Int ?? 21
         let streakMinute = UserDefaults.standard.object(forKey: "streakReminderMinute") as? Int ?? 0

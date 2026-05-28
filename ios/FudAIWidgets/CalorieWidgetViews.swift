@@ -21,12 +21,13 @@ struct CalorieWidgetView: View {
 
     var body: some View {
         switch family {
-        case .systemSmall:       SmallCalorieView(snapshot: entry.snapshot)
-        case .systemMedium:      MediumCalorieView(snapshot: entry.snapshot)
-        case .accessoryCircular: CircularCalorieView(snapshot: entry.snapshot)
+        case .systemSmall:          SmallCalorieView(snapshot: entry.snapshot)
+        case .systemMedium:         MediumCalorieView(snapshot: entry.snapshot)
+        case .systemLarge:          LargeCalorieView(snapshot: entry.snapshot)
+        case .accessoryCircular:    CircularCalorieView(snapshot: entry.snapshot)
         case .accessoryRectangular: RectangularCalorieView(snapshot: entry.snapshot)
-        case .accessoryInline:   InlineCalorieView(snapshot: entry.snapshot)
-        default:                 SmallCalorieView(snapshot: entry.snapshot)
+        case .accessoryInline:      InlineCalorieView(snapshot: entry.snapshot)
+        default:                    SmallCalorieView(snapshot: entry.snapshot)
         }
     }
 }
@@ -138,6 +139,77 @@ private struct MacroBar: View {
             }
             .frame(height: 6)
         }
+    }
+}
+
+// MARK: - StandBy / Large
+
+/// systemLarge — shown in StandBy mode and on the home screen large slot.
+/// Uses .widgetAccentable() so the progress arc and bars tint correctly
+/// in StandBy's night-mode yellow rendering.
+private struct LargeCalorieView: View {
+    let snapshot: WidgetSnapshot
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            // Header
+            HStack {
+                Label("Fud AI", systemImage: "fork.knife")
+                    .font(.system(.headline, design: .rounded, weight: .bold))
+                    .widgetAccentable()
+                Spacer()
+                Text(Date(), style: .date)
+                    .font(.system(.caption, design: .rounded))
+                    .foregroundStyle(.secondary)
+            }
+
+            // Big calorie ring
+            HStack(spacing: 20) {
+                ZStack {
+                    Circle()
+                        .stroke(WidgetPalette.calorie.opacity(0.15), lineWidth: 16)
+                    Circle()
+                        .trim(from: 0, to: snapshot.calorieProgress)
+                        .stroke(WidgetPalette.calorieGradient, style: StrokeStyle(lineWidth: 16, lineCap: .round))
+                        .rotationEffect(.degrees(-90))
+                        .widgetAccentable()
+                    VStack(spacing: 2) {
+                        Text("\(snapshot.calories)")
+                            .font(.system(size: 40, weight: .bold, design: .rounded))
+                            .minimumScaleFactor(0.6)
+                            .lineLimit(1)
+                        Text("/ \(snapshot.calorieGoal) kcal")
+                            .font(.system(.caption, design: .rounded))
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .frame(width: 130, height: 130)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(snapshot.caloriesRemaining > 0
+                         ? "\(snapshot.caloriesRemaining) kcal left"
+                         : "Goal reached!")
+                        .font(.system(.title3, design: .rounded, weight: .semibold))
+                        .foregroundStyle(WidgetPalette.calorie)
+                        .widgetAccentable()
+
+                    Text("today")
+                        .font(.system(.caption, design: .rounded))
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+            }
+
+            // Macro bars
+            VStack(spacing: 10) {
+                ForEach(snapshot.displayedHomeNutrients) { nutrient in
+                    MacroBar(nutrient: nutrient)
+                }
+            }
+
+            Spacer()
+        }
+        .padding()
     }
 }
 

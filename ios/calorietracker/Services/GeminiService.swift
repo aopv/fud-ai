@@ -238,6 +238,16 @@ struct GeminiService {
     }
 
     static func analyzeTextInput(description: String) async throws -> FoodAnalysis {
+        // Fast path: on-device model (iOS 26+, Apple Intelligence devices).
+        // Instant, offline, no quota consumed. Falls through on unsupported hardware.
+        #if canImport(FoundationModels)
+        if #available(iOS 26, *) {
+            if let onDevice = await OnDeviceAIService.analyzeText(description) {
+                return await addingFallbackServingUnits(to: onDevice, image: nil, description: description)
+            }
+        }
+        #endif
+
         let prompt = """
         Estimate the nutritional content for: \(description)
         Parse any quantities, brands, and multiple items from the text. If a brand is mentioned, use that brand's known nutritional data. If multiple items are described, sum up the total nutrition.
@@ -768,9 +778,9 @@ struct GeminiService {
             // Fall back to a status-code-only message when parsing finds nothing OR when the
             // parsed value is empty (some providers return `{"error": {"message": ""}}`,
             // which used to slip through as a literal blank "API error: " alert).
-            let parsed = parseErrorMessage(from: data) ?? ""
+            let parsed = AINetworkHelpers.parseErrorMessage(from: data) ?? ""
             let parsedMessage = parsed.isEmpty ? "HTTP \(httpResponse.statusCode)" : parsed
-            lastError = .apiError(friendlyMessage(for: httpResponse.statusCode, raw: parsedMessage))
+            lastError = .apiError(AINetworkHelpers.friendlyMessage(for: httpResponse.statusCode, raw: parsedMessage))
 
             let isRetryable = httpResponse.statusCode == 503
                            || httpResponse.statusCode == 529
@@ -782,30 +792,6 @@ struct GeminiService {
             throw lastError
         }
         throw lastError
-    }
-
-    private static func parseErrorMessage(from data: Data) -> String? {
-        guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return nil }
-        if let error = json["error"] as? [String: Any], let message = error["message"] as? String {
-            return message
-        }
-        if let message = json["error"] as? String {
-            return message
-        }
-        return nil
-    }
-
-    private static func friendlyMessage(for status: Int, raw: String) -> String {
-        switch status {
-        case 503, 529:
-            return "The AI provider is overloaded right now. We retried a few times — please try again in a minute, or switch to a different provider/model in Settings → AI Provider."
-        case 429:
-            return "Rate limit hit on your API key. Wait a minute, or switch to another provider in Settings → AI Provider."
-        case 401, 403:
-            return "Your API key was rejected. Open Settings → AI Provider and re-paste a valid key."
-        default:
-            return raw
-        }
     }
 
     // MARK: - Parsing (unchanged)

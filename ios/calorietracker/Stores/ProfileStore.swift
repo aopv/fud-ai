@@ -4,6 +4,7 @@ import SwiftUI
 /// Shared, observable wrapper around `UserProfile` so every view sees the same instance.
 /// Listens for `.userProfileDidChange` (posted by `UserProfile.save()`) so external writers
 /// — Settings @State, Onboarding, HealthKit observers, WeightStore — propagate to all observing views.
+@MainActor
 @Observable
 class ProfileStore {
     var profile: UserProfile

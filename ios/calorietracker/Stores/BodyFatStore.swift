@@ -8,6 +8,7 @@ import SwiftUI
 ///   - the latest entry's value is treated as the user's "current" body fat
 ///     and pushed to UserProfile.bodyFatPercentage on every add, so Katch-McArdle
 ///     BMR/TDEE re-evaluates every time the user logs a new reading
+@MainActor
 @Observable
 class BodyFatStore {
     private(set) var entries: [BodyFatEntry] = []
@@ -33,7 +34,7 @@ class BodyFatStore {
     }
 
     var latestEntry: BodyFatEntry? {
-        entries.sorted { $0.date > $1.date }.first
+        entries.max(by: { $0.date < $1.date })
     }
 
     func entries(in range: ClosedRange<Date>) -> [BodyFatEntry] {
@@ -64,7 +65,7 @@ class BodyFatStore {
     /// would surprise them; they can clear it explicitly via Settings.
     private func syncProfileBodyFatToLatest() {
         guard var profile = UserProfile.load(),
-              let newest = entries.sorted(by: { $0.date > $1.date }).first else { return }
+              let newest = entries.max(by: { $0.date < $1.date }) else { return }
         if abs((profile.bodyFatPercentage ?? -1) - newest.bodyFatFraction) > 0.0001 {
             profile.bodyFatPercentage = newest.bodyFatFraction
             profile.save()

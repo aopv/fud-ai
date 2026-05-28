@@ -8,6 +8,7 @@
 import SwiftUI
 import HealthKit
 import WidgetKit
+import CoreSpotlight
 
 @main
 struct calorietrackerApp: App {
@@ -40,6 +41,8 @@ struct calorietrackerApp: App {
             UserDefaults.standard.removeObject(forKey: "hasCompletedOnboarding")
             UserDefaults.standard.removeObject(forKey: "userProfile")
         }
+        APIKeyManager.migrateIfNeeded()
+        BackgroundTaskManager.registerAll()
     }
 
     var body: some Scene {
@@ -76,8 +79,14 @@ struct calorietrackerApp: App {
             .onReceive(NotificationCenter.default.publisher(for: .userProfileDidChange)) { _ in
                 refreshWidgetSnapshot()
             }
+            .onContinueUserActivity(CSSearchableItemActionType) { _ in
+                // Spotlight result tapped — app opens to the food log automatically
+            }
         }
         .onChange(of: scenePhase) { _, newPhase in
+            if newPhase == .background {
+                BackgroundTaskManager.scheduleWidgetRefresh()
+            }
             if newPhase == .active {
                 Task {
                     await notificationManager.refreshAuthorizationStatus()
@@ -148,6 +157,8 @@ struct calorietrackerApp: App {
         }
 
         healthKitManager.onBodyMeasurementsChanged = { [weightStore, bodyFatStore] weightKg, weightDate, weightFudaiID, heightCm, bodyFat, bodyFatDate, bodyFatFudaiID, dob, sex in
+            // HealthKit fires this on its own background thread; stores are @MainActor.
+            Task { @MainActor in
             guard var profile = UserProfile.load() else { return }
             var changed = false
 
@@ -238,6 +249,7 @@ struct calorietrackerApp: App {
                 }
             }
             if changed { profile.save() }
+            } // Task @MainActor
         }
 
         healthKitManager.startBodyMeasurementObserver()

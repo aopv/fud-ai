@@ -9,7 +9,7 @@ struct CloudData {
 
 struct CloudKitService {
     private static let containerID = "iCloud.com.apoorvdarshan.calorietracker"
-    private static var container: CKContainer { CKContainer(identifier: containerID) }
+    private static let container = CKContainer(identifier: containerID)
     private static var database: CKDatabase { container.privateCloudDatabase }
 
     // MARK: - Record Types
@@ -210,7 +210,7 @@ struct CloudKitService {
         do {
             let _ = try await database.save(rec)
         } catch {
-            // Silent failure — sync catches up on next mutation
+            print("[CloudKit] saveFoodEntry failed: \(error)")
         }
     }
 
@@ -218,29 +218,36 @@ struct CloudKitService {
         let rec = record(from: entry)
         do {
             let _ = try await database.save(rec)
-        } catch {}
+        } catch {
+            print("[CloudKit] saveWeightEntry failed: \(error)")
+        }
     }
 
     static func saveProfile(_ profile: UserProfile) async {
         let rec = record(from: profile)
         do {
-            // Use modifyRecords to upsert (handles both create and update)
             let _ = try await database.modifyRecords(saving: [rec], deleting: [], savePolicy: .allKeys)
-        } catch {}
+        } catch {
+            print("[CloudKit] saveProfile failed: \(error)")
+        }
     }
 
     static func deleteFoodEntry(id: UUID) async {
         let recordID = CKRecord.ID(recordName: id.uuidString)
         do {
             try await database.deleteRecord(withID: recordID)
-        } catch {}
+        } catch {
+            print("[CloudKit] deleteFoodEntry failed: \(error)")
+        }
     }
 
     static func deleteWeightEntry(id: UUID) async {
         let recordID = CKRecord.ID(recordName: id.uuidString)
         do {
             try await database.deleteRecord(withID: recordID)
-        } catch {}
+        } catch {
+            print("[CloudKit] deleteWeightEntry failed: \(error)")
+        }
     }
 
     // MARK: - Push All Data
@@ -265,7 +272,9 @@ struct CloudKitService {
             let batch = Array(allRecords[batchStart..<end])
             do {
                 let _ = try await database.modifyRecords(saving: batch, deleting: [], savePolicy: .allKeys)
-            } catch {}
+            } catch {
+                print("[CloudKit] pushAllData batch failed: \(error)")
+            }
         }
     }
 
@@ -285,7 +294,9 @@ struct CloudKitService {
                 let batch = Array(allIDs[batchStart..<end])
                 let _ = try await database.modifyRecords(saving: [], deleting: batch)
             }
-        } catch {}
+        } catch {
+            print("[CloudKit] deleteAllData failed: \(error)")
+        }
     }
 
     // MARK: - Pull All Data

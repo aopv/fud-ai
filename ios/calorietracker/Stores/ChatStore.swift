@@ -3,6 +3,7 @@ import SwiftUI
 
 /// Persists the Coach conversation locally in UserDefaults so the history survives app restarts,
 /// and exposes a reset to let the user start fresh whenever they want.
+@MainActor
 @Observable
 class ChatStore {
     private(set) var messages: [ChatMessage] = []

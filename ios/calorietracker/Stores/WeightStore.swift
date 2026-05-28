@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 
+@MainActor
 @Observable
 class WeightStore {
     private(set) var entries: [WeightEntry] = []
@@ -11,6 +12,7 @@ class WeightStore {
 
     init() {
         loadEntries()
+        observeExternalChanges()
         // No default seed — WeightStore.init runs before onboarding finishes on a fresh
         // install, so `UserProfile.load()` is nil and the old seed fell back to .default
         // (70 kg), dropping a phantom 70 kg entry onto every new user's chart even if
@@ -27,7 +29,7 @@ class WeightStore {
     }
 
     var latestEntry: WeightEntry? {
-        entries.sorted { $0.date > $1.date }.first
+        entries.max(by: { $0.date < $1.date })
     }
 
     func entries(in range: ClosedRange<Date>) -> [WeightEntry] {
@@ -37,7 +39,7 @@ class WeightStore {
     }
 
     func addEntry(_ entry: WeightEntry) {
-        let previousLatest = entries.sorted { $0.date > $1.date }.first
+        let previousLatest = entries.max(by: { $0.date < $1.date })
         entries.append(entry)
         saveEntries()
         onEntryAdded?(entry)
@@ -71,7 +73,7 @@ class WeightStore {
     /// — we still need some weightKg for BMR/TDEE math; user can log a new one.
     private func syncProfileWeightToLatest() {
         guard var profile = UserProfile.load(),
-              let newest = entries.sorted(by: { $0.date > $1.date }).first else { return }
+              let newest = entries.max(by: { $0.date < $1.date }) else { return }
         if abs(profile.weightKg - newest.weightKg) > 0.01 {
             profile.weightKg = newest.weightKg
             profile.save()
@@ -96,7 +98,7 @@ class WeightStore {
 
     func mergeWithCloudEntries(_ cloudEntries: [WeightEntry]) {
         var merged = Dictionary(uniqueKeysWithValues: entries.map { ($0.id, $0) })
-        for cloudEntry in cloudEntries {
+        for cloudEntry in cloudEntries where merged[cloudEntry.id] == nil {
             merged[cloudEntry.id] = cloudEntry
         }
         entries = Array(merged.values)
@@ -114,5 +116,41 @@ class WeightStore {
               let decoded = try? JSONDecoder().decode([WeightEntry].self, from: data)
         else { return }
         entries = decoded
+    }
+
+    deinit {
+        CFNotificationCenterRemoveObserver(
+            CFNotificationCenterGetDarwinNotifyCenter(),
+            Unmanaged.passUnretained(self).toOpaque(),
+            CFNotificationName(WeightEntryStorage.didChangeNotification as CFString),
+            nil
+        )
+    }
+
+    /// Listen for weight writes made by App Intents (Siri / Shortcuts) in
+    /// another process and reload from disk so we don't overwrite them.
+    private func observeExternalChanges() {
+        let observer = Unmanaged.passUnretained(self).toOpaque()
+        CFNotificationCenterAddObserver(
+            CFNotificationCenterGetDarwinNotifyCenter(),
+            observer,
+            { _, observer, _, _, _ in
+                guard let observer else { return }
+                let raw = UInt(bitPattern: observer)
+                Task { @MainActor in
+                    guard let ptr = UnsafeRawPointer(bitPattern: raw) else { return }
+                    Unmanaged<WeightStore>.fromOpaque(ptr).takeUnretainedValue()
+                        .reloadFromExternalChange()
+                }
+            },
+            WeightEntryStorage.didChangeNotification as CFString,
+            nil,
+            .deliverImmediately
+        )
+    }
+
+    private func reloadFromExternalChange() {
+        loadEntries()
+        syncProfileWeightToLatest()
     }
 }

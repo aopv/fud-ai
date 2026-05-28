@@ -28,6 +28,7 @@ struct FoodLogMealGroup: Identifiable {
     let entries: [FoodEntry]
 }
 
+@MainActor
 @Observable
 class FoodStore {
     private(set) var entries: [FoodEntry] = []
@@ -43,6 +44,49 @@ class FoodStore {
     init() {
         loadEntries()
         loadFavorites()
+        observeExternalChanges()
+    }
+
+    deinit {
+        CFNotificationCenterRemoveObserver(
+            CFNotificationCenterGetDarwinNotifyCenter(),
+            Unmanaged.passUnretained(self).toOpaque(),
+            CFNotificationName(FoodEntryStorage.didChangeNotification as CFString),
+            nil
+        )
+    }
+
+    /// Listen for writes made by App Intents (Siri / Shortcuts) in another
+    /// process. On notification we reload from disk so our in-memory array
+    /// includes the externally-added entry and won't overwrite it on next save.
+    private func observeExternalChanges() {
+        let observer = Unmanaged.passUnretained(self).toOpaque()
+        CFNotificationCenterAddObserver(
+            CFNotificationCenterGetDarwinNotifyCenter(),
+            observer,
+            { _, observer, _, _, _ in
+                guard let observer else { return }
+                // Cross the actor boundary with a Sendable bit-pattern, then
+                // reconstruct the store on the main actor (strict concurrency).
+                let raw = UInt(bitPattern: observer)
+                Task { @MainActor in
+                    guard let ptr = UnsafeRawPointer(bitPattern: raw) else { return }
+                    Unmanaged<FoodStore>.fromOpaque(ptr).takeUnretainedValue()
+                        .reloadFromExternalChange()
+                }
+            },
+            FoodEntryStorage.didChangeNotification as CFString,
+            nil,
+            .deliverImmediately
+        )
+    }
+
+    /// Re-read from disk after an external (Siri/Shortcut) write and fan out the
+    /// same side effects a normal add would (widget refresh, notifications).
+    /// The intent path already indexed Spotlight, so we don't re-index here.
+    private func reloadFromExternalChange() {
+        loadEntries()
+        onEntriesChanged?()
     }
 
     var todayEntries: [FoodEntry] {
@@ -299,7 +343,6 @@ class FoodStore {
     private func saveFavorites() {
         if let data = try? JSONEncoder().encode(favorites) {
             UserDefaults.standard.set(data, forKey: favoritesKey)
-            UserDefaults.standard.synchronize()
         }
     }
 
@@ -317,6 +360,7 @@ class FoodStore {
         offloadImageToDiskIfNeeded(&entry)
         entries.append(entry)
         saveEntries()
+        SpotlightIndexer.index(entry)
         onEntriesChanged?()
         onEntryAdded?(entry)
     }
@@ -327,6 +371,7 @@ class FoodStore {
         offloadImageToDiskIfNeeded(&entry)
         entries[index] = entry
         saveEntries()
+        SpotlightIndexer.index(entry)
         onEntriesChanged?()
         // Single callback so HealthKit can serialize delete-then-write atomically.
         onEntryUpdated?(entry)
@@ -343,6 +388,7 @@ class FoodStore {
         }
         entries.removeAll { $0.id == id }
         saveEntries()
+        SpotlightIndexer.remove(id: id)
         onEntriesChanged?()
         onEntryDeleted?(id)
     }
@@ -362,12 +408,15 @@ class FoodStore {
         }
         entries = newEntries.map { var e = $0; offloadImageToDiskIfNeeded(&e); return e }
         saveEntries()
+        SpotlightIndexer.reindexAll(entries)
         onEntriesChanged?()
     }
 
     func mergeWithCloudEntries(_ cloudEntries: [FoodEntry]) {
         var merged = Dictionary(uniqueKeysWithValues: entries.map { ($0.id, $0) })
-        for cloudEntry in cloudEntries {
+        // Only add cloud entries that don't exist locally — preserves any local edits
+        // made while offline. A proper last-write-wins merge requires a modifiedAt field.
+        for cloudEntry in cloudEntries where merged[cloudEntry.id] == nil {
             merged[cloudEntry.id] = cloudEntry
         }
         entries = Array(merged.values)
@@ -400,7 +449,6 @@ class FoodStore {
     private func saveEntries() {
         if let data = try? JSONEncoder().encode(entries) {
             UserDefaults.standard.set(data, forKey: storageKey)
-            UserDefaults.standard.synchronize()
         }
     }
 

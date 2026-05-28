@@ -8,6 +8,12 @@
 	<string>Read your weight, height, and body composition to keep your profile accurate.</string>
 	<key>NSHealthUpdateUsageDescription</key>
 	<string>Write your nutrition and body measurements so all your health data stays in one place.</string>
+	<key>AppGroupIdentifier</key>
+	<string>$(APP_GROUP_IDENTIFIER)</string>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>ai.fud.widget-refresh</string>
+	</array>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>

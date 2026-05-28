@@ -527,9 +527,9 @@ struct ChatService {
 
             if http.statusCode == 200 { return data }
 
-            let parsedRaw = parseErrorMessage(from: data) ?? ""
+            let parsedRaw = AINetworkHelpers.parseErrorMessage(from: data) ?? ""
             let parsed = parsedRaw.isEmpty ? "HTTP \(http.statusCode)" : parsedRaw
-            lastError = .apiError(friendlyMessage(for: http.statusCode, raw: parsed))
+            lastError = .apiError(AINetworkHelpers.friendlyMessage(for: http.statusCode, raw: parsed))
 
             let isRetryable = http.statusCode == 503
                            || http.statusCode == 529
@@ -543,27 +543,4 @@ struct ChatService {
         throw lastError
     }
 
-    private static func parseErrorMessage(from data: Data) -> String? {
-        guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return nil }
-        if let error = json["error"] as? [String: Any], let message = error["message"] as? String {
-            return message
-        }
-        if let message = json["error"] as? String {
-            return message
-        }
-        return nil
-    }
-
-    private static func friendlyMessage(for status: Int, raw: String) -> String {
-        switch status {
-        case 503, 529:
-            return "The AI provider is overloaded right now. We retried a few times — please try again in a minute, or switch to a different provider/model in Settings → AI Provider."
-        case 429:
-            return "Rate limit hit on your API key. Wait a minute, or switch to another provider in Settings → AI Provider."
-        case 401, 403:
-            return "Your API key was rejected. Open Settings → AI Provider and re-paste a valid key."
-        default:
-            return raw
-        }
-    }
 }

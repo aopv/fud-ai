@@ -76,8 +76,13 @@ final class WatchSnapshotSync: NSObject, WCSessionDelegate {
         activationDidCompleteWith activationState: WCSessionActivationState,
         error: Error?
     ) {
-        guard activationState == .activated, let pendingSnapshot else { return }
-        send(pendingSnapshot)
+        guard activationState == .activated else { return }
+        // WCSession delegate fires on a background thread; pendingSnapshot is only
+        // mutated from the main thread via send(), so dispatch there to avoid a race.
+        DispatchQueue.main.async { [weak self] in
+            guard let self, let pendingSnapshot = self.pendingSnapshot else { return }
+            self.send(pendingSnapshot)
+        }
     }
 
     func sessionDidBecomeInactive(_ session: WCSession) {}

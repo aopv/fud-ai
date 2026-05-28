@@ -1,8 +1,5 @@
 import UIKit
-import Social
-import MobileCoreServices
 import UniformTypeIdentifiers
-import WebKit
 
 class ShareViewController: UIViewController {
     
@@ -60,35 +57,14 @@ class ShareViewController: UIViewController {
         }
     }
     private func openMainAppAndComplete() {
-        let url = URL(string: "fudai://import-share-image")!
-        
-        // In iOS 18, the old openURL: selector silently fails. We must use the modern 3-argument selector.
-        // Furthermore, the UIApplication singleton is not in the responder chain of an extension.
-        // We must fetch it dynamically via NSClassFromString to bypass the APPLICATION_EXTENSION_API_ONLY ban.
-        
-        if let applicationClass = NSClassFromString("UIApplication") as? NSObject.Type {
-            let sharedAppSelector = sel_registerName("sharedApplication")
-            if applicationClass.responds(to: sharedAppSelector) {
-                if let sharedApp = applicationClass.perform(sharedAppSelector)?.takeUnretainedValue() {
-                    let openURLSelector = sel_registerName("openURL:options:completionHandler:")
-                    if sharedApp.responds(to: openURLSelector) {
-                        
-                        // We have the shared UIApplication instance, and it responds to the modern openURL selector.
-                        // Since it takes 3 arguments, we must use unsafeBitCast to call it.
-                        typealias OpenURLMethod = @convention(c) (AnyObject, Selector, URL, NSDictionary, ((Bool) -> Void)?) -> Void
-                        let method = sharedApp.method(for: openURLSelector)
-                        let openURL = unsafeBitCast(method, to: OpenURLMethod.self)
-                        
-                        let options: NSDictionary = [:]
-                        openURL(sharedApp, openURLSelector, url, options, nil)
-                    }
-                }
-            }
+        guard let url = URL(string: "fudai://import-share-image") else {
+            extensionContext?.completeRequest(returningItems: nil, completionHandler: nil)
+            return
         }
-        
-        // Wait 0.5s to let the app launch before completing the extension request
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            self.extensionContext?.completeRequest(returningItems: nil, completionHandler: nil)
+        // extensionContext.open is the official API for extensions to open the containing app.
+        // The completion handler fires after the OS hands control to the app, so no arbitrary delay needed.
+        extensionContext?.open(url) { [weak self] _ in
+            self?.extensionContext?.completeRequest(returningItems: nil, completionHandler: nil)
         }
     }
     
