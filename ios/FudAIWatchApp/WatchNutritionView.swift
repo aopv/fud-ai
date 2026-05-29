@@ -4,41 +4,53 @@ struct WatchNutritionView: View {
     @EnvironmentObject private var receiver: WatchSnapshotReceiver
 
     var body: some View {
-        VStack(spacing: 9) {
-            CalorieSummary(snapshot: receiver.snapshot)
+        NavigationStack {
+            VStack(spacing: 9) {
+                CalorieSummary(snapshot: receiver.snapshot)
 
-            HStack(spacing: 5) {
-                NutrientCompactCard(
-                    title: "Protein",
-                    value: receiver.snapshot.protein,
-                    goal: receiver.snapshot.proteinGoal,
-                    unit: "g",
-                    progress: receiver.snapshot.proteinProgress,
-                    color: .blue
-                )
-                NutrientCompactCard(
-                    title: "Carbs",
-                    value: receiver.snapshot.carbs,
-                    goal: receiver.snapshot.carbsGoal,
-                    unit: "g",
-                    progress: receiver.snapshot.carbsProgress,
-                    color: .green
-                )
-                NutrientCompactCard(
-                    title: "Fat",
-                    value: receiver.snapshot.fat,
-                    goal: receiver.snapshot.fatGoal,
-                    unit: "g",
-                    progress: receiver.snapshot.fatProgress,
-                    color: .orange
-                )
+                HStack(spacing: 5) {
+                    NutrientCompactCard(
+                        title: "Protein",
+                        value: receiver.snapshot.protein,
+                        goal: receiver.snapshot.proteinGoal,
+                        unit: "g",
+                        progress: receiver.snapshot.proteinProgress,
+                        color: .blue
+                    )
+                    NutrientCompactCard(
+                        title: "Carbs",
+                        value: receiver.snapshot.carbs,
+                        goal: receiver.snapshot.carbsGoal,
+                        unit: "g",
+                        progress: receiver.snapshot.carbsProgress,
+                        color: .green
+                    )
+                    NutrientCompactCard(
+                        title: "Fat",
+                        value: receiver.snapshot.fat,
+                        goal: receiver.snapshot.fatGoal,
+                        unit: "g",
+                        progress: receiver.snapshot.fatProgress,
+                        color: .orange
+                    )
+                }
+
+                NavigationLink(destination: WatchVoiceInputView()) {
+                    Label("Log Food", systemImage: "mic.fill")
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 7)
+                        .background(.red, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                }
+                .buttonStyle(.plain)
             }
-        }
-        .padding(.horizontal, 8)
-        .padding(.vertical, 5)
-        .navigationTitle("Fud AI")
-        .onAppear {
-            receiver.refreshFromDisk()
+            .padding(.horizontal, 8)
+            .padding(.vertical, 5)
+            .navigationTitle("Fud AI")
+            .onAppear {
+                receiver.refreshFromDisk()
+            }
         }
     }
 }

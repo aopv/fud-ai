@@ -28,7 +28,9 @@ enum SpotlightIndexer {
         }
     }
 
-    private static func makeItem(_ entry: FoodEntry) -> CSSearchableItem {
+    // Internal (not private) so SpotlightIndexerTests can verify the expiration
+    // logic without indexing into the real CoreSpotlight index.
+    static func makeItem(_ entry: FoodEntry) -> CSSearchableItem {
         let attributes = CSSearchableItemAttributeSet(contentType: .text)
         let prefix = entry.emoji.map { "\($0) " } ?? ""
         attributes.title = prefix + entry.name
@@ -40,7 +42,10 @@ enum SpotlightIndexer {
             domainIdentifier: domain,
             attributeSet: attributes
         )
-        item.expirationDate = Calendar.current.date(byAdding: .day, value: 30, to: entry.timestamp) ?? entry.timestamp
+        // Expire 30 days after indexing, not after the entry's own date — otherwise
+        // imported/back-dated entries older than 30 days get a past expiration and
+        // are dropped from the index immediately, so they'd never be searchable.
+        item.expirationDate = Calendar.current.date(byAdding: .day, value: 30, to: Date()) ?? Date()
         return item
     }
 }

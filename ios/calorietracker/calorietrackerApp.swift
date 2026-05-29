@@ -43,6 +43,7 @@ struct calorietrackerApp: App {
         }
         APIKeyManager.migrateIfNeeded()
         BackgroundTaskManager.registerAll()
+        WatchSnapshotSync.shared.startListening()
     }
 
     var body: some Scene {

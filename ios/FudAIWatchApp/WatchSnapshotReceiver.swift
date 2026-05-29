@@ -4,9 +4,14 @@ import WatchConnectivity
 import WidgetKit
 
 final class WatchSnapshotReceiver: NSObject, ObservableObject, WCSessionDelegate {
+    /// Single shared instance so the WCSession delegate set up at app launch (by
+    /// WatchAppDelegate) and the one the UI observes are the *same* object —
+    /// WCSession.default has only one delegate slot, so two instances would fight.
+    static let shared = WatchSnapshotReceiver()
+
     @Published private(set) var snapshot: WidgetSnapshot = WidgetSnapshot.read() ?? .empty
 
-    override init() {
+    private override init() {
         super.init()
         activate()
     }
