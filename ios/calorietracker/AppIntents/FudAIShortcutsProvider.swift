@@ -4,6 +4,9 @@ import AppIntents
 /// Siri learns these phrases and can trigger the intents without "Add to Siri" step.
 struct FudAIShortcuts: AppShortcutsProvider {
     static var appShortcuts: [AppShortcut] {
+        // Note: String/Double parameters cannot be interpolated in AppShortcut phrases
+        // (only AppEntity/AppEnum types are supported). Siri matches on these fixed phrases
+        // and then prompts for the parameter value via the intent's parameterSummary.
         AppShortcut(
             intent: LogFoodIntent(),
             phrases: [

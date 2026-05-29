@@ -20,5 +20,7 @@
 	<array>
 		<string>$(APP_GROUP_IDENTIFIER)</string>
 	</array>
+	<key>com.apple.developer.usernotifications.filtering</key>
+	<true/>
 </dict>
 </plist>

@@ -12,9 +12,16 @@ struct LogFoodIntent: AppIntent {
 
     @Parameter(
         title: "Food",
-        description: "What you ate — e.g. '100g chicken breast' or 'large banana'"
+        description: "What you ate — e.g. '100g chicken breast' or 'large banana'",
+        requestValueDialog: "What did you eat?"
     )
     var foodDescription: String
+
+    /// Siri shows this summary in the confirmation UI and uses it as the
+    /// follow-up question when the parameter is missing from the utterance.
+    static var parameterSummary: some ParameterSummary {
+        Summary("Log \(\.$foodDescription)")
+    }
 
     func perform() async throws -> some IntentResult & ProvidesDialog {
         // 1. Try on-device model first (iOS 26+, Apple Intelligence)

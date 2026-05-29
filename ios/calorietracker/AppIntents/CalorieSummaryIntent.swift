@@ -36,8 +36,16 @@ struct LogWeightIntent: AppIntent {
     )
     static var openAppWhenRun: Bool = false
 
-    @Parameter(title: "Weight in kg", description: "Your weight in kilograms, e.g. 75.5")
+    @Parameter(
+        title: "Weight in kg",
+        description: "Your weight in kilograms, e.g. 75.5",
+        requestValueDialog: "What's your weight in kilograms?"
+    )
     var weightKg: Double
+
+    static var parameterSummary: some ParameterSummary {
+        Summary("Log \(\.$weightKg) kg")
+    }
 
     func perform() async throws -> some IntentResult & ProvidesDialog {
         guard weightKg > 0, weightKg < 500 else {
