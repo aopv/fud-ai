@@ -41,7 +41,6 @@ struct calorietrackerApp: App {
             UserDefaults.standard.removeObject(forKey: "hasCompletedOnboarding")
             UserDefaults.standard.removeObject(forKey: "userProfile")
         }
-        APIKeyManager.migrateIfNeeded()
         BackgroundTaskManager.registerAll()
         WatchSnapshotSync.shared.startListening()
     }
