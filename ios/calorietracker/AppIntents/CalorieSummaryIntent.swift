@@ -55,6 +55,7 @@ struct LogWeightIntent: AppIntent {
         }
         let entry = WeightEntry(date: .now, weightKg: weightKg)
         WeightEntryStorage.append(entry)
+        HealthKitManager().writeWeight(for: entry)
 
         let formatted = String(format: "%.1f", weightKg)
         return .result(dialog: "Logged \(formatted) kg.")

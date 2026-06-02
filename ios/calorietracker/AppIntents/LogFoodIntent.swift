@@ -25,24 +25,9 @@ struct LogFoodIntent: AppIntent {
 
     @MainActor
     func perform() async throws -> some IntentResult & ProvidesDialog {
-        // 1. Try on-device model first (iOS 26+, Apple Intelligence)
-        var analysis: GeminiService.FoodAnalysis?
-        #if canImport(FoundationModels)
-        if #available(iOS 26, *) {
-            analysis = await OnDeviceAIService.analyzeText(foodDescription)
-        }
-        #endif
+        let result = try await GeminiService.analyzeTextInput(description: foodDescription)
 
-        // 2. Fall back to Gemini / network AI
-        if analysis == nil {
-            analysis = try await GeminiService.analyzeTextInput(description: foodDescription)
-        }
-
-        guard let result = analysis else {
-            return .result(dialog: "Sorry, I couldn't identify that food. Please try again.")
-        }
-
-        // 3. Persist — write directly to the same UserDefaults key FoodStore uses
+        // Persist — write directly to the same UserDefaults key FoodStore uses
         let entry = FoodEntry(
             name: result.name,
             calories: result.calories,
@@ -63,6 +48,7 @@ struct LogFoodIntent: AppIntent {
             selectedServingQuantity: result.selectedServingQuantity
         )
         FoodEntryStorage.append(entry)
+        HealthKitManager().writeNutrition(for: entry)
 
         let proteinStr = String(format: "%.0f", result.protein)
         return .result(

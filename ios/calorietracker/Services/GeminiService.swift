@@ -238,16 +238,6 @@ struct GeminiService {
     }
 
     static func analyzeTextInput(description: String) async throws -> FoodAnalysis {
-        // Fast path: on-device model (iOS 26+, Apple Intelligence devices).
-        // Instant, offline, no quota consumed. Falls through on unsupported hardware.
-        #if canImport(FoundationModels)
-        if #available(iOS 26, *) {
-            if let onDevice = await OnDeviceAIService.analyzeText(description) {
-                return await addingFallbackServingUnits(to: onDevice, image: nil, description: description)
-            }
-        }
-        #endif
-
         let prompt = """
         Estimate the nutritional content for: \(description)
         Parse any quantities, brands, and multiple items from the text. If a brand is mentioned, use that brand's known nutritional data. If multiple items are described, sum up the total nutrition.
