@@ -1,10 +1,22 @@
 import Foundation
-import WatchConnectivity
+@preconcurrency import WatchConnectivity
+
+nonisolated private final class WatchVoiceReply: @unchecked Sendable {
+    private let handler: ([String: Any]) -> Void
+
+    init(_ handler: @escaping ([String: Any]) -> Void) {
+        self.handler = handler
+    }
+
+    func send(_ message: [String: Any]) {
+        handler(message)
+    }
+}
 
 /// Mirrors the latest nutrition snapshot to Apple Watch. The watch app and its
 /// complications live on the watch, so they cannot read the iPhone App Group
 /// container directly.
-final class WatchSnapshotSync: NSObject, WCSessionDelegate {
+nonisolated final class WatchSnapshotSync: NSObject, WCSessionDelegate, @unchecked Sendable {
     static let shared = WatchSnapshotSync()
 
     private var pendingSnapshot: WidgetSnapshot?
@@ -109,26 +121,27 @@ final class WatchSnapshotSync: NSObject, WCSessionDelegate {
     }
 
     func session(_ session: WCSession, didReceiveMessage message: [String: Any], replyHandler: @escaping ([String: Any]) -> Void) {
+        let reply = WatchVoiceReply(replyHandler)
         guard let transcript = message["watchVoiceLog"] as? String,
               let requestID = message["requestID"] as? String else {
-            replyHandler(["error": "Invalid request"])
+            reply.send(["error": "Invalid request"])
             return
         }
 
         voiceQueue.async { [weak self] in
             guard let self else {
-                replyHandler(["error": "Unavailable"])
+                reply.send(["error": "Unavailable"])
                 return
             }
 
             switch self.dedup.lookup(requestID: requestID) {
             case .cached(let payload):
                 // Already finished — return the cached result (idempotent poll).
-                replyHandler(payload.asMessage)
+                reply.send(payload.asMessage)
             case .inFlight:
                 // Still analyzing this exact utterance — tell the Watch to keep
                 // waiting instead of starting a second analysis (double-log).
-                replyHandler(["status": "processing"])
+                reply.send(["status": "processing"])
             case .startProcessing:
                 Task {
                     let payload = await self.process(transcript: transcript)
@@ -136,7 +149,7 @@ final class WatchSnapshotSync: NSObject, WCSessionDelegate {
                         self.dedup.complete(requestID: requestID, payload: payload)
                         // May be a no-op if the original reply already timed out;
                         // the Watch picks up the result via a subsequent poll.
-                        replyHandler(payload.asMessage)
+                        reply.send(payload.asMessage)
                     }
                 }
             }

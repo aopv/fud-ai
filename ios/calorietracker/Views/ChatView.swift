@@ -602,7 +602,6 @@ private struct MessageBubble: View {
 
 private struct TypingIndicator: View {
     @State private var phase = 0
-    @State private var timer: Timer?
 
     var body: some View {
         HStack(spacing: 5) {
@@ -615,16 +614,14 @@ private struct TypingIndicator: View {
                     .opacity(phase == i ? 1 : 0.3)
                     .scaleEffect(phase == i ? 1.15 : 1.0)
                     .animation(.easeInOut(duration: 0.35), value: phase)
-            }
+                }
         }
-        .onAppear {
-            timer = Timer.scheduledTimer(withTimeInterval: 0.35, repeats: true) { _ in
+        .task {
+            while !Task.isCancelled {
+                try? await Task.sleep(nanoseconds: 350_000_000)
+                guard !Task.isCancelled else { return }
                 phase = (phase + 1) % 3
             }
-        }
-        .onDisappear {
-            timer?.invalidate()
-            timer = nil
         }
     }
 }

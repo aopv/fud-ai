@@ -3,7 +3,7 @@ import Foundation
 
 /// Shared UserDefaults key for the Focus-filter "mute meal reminders" toggle.
 /// Written by `FudAIFocusFilter`, read by `NotificationManager`.
-enum FocusFilterKeys {
+nonisolated enum FocusFilterKeys {
     static let muteReminders = "focusMuteReminders"
 }
 
@@ -11,8 +11,8 @@ enum FocusFilterKeys {
 /// Appears in Settings → Focus → [Focus Name] → App Behaviour → Fud AI.
 @available(iOS 16, *)
 struct FudAIFocusFilter: SetFocusFilterIntent {
-    static var title: LocalizedStringResource = "Fud AI"
-    static var description: LocalizedStringResource? = "Control Fud AI notifications while this Focus is active."
+    static let title: LocalizedStringResource = "Fud AI"
+    static let description: LocalizedStringResource? = "Control Fud AI notifications while this Focus is active."
 
     @Parameter(
         title: "Mute Meal Reminders",
@@ -28,6 +28,7 @@ struct FudAIFocusFilter: SetFocusFilterIntent {
         )
     }
 
+    @MainActor
     func perform() async throws -> some IntentResult {
         UserDefaults.standard.set(muteReminders, forKey: FocusFilterKeys.muteReminders)
         return .result()

@@ -12,7 +12,7 @@ import Foundation
 /// `Application Support/fudai-food-images/<uuid>.jpg`, and `FoodEntry`
 /// persists only the filename. The encoded entry JSON is tiny — a few
 /// hundred bytes per entry — so UserDefaults stays well under its cap.
-struct FoodImageStore {
+nonisolated struct FoodImageStore {
     static let shared = FoodImageStore()
 
     private let folderName = "fudai-food-images"

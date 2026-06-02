@@ -1,9 +1,9 @@
-import CoreSpotlight
+@preconcurrency import CoreSpotlight
 import Foundation
 
 /// Indexes FoodEntry objects in CoreSpotlight so users can search their food log
 /// from the iOS home screen Spotlight search.
-enum SpotlightIndexer {
+nonisolated enum SpotlightIndexer {
     private static let domain = "ai.fud.food"
 
     static func index(_ entry: FoodEntry) {

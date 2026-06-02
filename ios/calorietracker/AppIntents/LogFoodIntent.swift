@@ -3,12 +3,12 @@ import Foundation
 
 /// "Hey Siri, log 100g chicken breast in Fud AI"
 struct LogFoodIntent: AppIntent {
-    static var title: LocalizedStringResource = "Log Food"
-    static var description = IntentDescription(
+    static let title: LocalizedStringResource = "Log Food"
+    static let description = IntentDescription(
         "Log a food entry in Fud AI by describing what you ate.",
         categoryName: "Nutrition"
     )
-    static var openAppWhenRun: Bool = false
+    static let openAppWhenRun: Bool = false
 
     @Parameter(
         title: "Food",
@@ -23,6 +23,7 @@ struct LogFoodIntent: AppIntent {
         Summary("Log \(\.$foodDescription)")
     }
 
+    @MainActor
     func perform() async throws -> some IntentResult & ProvidesDialog {
         // 1. Try on-device model first (iOS 26+, Apple Intelligence)
         var analysis: GeminiService.FoodAnalysis?
@@ -72,7 +73,7 @@ struct LogFoodIntent: AppIntent {
 
 /// Shared read/write access to the FoodStore's UserDefaults key.
 /// Used by App Intents which can't access the SwiftUI environment.
-enum FoodEntryStorage {
+nonisolated enum FoodEntryStorage {
     private static let key = "foodEntries"
 
     /// Darwin notification posted after a Siri/Shortcut write so a running

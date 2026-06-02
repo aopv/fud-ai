@@ -16,7 +16,10 @@ class ProfileStore {
             object: nil,
             queue: .main
         ) { [weak self] _ in
-            self?.reloadFromDisk()
+            guard let self else { return }
+            Task { @MainActor [self] in
+                self.reloadFromDisk()
+            }
         }
     }
 

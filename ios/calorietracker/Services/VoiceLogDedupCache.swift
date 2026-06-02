@@ -13,7 +13,7 @@ import Foundation
 /// retries/polls. It is *not* internally synchronized — callers must serialize
 /// access (WatchSnapshotSync does this on its `voiceQueue`). Keeping it sync-free
 /// makes the idempotency invariant unit-testable without threads.
-struct VoiceLogDedupCache {
+nonisolated struct VoiceLogDedupCache {
     enum Lookup: Equatable {
         /// Analysis already finished for this requestID — reply with this payload.
         case cached([String: VoiceLogValue])
@@ -71,7 +71,7 @@ struct VoiceLogDedupCache {
 /// round-trip uses (`name`/`error` strings, `calories` int, `protein` double,
 /// `status` string). Avoids `[String: Any]`, which isn't Equatable or Sendable
 /// and so can't be unit-tested or safely crossed actor boundaries.
-enum VoiceLogValue: Equatable, Sendable {
+nonisolated enum VoiceLogValue: Equatable, Sendable {
     case string(String)
     case int(Int)
     case double(Double)
@@ -88,7 +88,7 @@ enum VoiceLogValue: Equatable, Sendable {
 
 extension Dictionary where Key == String, Value == VoiceLogValue {
     /// Convert to the `[String: Any]` payload WCSession sends back to the Watch.
-    var asMessage: [String: Any] {
+    nonisolated var asMessage: [String: Any] {
         mapValues { $0.anyValue }
     }
 }

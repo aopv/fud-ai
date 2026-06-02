@@ -1,6 +1,6 @@
 import Foundation
 
-enum FoodSource: String, Codable {
+nonisolated enum FoodSource: String, Codable {
     case snapFood
     case nutritionLabel
     case barcode
@@ -8,7 +8,7 @@ enum FoodSource: String, Codable {
     case manual
 }
 
-enum MealType: String, Codable, CaseIterable {
+nonisolated enum MealType: String, Codable, CaseIterable {
     case breakfast
     case lunch
     case dinner
@@ -46,7 +46,7 @@ enum MealType: String, Codable, CaseIterable {
     }
 }
 
-struct ServingUnitOption: Codable, Hashable, Identifiable {
+nonisolated struct ServingUnitOption: Codable, Hashable, Identifiable {
     var unit: String
     var gramsPerUnit: Double
     var quantity: Double?
@@ -88,7 +88,7 @@ struct ServingUnitOption: Codable, Hashable, Identifiable {
     }
 }
 
-struct FoodMeasurementSettings {
+nonisolated struct FoodMeasurementSettings {
     static let preferGramsByDefaultKey = "foodMeasurementPreferGramsByDefault"
 
     static var preferGramsByDefault: Bool {
@@ -97,7 +97,7 @@ struct FoodMeasurementSettings {
     }
 }
 
-enum MacroValueFormatter {
+nonisolated enum MacroValueFormatter {
     static func string(_ value: Double) -> String {
         if abs(value.rounded() - value) < 0.0001 {
             return String(Int(value.rounded()))
@@ -110,7 +110,7 @@ enum MacroValueFormatter {
     }
 }
 
-struct FoodEntry: Identifiable, Codable {
+nonisolated struct FoodEntry: Identifiable, Codable {
     let id: UUID
     var name: String
     var calories: Int

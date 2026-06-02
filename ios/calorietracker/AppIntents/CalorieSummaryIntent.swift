@@ -3,13 +3,14 @@ import Foundation
 
 /// "Hey Siri, how many calories today in Fud AI?"
 struct CalorieSummaryIntent: AppIntent {
-    static var title: LocalizedStringResource = "Today's Calories"
-    static var description = IntentDescription(
+    static let title: LocalizedStringResource = "Today's Calories"
+    static let description = IntentDescription(
         "Get your calorie and protein total for today.",
         categoryName: "Nutrition"
     )
-    static var openAppWhenRun: Bool = false
+    static let openAppWhenRun: Bool = false
 
+    @MainActor
     func perform() async throws -> some IntentResult & ProvidesDialog {
         let calories = FoodEntryStorage.todayCalories()
         let protein = FoodEntryStorage.todayProtein()
@@ -29,12 +30,12 @@ struct CalorieSummaryIntent: AppIntent {
 
 /// "Hey Siri, log 75 kilograms in Fud AI"
 struct LogWeightIntent: AppIntent {
-    static var title: LocalizedStringResource = "Log Weight"
-    static var description = IntentDescription(
+    static let title: LocalizedStringResource = "Log Weight"
+    static let description = IntentDescription(
         "Log your current weight in Fud AI.",
         categoryName: "Body Metrics"
     )
-    static var openAppWhenRun: Bool = false
+    static let openAppWhenRun: Bool = false
 
     @Parameter(
         title: "Weight in kg",
@@ -47,6 +48,7 @@ struct LogWeightIntent: AppIntent {
         Summary("Log \(\.$weightKg) kg")
     }
 
+    @MainActor
     func perform() async throws -> some IntentResult & ProvidesDialog {
         guard weightKg > 0, weightKg < 500 else {
             return .result(dialog: "That doesn't look like a valid weight. Please try again.")
@@ -60,7 +62,7 @@ struct LogWeightIntent: AppIntent {
 }
 
 /// Shared read/write for WeightStore's UserDefaults key.
-enum WeightEntryStorage {
+nonisolated enum WeightEntryStorage {
     private static let key = "weightEntries"
 
     /// Darwin notification posted after a Siri/Shortcut write so a running

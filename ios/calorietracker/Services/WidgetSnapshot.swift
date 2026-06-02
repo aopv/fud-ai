@@ -1,6 +1,6 @@
 import Foundation
 
-struct WidgetNutrientValue: Codable, Equatable, Identifiable {
+nonisolated struct WidgetNutrientValue: Codable, Equatable, Identifiable {
     let id: String
     let label: String
     let shortLabel: String
@@ -47,7 +47,7 @@ struct WidgetNutrientValue: Codable, Equatable, Identifiable {
 ///
 /// The widget target has its own copy of this file (FudAIWidgets/WidgetSnapshot.swift).
 /// Keep the two in sync or decoding will fail silently.
-struct WidgetSnapshot: Codable, Equatable {
+nonisolated struct WidgetSnapshot: Codable, Equatable {
     let date: Date
     let dayStart: Date
     let calories: Int
@@ -199,7 +199,7 @@ struct WidgetSnapshot: Codable, Equatable {
 }
 
 private extension WidgetNutrientValue {
-    var summaryLabel: String {
+    nonisolated var summaryLabel: String {
         String(label.prefix(1)).uppercased()
     }
 }
