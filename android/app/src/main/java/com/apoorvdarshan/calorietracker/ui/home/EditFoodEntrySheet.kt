@@ -201,7 +201,7 @@ fun EditFoodEntrySheet(
             title = stringResource(R.string.sheet_edit_food),
             primaryLabel = stringResource(R.string.action_save),
             onCancel = onDismiss,
-            onPrimary = { onSave(buildUpdated()) }
+            onPrimary = { if (!isReprocessing) onSave(buildUpdated()) }
         )
 
         // Hoist string + composition reads above LazyColumn — its lambda has
@@ -416,6 +416,7 @@ fun EditFoodEntrySheet(
                     OutlinedTextField(
                         value = noteText,
                         onValueChange = { noteText = it },
+                        enabled = !isReprocessing,
                         placeholder = { Text("e.g. cooked in olive oil, half portion", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)) },
                         shape = RoundedCornerShape(20.dp),
                         modifier = Modifier.fillMaxWidth().heightIn(min = 90.dp)
