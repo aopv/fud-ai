@@ -10,34 +10,40 @@ struct EditFoodEntryView: View {
     @Environment(\.dismiss) private var dismiss
 
     // Base values (the entry's nutrition at its logged serving size)
-    private let baseCalories: Int
-    private let baseProtein: Double
-    private let baseCarbs: Double
-    private let baseFat: Double
-    private let baseServingSizeGrams: Double
-    private let baseSugar: Double?
-    private let baseAddedSugar: Double?
-    private let baseFiber: Double?
-    private let baseSaturatedFat: Double?
-    private let baseMonounsaturatedFat: Double?
-    private let basePolyunsaturatedFat: Double?
-    private let baseCholesterol: Double?
-    private let baseSodium: Double?
-    private let basePotassium: Double?
-    private let baseTransFat: Double?
-    private let baseCalcium: Double?
-    private let baseIron: Double?
-    private let baseMagnesium: Double?
-    private let baseZinc: Double?
-    private let baseVitaminA: Double?
-    private let baseVitaminC: Double?
-    private let baseVitaminD: Double?
-    private let baseVitaminB12: Double?
-    private let baseVitaminE: Double?
-    private let baseVitaminK: Double?
-    private let baseFolate: Double?
-    private let baseOmega3: Double?
-    private let servingUnitOptions: [ServingUnitOption]
+    @State private var baseCalories: Int
+    @State private var baseProtein: Double
+    @State private var baseCarbs: Double
+    @State private var baseFat: Double
+    @State private var baseServingSizeGrams: Double
+    @State private var baseSugar: Double?
+    @State private var baseAddedSugar: Double?
+    @State private var baseFiber: Double?
+    @State private var baseSaturatedFat: Double?
+    @State private var baseMonounsaturatedFat: Double?
+    @State private var basePolyunsaturatedFat: Double?
+    @State private var baseCholesterol: Double?
+    @State private var baseSodium: Double?
+    @State private var basePotassium: Double?
+    @State private var baseTransFat: Double?
+    @State private var baseCalcium: Double?
+    @State private var baseIron: Double?
+    @State private var baseMagnesium: Double?
+    @State private var baseZinc: Double?
+    @State private var baseVitaminA: Double?
+    @State private var baseVitaminC: Double?
+    @State private var baseVitaminD: Double?
+    @State private var baseVitaminB12: Double?
+    @State private var baseVitaminE: Double?
+    @State private var baseVitaminK: Double?
+    @State private var baseFolate: Double?
+    @State private var baseOmega3: Double?
+    @State private var servingUnitOptions: [ServingUnitOption]
+
+    @State private var emoji: String?
+    @State private var customNote: String
+    @State private var savedNote: String
+    @State private var isReprocessing: Bool = false
+    @State private var reprocessingError: String? = nil
 
     @State private var name: String
     @State private var servingSizeGrams: Double
@@ -95,34 +101,37 @@ struct EditFoodEntryView: View {
             options: normalizedServingUnitOptions,
             defaultToGrams: FoodMeasurementSettings.preferGramsByDefault
         )
-        self.baseCalories = entry.calories
-        self.baseProtein = entry.protein
-        self.baseCarbs = entry.carbs
-        self.baseFat = entry.fat
-        self.baseServingSizeGrams = serving
-        self.baseSugar = entry.sugar
-        self.baseAddedSugar = entry.addedSugar
-        self.baseFiber = entry.fiber
-        self.baseSaturatedFat = entry.saturatedFat
-        self.baseMonounsaturatedFat = entry.monounsaturatedFat
-        self.basePolyunsaturatedFat = entry.polyunsaturatedFat
-        self.baseCholesterol = entry.cholesterol
-        self.baseSodium = entry.sodium
-        self.basePotassium = entry.potassium
-        self.baseTransFat = entry.transFat
-        self.baseCalcium = entry.calcium
-        self.baseIron = entry.iron
-        self.baseMagnesium = entry.magnesium
-        self.baseZinc = entry.zinc
-        self.baseVitaminA = entry.vitaminA
-        self.baseVitaminC = entry.vitaminC
-        self.baseVitaminD = entry.vitaminD
-        self.baseVitaminB12 = entry.vitaminB12
-        self.baseVitaminE = entry.vitaminE
-        self.baseVitaminK = entry.vitaminK
-        self.baseFolate = entry.folate
-        self.baseOmega3 = entry.omega3
-        self.servingUnitOptions = normalizedServingUnitOptions
+        self._baseCalories = State(initialValue: entry.calories)
+        self._baseProtein = State(initialValue: entry.protein)
+        self._baseCarbs = State(initialValue: entry.carbs)
+        self._baseFat = State(initialValue: entry.fat)
+        self._baseServingSizeGrams = State(initialValue: serving)
+        self._baseSugar = State(initialValue: entry.sugar)
+        self._baseAddedSugar = State(initialValue: entry.addedSugar)
+        self._baseFiber = State(initialValue: entry.fiber)
+        self._baseSaturatedFat = State(initialValue: entry.saturatedFat)
+        self._baseMonounsaturatedFat = State(initialValue: entry.monounsaturatedFat)
+        self._basePolyunsaturatedFat = State(initialValue: entry.polyunsaturatedFat)
+        self._baseCholesterol = State(initialValue: entry.cholesterol)
+        self._baseSodium = State(initialValue: entry.sodium)
+        self._basePotassium = State(initialValue: entry.potassium)
+        self._baseTransFat = State(initialValue: entry.transFat)
+        self._baseCalcium = State(initialValue: entry.calcium)
+        self._baseIron = State(initialValue: entry.iron)
+        self._baseMagnesium = State(initialValue: entry.magnesium)
+        self._baseZinc = State(initialValue: entry.zinc)
+        self._baseVitaminA = State(initialValue: entry.vitaminA)
+        self._baseVitaminC = State(initialValue: entry.vitaminC)
+        self._baseVitaminD = State(initialValue: entry.vitaminD)
+        self._baseVitaminB12 = State(initialValue: entry.vitaminB12)
+        self._baseVitaminE = State(initialValue: entry.vitaminE)
+        self._baseVitaminK = State(initialValue: entry.vitaminK)
+        self._baseFolate = State(initialValue: entry.folate)
+        self._baseOmega3 = State(initialValue: entry.omega3)
+        self._servingUnitOptions = State(initialValue: normalizedServingUnitOptions)
+        self._emoji = State(initialValue: entry.emoji)
+        self._customNote = State(initialValue: entry.customNote ?? "")
+        self._savedNote = State(initialValue: entry.customNote ?? "")
         self._name = State(initialValue: entry.name)
         self._servingSizeGrams = State(initialValue: serving)
         self._servingSizeText = State(initialValue: ServingUnitOption.initialQuantityText(
@@ -160,7 +169,7 @@ struct EditFoodEntryView: View {
                             }
                             .listRowBackground(Color.clear)
                         }
-                    } else if let emoji = entry.emoji {
+                    } else if let emoji = emoji {
                         Section {
                             HStack {
                                 Spacer()
@@ -246,6 +255,91 @@ struct EditFoodEntryView: View {
                         .tint(AppColors.calorie)
                     }
 
+                    Section("AI Note") {
+                        TextEditor(text: $customNote)
+                            .frame(minHeight: 80)
+                        
+                        if customNote.trimmingCharacters(in: .whitespacesAndNewlines) != savedNote {
+                            if isReprocessing {
+                                HStack {
+                                    Spacer()
+                                    ProgressView()
+                                    Spacer()
+                                }
+                            } else {
+                                Button("Reprocess with AI") {
+                                    Task {
+                                        isReprocessing = true
+                                        reprocessingError = nil
+                                        do {
+                                            let newAnalysis = try await foodStore.reprocessEntry(entry, withNote: customNote)
+                                            
+                                            // Overwrite states in-place
+                                            name = newAnalysis.name
+                                            baseCalories = newAnalysis.calories
+                                            baseProtein = newAnalysis.protein
+                                            baseCarbs = newAnalysis.carbs
+                                            baseFat = newAnalysis.fat
+                                            baseServingSizeGrams = newAnalysis.servingSizeGrams
+                                            baseSugar = newAnalysis.sugar
+                                            baseAddedSugar = newAnalysis.addedSugar
+                                            baseFiber = newAnalysis.fiber
+                                            baseSaturatedFat = newAnalysis.saturatedFat
+                                            baseMonounsaturatedFat = newAnalysis.monounsaturatedFat
+                                            basePolyunsaturatedFat = newAnalysis.polyunsaturatedFat
+                                            baseCholesterol = newAnalysis.cholesterol
+                                            baseSodium = newAnalysis.sodium
+                                            basePotassium = newAnalysis.potassium
+                                            baseTransFat = newAnalysis.transFat
+                                            baseCalcium = newAnalysis.calcium
+                                            baseIron = newAnalysis.iron
+                                            baseMagnesium = newAnalysis.magnesium
+                                            baseZinc = newAnalysis.zinc
+                                            baseVitaminA = newAnalysis.vitaminA
+                                            baseVitaminC = newAnalysis.vitaminC
+                                            baseVitaminD = newAnalysis.vitaminD
+                                            baseVitaminB12 = newAnalysis.vitaminB12
+                                            baseVitaminE = newAnalysis.vitaminE
+                                            baseVitaminK = newAnalysis.vitaminK
+                                            baseFolate = newAnalysis.folate
+                                            baseOmega3 = newAnalysis.omega3
+                                            emoji = newAnalysis.emoji
+                                            
+                                            // Update serving unit options and text
+                                            servingUnitOptions = ServingUnitOption.normalizedOptions(newAnalysis.servingUnitOptions, totalGrams: newAnalysis.servingSizeGrams)
+                                            let initialServingUnitID = ServingUnitOption.initialUnitID(
+                                                preferredUnit: newAnalysis.selectedServingUnit,
+                                                options: servingUnitOptions,
+                                                defaultToGrams: FoodMeasurementSettings.preferGramsByDefault
+                                            )
+                                            selectedServingUnitID = initialServingUnitID
+                                            servingSizeGrams = newAnalysis.servingSizeGrams
+                                            servingSizeText = ServingUnitOption.initialQuantityText(
+                                                totalGrams: newAnalysis.servingSizeGrams,
+                                                selectedUnitID: initialServingUnitID,
+                                                selectedQuantity: newAnalysis.selectedServingQuantity,
+                                                options: servingUnitOptions
+                                            )
+                                            
+                                            // Update savedNote to current note to hide button
+                                            savedNote = customNote.trimmingCharacters(in: .whitespacesAndNewlines)
+                                        } catch {
+                                            reprocessingError = error.localizedDescription
+                                        }
+                                        isReprocessing = false
+                                    }
+                                }
+                                .tint(AppColors.calorie)
+                            }
+                        }
+                        
+                        if let errorMsg = reprocessingError {
+                            Text(errorMsg)
+                                .font(.caption)
+                                .foregroundStyle(.red)
+                        }
+                    }
+
                     Section("Meal") {
                         Picker("Meal Type", selection: $mealType) {
                             ForEach(MealType.allCases, id: \.self) { meal in
@@ -277,6 +371,7 @@ struct EditFoodEntryView: View {
                     guard editing else { return }
                     scrollQuantityIntoView(scrollProxy)
                 }
+                .disabled(isReprocessing)
                 .navigationTitle("Edit Food")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
@@ -287,6 +382,7 @@ struct EditFoodEntryView: View {
                         Button("Save", action: saveChanges)
                             .font(.system(.body, design: .rounded, weight: .semibold))
                             .tint(AppColors.calorie)
+                            .disabled(isReprocessing)
                     }
                 }
             }
@@ -311,7 +407,8 @@ struct EditFoodEntryView: View {
             fat: scaledFat,
             timestamp: loggedAt,
             imageData: entry.imageData,
-            emoji: entry.emoji,
+            imageFilename: entry.imageFilename,
+            emoji: emoji,
             source: entry.source,
             mealType: mealType,
             sugar: scaledSugar,
@@ -339,7 +436,8 @@ struct EditFoodEntryView: View {
             servingSizeGrams: servingSizeGrams,
             servingUnitOptions: servingUnitOptions,
             selectedServingUnit: servingUnitOptions.isEmpty ? nil : selectedServingOption.unit,
-            selectedServingQuantity: servingUnitOptions.isEmpty ? nil : selectedServingQuantity
+            selectedServingQuantity: servingUnitOptions.isEmpty ? nil : selectedServingQuantity,
+            customNote: customNote.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? nil : customNote
         )
         foodStore.updateEntry(updated)
         dismiss()
