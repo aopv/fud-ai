@@ -543,6 +543,7 @@ fun EditFoodEntrySheet(
             )
         }
     }
+    }
 
     if (showDatePicker) {
         var pickedDate by remember(loggedDate) { mutableStateOf(loggedDate) }
