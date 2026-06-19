@@ -105,17 +105,17 @@ fun EditFoodEntrySheet(
     val servingUnitOptions = remember(currentBaseEntry.servingUnitOptions, baseServing) {
         ServingUnitOption.normalizedOptions(currentBaseEntry.servingUnitOptions, baseServing)
     }
-    var name by remember { mutableStateOf(currentBaseEntry.name) }
+    var name by remember(currentBaseEntry) { mutableStateOf(currentBaseEntry.name) }
     val initialServingUnit = if (preferGramsByDefault) {
         ServingUnitOption.grams.unit
     } else {
         currentBaseEntry.selectedServingUnit
     }
-    var selectedServingUnitId by remember(entry, servingUnitOptions, preferGramsByDefault) {
+    var selectedServingUnitId by remember(currentBaseEntry, servingUnitOptions, preferGramsByDefault) {
         mutableStateOf(ServingUnitOption.initialUnitId(initialServingUnit, servingUnitOptions))
     }
-    var servingGrams by remember(entry, baseServing) { mutableStateOf(baseServing) }
-    var servingQuantityText by remember(entry, servingUnitOptions, preferGramsByDefault) {
+    var servingGrams by remember(currentBaseEntry, baseServing) { mutableStateOf(baseServing) }
+    var servingQuantityText by remember(currentBaseEntry, servingUnitOptions, preferGramsByDefault) {
         mutableStateOf(
             ServingUnitOption.initialQuantityText(
                 totalGrams = baseServing,
@@ -465,16 +465,8 @@ fun EditFoodEntrySheet(
                                                 servingSizeGrams = newAnalysis.servingSizeGrams,
                                                 servingUnitOptions = newAnalysis.servingUnitOptions,
                                                 selectedServingUnit = newAnalysis.selectedServingUnit,
-                                                selectedServingQuantity = newAnalysis.selectedServingQuantity
-                                            )
-                                            name = newAnalysis.name
-                                            selectedServingUnitId = ServingUnitOption.initialUnitId(newAnalysis.selectedServingUnit, ServingUnitOption.normalizedOptions(newAnalysis.servingUnitOptions, newAnalysis.servingSizeGrams))
-                                            servingGrams = newAnalysis.servingSizeGrams
-                                            servingQuantityText = ServingUnitOption.initialQuantityText(
-                                                totalGrams = newAnalysis.servingSizeGrams,
-                                                selectedUnitId = selectedServingUnitId,
-                                                selectedQuantity = newAnalysis.selectedServingQuantity,
-                                                options = ServingUnitOption.normalizedOptions(newAnalysis.servingUnitOptions, newAnalysis.servingSizeGrams)
+                                                selectedServingQuantity = newAnalysis.selectedServingQuantity,
+                                                customNote = noteText.trim().takeIf { it.isNotEmpty() }
                                             )
                                         } catch (e: Exception) {
                                             errorText = e.localizedMessage ?: "Reprocessing failed"
