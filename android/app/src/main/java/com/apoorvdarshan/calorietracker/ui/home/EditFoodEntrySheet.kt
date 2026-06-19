@@ -133,7 +133,7 @@ fun EditFoodEntrySheet(
     var mealMenuExpanded by remember { mutableStateOf(false) }
     var servingMenuExpanded by remember { mutableStateOf(false) }
     val zone = remember { ZoneId.systemDefault() }
-    val initialLoggedAt = remember(entry.id, entry.timestamp) { currentBaseEntry.timestamp.atZone(zone) }
+    val initialLoggedAt = remember(entry.id, entry.timestamp) { entry.timestamp.atZone(zone) }
     var loggedDate by remember(entry.id, entry.timestamp) { mutableStateOf(initialLoggedAt.toLocalDate()) }
     var loggedTime by remember(entry.id, entry.timestamp) { mutableStateOf(initialLoggedAt.toLocalTime().withSecond(0).withNano(0)) }
     var showDatePicker by remember { mutableStateOf(false) }
@@ -235,16 +235,17 @@ fun EditFoodEntrySheet(
             Triple("Omega-3", scaledD(currentBaseEntry.omega3), gUnit)
         )
 
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .pointerInput(Unit) {
-                    detectTapGestures(onTap = { dismissKeyboard() })
-                }
-                .padding(horizontal = 20.dp)
-                .padding(bottom = 28.dp),
-            verticalArrangement = Arrangement.spacedBy(18.dp)
-        ) {
+        Box(modifier = Modifier.fillMaxWidth()) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .pointerInput(Unit) {
+                        detectTapGestures(onTap = { dismissKeyboard() })
+                    }
+                    .padding(horizontal = 20.dp)
+                    .padding(bottom = 28.dp),
+                verticalArrangement = Arrangement.spacedBy(18.dp)
+            ) {
             // Square hero (saved photo) OR 80sp emoji fallback — centered.
             item {
                 val ctx = LocalContext.current
@@ -467,7 +468,8 @@ fun EditFoodEntrySheet(
                                                 servingUnitOptions = newAnalysis.servingUnitOptions,
                                                 selectedServingUnit = newAnalysis.selectedServingUnit,
                                                 selectedServingQuantity = newAnalysis.selectedServingQuantity,
-                                                customNote = noteText.trim().takeIf { it.isNotEmpty() }
+                                                customNote = noteText.trim().takeIf { it.isNotEmpty() },
+                                                emoji = newAnalysis.emoji
                                             )
                                         } catch (e: Exception) {
                                             errorText = e.localizedMessage ?: "Reprocessing failed"
@@ -530,6 +532,15 @@ fun EditFoodEntrySheet(
                     }
                 }
             }
+        }
+        if (isReprocessing) {
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .pointerInput(Unit) {
+                        detectTapGestures { /* Consume touches to disable UI interaction during reprocessing */ }
+                    }
+            )
         }
     }
 
