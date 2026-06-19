@@ -42,7 +42,8 @@ data class FoodAnalysis(
     val omega3: Double? = null,
     val servingUnitOptions: List<ServingUnitOption> = emptyList(),
     val selectedServingUnit: String? = null,
-    val selectedServingQuantity: Double? = null
+    val selectedServingQuantity: Double? = null,
+    val customNote: String? = null
 )
 
 /** Per-100g nutrition-label reading. Scaled to a real serving via [scaled]. */

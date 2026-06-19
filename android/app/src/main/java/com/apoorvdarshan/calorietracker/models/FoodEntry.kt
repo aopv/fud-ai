@@ -45,7 +45,8 @@ data class FoodEntry(
     val servingSizeGrams: Double? = null,
     val servingUnitOptions: List<ServingUnitOption> = emptyList(),
     val selectedServingUnit: String? = null,
-    val selectedServingQuantity: Double? = null
+    val selectedServingQuantity: Double? = null,
+    val customNote: String? = null
 ) {
     /** Unique key for favorite deduplication (name + calorie combo). */
     val favoriteKey: String get() = "${name.lowercase()}|$calories"
@@ -91,6 +92,7 @@ data class FoodEntry(
         servingSizeGrams = servingSizeGrams,
         servingUnitOptions = servingUnitOptions,
         selectedServingUnit = selectedServingUnit,
-        selectedServingQuantity = selectedServingQuantity
+        selectedServingQuantity = selectedServingQuantity,
+        customNote = customNote
     )
 }

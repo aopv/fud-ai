@@ -244,6 +244,7 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
             discardPendingDraft(previousDraftImage)
             try {
                 val analysis = container.foodAnalysis.analyzeFood(bytes, note.takeIf { it.isNotBlank() })
+                    .copy(customNote = note.takeIf { it.isNotBlank() })
                 savePendingDraft(analysis, imageBytes = bytes, source = FoodSource.SNAP_FOOD)
             } catch (e: AiError) {
                 _ui.value = _ui.value.copy(analyzing = false, error = e.message)
@@ -345,7 +346,8 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
                 servingSizeGrams = servingGrams ?: analysis.servingSizeGrams,
                 servingUnitOptions = analysis.servingUnitOptions,
                 selectedServingUnit = if (analysis.servingUnitOptions.isEmpty()) null else selectedServingUnit,
-                selectedServingQuantity = if (analysis.servingUnitOptions.isEmpty()) null else selectedServingQuantity
+                selectedServingQuantity = if (analysis.servingUnitOptions.isEmpty()) null else selectedServingQuantity,
+                customNote = analysis.customNote
             )
             container.foodRepository.addEntry(entry)
             container.prefs.setPendingFoodAnalysisDraft(null)
@@ -540,6 +542,18 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
         override fun <T : ViewModel> create(modelClass: Class<T>): T =
             HomeViewModel(container) as T
     }
+
+    suspend fun reprocessFoodEntry(entry: FoodEntry, updatedNote: String): FoodAnalysis {
+        val imageBytes = entry.imageFilename?.let {
+            runCatching { container.imageStore.file(it).readBytes() }.getOrNull()
+        }
+        val result = if (imageBytes != null) {
+            container.foodAnalysis.analyzeFood(imageBytes, updatedNote.takeIf { it.isNotBlank() })
+        } else {
+            container.foodAnalysis.analyzeText(updatedNote)
+        }
+        return result.copy(customNote = updatedNote.takeIf { it.isNotBlank() })
+    }
 }
 
 /**
@@ -580,5 +594,6 @@ private fun FoodEntry.toAnalysis(): FoodAnalysis = FoodAnalysis(
     omega3 = omega3,
     servingUnitOptions = servingUnitOptions,
     selectedServingUnit = selectedServingUnit,
-    selectedServingQuantity = selectedServingQuantity
+    selectedServingQuantity = selectedServingQuantity,
+    customNote = customNote
 )
