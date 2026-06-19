@@ -227,6 +227,7 @@ struct FoodEntry: Identifiable, Codable {
     var servingUnitOptions: [ServingUnitOption]
     var selectedServingUnit: String?
     var selectedServingQuantity: Double?
+    var customNote: String?
 
     init(
         id: UUID = UUID(),
@@ -266,7 +267,8 @@ struct FoodEntry: Identifiable, Codable {
         servingSizeGrams: Double? = nil,
         servingUnitOptions: [ServingUnitOption] = [],
         selectedServingUnit: String? = nil,
-        selectedServingQuantity: Double? = nil
+        selectedServingQuantity: Double? = nil,
+        customNote: String? = nil
     ) {
         self.id = id
         self.name = name
@@ -306,6 +308,7 @@ struct FoodEntry: Identifiable, Codable {
         self.servingUnitOptions = servingUnitOptions
         self.selectedServingUnit = selectedServingUnit
         self.selectedServingQuantity = selectedServingQuantity
+        self.customNote = customNote
     }
 
     private enum CodingKeys: String, CodingKey {
@@ -319,7 +322,7 @@ struct FoodEntry: Identifiable, Codable {
         case transFat, calcium, iron, magnesium, zinc
         case vitaminA, vitaminC, vitaminD, vitaminB12, vitaminE, vitaminK, folate, omega3
         case servingSizeGrams
-        case servingUnitOptions, selectedServingUnit, selectedServingQuantity
+        case servingUnitOptions, selectedServingUnit, selectedServingQuantity, customNote
     }
 
     private static func decodeDouble(
@@ -387,6 +390,7 @@ struct FoodEntry: Identifiable, Codable {
         servingUnitOptions = try container.decodeIfPresent([ServingUnitOption].self, forKey: .servingUnitOptions) ?? []
         selectedServingUnit = try container.decodeIfPresent(String.self, forKey: .selectedServingUnit)
         selectedServingQuantity = try container.decodeIfPresent(Double.self, forKey: .selectedServingQuantity)
+        customNote = try container.decodeIfPresent(String.self, forKey: .customNote)
     }
 
     func encode(to encoder: Encoder) throws {
@@ -432,6 +436,7 @@ struct FoodEntry: Identifiable, Codable {
         }
         try container.encodeIfPresent(selectedServingUnit, forKey: .selectedServingUnit)
         try container.encodeIfPresent(selectedServingQuantity, forKey: .selectedServingQuantity)
+        try container.encodeIfPresent(customNote, forKey: .customNote)
     }
 
     var timeString: String {
@@ -484,7 +489,8 @@ struct FoodEntry: Identifiable, Codable {
             servingSizeGrams: servingSizeGrams,
             servingUnitOptions: servingUnitOptions,
             selectedServingUnit: selectedServingUnit,
-            selectedServingQuantity: selectedServingQuantity
+            selectedServingQuantity: selectedServingQuantity,
+            customNote: customNote
         )
     }
 }

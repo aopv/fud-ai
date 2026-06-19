@@ -394,6 +394,17 @@ class FoodStore {
         onEntriesChanged?()
     }
 
+    func reprocessEntry(_ entry: FoodEntry, withNote note: String) async throws -> GeminiService.FoodAnalysis {
+        let imageData = entry.imageFilename.flatMap { FoodImageStore.shared.load(filename: $0) }
+        let result: GeminiService.FoodAnalysis
+        if let imageData = imageData {
+            result = try await GeminiService.analyzeFood(image: imageData, description: note)
+        } else {
+            result = try await GeminiService.analyzeTextInput(description: note)
+        }
+        return result
+    }
+
     /// If `entry` carries in-memory `imageData` but no `imageFilename`, write
     /// the bytes to disk and stamp the filename onto the entry. No-op when
     /// there are no bytes, or when a filename is already set (idempotent).
