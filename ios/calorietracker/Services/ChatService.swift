@@ -11,7 +11,6 @@ struct ChatService {
         case networkError(Error)
         case apiError(String)
         case invalidResponse
-        case subscriptionRequired
 
         var errorDescription: String? {
             switch self {
@@ -23,8 +22,6 @@ struct ChatService {
                 return "API error: \(msg)"
             case .invalidResponse:
                 return "Could not understand the AI response. Please try again."
-            case .subscriptionRequired:
-                return "Fud AI Premium is not active. Subscribe or switch back to Bring Your Own Key in Settings."
             }
         }
     }
@@ -58,16 +55,11 @@ struct ChatService {
         )
         let tools = CoachTools(weights: weights, bodyFats: bodyFats, foods: foods, useMetric: useMetric)
 
-        let usingPremium = AIAccessSettings.isUsingFudAIPremium
-        let provider: AIProvider = usingPremium ? .gemini : AIProviderSettings.selectedProvider
-        let model = usingPremium ? "gemini-3.1-flash-lite" : AIProviderSettings.selectedModel
-        let baseURL = usingPremium ? AIProvider.gemini.baseURL : AIProviderSettings.currentBaseURL
+        let provider: AIProvider = AIProviderSettings.selectedProvider
+        let model = AIProviderSettings.selectedModel
+        let baseURL = AIProviderSettings.currentBaseURL
 
-        if usingPremium, !AIAccessSettings.hasActivePremiumEntitlement {
-            throw ChatError.subscriptionRequired
-        }
-
-        guard usingPremium || AIProviderSettings.currentAPIKey != nil || provider == .ollama else {
+        guard AIProviderSettings.currentAPIKey != nil || provider == .ollama else {
             throw ChatError.noAPIKey
         }
 
@@ -437,7 +429,7 @@ struct ChatService {
 
     private static func callGemini(baseURL: String, model: String, systemPrompt: String, history: [ChatMessage], newUserMessage: String, imageData: Data?, tools: CoachTools) async throws -> String {
         let apiKey = AIProviderSettings.currentAPIKey
-        if !AIAccessSettings.isUsingFudAIPremium, apiKey == nil {
+        if apiKey == nil {
             throw ChatError.noAPIKey
         }
         guard let url = URL(string: "\(baseURL)/models/\(model):generateContent") else {
@@ -459,16 +451,11 @@ struct ChatService {
                 "contents": contents,
                 "tools": [toolsObj],
             ]
-            let data: Data
-            if AIAccessSettings.isUsingFudAIPremium {
-                data = try await FudAIProxyClient.generateContent(task: .coach, body: body)
-            } else {
-                data = try await send(
-                    url: url,
-                    headers: ["Content-Type": "application/json", "X-goog-api-key": apiKey ?? ""],
-                    body: body
-                )
-            }
+            let data = try await send(
+                url: url,
+                headers: ["Content-Type": "application/json", "X-goog-api-key": apiKey ?? ""],
+                body: body
+            )
             guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
                   let candidates = json["candidates"] as? [[String: Any]],
                   let candidate = candidates.first,

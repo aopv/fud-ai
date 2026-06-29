@@ -11,7 +11,6 @@
 		BA8E0E382F33F198007DD537 /* calorietrackerShare.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = BA8E0E372F33F198007DD537 /* calorietrackerShare.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F00D10000000000000000001 /* FudAIWatchApp.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = F00D10000000000000000007 /* FudAIWatchApp.app */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F00D10000000000000000002 /* FudAIWatchWidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F00D10000000000000000008 /* FudAIWatchWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		F00DCA700000000000000001 /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = F00DCA700000000000000003 /* RevenueCat */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -202,7 +201,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F00DCA700000000000000001 /* RevenueCat in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -304,7 +302,6 @@
 			);
 			name = calorietracker;
 			packageProductDependencies = (
-				F00DCA700000000000000003 /* RevenueCat */,
 			);
 			productName = calorietracker;
 			productReference = BA8E0DF32F33F197007DD537 /* calorietracker.app */;
@@ -506,7 +503,6 @@
 			mainGroup = BA8E0DEA2F33F197007DD537;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				F00DCA700000000000000002 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = BA8E0DF42F33F197007DD537 /* Products */;
@@ -700,7 +696,6 @@
 				MARKETING_VERSION = 4.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.apoorvdarshan.calorietracker.debug;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				REVENUECAT_API_KEY = appl_oLVmgmKsUevcLQmETHsZkhWtCnL;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -752,7 +747,6 @@
 				MARKETING_VERSION = 4.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.apoorvdarshan.calorietracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				REVENUECAT_API_KEY = appl_oLVmgmKsUevcLQmETHsZkhWtCnL;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -1366,25 +1360,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		F00DCA700000000000000002 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/RevenueCat/purchases-ios-spm";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.70.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		F00DCA700000000000000003 /* RevenueCat */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = F00DCA700000000000000002 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */;
-			productName = RevenueCat;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = BA8E0DEB2F33F197007DD537 /* Project object */;
 }

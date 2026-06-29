@@ -112,7 +112,6 @@ private enum AppUpdateChecker {
 
 // MARK: - Main Content View
 struct ContentView: View {
-    @Environment(StoreManager.self) private var storeManager
     @Environment(NotificationManager.self) private var notificationManager
     @AppStorage(AppThemeColor.storageKey) private var appThemeColorRaw = AppThemeColor.defaultColor.rawValue
     @State private var appUpdateState: AppUpdateState = .idle
@@ -158,7 +157,6 @@ struct ContentView: View {
         .tint(AppThemeColor.color(for: appThemeColorRaw).color)
         .task {
             await refreshAppUpdateState()
-            await storeManager.checkEntitlements()
         }
     }
 
@@ -395,7 +393,7 @@ private struct AboutView: View {
     private static let whatsNewItems = [
         "Recalculate Goals uses AI to set your calories and macros from your profile, logged intake, and weight trend. Your goals stay put when you edit details like weight or pace — they only change when you tap Recalculate (or the weekly Adaptive check).",
         "Recalculate also refreshes your optional nutrient targets like fiber, sugar, and sodium.",
-        "Onboarding now sets up your AI — Fud AI Premium or your own provider key — and builds your starting plan with it.",
+        "Onboarding now sets up your AI with your own provider key and builds your starting plan with it.",
         "Energy Burn Goals is now part of a single Adaptive Goals toggle that factors your Apple Health calories burned into the weekly correction.",
         "Lock any calculated calorie or macro target so Recalculate and Adaptive keep it fixed; reset to auto-balance anytime.",
         "New optional body measurements (waist, hips, neck, and more) in Settings → Personal Info feed Recalculate Goals and the Coach.",
@@ -2699,7 +2697,6 @@ struct ProfileView: View {
     @Environment(BodyMeasurementStore.self) private var bodyMeasurementStore
     @Environment(NotificationManager.self) private var notificationManager
     @Environment(HealthKitManager.self) private var healthKitManager
-    @Environment(StoreManager.self) private var storeManager
     private var profile: UserProfile {
         get { profileStore.profile }
         nonmutating set { profileStore.profile = newValue }
@@ -2756,8 +2753,6 @@ struct ProfileView: View {
     @State private var selectedSpeechLanguage: SpeechLanguage = SpeechSettings.selectedLanguage(for: SpeechSettings.selectedProvider)
     @State private var speechApiKeyText: String = SpeechSettings.apiKey(for: SpeechSettings.selectedProvider) ?? ""
     @State private var showSpeechAPIKey = false
-    @State private var selectedAccessMode: AIAccessMode = AIAccessSettings.mode
-    @State private var showFudAIPremiumPaywall = false
 
     // Height formatting
     private var heightDisplay: String {
@@ -3206,16 +3201,7 @@ struct ProfileView: View {
                 }
                 .listRowBackground(AppColors.appCard)
 
-                AIAccessSettingsSection(
-                    selectedAccessMode: $selectedAccessMode,
-                    showFudAIPremiumPaywall: $showFudAIPremiumPaywall
-                )
-
-                if selectedAccessMode == .fudAIPremium {
-                    FudAIPremiumManagedSettingsSection()
-                }
-
-                if selectedAccessMode == .bringYourOwnKey {
+                Group {
                     // Section 4: AI Provider
                     Section("AI Provider") {
                         Picker(selection: $selectedProvider) {
@@ -3403,7 +3389,7 @@ struct ProfileView: View {
                 }
                 .listRowBackground(AppColors.appCard)
 
-                if selectedAccessMode == .bringYourOwnKey {
+                Group {
                     // Fallback Provider — retry on a second provider when the primary fails
                     Section {
                         Toggle(isOn: $fallbackEnabled) {
@@ -3919,11 +3905,7 @@ struct ProfileView: View {
             .sheet(isPresented: $showCalculationMethods) {
                 CalculationMethodsView()
             }
-            .sheet(isPresented: $showFudAIPremiumPaywall) {
-                PaywallView()
-            }
             .onAppear {
-                selectedAccessMode = AIAccessSettings.mode
                 // Existing users (and anyone who has never recalculated) start with no baseline.
                 // Seed it to the current inputs so the "recalculate suggested" nudge only appears
                 // after a genuine change from here on, instead of firing on first launch.
@@ -3967,7 +3949,6 @@ struct ProfileView: View {
                     // Wipe Keychain API keys
                     AIProviderSettings.deleteAllData()
                     SpeechSettings.deleteAllData()
-                    AIAccessSettings.resetForDeleteAllData()
                     chatStore.reset()
                     // Wipe the widget snapshot out of the App Group container —
                     // it lives outside UserDefaults.standard and would otherwise
@@ -4086,9 +4067,9 @@ struct ProfileView: View {
     }
 
     /// AI-driven goal recalculation. Sends the profile + the app's formulas to the user's
-    /// selected provider (BYOK or Premium, transparently) and applies the returned calorie
+    /// selected provider and applies the returned calorie
     /// and protein/fat targets; carbs auto-balances so totals stay consistent. AI-only — when
-    /// the provider is unavailable (no key / Premium inactive / offline / bad response) the
+    /// the provider is unavailable (no key / offline / bad response) the
     /// existing goals are left unchanged and the user is told to fix their provider/key, with
     /// NO silent formula fallback. Then recomputes the optional "Other Nutrients"
     /// (fiber/sugar/sodium/…) via AI, leaving them untouched if that call fails (no clobbering
@@ -4314,202 +4295,6 @@ struct ProfileView: View {
         showAdaptiveGoalAlert = true
     }
 
-}
-
-private struct FudAIPremiumManagedSettingsSection: View {
-    @State private var quotaSnapshot: AIAccessQuotaSnapshot = .fallback
-    @State private var quotaError: String?
-    @State private var isLoadingQuota = false
-    @State private var selectedPremiumSpeechLanguage: SpeechLanguage = SpeechSettings.selectedLanguage(for: .deepgram)
-
-    var body: some View {
-        Section {
-            quotaRow(icon: "fork.knife", title: "Food Logs", bucket: quotaSnapshot.food)
-            quotaRow(icon: "waveform", title: "Voice", bucket: quotaSnapshot.speech)
-            quotaRow(icon: "message.fill", title: "Coach", bucket: quotaSnapshot.coach)
-            quotaRow(icon: "shield.lefthalf.filled", title: "Daily Safety Limit", bucket: quotaSnapshot.global)
-
-            Picker(selection: $selectedPremiumSpeechLanguage) {
-                ForEach(SpeechLanguage.allCases) { language in
-                    Text(language.displayName).tag(language)
-                }
-            } label: {
-                Label {
-                    Text("Voice Language")
-                } icon: {
-                    Image(systemName: "globe")
-                        .foregroundStyle(AppColors.calorie)
-                }
-            }
-            .pickerStyle(.menu)
-            .tint(.secondary)
-            .onChange(of: selectedPremiumSpeechLanguage) { _, newLanguage in
-                SpeechSettings.setLanguage(newLanguage, for: .deepgram)
-            }
-
-            Button {
-                Task { await refreshQuota() }
-            } label: {
-                Label(isLoadingQuota ? "Refreshing Usage" : "Refresh Usage", systemImage: "arrow.clockwise")
-            }
-            .disabled(isLoadingQuota)
-
-            if let quotaError {
-                Text(quotaError)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-        } header: {
-            Text("Fud AI Premium")
-        } footer: {
-            Text("Premium requests use Fud AI's Gemini and Deepgram proxy with daily usage limits. BYOK provider, fallback, and speech API key settings are hidden while Premium is selected and reappear when you switch back to Bring Your Own Key.")
-        }
-        .listRowBackground(AppColors.appCard)
-        .task {
-            selectedPremiumSpeechLanguage = SpeechSettings.selectedLanguage(for: .deepgram)
-            await refreshQuota()
-        }
-    }
-
-    private func quotaRow(icon: String, title: String, bucket: AIAccessQuotaSnapshot.Bucket) -> some View {
-        HStack {
-            Label {
-                Text(title)
-            } icon: {
-                Image(systemName: icon)
-                    .foregroundStyle(AppColors.calorie)
-            }
-            Spacer()
-            Text("\(bucket.remaining)/\(bucket.limit) left")
-                .foregroundStyle(.secondary)
-        }
-    }
-
-    private func refreshQuota() async {
-        guard AIAccessSettings.hasActivePremiumEntitlement else { return }
-        isLoadingQuota = true
-        quotaError = nil
-        do {
-            quotaSnapshot = try await FudAIProxyClient.quotaSnapshot()
-        } catch {
-            quotaError = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
-        }
-        isLoadingQuota = false
-    }
-}
-
-private struct AIAccessSettingsSection: View {
-    @Environment(StoreManager.self) private var storeManager
-    @Binding var selectedAccessMode: AIAccessMode
-    @Binding var showFudAIPremiumPaywall: Bool
-
-    var body: some View {
-        Section {
-            Picker(selection: $selectedAccessMode) {
-                ForEach(AIAccessMode.allCases) { mode in
-                    Label(mode.displayName, systemImage: mode.icon).tag(mode)
-                }
-            } label: {
-                Label {
-                    Text("Mode")
-                } icon: {
-                    Image(systemName: selectedAccessMode.icon)
-                        .foregroundStyle(AppColors.calorie)
-                }
-            }
-            .pickerStyle(.menu)
-            .tint(.secondary)
-            .onChange(of: selectedAccessMode) { _, newMode in
-                AIAccessSettings.mode = newMode
-                if newMode == .fudAIPremium && !storeManager.isSubscribed {
-                    showFudAIPremiumPaywall = true
-                }
-            }
-
-            statusRow
-            actionButton
-
-            if selectedAccessMode == .fudAIPremium {
-                Button {
-                    selectedAccessMode = .bringYourOwnKey
-                    AIAccessSettings.mode = .bringYourOwnKey
-                } label: {
-                    Label {
-                        Text("Switch to BYOK")
-                    } icon: {
-                        Image(systemName: "key.fill")
-                            .foregroundStyle(AppColors.calorie)
-                    }
-                }
-                .tint(.primary)
-            }
-        } header: {
-            Text("AI Access")
-        } footer: {
-            Text("BYOK is free if you bring your own AI keys. Premium is optional no-key access: $6.99/week or $199.99/year. Switching to BYOK does not cancel an active subscription.")
-        }
-        .listRowBackground(AppColors.appCard)
-        .task {
-            await storeManager.checkEntitlements()
-        }
-    }
-
-    private var statusRow: some View {
-        HStack {
-            Label {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(selectedAccessMode.displayName)
-                    Text(statusText)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-            } icon: {
-                Image(systemName: selectedAccessMode.icon)
-                    .foregroundStyle(AppColors.calorie)
-            }
-            Spacer()
-            if storeManager.isSubscribed && selectedAccessMode == .fudAIPremium {
-                Text(storeManager.currentPlanName)
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(AppColors.calorie)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
-                    .background(Capsule().fill(AppColors.calorie.opacity(0.12)))
-            }
-        }
-    }
-
-    private var statusText: String {
-        if selectedAccessMode == .fudAIPremium {
-            return storeManager.isSubscribed ? "Premium active" : "Subscription required"
-        }
-        return "Use your saved provider keys"
-    }
-
-    private var actionButton: some View {
-        Button {
-            if storeManager.isSubscribed {
-                openSubscriptionManagement()
-            } else {
-                selectedAccessMode = .fudAIPremium
-                AIAccessSettings.mode = .fudAIPremium
-                showFudAIPremiumPaywall = true
-            }
-        } label: {
-            Label {
-                Text(storeManager.isSubscribed ? "Manage Subscription" : "Upgrade to Premium")
-            } icon: {
-                Image(systemName: storeManager.isSubscribed ? "creditcard.fill" : "sparkles")
-                    .foregroundStyle(AppColors.calorie)
-            }
-        }
-        .tint(.primary)
-    }
-
-    private func openSubscriptionManagement() {
-        guard let url = URL(string: "https://apps.apple.com/account/subscriptions") else { return }
-        UIApplication.shared.open(url)
-    }
 }
 
 private struct ThemeColorSettingsView: View {

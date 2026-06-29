@@ -4,8 +4,6 @@
 <dict>
 	<key>CFBundleDisplayName</key>
 	<string>$(APP_DISPLAY_NAME)</string>
-	<key>RevenueCatAppleAPIKey</key>
-	<string>$(REVENUECAT_API_KEY)</string>
 	<key>NSHealthShareUsageDescription</key>
 	<string>Read your weight, height, and body composition to keep your profile accurate.</string>
 	<key>NSHealthUpdateUsageDescription</key>

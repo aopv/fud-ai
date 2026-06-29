@@ -19027,97 +19027,97 @@
         }
       }
     },
-    "Onboarding now sets up your AI — Fud AI Premium or your own provider key — and builds your starting plan with it." : {
+    "Onboarding now sets up your AI with your own provider key and builds your starting plan with it." : {
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "تعمل عملية الإعداد الآن على تهيئة الذكاء الاصطناعي الخاص بك — سواء عبر Fud AI Premium أو مفتاح المزوّد الخاص بك — وتبني خطتك المبدئية باستخدامه."
+            "value" : "تعمل عملية الإعداد الآن على تهيئة الذكاء الاصطناعي الخاص بك عبر مفتاح المزوّد الخاص بك، وتبني خطتك المبدئية باستخدامه."
           }
         },
         "az" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "İlkin quraşdırma indi süni intellektinizi — Fud AI Premium və ya öz provayder açarınızı — qurur və onunla başlanğıc planınızı tərtib edir."
+            "value" : "İlkin quraşdırma indi süni intellektinizi öz provayder açarınızla qurur və onunla başlanğıc planınızı tərtib edir."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Das Onboarding richtet jetzt deine KI ein – Fud AI Premium oder dein eigener Anbieter-Schlüssel – und erstellt damit deinen Startplan."
+            "value" : "Das Onboarding richtet jetzt deine KI mit deinem eigenen Anbieter-Schlüssel ein und erstellt damit deinen Startplan."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La configuración inicial ahora prepara tu IA (Fud AI Premium o tu propia clave de proveedor) y crea con ella tu plan inicial."
+            "value" : "La configuración inicial ahora prepara tu IA con tu propia clave de proveedor y crea con ella tu plan inicial."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La configuration initiale met maintenant en place votre IA — Fud AI Premium ou votre propre clé de fournisseur — et élabore votre plan de départ avec elle."
+            "value" : "La configuration initiale met maintenant en place votre IA avec votre propre clé de fournisseur et élabore votre plan de départ avec elle."
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ऑनबोर्डिंग अब आपका AI सेट करती है — Fud AI Premium या आपकी अपनी प्रोवाइडर key — और उसी से आपकी शुरुआती योजना बनाती है।"
+            "value" : "ऑनबोर्डिंग अब आपका AI आपकी अपनी प्रोवाइडर key से सेट करती है और उसी से आपकी शुरुआती योजना बनाती है।"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La configurazione iniziale ora imposta la tua IA - Fud AI Premium o la chiave del tuo provider - e crea con essa il tuo piano di partenza."
+            "value" : "La configurazione iniziale ora imposta la tua IA con la chiave del tuo provider e crea con essa il tuo piano di partenza."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "初期設定でAI（Fud AI Premiumまたはご自身のプロバイダーキー）をセットアップし、それを使って最初のプランを作成するようになりました。"
+            "value" : "初期設定でご自身のプロバイダーキーを使ってAIをセットアップし、それをもとに最初のプランを作成するようになりました。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이제 온보딩에서 AI(Fud AI Premium 또는 직접 입력한 제공업체 키)를 설정하고, 이를 사용해 초기 플랜을 만들어 줍니다."
+            "value" : "이제 온보딩에서 직접 입력한 제공업체 키로 AI를 설정하고, 이를 사용해 초기 플랜을 만들어 줍니다."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "De onboarding stelt nu je AI in — Fud AI Premium of je eigen providersleutel — en bouwt daarmee je startplan op."
+            "value" : "De onboarding stelt nu je AI in met je eigen providersleutel en bouwt daarmee je startplan op."
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wprowadzenie konfiguruje teraz Twoją AI — Fud AI Premium lub własny klucz dostawcy — i na jej podstawie tworzy Twój początkowy plan."
+            "value" : "Wprowadzenie konfiguruje teraz Twoją AI za pomocą Twojego własnego klucza dostawcy i na jej podstawie tworzy Twój początkowy plan."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A introdução agora configura sua IA — o Fud AI Premium ou a chave do seu próprio provedor — e cria seu plano inicial com ela."
+            "value" : "A introdução agora configura sua IA com a chave do seu próprio provedor e cria seu plano inicial com ela."
           }
         },
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Configurarea inițială îți pregătește acum AI-ul — Fud AI Premium sau propria ta cheie de furnizor — și îți creează cu ajutorul lui planul de pornire."
+            "value" : "Configurarea inițială îți pregătește acum AI-ul cu propria ta cheie de furnizor și îți creează cu ajutorul lui planul de pornire."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Онбординг теперь настраивает ваш ИИ — Fud AI Premium или ваш собственный ключ провайдера — и строит с его помощью ваш начальный план."
+            "value" : "Онбординг теперь настраивает ваш ИИ с помощью вашего собственного ключа провайдера и строит с его помощью ваш начальный план."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "引导设置现在会配置你的 AI（Fud AI Premium 或你自己的服务商密钥），并据此为你生成初始计划。"
+            "value" : "引导设置现在会使用你自己的服务商密钥配置你的 AI，并据此为你生成初始计划。"
           }
         }
       }

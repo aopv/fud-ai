@@ -140,7 +140,6 @@ struct GeminiService {
         case networkError(Error)
         case invalidResponse
         case apiError(String)
-        case subscriptionRequired
 
         var errorDescription: String? {
             switch self {
@@ -154,8 +153,6 @@ struct GeminiService {
                 return "Could not understand the AI response. Please try again."
             case .apiError(let message):
                 return "API error: \(message)"
-            case .subscriptionRequired:
-                return "Fud AI Premium is not active. Subscribe or switch back to Bring Your Own Key in Settings."
             }
         }
     }
@@ -395,7 +392,7 @@ struct GeminiService {
         \(currentGoalLines)
         """
 
-        let text = try await callAI(prompt: prompt, image: nil, proxyTask: .goals)
+        let text = try await callAI(prompt: prompt, image: nil)
         return try parseOptionalNutrientGoals(from: text, fallback: currentGoals)
     }
 
@@ -405,7 +402,7 @@ struct GeminiService {
     /// profile / goals / settings, AND — when available — their recent logged-calorie average
     /// and observed weight trend, so the model can estimate true maintenance empirically
     /// (hit-and-trial / adaptive) rather than trusting the formula alone. Routes through the
-    /// selected provider (BYOK or Premium). The deterministic math stays as the caller's
+    /// user's selected provider. The deterministic math stays as the caller's
     /// fallback when AI is unavailable. ONLY for goal targets — does not touch food estimation.
     static func calculateGoals(profile: UserProfile, forecast: WeightForecast?, measuredTdee: Int? = nil, measurement: BodyMeasurement? = nil, useMetric: Bool) async throws -> GoalCalculation {
         let weight = useMetric
@@ -499,7 +496,7 @@ struct GeminiService {
         \(observedSection)
         """
 
-        let text = try await callAI(prompt: prompt, image: nil, proxyTask: .goals)
+        let text = try await callAI(prompt: prompt, image: nil)
         return try parseGoalCalculation(from: text)
     }
 
@@ -599,29 +596,14 @@ struct GeminiService {
 
     // MARK: - Unified AI Call Router
 
-    private static func callAI(prompt: String, image: UIImage?, proxyTask: FudAIProxyClient.ProxyTask = .food) async throws -> String {
-        try await callAI(prompt: prompt, images: image.map { [$0] } ?? [], proxyTask: proxyTask)
+    private static func callAI(prompt: String, image: UIImage?) async throws -> String {
+        try await callAI(prompt: prompt, images: image.map { [$0] } ?? [])
     }
 
     private static func callTextFoodAnalysis(prompt: String) async throws -> FoodAnalysis {
-        let usingPremium = AIAccessSettings.isUsingFudAIPremium
-        if usingPremium, !AIAccessSettings.hasActivePremiumEntitlement {
-            throw AnalysisError.subscriptionRequired
-        }
-
         let primaryProvider = AIProviderSettings.selectedProvider
-        if !usingPremium, primaryProvider.requiresAPIKey, AIProviderSettings.currentAPIKey == nil {
+        if primaryProvider.requiresAPIKey, AIProviderSettings.currentAPIKey == nil {
             throw AnalysisError.noAPIKey
-        }
-
-        if usingPremium {
-            return try await dispatchFoodAnalysis(
-                provider: .gemini,
-                model: "gemini-3.1-flash-lite",
-                baseURL: AIProvider.gemini.baseURL,
-                apiKey: nil,
-                prompt: prompt
-            )
         }
 
         do {
@@ -667,7 +649,7 @@ struct GeminiService {
     private static func onDeviceTextFallback(description: String, after error: Error) async -> FoodAnalysis? {
         if let analysisError = error as? AnalysisError {
             switch analysisError {
-            case .noAPIKey, .subscriptionRequired, .imageConversionFailed:
+            case .noAPIKey, .imageConversionFailed:
                 return nil
             case .networkError, .invalidResponse, .apiError:
                 break
@@ -685,31 +667,14 @@ struct GeminiService {
         return nil
     }
 
-    private static func callAI(prompt: String, images: [UIImage], proxyTask: FudAIProxyClient.ProxyTask = .food) async throws -> String {
-        let usingPremium = AIAccessSettings.isUsingFudAIPremium
-        if usingPremium, !AIAccessSettings.hasActivePremiumEntitlement {
-            throw AnalysisError.subscriptionRequired
-        }
-
+    private static func callAI(prompt: String, images: [UIImage]) async throws -> String {
         let primaryProvider = AIProviderSettings.selectedProvider
-        if !usingPremium, primaryProvider.requiresAPIKey, AIProviderSettings.currentAPIKey == nil {
+        if primaryProvider.requiresAPIKey, AIProviderSettings.currentAPIKey == nil {
             throw AnalysisError.noAPIKey
         }
 
         let imageDataList = try images.map {
-            try encodedJPEGData(for: $0, usingPremium: usingPremium, imageCount: images.count)
-        }
-
-        if usingPremium {
-            return try await dispatch(
-                provider: .gemini,
-                model: "gemini-3.1-flash-lite",
-                baseURL: AIProvider.gemini.baseURL,
-                apiKey: nil,
-                prompt: prompt,
-                imageDataList: imageDataList,
-                proxyTask: proxyTask
-            )
+            try encodedJPEGData(for: $0)
         }
 
         do {
@@ -739,68 +704,18 @@ struct GeminiService {
         }
     }
 
-    private static func encodedJPEGData(for image: UIImage, usingPremium: Bool, imageCount: Int) throws -> Data {
-        guard usingPremium else {
-            guard let data = image.jpegData(compressionQuality: 0.8) else {
-                throw AnalysisError.imageConversionFailed
-            }
-            return data
-        }
-
-        let maxBytes = imageCount > 1 ? 850_000 : 1_700_000
-        var maxDimension: CGFloat = imageCount > 1 ? 1024 : 1600
-        var quality: CGFloat = imageCount > 1 ? 0.55 : 0.68
-
-        for _ in 0..<8 {
-            let resized = resizedImage(image, maxDimension: maxDimension)
-            guard let data = resized.jpegData(compressionQuality: quality) else {
-                throw AnalysisError.imageConversionFailed
-            }
-            if data.count <= maxBytes {
-                return data
-            }
-            if quality > 0.42 {
-                quality -= 0.08
-            } else {
-                maxDimension *= 0.82
-                quality = imageCount > 1 ? 0.52 : 0.62
-            }
-        }
-
-        let fallback = resizedImage(image, maxDimension: imageCount > 1 ? 768 : 1200)
-        guard let data = fallback.jpegData(compressionQuality: imageCount > 1 ? 0.45 : 0.55) else {
+    private static func encodedJPEGData(for image: UIImage) throws -> Data {
+        guard let data = image.jpegData(compressionQuality: 0.8) else {
             throw AnalysisError.imageConversionFailed
         }
         return data
     }
 
-    private static func resizedImage(_ image: UIImage, maxDimension: CGFloat) -> UIImage {
-        let width = image.size.width
-        let height = image.size.height
-        let largestSide = max(width, height)
-        guard largestSide > maxDimension else { return image }
-
-        let scale = maxDimension / largestSide
-        let targetSize = CGSize(width: width * scale, height: height * scale)
-        let format = UIGraphicsImageRendererFormat.default()
-        format.scale = 1
-        format.opaque = true
-
-        return UIGraphicsImageRenderer(size: targetSize, format: format).image { context in
-            UIColor.white.setFill()
-            context.cgContext.fill(CGRect(origin: .zero, size: targetSize))
-            image.draw(in: CGRect(origin: .zero, size: targetSize))
-        }
-    }
-
-    private static func dispatch(provider: AIProvider, model: String, baseURL: String, apiKey: String?, prompt: String, imageDataList: [Data], proxyTask: FudAIProxyClient.ProxyTask = .food) async throws -> String {
+    private static func dispatch(provider: AIProvider, model: String, baseURL: String, apiKey: String?, prompt: String, imageDataList: [Data]) async throws -> String {
         switch provider.apiFormat {
         case .gemini:
-            if AIAccessSettings.isUsingFudAIPremium {
-                return try await callGemini(baseURL: baseURL, model: model, apiKey: nil, prompt: prompt, imageDataList: imageDataList, proxyTask: proxyTask)
-            }
             guard let key = apiKey else { throw AnalysisError.noAPIKey }
-            return try await callGemini(baseURL: baseURL, model: model, apiKey: key, prompt: prompt, imageDataList: imageDataList, proxyTask: proxyTask)
+            return try await callGemini(baseURL: baseURL, model: model, apiKey: key, prompt: prompt, imageDataList: imageDataList)
         case .openaiCompatible:
             return try await callOpenAICompatible(baseURL: baseURL, model: model, apiKey: apiKey, provider: provider, prompt: prompt, imageDataList: imageDataList)
         case .anthropic:
@@ -811,7 +726,7 @@ struct GeminiService {
 
     // MARK: - Gemini Format
 
-    private static func callGemini(baseURL: String, model: String, apiKey: String?, prompt: String, imageDataList: [Data], proxyTask: FudAIProxyClient.ProxyTask = .food) async throws -> String {
+    private static func callGemini(baseURL: String, model: String, apiKey: String?, prompt: String, imageDataList: [Data]) async throws -> String {
         // Send the API key in the X-goog-api-key header, not the URL query string,
         // so it doesn't end up in server logs / proxies (CodeQL: cleartext transmission).
         var parts: [[String: Any]] = []
@@ -832,20 +747,15 @@ struct GeminiService {
             body["systemInstruction"] = ["parts": [["text": userContext]]]
         }
 
-        let data: Data
-        if AIAccessSettings.isUsingFudAIPremium {
-            data = try await FudAIProxyClient.generateContent(task: proxyTask, body: body)
-        } else {
-            guard let apiKey else { throw AnalysisError.noAPIKey }
-            guard let url = URL(string: "\(baseURL)/models/\(model):generateContent") else {
-                throw AnalysisError.apiError("Invalid API URL. Check your provider settings.")
-            }
-            data = try await makeRequest(
-                url: url,
-                headers: ["Content-Type": "application/json", "X-goog-api-key": apiKey],
-                body: body
-            )
+        guard let apiKey else { throw AnalysisError.noAPIKey }
+        guard let url = URL(string: "\(baseURL)/models/\(model):generateContent") else {
+            throw AnalysisError.apiError("Invalid API URL. Check your provider settings.")
         }
+        let data = try await makeRequest(
+            url: url,
+            headers: ["Content-Type": "application/json", "X-goog-api-key": apiKey],
+            body: body
+        )
 
         guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
               let candidates = json["candidates"] as? [[String: Any]],

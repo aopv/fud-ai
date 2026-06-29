@@ -26,7 +26,7 @@ struct VoiceInputView: View {
     var onCancel: () -> Void
     var onSubmit: (String) -> Void
 
-    private var provider: SpeechProvider { AIAccessSettings.isUsingFudAIPremium ? .deepgram : SpeechSettings.selectedProvider }
+    private var provider: SpeechProvider { SpeechSettings.selectedProvider }
     private var isNative: Bool { provider == .nativeIOS }
 
     private var analyzeButtonLabel: String { "Analyze" }
@@ -176,12 +176,7 @@ struct VoiceInputView: View {
         if isNative {
             startNativeRecording()
         } else {
-            if AIAccessSettings.isUsingFudAIPremium {
-                guard AIAccessSettings.hasActivePremiumEntitlement else {
-                    permissionError = "Fud AI Premium is not active. Subscribe or switch back to Bring Your Own Key in Settings."
-                    return
-                }
-            } else if SpeechSettings.apiKey(for: provider) == nil {
+            if SpeechSettings.apiKey(for: provider) == nil {
                 permissionError = "No API key configured for \(provider.rawValue). Add one in Settings → Speech-to-Text."
                 return
             }
