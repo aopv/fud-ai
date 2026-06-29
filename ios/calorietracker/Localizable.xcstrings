@@ -1,6 +1,386 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Fud AI is now completely free — the optional Premium subscription has been removed." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أصبح Fud AI الآن مجانيًا بالكامل — تمت إزالة اشتراك Premium الاختياري."
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fud AI artıq tamamilə pulsuzdur — istəyə bağlı Premium abunəliyi silindi."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fud AI ist jetzt komplett kostenlos — das optionale Premium-Abo wurde entfernt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fud AI ahora es completamente gratis — se ha eliminado la suscripción Premium opcional."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fud AI est désormais entièrement gratuit — l'abonnement Premium optionnel a été supprimé."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fud AI अब पूरी तरह मुफ़्त है — वैकल्पिक Premium सब्सक्रिप्शन हटा दिया गया है।"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fud AI ora è completamente gratis — l'abbonamento Premium opzionale è stato rimosso."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fud AIが完全に無料になりました — オプションのPremiumサブスクリプションは廃止されました。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fud AI가 이제 완전 무료예요 — 선택 사항이던 Premium 구독은 사라졌어요."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fud AI is nu volledig gratis — het optionele Premium-abonnement is verwijderd."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fud AI jest teraz całkowicie darmowe — opcjonalna subskrypcja Premium została usunięta."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Fud AI agora é totalmente gratuito — a assinatura Premium opcional foi removida."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fud AI este acum complet gratuit — abonamentul Premium opțional a fost eliminat."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fud AI теперь полностью бесплатное — необязательная подписка Premium удалена."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fud AI 现在完全免费 — 可选的高级版订阅已移除。"
+          }
+        }
+      }
+    },
+    "AI features run on your own provider key — add a free Gemini, OpenAI, Groq, or other supported key in onboarding or Settings." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تعمل ميزات الذكاء الاصطناعي عبر مفتاح المزوّد الخاص بك — أضِف مجانًا مفتاح Gemini أو OpenAI أو Groq أو أي مفتاح آخر مدعوم أثناء الإعداد أو من الإعدادات."
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Süni intellekt funksiyaları sənin öz provayder açarınla işləyir — ilkin quraşdırma zamanı və ya Parametrlərdə pulsuz Gemini, OpenAI, Groq və ya digər dəstəklənən açar əlavə et."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KI-Funktionen laufen mit deinem eigenen Anbieter-Schlüssel — füge beim Onboarding oder in den Einstellungen einen kostenlosen Gemini-, OpenAI-, Groq- oder anderen unterstützten Schlüssel hinzu."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las funciones de IA usan tu propia clave de proveedor — añade una clave gratuita de Gemini, OpenAI, Groq u otra compatible en la configuración inicial o en Ajustes."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les fonctionnalités d'IA fonctionnent avec ta propre clé de fournisseur — ajoute une clé gratuite Gemini, OpenAI, Groq ou une autre clé prise en charge lors de la configuration ou dans les Réglages."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI फ़ीचर्स आपकी अपनी प्रोवाइडर key से चलते हैं — ऑनबोर्डिंग या सेटिंग्स में एक मुफ़्त Gemini, OpenAI, Groq, या कोई दूसरी सपोर्टेड key जोड़ें।"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le funzioni IA funzionano con la chiave del tuo provider — aggiungi una chiave gratuita di Gemini, OpenAI, Groq o di un altro provider supportato durante la configurazione iniziale o in Impostazioni."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI機能はご自身のプロバイダーキーで動作します — Gemini、OpenAI、Groq などの無料の対応キーを、初期設定または設定で追加してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 기능은 직접 입력한 제공업체 키로 작동해요 — 온보딩이나 설정에서 무료 Gemini, OpenAI, Groq 또는 지원되는 다른 키를 추가하세요."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI-functies werken met je eigen providersleutel — voeg tijdens de onboarding of in Instellingen een gratis Gemini-, OpenAI-, Groq- of andere ondersteunde sleutel toe."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Funkcje AI działają w oparciu o Twój własny klucz dostawcy — dodaj darmowy klucz Gemini, OpenAI, Groq lub innego obsługiwanego dostawcy we wprowadzeniu lub w Ustawieniach."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os recursos de IA funcionam com a chave do seu próprio provedor — adicione uma chave gratuita do Gemini, OpenAI, Groq ou de outro provedor compatível na introdução ou nos Ajustes."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Funcțiile AI rulează cu propria ta cheie de furnizor — adaugă o cheie gratuită Gemini, OpenAI, Groq sau alta acceptată în configurarea inițială sau în Setări."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ИИ-функции работают на твоём собственном ключе провайдера — добавь бесплатный ключ Gemini, OpenAI, Groq или другого поддерживаемого провайдера при первом запуске или в настройках."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 功能现在使用你自己的提供商密钥运行 — 在引导设置或设置中添加免费的 Gemini、OpenAI、Groq 或其他受支持的密钥。"
+          }
+        }
+      }
+    },
+    "Setting up AI is simpler: onboarding and Settings now focus on connecting your own provider key." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أصبح إعداد الذكاء الاصطناعي أبسط: يركّز الإعداد والإعدادات الآن على ربط مفتاح المزوّد الخاص بك."
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Süni intellekti qurmaq daha sadədir: ilkin quraşdırma və Parametrlər artıq sənin öz provayder açarını qoşmağa yönəlib."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die KI-Einrichtung ist einfacher: Onboarding und Einstellungen konzentrieren sich jetzt darauf, deinen eigenen Anbieter-Schlüssel zu verbinden."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configurar la IA es más sencillo: la configuración inicial y los Ajustes ahora se centran en conectar tu propia clave de proveedor."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configurer l'IA est plus simple : la configuration initiale et les Réglages se concentrent désormais sur la connexion de ta propre clé de fournisseur."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI सेटअप करना अब और आसान है: ऑनबोर्डिंग और सेटिंग्स अब आपकी अपनी प्रोवाइडर key कनेक्ट करने पर फ़ोकस करते हैं।"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configurare l'IA è più semplice: la configurazione iniziale e le Impostazioni ora si concentrano sul collegamento della chiave del tuo provider."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIのセットアップがより簡単になりました。初期設定と設定は、ご自身のプロバイダーキーの接続に重点を置くようになりました。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 설정이 더 간단해졌어요. 이제 온보딩과 설정은 직접 입력한 제공업체 키 연결에 집중해요."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI instellen is eenvoudiger: onboarding en Instellingen draaien nu om het verbinden van je eigen providersleutel."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konfiguracja AI jest prostsza: wprowadzenie i Ustawienia skupiają się teraz na podłączeniu Twojego własnego klucza dostawcy."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configurar a IA ficou mais simples: a introdução e os Ajustes agora focam em conectar a chave do seu próprio provedor."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configurarea AI este mai simplă: configurarea inițială și Setările se concentrează acum pe conectarea propriei tale chei de furnizor."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Настроить ИИ стало проще: при первом запуске и в настройках теперь всё сосредоточено на подключении твоего собственного ключа провайдера."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "设置 AI 更简单了：引导设置和设置现在专注于连接你自己的提供商密钥。"
+          }
+        }
+      }
+    },
+    "As always, your food log, weight and body history, and API keys stay on your device." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "كالعادة، يبقى سجلّ طعامك وسجلّ وزنك وقياسات جسمك ومفاتيح API على جهازك."
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Həmişəki kimi, qida jurnalın, çəki və bədən tarixçən, həmçinin API açarların cihazında qalır."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wie immer bleiben dein Ernährungstagebuch, dein Gewichts- und Körperverlauf sowie deine API-Schlüssel auf deinem Gerät."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Como siempre, tu registro de comidas, tu historial de peso y corporal, y tus claves de API permanecen en tu dispositivo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comme toujours, ton journal alimentaire, ton historique de poids et de mensurations, ainsi que tes clés API restent sur ton appareil."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "हमेशा की तरह, आपका food log, वज़न और बॉडी का इतिहास, और API keys आपके डिवाइस पर ही रहते हैं।"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Come sempre, il tuo diario alimentare, la cronologia di peso e corpo e le chiavi API restano sul tuo dispositivo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "これまで通り、食事記録、体重や身体の履歴、APIキーはすべてこの端末に残ります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "언제나처럼 식사 일지, 체중 및 신체 기록, API 키는 모두 기기에만 보관돼요."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoals altijd blijven je voedingslogboek, gewichts- en lichaamsgeschiedenis en API-sleutels op je apparaat."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jak zawsze, Twój dziennik posiłków, historia wagi i ciała oraz klucze API pozostają na Twoim urządzeniu."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Como sempre, seu diário alimentar, histórico de peso e corporal e chaves de API ficam no seu dispositivo."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ca întotdeauna, jurnalul tău alimentar, istoricul greutății și al corpului și cheile API rămân pe dispozitivul tău."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Как всегда, твой дневник питания, история веса и тела, а также ключи API остаются на твоём устройстве."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一如既往，你的饮食记录、体重和身体记录以及 API 密钥都保留在你的设备上。"
+          }
+        }
+      }
+    },
     "" : {
 
     },

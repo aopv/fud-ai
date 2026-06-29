@@ -391,24 +391,16 @@ private struct AboutView: View {
     }
 
     private static let whatsNewItems = [
-        "Recalculate Goals uses AI to set your calories and macros from your profile, logged intake, and weight trend. Your goals stay put when you edit details like weight or pace — they only change when you tap Recalculate (or the weekly Adaptive check).",
-        "Recalculate also refreshes your optional nutrient targets like fiber, sugar, and sodium.",
-        "Onboarding now sets up your AI with your own provider key and builds your starting plan with it.",
-        "Energy Burn Goals is now part of a single Adaptive Goals toggle that factors your Apple Health calories burned into the weekly correction.",
-        "Lock any calculated calorie or macro target so Recalculate and Adaptive keep it fixed; reset to auto-balance anytime.",
-        "New optional body measurements (waist, hips, neck, and more) in Settings → Personal Info feed Recalculate Goals and the Coach.",
-        "Swipe left or right on the calorie area of Home to move between days; the week strip follows.",
-        "Coach replies now render formatted text — headings, bold, and bullet lists — so guidance is easier to read.",
-        "Weight goals are clearer: Lose / Cutting, Maintain / Recomp, and Gain / Bulking.",
-        "Get notified when a new version is available, with an App Updates toggle in Notifications.",
-        "Food log times now follow your phone's 12- or 24-hour clock.",
-        "Various refinements and fixes."
+        "Fud AI is now completely free — the optional Premium subscription has been removed.",
+        "AI features run on your own provider key — add a free Gemini, OpenAI, Groq, or other supported key in onboarding or Settings.",
+        "Setting up AI is simpler: onboarding and Settings now focus on connecting your own provider key.",
+        "As always, your food log, weight and body history, and API keys stay on your device."
     ]
 
     private var whatsNewRow: some View {
         DisclosureGroup(isExpanded: $showWhatsNew) {
             VStack(alignment: .leading, spacing: 10) {
-                Text("Fud AI 4.4")
+                Text("Fud AI 4.5")
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(.primary)
 
