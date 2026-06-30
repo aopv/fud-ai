@@ -384,6 +384,11 @@ private struct AboutView: View {
             }
             .scrollContentBackground(.hidden)
             .background(AppColors.appBackground)
+            .safeAreaInset(edge: .bottom) {
+                BannerAdView()
+                    .frame(height: 50)
+                    .frame(maxWidth: .infinity)
+            }
             .navigationBarHidden(true)
             .sheet(isPresented: $showShareSheet) {
                 ActivityShareSheet(activityItems: [shareMessage, fudAIAppStoreURL])
@@ -3727,6 +3732,11 @@ struct ProfileView: View {
             }
             .scrollContentBackground(.hidden)
             .background(AppColors.appBackground)
+            .safeAreaInset(edge: .bottom) {
+                BannerAdView()
+                    .frame(height: 50)
+                    .frame(maxWidth: .infinity)
+            }
             .navigationBarHidden(true)
             .sheet(item: $activeSheet) { sheet in
                 switch sheet {

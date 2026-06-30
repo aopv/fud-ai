@@ -48,6 +48,11 @@ struct ChatView: View {
                 inputArea
             }
             .background(AppColors.appBackground)
+            .safeAreaInset(edge: .bottom) {
+                BannerAdView()
+                    .frame(height: 50)
+                    .frame(maxWidth: .infinity)
+            }
             .navigationTitle("Coach")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
