@@ -479,3 +479,167 @@ struct MacroCard: View {
         return MacroValueFormatter.string(value)
     }
 }
+
+/// One elevated card holding the calorie summary on top and the macro trio
+/// beneath a hairline divider — a single cohesive Home widget.
+struct HomeHeroCard<Macros: View>: View {
+    let eaten: Int
+    let goal: Int
+    let remaining: Int
+    let onViewMore: () -> Void
+    @ViewBuilder var macros: Macros
+
+    private var fraction: Double {
+        goal > 0 ? min(Double(eaten) / Double(goal), 1.0) : 0
+    }
+    private var percent: Int {
+        goal > 0 ? Int((Double(eaten) / Double(goal) * 100).rounded()) : 0
+    }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            // Calorie summary
+            VStack(spacing: 14) {
+                VStack(spacing: 2) {
+                    Text("\(eaten)")
+                        .font(.system(size: 60, weight: .bold, design: .rounded))
+                        .foregroundStyle(
+                            LinearGradient(colors: AppColors.calorieGradient,
+                                           startPoint: .topLeading, endPoint: .bottomTrailing)
+                        )
+                        .contentTransition(.numericText())
+                        .animation(.snappy, value: eaten)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
+
+                    Text("of \(goal) kcal")
+                        .font(.system(.callout, design: .rounded, weight: .medium))
+                        .foregroundStyle(.tertiary)
+                }
+
+                GeometryReader { geo in
+                    ZStack(alignment: .leading) {
+                        Capsule()
+                            .fill(AppColors.calorie.opacity(0.12))
+                        Capsule()
+                            .fill(LinearGradient(colors: AppColors.calorieGradient,
+                                                 startPoint: .leading, endPoint: .trailing))
+                            .frame(width: max(14, geo.size.width * fraction))
+                            .shadow(color: AppColors.calorie.opacity(0.35), radius: 8, y: 3)
+                            .animation(.spring(response: 0.8, dampingFraction: 0.75), value: fraction)
+                    }
+                }
+                .frame(height: 14)
+
+                HStack {
+                    Text("\(remaining) left")
+                        .foregroundStyle(.secondary)
+                    Spacer(minLength: 8)
+                    Text("\(percent)%")
+                        .foregroundStyle(.tertiary)
+                }
+                .font(.system(.footnote, design: .rounded, weight: .medium))
+            }
+            .padding(.horizontal, 22)
+            .padding(.top, 26)
+            .padding(.bottom, 22)
+
+            // Divider
+            Rectangle()
+                .fill(Color.primary.opacity(0.08))
+                .frame(height: 1)
+                .padding(.horizontal, 18)
+
+            // Macro trio
+            HStack(alignment: .top, spacing: 14) {
+                macros
+            }
+            .padding(.horizontal, 18)
+            .padding(.top, 20)
+            .padding(.bottom, 14)
+
+            // View More footer
+            Button(action: onViewMore) {
+                HStack(spacing: 4) {
+                    Text(LocalizedDisplayText.text("View More"))
+                        .font(.system(.subheadline, design: .rounded, weight: .semibold))
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 11, weight: .semibold))
+                }
+                .foregroundStyle(AppColors.calorie)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 14)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .overlay(alignment: .top) {
+                Rectangle()
+                    .fill(Color.primary.opacity(0.06))
+                    .frame(height: 1)
+                    .padding(.horizontal, 18)
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .background(
+            RoundedRectangle(cornerRadius: 28, style: .continuous)
+                .fill(AppColors.appCard)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 28, style: .continuous)
+                .strokeBorder(AppColors.calorie.opacity(0.10), lineWidth: 1)
+        )
+        .shadow(color: Color.black.opacity(0.22), radius: 18, x: 0, y: 10)
+    }
+}
+
+/// A single compact macro column for the unified card's trio row.
+struct HomeMacroColumn: View {
+    let label: String
+    let current: Double
+    let goal: Double
+    let unit: String
+    let gradientColors: [Color]
+
+    private var progress: Double { goal > 0 ? min(current / goal, 1.0) : 0 }
+    private var accent: Color { gradientColors.first ?? AppColors.calorie }
+
+    var body: some View {
+        VStack(spacing: 8) {
+            Text(LocalizedDisplayText.text(label))
+                .font(.system(.caption, design: .rounded, weight: .semibold))
+                .textCase(.uppercase)
+                .tracking(0.5)
+                .foregroundStyle(.secondary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+
+            HStack(alignment: .firstTextBaseline, spacing: 1) {
+                Text(MacroValueFormatter.string(current))
+                    .font(.system(.title3, design: .rounded, weight: .bold))
+                    .foregroundStyle(
+                        LinearGradient(colors: gradientColors, startPoint: .top, endPoint: .bottom)
+                    )
+                    .contentTransition(.numericText())
+                    .animation(.snappy, value: current)
+                Text("/\(MacroValueFormatter.string(goal))\(unit)")
+                    .font(.system(.caption2, design: .rounded, weight: .medium))
+                    .foregroundStyle(.tertiary)
+            }
+            .lineLimit(1)
+            .minimumScaleFactor(0.6)
+
+            GeometryReader { geo in
+                ZStack(alignment: .leading) {
+                    Capsule().fill(accent.opacity(0.12))
+                    Capsule()
+                        .fill(LinearGradient(colors: gradientColors,
+                                             startPoint: .leading, endPoint: .trailing))
+                        .frame(width: max(6, geo.size.width * progress))
+                        .animation(.spring(response: 0.8, dampingFraction: 0.75), value: progress)
+                }
+            }
+            .frame(height: 6)
+        }
+        .frame(maxWidth: .infinity)
+    }
+}
