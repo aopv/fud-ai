@@ -432,6 +432,7 @@
     <string name="coach_title">Coach</string>
     <string name="coach_reset_chat_a11y">Reset chat</string>
     <string name="coach_send_a11y">Send</string>
+    <string name="coach_input_voice_a11y">Voice input</string>
     <string name="coach_input_placeholder">Ask Coach…</string>
     <string name="coach_empty_title">Ask your Coach</string>
     <string name="coach_empty_subtitle">Your coach can see your weight history, calorie log, and goals. Ask about expected weight, what to eat, or how to hit your target.</string>

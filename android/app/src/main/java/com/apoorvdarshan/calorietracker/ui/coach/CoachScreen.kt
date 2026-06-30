@@ -47,6 +47,7 @@ import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Forum
+import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.Replay
 import androidx.compose.material3.AlertDialog
@@ -102,6 +103,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.apoorvdarshan.calorietracker.AppContainer
 import com.apoorvdarshan.calorietracker.models.ChatMessage
 import com.apoorvdarshan.calorietracker.ui.components.InAppCameraCaptureDialog
+import com.apoorvdarshan.calorietracker.ui.home.VoiceInputSheet
 import com.apoorvdarshan.calorietracker.ui.navigation.BottomNavDockedControlPadding
 import com.apoorvdarshan.calorietracker.ui.theme.AppColors
 import java.io.ByteArrayOutputStream
@@ -126,6 +128,7 @@ fun CoachScreen(container: AppContainer) {
     var input by remember { mutableStateOf("") }
     var attachedImageBytes by remember { mutableStateOf<ByteArray?>(null) }
     var showCameraCapture by remember { mutableStateOf(false) }
+    var showVoice by remember { mutableStateOf(false) }
     val listState = rememberLazyListState()
     var showResetConfirm by remember { mutableStateOf(false) }
     val ctx = LocalContext.current
@@ -263,6 +266,10 @@ fun CoachScreen(container: AppContainer) {
                     photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
                 },
                 onCaptureImage = { openCamera() },
+                onVoice = {
+                    hideKeyboard()
+                    showVoice = true
+                },
                 onRemoveImage = { attachedImageBytes = null },
                 onSend = { sendCurrentDraft() }
             )
@@ -276,6 +283,17 @@ fun CoachScreen(container: AppContainer) {
                 attachedImageBytes = resizedJpeg(bytes, maxDimension = 1800, quality = 86) ?: bytes
             },
             onDismiss = { showCameraCapture = false }
+        )
+    }
+
+    if (showVoice) {
+        VoiceInputSheet(
+            container = container,
+            onDismiss = { showVoice = false },
+            onSubmit = { text ->
+                showVoice = false
+                vm.send(text)
+            }
         )
     }
 
@@ -649,6 +667,7 @@ private fun InputBar(
     sending: Boolean,
     onPickImage: () -> Unit,
     onCaptureImage: () -> Unit,
+    onVoice: () -> Unit,
     onRemoveImage: () -> Unit,
     onSend: () -> Unit
 ) {
@@ -714,7 +733,8 @@ private fun InputBar(
             CoachMediaActions(
                 enabled = !sending,
                 onPickImage = onPickImage,
-                onCaptureImage = onCaptureImage
+                onCaptureImage = onCaptureImage,
+                onVoice = onVoice
             )
 
             Box(Modifier.weight(1f).padding(horizontal = 2.dp, vertical = 8.dp)) {
@@ -750,7 +770,8 @@ private fun InputBar(
 private fun CoachMediaActions(
     enabled: Boolean,
     onPickImage: () -> Unit,
-    onCaptureImage: () -> Unit
+    onCaptureImage: () -> Unit,
+    onVoice: () -> Unit
 ) {
     val shape = RoundedCornerShape(19.dp)
     Row(
@@ -782,6 +803,12 @@ private fun CoachMediaActions(
             contentDescription = "Open camera",
             enabled = enabled,
             onClick = onCaptureImage
+        )
+        CoachMediaActionButton(
+            icon = Icons.Filled.Mic,
+            contentDescription = stringResource(R.string.coach_input_voice_a11y),
+            enabled = enabled,
+            onClick = onVoice
         )
     }
 }
