@@ -160,7 +160,7 @@ enum HomeTopNutrient: String, CaseIterable, Identifiable {
     case omega3
 
     static let storageKey = "homeTopNutrients"
-    static let defaultSelection: [HomeTopNutrient] = [.protein, .carbs, .fat]
+    static let defaultSelection: [HomeTopNutrient] = [.protein, .carbs, .fat, .fiber]
 
     var id: String { rawValue }
 
@@ -299,14 +299,14 @@ enum HomeTopNutrient: String, CaseIterable, Identifiable {
         for nutrient in parsed + defaultSelection {
             guard !selection.contains(nutrient) else { continue }
             selection.append(nutrient)
-            if selection.count == 3 { break }
+            if selection.count == 4 { break }
         }
         return selection
     }
 
     static func storageValue(for nutrients: [HomeTopNutrient]) -> String {
         nutrients
-            .prefix(3)
+            .prefix(4)
             .map(\.rawValue)
             .joined(separator: ",")
     }
@@ -359,9 +359,9 @@ struct HomeNutrientPickerSheet: View {
                         .buttonStyle(.plain)
                     }
                 } header: {
-                    Text("Choose 3 Nutrients")
+                    Text("Choose 4 Nutrients")
                 } footer: {
-                    Text("Pick exactly three nutrients for the Home summary row.")
+                    Text("Pick exactly four nutrients for the Home summary row.")
                 }
                 .listRowBackground(AppColors.appCard)
             }
@@ -387,7 +387,7 @@ struct HomeNutrientPickerSheet: View {
                         dismiss()
                     }
                     .tint(AppColors.calorie)
-                    .disabled(draftSelection.count != 3)
+                    .disabled(draftSelection.count != 4)
                 }
             }
         }
@@ -396,7 +396,7 @@ struct HomeNutrientPickerSheet: View {
     private func toggle(_ nutrient: HomeTopNutrient) {
         if let index = draftSelection.firstIndex(of: nutrient) {
             draftSelection.remove(at: index)
-        } else if draftSelection.count < 3 {
+        } else if draftSelection.count < 4 {
             draftSelection.append(nutrient)
         } else {
             draftSelection.removeLast()

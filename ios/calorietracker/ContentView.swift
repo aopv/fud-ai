@@ -691,9 +691,9 @@ struct HomeView: View {
                         .listRowSeparator(.hidden)
                 }
 
-                // Top nutrient trio (vertical bars)
+                // Top nutrient row (vertical bars)
                 Section {
-                    HStack(alignment: .top, spacing: 8) {
+                    HStack(alignment: .top, spacing: 4) {
                         ForEach(homeTopNutrients) { nutrient in
                             MacroVerticalBar(
                                 label: nutrient.displayName,
