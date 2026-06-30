@@ -11,6 +11,7 @@
 		BA8E0E382F33F198007DD537 /* calorietrackerShare.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = BA8E0E372F33F198007DD537 /* calorietrackerShare.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F00D10000000000000000001 /* FudAIWatchApp.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = F00D10000000000000000007 /* FudAIWatchApp.app */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F00D10000000000000000002 /* FudAIWatchWidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F00D10000000000000000008 /* FudAIWatchWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		F00DAD000000000000000001 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = F00DAD000000000000000003 /* GoogleMobileAds */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -201,6 +202,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F00DAD000000000000000001 /* GoogleMobileAds in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -302,6 +304,7 @@
 			);
 			name = calorietracker;
 			packageProductDependencies = (
+				F00DAD000000000000000003 /* GoogleMobileAds */,
 			);
 			productName = calorietracker;
 			productReference = BA8E0DF32F33F197007DD537 /* calorietracker.app */;
@@ -503,6 +506,7 @@
 			mainGroup = BA8E0DEA2F33F197007DD537;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
+				F00DAD000000000000000002 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = BA8E0DF42F33F197007DD537 /* Products */;
@@ -1360,6 +1364,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		F00DAD000000000000000002 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googleads/swift-package-manager-google-mobile-ads.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 13.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		F00DAD000000000000000003 /* GoogleMobileAds */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F00DAD000000000000000002 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
+			productName = GoogleMobileAds;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = BA8E0DEB2F33F197007DD537 /* Project object */;
 }

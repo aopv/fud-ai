@@ -156,6 +156,7 @@ struct ContentView: View {
         }
         .tint(AppThemeColor.color(for: appThemeColorRaw).color)
         .task {
+            AdsManager.shared.start()
             await refreshAppUpdateState()
         }
     }
@@ -820,6 +821,11 @@ struct HomeView: View {
             .scrollContentBackground(.hidden)
             .background(AppColors.appBackground)
             .animation(.snappy, value: selectedDate)
+            .safeAreaInset(edge: .bottom) {
+                BannerAdView()
+                    .frame(height: 50)
+                    .frame(maxWidth: .infinity)
+            }
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
