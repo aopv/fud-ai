@@ -793,7 +793,7 @@ struct OnboardingView: View {
                     }
 
                     VStack(spacing: 8) {
-                        Text("Choose Your AI")
+                        Text("Set Up Your AI")
                             .font(.system(size: 28, weight: .bold, design: .rounded))
                             .multilineTextAlignment(.center)
 
