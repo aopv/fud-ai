@@ -487,8 +487,8 @@ struct CalorieGauge: View {
     let goal: Int
     let remaining: Int
 
-    private let diameter: CGFloat = 250
-    private let lineWidth: CGFloat = 18
+    private let diameter: CGFloat = 260
+    private let lineWidth: CGFloat = 16
 
     private var progress: Double {
         goal > 0 ? min(Double(eaten) / Double(goal), 1.0) : 0
@@ -500,10 +500,12 @@ struct CalorieGauge: View {
 
     var body: some View {
         ZStack {
-            // Top-semicircle track (9 o'clock -> 12 -> 3 o'clock)
+            // Top-semicircle track (9 o'clock -> 12 -> 3 o'clock). The .padding keeps the stroke
+            // inside the frame so the arc ends aren't clipped flat on each side.
             Circle()
                 .trim(from: 0.5, to: 1.0)
                 .stroke(AppColors.calorie.opacity(0.12), style: dashedStroke)
+                .padding(lineWidth / 2)
 
             // Progress sweep
             Circle()
@@ -513,10 +515,11 @@ struct CalorieGauge: View {
                                    startPoint: .leading, endPoint: .trailing),
                     style: dashedStroke
                 )
+                .padding(lineWidth / 2)
                 .shadow(color: AppColors.calorie.opacity(0.35), radius: 6, y: 2)
                 .animation(.spring(response: 0.8, dampingFraction: 0.78), value: progress)
 
-            // Centered readout
+            // Readout, lifted up into the dome so nothing is cropped at the bottom.
             VStack(spacing: 2) {
                 Text("Calories")
                     .font(.system(.caption, design: .rounded, weight: .semibold))
@@ -525,7 +528,7 @@ struct CalorieGauge: View {
                     .foregroundStyle(.secondary)
 
                 Text("\(eaten)")
-                    .font(.system(size: 56, weight: .bold, design: .rounded))
+                    .font(.system(size: 54, weight: .bold, design: .rounded))
                     .foregroundStyle(
                         LinearGradient(colors: AppColors.calorieGradient,
                                        startPoint: .topLeading, endPoint: .bottomTrailing)
@@ -543,10 +546,10 @@ struct CalorieGauge: View {
                 }
                 .foregroundStyle(AppColors.calorie)
             }
-            .offset(y: -diameter * 0.04)
+            .offset(y: -diameter * 0.14)
         }
         .frame(width: diameter, height: diameter)
-        .frame(height: diameter * 0.62, alignment: .top)
+        .frame(height: diameter * 0.58, alignment: .top)
         .clipped()
     }
 }
