@@ -691,11 +691,11 @@ struct HomeView: View {
                         .listRowSeparator(.hidden)
                 }
 
-                // Top nutrient trio (liquid bowls)
+                // Top nutrient trio (vertical bars)
                 Section {
                     HStack(alignment: .top, spacing: 8) {
                         ForEach(homeTopNutrients) { nutrient in
-                            MacroLiquidFill(
+                            MacroVerticalBar(
                                 label: nutrient.displayName,
                                 current: nutrient.value(from: foodStore, on: selectedDate),
                                 goal: nutrient.goal(for: userProfile, optionalGoals: optionalNutrientGoals),

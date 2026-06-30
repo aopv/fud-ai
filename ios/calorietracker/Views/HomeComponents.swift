@@ -554,75 +554,44 @@ struct CalorieGauge: View {
     }
 }
 
-/// Liquid level inside the macro bowl — a sine wave at the fill line, filled below.
-struct WaterWave: Shape {
-    var fill: CGFloat   // 0...1 (0 = empty, 1 = full)
-    var phase: CGFloat
-    var waveHeight: CGFloat = 3
-
-    var animatableData: AnimatablePair<CGFloat, CGFloat> {
-        get { AnimatablePair(fill, phase) }
-        set { fill = newValue.first; phase = newValue.second }
-    }
-
-    func path(in rect: CGRect) -> Path {
-        var path = Path()
-        let level = rect.height * (1 - fill)
-        path.move(to: CGPoint(x: 0, y: level))
-        for x in stride(from: 0, through: rect.width, by: 1) {
-            let y = level + waveHeight * sin((x / rect.width) * 2 * .pi + phase)
-            path.addLine(to: CGPoint(x: x, y: y))
-        }
-        path.addLine(to: CGPoint(x: rect.width, y: rect.height))
-        path.addLine(to: CGPoint(x: 0, y: rect.height))
-        path.closeSubpath()
-        return path
-    }
-}
-
-/// A single macro shown as a circular "bowl" that fills with accent liquid (with a gentle moving
-/// wave) toward the goal. Value centered, name + goal beneath.
-struct MacroLiquidFill: View {
+/// A single macro shown as a vertical fill bar (rounded tube) that fills bottom-up toward the goal.
+/// Value above, name + goal beneath.
+struct MacroVerticalBar: View {
     let label: String
     let current: Double
     let goal: Double
     let unit: String
     let gradient: [Color]
 
-    private let size: CGFloat = 82
-    @State private var phase: CGFloat = 0
+    private let barWidth: CGFloat = 16
+    private let barHeight: CGFloat = 74
 
-    private var fill: CGFloat {
+    private var progress: CGFloat {
         goal > 0 ? CGFloat(min(current / goal, 1.0)) : 0
     }
 
     var body: some View {
-        VStack(spacing: 8) {
-            ZStack {
-                Circle()
-                    .fill(AppColors.calorie.opacity(0.10))
+        VStack(spacing: 10) {
+            Text(MacroValueFormatter.string(current))
+                .font(.system(.title3, design: .rounded, weight: .bold))
+                .foregroundStyle(
+                    LinearGradient(colors: gradient, startPoint: .top, endPoint: .bottom)
+                )
+                .contentTransition(.numericText())
+                .animation(.snappy, value: current)
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
 
-                WaterWave(fill: fill, phase: phase)
-                    .fill(LinearGradient(colors: gradient, startPoint: .top, endPoint: .bottom))
-                    .clipShape(Circle())
-                    .animation(.spring(response: 0.8, dampingFraction: 0.8), value: fill)
+            ZStack(alignment: .bottom) {
+                Capsule()
+                    .fill(AppColors.calorie.opacity(0.12))
+                    .frame(width: barWidth, height: barHeight)
 
-                Circle()
-                    .strokeBorder(AppColors.calorie.opacity(0.25), lineWidth: 1.5)
-
-                Text(MacroValueFormatter.string(current))
-                    .font(.system(.headline, design: .rounded, weight: .bold))
-                    .foregroundStyle(.white)
-                    .shadow(color: .black.opacity(0.3), radius: 2, y: 1)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.6)
-                    .padding(6)
-            }
-            .frame(width: size, height: size)
-            .onAppear {
-                withAnimation(.linear(duration: 2.6).repeatForever(autoreverses: false)) {
-                    phase = .pi * 2
-                }
+                Capsule()
+                    .fill(LinearGradient(colors: gradient, startPoint: .bottom, endPoint: .top))
+                    .frame(width: barWidth, height: max(barWidth, barHeight * progress))
+                    .shadow(color: (gradient.first ?? AppColors.calorie).opacity(0.4), radius: 5)
+                    .animation(.spring(response: 0.8, dampingFraction: 0.78), value: progress)
             }
 
             VStack(spacing: 1) {
