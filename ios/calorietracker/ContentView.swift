@@ -823,6 +823,7 @@ struct HomeView: View {
             .scrollContentBackground(.hidden)
             .background(AppColors.appBackground)
             .animation(.snappy, value: selectedDate)
+            .contentMargins(.bottom, 96, for: .scrollContent)
             .safeAreaInset(edge: .top) {
                 BannerAdView()
                     .frame(height: 50)
@@ -830,9 +831,8 @@ struct HomeView: View {
             }
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Menu {
+            .overlay(alignment: .bottomTrailing) {
+                Menu {
                             Button(action: {
                                 cameraMode = .snapFood
                                 pendingSecondCameraImage = nil
@@ -913,6 +913,10 @@ struct HomeView: View {
                             }
                         } label: {
                             Image(systemName: "plus")
+                                .font(.system(size: 26, weight: .semibold))
+                                .foregroundStyle(.white)
+                                .frame(width: 60, height: 60)
+                                .background(AppColors.calorie, in: Circle())
                         }
                         .popover(isPresented: $showTextPopover) {
                             TextFoodInputView(
@@ -983,7 +987,7 @@ struct HomeView: View {
                             )
                             .presentationCompactAdaptation(.popover)
                         }
-                }
+                        .padding(24)
             }
             .fullScreenCover(isPresented: $showCamera) {
                 CameraView(
