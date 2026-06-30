@@ -338,7 +338,6 @@ class FoodStore {
         saveEntries()
         onEntriesChanged?()
         onEntryAdded?(entry)
-        NotificationCenter.default.post(name: .fudMealLogged, object: nil)
     }
 
     func updateEntry(_ entry: FoodEntry) {
