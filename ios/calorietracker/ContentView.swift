@@ -796,7 +796,6 @@ struct HomeView: View {
                         } header: {
                             HStack(alignment: .center) {
                                 Label(group.meal.displayName, systemImage: group.meal.icon)
-                                Spacer()
                                 if group.id == mealGroups.first?.id {
                                     Menu {
                                         Picker("Food Log Order", selection: $foodLogSortOrderRaw) {
@@ -814,7 +813,9 @@ struct HomeView: View {
                                     }
                                     .tint(AppColors.calorie)
                                     .textCase(nil)
+                                    .padding(.leading, 8)
                                 }
+                                Spacer()
                             }
                         }
                     }
@@ -823,7 +824,7 @@ struct HomeView: View {
             .scrollContentBackground(.hidden)
             .background(AppColors.appBackground)
             .animation(.snappy, value: selectedDate)
-            .contentMargins(.bottom, 116, for: .scrollContent)
+            .contentMargins(.bottom, 96, for: .scrollContent)
             .safeAreaInset(edge: .top) {
                 BannerAdView()
                     .frame(height: 50)
@@ -987,8 +988,7 @@ struct HomeView: View {
                             )
                             .presentationCompactAdaptation(.popover)
                         }
-                        .padding(.trailing, 24)
-                        .padding(.bottom, 56)
+                        .padding(24)
             }
             .fullScreenCover(isPresented: $showCamera) {
                 CameraView(
