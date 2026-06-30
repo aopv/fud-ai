@@ -7,8 +7,12 @@ struct BannerAdView: UIViewRepresentable {
     func makeUIView(context: Context) -> BannerView {
         let banner = BannerView(adSize: AdSizeBanner)
         banner.adUnitID = AdsConfig.bannerUnitID
-        banner.rootViewController = AdsManager.topViewController()
-        banner.load(Request())
+        // Defer the load until the banner is in the hierarchy and a root view controller is
+        // available — otherwise (e.g. inside a toolbar) the ad never renders.
+        DispatchQueue.main.async {
+            banner.rootViewController = AdsManager.topViewController()
+            banner.load(Request())
+        }
         return banner
     }
 
