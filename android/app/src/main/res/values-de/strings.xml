@@ -411,6 +411,7 @@
     <string name="coach_title">Coach</string>
     <string name="coach_reset_chat_a11y">Chat zurücksetzen</string>
     <string name="coach_send_a11y">Senden</string>
+    <string name="coach_input_voice_a11y">Spracheingabe</string>
     <string name="coach_input_placeholder">Coach fragen…</string>
     <string name="coach_empty_title">Frag deinen Coach</string>
     <string name="coach_empty_subtitle">Dein Coach sieht dein Gewichtsverlauf, deine Kalorien und Ziele. Frag nach erwartetem Gewicht, was du essen solltest oder wie du dein Ziel erreichst.</string>

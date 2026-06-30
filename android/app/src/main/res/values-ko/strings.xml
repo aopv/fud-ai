@@ -411,6 +411,7 @@
     <string name="coach_title">코치</string>
     <string name="coach_reset_chat_a11y">채팅 초기화</string>
     <string name="coach_send_a11y">보내기</string>
+    <string name="coach_input_voice_a11y">음성 입력</string>
     <string name="coach_input_placeholder">코치에게 질문…</string>
     <string name="coach_empty_title">코치에게 물어보세요</string>
     <string name="coach_empty_subtitle">코치는 체중 기록, 칼로리 로그, 목표를 볼 수 있어요. 예상 체중, 무엇을 먹을지, 목표 달성 방법을 물어보세요.</string>

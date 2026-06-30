@@ -411,6 +411,7 @@
     <string name="coach_title">Coach</string>
     <string name="coach_reset_chat_a11y">Chat resetten</string>
     <string name="coach_send_a11y">Verstuur</string>
+    <string name="coach_input_voice_a11y">Spraakinvoer</string>
     <string name="coach_input_placeholder">Vraag de coach…</string>
     <string name="coach_empty_title">Vraag je coach</string>
     <string name="coach_empty_subtitle">Je coach ziet je gewichtsgeschiedenis, calorielogboek en doelen. Vraag naar verwacht gewicht, wat je moet eten of hoe je je doel haalt.</string>

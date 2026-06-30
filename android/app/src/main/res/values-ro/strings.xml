@@ -411,6 +411,7 @@
     <string name="coach_title">Antrenor</string>
     <string name="coach_reset_chat_a11y">Resetează chatul</string>
     <string name="coach_send_a11y">Trimite</string>
+    <string name="coach_input_voice_a11y">Introducere vocală</string>
     <string name="coach_input_placeholder">Întreabă Antrenorul…</string>
     <string name="coach_empty_title">Întreabă-ți Antrenorul</string>
     <string name="coach_empty_subtitle">Antrenorul tău îți vede istoricul greutății, jurnalul de calorii și obiectivele. Întreabă despre greutatea estimată, ce să mănânci sau cum să îți atingi ținta.</string>

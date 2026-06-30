@@ -411,6 +411,7 @@
     <string name="coach_title">المدرب</string>
     <string name="coach_reset_chat_a11y">إعادة تعيين المحادثة</string>
     <string name="coach_send_a11y">إرسال</string>
+    <string name="coach_input_voice_a11y">الإدخال الصوتي</string>
     <string name="coach_input_placeholder">اسأل المدرب…</string>
     <string name="coach_empty_title">اسأل مدربك</string>
     <string name="coach_empty_subtitle">يمكن لمدربك الاطلاع على سجل وزنك وسعراتك الحرارية وأهدافك. اسأل عن الوزن المتوقع أو ماذا تأكل أو كيف تحقق هدفك.</string>
