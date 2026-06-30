@@ -554,8 +554,8 @@ struct CalorieGauge: View {
     }
 }
 
-/// A single macro shown as a vertical fill bar (rounded tube) that fills bottom-up toward the goal.
-/// Value above, name + goal beneath.
+/// A single macro shown as a segmented vertical level meter (discrete blocks filling bottom-up,
+/// echoing the calorie gauge's segmented style). Value above, name + goal beneath.
 struct MacroVerticalBar: View {
     let label: String
     let current: Double
@@ -563,11 +563,28 @@ struct MacroVerticalBar: View {
     let unit: String
     let gradient: [Color]
 
-    private let barWidth: CGFloat = 16
-    private let barHeight: CGFloat = 74
+    private let segments = 11
+    private let segWidth: CGFloat = 22
+    private let segHeight: CGFloat = 5
+    private let spacing: CGFloat = 4
 
-    private var progress: CGFloat {
-        goal > 0 ? CGFloat(min(current / goal, 1.0)) : 0
+    private var progress: Double {
+        goal > 0 ? min(current / goal, 1.0) : 0
+    }
+    private var filled: Int {
+        max(0, min(segments, Int((Double(segments) * progress).rounded())))
+    }
+    private var totalHeight: CGFloat {
+        CGFloat(segments) * segHeight + CGFloat(segments - 1) * spacing
+    }
+
+    private func segmentColumn(@ViewBuilder _ style: (Int) -> some View) -> some View {
+        VStack(spacing: spacing) {
+            ForEach(0..<segments, id: \.self) { i in
+                style(i)
+                    .frame(width: segWidth, height: segHeight)
+            }
+        }
     }
 
     var body: some View {
@@ -582,16 +599,23 @@ struct MacroVerticalBar: View {
                 .lineLimit(1)
                 .minimumScaleFactor(0.6)
 
-            ZStack(alignment: .bottom) {
-                Capsule()
-                    .fill(AppColors.calorie.opacity(0.12))
-                    .frame(width: barWidth, height: barHeight)
-
-                Capsule()
-                    .fill(LinearGradient(colors: gradient, startPoint: .bottom, endPoint: .top))
-                    .frame(width: barWidth, height: max(barWidth, barHeight * progress))
+            ZStack {
+                // Dim track (all segments)
+                segmentColumn { _ in
+                    RoundedRectangle(cornerRadius: 2, style: .continuous)
+                        .fill(AppColors.calorie.opacity(0.12))
+                }
+                // Gradient flowing through the lit (bottom) segments
+                LinearGradient(colors: gradient, startPoint: .bottom, endPoint: .top)
+                    .frame(width: segWidth, height: totalHeight)
+                    .mask(
+                        segmentColumn { i in
+                            RoundedRectangle(cornerRadius: 2, style: .continuous)
+                                .opacity((segments - 1 - i) < filled ? 1 : 0)
+                        }
+                    )
                     .shadow(color: (gradient.first ?? AppColors.calorie).opacity(0.4), radius: 5)
-                    .animation(.spring(response: 0.8, dampingFraction: 0.78), value: progress)
+                    .animation(.spring(response: 0.8, dampingFraction: 0.78), value: filled)
             }
 
             VStack(spacing: 1) {
