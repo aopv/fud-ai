@@ -280,14 +280,14 @@ private fun HomeTopNutrientPickerDialog(
         draft = if (nutrient in draft) {
             if (draft.size <= 1) draft else draft - nutrient
         } else {
-            if (draft.size >= 3) draft else draft + nutrient
+            if (draft.size >= 4) draft else draft + nutrient
         }
     }
 
     FudGlassDialog(onDismissRequest = onDismiss) {
         Text("Home Nutrient Cards", fontSize = 22.sp, fontWeight = FontWeight.Bold)
         Text(
-            "Choose up to 3 cards for the top of Home.",
+            "Choose up to 4 cards for the top of Home.",
             fontSize = 14.sp,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.62f)
         )

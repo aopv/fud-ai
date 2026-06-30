@@ -84,7 +84,7 @@ enum class HomeTopNutrient(
     }
 
     companion object {
-        val DefaultSelection = listOf(PROTEIN, CARBS, FAT)
+        val DefaultSelection = listOf(PROTEIN, CARBS, FAT, FIBER)
         val DefaultStorageValue = DefaultSelection.joinToString(",") { it.storageKey }
 
         fun fromStorage(raw: String?): List<HomeTopNutrient> {
@@ -104,7 +104,7 @@ enum class HomeTopNutrient(
         fun normalized(selection: List<HomeTopNutrient>): List<HomeTopNutrient> =
             (selection.distinct() + DefaultSelection)
                 .distinct()
-                .take(3)
+                .take(4)
     }
 }
 
