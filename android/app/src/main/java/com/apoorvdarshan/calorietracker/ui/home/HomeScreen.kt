@@ -19,6 +19,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -273,57 +274,11 @@ fun HomeScreen(container: AppContainer) {
                 actions = {}
             )
         },
-        floatingActionButton = {
-            Box(modifier = Modifier.padding(end = 4.dp)) {
-                Box(
-                    modifier = Modifier
-                        .size(60.dp)
-                        .shadow(8.dp, CircleShape, ambientColor = AppColors.Calorie.copy(alpha = 0.3f), spotColor = AppColors.Calorie.copy(alpha = 0.3f))
-                        .clip(CircleShape)
-                        .background(Brush.verticalGradient(listOf(AppColors.CalorieStart, AppColors.CalorieEnd)))
-                        .clickable { showAddMenu = true },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        Icons.Filled.Add,
-                        contentDescription = "Add food",
-                        tint = Color.White,
-                        modifier = Modifier.size(30.dp)
-                    )
-                }
-                DropdownMenu(
-                    expanded = showAddMenu,
-                    onDismissRequest = { showAddMenu = false },
-                    modifier = Modifier.width(248.dp)
-                ) {
-                    MenuRow(label = "Camera", icon = Icons.Filled.CameraAlt) { showAddMenu = false; openCamera() }
-                    MenuRow(label = "Camera + Note", icon = Icons.AutoMirrored.Filled.Note) { showAddMenu = false; openCamera(withNote = true) }
-                    MenuRow(label = "Camera + Camera", icon = Icons.Filled.AddAPhoto) { showAddMenu = false; openCamera(withSecondPhoto = true) }
-                    MenuRow(label = "Nutrition Label", icon = Icons.Filled.QrCodeScanner) { showAddMenu = false; openCamera() }
-                    MenuRow(label = "Barcode", icon = Icons.Filled.QrCodeScanner) { showAddMenu = false; openBarcodeScanner() }
-                    MenuRow(label = "From Photos", icon = Icons.Filled.PhotoLibrary) {
-                        showAddMenu = false
-                        pendingPickedPhotoWantsNote = false
-                        photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                    }
-                    MenuRow(label = "From Photos + Note", icon = Icons.AutoMirrored.Filled.Note) {
-                        showAddMenu = false
-                        pendingPickedPhotoWantsNote = true
-                        photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                    }
-                    MenuRow(label = "Text Input", icon = Icons.Filled.Edit) { showAddMenu = false; showText = true }
-                    MenuRow(label = "Voice", icon = Icons.Filled.Mic) { showAddMenu = false; showVoice = true }
-                    MenuRow(label = "Manual Entry", icon = Icons.Filled.Calculate) { showAddMenu = false; showManual = true }
-                    MenuRow(label = "Saved Meals", icon = Icons.Filled.Bookmark) { showAddMenu = false; showSaved = true }
-                    MenuRow(label = "Copy from Day", icon = Icons.Filled.CalendarMonth) { showAddMenu = false; showCopyFromDay = true }
-                }
-            }
-        },
     ) { padding ->
+        Box(Modifier.fillMaxSize().padding(padding)) {
         LazyColumn(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(padding),
+                .fillMaxSize(),
             contentPadding = androidx.compose.foundation.layout.PaddingValues(top = 8.dp, bottom = BottomNavScrollPadding + 72.dp)
         ) {
             // Week strip — verbatim port of WeekEnergyStrip in HomeComponents.swift,
@@ -449,6 +404,61 @@ fun HomeScreen(container: AppContainer) {
                     }
                 }
             }
+        }
+
+        // Floating "+" add button — overlaid bottom-right and lifted above the docked
+        // bottom nav bar. The parent Scaffold renders content full-screen behind the
+        // bar, so the Scaffold FAB slot would sit hidden underneath it. Mirrors the iOS
+        // ContentView FAB: .overlay(alignment: .bottomTrailing) + .padding(.bottom).
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .navigationBarsPadding()
+                .padding(end = 24.dp, bottom = 100.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(60.dp)
+                    .shadow(8.dp, CircleShape, ambientColor = AppColors.Calorie.copy(alpha = 0.3f), spotColor = AppColors.Calorie.copy(alpha = 0.3f))
+                    .clip(CircleShape)
+                    .background(Brush.verticalGradient(listOf(AppColors.CalorieStart, AppColors.CalorieEnd)))
+                    .clickable { showAddMenu = true },
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    Icons.Filled.Add,
+                    contentDescription = "Add food",
+                    tint = Color.White,
+                    modifier = Modifier.size(30.dp)
+                )
+            }
+            DropdownMenu(
+                expanded = showAddMenu,
+                onDismissRequest = { showAddMenu = false },
+                modifier = Modifier.width(248.dp)
+            ) {
+                MenuRow(label = "Camera", icon = Icons.Filled.CameraAlt) { showAddMenu = false; openCamera() }
+                MenuRow(label = "Camera + Note", icon = Icons.AutoMirrored.Filled.Note) { showAddMenu = false; openCamera(withNote = true) }
+                MenuRow(label = "Camera + Camera", icon = Icons.Filled.AddAPhoto) { showAddMenu = false; openCamera(withSecondPhoto = true) }
+                MenuRow(label = "Nutrition Label", icon = Icons.Filled.QrCodeScanner) { showAddMenu = false; openCamera() }
+                MenuRow(label = "Barcode", icon = Icons.Filled.QrCodeScanner) { showAddMenu = false; openBarcodeScanner() }
+                MenuRow(label = "From Photos", icon = Icons.Filled.PhotoLibrary) {
+                    showAddMenu = false
+                    pendingPickedPhotoWantsNote = false
+                    photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                }
+                MenuRow(label = "From Photos + Note", icon = Icons.AutoMirrored.Filled.Note) {
+                    showAddMenu = false
+                    pendingPickedPhotoWantsNote = true
+                    photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                }
+                MenuRow(label = "Text Input", icon = Icons.Filled.Edit) { showAddMenu = false; showText = true }
+                MenuRow(label = "Voice", icon = Icons.Filled.Mic) { showAddMenu = false; showVoice = true }
+                MenuRow(label = "Manual Entry", icon = Icons.Filled.Calculate) { showAddMenu = false; showManual = true }
+                MenuRow(label = "Saved Meals", icon = Icons.Filled.Bookmark) { showAddMenu = false; showSaved = true }
+                MenuRow(label = "Copy from Day", icon = Icons.Filled.CalendarMonth) { showAddMenu = false; showCopyFromDay = true }
+            }
+        }
         }
     }
 
