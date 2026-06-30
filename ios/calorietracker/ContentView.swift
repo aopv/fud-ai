@@ -823,7 +823,7 @@ struct HomeView: View {
             .scrollContentBackground(.hidden)
             .background(AppColors.appBackground)
             .animation(.snappy, value: selectedDate)
-            .contentMargins(.bottom, 96, for: .scrollContent)
+            .contentMargins(.bottom, 116, for: .scrollContent)
             .safeAreaInset(edge: .top) {
                 BannerAdView()
                     .frame(height: 50)
@@ -987,7 +987,8 @@ struct HomeView: View {
                             )
                             .presentationCompactAdaptation(.popover)
                         }
-                        .padding(24)
+                        .padding(.trailing, 24)
+                        .padding(.bottom, 56)
             }
             .fullScreenCover(isPresented: $showCamera) {
                 CameraView(
