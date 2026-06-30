@@ -554,47 +554,57 @@ struct CalorieGauge: View {
     }
 }
 
-/// A small circular progress ring for a single macro, value centered, name + goal below.
-struct MacroMiniRing: View {
+/// A single macro shown as a mini semicircle gauge (matching the calorie speedometer), with the
+/// value inside the dome and the name + goal beneath.
+struct MacroMiniGauge: View {
     let label: String
     let current: Double
     let goal: Double
     let unit: String
     let gradient: [Color]
 
+    private let size: CGFloat = 92
+    private let lineWidth: CGFloat = 9
+
     private var progress: Double {
         goal > 0 ? min(current / goal, 1.0) : 0
     }
 
-    private var ringGradient: AngularGradient {
-        AngularGradient(
-            gradient: Gradient(colors: gradient + [gradient.first ?? AppColors.calorie]),
-            center: .center
-        )
+    private var dashedStroke: StrokeStyle {
+        StrokeStyle(lineWidth: lineWidth, lineCap: .butt, dash: [2.5, 3.5])
     }
 
     var body: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: 8) {
             ZStack {
                 Circle()
-                    .stroke(AppColors.calorie.opacity(0.12),
-                            style: StrokeStyle(lineWidth: 6, lineCap: .round))
+                    .trim(from: 0.5, to: 1.0)
+                    .stroke(AppColors.calorie.opacity(0.12), style: dashedStroke)
+                    .padding(lineWidth / 2)
 
                 Circle()
-                    .trim(from: 0, to: progress)
-                    .stroke(ringGradient,
-                            style: StrokeStyle(lineWidth: 6, lineCap: .round))
-                    .rotationEffect(.degrees(-90))
+                    .trim(from: 0.5, to: 0.5 + 0.5 * progress)
+                    .stroke(
+                        LinearGradient(colors: gradient, startPoint: .leading, endPoint: .trailing),
+                        style: dashedStroke
+                    )
+                    .padding(lineWidth / 2)
                     .animation(.spring(response: 0.7, dampingFraction: 0.8), value: progress)
 
                 Text(MacroValueFormatter.string(current))
-                    .font(.system(.subheadline, design: .rounded, weight: .bold))
-                    .foregroundStyle(.primary)
+                    .font(.system(.title3, design: .rounded, weight: .bold))
+                    .foregroundStyle(
+                        LinearGradient(colors: gradient, startPoint: .top, endPoint: .bottom)
+                    )
+                    .contentTransition(.numericText())
+                    .animation(.snappy, value: current)
                     .lineLimit(1)
                     .minimumScaleFactor(0.6)
-                    .padding(8)
+                    .offset(y: -size * 0.14)
             }
-            .frame(width: 64, height: 64)
+            .frame(width: size, height: size)
+            .frame(height: size * 0.58, alignment: .top)
+            .clipped()
 
             VStack(spacing: 1) {
                 Text(LocalizedDisplayText.text(label))

@@ -691,11 +691,11 @@ struct HomeView: View {
                         .listRowSeparator(.hidden)
                 }
 
-                // Top nutrient trio (rings)
+                // Top nutrient trio (mini gauges)
                 Section {
                     HStack(alignment: .top, spacing: 8) {
                         ForEach(homeTopNutrients) { nutrient in
-                            MacroMiniRing(
+                            MacroMiniGauge(
                                 label: nutrient.displayName,
                                 current: nutrient.value(from: foodStore, on: selectedDate),
                                 goal: nutrient.goal(for: userProfile, optionalGoals: optionalNutrientGoals),
