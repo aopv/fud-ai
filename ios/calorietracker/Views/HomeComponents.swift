@@ -578,15 +578,6 @@ struct MacroVerticalBar: View {
         CGFloat(segments) * segHeight + CGFloat(segments - 1) * spacing
     }
 
-    private func segmentColumn(@ViewBuilder _ style: (Int) -> some View) -> some View {
-        VStack(spacing: spacing) {
-            ForEach(0..<segments, id: \.self) { i in
-                style(i)
-                    .frame(width: segWidth, height: segHeight)
-            }
-        }
-    }
-
     var body: some View {
         VStack(spacing: 10) {
             Text(MacroValueFormatter.string(current))
@@ -601,17 +592,23 @@ struct MacroVerticalBar: View {
 
             ZStack {
                 // Dim track (all segments)
-                segmentColumn { _ in
-                    RoundedRectangle(cornerRadius: 2, style: .continuous)
-                        .fill(AppColors.calorie.opacity(0.12))
+                VStack(spacing: spacing) {
+                    ForEach(0..<segments, id: \.self) { _ in
+                        RoundedRectangle(cornerRadius: 2, style: .continuous)
+                            .fill(AppColors.calorie.opacity(0.12))
+                            .frame(width: segWidth, height: segHeight)
+                    }
                 }
                 // Gradient flowing through the lit (bottom) segments
                 LinearGradient(colors: gradient, startPoint: .bottom, endPoint: .top)
                     .frame(width: segWidth, height: totalHeight)
                     .mask(
-                        segmentColumn { i in
-                            RoundedRectangle(cornerRadius: 2, style: .continuous)
-                                .opacity((segments - 1 - i) < filled ? 1 : 0)
+                        VStack(spacing: spacing) {
+                            ForEach(0..<segments, id: \.self) { i in
+                                RoundedRectangle(cornerRadius: 2, style: .continuous)
+                                    .frame(width: segWidth, height: segHeight)
+                                    .opacity((segments - 1 - i) < filled ? 1 : 0)
+                            }
                         }
                     )
                     .shadow(color: (gradient.first ?? AppColors.calorie).opacity(0.4), radius: 5)
