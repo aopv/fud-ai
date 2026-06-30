@@ -2648,6 +2648,11 @@ struct ProgressTabView: View {
                 .padding(.vertical)
             }
             .background(AppColors.appBackground)
+            .safeAreaInset(edge: .bottom) {
+                BannerAdView()
+                    .frame(height: 50)
+                    .frame(maxWidth: .infinity)
+            }
             .navigationBarHidden(true)
             .sheet(isPresented: $showLogWeight) {
                 LogWeightSheet(

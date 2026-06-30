@@ -5,21 +5,21 @@ struct AnalyzingView: View {
     var message: String = "Analyzing your food..."
 
     var body: some View {
-        VStack(spacing: 20) {
-            Spacer(minLength: 12)
+        VStack(spacing: 24) {
+            Spacer()
 
             if let image {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFit()
-                    .frame(maxWidth: 200, maxHeight: 200)
+                    .frame(maxWidth: 250, maxHeight: 250)
                     .clipShape(RoundedRectangle(cornerRadius: 16))
                     .shadow(radius: 8)
             } else {
                 Image(systemName: "text.magnifyingglass")
-                    .font(.system(size: 56))
+                    .font(.system(size: 64))
                     .foregroundStyle(AppColors.calorie)
-                    .frame(maxWidth: 200, maxHeight: 200)
+                    .frame(maxWidth: 250, maxHeight: 250)
             }
 
             ProgressView()
@@ -30,12 +30,7 @@ struct AnalyzingView: View {
                 .font(.headline)
                 .foregroundStyle(AppColors.calorie)
 
-            Spacer(minLength: 16)
-
-            // Ad shown while the AI works — the user is already waiting, so it's unobtrusive.
-            BannerAdView(unitID: AdsConfig.analyzingUnitID, format: .mediumRectangle)
-                .frame(width: 300, height: 250)
-                .padding(.bottom, 24)
+            Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.background)
