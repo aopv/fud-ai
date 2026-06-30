@@ -826,7 +826,7 @@ struct HomeView: View {
             .scrollContentBackground(.hidden)
             .background(AppColors.appBackground)
             .animation(.snappy, value: selectedDate)
-            .safeAreaInset(edge: .bottom) {
+            .safeAreaInset(edge: .top) {
                 BannerAdView()
                     .frame(height: 50)
                     .frame(maxWidth: .infinity)
