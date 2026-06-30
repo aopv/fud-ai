@@ -163,9 +163,9 @@ fun CoachScreen(container: AppContainer) {
         }
     }
 
-    fun sendCurrentDraft() {
+    fun sendCurrentDraft(textOverride: String? = null) {
         val image = attachedImageBytes
-        val trimmed = input.trim()
+        val trimmed = (textOverride ?: input).trim()
         if (trimmed.isEmpty() && image == null) return
         if (ui.sending) return
         val imageForAi = image?.let { resizedJpeg(it, maxDimension = 1600, quality = 78) ?: it }
@@ -292,7 +292,7 @@ fun CoachScreen(container: AppContainer) {
             onDismiss = { showVoice = false },
             onSubmit = { text ->
                 showVoice = false
-                vm.send(text)
+                sendCurrentDraft(text)
             }
         )
     }
