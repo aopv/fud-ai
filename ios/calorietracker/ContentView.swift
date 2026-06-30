@@ -679,16 +679,56 @@ struct HomeView: View {
                     .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
                 }
 
-                // Calorie hero + macro trio (unified premium card)
+                // Calorie hero
                 Section {
-                    HomeHeroCard(
-                        eaten: selectedCalories,
-                        goal: calorieGoal,
-                        remaining: caloriesRemaining,
-                        onViewMore: { showNutritionDetail = true }
-                    ) {
+                    VStack(spacing: 20) {
+                        VStack(spacing: 4) {
+                            Text("\(selectedCalories)")
+                                .font(.system(size: 72, weight: .bold, design: .rounded))
+                                .foregroundStyle(
+                                    LinearGradient(colors: AppColors.calorieGradient, startPoint: .topLeading, endPoint: .bottomTrailing)
+                                )
+                                .contentTransition(.numericText())
+                                .animation(.snappy, value: selectedCalories)
+
+                            Text("of \(calorieGoal) kcal")
+                                .font(.system(.callout, design: .rounded, weight: .medium))
+                                .foregroundStyle(.tertiary)
+                        }
+
+                        GeometryReader { geo in
+                            ZStack(alignment: .leading) {
+                                Capsule()
+                                    .fill(AppColors.calorie.opacity(0.10))
+                                    .frame(height: 10)
+
+                                Capsule()
+                                    .fill(LinearGradient(colors: AppColors.calorieGradient, startPoint: .leading, endPoint: .trailing))
+                                    .frame(width: max(10, geo.size.width * min(Double(selectedCalories) / Double(calorieGoal), 1.0)), height: 10)
+                                    .shadow(color: AppColors.calorie.opacity(0.35), radius: 8, y: 3)
+                                    .animation(.spring(response: 0.8, dampingFraction: 0.75), value: selectedCalories)
+                            }
+                        }
+                        .frame(height: 10)
+                        .padding(.horizontal, 24)
+
+                        Text("\(caloriesRemaining) left")
+                            .font(.system(.footnote, design: .rounded, weight: .medium))
+                            .foregroundStyle(.secondary)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 20)
+                    .contentShape(Rectangle())
+                    .simultaneousGesture(daySwipeGesture)
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                }
+
+                // Top nutrient trio
+                Section {
+                    HStack(spacing: 20) {
                         ForEach(homeTopNutrients) { nutrient in
-                            HomeMacroColumn(
+                            MacroCard(
                                 label: nutrient.displayName,
                                 current: nutrient.value(from: foodStore, on: selectedDate),
                                 goal: nutrient.goal(for: userProfile, optionalGoals: optionalNutrientGoals),
@@ -697,11 +737,27 @@ struct HomeView: View {
                             )
                         }
                     }
+                    .padding(.vertical, 8)
                     .contentShape(Rectangle())
                     .simultaneousGesture(daySwipeGesture)
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
-                    .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+
+                    Button {
+                        showNutritionDetail = true
+                    } label: {
+                        HStack {
+                            Spacer()
+                            Text("View More")
+                                .font(.system(.subheadline, design: .rounded, weight: .medium))
+                            Image(systemName: "chevron.right")
+                                .font(.caption2)
+                            Spacer()
+                        }
+                        .foregroundStyle(AppColors.calorie.opacity(0.6))
+                    }
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
                 }
 
                 // Food list
