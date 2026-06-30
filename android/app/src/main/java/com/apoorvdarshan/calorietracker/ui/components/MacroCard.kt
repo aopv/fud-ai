@@ -60,7 +60,7 @@ fun MacroCard(
             MacroValueFormatter.string(current),
             style = TextStyle(
                 brush = Brush.verticalGradient(gradientColors),
-                fontSize = 22.sp,
+                fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
             ),
             maxLines = 1
@@ -89,25 +89,33 @@ fun MacroCard(
                         spotColor = firstColor.copy(alpha = 0.4f)
                     )
                     .clip(CircleShape)
-                    .background(Brush.verticalGradient(gradientColors))
+                    // iOS fills bottom-up with the base color at the BOTTOM
+                    // (LinearGradient startPoint: .bottom). verticalGradient puts the
+                    // first color at the top, so reverse to match.
+                    .background(Brush.verticalGradient(gradientColors.reversed()))
             )
         }
 
-        // Name
-        Text(
-            label,
-            fontSize = 12.sp,
-            fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.85f),
-            maxLines = 1
-        )
-        // Goal
-        Text(
-            "/$goal$unit",
-            fontSize = 11.sp,
-            fontWeight = FontWeight.Medium,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
-            maxLines = 1
-        )
+        // Name + goal — a tight pair (iOS groups them in an inner VStack(spacing: 1)
+        // inside the outer VStack(spacing: 10)).
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(1.dp)
+        ) {
+            Text(
+                label,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface,
+                maxLines = 1
+            )
+            Text(
+                "/$goal$unit",
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
+                maxLines = 1
+            )
+        }
     }
 }

@@ -50,6 +50,9 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddAPhoto
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Calculate
+import androidx.compose.material.icons.filled.LocalFireDepartment
+import androidx.compose.material.icons.filled.DocumentScanner
+import androidx.compose.material.icons.filled.DriveFileRenameOutline
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.ChevronRight
@@ -324,7 +327,7 @@ fun HomeScreen(container: AppContainer) {
                         Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp),
-                        horizontalArrangement = Arrangement.spacedBy(20.dp)
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         ui.homeTopNutrients.forEach { nutrient ->
                             MacroCard(
@@ -352,7 +355,7 @@ fun HomeScreen(container: AppContainer) {
             // Food log
             item { Spacer(Modifier.height(8.dp)) }
             if (mealGroups.isEmpty()) {
-                item { SectionHeader("Today's Food") }
+                item { SectionHeader(if (isToday) "Today's Food" else "Food Log") }
                 item {
                     SectionCardWrapper(isFirst = true, isLast = true) {
                         Box(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 16.dp)) {
@@ -419,9 +422,8 @@ fun HomeScreen(container: AppContainer) {
             Box(
                 modifier = Modifier
                     .size(60.dp)
-                    .shadow(8.dp, CircleShape, ambientColor = AppColors.Calorie.copy(alpha = 0.3f), spotColor = AppColors.Calorie.copy(alpha = 0.3f))
                     .clip(CircleShape)
-                    .background(Brush.verticalGradient(listOf(AppColors.CalorieStart, AppColors.CalorieEnd)))
+                    .background(AppColors.Calorie)
                     .clickable { showAddMenu = true },
                 contentAlignment = Alignment.Center
             ) {
@@ -440,7 +442,7 @@ fun HomeScreen(container: AppContainer) {
                 MenuRow(label = "Camera", icon = Icons.Filled.CameraAlt) { showAddMenu = false; openCamera() }
                 MenuRow(label = "Camera + Note", icon = Icons.AutoMirrored.Filled.Note) { showAddMenu = false; openCamera(withNote = true) }
                 MenuRow(label = "Camera + Camera", icon = Icons.Filled.AddAPhoto) { showAddMenu = false; openCamera(withSecondPhoto = true) }
-                MenuRow(label = "Nutrition Label", icon = Icons.Filled.QrCodeScanner) { showAddMenu = false; openCamera() }
+                MenuRow(label = "Nutrition Label", icon = Icons.Filled.DocumentScanner) { showAddMenu = false; openCamera() }
                 MenuRow(label = "Barcode", icon = Icons.Filled.QrCodeScanner) { showAddMenu = false; openBarcodeScanner() }
                 MenuRow(label = "From Photos", icon = Icons.Filled.PhotoLibrary) {
                     showAddMenu = false
@@ -454,7 +456,7 @@ fun HomeScreen(container: AppContainer) {
                 }
                 MenuRow(label = "Text Input", icon = Icons.Filled.Edit) { showAddMenu = false; showText = true }
                 MenuRow(label = "Voice", icon = Icons.Filled.Mic) { showAddMenu = false; showVoice = true }
-                MenuRow(label = "Manual Entry", icon = Icons.Filled.Calculate) { showAddMenu = false; showManual = true }
+                MenuRow(label = "Manual Entry", icon = Icons.Filled.DriveFileRenameOutline) { showAddMenu = false; showManual = true }
                 MenuRow(label = "Saved Meals", icon = Icons.Filled.Bookmark) { showAddMenu = false; showSaved = true }
                 MenuRow(label = "Copy from Day", icon = Icons.Filled.CalendarMonth) { showAddMenu = false; showCopyFromDay = true }
             }
@@ -755,12 +757,12 @@ private fun CalorieHero(current: Int, goal: Int) {
             .padding(top = 8.dp, bottom = 4.dp),
         contentAlignment = Alignment.TopCenter
     ) {
-        // Segmented (dashed) semicircle speedometer arc
+        // Segmented (dashed) semicircle speedometer arc. Fixed 260dp dome to mirror
+        // iOS CalorieGauge's hard .frame(width: 260) (244dp arc + 16dp stroke = 260dp).
         Canvas(
             modifier = Modifier
-                .fillMaxWidth()
+                .width(260.dp)
                 .aspectRatio(2f)
-                .padding(horizontal = 34.dp)
         ) {
             val stroke = 16.dp.toPx()
             val inset = stroke / 2f
@@ -809,12 +811,26 @@ private fun CalorieHero(current: Int, goal: Int) {
                 ),
                 maxLines = 1
             )
-            Text(
-                "🔥 ${String.format(java.util.Locale.getDefault(), "%,d", remaining)} left",
-                fontSize = 13.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = AppColors.Calorie
-            )
+            // Flame + remaining, mirroring iOS HStack(spacing: 5) { flame.fill (11pt) ;
+            // Text("\(remaining) left") } tinted to AppColors.calorie — a pink monochrome
+            // glyph, not a multicolor emoji, and the count is un-grouped (no thousands comma).
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(5.dp)
+            ) {
+                Icon(
+                    Icons.Filled.LocalFireDepartment,
+                    contentDescription = null,
+                    tint = AppColors.Calorie,
+                    modifier = Modifier.size(13.dp)
+                )
+                Text(
+                    "$remaining left",
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = AppColors.Calorie
+                )
+            }
         }
     }
 }
@@ -868,14 +884,14 @@ private fun ViewMoreButton() {
             "View More",
             fontSize = 15.sp,
             fontWeight = FontWeight.Medium,
-            color = AppColors.Calorie.copy(alpha = 0.72f)
+            color = AppColors.Calorie.copy(alpha = 0.6f)
         )
         Spacer(Modifier.width(5.dp))
         Icon(
             Icons.Filled.ChevronRight,
             contentDescription = null,
-            tint = AppColors.Calorie.copy(alpha = 0.72f),
-            modifier = Modifier.size(15.dp)
+            tint = AppColors.Calorie.copy(alpha = 0.6f),
+            modifier = Modifier.size(11.dp)
         )
     }
 }
