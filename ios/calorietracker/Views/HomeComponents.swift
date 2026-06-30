@@ -479,3 +479,131 @@ struct MacroCard: View {
         return MacroValueFormatter.string(value)
     }
 }
+
+/// Semicircle speedometer-style gauge for total calories — segmented (dashed) accent arc with the
+/// calorie count, "Calories" label, and remaining read out in the center. Flat, no card.
+struct CalorieGauge: View {
+    let eaten: Int
+    let goal: Int
+    let remaining: Int
+
+    private let diameter: CGFloat = 250
+    private let lineWidth: CGFloat = 18
+
+    private var progress: Double {
+        goal > 0 ? min(Double(eaten) / Double(goal), 1.0) : 0
+    }
+
+    private var dashedStroke: StrokeStyle {
+        StrokeStyle(lineWidth: lineWidth, lineCap: .butt, dash: [4, 6])
+    }
+
+    var body: some View {
+        ZStack {
+            // Top-semicircle track (9 o'clock -> 12 -> 3 o'clock)
+            Circle()
+                .trim(from: 0.5, to: 1.0)
+                .stroke(AppColors.calorie.opacity(0.12), style: dashedStroke)
+
+            // Progress sweep
+            Circle()
+                .trim(from: 0.5, to: 0.5 + 0.5 * progress)
+                .stroke(
+                    LinearGradient(colors: AppColors.calorieGradient,
+                                   startPoint: .leading, endPoint: .trailing),
+                    style: dashedStroke
+                )
+                .shadow(color: AppColors.calorie.opacity(0.35), radius: 6, y: 2)
+                .animation(.spring(response: 0.8, dampingFraction: 0.78), value: progress)
+
+            // Centered readout
+            VStack(spacing: 2) {
+                Text("Calories")
+                    .font(.system(.caption, design: .rounded, weight: .semibold))
+                    .textCase(.uppercase)
+                    .tracking(0.5)
+                    .foregroundStyle(.secondary)
+
+                Text("\(eaten)")
+                    .font(.system(size: 56, weight: .bold, design: .rounded))
+                    .foregroundStyle(
+                        LinearGradient(colors: AppColors.calorieGradient,
+                                       startPoint: .topLeading, endPoint: .bottomTrailing)
+                    )
+                    .contentTransition(.numericText())
+                    .animation(.snappy, value: eaten)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
+
+                HStack(spacing: 5) {
+                    Image(systemName: "flame.fill")
+                        .font(.system(size: 11, weight: .semibold))
+                    Text("\(remaining) left")
+                        .font(.system(.footnote, design: .rounded, weight: .semibold))
+                }
+                .foregroundStyle(AppColors.calorie)
+            }
+            .offset(y: -diameter * 0.04)
+        }
+        .frame(width: diameter, height: diameter)
+        .frame(height: diameter * 0.62, alignment: .top)
+        .clipped()
+    }
+}
+
+/// A small circular progress ring for a single macro, value centered, name + goal below.
+struct MacroMiniRing: View {
+    let label: String
+    let current: Double
+    let goal: Double
+    let unit: String
+    let gradient: [Color]
+
+    private var progress: Double {
+        goal > 0 ? min(current / goal, 1.0) : 0
+    }
+
+    private var ringGradient: AngularGradient {
+        AngularGradient(
+            gradient: Gradient(colors: gradient + [gradient.first ?? AppColors.calorie]),
+            center: .center
+        )
+    }
+
+    var body: some View {
+        VStack(spacing: 10) {
+            ZStack {
+                Circle()
+                    .stroke(AppColors.calorie.opacity(0.12),
+                            style: StrokeStyle(lineWidth: 6, lineCap: .round))
+
+                Circle()
+                    .trim(from: 0, to: progress)
+                    .stroke(ringGradient,
+                            style: StrokeStyle(lineWidth: 6, lineCap: .round))
+                    .rotationEffect(.degrees(-90))
+                    .animation(.spring(response: 0.7, dampingFraction: 0.8), value: progress)
+
+                Text(MacroValueFormatter.string(current))
+                    .font(.system(.subheadline, design: .rounded, weight: .bold))
+                    .foregroundStyle(.primary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
+                    .padding(8)
+            }
+            .frame(width: 64, height: 64)
+
+            VStack(spacing: 1) {
+                Text(LocalizedDisplayText.text(label))
+                    .font(.system(.caption, design: .rounded, weight: .semibold))
+                    .foregroundStyle(.primary)
+                Text("/\(MacroValueFormatter.string(goal))\(unit)")
+                    .font(.system(.caption2, design: .rounded, weight: .medium))
+                    .foregroundStyle(.secondary)
+            }
+            .lineLimit(1)
+            .minimumScaleFactor(0.6)
+        }
+        .frame(maxWidth: .infinity)
+    }
+}
