@@ -191,17 +191,79 @@ fun EditFoodEntrySheet(
         selectedServingQuantity = if (servingUnitOptions.isEmpty()) null else selectedServingQuantity
     )
 
+    // Re-run the AI on this entry with the edited note and overwrite the fields in
+    // place; marking customNote as the current note flips the primary button back to Save.
+    fun reprocess() {
+        scope.launch {
+            isReprocessing = true
+            errorText = null
+            try {
+                val newAnalysis = onReprocess(noteText)
+                currentBaseEntry = currentBaseEntry.copy(
+                    name = newAnalysis.name,
+                    calories = newAnalysis.calories,
+                    protein = newAnalysis.protein,
+                    carbs = newAnalysis.carbs,
+                    fat = newAnalysis.fat,
+                    sugar = newAnalysis.sugar,
+                    addedSugar = newAnalysis.addedSugar,
+                    fiber = newAnalysis.fiber,
+                    saturatedFat = newAnalysis.saturatedFat,
+                    monounsaturatedFat = newAnalysis.monounsaturatedFat,
+                    polyunsaturatedFat = newAnalysis.polyunsaturatedFat,
+                    cholesterol = newAnalysis.cholesterol,
+                    sodium = newAnalysis.sodium,
+                    potassium = newAnalysis.potassium,
+                    transFat = newAnalysis.transFat,
+                    calcium = newAnalysis.calcium,
+                    iron = newAnalysis.iron,
+                    magnesium = newAnalysis.magnesium,
+                    zinc = newAnalysis.zinc,
+                    vitaminA = newAnalysis.vitaminA,
+                    vitaminC = newAnalysis.vitaminC,
+                    vitaminD = newAnalysis.vitaminD,
+                    vitaminB12 = newAnalysis.vitaminB12,
+                    vitaminE = newAnalysis.vitaminE,
+                    vitaminK = newAnalysis.vitaminK,
+                    folate = newAnalysis.folate,
+                    omega3 = newAnalysis.omega3,
+                    servingSizeGrams = newAnalysis.servingSizeGrams,
+                    servingUnitOptions = newAnalysis.servingUnitOptions,
+                    selectedServingUnit = newAnalysis.selectedServingUnit,
+                    selectedServingQuantity = newAnalysis.selectedServingQuantity,
+                    customNote = noteText.trim().takeIf { it.isNotEmpty() },
+                    emoji = newAnalysis.emoji
+                )
+            } catch (e: Exception) {
+                errorText = e.localizedMessage ?: "Reprocessing failed"
+            } finally {
+                isReprocessing = false
+            }
+        }
+    }
+
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = state,
         shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
         containerColor = sheetSurface
     ) {
+        // While the note differs from what's saved, the primary button becomes
+        // "Reprocess"; once reprocessed (or unchanged) it reverts to "Save".
+        val noteChanged = noteText.trim() != (currentBaseEntry.customNote ?: "")
         SheetReviewToolbar(
             title = stringResource(R.string.sheet_edit_food),
-            primaryLabel = stringResource(R.string.action_save),
+            primaryLabel = when {
+                isReprocessing -> "Reprocessing…"
+                noteChanged -> "Reprocess"
+                else -> stringResource(R.string.action_save)
+            },
             onCancel = onDismiss,
-            onPrimary = { if (!isReprocessing) onSave(buildUpdated()) }
+            onPrimary = {
+                if (!isReprocessing) {
+                    if (noteChanged) reprocess() else onSave(buildUpdated())
+                }
+            }
         )
 
         // Hoist string + composition reads above LazyColumn — its lambda has
@@ -411,79 +473,22 @@ fun EditFoodEntrySheet(
                 }
             }
 
-            item { SheetSectionHeader("AI Note") }
+            item { SheetSectionHeader("Reprocess with AI") }
             item {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedTextField(
                         value = noteText,
                         onValueChange = { noteText = it },
                         enabled = !isReprocessing,
-                        placeholder = { Text("e.g. cooked in olive oil, half portion", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)) },
+                        placeholder = {
+                            Text(
+                                "Add a note to refine this entry — e.g. large bowl, extra olive oil — then tap Reprocess",
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+                            )
+                        },
                         shape = RoundedCornerShape(20.dp),
                         modifier = Modifier.fillMaxWidth().heightIn(min = 90.dp)
                     )
-                    
-                    if (noteText.trim() != (currentBaseEntry.customNote ?: "")) {
-                        if (isReprocessing) {
-                            Box(Modifier.fillMaxWidth().padding(vertical = 8.dp), contentAlignment = Alignment.Center) {
-                                CircularProgressIndicator(color = AppColors.Calorie, modifier = Modifier.size(24.dp))
-                            }
-                        } else {
-                            TextButton(
-                                onClick = {
-                                    scope.launch {
-                                        isReprocessing = true
-                                        errorText = null
-                                        try {
-                                            val newAnalysis = onReprocess(noteText)
-                                            currentBaseEntry = currentBaseEntry.copy(
-                                                name = newAnalysis.name,
-                                                calories = newAnalysis.calories,
-                                                protein = newAnalysis.protein,
-                                                carbs = newAnalysis.carbs,
-                                                fat = newAnalysis.fat,
-                                                sugar = newAnalysis.sugar,
-                                                addedSugar = newAnalysis.addedSugar,
-                                                fiber = newAnalysis.fiber,
-                                                saturatedFat = newAnalysis.saturatedFat,
-                                                monounsaturatedFat = newAnalysis.monounsaturatedFat,
-                                                polyunsaturatedFat = newAnalysis.polyunsaturatedFat,
-                                                cholesterol = newAnalysis.cholesterol,
-                                                sodium = newAnalysis.sodium,
-                                                potassium = newAnalysis.potassium,
-                                                transFat = newAnalysis.transFat,
-                                                calcium = newAnalysis.calcium,
-                                                iron = newAnalysis.iron,
-                                                magnesium = newAnalysis.magnesium,
-                                                zinc = newAnalysis.zinc,
-                                                vitaminA = newAnalysis.vitaminA,
-                                                vitaminC = newAnalysis.vitaminC,
-                                                vitaminD = newAnalysis.vitaminD,
-                                                vitaminB12 = newAnalysis.vitaminB12,
-                                                vitaminE = newAnalysis.vitaminE,
-                                                vitaminK = newAnalysis.vitaminK,
-                                                folate = newAnalysis.folate,
-                                                omega3 = newAnalysis.omega3,
-                                                servingSizeGrams = newAnalysis.servingSizeGrams,
-                                                servingUnitOptions = newAnalysis.servingUnitOptions,
-                                                selectedServingUnit = newAnalysis.selectedServingUnit,
-                                                selectedServingQuantity = newAnalysis.selectedServingQuantity,
-                                                customNote = noteText.trim().takeIf { it.isNotEmpty() },
-                                                emoji = newAnalysis.emoji
-                                            )
-                                        } catch (e: Exception) {
-                                            errorText = e.localizedMessage ?: "Reprocessing failed"
-                                        } finally {
-                                            isReprocessing = false
-                                        }
-                                    }
-                                },
-                                modifier = Modifier.align(Alignment.End)
-                            ) {
-                                Text("Reprocess with AI", color = AppColors.Calorie, fontWeight = FontWeight.Bold)
-                            }
-                        }
-                    }
                     errorText?.let {
                         Text(it, color = Color.Red, fontSize = 13.sp, modifier = Modifier.padding(top = 4.dp))
                     }

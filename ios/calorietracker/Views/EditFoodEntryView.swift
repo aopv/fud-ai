@@ -255,84 +255,19 @@ struct EditFoodEntryView: View {
                         .tint(AppColors.calorie)
                     }
 
-                    Section("AI Note") {
-                        TextEditor(text: $customNote)
-                            .frame(minHeight: 80)
-                        
-                        if customNote.trimmingCharacters(in: .whitespacesAndNewlines) != savedNote {
-                            if isReprocessing {
-                                HStack {
-                                    Spacer()
-                                    ProgressView()
-                                    Spacer()
-                                }
-                            } else {
-                                Button("Reprocess with AI") {
-                                    Task {
-                                        isReprocessing = true
-                                        reprocessingError = nil
-                                        do {
-                                            let newAnalysis = try await foodStore.reprocessEntry(entry, withNote: customNote)
-                                            
-                                            // Overwrite states in-place
-                                            name = newAnalysis.name
-                                            baseCalories = newAnalysis.calories
-                                            baseProtein = newAnalysis.protein
-                                            baseCarbs = newAnalysis.carbs
-                                            baseFat = newAnalysis.fat
-                                            baseServingSizeGrams = newAnalysis.servingSizeGrams
-                                            baseSugar = newAnalysis.sugar
-                                            baseAddedSugar = newAnalysis.addedSugar
-                                            baseFiber = newAnalysis.fiber
-                                            baseSaturatedFat = newAnalysis.saturatedFat
-                                            baseMonounsaturatedFat = newAnalysis.monounsaturatedFat
-                                            basePolyunsaturatedFat = newAnalysis.polyunsaturatedFat
-                                            baseCholesterol = newAnalysis.cholesterol
-                                            baseSodium = newAnalysis.sodium
-                                            basePotassium = newAnalysis.potassium
-                                            baseTransFat = newAnalysis.transFat
-                                            baseCalcium = newAnalysis.calcium
-                                            baseIron = newAnalysis.iron
-                                            baseMagnesium = newAnalysis.magnesium
-                                            baseZinc = newAnalysis.zinc
-                                            baseVitaminA = newAnalysis.vitaminA
-                                            baseVitaminC = newAnalysis.vitaminC
-                                            baseVitaminD = newAnalysis.vitaminD
-                                            baseVitaminB12 = newAnalysis.vitaminB12
-                                            baseVitaminE = newAnalysis.vitaminE
-                                            baseVitaminK = newAnalysis.vitaminK
-                                            baseFolate = newAnalysis.folate
-                                            baseOmega3 = newAnalysis.omega3
-                                            emoji = newAnalysis.emoji
-                                            
-                                            // Update serving unit options and text
-                                            servingUnitOptions = ServingUnitOption.normalizedOptions(newAnalysis.servingUnitOptions, totalGrams: newAnalysis.servingSizeGrams)
-                                            let initialServingUnitID = ServingUnitOption.initialUnitID(
-                                                preferredUnit: newAnalysis.selectedServingUnit,
-                                                options: servingUnitOptions,
-                                                defaultToGrams: FoodMeasurementSettings.preferGramsByDefault
-                                            )
-                                            selectedServingUnitID = initialServingUnitID
-                                            servingSizeGrams = newAnalysis.servingSizeGrams
-                                            servingSizeText = ServingUnitOption.initialQuantityText(
-                                                totalGrams: newAnalysis.servingSizeGrams,
-                                                selectedUnitID: initialServingUnitID,
-                                                selectedQuantity: newAnalysis.selectedServingQuantity,
-                                                options: servingUnitOptions
-                                            )
-                                            
-                                            // Update savedNote to current note to hide button
-                                            savedNote = customNote.trimmingCharacters(in: .whitespacesAndNewlines)
-                                        } catch {
-                                            reprocessingError = error.localizedDescription
-                                        }
-                                        isReprocessing = false
-                                    }
-                                }
-                                .tint(AppColors.calorie)
+                    Section("Reprocess with AI") {
+                        ZStack(alignment: .topLeading) {
+                            if customNote.isEmpty {
+                                Text("Add a note to refine this entry — e.g. “large bowl, extra olive oil” — then tap Reprocess.")
+                                    .foregroundStyle(.tertiary)
+                                    .padding(.top, 8)
+                                    .padding(.leading, 5)
+                                    .allowsHitTesting(false)
                             }
+                            TextEditor(text: $customNote)
+                                .frame(minHeight: 80)
                         }
-                        
+
                         if let errorMsg = reprocessingError {
                             Text(errorMsg)
                                 .font(.caption)
@@ -379,10 +314,17 @@ struct EditFoodEntryView: View {
                         Button("Cancel") { dismiss() }
                     }
                     ToolbarItem(placement: .confirmationAction) {
-                        Button("Save", action: saveChanges)
-                            .font(.system(.body, design: .rounded, weight: .semibold))
-                            .tint(AppColors.calorie)
-                            .disabled(isReprocessing)
+                        if isReprocessing {
+                            ProgressView()
+                        } else if noteChanged {
+                            Button("Reprocess", action: reprocess)
+                                .font(.system(.body, design: .rounded, weight: .semibold))
+                                .tint(AppColors.calorie)
+                        } else {
+                            Button("Save", action: saveChanges)
+                                .font(.system(.body, design: .rounded, weight: .semibold))
+                                .tint(AppColors.calorie)
+                        }
                     }
                 }
             }
@@ -394,6 +336,72 @@ struct EditFoodEntryView: View {
             withAnimation(.easeInOut(duration: 0.2)) {
                 proxy.scrollTo(ScrollTarget.quantity, anchor: .bottom)
             }
+        }
+    }
+
+    private var noteChanged: Bool {
+        customNote.trimmingCharacters(in: .whitespacesAndNewlines) != savedNote
+    }
+
+    /// Re-run the AI on this entry with the edited note and overwrite the fields in
+    /// place, then mark the note as saved (so the toolbar reverts to "Save").
+    private func reprocess() {
+        Task {
+            isReprocessing = true
+            reprocessingError = nil
+            do {
+                let newAnalysis = try await foodStore.reprocessEntry(entry, withNote: customNote)
+
+                name = newAnalysis.name
+                baseCalories = newAnalysis.calories
+                baseProtein = newAnalysis.protein
+                baseCarbs = newAnalysis.carbs
+                baseFat = newAnalysis.fat
+                baseServingSizeGrams = newAnalysis.servingSizeGrams
+                baseSugar = newAnalysis.sugar
+                baseAddedSugar = newAnalysis.addedSugar
+                baseFiber = newAnalysis.fiber
+                baseSaturatedFat = newAnalysis.saturatedFat
+                baseMonounsaturatedFat = newAnalysis.monounsaturatedFat
+                basePolyunsaturatedFat = newAnalysis.polyunsaturatedFat
+                baseCholesterol = newAnalysis.cholesterol
+                baseSodium = newAnalysis.sodium
+                basePotassium = newAnalysis.potassium
+                baseTransFat = newAnalysis.transFat
+                baseCalcium = newAnalysis.calcium
+                baseIron = newAnalysis.iron
+                baseMagnesium = newAnalysis.magnesium
+                baseZinc = newAnalysis.zinc
+                baseVitaminA = newAnalysis.vitaminA
+                baseVitaminC = newAnalysis.vitaminC
+                baseVitaminD = newAnalysis.vitaminD
+                baseVitaminB12 = newAnalysis.vitaminB12
+                baseVitaminE = newAnalysis.vitaminE
+                baseVitaminK = newAnalysis.vitaminK
+                baseFolate = newAnalysis.folate
+                baseOmega3 = newAnalysis.omega3
+                emoji = newAnalysis.emoji
+
+                servingUnitOptions = ServingUnitOption.normalizedOptions(newAnalysis.servingUnitOptions, totalGrams: newAnalysis.servingSizeGrams)
+                let initialServingUnitID = ServingUnitOption.initialUnitID(
+                    preferredUnit: newAnalysis.selectedServingUnit,
+                    options: servingUnitOptions,
+                    defaultToGrams: FoodMeasurementSettings.preferGramsByDefault
+                )
+                selectedServingUnitID = initialServingUnitID
+                servingSizeGrams = newAnalysis.servingSizeGrams
+                servingSizeText = ServingUnitOption.initialQuantityText(
+                    totalGrams: newAnalysis.servingSizeGrams,
+                    selectedUnitID: initialServingUnitID,
+                    selectedQuantity: newAnalysis.selectedServingQuantity,
+                    options: servingUnitOptions
+                )
+
+                savedNote = customNote.trimmingCharacters(in: .whitespacesAndNewlines)
+            } catch {
+                reprocessingError = error.localizedDescription
+            }
+            isReprocessing = false
         }
     }
 
