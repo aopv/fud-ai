@@ -33,6 +33,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.IosShare
 import androidx.compose.material.icons.automirrored.outlined.DirectionsRun
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.ChevronRight
@@ -191,6 +192,7 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController) {
     var sheet by remember { mutableStateOf<SettingsSheet?>(null) }
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showClearFoodDialog by remember { mutableStateOf(false) }
+    var showExportSheet by remember { mutableStateOf(false) }
     var invalidGoalWeightMessage by remember { mutableStateOf<String?>(null) }
     var showMaxPinnedAlert by remember { mutableStateOf(false) }
     var showRebalanceBlockedAlert by remember { mutableStateOf(false) }
@@ -656,6 +658,22 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController) {
                 Row(
                     Modifier
                         .fillMaxWidth()
+                        .clickable { showExportSheet = true }
+                        .padding(horizontal = 16.dp, vertical = 14.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    FudIconBubble(icon = Icons.Outlined.IosShare, size = 22.dp, iconSize = 14.dp, tint = AppColors.Calorie)
+                    Spacer(Modifier.width(14.dp))
+                    Text(
+                        "Export Food Diary",
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+                HorizontalDivider()
+                Row(
+                    Modifier
+                        .fillMaxWidth()
                         .clickable { showClearFoodDialog = true }
                         .padding(horizontal = 16.dp, vertical = 14.dp),
                     verticalAlignment = Alignment.CenterVertically
@@ -692,6 +710,14 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController) {
 
             Spacer(Modifier.height(BottomNavScrollPadding))
         }
+    }
+
+    if (showExportSheet) {
+        ExportDiarySheet(
+            container = container,
+            profile = profile,
+            onDismiss = { showExportSheet = false },
+        )
     }
 
     sheet?.let { s ->
