@@ -789,6 +789,16 @@ struct HomeView: View {
                                     .padding(.leading, 8)
                                 }
                                 Spacer()
+                                // Combined nutrients for this meal (issue #103: chicken + pasta + sauce = one total)
+                                VStack(alignment: .trailing, spacing: 1) {
+                                    Text("\(group.totalCalories) kcal")
+                                        .font(.system(.subheadline, design: .rounded, weight: .semibold))
+                                        .foregroundStyle(AppColors.calorie)
+                                    Text("\(Int(group.totalProtein.rounded()))P · \(Int(group.totalCarbs.rounded()))C · \(Int(group.totalFat.rounded()))F")
+                                        .font(.system(.caption2, design: .rounded, weight: .medium))
+                                        .foregroundStyle(.secondary)
+                                }
+                                .textCase(nil)
                             }
                         }
                     }

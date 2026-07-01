@@ -28,6 +28,13 @@ struct FoodLogMealGroup: Identifiable {
     let id: String
     let meal: MealType
     let entries: [FoodEntry]
+
+    /// Combined nutrients for this meal group — the "chicken + pasta + sauce = one meal"
+    /// total shown in the food-log section header. Sums the same fields the daily totals use.
+    var totalCalories: Int { entries.reduce(0) { $0 + $1.calories } }
+    var totalProtein: Double { entries.reduce(0) { $0 + $1.protein } }
+    var totalCarbs: Double { entries.reduce(0) { $0 + $1.carbs } }
+    var totalFat: Double { entries.reduce(0) { $0 + $1.fat } }
 }
 
 @Observable

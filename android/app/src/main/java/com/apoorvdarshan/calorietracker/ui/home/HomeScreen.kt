@@ -376,6 +376,10 @@ fun HomeScreen(container: AppContainer) {
                     item(key = "header-${group.id}") {
                         MealSectionHeader(
                             meal = group.meal,
+                            totalCalories = group.totalCalories,
+                            totalProtein = group.totalProtein,
+                            totalCarbs = group.totalCarbs,
+                            totalFat = group.totalFat,
                             showSortMenu = groupIndex == 0,
                             sortOrder = ui.foodLogSortOrder,
                             sortMenuExpanded = showSortMenu,
@@ -904,6 +908,10 @@ private fun SectionHeader(title: String) {
 @Composable
 private fun MealSectionHeader(
     meal: MealType,
+    totalCalories: Int? = null,
+    totalProtein: Double = 0.0,
+    totalCarbs: Double = 0.0,
+    totalFat: Double = 0.0,
     showSortMenu: Boolean = false,
     sortOrder: FoodLogSortOrder = FoodLogSortOrder.STANDARD,
     sortMenuExpanded: Boolean = false,
@@ -932,7 +940,7 @@ private fun MealSectionHeader(
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.85f)
         )
         if (showSortMenu) {
-            Spacer(Modifier.weight(1f))
+            Spacer(Modifier.width(12.dp))
             Box {
                 Row(
                     modifier = Modifier.clickable { onSortClick() },
@@ -968,6 +976,24 @@ private fun MealSectionHeader(
                 }
             }
         }
+        // Combined nutrients for this meal (issue #103: chicken + pasta + sauce = one total)
+        if (totalCalories != null) {
+            Spacer(Modifier.weight(1f))
+            Column(horizontalAlignment = Alignment.End) {
+                Text(
+                    "$totalCalories kcal",
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = AppColors.Calorie
+                )
+                Text(
+                    "${totalProtein.roundToInt()}P · ${totalCarbs.roundToInt()}C · ${totalFat.roundToInt()}F",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.55f)
+                )
+            }
+        }
     }
 }
 
@@ -975,7 +1001,13 @@ private data class FoodLogMealGroup(
     val id: String,
     val meal: MealType,
     val entries: List<FoodEntry>
-)
+) {
+    // Combined nutrients for this meal group (issue #103: chicken + pasta + sauce = one total).
+    val totalCalories: Int get() = entries.sumOf { it.calories }
+    val totalProtein: Double get() = entries.sumOf { it.protein }
+    val totalCarbs: Double get() = entries.sumOf { it.carbs }
+    val totalFat: Double get() = entries.sumOf { it.fat }
+}
 
 private fun foodLogMealGroups(
     entries: List<FoodEntry>,
