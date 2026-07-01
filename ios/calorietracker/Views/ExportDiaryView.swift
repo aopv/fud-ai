@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 /// Export the food diary as JSON / Markdown / CSV over a chosen date range,
 /// then hand the file to the system share sheet.
@@ -12,8 +13,6 @@ struct ExportDiaryView: View {
     @State private var customStart: Date = Calendar.current.date(byAdding: .day, value: -7, to: .now) ?? .now
     @State private var customEnd: Date = .now
 
-    @State private var shareURL: URL?
-    @State private var isSharing = false
     @State private var emptyNotice = false
 
     var body: some View {
@@ -64,11 +63,6 @@ struct ExportDiaryView: View {
                     Button("Done") { dismiss() }
                 }
             }
-            .sheet(isPresented: $isSharing) {
-                if let shareURL {
-                    ActivityShareSheet(activityItems: [shareURL])
-                }
-            }
             .alert("Nothing to export", isPresented: $emptyNotice) {
                 Button("OK", role: .cancel) {}
             } message: {
@@ -88,10 +82,28 @@ struct ExportDiaryView: View {
         let url = FileManager.default.temporaryDirectory.appendingPathComponent(name)
         do {
             try data.write(to: url, options: .atomic)
-            shareURL = url
-            isSharing = true
+            Self.presentShareSheet(for: url)
         } catch {
             emptyNotice = true
         }
+    }
+
+    /// Present the system share sheet directly via UIKit. A UIActivityViewController
+    /// must be *presented*, not embedded in a SwiftUI `.sheet` (doubly so from inside
+    /// another sheet), which renders blank.
+    private static func presentShareSheet(for url: URL) {
+        let av = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+        guard let scene = UIApplication.shared.connectedScenes
+                .compactMap({ $0 as? UIWindowScene })
+                .first(where: { $0.activationState == .foregroundActive }) ?? UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).first,
+              let window = scene.windows.first(where: { $0.isKeyWindow }) ?? scene.windows.first,
+              var top = window.rootViewController else { return }
+        while let presented = top.presentedViewController { top = presented }
+        if let pop = av.popoverPresentationController {
+            pop.sourceView = top.view
+            pop.sourceRect = CGRect(x: top.view.bounds.midX, y: top.view.bounds.maxY - 40, width: 0, height: 0)
+            pop.permittedArrowDirections = []
+        }
+        top.present(av, animated: true)
     }
 }
