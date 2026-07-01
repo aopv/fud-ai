@@ -434,31 +434,35 @@ fun HomeScreen(container: AppContainer) {
                     modifier = Modifier.size(30.dp)
                 )
             }
-            DropdownMenu(
+            // Glass-styled popup (matches the app's other sheet menus). Items are
+            // REVERSED vs the source order because the FAB sits at the bottom and the
+            // menu opens upward — iOS puts the first action (Camera) nearest the button,
+            // so Camera renders at the BOTTOM of the list and Copy from Day at the top.
+            SheetGlassDropdownMenu(
                 expanded = showAddMenu,
                 onDismissRequest = { showAddMenu = false },
-                modifier = Modifier.width(248.dp)
+                menuWidth = 248.dp
             ) {
-                MenuRow(label = "Camera", icon = Icons.Filled.CameraAlt) { showAddMenu = false; openCamera() }
-                MenuRow(label = "Camera + Note", icon = Icons.AutoMirrored.Filled.Note) { showAddMenu = false; openCamera(withNote = true) }
-                MenuRow(label = "Camera + Camera", icon = Icons.Filled.AddAPhoto) { showAddMenu = false; openCamera(withSecondPhoto = true) }
-                MenuRow(label = "Nutrition Label", icon = Icons.Filled.DocumentScanner) { showAddMenu = false; openCamera() }
-                MenuRow(label = "Barcode", icon = Icons.Filled.QrCodeScanner) { showAddMenu = false; openBarcodeScanner() }
-                MenuRow(label = "From Photos", icon = Icons.Filled.PhotoLibrary) {
-                    showAddMenu = false
-                    pendingPickedPhotoWantsNote = false
-                    photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                }
-                MenuRow(label = "From Photos + Note", icon = Icons.AutoMirrored.Filled.Note) {
+                SheetGlassDropdownMenuItem(label = "Copy from Day", leadingIcon = Icons.Filled.CalendarMonth) { showAddMenu = false; showCopyFromDay = true }
+                SheetGlassDropdownMenuItem(label = "Saved Meals", leadingIcon = Icons.Filled.Bookmark) { showAddMenu = false; showSaved = true }
+                SheetGlassDropdownMenuItem(label = "Manual Entry", leadingIcon = Icons.Filled.DriveFileRenameOutline) { showAddMenu = false; showManual = true }
+                SheetGlassDropdownMenuItem(label = "Voice", leadingIcon = Icons.Filled.Mic) { showAddMenu = false; showVoice = true }
+                SheetGlassDropdownMenuItem(label = "Text Input", leadingIcon = Icons.Filled.Edit) { showAddMenu = false; showText = true }
+                SheetGlassDropdownMenuItem(label = "From Photos + Note", leadingIcon = Icons.AutoMirrored.Filled.Note) {
                     showAddMenu = false
                     pendingPickedPhotoWantsNote = true
                     photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
                 }
-                MenuRow(label = "Text Input", icon = Icons.Filled.Edit) { showAddMenu = false; showText = true }
-                MenuRow(label = "Voice", icon = Icons.Filled.Mic) { showAddMenu = false; showVoice = true }
-                MenuRow(label = "Manual Entry", icon = Icons.Filled.DriveFileRenameOutline) { showAddMenu = false; showManual = true }
-                MenuRow(label = "Saved Meals", icon = Icons.Filled.Bookmark) { showAddMenu = false; showSaved = true }
-                MenuRow(label = "Copy from Day", icon = Icons.Filled.CalendarMonth) { showAddMenu = false; showCopyFromDay = true }
+                SheetGlassDropdownMenuItem(label = "From Photos", leadingIcon = Icons.Filled.PhotoLibrary) {
+                    showAddMenu = false
+                    pendingPickedPhotoWantsNote = false
+                    photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                }
+                SheetGlassDropdownMenuItem(label = "Barcode", leadingIcon = Icons.Filled.QrCodeScanner) { showAddMenu = false; openBarcodeScanner() }
+                SheetGlassDropdownMenuItem(label = "Nutrition Label", leadingIcon = Icons.Filled.DocumentScanner) { showAddMenu = false; openCamera() }
+                SheetGlassDropdownMenuItem(label = "Camera + Camera", leadingIcon = Icons.Filled.AddAPhoto) { showAddMenu = false; openCamera(withSecondPhoto = true) }
+                SheetGlassDropdownMenuItem(label = "Camera + Note", leadingIcon = Icons.AutoMirrored.Filled.Note) { showAddMenu = false; openCamera(withNote = true) }
+                SheetGlassDropdownMenuItem(label = "Camera", leadingIcon = Icons.Filled.CameraAlt) { showAddMenu = false; openCamera() }
             }
         }
         }
@@ -840,38 +844,6 @@ private fun CalorieHero(current: Int, goal: Int) {
 // MacroCard moved to ui/components/MacroCard.kt as a verbatim port of
 // HomeComponents.swift's struct MacroCard. Imported above.
 
-/**
- * iOS-styled menu row used inside the + DropdownMenu. Pink leading icon,
- * 17sp body label, slightly larger row height than Material default to
- * match iOS Menu touch targets.
- */
-@Composable
-private fun MenuRow(label: String, icon: ImageVector, onClick: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 1.dp)
-            .clip(RoundedCornerShape(14.dp))
-            .clickable(onClick = onClick)
-            .padding(horizontal = 14.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        Icon(
-            icon,
-            contentDescription = null,
-            tint = AppColors.Calorie,
-            modifier = Modifier.size(24.dp)
-        )
-        Text(
-            label,
-            fontSize = 17.sp,
-            fontWeight = FontWeight.Medium,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.92f),
-            maxLines = 1
-        )
-    }
-}
 
 @Composable
 private fun ViewMoreButton() {
