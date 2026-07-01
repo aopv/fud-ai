@@ -16,8 +16,6 @@ enum CameraMode {
 
 private let fudAIAppStoreID = "6758935726"
 private let fudAIAppStoreURL = URL(string: "https://apps.apple.com/us/app/fud-ai-calorie-tracker/id6758935726")!
-// Cross-promo: the developer's workout app, opened from the Home toolbar button.
-private let deltsAppStoreURL = URL(string: "https://apps.apple.com/us/app/delts-workout-tracker/id6778653288")!
 
 private enum AppUpdateState: Equatable {
     case idle
@@ -112,7 +110,6 @@ private enum AppUpdateChecker {
 
 // MARK: - Main Content View
 struct ContentView: View {
-    @Environment(StoreManager.self) private var storeManager
     @Environment(NotificationManager.self) private var notificationManager
     @AppStorage(AppThemeColor.storageKey) private var appThemeColorRaw = AppThemeColor.defaultColor.rawValue
     @State private var appUpdateState: AppUpdateState = .idle
@@ -157,8 +154,8 @@ struct ContentView: View {
         }
         .tint(AppThemeColor.color(for: appThemeColorRaw).color)
         .task {
+            AdsManager.shared.start()
             await refreshAppUpdateState()
-            await storeManager.checkEntitlements()
         }
     }
 
@@ -385,6 +382,11 @@ private struct AboutView: View {
             }
             .scrollContentBackground(.hidden)
             .background(AppColors.appBackground)
+            .safeAreaInset(edge: .bottom) {
+                BannerAdView()
+                    .frame(height: 50)
+                    .frame(maxWidth: .infinity)
+            }
             .navigationBarHidden(true)
             .sheet(isPresented: $showShareSheet) {
                 ActivityShareSheet(activityItems: [shareMessage, fudAIAppStoreURL])
@@ -393,24 +395,16 @@ private struct AboutView: View {
     }
 
     private static let whatsNewItems = [
-        "Recalculate Goals uses AI to set your calories and macros from your profile, logged intake, and weight trend. Your goals stay put when you edit details like weight or pace — they only change when you tap Recalculate (or the weekly Adaptive check).",
-        "Recalculate also refreshes your optional nutrient targets like fiber, sugar, and sodium.",
-        "Onboarding now sets up your AI — Fud AI Premium or your own provider key — and builds your starting plan with it.",
-        "Energy Burn Goals is now part of a single Adaptive Goals toggle that factors your Apple Health calories burned into the weekly correction.",
-        "Lock any calculated calorie or macro target so Recalculate and Adaptive keep it fixed; reset to auto-balance anytime.",
-        "New optional body measurements (waist, hips, neck, and more) in Settings → Personal Info feed Recalculate Goals and the Coach.",
-        "Swipe left or right on the calorie area of Home to move between days; the week strip follows.",
-        "Coach replies now render formatted text — headings, bold, and bullet lists — so guidance is easier to read.",
-        "Weight goals are clearer: Lose / Cutting, Maintain / Recomp, and Gain / Bulking.",
-        "Get notified when a new version is available, with an App Updates toggle in Notifications.",
-        "Food log times now follow your phone's 12- or 24-hour clock.",
-        "Various refinements and fixes."
+        "Fud AI is now completely free — the optional Premium subscription has been removed.",
+        "AI features run on your own provider key — add a free Gemini, OpenAI, Groq, or other supported key in onboarding or Settings.",
+        "Setting up AI is simpler: onboarding and Settings now focus on connecting your own provider key.",
+        "As always, your food log, weight and body history, and API keys stay on your device."
     ]
 
     private var whatsNewRow: some View {
         DisclosureGroup(isExpanded: $showWhatsNew) {
             VStack(alignment: .leading, spacing: 10) {
-                Text("Fud AI 4.4")
+                Text("Fud AI 4.5")
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(.primary)
 
@@ -565,7 +559,6 @@ struct ActivityShareSheet: UIViewControllerRepresentable {
 // MARK: - Home View (Main Dashboard)
 struct HomeView: View {
     @Environment(FoodStore.self) private var foodStore
-    @Environment(\.openURL) private var openURL
     @Environment(\.scenePhase) private var scenePhase
     @State private var showCamera = false
     @State private var showBarcodeScanner = false
@@ -599,6 +592,11 @@ struct HomeView: View {
     @State private var currentEmoji: String?
     @State private var currentFoodSource: FoodSource = .snapFood
     @State private var showNutritionDetail = false
+    // Bumped each time the app is opened (cold launch = 1, then +1 on every
+    // return from background). Drives the gauge + macro "fill from zero" reveal.
+    // Not bumped on tab switches or data edits, so it only plays on app open.
+    @State private var launchFillEpoch = 1
+    @State private var wasBackgrounded = false
     @AppStorage("useMetric") private var useMetric = false
     @AppStorage(FoodLogSortOrder.storageKey) private var foodLogSortOrderRaw = FoodLogSortOrder.defaultOrder.rawValue
     @AppStorage(HomeTopNutrient.storageKey) private var homeTopNutrientsRaw = HomeTopNutrient.storageValue(for: HomeTopNutrient.defaultSelection)
@@ -686,61 +684,29 @@ struct HomeView: View {
                     .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
                 }
 
-                // Calorie hero
+                // Calorie hero (semicircle gauge)
                 Section {
-                    VStack(spacing: 20) {
-                        VStack(spacing: 4) {
-                            Text("\(selectedCalories)")
-                                .font(.system(size: 72, weight: .bold, design: .rounded))
-                                .foregroundStyle(
-                                    LinearGradient(colors: AppColors.calorieGradient, startPoint: .topLeading, endPoint: .bottomTrailing)
-                                )
-                                .contentTransition(.numericText())
-                                .animation(.snappy, value: selectedCalories)
-
-                            Text("of \(calorieGoal) kcal")
-                                .font(.system(.callout, design: .rounded, weight: .medium))
-                                .foregroundStyle(.tertiary)
-                        }
-
-                        GeometryReader { geo in
-                            ZStack(alignment: .leading) {
-                                Capsule()
-                                    .fill(AppColors.calorie.opacity(0.10))
-                                    .frame(height: 10)
-
-                                Capsule()
-                                    .fill(LinearGradient(colors: AppColors.calorieGradient, startPoint: .leading, endPoint: .trailing))
-                                    .frame(width: max(10, geo.size.width * min(Double(selectedCalories) / Double(calorieGoal), 1.0)), height: 10)
-                                    .shadow(color: AppColors.calorie.opacity(0.35), radius: 8, y: 3)
-                                    .animation(.spring(response: 0.8, dampingFraction: 0.75), value: selectedCalories)
-                            }
-                        }
-                        .frame(height: 10)
-                        .padding(.horizontal, 24)
-
-                        Text("\(caloriesRemaining) left")
-                            .font(.system(.footnote, design: .rounded, weight: .medium))
-                            .foregroundStyle(.secondary)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 20)
-                    .contentShape(Rectangle())
-                    .simultaneousGesture(daySwipeGesture)
-                    .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
+                    CalorieGauge(eaten: selectedCalories, goal: calorieGoal, remaining: caloriesRemaining, launchFillEpoch: launchFillEpoch)
+                        .frame(maxWidth: .infinity)
+                        .padding(.top, 8)
+                        .padding(.bottom, 4)
+                        .contentShape(Rectangle())
+                        .simultaneousGesture(daySwipeGesture)
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
                 }
 
-                // Top nutrient trio
+                // Top nutrient row (vertical bars)
                 Section {
-                    HStack(spacing: 20) {
+                    HStack(alignment: .top, spacing: 4) {
                         ForEach(homeTopNutrients) { nutrient in
-                            MacroCard(
+                            MacroVerticalBar(
                                 label: nutrient.displayName,
                                 current: nutrient.value(from: foodStore, on: selectedDate),
                                 goal: nutrient.goal(for: userProfile, optionalGoals: optionalNutrientGoals),
                                 unit: nutrient.unit,
-                                gradientColors: nutrient.gradientColors
+                                gradient: nutrient.gradientColors,
+                                launchFillEpoch: launchFillEpoch
                             )
                         }
                     }
@@ -803,7 +769,6 @@ struct HomeView: View {
                         } header: {
                             HStack(alignment: .center) {
                                 Label(group.meal.displayName, systemImage: group.meal.icon)
-                                Spacer()
                                 if group.id == mealGroups.first?.id {
                                     Menu {
                                         Picker("Food Log Order", selection: $foodLogSortOrderRaw) {
@@ -821,7 +786,9 @@ struct HomeView: View {
                                     }
                                     .tint(AppColors.calorie)
                                     .textCase(nil)
+                                    .padding(.leading, 8)
                                 }
+                                Spacer()
                             }
                         }
                     }
@@ -830,27 +797,16 @@ struct HomeView: View {
             .scrollContentBackground(.hidden)
             .background(AppColors.appBackground)
             .animation(.snappy, value: selectedDate)
+            .contentMargins(.bottom, 96, for: .scrollContent)
+            .safeAreaInset(edge: .top) {
+                BannerAdView()
+                    .frame(height: 50)
+                    .frame(maxWidth: .infinity)
+            }
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                // Delts cross-promo button to the LEFT of the "+" (first-declared trailing item sits
-                // leftmost). Native Liquid Glass toolbar button showing the Delts logo; opens its
-                // App Store page.
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        openURL(deltsAppStoreURL)
-                    } label: {
-                        Image("DeltsLogo")
-                            .renderingMode(.original)
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 24, height: 24)
-                            .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
-                    }
-                    .accessibilityLabel("Delts Workout Tracker on the App Store")
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Menu {
+            .overlay(alignment: .bottomTrailing) {
+                Menu {
                             Button(action: {
                                 cameraMode = .snapFood
                                 pendingSecondCameraImage = nil
@@ -931,6 +887,10 @@ struct HomeView: View {
                             }
                         } label: {
                             Image(systemName: "plus")
+                                .font(.system(size: 26, weight: .semibold))
+                                .foregroundStyle(.white)
+                                .frame(width: 60, height: 60)
+                                .background(AppColors.calorie, in: Circle())
                         }
                         .popover(isPresented: $showTextPopover) {
                             TextFoodInputView(
@@ -1001,7 +961,7 @@ struct HomeView: View {
                             )
                             .presentationCompactAdaptation(.popover)
                         }
-                }
+                        .padding(24)
             }
             .fullScreenCover(isPresented: $showCamera) {
                 CameraView(
@@ -1242,6 +1202,15 @@ struct HomeView: View {
             .onChange(of: scenePhase) { _, newPhase in
                 if newPhase == .active {
                     checkAndConsumeSharedImage()
+                    // Returned to the foreground -> replay the fill-from-zero reveal.
+                    // Gated on wasBackgrounded so transient .inactive blips (control
+                    // center, app switcher) don't retrigger it.
+                    if wasBackgrounded {
+                        launchFillEpoch += 1
+                        wasBackgrounded = false
+                    }
+                } else if newPhase == .background {
+                    wasBackgrounded = true
                 }
             }
         }
@@ -2652,6 +2621,11 @@ struct ProgressTabView: View {
                 .padding(.vertical)
             }
             .background(AppColors.appBackground)
+            .safeAreaInset(edge: .bottom) {
+                BannerAdView()
+                    .frame(height: 50)
+                    .frame(maxWidth: .infinity)
+            }
             .navigationBarHidden(true)
             .sheet(isPresented: $showLogWeight) {
                 LogWeightSheet(
@@ -2699,7 +2673,6 @@ struct ProfileView: View {
     @Environment(BodyMeasurementStore.self) private var bodyMeasurementStore
     @Environment(NotificationManager.self) private var notificationManager
     @Environment(HealthKitManager.self) private var healthKitManager
-    @Environment(StoreManager.self) private var storeManager
     private var profile: UserProfile {
         get { profileStore.profile }
         nonmutating set { profileStore.profile = newValue }
@@ -2756,8 +2729,6 @@ struct ProfileView: View {
     @State private var selectedSpeechLanguage: SpeechLanguage = SpeechSettings.selectedLanguage(for: SpeechSettings.selectedProvider)
     @State private var speechApiKeyText: String = SpeechSettings.apiKey(for: SpeechSettings.selectedProvider) ?? ""
     @State private var showSpeechAPIKey = false
-    @State private var selectedAccessMode: AIAccessMode = AIAccessSettings.mode
-    @State private var showFudAIPremiumPaywall = false
 
     // Height formatting
     private var heightDisplay: String {
@@ -3206,16 +3177,7 @@ struct ProfileView: View {
                 }
                 .listRowBackground(AppColors.appCard)
 
-                AIAccessSettingsSection(
-                    selectedAccessMode: $selectedAccessMode,
-                    showFudAIPremiumPaywall: $showFudAIPremiumPaywall
-                )
-
-                if selectedAccessMode == .fudAIPremium {
-                    FudAIPremiumManagedSettingsSection()
-                }
-
-                if selectedAccessMode == .bringYourOwnKey {
+                Group {
                     // Section 4: AI Provider
                     Section("AI Provider") {
                         Picker(selection: $selectedProvider) {
@@ -3403,7 +3365,7 @@ struct ProfileView: View {
                 }
                 .listRowBackground(AppColors.appCard)
 
-                if selectedAccessMode == .bringYourOwnKey {
+                Group {
                     // Fallback Provider — retry on a second provider when the primary fails
                     Section {
                         Toggle(isOn: $fallbackEnabled) {
@@ -3738,6 +3700,11 @@ struct ProfileView: View {
             }
             .scrollContentBackground(.hidden)
             .background(AppColors.appBackground)
+            .safeAreaInset(edge: .bottom) {
+                BannerAdView()
+                    .frame(height: 50)
+                    .frame(maxWidth: .infinity)
+            }
             .navigationBarHidden(true)
             .sheet(item: $activeSheet) { sheet in
                 switch sheet {
@@ -3919,11 +3886,7 @@ struct ProfileView: View {
             .sheet(isPresented: $showCalculationMethods) {
                 CalculationMethodsView()
             }
-            .sheet(isPresented: $showFudAIPremiumPaywall) {
-                PaywallView()
-            }
             .onAppear {
-                selectedAccessMode = AIAccessSettings.mode
                 // Existing users (and anyone who has never recalculated) start with no baseline.
                 // Seed it to the current inputs so the "recalculate suggested" nudge only appears
                 // after a genuine change from here on, instead of firing on first launch.
@@ -3967,7 +3930,6 @@ struct ProfileView: View {
                     // Wipe Keychain API keys
                     AIProviderSettings.deleteAllData()
                     SpeechSettings.deleteAllData()
-                    AIAccessSettings.resetForDeleteAllData()
                     chatStore.reset()
                     // Wipe the widget snapshot out of the App Group container —
                     // it lives outside UserDefaults.standard and would otherwise
@@ -4086,9 +4048,9 @@ struct ProfileView: View {
     }
 
     /// AI-driven goal recalculation. Sends the profile + the app's formulas to the user's
-    /// selected provider (BYOK or Premium, transparently) and applies the returned calorie
+    /// selected provider and applies the returned calorie
     /// and protein/fat targets; carbs auto-balances so totals stay consistent. AI-only — when
-    /// the provider is unavailable (no key / Premium inactive / offline / bad response) the
+    /// the provider is unavailable (no key / offline / bad response) the
     /// existing goals are left unchanged and the user is told to fix their provider/key, with
     /// NO silent formula fallback. Then recomputes the optional "Other Nutrients"
     /// (fiber/sugar/sodium/…) via AI, leaving them untouched if that call fails (no clobbering
@@ -4314,202 +4276,6 @@ struct ProfileView: View {
         showAdaptiveGoalAlert = true
     }
 
-}
-
-private struct FudAIPremiumManagedSettingsSection: View {
-    @State private var quotaSnapshot: AIAccessQuotaSnapshot = .fallback
-    @State private var quotaError: String?
-    @State private var isLoadingQuota = false
-    @State private var selectedPremiumSpeechLanguage: SpeechLanguage = SpeechSettings.selectedLanguage(for: .deepgram)
-
-    var body: some View {
-        Section {
-            quotaRow(icon: "fork.knife", title: "Food Logs", bucket: quotaSnapshot.food)
-            quotaRow(icon: "waveform", title: "Voice", bucket: quotaSnapshot.speech)
-            quotaRow(icon: "message.fill", title: "Coach", bucket: quotaSnapshot.coach)
-            quotaRow(icon: "shield.lefthalf.filled", title: "Daily Safety Limit", bucket: quotaSnapshot.global)
-
-            Picker(selection: $selectedPremiumSpeechLanguage) {
-                ForEach(SpeechLanguage.allCases) { language in
-                    Text(language.displayName).tag(language)
-                }
-            } label: {
-                Label {
-                    Text("Voice Language")
-                } icon: {
-                    Image(systemName: "globe")
-                        .foregroundStyle(AppColors.calorie)
-                }
-            }
-            .pickerStyle(.menu)
-            .tint(.secondary)
-            .onChange(of: selectedPremiumSpeechLanguage) { _, newLanguage in
-                SpeechSettings.setLanguage(newLanguage, for: .deepgram)
-            }
-
-            Button {
-                Task { await refreshQuota() }
-            } label: {
-                Label(isLoadingQuota ? "Refreshing Usage" : "Refresh Usage", systemImage: "arrow.clockwise")
-            }
-            .disabled(isLoadingQuota)
-
-            if let quotaError {
-                Text(quotaError)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-        } header: {
-            Text("Fud AI Premium")
-        } footer: {
-            Text("Premium requests use Fud AI's Gemini and Deepgram proxy with daily usage limits. BYOK provider, fallback, and speech API key settings are hidden while Premium is selected and reappear when you switch back to Bring Your Own Key.")
-        }
-        .listRowBackground(AppColors.appCard)
-        .task {
-            selectedPremiumSpeechLanguage = SpeechSettings.selectedLanguage(for: .deepgram)
-            await refreshQuota()
-        }
-    }
-
-    private func quotaRow(icon: String, title: String, bucket: AIAccessQuotaSnapshot.Bucket) -> some View {
-        HStack {
-            Label {
-                Text(title)
-            } icon: {
-                Image(systemName: icon)
-                    .foregroundStyle(AppColors.calorie)
-            }
-            Spacer()
-            Text("\(bucket.remaining)/\(bucket.limit) left")
-                .foregroundStyle(.secondary)
-        }
-    }
-
-    private func refreshQuota() async {
-        guard AIAccessSettings.hasActivePremiumEntitlement else { return }
-        isLoadingQuota = true
-        quotaError = nil
-        do {
-            quotaSnapshot = try await FudAIProxyClient.quotaSnapshot()
-        } catch {
-            quotaError = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
-        }
-        isLoadingQuota = false
-    }
-}
-
-private struct AIAccessSettingsSection: View {
-    @Environment(StoreManager.self) private var storeManager
-    @Binding var selectedAccessMode: AIAccessMode
-    @Binding var showFudAIPremiumPaywall: Bool
-
-    var body: some View {
-        Section {
-            Picker(selection: $selectedAccessMode) {
-                ForEach(AIAccessMode.allCases) { mode in
-                    Label(mode.displayName, systemImage: mode.icon).tag(mode)
-                }
-            } label: {
-                Label {
-                    Text("Mode")
-                } icon: {
-                    Image(systemName: selectedAccessMode.icon)
-                        .foregroundStyle(AppColors.calorie)
-                }
-            }
-            .pickerStyle(.menu)
-            .tint(.secondary)
-            .onChange(of: selectedAccessMode) { _, newMode in
-                AIAccessSettings.mode = newMode
-                if newMode == .fudAIPremium && !storeManager.isSubscribed {
-                    showFudAIPremiumPaywall = true
-                }
-            }
-
-            statusRow
-            actionButton
-
-            if selectedAccessMode == .fudAIPremium {
-                Button {
-                    selectedAccessMode = .bringYourOwnKey
-                    AIAccessSettings.mode = .bringYourOwnKey
-                } label: {
-                    Label {
-                        Text("Switch to BYOK")
-                    } icon: {
-                        Image(systemName: "key.fill")
-                            .foregroundStyle(AppColors.calorie)
-                    }
-                }
-                .tint(.primary)
-            }
-        } header: {
-            Text("AI Access")
-        } footer: {
-            Text("BYOK is free if you bring your own AI keys. Premium is optional no-key access: $6.99/week or $199.99/year. Switching to BYOK does not cancel an active subscription.")
-        }
-        .listRowBackground(AppColors.appCard)
-        .task {
-            await storeManager.checkEntitlements()
-        }
-    }
-
-    private var statusRow: some View {
-        HStack {
-            Label {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(selectedAccessMode.displayName)
-                    Text(statusText)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-            } icon: {
-                Image(systemName: selectedAccessMode.icon)
-                    .foregroundStyle(AppColors.calorie)
-            }
-            Spacer()
-            if storeManager.isSubscribed && selectedAccessMode == .fudAIPremium {
-                Text(storeManager.currentPlanName)
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(AppColors.calorie)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
-                    .background(Capsule().fill(AppColors.calorie.opacity(0.12)))
-            }
-        }
-    }
-
-    private var statusText: String {
-        if selectedAccessMode == .fudAIPremium {
-            return storeManager.isSubscribed ? "Premium active" : "Subscription required"
-        }
-        return "Use your saved provider keys"
-    }
-
-    private var actionButton: some View {
-        Button {
-            if storeManager.isSubscribed {
-                openSubscriptionManagement()
-            } else {
-                selectedAccessMode = .fudAIPremium
-                AIAccessSettings.mode = .fudAIPremium
-                showFudAIPremiumPaywall = true
-            }
-        } label: {
-            Label {
-                Text(storeManager.isSubscribed ? "Manage Subscription" : "Upgrade to Premium")
-            } icon: {
-                Image(systemName: storeManager.isSubscribed ? "creditcard.fill" : "sparkles")
-                    .foregroundStyle(AppColors.calorie)
-            }
-        }
-        .tint(.primary)
-    }
-
-    private func openSubscriptionManagement() {
-        guard let url = URL(string: "https://apps.apple.com/account/subscriptions") else { return }
-        UIApplication.shared.open(url)
-    }
 }
 
 private struct ThemeColorSettingsView: View {

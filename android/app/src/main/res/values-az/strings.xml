@@ -411,6 +411,7 @@
     <string name="coach_title">Məşqçi</string>
     <string name="coach_reset_chat_a11y">Söhbəti sıfırla</string>
     <string name="coach_send_a11y">Göndər</string>
+    <string name="coach_input_voice_a11y">Səsli daxiletmə</string>
     <string name="coach_input_placeholder">Məşqçidən soruş…</string>
     <string name="coach_empty_title">Məşqçindən soruş</string>
     <string name="coach_empty_subtitle">Məşqçin çəki tarixçəni, kalori qeydlərini və məqsədlərini görə bilər. Gözlənilən çəki, nə yeməli və hədəfə necə çatacağın barədə soruş.</string>

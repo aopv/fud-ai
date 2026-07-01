@@ -254,7 +254,7 @@ private fun HomeCardsRow(
         Column(Modifier.weight(1f)) {
             Text("Home Nutrient Cards", fontSize = 17.sp)
             Text(
-                selected.joinToString(" / ") { it.displayName },
+                selected.joinToString(", ") { it.displayName },
                 fontSize = 13.sp,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
             )
@@ -280,14 +280,15 @@ private fun HomeTopNutrientPickerDialog(
         draft = if (nutrient in draft) {
             if (draft.size <= 1) draft else draft - nutrient
         } else {
-            if (draft.size >= 3) draft else draft + nutrient
+            // iOS swaps out the last when full (removeLast + append) rather than ignoring.
+            if (draft.size >= 4) draft.dropLast(1) + nutrient else draft + nutrient
         }
     }
 
     FudGlassDialog(onDismissRequest = onDismiss) {
-        Text("Home Nutrient Cards", fontSize = 22.sp, fontWeight = FontWeight.Bold)
+        Text("Home Nutrients", fontSize = 22.sp, fontWeight = FontWeight.Bold)
         Text(
-            "Choose up to 3 cards for the top of Home.",
+            "Pick exactly four nutrients for the Home summary row.",
             fontSize = 14.sp,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.62f)
         )

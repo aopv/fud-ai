@@ -1,9 +1,482 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "" : {
-
+    "Set Up Your AI" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إعداد الذكاء الاصطناعي الخاص بك"
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öz AI-ni Quraşdır"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Richte deine KI ein"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configura tu IA"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configure ton IA"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अपना AI सेट अप करें"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configura la tua IA"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIをセットアップ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 설정하기"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stel je AI in"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skonfiguruj swoje AI"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configure sua IA"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configurează-ți AI-ul"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Настрой свой ИИ"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "设置你的 AI"
+          }
+        }
+      }
     },
+    "Fud AI is now completely free — the optional Premium subscription has been removed." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أصبح Fud AI الآن مجانيًا بالكامل — تمت إزالة اشتراك Premium الاختياري."
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fud AI artıq tamamilə pulsuzdur — istəyə bağlı Premium abunəliyi silindi."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fud AI ist jetzt komplett kostenlos — das optionale Premium-Abo wurde entfernt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fud AI ahora es completamente gratis — se ha eliminado la suscripción Premium opcional."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fud AI est désormais entièrement gratuit — l'abonnement Premium optionnel a été supprimé."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fud AI अब पूरी तरह मुफ़्त है — वैकल्पिक Premium सब्सक्रिप्शन हटा दिया गया है।"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fud AI ora è completamente gratis — l'abbonamento Premium opzionale è stato rimosso."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fud AIが完全に無料になりました — オプションのPremiumサブスクリプションは廃止されました。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fud AI가 이제 완전 무료예요 — 선택 사항이던 Premium 구독은 사라졌어요."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fud AI is nu volledig gratis — het optionele Premium-abonnement is verwijderd."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fud AI jest teraz całkowicie darmowe — opcjonalna subskrypcja Premium została usunięta."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Fud AI agora é totalmente gratuito — a assinatura Premium opcional foi removida."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fud AI este acum complet gratuit — abonamentul Premium opțional a fost eliminat."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fud AI теперь полностью бесплатное — необязательная подписка Premium удалена."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fud AI 现在完全免费 — 可选的高级版订阅已移除。"
+          }
+        }
+      }
+    },
+    "AI features run on your own provider key — add a free Gemini, OpenAI, Groq, or other supported key in onboarding or Settings." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تعمل ميزات الذكاء الاصطناعي عبر مفتاح المزوّد الخاص بك — أضِف مجانًا مفتاح Gemini أو OpenAI أو Groq أو أي مفتاح آخر مدعوم أثناء الإعداد أو من الإعدادات."
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Süni intellekt funksiyaları sənin öz provayder açarınla işləyir — ilkin quraşdırma zamanı və ya Parametrlərdə pulsuz Gemini, OpenAI, Groq və ya digər dəstəklənən açar əlavə et."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KI-Funktionen laufen mit deinem eigenen Anbieter-Schlüssel — füge beim Onboarding oder in den Einstellungen einen kostenlosen Gemini-, OpenAI-, Groq- oder anderen unterstützten Schlüssel hinzu."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las funciones de IA usan tu propia clave de proveedor — añade una clave gratuita de Gemini, OpenAI, Groq u otra compatible en la configuración inicial o en Ajustes."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les fonctionnalités d'IA fonctionnent avec ta propre clé de fournisseur — ajoute une clé gratuite Gemini, OpenAI, Groq ou une autre clé prise en charge lors de la configuration ou dans les Réglages."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI फ़ीचर्स आपकी अपनी प्रोवाइडर key से चलते हैं — ऑनबोर्डिंग या सेटिंग्स में एक मुफ़्त Gemini, OpenAI, Groq, या कोई दूसरी सपोर्टेड key जोड़ें।"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le funzioni IA funzionano con la chiave del tuo provider — aggiungi una chiave gratuita di Gemini, OpenAI, Groq o di un altro provider supportato durante la configurazione iniziale o in Impostazioni."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI機能はご自身のプロバイダーキーで動作します — Gemini、OpenAI、Groq などの無料の対応キーを、初期設定または設定で追加してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 기능은 직접 입력한 제공업체 키로 작동해요 — 온보딩이나 설정에서 무료 Gemini, OpenAI, Groq 또는 지원되는 다른 키를 추가하세요."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI-functies werken met je eigen providersleutel — voeg tijdens de onboarding of in Instellingen een gratis Gemini-, OpenAI-, Groq- of andere ondersteunde sleutel toe."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Funkcje AI działają w oparciu o Twój własny klucz dostawcy — dodaj darmowy klucz Gemini, OpenAI, Groq lub innego obsługiwanego dostawcy we wprowadzeniu lub w Ustawieniach."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os recursos de IA funcionam com a chave do seu próprio provedor — adicione uma chave gratuita do Gemini, OpenAI, Groq ou de outro provedor compatível na introdução ou nos Ajustes."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Funcțiile AI rulează cu propria ta cheie de furnizor — adaugă o cheie gratuită Gemini, OpenAI, Groq sau alta acceptată în configurarea inițială sau în Setări."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ИИ-функции работают на твоём собственном ключе провайдера — добавь бесплатный ключ Gemini, OpenAI, Groq или другого поддерживаемого провайдера при первом запуске или в настройках."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 功能现在使用你自己的提供商密钥运行 — 在引导设置或设置中添加免费的 Gemini、OpenAI、Groq 或其他受支持的密钥。"
+          }
+        }
+      }
+    },
+    "Setting up AI is simpler: onboarding and Settings now focus on connecting your own provider key." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أصبح إعداد الذكاء الاصطناعي أبسط: يركّز الإعداد والإعدادات الآن على ربط مفتاح المزوّد الخاص بك."
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Süni intellekti qurmaq daha sadədir: ilkin quraşdırma və Parametrlər artıq sənin öz provayder açarını qoşmağa yönəlib."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die KI-Einrichtung ist einfacher: Onboarding und Einstellungen konzentrieren sich jetzt darauf, deinen eigenen Anbieter-Schlüssel zu verbinden."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configurar la IA es más sencillo: la configuración inicial y los Ajustes ahora se centran en conectar tu propia clave de proveedor."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configurer l'IA est plus simple : la configuration initiale et les Réglages se concentrent désormais sur la connexion de ta propre clé de fournisseur."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI सेटअप करना अब और आसान है: ऑनबोर्डिंग और सेटिंग्स अब आपकी अपनी प्रोवाइडर key कनेक्ट करने पर फ़ोकस करते हैं।"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configurare l'IA è più semplice: la configurazione iniziale e le Impostazioni ora si concentrano sul collegamento della chiave del tuo provider."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIのセットアップがより簡単になりました。初期設定と設定は、ご自身のプロバイダーキーの接続に重点を置くようになりました。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 설정이 더 간단해졌어요. 이제 온보딩과 설정은 직접 입력한 제공업체 키 연결에 집중해요."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI instellen is eenvoudiger: onboarding en Instellingen draaien nu om het verbinden van je eigen providersleutel."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konfiguracja AI jest prostsza: wprowadzenie i Ustawienia skupiają się teraz na podłączeniu Twojego własnego klucza dostawcy."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configurar a IA ficou mais simples: a introdução e os Ajustes agora focam em conectar a chave do seu próprio provedor."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configurarea AI este mai simplă: configurarea inițială și Setările se concentrează acum pe conectarea propriei tale chei de furnizor."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Настроить ИИ стало проще: при первом запуске и в настройках теперь всё сосредоточено на подключении твоего собственного ключа провайдера."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "设置 AI 更简单了：引导设置和设置现在专注于连接你自己的提供商密钥。"
+          }
+        }
+      }
+    },
+    "As always, your food log, weight and body history, and API keys stay on your device." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "كالعادة، يبقى سجلّ طعامك وسجلّ وزنك وقياسات جسمك ومفاتيح API على جهازك."
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Həmişəki kimi, qida jurnalın, çəki və bədən tarixçən, həmçinin API açarların cihazında qalır."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wie immer bleiben dein Ernährungstagebuch, dein Gewichts- und Körperverlauf sowie deine API-Schlüssel auf deinem Gerät."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Como siempre, tu registro de comidas, tu historial de peso y corporal, y tus claves de API permanecen en tu dispositivo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comme toujours, ton journal alimentaire, ton historique de poids et de mensurations, ainsi que tes clés API restent sur ton appareil."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "हमेशा की तरह, आपका food log, वज़न और बॉडी का इतिहास, और API keys आपके डिवाइस पर ही रहते हैं।"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Come sempre, il tuo diario alimentare, la cronologia di peso e corpo e le chiavi API restano sul tuo dispositivo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "これまで通り、食事記録、体重や身体の履歴、APIキーはすべてこの端末に残ります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "언제나처럼 식사 일지, 체중 및 신체 기록, API 키는 모두 기기에만 보관돼요."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoals altijd blijven je voedingslogboek, gewichts- en lichaamsgeschiedenis en API-sleutels op je apparaat."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jak zawsze, Twój dziennik posiłków, historia wagi i ciała oraz klucze API pozostają na Twoim urządzeniu."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Como sempre, seu diário alimentar, histórico de peso e corporal e chaves de API ficam no seu dispositivo."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ca întotdeauna, jurnalul tău alimentar, istoricul greutății și al corpului și cheile API rămân pe dispozitivul tău."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Как всегда, твой дневник питания, история веса и тела, а также ключи API остаются на твоём устройстве."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一如既往，你的饮食记录、体重和身体记录以及 API 密钥都保留在你的设备上。"
+          }
+        }
+      }
+    },
+    "" : {},
     "!" : {
       "comment" : "An exclamation mark.",
       "isCommentAutoGenerated" : true,
@@ -806,9 +1279,7 @@
         }
       }
     },
-    "About Energy Burn" : {
-
-    },
+    "About Energy Burn" : {},
     "About Energy Burn Goals" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -3052,9 +3523,7 @@
         }
       }
     },
-    "At most 2 macros can be locked at a time, so one stays free to balance. Unlock another macro first (tap its lock icon)." : {
-
-    },
+    "At most 2 macros can be locked at a time, so one stays free to balance. Unlock another macro first (tap its lock icon)." : {},
     "At most 2 macros can be pinned at a time. Unpin another macro first (tap its lock icon)." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -4195,46 +4664,6 @@
         }
       }
     },
-    "Bring Your Own Key" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Własny klucz"
-          }
-        }
-      }
-    },
-    "BYOK" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Własny klucz"
-          }
-        }
-      }
-    },
-    "BYOK is free if you bring your own AI keys. Premium is optional no-key access: $6.99/week or $199.99/year. Switching to BYOK does not cancel an active subscription." : {
-      "comment" : "A footer for the AI Access section.",
-      "isCommentAutoGenerated" : true,
-      "localizations" : {
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "BYOK jest darmowe, jeśli używasz własnych kluczy AI. Premium to opcjonalny dostęp bez klucza: 6,99 USD/tydzień lub 199,99 USD/rok. Przełączenie na BYOK nie anuluje aktywnej subskrypcji."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "BYOK бесплатен, если вы используете собственные ключи ИИ. Premium — это необязательный доступ без ключей: 6,99 $ в неделю или 199,99 $ в год. Переключение на BYOK не отменяет активную подписку."
-          }
-        }
-      }
-    },
     "Calcium" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4536,9 +4965,7 @@
         }
       }
     },
-    "Calories is locked and both other macros are locked, so there's nothing left to absorb this change. Unlock calories or another macro, then try again." : {
-
-    },
+    "Calories is locked and both other macros are locked, so there's nothing left to absorb this change. Unlock calories or another macro, then try again." : {},
     "Camera" : {
       "localizations" : {
         "ar" : {
@@ -4755,9 +5182,7 @@
         }
       }
     },
-    "Can't Rebalance" : {
-
-    },
+    "Can't Rebalance" : {},
     "Cancel" : {
       "localizations" : {
         "ar" : {
@@ -5076,24 +5501,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cholesterol"
-          }
-        }
-      }
-    },
-    "Choose 3 Nutrients" : {
-      "comment" : "A heading for a section of a sheet that lets the user choose 3 nutrients to display in the Home view.",
-      "isCommentAutoGenerated" : true,
-      "localizations" : {
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wybierz 3 składniki odżywcze"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Выберите 3 нутриента"
           }
         }
       }
@@ -7760,9 +8167,7 @@
         }
       }
     },
-    "Delts Workout Tracker on the App Store" : {
-
-    },
+    "Delts Workout Tracker on the App Store" : {},
     "Derived" : {
       "comment" : "A section title for the body measurements that are calculated by the",
       "isCommentAutoGenerated" : true
@@ -8538,9 +8943,7 @@
         }
       }
     },
-    "Energy Burn" : {
-
-    },
+    "Energy Burn" : {},
     "Energy Burn Goals" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -9198,12 +9601,8 @@
         }
       }
     },
-    "Experimental · needs Apple Health" : {
-
-    },
-    "Experimental. About once a week when you open the app, Fud AI automatically re-runs the full goal calculation — the same one the Recalculate button uses — from your profile, recent logged food, and weight trend. If Energy Burn is on, it uses your measured burn as the maintenance anchor. It skips silently if the AI is unavailable. Turning this off restores the targets from before Adaptive Goals first changed them. This is not medical advice." : {
-
-    },
+    "Experimental · needs Apple Health" : {},
+    "Experimental. About once a week when you open the app, Fud AI automatically re-runs the full goal calculation — the same one the Recalculate button uses — from your profile, recent logged food, and weight trend. If Energy Burn is on, it uses your measured burn as the maintenance anchor. It skips silently if the AI is unavailable. Turning this off restores the targets from before Adaptive Goals first changed them. This is not medical advice." : {},
     "Experimental. About once a week, Fud AI checks your recent weight trend against your target pace and makes a small calorie correction. When Apple Health is connected, it also factors your measured energy burned (Active + Basal). Pinned macros stay pinned; unlocked macros auto-balance. Turning this off restores the targets from before Adaptive Goals first changed them. This is not medical advice." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -9316,9 +9715,7 @@
         }
       }
     },
-    "Experimental. When on, Fud AI uses your measured calories burned from Apple Health — a 14-day average of Active + Basal energy — as your maintenance (TDEE) anchor when calculating goals, instead of the formula estimate. No AI is used to read your burn. Requires Apple Health. Works with the Recalculate button and with Adaptive Goals." : {
-
-    },
+    "Experimental. When on, Fud AI uses your measured calories burned from Apple Health — a 14-day average of Active + Basal energy — as your maintenance (TDEE) anchor when calculating goals, instead of the formula estimate. No AI is used to read your burn. Requires Apple Health. Works with the Recalculate button and with Adaptive Goals." : {},
     "Extra Active" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -11014,24 +11411,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fud AI 是一款估算工具,而非临床设备。预测公式存在固有误差(BMR 通常约为 ±10%)。在对饮食做出重大改变之前,请咨询注册营养师、医生或运动医学专业人士 — 尤其是当你患有疾病、正在怀孕或哺乳、未满 18 岁或正在应对饮食失调问题时。"
-          }
-        }
-      }
-    },
-    "Fud AI Premium" : {
-      "comment" : "A section header for Fud AI Premium settings.",
-      "isCommentAutoGenerated" : true,
-      "localizations" : {
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fud AI Premium"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fud AI Premium"
           }
         }
       }
@@ -16310,24 +16689,6 @@
         }
       }
     },
-    "Manage Subscription" : {
-      "comment" : "A label for a button that opens the user's subscription management app.",
-      "isCommentAutoGenerated" : true,
-      "localizations" : {
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zarządzaj subskrypcją"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Управление подпиской"
-          }
-        }
-      }
-    },
     "Manual Entry" : {
       "localizations" : {
         "pl" : {
@@ -16344,9 +16705,7 @@
         }
       }
     },
-    "Max 2 Macros Locked" : {
-
-    },
+    "Max 2 Macros Locked" : {},
     "Max 2 Pinned" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -19027,97 +19386,97 @@
         }
       }
     },
-    "Onboarding now sets up your AI — Fud AI Premium or your own provider key — and builds your starting plan with it." : {
+    "Onboarding now sets up your AI with your own provider key and builds your starting plan with it." : {
       "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "تعمل عملية الإعداد الآن على تهيئة الذكاء الاصطناعي الخاص بك — سواء عبر Fud AI Premium أو مفتاح المزوّد الخاص بك — وتبني خطتك المبدئية باستخدامه."
+            "value" : "تعمل عملية الإعداد الآن على تهيئة الذكاء الاصطناعي الخاص بك عبر مفتاح المزوّد الخاص بك، وتبني خطتك المبدئية باستخدامه."
           }
         },
         "az" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "İlkin quraşdırma indi süni intellektinizi — Fud AI Premium və ya öz provayder açarınızı — qurur və onunla başlanğıc planınızı tərtib edir."
+            "value" : "İlkin quraşdırma indi süni intellektinizi öz provayder açarınızla qurur və onunla başlanğıc planınızı tərtib edir."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Das Onboarding richtet jetzt deine KI ein – Fud AI Premium oder dein eigener Anbieter-Schlüssel – und erstellt damit deinen Startplan."
+            "value" : "Das Onboarding richtet jetzt deine KI mit deinem eigenen Anbieter-Schlüssel ein und erstellt damit deinen Startplan."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La configuración inicial ahora prepara tu IA (Fud AI Premium o tu propia clave de proveedor) y crea con ella tu plan inicial."
+            "value" : "La configuración inicial ahora prepara tu IA con tu propia clave de proveedor y crea con ella tu plan inicial."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La configuration initiale met maintenant en place votre IA — Fud AI Premium ou votre propre clé de fournisseur — et élabore votre plan de départ avec elle."
+            "value" : "La configuration initiale met maintenant en place votre IA avec votre propre clé de fournisseur et élabore votre plan de départ avec elle."
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ऑनबोर्डिंग अब आपका AI सेट करती है — Fud AI Premium या आपकी अपनी प्रोवाइडर key — और उसी से आपकी शुरुआती योजना बनाती है।"
+            "value" : "ऑनबोर्डिंग अब आपका AI आपकी अपनी प्रोवाइडर key से सेट करती है और उसी से आपकी शुरुआती योजना बनाती है।"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La configurazione iniziale ora imposta la tua IA - Fud AI Premium o la chiave del tuo provider - e crea con essa il tuo piano di partenza."
+            "value" : "La configurazione iniziale ora imposta la tua IA con la chiave del tuo provider e crea con essa il tuo piano di partenza."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "初期設定でAI（Fud AI Premiumまたはご自身のプロバイダーキー）をセットアップし、それを使って最初のプランを作成するようになりました。"
+            "value" : "初期設定でご自身のプロバイダーキーを使ってAIをセットアップし、それをもとに最初のプランを作成するようになりました。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이제 온보딩에서 AI(Fud AI Premium 또는 직접 입력한 제공업체 키)를 설정하고, 이를 사용해 초기 플랜을 만들어 줍니다."
+            "value" : "이제 온보딩에서 직접 입력한 제공업체 키로 AI를 설정하고, 이를 사용해 초기 플랜을 만들어 줍니다."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "De onboarding stelt nu je AI in — Fud AI Premium of je eigen providersleutel — en bouwt daarmee je startplan op."
+            "value" : "De onboarding stelt nu je AI in met je eigen providersleutel en bouwt daarmee je startplan op."
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wprowadzenie konfiguruje teraz Twoją AI — Fud AI Premium lub własny klucz dostawcy — i na jej podstawie tworzy Twój początkowy plan."
+            "value" : "Wprowadzenie konfiguruje teraz Twoją AI za pomocą Twojego własnego klucza dostawcy i na jej podstawie tworzy Twój początkowy plan."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A introdução agora configura sua IA — o Fud AI Premium ou a chave do seu próprio provedor — e cria seu plano inicial com ela."
+            "value" : "A introdução agora configura sua IA com a chave do seu próprio provedor e cria seu plano inicial com ela."
           }
         },
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Configurarea inițială îți pregătește acum AI-ul — Fud AI Premium sau propria ta cheie de furnizor — și îți creează cu ajutorul lui planul de pornire."
+            "value" : "Configurarea inițială îți pregătește acum AI-ul cu propria ta cheie de furnizor și îți creează cu ajutorul lui planul de pornire."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Онбординг теперь настраивает ваш ИИ — Fud AI Premium или ваш собственный ключ провайдера — и строит с его помощью ваш начальный план."
+            "value" : "Онбординг теперь настраивает ваш ИИ с помощью вашего собственного ключа провайдера и строит с его помощью ваш начальный план."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "引导设置现在会配置你的 AI（Fud AI Premium 或你自己的服务商密钥），并据此为你生成初始计划。"
+            "value" : "引导设置现在会使用你自己的服务商密钥配置你的 AI，并据此为你生成初始计划。"
           }
         }
       }
@@ -19783,24 +20142,6 @@
         }
       }
     },
-    "Pick exactly three nutrients for the Home summary row." : {
-      "comment" : "A description of the Home nutrients picker.",
-      "isCommentAutoGenerated" : true,
-      "localizations" : {
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wybierz dokładnie trzy składniki do wiersza podsumowania na ekranie głównym."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Выберите только три нутриента для отображения на главном экране."
-          }
-        }
-      }
-    },
     "Please consult with a doctor" : {
       "localizations" : {
         "ar" : {
@@ -20042,56 +20383,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "预测"
-          }
-        }
-      }
-    },
-    "Premium" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Premium"
-          }
-        }
-      }
-    },
-    "Premium is the easiest setup. BYOK stays free if you want to use your own AI key." : {
-      "localizations" : {
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Premium to najprostsza konfiguracja. BYOK pozostaje darmowe, jeśli chcesz używać własnego klucza AI."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Premium — самая простая настройка. BYOK остается бесплатным, если вы хотите использовать собственный ключ ИИ."
-          }
-        }
-      }
-    },
-    "Premium requests use Fud AI's Gemini and Deepgram proxy with daily usage limits. BYOK provider, fallback, and speech API key settings are hidden while Premium is selected and reappear when you switch back to Bring Your Own Key." : {
-      "comment" : "A footer for the Fud AI Premium section.",
-      "isCommentAutoGenerated" : true
-    },
-    "Premium requests use Fud AI's Gemini and Deepgram proxy with daily usage limits. Provider, model, fallback, and speech API key settings below apply only when AI Access is set to Bring Your Own Key." : {
-      "comment" : "A description of the premium features available in Fud.",
-      "extractionState" : "stale",
-      "isCommentAutoGenerated" : true,
-      "localizations" : {
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Żądania Premium używają proxy Gemini i Deepgram Fud AI z dziennymi limitami użycia. Ustawienia dostawcy, modelu, zapasu i klucza API mowy poniżej obowiązują tylko wtedy, gdy Dostęp AI jest ustawiony na Bring Your Own Key."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Запросы Premium используют прокси Fud AI для Gemini и Deepgram с дневными лимитами. Настройки провайдера, модели, резервного провайдера и ключа API для речи ниже применяются только тогда, когда доступ к ИИ установлен на Bring Your Own Key."
           }
         }
       }
@@ -22538,106 +22829,6 @@
         }
       }
     },
-    "Restore Purchases" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "استعادة المشتريات"
-          }
-        },
-        "az" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alışları Bərpa Et"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Käufe wiederherstellen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Restore Purchases"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Restaurar compras"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Restaurer les achats"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "खरीदारी पुनर्स्थापित करें"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ripristina acquisti"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "購入を復元"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "구매 복원"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aankopen herstellen"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Przywróć zakupy"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Restaurar compras"
-          }
-        },
-        "ro" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Restaurează achizițiile"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Восстановить покупки"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "恢复购买项目"
-          }
-        }
-      }
-    },
     "Retry" : {
       "comment" : "A button that retries loading a suggestion.",
       "isCommentAutoGenerated" : true,
@@ -23416,22 +23607,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Siedzący"
-          }
-        }
-      }
-    },
-    "See Premium Plans" : {
-      "localizations" : {
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zobacz plany Premium"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Посмотреть планы Premium"
           }
         }
       }
@@ -24870,106 +25045,6 @@
         }
       }
     },
-    "Subscribe" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "اشترك"
-          }
-        },
-        "az" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abunə Ol"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abonnieren"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Subscribe"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Suscribirse"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "S'abonner"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "सब्सक्राइब करें"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abbonati"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "登録する"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "구독"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abonneren"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Subskrybuj"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Assinar"
-          }
-        },
-        "ro" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abonează-te"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Подписаться"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "订阅"
-          }
-        }
-      }
-    },
     "Sugar" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -25233,24 +25308,6 @@
         }
       }
     },
-    "Switch to BYOK" : {
-      "comment" : "A button label that switches to Bring Your Own Key.",
-      "isCommentAutoGenerated" : true,
-      "localizations" : {
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Przełącz na BYOK"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Перейти на BYOK"
-          }
-        }
-      }
-    },
     "System" : {
       "localizations" : {
         "ar" : {
@@ -25464,9 +25521,7 @@
         }
       }
     },
-    "Tap to update" : {
-
-    },
+    "Tap to update" : {},
     "Target" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -26590,107 +26645,6 @@
         }
       }
     },
-    "Unlock Premium" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "افتح النسخة المميزة"
-          }
-        },
-        "az" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Premium-u Aç"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Premium freischalten"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Unlock Premium"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Desbloquear Premium"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Déverrouiller Premium"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "प्रीमियम अनलॉक करें"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sblocca Premium"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Premiumをアンロック"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "프리미엄 잠금 해제"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Premium ontgrendelen"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Odblokuj Premium"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Desbloquear Premium"
-          }
-        },
-        "ro" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Deblochează Premium"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Открыть Premium"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "解锁高级版"
-          }
-        }
-      }
-    },
     "Unlocked" : {
       "comment" : "A label for a lock icon that is unlocked.",
       "isCommentAutoGenerated" : true
@@ -26727,24 +26681,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Доступно обновление"
-          }
-        }
-      }
-    },
-    "Upgrade to Premium" : {
-      "comment" : "A button that opens the Fud AI Premium paywall.",
-      "isCommentAutoGenerated" : true,
-      "localizations" : {
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Przejdź na Premium"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Перейти на Premium"
           }
         }
       }
@@ -29992,6 +29928,196 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cynk"
+          }
+        }
+      }
+    },
+    "Choose 4 Nutrients" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اختر 4 عناصر غذائية"
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4 qida maddəsi seçin"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4 Nährstoffe auswählen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige 4 nutrientes"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisir 4 nutriments"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4 पोषक तत्व चुनें"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scegli 4 nutrienti"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "栄養素を4つ選択"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "영양소 4개 선택"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kies 4 voedingsstoffen"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wybierz 4 składniki odżywcze"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha 4 nutrientes"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alege 4 nutrienți"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выберите 4 нутриента"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择 4 种营养素"
+          }
+        }
+      }
+    },
+    "Pick exactly four nutrients for the Home summary row." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اختر أربعة عناصر غذائية بالضبط لصف الملخص في الشاشة الرئيسية."
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ana səhifə xülasə sətri üçün tam olaraq dörd qida maddəsi seçin."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle genau vier Nährstoffe für die Übersichtszeile auf dem Startbildschirm."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige exactamente cuatro nutrientes para la fila de resumen del inicio."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisissez exactement quatre nutriments pour la ligne de résumé de l'accueil."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "होम सारांश पंक्ति के लिए ठीक चार पोषक तत्व चुनें।"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scegli esattamente quattro nutrienti per la riga di riepilogo della Home."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ホームの概要行に表示する栄養素をちょうど4つ選んでください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "홈 요약 행에 표시할 영양소를 정확히 4개 선택하세요."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kies precies vier voedingsstoffen voor de samenvattingsrij op het startscherm."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wybierz dokładnie cztery składniki do wiersza podsumowania na ekranie głównym."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha exatamente quatro nutrientes para a linha de resumo da tela inicial."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alege exact patru nutrienți pentru rândul de rezumat de pe ecranul principal."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выберите ровно четыре нутриента для строки сводки на главном экране."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请为主页摘要行恰好选择四种营养素。"
           }
         }
       }

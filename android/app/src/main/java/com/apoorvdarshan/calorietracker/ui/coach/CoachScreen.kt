@@ -25,7 +25,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -66,6 +73,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -102,6 +110,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.apoorvdarshan.calorietracker.AppContainer
 import com.apoorvdarshan.calorietracker.models.ChatMessage
 import com.apoorvdarshan.calorietracker.ui.components.InAppCameraCaptureDialog
+import com.apoorvdarshan.calorietracker.models.SpeechLanguage
+import com.apoorvdarshan.calorietracker.models.SpeechProvider
 import com.apoorvdarshan.calorietracker.ui.navigation.BottomNavDockedControlPadding
 import com.apoorvdarshan.calorietracker.ui.theme.AppColors
 import java.io.ByteArrayOutputStream
@@ -118,7 +128,7 @@ import kotlinx.coroutines.delay
  *   - horizontal scrolling promptChips (always visible)
  *   - capsule input bar with gradient send button
  */
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun CoachScreen(container: AppContainer) {
     val vm: CoachViewModel = viewModel(factory = CoachViewModel.Factory(container))
@@ -160,9 +170,9 @@ fun CoachScreen(container: AppContainer) {
         }
     }
 
-    fun sendCurrentDraft() {
+    fun sendCurrentDraft(textOverride: String? = null) {
         val image = attachedImageBytes
-        val trimmed = input.trim()
+        val trimmed = (textOverride ?: input).trim()
         if (trimmed.isEmpty() && image == null) return
         if (ui.sending) return
         val imageForAi = image?.let { resizedJpeg(it, maxDimension = 1600, quality = 78) ?: it }
@@ -171,6 +181,19 @@ fun CoachScreen(container: AppContainer) {
         input = ""
         attachedImageBytes = null
         vm.send(trimmed, imageBytes = imageForAi, thumbnailBytes = thumbnail)
+    }
+
+    // Inline (WhatsApp-style) voice recorder — records with whatever STT provider
+    // the user has configured and drops the transcript straight into the send path.
+    val voiceScope = rememberCoroutineScope()
+    val voiceProvider by container.prefs.selectedSpeechProvider
+        .collectAsState(initial = SpeechProvider.NATIVE)
+    val voiceLanguage by container.prefs.selectedSpeechLanguage(voiceProvider)
+        .collectAsState(initial = SpeechLanguage.defaultFor(voiceProvider))
+    val voice = remember { CoachVoiceController(ctx, container, voiceScope) { text -> sendCurrentDraft(text) } }
+    LaunchedEffect(voiceProvider, voiceLanguage) {
+        voice.provider = voiceProvider
+        voice.nativeLocale = voiceLanguage.nativeLocaleTag()
     }
 
     LaunchedEffect(ui.messages.size, ui.sending) {
@@ -211,11 +234,25 @@ fun CoachScreen(container: AppContainer) {
             )
         }
     ) { padding ->
+        // The app is edge-to-edge, so the IME would otherwise overlay the input bar.
+        // Lift the whole column above the keyboard (imePadding) with a small gap; when
+        // the keyboard is down, keep the docked-nav clearance instead.
+        // Keyboard-down clearance = the nav-bar system inset (from the Scaffold) plus the
+        // docked-control padding, so the bar clears the floating bottom nav.
+        val restClearance = padding.calculateBottomPadding() + BottomNavDockedControlPadding
         Column(
             Modifier
                 .fillMaxSize()
-                .padding(padding)
-                .padding(bottom = BottomNavDockedControlPadding)
+                .padding(top = padding.calculateTopPadding())
+                // Track the keyboard rigidly: bottom inset = max(ime, rest clearance).
+                // windowInsetsPadding animates it in the layout phase, so the bar sits
+                // tight on the keyboard with no bounce and no floaty gap (a plain
+                // conditional pad jumps discretely against the smooth IME animation).
+                .windowInsetsPadding(
+                    WindowInsets.ime
+                        .union(WindowInsets(bottom = restClearance))
+                        .only(WindowInsetsSides.Bottom)
+                )
         ) {
             // Top region — empty state OR message list
             Box(
@@ -263,6 +300,7 @@ fun CoachScreen(container: AppContainer) {
                     photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
                 },
                 onCaptureImage = { openCamera() },
+                voice = voice,
                 onRemoveImage = { attachedImageBytes = null },
                 onSend = { sendCurrentDraft() }
             )
@@ -649,6 +687,7 @@ private fun InputBar(
     sending: Boolean,
     onPickImage: () -> Unit,
     onCaptureImage: () -> Unit,
+    voice: CoachVoiceController,
     onRemoveImage: () -> Unit,
     onSend: () -> Unit
 ) {
@@ -711,37 +750,53 @@ private fun InputBar(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            CoachMediaActions(
-                enabled = !sending,
-                onPickImage = onPickImage,
-                onCaptureImage = onCaptureImage
-            )
+            if (voice.phase != VoicePhase.Idle) {
+                // Recording: the media pill + text field are replaced by the live
+                // recording indicator (timer + slide-to-cancel hint / live text).
+                CoachRecordingIndicator(voice, Modifier.weight(1f))
+            } else {
+                CoachMediaActions(
+                    enabled = !sending,
+                    onPickImage = onPickImage,
+                    onCaptureImage = onCaptureImage
+                )
 
-            Box(Modifier.weight(1f).padding(horizontal = 2.dp, vertical = 8.dp)) {
-                if (value.isEmpty()) {
-                    Text(
-                        stringResource(R.string.coach_input_placeholder),
-                        fontSize = 17.sp,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.45f)
+                Box(Modifier.weight(1f).padding(horizontal = 2.dp, vertical = 8.dp)) {
+                    if (value.isEmpty()) {
+                        Text(
+                            stringResource(R.string.coach_input_placeholder),
+                            fontSize = 17.sp,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.45f)
+                        )
+                    }
+                    BasicTextField(
+                        value = value,
+                        onValueChange = onValueChange,
+                        textStyle = LocalTextStyle.current.copy(
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontSize = 17.sp,
+                            fontWeight = FontWeight.Normal
+                        ),
+                        cursorBrush = SolidColor(AppColors.Calorie),
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
+                        keyboardActions = KeyboardActions(onSend = { onSend() }),
+                        maxLines = 5,
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
-                BasicTextField(
-                    value = value,
-                    onValueChange = onValueChange,
-                    textStyle = LocalTextStyle.current.copy(
-                        color = MaterialTheme.colorScheme.onSurface,
-                        fontSize = 17.sp,
-                        fontWeight = FontWeight.Normal
-                    ),
-                    cursorBrush = SolidColor(AppColors.Calorie),
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
-                    keyboardActions = KeyboardActions(onSend = { onSend() }),
-                    maxLines = 5,
-                    modifier = Modifier.fillMaxWidth()
-                )
             }
 
-            SendButton(canSend = canSend, onClick = onSend)
+            // Trailing control. Keep the mic at a stable call site (the else branch)
+            // so a held press survives the left region swapping to the indicator.
+            when {
+                voice.phase == VoicePhase.Locked -> {
+                    CoachVoiceCancelButton { voice.cancel() }
+                    SendButton(canSend = true) { voice.stopAndSend() }
+                }
+                voice.phase == VoicePhase.Transcribing -> Unit
+                canSend -> SendButton(canSend = canSend, onClick = onSend)
+                else -> CoachMicButton(voice)
+            }
         }
     }
 }

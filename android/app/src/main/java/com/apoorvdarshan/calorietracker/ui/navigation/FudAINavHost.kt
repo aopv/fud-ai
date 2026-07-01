@@ -4,15 +4,22 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import kotlinx.coroutines.flow.first
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -30,6 +37,14 @@ import com.apoorvdarshan.calorietracker.ui.progress.ProgressScreen
 import com.apoorvdarshan.calorietracker.ui.settings.CalculationMethodsScreen
 import com.apoorvdarshan.calorietracker.ui.settings.OptionalNutrientGoalsScreen
 import com.apoorvdarshan.calorietracker.ui.settings.SettingsScreen
+
+/**
+ * Increments each time the app is opened: 1 on cold launch, then +1 on every
+ * return from the background (ON_START after a real ON_STOP). Read by the Home
+ * gauge + macro bars to replay their fill-from-zero reveal. It lives above the
+ * NavHost, so tab switches (which recompose Home) never change it.
+ */
+val LocalLaunchFillEpoch = compositionLocalOf { 1 }
 
 @Composable
 fun FudAINavHost(
@@ -63,6 +78,25 @@ fun FudAINavHost(
         }
     }
 
+    // App-open epoch for the Home fill-from-zero reveal. Bumped only on ON_START
+    // that follows an ON_STOP (a genuine background -> foreground return), so
+    // transient pauses (notification shade, permission dialog) don't retrigger it.
+    val lifecycleOwner = LocalLifecycleOwner.current
+    var launchFillEpoch by remember { mutableIntStateOf(1) }
+    var hasStopped by remember { mutableStateOf(false) }
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_STOP -> hasStopped = true
+                Lifecycle.Event.ON_START -> if (hasStopped) { launchFillEpoch++; hasStopped = false }
+                else -> {}
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+
+    CompositionLocalProvider(LocalLaunchFillEpoch provides launchFillEpoch) {
     Scaffold(
         bottomBar = {
             if (showTabs) {
@@ -119,6 +153,7 @@ fun FudAINavHost(
                 composable(FudAIRoutes.ABOUT) { AboutScreen(container = container) }
             }
         }
+    }
     }
 }
 

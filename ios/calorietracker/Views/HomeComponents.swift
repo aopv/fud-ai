@@ -160,7 +160,7 @@ enum HomeTopNutrient: String, CaseIterable, Identifiable {
     case omega3
 
     static let storageKey = "homeTopNutrients"
-    static let defaultSelection: [HomeTopNutrient] = [.protein, .carbs, .fat]
+    static let defaultSelection: [HomeTopNutrient] = [.protein, .carbs, .fat, .fiber]
 
     var id: String { rawValue }
 
@@ -299,14 +299,14 @@ enum HomeTopNutrient: String, CaseIterable, Identifiable {
         for nutrient in parsed + defaultSelection {
             guard !selection.contains(nutrient) else { continue }
             selection.append(nutrient)
-            if selection.count == 3 { break }
+            if selection.count == 4 { break }
         }
         return selection
     }
 
     static func storageValue(for nutrients: [HomeTopNutrient]) -> String {
         nutrients
-            .prefix(3)
+            .prefix(4)
             .map(\.rawValue)
             .joined(separator: ",")
     }
@@ -359,9 +359,9 @@ struct HomeNutrientPickerSheet: View {
                         .buttonStyle(.plain)
                     }
                 } header: {
-                    Text("Choose 3 Nutrients")
+                    Text("Choose 4 Nutrients")
                 } footer: {
-                    Text("Pick exactly three nutrients for the Home summary row.")
+                    Text("Pick exactly four nutrients for the Home summary row.")
                 }
                 .listRowBackground(AppColors.appCard)
             }
@@ -387,7 +387,7 @@ struct HomeNutrientPickerSheet: View {
                         dismiss()
                     }
                     .tint(AppColors.calorie)
-                    .disabled(draftSelection.count != 3)
+                    .disabled(draftSelection.count != 4)
                 }
             }
         }
@@ -396,7 +396,7 @@ struct HomeNutrientPickerSheet: View {
     private func toggle(_ nutrient: HomeTopNutrient) {
         if let index = draftSelection.firstIndex(of: nutrient) {
             draftSelection.remove(at: index)
-        } else if draftSelection.count < 3 {
+        } else if draftSelection.count < 4 {
             draftSelection.append(nutrient)
         } else {
             draftSelection.removeLast()
@@ -477,5 +477,175 @@ struct MacroCard: View {
             return "\(Int(value.rounded()))"
         }
         return MacroValueFormatter.string(value)
+    }
+}
+
+/// Semicircle speedometer-style gauge for total calories — segmented (dashed) accent arc with the
+/// calorie count, "Calories" label, and remaining read out in the center. Flat, no card.
+struct CalorieGauge: View {
+    let eaten: Int
+    let goal: Int
+    let remaining: Int
+    /// Increments when the app is opened; drives the fill-from-zero reveal.
+    var launchFillEpoch: Int = 0
+
+    private let diameter: CGFloat = 260
+    private let lineWidth: CGFloat = 16
+
+    @State private var shownProgress: Double = 0
+    @State private var lastEpoch = 0
+
+    private var progress: Double {
+        goal > 0 ? min(Double(eaten) / Double(goal), 1.0) : 0
+    }
+
+    private var dashedStroke: StrokeStyle {
+        StrokeStyle(lineWidth: lineWidth, lineCap: .butt, dash: [4, 6])
+    }
+
+    var body: some View {
+        ZStack {
+            // Top-semicircle track (9 o'clock -> 12 -> 3 o'clock). The .padding keeps the stroke
+            // inside the frame so the arc ends aren't clipped flat on each side.
+            Circle()
+                .trim(from: 0.5, to: 1.0)
+                .stroke(AppColors.calorie.opacity(0.12), style: dashedStroke)
+                .padding(lineWidth / 2)
+
+            // Progress sweep — driven by shownProgress so it fills from zero on app open.
+            Circle()
+                .trim(from: 0.5, to: 0.5 + 0.5 * shownProgress)
+                .stroke(
+                    LinearGradient(colors: AppColors.calorieGradient,
+                                   startPoint: .leading, endPoint: .trailing),
+                    style: dashedStroke
+                )
+                .padding(lineWidth / 2)
+                .shadow(color: AppColors.calorie.opacity(0.35), radius: 6, y: 2)
+                // Implicit animation on the trim — the reliable way to animate a
+                // Shape's .trim (withAnimation from an async block does not take here).
+                .animation(.spring(response: 0.9, dampingFraction: 0.85), value: shownProgress)
+
+            // Readout, lifted up into the dome so nothing is cropped at the bottom.
+            VStack(spacing: 2) {
+                Text("Calories")
+                    .font(.system(.caption, design: .rounded, weight: .semibold))
+                    .textCase(.uppercase)
+                    .tracking(0.5)
+                    .foregroundStyle(.secondary)
+
+                Text("\(eaten)")
+                    .font(.system(size: 54, weight: .bold, design: .rounded))
+                    .foregroundStyle(
+                        LinearGradient(colors: AppColors.calorieGradient,
+                                       startPoint: .topLeading, endPoint: .bottomTrailing)
+                    )
+                    .contentTransition(.numericText())
+                    .animation(.snappy, value: eaten)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
+
+                HStack(spacing: 5) {
+                    Image(systemName: "flame.fill")
+                        .font(.system(size: 11, weight: .semibold))
+                    Text("\(remaining) left")
+                        .font(.system(.footnote, design: .rounded, weight: .semibold))
+                }
+                .foregroundStyle(AppColors.calorie)
+            }
+            .offset(y: -diameter * 0.14)
+        }
+        .frame(width: diameter, height: diameter)
+        .frame(height: diameter * 0.58, alignment: .top)
+        .clipped()
+        .onAppear {
+            if lastEpoch != launchFillEpoch { playLaunchFill() } else { shownProgress = progress }
+        }
+        .onChange(of: launchFillEpoch) { _, _ in playLaunchFill() }
+        .onChange(of: progress) { _, newValue in shownProgress = newValue }
+    }
+
+    /// Snap to empty, then let the arc's implicit .animation spring it up to the
+    /// real value on the next runloop tick (so the 0 frame renders first).
+    private func playLaunchFill() {
+        lastEpoch = launchFillEpoch
+        var reset = Transaction()
+        reset.disablesAnimations = true
+        withTransaction(reset) { shownProgress = 0 }
+        DispatchQueue.main.async { shownProgress = progress }
+    }
+}
+
+/// A single macro shown as a vertical fill bar (rounded tube) that fills bottom-up toward the goal.
+/// Value above, name + goal beneath.
+struct MacroVerticalBar: View {
+    let label: String
+    let current: Double
+    let goal: Double
+    let unit: String
+    let gradient: [Color]
+    /// Increments when the app is opened; drives the fill-from-zero reveal.
+    var launchFillEpoch: Int = 0
+
+    private let barWidth: CGFloat = 16
+    private let barHeight: CGFloat = 74
+
+    @State private var shownProgress: CGFloat = 0
+    @State private var lastEpoch = 0
+
+    private var progress: CGFloat {
+        goal > 0 ? CGFloat(min(current / goal, 1.0)) : 0
+    }
+
+    var body: some View {
+        VStack(spacing: 10) {
+            Text(MacroValueFormatter.string(current))
+                .font(.system(.title3, design: .rounded, weight: .bold))
+                .foregroundStyle(
+                    LinearGradient(colors: gradient, startPoint: .top, endPoint: .bottom)
+                )
+                .contentTransition(.numericText())
+                .animation(.snappy, value: current)
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
+
+            ZStack(alignment: .bottom) {
+                Capsule()
+                    .fill(AppColors.calorie.opacity(0.12))
+                    .frame(width: barWidth, height: barHeight)
+
+                Capsule()
+                    .fill(LinearGradient(colors: gradient, startPoint: .bottom, endPoint: .top))
+                    .frame(width: barWidth, height: max(barWidth, barHeight * shownProgress))
+                    .shadow(color: (gradient.first ?? AppColors.calorie).opacity(0.4), radius: 5)
+            }
+
+            VStack(spacing: 1) {
+                Text(LocalizedDisplayText.text(label))
+                    .font(.system(.caption, design: .rounded, weight: .semibold))
+                    .foregroundStyle(.primary)
+                Text("/\(MacroValueFormatter.string(goal))\(unit)")
+                    .font(.system(.caption2, design: .rounded, weight: .medium))
+                    .foregroundStyle(.secondary)
+            }
+            .lineLimit(1)
+            .minimumScaleFactor(0.6)
+        }
+        .frame(maxWidth: .infinity)
+        .onAppear {
+            if lastEpoch != launchFillEpoch { playLaunchFill() } else { shownProgress = progress }
+        }
+        .onChange(of: launchFillEpoch) { _, _ in playLaunchFill() }
+        .onChange(of: progress) { _, newValue in
+            withAnimation(.spring(response: 0.8, dampingFraction: 0.78)) { shownProgress = newValue }
+        }
+    }
+
+    private func playLaunchFill() {
+        lastEpoch = launchFillEpoch
+        shownProgress = 0
+        DispatchQueue.main.async {
+            withAnimation(.spring(response: 0.9, dampingFraction: 0.85)) { shownProgress = progress }
+        }
     }
 }
