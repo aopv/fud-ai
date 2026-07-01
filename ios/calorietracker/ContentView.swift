@@ -2719,7 +2719,7 @@ struct ProfileView: View {
     @Binding private var updateState: AppUpdateState
     private let refreshUpdateState: () async -> Void
 
-    init(updateState: Binding<AppUpdateState>, refreshUpdateState: @escaping () async -> Void) {
+    fileprivate init(updateState: Binding<AppUpdateState>, refreshUpdateState: @escaping () async -> Void) {
         self._updateState = updateState
         self.refreshUpdateState = refreshUpdateState
     }
