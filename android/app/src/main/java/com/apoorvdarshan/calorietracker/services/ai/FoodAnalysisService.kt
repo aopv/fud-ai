@@ -387,12 +387,13 @@ class FoodAnalysisService(
         val primaryBaseUrl = prefs.customBaseUrl(primary).first()?.takeIf { it.isNotEmpty() } ?: primary.baseUrl
         val primaryKey = keyStore.apiKey(primary)
         if (primary.requiresApiKey && primaryKey.isNullOrEmpty()) throw AiError.NoApiKey
+        val maxTokens = prefs.maxResponseTokens.first()
 
         return try {
-            dispatch(primary, primaryModel, primaryBaseUrl, primaryKey, finalPrompt, imageBytesList)
+            dispatch(primary, primaryModel, primaryBaseUrl, primaryKey, finalPrompt, imageBytesList, maxTokens)
         } catch (primaryError: Throwable) {
             val fallback = currentFallbackConfig(primary, primaryModel) ?: throw primaryError
-            dispatch(fallback.provider, fallback.model, fallback.baseUrl, fallback.apiKey, finalPrompt, imageBytesList)
+            dispatch(fallback.provider, fallback.model, fallback.baseUrl, fallback.apiKey, finalPrompt, imageBytesList, maxTokens)
         }
     }
 
@@ -479,17 +480,18 @@ class FoodAnalysisService(
         baseUrl: String,
         apiKey: String?,
         prompt: String,
-        imageBytesList: List<ByteArray>
+        imageBytesList: List<ByteArray>,
+        maxTokens: Int
     ): String {
         if (baseUrl.isEmpty()) throw AiError.InvalidUrl(baseUrl)
         if (provider.requiresApiKey && apiKey.isNullOrEmpty()) throw AiError.NoApiKey
         return when (provider.apiFormat) {
             AIProvider.ApiFormat.GEMINI ->
-                GeminiClient.analyze(okHttp, baseUrl, model, apiKey!!, prompt, imageBytesList)
+                GeminiClient.analyze(okHttp, baseUrl, model, apiKey!!, prompt, imageBytesList, maxTokens)
             AIProvider.ApiFormat.ANTHROPIC ->
-                AnthropicClient.analyze(okHttp, baseUrl, model, apiKey!!, prompt, imageBytesList)
+                AnthropicClient.analyze(okHttp, baseUrl, model, apiKey!!, prompt, imageBytesList, maxTokens)
             AIProvider.ApiFormat.OPENAI_COMPATIBLE ->
-                OpenAICompatibleClient.analyze(okHttp, baseUrl, model, apiKey, prompt, imageBytesList, provider)
+                OpenAICompatibleClient.analyze(okHttp, baseUrl, model, apiKey, prompt, imageBytesList, provider, maxTokens)
         }
     }
 

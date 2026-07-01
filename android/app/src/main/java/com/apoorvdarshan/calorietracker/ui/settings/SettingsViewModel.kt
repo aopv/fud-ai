@@ -28,6 +28,7 @@ import java.time.LocalDate
 data class SettingsUiState(
     val selectedAI: AIProvider = AIProvider.GEMINI,
     val selectedModel: String = AIProvider.GEMINI.defaultModel,
+    val maxResponseTokens: Int = 1024,
     val selectedSpeech: SpeechProvider = SpeechProvider.NATIVE,
     val selectedSpeechLanguage: SpeechLanguage = SpeechLanguage.defaultFor(SpeechProvider.NATIVE),
     val useMetric: Boolean = true,
@@ -108,6 +109,7 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
             val appThemeColor = AppThemeColor.fromKey(container.prefs.appThemeColor.first())
             val weekMon = container.prefs.weekStartsOnMonday.first()
             val userContext = container.prefs.userContext.first()
+            val maxTokens = container.prefs.maxResponseTokens.first()
             val fbEnabled = container.prefs.fallbackEnabled.first()
             val fbProvider = container.prefs.selectedFallbackProvider.first()
             val fbModel = fbProvider.supportedModelOrDefault(container.prefs.selectedFallbackModel.first())
@@ -123,6 +125,7 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
             _ui.value = SettingsUiState(
                 selectedAI = provider,
                 selectedModel = model,
+                maxResponseTokens = maxTokens,
                 selectedSpeech = speech,
                 selectedSpeechLanguage = speechLanguage,
                 useMetric = useMetric,
@@ -165,6 +168,14 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
         viewModelScope.launch {
             container.prefs.setUserContext(value)
             _ui.value = _ui.value.copy(userContext = value.trim())
+        }
+    }
+
+    fun setMaxResponseTokens(v: Int) {
+        val clamped = v.coerceAtLeast(1)
+        viewModelScope.launch {
+            container.prefs.setMaxResponseTokens(clamped)
+            _ui.value = _ui.value.copy(maxResponseTokens = clamped)
         }
     }
 

@@ -298,6 +298,11 @@ class PreferencesStore(private val context: Context) {
         }
     }
 
+    /** AI output-token cap sent with every request. Default 1024; raise it for local
+     *  models whose replies get truncated. */
+    val maxResponseTokens: Flow<Int> = ds.data.map { it[Keys.MAX_RESPONSE_TOKENS] ?: 1024 }
+    suspend fun setMaxResponseTokens(v: Int) { ds.edit { it[Keys.MAX_RESPONSE_TOKENS] = v.coerceAtLeast(1) } }
+
     // -- Custom AI Instructions ------------------------------------------
     /** Free-form text appended to every AI request. Empty = disabled. */
     val userContext: Flow<String> = ds.data.map { it[Keys.USER_CONTEXT].orEmpty() }
@@ -516,6 +521,7 @@ class PreferencesStore(private val context: Context) {
         val OPTIONAL_NUTRIENT_GOALS = stringPreferencesKey("optionalNutrientGoals")
         val SELECTED_AI_PROVIDER = stringPreferencesKey("selectedAIProvider")
         val SELECTED_AI_MODEL = stringPreferencesKey("selectedAIModel")
+        val MAX_RESPONSE_TOKENS = intPreferencesKey("maxResponseTokens")
         val USER_CONTEXT = stringPreferencesKey("userContext")
         val FALLBACK_ENABLED = booleanPreferencesKey("aiFallbackEnabled")
         val FALLBACK_PROVIDER = stringPreferencesKey("selectedFallbackAIProvider")

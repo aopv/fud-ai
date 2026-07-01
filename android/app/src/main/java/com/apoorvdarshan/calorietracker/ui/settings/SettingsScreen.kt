@@ -68,6 +68,7 @@ import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Key
 import androidx.compose.material.icons.outlined.Language
 import androidx.compose.material.icons.outlined.Link
+import androidx.compose.material.icons.outlined.Numbers
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.outlined.LockOpen
 import androidx.compose.material.icons.outlined.LocalFireDepartment
@@ -170,7 +171,7 @@ import kotlinx.coroutines.runBlocking
 import java.util.Locale
 
 private enum class SettingsSheet {
-    AI_PROVIDER, AI_MODEL, API_KEY, CUSTOM_BASE_URL, SPEECH_PROVIDER, SPEECH_LANGUAGE, SPEECH_KEY,
+    AI_PROVIDER, AI_MODEL, MAX_TOKENS, API_KEY, CUSTOM_BASE_URL, SPEECH_PROVIDER, SPEECH_LANGUAGE, SPEECH_KEY,
     FALLBACK_PROVIDER, FALLBACK_MODEL, FALLBACK_KEY, FALLBACK_BASE_URL,
     GENDER, BIRTHDAY, HEIGHT, WEIGHT, BODY_FAT, GOAL_BODY_FAT, ACTIVITY, GOAL, GOAL_WEIGHT, GOAL_SPEED,
     CALORIES, PROTEIN, CARBS, FAT, OPTIONAL_NUTRIENTS,
@@ -562,6 +563,12 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController) {
                         icon = Icons.Outlined.Link
                     ) { sheet = SettingsSheet.CUSTOM_BASE_URL }
                 }
+                HorizontalDivider()
+                SettingRow(
+                    "Max response tokens",
+                    ui.maxResponseTokens.toString(),
+                    icon = Icons.Outlined.Numbers
+                ) { sheet = SettingsSheet.MAX_TOKENS }
             }
 
             // Section 4b — Custom AI Instructions (matches iOS Section)
@@ -1379,6 +1386,15 @@ private fun SettingsSheets(
                         onSave = { vm.setCustomBaseUrl(ui.selectedAI, it); onDismiss() }
                     )
                 }
+                SettingsSheet.MAX_TOKENS -> {
+                    TextFieldSheet(
+                        title = "Max response tokens",
+                        initial = ui.maxResponseTokens.toString(),
+                        placeholder = "1024",
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        onSave = { it.trim().toIntOrNull()?.let(vm::setMaxResponseTokens); onDismiss() }
+                    )
+                }
                 SettingsSheet.SPEECH_PROVIDER -> ListSheet(
                     title = stringResource(R.string.sheet_speech_engine),
                     items = SpeechProvider.values().toList(),
@@ -1966,7 +1982,13 @@ private fun ApiKeySheet(title: String, placeholder: String, onSave: (String) -> 
 }
 
 @Composable
-private fun TextFieldSheet(title: String, initial: String, placeholder: String, onSave: (String) -> Unit) {
+private fun TextFieldSheet(
+    title: String,
+    initial: String,
+    placeholder: String,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    onSave: (String) -> Unit
+) {
     var value by remember { mutableStateOf(initial) }
     Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
     Spacer(Modifier.height(12.dp))
@@ -1975,6 +1997,7 @@ private fun TextFieldSheet(title: String, initial: String, placeholder: String, 
         onValueChange = { value = it },
         placeholder = placeholder,
         singleLine = true,
+        keyboardOptions = keyboardOptions,
         modifier = Modifier.fillMaxWidth()
     )
     Spacer(Modifier.height(12.dp))

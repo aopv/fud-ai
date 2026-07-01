@@ -2716,6 +2716,7 @@ struct ProfileView: View {
     @State private var selectedModel: String = AIProviderSettings.selectedModel
     @State private var apiKeyText: String = AIProviderSettings.apiKey(for: AIProviderSettings.selectedProvider) ?? ""
     @State private var customBaseURL: String = AIProviderSettings.customBaseURL(for: AIProviderSettings.selectedProvider) ?? ""
+    @State private var maxResponseTokensText: String = String(AIProviderSettings.maxResponseTokens)
     @State private var showAPIKey = false
     @State private var customAIInstructions: String = AIProviderSettings.userContext
     @State private var savedAIInstructions: String = AIProviderSettings.userContext
@@ -3327,6 +3328,28 @@ struct ProfileView: View {
                                         AIProviderSettings.setCustomBaseURL(t.isEmpty ? nil : t, for: selectedProvider)
                                     }
                             }
+                        }
+
+                        HStack {
+                            Label {
+                                Text("Max Response Tokens")
+                            } icon: {
+                                Image(systemName: "text.append")
+                                    .foregroundStyle(AppColors.calorie)
+                            }
+                            Spacer()
+                            TextField("1024", text: $maxResponseTokensText)
+                                .textFieldStyle(.plain)
+                                .multilineTextAlignment(.trailing)
+                                .keyboardType(.numberPad)
+                                .frame(maxWidth: 90)
+                                .onChange(of: maxResponseTokensText) { _, newValue in
+                                    let digits = newValue.filter(\.isNumber)
+                                    if digits != newValue { maxResponseTokensText = digits }
+                                    if let n = Int(digits), n > 0 {
+                                        AIProviderSettings.maxResponseTokens = n
+                                    }
+                                }
                         }
                     }
                         .listRowBackground(AppColors.appCard)

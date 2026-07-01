@@ -68,11 +68,12 @@ class ChatService(
 
         if (provider.requiresApiKey && apiKey.isNullOrEmpty()) throw AiError.NoApiKey
         if (baseUrl.isEmpty()) throw AiError.InvalidUrl(baseUrl)
+        val maxTokens = prefs.maxResponseTokens.first()
 
         return when (provider.apiFormat) {
-            AIProvider.ApiFormat.GEMINI -> runGeminiToolLoop(baseUrl, model, apiKey!!, systemPrompt, history, newUserMessage, tools, imageBytes)
-            AIProvider.ApiFormat.ANTHROPIC -> runAnthropicToolLoop(baseUrl, model, apiKey!!, systemPrompt, history, newUserMessage, tools, imageBytes)
-            AIProvider.ApiFormat.OPENAI_COMPATIBLE -> runOpenAIToolLoop(baseUrl, model, apiKey, systemPrompt, history, newUserMessage, provider, tools, imageBytes)
+            AIProvider.ApiFormat.GEMINI -> runGeminiToolLoop(baseUrl, model, apiKey!!, systemPrompt, history, newUserMessage, tools, imageBytes, maxTokens)
+            AIProvider.ApiFormat.ANTHROPIC -> runAnthropicToolLoop(baseUrl, model, apiKey!!, systemPrompt, history, newUserMessage, tools, imageBytes, maxTokens)
+            AIProvider.ApiFormat.OPENAI_COMPATIBLE -> runOpenAIToolLoop(baseUrl, model, apiKey, systemPrompt, history, newUserMessage, provider, tools, imageBytes, maxTokens)
         }
     }
 
@@ -182,7 +183,8 @@ class ChatService(
         newUserMessage: String,
         provider: AIProvider,
         tools: CoachTools,
-        imageBytes: ByteArray?
+        imageBytes: ByteArray?,
+        maxTokens: Int
     ): String {
         val url = "$baseUrl/chat/completions"
         // OpenAI tool schema: {type:function, function:{name, description, parameters}}
@@ -213,7 +215,7 @@ class ChatService(
                 put("messages", messages)
                 put("tools", toolsArr)
                 put("tool_choice", "auto")
-                put(OpenAICompatibleClient.tokenLimitParameter(provider, model), 1024)
+                put(OpenAICompatibleClient.tokenLimitParameter(provider, model), maxTokens)
             }
             val builder = Request.Builder()
                 .url(url)
@@ -266,7 +268,8 @@ class ChatService(
         history: List<ChatMessage>,
         newUserMessage: String,
         tools: CoachTools,
-        imageBytes: ByteArray?
+        imageBytes: ByteArray?,
+        maxTokens: Int
     ): String {
         val url = "$baseUrl/messages"
         // Anthropic tool schema: {name, description, input_schema}
@@ -290,7 +293,7 @@ class ChatService(
         repeat(MAX_TOOL_ROUNDS) {
             val body = JSONObject().apply {
                 put("model", model)
-                put("max_tokens", 1024)
+                put("max_tokens", maxTokens)
                 put("system", systemPrompt)
                 put("tools", toolsArr)
                 put("messages", messages)
@@ -356,7 +359,8 @@ class ChatService(
         history: List<ChatMessage>,
         newUserMessage: String,
         tools: CoachTools,
-        imageBytes: ByteArray?
+        imageBytes: ByteArray?,
+        maxTokens: Int
     ): String {
         val url = "$baseUrl/models/$model:generateContent"
         // Gemini tool schema: tools=[{functionDeclarations:[{name,description,parameters}]}]
@@ -390,6 +394,7 @@ class ChatService(
                 put("systemInstruction", JSONObject().put("parts", JSONArray().put(JSONObject().put("text", systemPrompt))))
                 put("contents", contents)
                 put("tools", JSONArray().put(toolsObj))
+                put("generationConfig", JSONObject().put("maxOutputTokens", maxTokens))
             }
             val raw = RetryPolicy.execute {
                 okHttp.newCall(

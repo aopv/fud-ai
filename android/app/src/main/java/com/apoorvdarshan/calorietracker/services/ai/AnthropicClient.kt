@@ -25,7 +25,8 @@ object AnthropicClient {
         model: String,
         apiKey: String,
         prompt: String,
-        imageBytesList: List<ByteArray>
+        imageBytesList: List<ByteArray>,
+        maxTokens: Int
     ): String {
         val url = "$baseUrl/messages"
 
@@ -48,7 +49,7 @@ object AnthropicClient {
 
         val body = JSONObject()
             .put("model", model)
-            .put("max_tokens", 1024)
+            .put("max_tokens", maxTokens)
             .put("messages", JSONArray().put(JSONObject().put("role", "user").put("content", content)))
 
         val bodyStr = RetryPolicy.execute {
@@ -72,7 +73,8 @@ object AnthropicClient {
         apiKey: String,
         systemPrompt: String,
         history: List<Pair<String, String>>, // (role: "user"|"assistant", content)
-        userMessage: String
+        userMessage: String,
+        maxTokens: Int
     ): String {
         val url = "$baseUrl/messages"
 
@@ -84,7 +86,7 @@ object AnthropicClient {
 
         val body = JSONObject()
             .put("model", model)
-            .put("max_tokens", 1024)
+            .put("max_tokens", maxTokens)
             .put("system", systemPrompt)
             .put("messages", messages)
 

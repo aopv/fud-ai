@@ -741,7 +741,8 @@ struct GeminiService {
         parts.append(["text": prompt])
 
         var body: [String: Any] = [
-            "contents": [["parts": parts]]
+            "contents": [["parts": parts]],
+            "generationConfig": ["maxOutputTokens": AIProviderSettings.maxResponseTokens]
         ]
         if let userContext = AIProviderSettings.currentUserContext {
             body["systemInstruction"] = ["parts": [["text": userContext]]]
@@ -792,7 +793,7 @@ struct GeminiService {
             "model": model,
             "messages": messages,
         ]
-        body[provider.openAICompatibleTokenLimitKey(for: model)] = 1024
+        body[provider.openAICompatibleTokenLimitKey(for: model)] = AIProviderSettings.maxResponseTokens
 
         var headers = ["Content-Type": "application/json"]
         if let apiKey {
@@ -835,7 +836,7 @@ struct GeminiService {
 
         var body: [String: Any] = [
             "model": model,
-            "max_tokens": 1024,
+            "max_tokens": AIProviderSettings.maxResponseTokens,
             "messages": [["role": "user", "content": content]],
         ]
         if let userContext = AIProviderSettings.currentUserContext {

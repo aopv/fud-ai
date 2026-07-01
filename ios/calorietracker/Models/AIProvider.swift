@@ -240,6 +240,18 @@ struct AIProviderSettings {
     private static let fallbackEnabledKey = "aiFallbackEnabled"
     private static let fallbackProviderKey = "selectedFallbackAIProvider"
     private static let fallbackModelKey = "selectedFallbackAIModel"
+    private static let maxResponseTokensKey = "aiMaxResponseTokens"
+
+    /// The AI output-token cap sent with every request (`max_tokens` /
+    /// `max_completion_tokens` / Gemini `maxOutputTokens`). Default 1024; raise it for
+    /// local models whose replies get truncated.
+    static var maxResponseTokens: Int {
+        get {
+            let v = UserDefaults.standard.integer(forKey: maxResponseTokensKey)
+            return v > 0 ? v : 1024 // 0 == unset -> default
+        }
+        set { UserDefaults.standard.set(max(1, newValue), forKey: maxResponseTokensKey) }
+    }
 
     static var selectedProvider: AIProvider {
         get {

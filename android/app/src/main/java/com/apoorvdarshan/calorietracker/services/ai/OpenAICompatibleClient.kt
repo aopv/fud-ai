@@ -30,7 +30,8 @@ object OpenAICompatibleClient {
         apiKey: String?,
         prompt: String,
         imageBytesList: List<ByteArray>,
-        provider: AIProvider
+        provider: AIProvider,
+        maxTokens: Int
     ): String {
         val url = "$baseUrl/chat/completions"
 
@@ -51,7 +52,7 @@ object OpenAICompatibleClient {
         val body = JSONObject()
             .put("model", model)
             .put("messages", JSONArray().put(JSONObject().put("role", "user").put("content", content)))
-            .put(tokenLimitParameter(provider, model), 1024)
+            .put(tokenLimitParameter(provider, model), maxTokens)
 
         val builder = Request.Builder()
             .url(url)
@@ -75,7 +76,8 @@ object OpenAICompatibleClient {
         systemPrompt: String,
         history: List<Pair<String, String>>, // (role: "user"|"assistant", content)
         userMessage: String,
-        provider: AIProvider
+        provider: AIProvider,
+        maxTokens: Int
     ): String {
         val url = "$baseUrl/chat/completions"
 
@@ -89,7 +91,7 @@ object OpenAICompatibleClient {
         val body = JSONObject()
             .put("model", model)
             .put("messages", messages)
-            .put(tokenLimitParameter(provider, model), 1024)
+            .put(tokenLimitParameter(provider, model), maxTokens)
 
         val builder = Request.Builder()
             .url(url)

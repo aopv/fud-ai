@@ -244,7 +244,7 @@ struct ChatService {
                 "tools": toolsArray,
                 "tool_choice": "auto",
             ]
-            body[provider.openAICompatibleTokenLimitKey(for: model)] = 1024
+            body[provider.openAICompatibleTokenLimitKey(for: model)] = AIProviderSettings.maxResponseTokens
             let data = try await send(url: url, headers: headers, body: body)
             guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
                   let choices = json["choices"] as? [[String: Any]],
@@ -342,7 +342,7 @@ struct ChatService {
         for _ in 0..<maxToolRounds {
             let body: [String: Any] = [
                 "model": model,
-                "max_tokens": 1024,
+                "max_tokens": AIProviderSettings.maxResponseTokens,
                 "system": systemPrompt,
                 "tools": toolsArray,
                 "messages": messages,
@@ -450,6 +450,7 @@ struct ChatService {
                 "systemInstruction": ["parts": [["text": systemPrompt]]],
                 "contents": contents,
                 "tools": [toolsObj],
+                "generationConfig": ["maxOutputTokens": AIProviderSettings.maxResponseTokens],
             ]
             let data = try await send(
                 url: url,
