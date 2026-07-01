@@ -25,7 +25,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -121,7 +125,7 @@ import kotlinx.coroutines.delay
  *   - horizontal scrolling promptChips (always visible)
  *   - capsule input bar with gradient send button
  */
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun CoachScreen(container: AppContainer) {
     val vm: CoachViewModel = viewModel(factory = CoachViewModel.Factory(container))
@@ -227,11 +231,16 @@ fun CoachScreen(container: AppContainer) {
             )
         }
     ) { padding ->
+        // The app is edge-to-edge, so the IME would otherwise overlay the input bar.
+        // Lift the whole column above the keyboard (imePadding) with a small gap; when
+        // the keyboard is down, keep the docked-nav clearance instead.
+        val imeVisible = WindowInsets.isImeVisible
         Column(
             Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(bottom = BottomNavDockedControlPadding)
+                .imePadding()
+                .padding(bottom = if (imeVisible) 8.dp else BottomNavDockedControlPadding)
         ) {
             // Top region — empty state OR message list
             Box(
