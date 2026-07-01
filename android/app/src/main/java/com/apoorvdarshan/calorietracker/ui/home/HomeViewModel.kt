@@ -547,12 +547,36 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
         val imageBytes = entry.imageFilename?.let {
             runCatching { container.imageStore.file(it).readBytes() }.getOrNull()
         }
+        // Compose name + serving + note so a photo-less (text / voice / emoji) entry
+        // keeps its food context instead of re-analyzing the bare note; a photo entry
+        // gets the name/note as extra grounding on top of the image.
+        val description = reprocessDescription(entry, updatedNote)
         val result = if (imageBytes != null) {
-            container.foodAnalysis.analyzeFood(imageBytes, updatedNote.takeIf { it.isNotBlank() })
+            container.foodAnalysis.analyzeFood(imageBytes, description.takeIf { it.isNotBlank() })
         } else {
-            container.foodAnalysis.analyzeText(updatedNote)
+            container.foodAnalysis.analyzeText(description)
         }
         return result.copy(customNote = updatedNote.takeIf { it.isNotBlank() })
+    }
+
+    private fun reprocessDescription(entry: FoodEntry, note: String): String {
+        val parts = mutableListOf<String>()
+        entry.name.trim().takeIf { it.isNotEmpty() }?.let { parts += it }
+        val qty = entry.selectedServingQuantity
+        val unit = entry.selectedServingUnit?.trim()
+        if (qty != null && qty > 0 && !unit.isNullOrEmpty()) {
+            val q = if (qty % 1.0 == 0.0) qty.toInt().toString() else qty.toString()
+            parts += "$q $unit"
+        } else {
+            entry.servingSizeGrams?.takeIf { it > 0 }?.let { parts += "${it.toInt()} g" }
+        }
+        val base = parts.joinToString(", ")
+        val trimmed = note.trim()
+        return when {
+            base.isEmpty() -> trimmed
+            trimmed.isEmpty() -> base
+            else -> "$base. $trimmed"
+        }
     }
 }
 
