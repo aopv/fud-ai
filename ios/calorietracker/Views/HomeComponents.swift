@@ -522,6 +522,9 @@ struct CalorieGauge: View {
                 )
                 .padding(lineWidth / 2)
                 .shadow(color: AppColors.calorie.opacity(0.35), radius: 6, y: 2)
+                // Implicit animation on the trim — the reliable way to animate a
+                // Shape's .trim (withAnimation from an async block does not take here).
+                .animation(.spring(response: 0.9, dampingFraction: 0.85), value: shownProgress)
 
             // Readout, lifted up into the dome so nothing is cropped at the bottom.
             VStack(spacing: 2) {
@@ -559,19 +562,17 @@ struct CalorieGauge: View {
             if lastEpoch != launchFillEpoch { playLaunchFill() } else { shownProgress = progress }
         }
         .onChange(of: launchFillEpoch) { _, _ in playLaunchFill() }
-        .onChange(of: progress) { _, newValue in
-            withAnimation(.spring(response: 0.8, dampingFraction: 0.78)) { shownProgress = newValue }
-        }
+        .onChange(of: progress) { _, newValue in shownProgress = newValue }
     }
 
-    /// Snap to empty, then spring up to the real value on the next runloop tick so
-    /// the 0 frame actually renders before the fill animates.
+    /// Snap to empty, then let the arc's implicit .animation spring it up to the
+    /// real value on the next runloop tick (so the 0 frame renders first).
     private func playLaunchFill() {
         lastEpoch = launchFillEpoch
-        shownProgress = 0
-        DispatchQueue.main.async {
-            withAnimation(.spring(response: 0.9, dampingFraction: 0.85)) { shownProgress = progress }
-        }
+        var reset = Transaction()
+        reset.disablesAnimations = true
+        withTransaction(reset) { shownProgress = 0 }
+        DispatchQueue.main.async { shownProgress = progress }
     }
 }
 
