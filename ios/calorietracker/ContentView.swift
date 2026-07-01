@@ -1222,12 +1222,11 @@ struct HomeView: View {
                 NutritionDetailView(date: selectedDate, homeTopNutrientsRaw: $homeTopNutrientsRaw)
             }
             .onOpenURL { url in
-                guard url.scheme == "fudai" else { return }
-
-                if url.host == "import-share-image" {
+                if url.scheme == "fudai", url.host == "import-share-image" {
                     checkAndConsumeSharedImage()
-                } else if url.host == MealShare.host {
-                    // Shared meal link (issue #107) — decode and confirm before adding.
+                } else if MealShare.handles(url) {
+                    // Shared meal — custom scheme or https Universal Link (issue #107).
+                    // Universal Links open the app directly (no browser). Confirm before adding.
                     guard let meals = MealShare.meals(from: url) else { return }
                     activeSheet = nil
                     pendingSharedMeals = meals

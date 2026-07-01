@@ -1,0 +1,12 @@
+[
+  {
+    "relation": [ "delegate_permission/common.handle_all_urls" ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.apoorvdarshan.calorietracker.debug",
+      "sha256_cert_fingerprints": [
+        "80:C5:BB:73:F3:4B:48:E9:4C:63:C2:FD:BB:B6:A5:98:EB:1E:96:23:03:72:89:A3:0B:FC:AB:1E:C0:3F:1F:44"
+      ]
+    }
+  }
+]

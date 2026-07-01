@@ -1,0 +1,11 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "23RV7FYH36.com.apoorvdarshan.calorietracker",
+        "paths": [ "/add-meal", "/add-meal*" ]
+      }
+    ]
+  }
+}

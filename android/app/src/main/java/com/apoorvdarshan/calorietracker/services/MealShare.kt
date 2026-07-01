@@ -20,6 +20,9 @@ import kotlin.math.roundToInt
 object MealShare {
     const val SCHEME = "fudai"
     const val HOST = "add-meal"
+    /** Verified App Link host + path — tapping this opens the app directly (no browser). */
+    const val WEB_HOST = "www.fud-ai.app"
+    const val WEB_PATH = "/add-meal"
     private const val VERSION = 1
 
     // MARK: Encode
@@ -35,7 +38,7 @@ object MealShare {
         val payload = JSONObject().put("v", VERSION).put("meals", meals)
         val b64 = Base64.getUrlEncoder().withoutPadding()
             .encodeToString(payload.toString().toByteArray(Charsets.UTF_8))
-        return "https://fud-ai.app/add-meal.html?d=$b64"
+        return "https://$WEB_HOST$WEB_PATH?d=$b64"
     }
 
     /** Fire the system share sheet with a readable summary + the fudai://add-meal link. */
@@ -88,9 +91,20 @@ object MealShare {
 
     // MARK: Decode
 
-    /** Parse a `fudai://add-meal` link back into fresh [FoodEntry] values (new ids, logged now). */
+    /** True for both the custom scheme and the https App Link that carry a shared meal. */
+    fun handles(uri: Uri): Boolean {
+        if (uri.scheme == SCHEME && uri.host == HOST) return true
+        return uri.scheme == "https" &&
+            (uri.host == WEB_HOST || uri.host == "fud-ai.app") &&
+            uri.path == WEB_PATH
+    }
+
+    /**
+     * Parse a shared-meal link (custom scheme or https App Link) back into fresh [FoodEntry]
+     * values (new ids, logged now).
+     */
     fun meals(uri: Uri): List<FoodEntry>? {
-        if (uri.scheme != SCHEME || uri.host != HOST) return null
+        if (!handles(uri)) return null
         val encoded = uri.getQueryParameter("d") ?: return null
         val json = runCatching {
             val bytes = Base64.getUrlDecoder().decode(encoded)

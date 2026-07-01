@@ -8,6 +8,10 @@ import UIKit
 enum MealShare {
     static let scheme = "fudai"
     static let host = "add-meal"
+    /// Universal Link host + path — tapping this in a messenger opens the app directly
+    /// (verified via /.well-known/apple-app-site-association), no browser.
+    static let webHost = "www.fud-ai.app"
+    static let webPath = "/add-meal"
     private static let version = 1
 
     // MARK: - Encode
@@ -22,8 +26,8 @@ enum MealShare {
               !data.isEmpty else { return nil }
         var comps = URLComponents()
         comps.scheme = "https"
-        comps.host = "fud-ai.app"
-        comps.path = "/add-meal.html"
+        comps.host = webHost
+        comps.path = webPath
         comps.queryItems = [URLQueryItem(name: "d", value: base64url(data))]
         return comps.url
     }
@@ -71,9 +75,19 @@ enum MealShare {
 
     // MARK: - Decode
 
-    /// Parse a `fudai://add-meal` link back into fresh `FoodEntry` values (new ids, logged now).
+    /// True for both the custom scheme and the https Universal Link that carry a shared meal.
+    static func handles(_ url: URL) -> Bool {
+        if url.scheme == scheme, url.host == host { return true }
+        if url.scheme == "https",
+           url.host == webHost || url.host == "fud-ai.app",
+           url.path == webPath { return true }
+        return false
+    }
+
+    /// Parse a shared-meal link (custom scheme or https Universal Link) back into fresh
+    /// `FoodEntry` values (new ids, logged now).
     static func meals(from url: URL) -> [FoodEntry]? {
-        guard url.scheme == scheme, url.host == host,
+        guard handles(url),
               let comps = URLComponents(url: url, resolvingAgainstBaseURL: false),
               let encoded = comps.queryItems?.first(where: { $0.name == "d" })?.value,
               let data = data(fromBase64url: encoded),
