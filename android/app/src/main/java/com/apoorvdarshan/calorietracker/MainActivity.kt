@@ -33,7 +33,7 @@ open class MainActivity : ComponentActivity() {
     /** Decode a `fudai://add-meal` link (if that's what launched us) into pending meals. */
     private fun handleShareIntent(intent: Intent?) {
         val uri = intent?.data ?: return
-        if (uri.scheme != MealShare.SCHEME || uri.host != MealShare.HOST) return
+        if (!MealShare.handles(uri)) return
         MealShare.meals(uri)?.let { pendingSharedMeals = it }
     }
 
