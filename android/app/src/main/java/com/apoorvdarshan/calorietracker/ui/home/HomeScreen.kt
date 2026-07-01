@@ -17,6 +17,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.material.icons.filled.IosShare
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -131,6 +132,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.apoorvdarshan.calorietracker.R
 import com.apoorvdarshan.calorietracker.AppContainer
 import com.apoorvdarshan.calorietracker.models.FoodEntry
+import com.apoorvdarshan.calorietracker.services.MealShare
 import com.apoorvdarshan.calorietracker.models.FoodSource
 import com.apoorvdarshan.calorietracker.models.MacroValueFormatter
 import com.apoorvdarshan.calorietracker.models.MealType
@@ -380,6 +382,7 @@ fun HomeScreen(container: AppContainer) {
                             totalProtein = group.totalProtein,
                             totalCarbs = group.totalCarbs,
                             totalFat = group.totalFat,
+                            onShare = { MealShare.share(ctx, group.entries) },
                             showSortMenu = groupIndex == 0,
                             sortOrder = ui.foodLogSortOrder,
                             sortMenuExpanded = showSortMenu,
@@ -912,6 +915,7 @@ private fun MealSectionHeader(
     totalProtein: Double = 0.0,
     totalCarbs: Double = 0.0,
     totalFat: Double = 0.0,
+    onShare: (() -> Unit)? = null,
     showSortMenu: Boolean = false,
     sortOrder: FoodLogSortOrder = FoodLogSortOrder.STANDARD,
     sortMenuExpanded: Boolean = false,
@@ -979,6 +983,19 @@ private fun MealSectionHeader(
         // Combined nutrients for this meal (issue #103: chicken + pasta + sauce = one total)
         if (totalCalories != null) {
             Spacer(Modifier.weight(1f))
+            // Share the whole meal as a fudai://add-meal link (issue #107)
+            if (onShare != null) {
+                Icon(
+                    Icons.Filled.IosShare,
+                    contentDescription = "Share meal",
+                    tint = AppColors.Calorie,
+                    modifier = Modifier
+                        .clickable { onShare() }
+                        .padding(4.dp)
+                        .size(18.dp),
+                )
+                Spacer(Modifier.width(14.dp))
+            }
             Column(horizontalAlignment = Alignment.End) {
                 Text(
                     "$totalCalories kcal",

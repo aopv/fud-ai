@@ -1,0 +1,146 @@
+import Foundation
+import UIKit
+
+/// Encodes/decodes a logged meal into a `fudai://add-meal?d=<base64url>` deep link so it
+/// can be shared (AirDrop, Messages, any app) and imported directly into Fud AI — including
+/// cross-platform. The payload schema is byte-identical to the Android `MealShare`, so a
+/// link produced on one platform imports on the other.
+enum MealShare {
+    static let scheme = "fudai"
+    static let host = "add-meal"
+    private static let version = 1
+
+    // MARK: - Encode
+
+    /// A `fudai://add-meal?d=…` link carrying every entry's nutrients (no image).
+    static func link(for entries: [FoodEntry]) -> URL? {
+        let payload: [String: Any] = ["v": version, "meals": entries.map(mealDict)]
+        guard JSONSerialization.isValidJSONObject(payload),
+              let data = try? JSONSerialization.data(withJSONObject: payload),
+              !data.isEmpty else { return nil }
+        var comps = URLComponents()
+        comps.scheme = scheme
+        comps.host = host
+        comps.queryItems = [URLQueryItem(name: "d", value: base64url(data))]
+        return comps.url
+    }
+
+    /// Human-readable summary plus the import link — the text put on the share sheet.
+    static func shareText(for entries: [FoodEntry]) -> String {
+        var lines = entries.map { e -> String in
+            let macros = "\(Int(e.protein.rounded()))P · \(Int(e.carbs.rounded()))C · \(Int(e.fat.rounded()))F"
+            let prefix = e.emoji.map { "\($0) " } ?? ""
+            return "\(prefix)\(e.name) — \(e.calories) kcal · \(macros)"
+        }
+        if let link = link(for: entries) {
+            lines.append("")
+            lines.append("Open in Fud AI to add:")
+            lines.append(link.absoluteString)
+        }
+        return lines.joined(separator: "\n")
+    }
+
+    private static func mealDict(_ e: FoodEntry) -> [String: Any] {
+        var d: [String: Any] = [
+            "name": e.name,
+            "calories": e.calories,
+            "protein": e.protein,
+            "carbs": e.carbs,
+            "fat": e.fat,
+            "mealType": e.mealType.rawValue,
+        ]
+        if let emoji = e.emoji { d["emoji"] = emoji }
+        func put(_ key: String, _ v: Double?) { if let v { d[key] = v } }
+        put("sugar", e.sugar); put("addedSugar", e.addedSugar); put("fiber", e.fiber)
+        put("saturatedFat", e.saturatedFat); put("monounsaturatedFat", e.monounsaturatedFat)
+        put("polyunsaturatedFat", e.polyunsaturatedFat); put("cholesterol", e.cholesterol)
+        put("sodium", e.sodium); put("potassium", e.potassium); put("transFat", e.transFat)
+        put("calcium", e.calcium); put("iron", e.iron); put("magnesium", e.magnesium); put("zinc", e.zinc)
+        put("vitaminA", e.vitaminA); put("vitaminC", e.vitaminC); put("vitaminD", e.vitaminD)
+        put("vitaminB12", e.vitaminB12); put("vitaminE", e.vitaminE); put("vitaminK", e.vitaminK)
+        put("folate", e.folate); put("omega3", e.omega3)
+        put("servingSizeGrams", e.servingSizeGrams)
+        if let unit = e.selectedServingUnit { d["selectedServingUnit"] = unit }
+        put("selectedServingQuantity", e.selectedServingQuantity)
+        if let note = e.customNote { d["customNote"] = note }
+        return d
+    }
+
+    // MARK: - Decode
+
+    /// Parse a `fudai://add-meal` link back into fresh `FoodEntry` values (new ids, logged now).
+    static func meals(from url: URL) -> [FoodEntry]? {
+        guard url.scheme == scheme, url.host == host,
+              let comps = URLComponents(url: url, resolvingAgainstBaseURL: false),
+              let encoded = comps.queryItems?.first(where: { $0.name == "d" })?.value,
+              let data = data(fromBase64url: encoded),
+              let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let mealsArr = obj["meals"] as? [[String: Any]]
+        else { return nil }
+        let entries = mealsArr.compactMap(entry(from:))
+        return entries.isEmpty ? nil : entries
+    }
+
+    private static func entry(from d: [String: Any]) -> FoodEntry? {
+        guard let name = (d["name"] as? String), !name.isEmpty,
+              let calories = (d["calories"] as? NSNumber)?.intValue else { return nil }
+        func dbl(_ k: String) -> Double? { (d[k] as? NSNumber)?.doubleValue }
+        let meal = MealType(rawValue: (d["mealType"] as? String) ?? "") ?? .currentMeal
+        return FoodEntry(
+            name: name,
+            calories: calories,
+            protein: dbl("protein") ?? 0,
+            carbs: dbl("carbs") ?? 0,
+            fat: dbl("fat") ?? 0,
+            emoji: d["emoji"] as? String,
+            source: .manual,
+            mealType: meal,
+            sugar: dbl("sugar"), addedSugar: dbl("addedSugar"), fiber: dbl("fiber"),
+            saturatedFat: dbl("saturatedFat"), monounsaturatedFat: dbl("monounsaturatedFat"),
+            polyunsaturatedFat: dbl("polyunsaturatedFat"), cholesterol: dbl("cholesterol"),
+            sodium: dbl("sodium"), potassium: dbl("potassium"), transFat: dbl("transFat"),
+            calcium: dbl("calcium"), iron: dbl("iron"), magnesium: dbl("magnesium"), zinc: dbl("zinc"),
+            vitaminA: dbl("vitaminA"), vitaminC: dbl("vitaminC"), vitaminD: dbl("vitaminD"),
+            vitaminB12: dbl("vitaminB12"), vitaminE: dbl("vitaminE"), vitaminK: dbl("vitaminK"),
+            folate: dbl("folate"), omega3: dbl("omega3"),
+            servingSizeGrams: dbl("servingSizeGrams"),
+            servingUnitOptions: [],
+            selectedServingUnit: d["selectedServingUnit"] as? String,
+            selectedServingQuantity: dbl("selectedServingQuantity"),
+            customNote: d["customNote"] as? String
+        )
+    }
+
+    // MARK: - Share sheet
+
+    /// Present the system share sheet directly via UIKit (avoids the blank-page issue of a
+    /// SwiftUI `.sheet` nested inside another sheet).
+    static func presentShareSheet(for entries: [FoodEntry]) {
+        guard !entries.isEmpty else { return }
+        let av = UIActivityViewController(activityItems: [shareText(for: entries)], applicationActivities: nil)
+        guard let scene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene,
+              let root = scene.windows.first(where: { $0.isKeyWindow })?.rootViewController else { return }
+        var top = root
+        while let presented = top.presentedViewController { top = presented }
+        av.popoverPresentationController?.sourceView = top.view
+        av.popoverPresentationController?.sourceRect = CGRect(x: top.view.bounds.midX, y: top.view.bounds.midY, width: 0, height: 0)
+        av.popoverPresentationController?.permittedArrowDirections = []
+        top.present(av, animated: true)
+    }
+
+    // MARK: - base64url helpers
+
+    private static func base64url(_ data: Data) -> String {
+        data.base64EncodedString()
+            .replacingOccurrences(of: "+", with: "-")
+            .replacingOccurrences(of: "/", with: "_")
+            .replacingOccurrences(of: "=", with: "")
+    }
+
+    private static func data(fromBase64url s: String) -> Data? {
+        var b64 = s.replacingOccurrences(of: "-", with: "+").replacingOccurrences(of: "_", with: "/")
+        let pad = b64.count % 4
+        if pad > 0 { b64 += String(repeating: "=", count: 4 - pad) }
+        return Data(base64Encoded: b64)
+    }
+}

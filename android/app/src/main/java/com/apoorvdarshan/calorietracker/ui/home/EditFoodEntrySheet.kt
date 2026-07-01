@@ -19,6 +19,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
 import com.apoorvdarshan.calorietracker.services.ai.FoodAnalysis
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.IosShare
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.UnfoldMore
@@ -57,6 +58,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.apoorvdarshan.calorietracker.R
 import com.apoorvdarshan.calorietracker.models.FoodEntry
+import com.apoorvdarshan.calorietracker.services.MealShare
 import com.apoorvdarshan.calorietracker.models.MacroValueFormatter
 import com.apoorvdarshan.calorietracker.models.MealType
 import com.apoorvdarshan.calorietracker.models.ServingUnitOption
@@ -534,6 +536,29 @@ fun EditFoodEntrySheet(
                             color = AppColors.Calorie,
                             fontWeight = FontWeight.Medium
                         )
+                    }
+                }
+            }
+
+            // Share this meal as a fudai://add-meal link (issue #107)
+            item { SheetSectionHeader("Share") }
+            item {
+                SheetPillCard {
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .clickable { MealShare.share(context, listOf(currentBaseEntry)) }
+                            .padding(horizontal = 18.dp, vertical = 14.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            Icons.Filled.IosShare,
+                            contentDescription = null,
+                            tint = AppColors.Calorie,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(Modifier.width(12.dp))
+                        Text("Share Meal", fontSize = 17.sp, fontWeight = FontWeight.Medium)
                     }
                 }
             }

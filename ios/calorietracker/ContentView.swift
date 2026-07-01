@@ -581,11 +581,12 @@ struct HomeView: View {
     @State private var showContextSheet = false
 
     enum ActiveSheet: String, Identifiable {
-        case analyzing, foodResult, analyzingText, lookingUpBarcode, editFood
+        case analyzing, foodResult, analyzingText, lookingUpBarcode, editFood, importSharedMeal
         var id: String { rawValue }
     }
     @State private var activeSheet: ActiveSheet?
     @State private var editingEntry: FoodEntry?
+    @State private var pendingSharedMeals: [FoodEntry] = []
 
     @State private var currentFoodResult: GeminiService.FoodAnalysis?
     @State private var currentImage: UIImage?
@@ -789,6 +790,17 @@ struct HomeView: View {
                                     .padding(.leading, 8)
                                 }
                                 Spacer()
+                                // Share the whole meal as a fudai://add-meal link (issue #107)
+                                Button {
+                                    MealShare.presentShareSheet(for: group.entries)
+                                } label: {
+                                    Image(systemName: "square.and.arrow.up")
+                                        .font(.system(.subheadline, design: .rounded, weight: .semibold))
+                                        .foregroundStyle(AppColors.calorie)
+                                }
+                                .buttonStyle(.plain)
+                                .padding(.trailing, 12)
+                                .textCase(nil)
                                 // Combined nutrients for this meal (issue #103: chicken + pasta + sauce = one total)
                                 VStack(alignment: .trailing, spacing: 1) {
                                     Text("\(group.totalCalories) kcal")
@@ -1108,6 +1120,16 @@ struct HomeView: View {
                     if let editingEntry {
                         EditFoodEntryView(entry: editingEntry)
                     }
+                case .importSharedMeal:
+                    ImportSharedMealView(meals: pendingSharedMeals) { meals in
+                        let logDate = logDateForSelectedDay
+                        for meal in meals {
+                            foodStore.addEntry(meal.duplicatedForLogging(at: logDate, mealType: meal.mealType))
+                        }
+                        activeSheet = nil
+                    } onCancel: {
+                        activeSheet = nil
+                    }
                 }
             }
             .sheet(isPresented: $showRecentSheet, content: {
@@ -1201,9 +1223,17 @@ struct HomeView: View {
             }
             .onOpenURL { url in
                 guard url.scheme == "fudai" else { return }
-                
+
                 if url.host == "import-share-image" {
                     checkAndConsumeSharedImage()
+                } else if url.host == MealShare.host {
+                    // Shared meal link (issue #107) — decode and confirm before adding.
+                    guard let meals = MealShare.meals(from: url) else { return }
+                    activeSheet = nil
+                    pendingSharedMeals = meals
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        activeSheet = .importSharedMeal
+                    }
                 }
             }
             .onAppear {

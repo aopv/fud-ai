@@ -293,6 +293,19 @@ struct EditFoodEntryView: View {
                             .tint(AppColors.calorie)
                     }
 
+                    // Share this meal as a fudai://add-meal link (issue #107)
+                    Section {
+                        Button {
+                            MealShare.presentShareSheet(for: [entry])
+                        } label: {
+                            Label("Share Meal", systemImage: "square.and.arrow.up")
+                                .font(.system(.body, design: .rounded, weight: .medium))
+                        }
+                        .tint(AppColors.calorie)
+                    } footer: {
+                        Text("Send this meal to a friend — they can add it to their Fud AI in one tap.")
+                    }
+
                 }
                 .scrollContentBackground(.hidden)
                 .background(AppColors.appBackground)

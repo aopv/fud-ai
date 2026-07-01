@@ -1,5 +1,6 @@
 package com.apoorvdarshan.calorietracker
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,8 +12,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
+import com.apoorvdarshan.calorietracker.models.FoodEntry
+import com.apoorvdarshan.calorietracker.services.MealShare
+import com.apoorvdarshan.calorietracker.ui.home.ImportSharedMealSheet
 import com.apoorvdarshan.calorietracker.ui.navigation.FudAINavHost
 import com.apoorvdarshan.calorietracker.ui.theme.AppThemeColor
 import com.apoorvdarshan.calorietracker.ui.theme.FudAITheme
@@ -21,6 +27,21 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 open class MainActivity : ComponentActivity() {
+    // Shared-meal deep link (issue #107). Non-empty -> the confirm sheet is shown over the app.
+    private var pendingSharedMeals by mutableStateOf<List<FoodEntry>>(emptyList())
+
+    /** Decode a `fudai://add-meal` link (if that's what launched us) into pending meals. */
+    private fun handleShareIntent(intent: Intent?) {
+        val uri = intent?.data ?: return
+        if (uri.scheme != MealShare.SCHEME || uri.host != MealShare.HOST) return
+        MealShare.meals(uri)?.let { pendingSharedMeals = it }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleShareIntent(intent)
+    }
     override fun onStart() {
         super.onStart()
         lifecycleScope.launch {
@@ -70,6 +91,9 @@ open class MainActivity : ComponentActivity() {
             runBlocking { container.testDataSeeder.restore() }
             intent.removeExtra("restore_real_data")
         }
+        // A fudai://add-meal link may have cold-launched us.
+        handleShareIntent(intent)
+
         val startOnboarding = runBlocking { !container.prefs.hasCompletedOnboarding.first() }
         val initialAppearance = runBlocking { container.prefs.appearanceMode.first() }
         val initialThemeColorKey = runBlocking { container.prefs.appThemeColor.first() }
@@ -104,6 +128,19 @@ open class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     FudAINavHost(container = container, startOnboarding = startOnboarding)
+
+                    if (pendingSharedMeals.isNotEmpty()) {
+                        ImportSharedMealSheet(
+                            meals = pendingSharedMeals,
+                            onAdd = { meals ->
+                                lifecycleScope.launch {
+                                    meals.forEach { container.foodRepository.addEntry(it) }
+                                }
+                                pendingSharedMeals = emptyList()
+                            },
+                            onDismiss = { pendingSharedMeals = emptyList() }
+                        )
+                    }
                 }
             }
         }
