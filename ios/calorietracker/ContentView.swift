@@ -3330,26 +3330,30 @@ struct ProfileView: View {
                             }
                         }
 
-                        HStack {
-                            Label {
-                                Text("Max Response Tokens")
-                            } icon: {
-                                Image(systemName: "text.append")
-                                    .foregroundStyle(AppColors.calorie)
-                            }
-                            Spacer()
-                            TextField("1024", text: $maxResponseTokensText)
-                                .textFieldStyle(.plain)
-                                .multilineTextAlignment(.trailing)
-                                .keyboardType(.numberPad)
-                                .frame(maxWidth: 90)
-                                .onChange(of: maxResponseTokensText) { _, newValue in
-                                    let digits = newValue.filter(\.isNumber)
-                                    if digits != newValue { maxResponseTokensText = digits }
-                                    if let n = Int(digits), n > 0 {
-                                        AIProviderSettings.maxResponseTokens = n
-                                    }
+                        // Only OpenAI-compatible + Anthropic send a token cap; Gemini is
+                        // left uncapped, so hide this for Gemini.
+                        if selectedProvider.apiFormat != .gemini {
+                            HStack {
+                                Label {
+                                    Text("Max Response Tokens")
+                                } icon: {
+                                    Image(systemName: "text.append")
+                                        .foregroundStyle(AppColors.calorie)
                                 }
+                                Spacer()
+                                TextField("1024", text: $maxResponseTokensText)
+                                    .textFieldStyle(.plain)
+                                    .multilineTextAlignment(.trailing)
+                                    .keyboardType(.numberPad)
+                                    .frame(maxWidth: 90)
+                                    .onChange(of: maxResponseTokensText) { _, newValue in
+                                        let digits = newValue.filter(\.isNumber)
+                                        if digits != newValue { maxResponseTokensText = digits }
+                                        if let n = Int(digits), n > 0 {
+                                            AIProviderSettings.maxResponseTokens = n
+                                        }
+                                    }
+                            }
                         }
                     }
                         .listRowBackground(AppColors.appCard)

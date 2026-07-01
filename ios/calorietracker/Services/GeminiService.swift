@@ -741,8 +741,7 @@ struct GeminiService {
         parts.append(["text": prompt])
 
         var body: [String: Any] = [
-            "contents": [["parts": parts]],
-            "generationConfig": ["maxOutputTokens": AIProviderSettings.maxResponseTokens]
+            "contents": [["parts": parts]]
         ]
         if let userContext = AIProviderSettings.currentUserContext {
             body["systemInstruction"] = ["parts": [["text": userContext]]]

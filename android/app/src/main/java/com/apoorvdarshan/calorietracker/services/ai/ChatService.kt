@@ -71,7 +71,7 @@ class ChatService(
         val maxTokens = prefs.maxResponseTokens.first()
 
         return when (provider.apiFormat) {
-            AIProvider.ApiFormat.GEMINI -> runGeminiToolLoop(baseUrl, model, apiKey!!, systemPrompt, history, newUserMessage, tools, imageBytes, maxTokens)
+            AIProvider.ApiFormat.GEMINI -> runGeminiToolLoop(baseUrl, model, apiKey!!, systemPrompt, history, newUserMessage, tools, imageBytes)
             AIProvider.ApiFormat.ANTHROPIC -> runAnthropicToolLoop(baseUrl, model, apiKey!!, systemPrompt, history, newUserMessage, tools, imageBytes, maxTokens)
             AIProvider.ApiFormat.OPENAI_COMPATIBLE -> runOpenAIToolLoop(baseUrl, model, apiKey, systemPrompt, history, newUserMessage, provider, tools, imageBytes, maxTokens)
         }
@@ -359,8 +359,7 @@ class ChatService(
         history: List<ChatMessage>,
         newUserMessage: String,
         tools: CoachTools,
-        imageBytes: ByteArray?,
-        maxTokens: Int
+        imageBytes: ByteArray?
     ): String {
         val url = "$baseUrl/models/$model:generateContent"
         // Gemini tool schema: tools=[{functionDeclarations:[{name,description,parameters}]}]
@@ -394,7 +393,6 @@ class ChatService(
                 put("systemInstruction", JSONObject().put("parts", JSONArray().put(JSONObject().put("text", systemPrompt))))
                 put("contents", contents)
                 put("tools", JSONArray().put(toolsObj))
-                put("generationConfig", JSONObject().put("maxOutputTokens", maxTokens))
             }
             val raw = RetryPolicy.execute {
                 okHttp.newCall(

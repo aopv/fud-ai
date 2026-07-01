@@ -450,7 +450,6 @@ struct ChatService {
                 "systemInstruction": ["parts": [["text": systemPrompt]]],
                 "contents": contents,
                 "tools": [toolsObj],
-                "generationConfig": ["maxOutputTokens": AIProviderSettings.maxResponseTokens],
             ]
             let data = try await send(
                 url: url,

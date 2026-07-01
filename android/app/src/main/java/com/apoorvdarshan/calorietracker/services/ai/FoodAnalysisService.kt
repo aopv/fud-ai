@@ -487,7 +487,7 @@ class FoodAnalysisService(
         if (provider.requiresApiKey && apiKey.isNullOrEmpty()) throw AiError.NoApiKey
         return when (provider.apiFormat) {
             AIProvider.ApiFormat.GEMINI ->
-                GeminiClient.analyze(okHttp, baseUrl, model, apiKey!!, prompt, imageBytesList, maxTokens)
+                GeminiClient.analyze(okHttp, baseUrl, model, apiKey!!, prompt, imageBytesList)
             AIProvider.ApiFormat.ANTHROPIC ->
                 AnthropicClient.analyze(okHttp, baseUrl, model, apiKey!!, prompt, imageBytesList, maxTokens)
             AIProvider.ApiFormat.OPENAI_COMPATIBLE ->

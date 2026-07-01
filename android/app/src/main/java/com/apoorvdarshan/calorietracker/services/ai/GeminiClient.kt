@@ -24,8 +24,7 @@ object GeminiClient {
         model: String,
         apiKey: String,
         prompt: String,
-        imageBytesList: List<ByteArray>,
-        maxTokens: Int
+        imageBytesList: List<ByteArray>
     ): String {
         val url = "$baseUrl/models/$model:generateContent"
 
@@ -45,7 +44,6 @@ object GeminiClient {
 
         val body = JSONObject().apply {
             put("contents", JSONArray().put(JSONObject().put("parts", parts)))
-            put("generationConfig", JSONObject().put("maxOutputTokens", maxTokens))
         }
 
         val requestBody = body.toString().toRequestBody(jsonMedia)
@@ -73,8 +71,7 @@ object GeminiClient {
         apiKey: String,
         systemPrompt: String,
         history: List<Pair<String, String>>, // (role, content) role in {"user","model"}
-        userMessage: String,
-        maxTokens: Int
+        userMessage: String
     ): String {
         val url = "$baseUrl/models/$model:generateContent"
 
@@ -98,7 +95,6 @@ object GeminiClient {
                 JSONObject().put("parts", JSONArray().put(JSONObject().put("text", systemPrompt)))
             )
             put("contents", contents)
-            put("generationConfig", JSONObject().put("maxOutputTokens", maxTokens))
         }
 
         val requestBody = body.toString().toRequestBody(jsonMedia)

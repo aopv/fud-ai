@@ -563,12 +563,16 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController) {
                         icon = Icons.Outlined.Link
                     ) { sheet = SettingsSheet.CUSTOM_BASE_URL }
                 }
-                HorizontalDivider()
-                SettingRow(
-                    "Max response tokens",
-                    ui.maxResponseTokens.toString(),
-                    icon = Icons.Outlined.Numbers
-                ) { sheet = SettingsSheet.MAX_TOKENS }
+                // Only OpenAI-compatible + Anthropic send a token cap; Gemini is left
+                // uncapped, so hide this for Gemini.
+                if (ui.selectedAI.apiFormat != AIProvider.ApiFormat.GEMINI) {
+                    HorizontalDivider()
+                    SettingRow(
+                        "Max response tokens",
+                        ui.maxResponseTokens.toString(),
+                        icon = Icons.Outlined.Numbers
+                    ) { sheet = SettingsSheet.MAX_TOKENS }
+                }
             }
 
             // Section 4b — Custom AI Instructions (matches iOS Section)
