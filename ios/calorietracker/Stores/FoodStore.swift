@@ -394,6 +394,41 @@ class FoodStore {
         onEntriesChanged?()
     }
 
+    func reprocessEntry(_ entry: FoodEntry, withNote note: String) async throws -> GeminiService.FoodAnalysis {
+        let image = entry.imageFilename
+            .flatMap { FoodImageStore.shared.load(filename: $0) }
+            .flatMap { UIImage(data: $0) }
+        // Compose name + serving + note so a photo-less (text / voice / emoji) entry
+        // keeps its food context instead of re-analyzing the bare note; a photo entry
+        // gets the name/note as extra grounding on top of the image.
+        let description = Self.reprocessDescription(for: entry, note: note)
+        let result: GeminiService.FoodAnalysis
+        if let image {
+            result = try await GeminiService.analyzeFood(image: image, description: description)
+        } else {
+            result = try await GeminiService.analyzeTextInput(description: description)
+        }
+        return result
+    }
+
+    private static func reprocessDescription(for entry: FoodEntry, note: String) -> String {
+        var parts: [String] = []
+        let name = entry.name.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !name.isEmpty { parts.append(name) }
+        if let qty = entry.selectedServingQuantity, qty > 0,
+           let unit = entry.selectedServingUnit?.trimmingCharacters(in: .whitespacesAndNewlines), !unit.isEmpty {
+            let q = qty.truncatingRemainder(dividingBy: 1) == 0 ? String(Int(qty)) : String(qty)
+            parts.append("\(q) \(unit)")
+        } else if let grams = entry.servingSizeGrams, grams > 0 {
+            parts.append("\(Int(grams)) g")
+        }
+        let base = parts.joined(separator: ", ")
+        let trimmedNote = note.trimmingCharacters(in: .whitespacesAndNewlines)
+        if base.isEmpty { return trimmedNote }
+        if trimmedNote.isEmpty { return base }
+        return "\(base). \(trimmedNote)"
+    }
+
     /// If `entry` carries in-memory `imageData` but no `imageFilename`, write
     /// the bytes to disk and stamp the filename onto the entry. No-op when
     /// there are no bytes, or when a filename is already set (idempotent).

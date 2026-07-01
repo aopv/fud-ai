@@ -135,6 +135,7 @@ import com.apoorvdarshan.calorietracker.models.FoodSource
 import com.apoorvdarshan.calorietracker.models.MacroValueFormatter
 import com.apoorvdarshan.calorietracker.models.MealType
 import com.apoorvdarshan.calorietracker.models.ServingUnitOption
+import com.apoorvdarshan.calorietracker.services.ai.FoodAnalysis
 import com.apoorvdarshan.calorietracker.ui.components.InAppCameraCaptureDialog
 import com.apoorvdarshan.calorietracker.ui.components.MacroCard
 import com.apoorvdarshan.calorietracker.ui.components.DateWheelPicker
@@ -563,6 +564,9 @@ fun HomeScreen(container: AppContainer) {
         EditFoodEntrySheet(
             entry = entry,
             preferGramsByDefault = ui.preferGramsByDefault,
+            onReprocess = { updatedNote ->
+                vm.reprocessFoodEntry(entry, updatedNote)
+            },
             onSave = { updated ->
                 vm.updateEntry(updated)
                 editingEntry = null

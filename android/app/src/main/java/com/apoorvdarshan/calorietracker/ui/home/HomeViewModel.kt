@@ -244,6 +244,7 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
             discardPendingDraft(previousDraftImage)
             try {
                 val analysis = container.foodAnalysis.analyzeFood(bytes, note.takeIf { it.isNotBlank() })
+                    .copy(customNote = note.takeIf { it.isNotBlank() })
                 savePendingDraft(analysis, imageBytes = bytes, source = FoodSource.SNAP_FOOD)
             } catch (e: AiError) {
                 _ui.value = _ui.value.copy(analyzing = false, error = e.message)
@@ -345,7 +346,8 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
                 servingSizeGrams = servingGrams ?: analysis.servingSizeGrams,
                 servingUnitOptions = analysis.servingUnitOptions,
                 selectedServingUnit = if (analysis.servingUnitOptions.isEmpty()) null else selectedServingUnit,
-                selectedServingQuantity = if (analysis.servingUnitOptions.isEmpty()) null else selectedServingQuantity
+                selectedServingQuantity = if (analysis.servingUnitOptions.isEmpty()) null else selectedServingQuantity,
+                customNote = analysis.customNote
             )
             container.foodRepository.addEntry(entry)
             container.prefs.setPendingFoodAnalysisDraft(null)
@@ -540,6 +542,42 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
         override fun <T : ViewModel> create(modelClass: Class<T>): T =
             HomeViewModel(container) as T
     }
+
+    suspend fun reprocessFoodEntry(entry: FoodEntry, updatedNote: String): FoodAnalysis {
+        val imageBytes = entry.imageFilename?.let {
+            runCatching { container.imageStore.file(it).readBytes() }.getOrNull()
+        }
+        // Compose name + serving + note so a photo-less (text / voice / emoji) entry
+        // keeps its food context instead of re-analyzing the bare note; a photo entry
+        // gets the name/note as extra grounding on top of the image.
+        val description = reprocessDescription(entry, updatedNote)
+        val result = if (imageBytes != null) {
+            container.foodAnalysis.analyzeFood(imageBytes, description.takeIf { it.isNotBlank() })
+        } else {
+            container.foodAnalysis.analyzeText(description)
+        }
+        return result.copy(customNote = updatedNote.takeIf { it.isNotBlank() })
+    }
+
+    private fun reprocessDescription(entry: FoodEntry, note: String): String {
+        val parts = mutableListOf<String>()
+        entry.name.trim().takeIf { it.isNotEmpty() }?.let { parts += it }
+        val qty = entry.selectedServingQuantity
+        val unit = entry.selectedServingUnit?.trim()
+        if (qty != null && qty > 0 && !unit.isNullOrEmpty()) {
+            val q = if (qty % 1.0 == 0.0) qty.toInt().toString() else qty.toString()
+            parts += "$q $unit"
+        } else {
+            entry.servingSizeGrams?.takeIf { it > 0 }?.let { parts += "${it.toInt()} g" }
+        }
+        val base = parts.joinToString(", ")
+        val trimmed = note.trim()
+        return when {
+            base.isEmpty() -> trimmed
+            trimmed.isEmpty() -> base
+            else -> "$base. $trimmed"
+        }
+    }
 }
 
 /**
@@ -580,5 +618,6 @@ private fun FoodEntry.toAnalysis(): FoodAnalysis = FoodAnalysis(
     omega3 = omega3,
     servingUnitOptions = servingUnitOptions,
     selectedServingUnit = selectedServingUnit,
-    selectedServingQuantity = selectedServingQuantity
+    selectedServingQuantity = selectedServingQuantity,
+    customNote = customNote
 )

@@ -67,6 +67,7 @@ struct CloudKitService {
         if let v = entry.folate { record["folate"] = v }
         if let v = entry.omega3 { record["omega3"] = v }
         if let v = entry.servingSizeGrams { record["servingSizeGrams"] = v }
+        if let v = entry.customNote { record["customNote"] = v }
         return record
     }
 
@@ -84,6 +85,7 @@ struct CloudKitService {
         let emoji = record["emoji"] as? String
         let mealTypeRaw = record["mealType"] as? String ?? MealType.other.rawValue
         let mealType = MealType(rawValue: mealTypeRaw) ?? .other
+        let customNote = record["customNote"] as? String
 
         guard let id = UUID(uuidString: record.recordID.recordName) else { return nil }
 
@@ -121,7 +123,8 @@ struct CloudKitService {
             vitaminK: record["vitaminK"] as? Double,
             folate: record["folate"] as? Double,
             omega3: record["omega3"] as? Double,
-            servingSizeGrams: record["servingSizeGrams"] as? Double
+            servingSizeGrams: record["servingSizeGrams"] as? Double,
+            customNote: customNote
         )
     }
 
