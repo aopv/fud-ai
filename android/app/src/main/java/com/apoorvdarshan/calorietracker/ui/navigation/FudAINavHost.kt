@@ -28,7 +28,6 @@ import androidx.navigation.compose.rememberNavController
 import com.apoorvdarshan.calorietracker.AppContainer
 import com.apoorvdarshan.calorietracker.services.update.AndroidUpdateChecker
 import com.apoorvdarshan.calorietracker.services.update.AndroidUpdateState
-import com.apoorvdarshan.calorietracker.ui.about.AboutScreen
 import com.apoorvdarshan.calorietracker.ui.coach.CoachScreen
 import com.apoorvdarshan.calorietracker.ui.home.HomeScreen
 import com.apoorvdarshan.calorietracker.ui.onboarding.OnboardingScreen
@@ -67,7 +66,7 @@ fun FudAINavHost(
         val state = AndroidUpdateChecker.check(context, currentVersion)
         updateAvailable = state is AndroidUpdateState.Available
         // A newer version is out — fire a one-shot notification (de-duped per version, gated by the
-        // "App Updates" toggle) so the user finds out even without opening the About tab.
+        // "App Updates" toggle) so the user finds out even without opening the About section.
         if (state is AndroidUpdateState.Available &&
             container.prefs.appUpdateNotificationsEnabled.first() &&
             container.notifications.canPostNotifications() &&
@@ -150,7 +149,6 @@ fun FudAINavHost(
                 composable(FudAIRoutes.BODY_MEASUREMENTS) {
                     BodyMeasurementsScreen(container = container, onBack = { nav.popBackStack() })
                 }
-                composable(FudAIRoutes.ABOUT) { AboutScreen(container = container) }
             }
         }
     }

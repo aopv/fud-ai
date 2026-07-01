@@ -160,6 +160,7 @@ import com.apoorvdarshan.calorietracker.ui.components.FudGlassTextField
 import com.apoorvdarshan.calorietracker.ui.components.FudIconBubble
 import com.apoorvdarshan.calorietracker.ui.components.FeetInchesWheelPicker
 import com.apoorvdarshan.calorietracker.ui.components.NumericWheelPicker
+import com.apoorvdarshan.calorietracker.ui.about.AboutSettingsRows
 import com.apoorvdarshan.calorietracker.ui.components.SplitDecimalWheelPicker
 import com.apoorvdarshan.calorietracker.ui.components.UnitToggle
 import com.apoorvdarshan.calorietracker.ui.navigation.BottomNavScrollPadding
@@ -717,6 +718,12 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController) {
                         fontWeight = FontWeight.Medium
                     )
                 }
+            }
+
+            // Section 7 — About (folded in from the former About tab so it's the
+            // last section of Settings; tabs are now Home / Progress / Coach / Settings).
+            SectionCard(title = stringResource(R.string.nav_about)) {
+                AboutSettingsRows(container)
             }
 
             Spacer(Modifier.height(BottomNavScrollPadding))

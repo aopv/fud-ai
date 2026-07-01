@@ -134,21 +134,15 @@ struct ContentView: View {
                     Text("Coach")
                 }
 
-            ProfileView()
-                .tabItem {
-                    Image(systemName: "gearshape.fill")
-                    Text("Settings")
-                }
-
-            AboutView(
+            ProfileView(
                 updateState: $appUpdateState,
                 refreshUpdateState: {
                     await refreshAppUpdateState(force: true)
                 }
             )
                 .tabItem {
-                    Image(systemName: "info.circle.fill")
-                    Text("About")
+                    Image(systemName: "gearshape.fill")
+                    Text("Settings")
                 }
                 .badge(appUpdateState.isUpdateAvailable ? "!" : nil)
         }
@@ -169,15 +163,15 @@ struct ContentView: View {
         appUpdateState = await AppUpdateChecker.check()
 
         // A newer version is out — fire a one-shot notification (de-duped per version, gated by the
-        // "App Updates" toggle) so the user finds out even if they don't open the About tab.
+        // "App Updates" toggle) so the user finds out even if they don't scroll to the About section.
         if case let .available(_, latest, url) = appUpdateState {
             await notificationManager.notifyUpdateAvailable(version: latest, url: url)
         }
     }
 }
 
-// MARK: - About View
-private struct AboutView: View {
+// MARK: - About (embedded as the last Settings section)
+private struct AboutSettingsSections: View {
     @Binding private var updateState: AppUpdateState
     private let refreshUpdateState: () async -> Void
 
@@ -194,203 +188,193 @@ private struct AboutView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            List {
-                Section {
-                    updateRow
-                    whatsNewRow
+        Group {
+            Section("About") {
+                updateRow
+                whatsNewRow
 
-                    // Rate the App
-                    Button {
-                        requestNativeReview()
-                    } label: {
-                        Label {
-                            Text("Rate the App")
-                        } icon: {
-                            Image(systemName: "star.fill")
-                                .foregroundStyle(AppColors.calorie)
-                        }
+                // Rate the App
+                Button {
+                    requestNativeReview()
+                } label: {
+                    Label {
+                        Text("Rate the App")
+                    } icon: {
+                        Image(systemName: "star.fill")
+                            .foregroundStyle(AppColors.calorie)
                     }
-                    .tint(.primary)
-
-                    // Share the App — uses UIActivityViewController so both
-                    // the personalized message AND the App Store URL get
-                    // forwarded to every share target (SwiftUI ShareLink
-                    // drops the message arg for most targets).
-                    Button {
-                        showShareSheet = true
-                    } label: {
-                        Label {
-                            Text("Share the App")
-                        } icon: {
-                            Image(systemName: "square.and.arrow.up.fill")
-                                .foregroundStyle(AppColors.calorie)
-                        }
-                    }
-                    .tint(.primary)
-
-                    // Support
-                    Link(destination: URL(string: "https://ko-fi.com/apoorvdarshan")!) {
-                        Label {
-                            Text("Support on Ko-fi")
-                        } icon: {
-                            Image(systemName: "cup.and.saucer.fill")
-                                .foregroundStyle(AppColors.calorie)
-                        }
-                    }
-                    .tint(.primary)
-
-                    // Open Source
-                    Link(destination: URL(string: "https://github.com/apoorvdarshan/fud-ai")!) {
-                        Label {
-                            Text("Open Source (MIT)")
-                        } icon: {
-                            Image(systemName: "chevron.left.forwardslash.chevron.right")
-                                .foregroundStyle(AppColors.calorie)
-                        }
-                    }
-                    .tint(.primary)
-
-                    // Star the Repo
-                    Link(destination: URL(string: "https://github.com/apoorvdarshan/fud-ai")!) {
-                        Label {
-                            Text("Star on GitHub")
-                        } icon: {
-                            Image(systemName: "star.circle.fill")
-                                .foregroundStyle(AppColors.calorie)
-                        }
-                    }
-                    .tint(.primary)
-
-                    // Vote on Product Hunt
-                    Link(destination: URL(string: "https://www.producthunt.com/products/fud-ai-calorie-tracker")!) {
-                        Label {
-                            Text("Vote on Product Hunt")
-                        } icon: {
-                            Image(systemName: "hand.thumbsup.fill")
-                                .foregroundStyle(AppColors.calorie)
-                        }
-                    }
-                    .tint(.primary)
-
-                    // Report an Issue
-                    Link(destination: URL(string: "https://github.com/apoorvdarshan/fud-ai/issues/new?labels=bug&title=Bug:%20")!) {
-                        Label {
-                            Text("Report an Issue")
-                        } icon: {
-                            Image(systemName: "exclamationmark.bubble.fill")
-                                .foregroundStyle(AppColors.calorie)
-                        }
-                    }
-                    .tint(.primary)
-
-                    // Request a Feature
-                    Link(destination: URL(string: "https://github.com/apoorvdarshan/fud-ai/issues/new?labels=enhancement&title=Feature:%20")!) {
-                        Label {
-                            Text("Request a Feature")
-                        } icon: {
-                            Image(systemName: "lightbulb.fill")
-                                .foregroundStyle(AppColors.calorie)
-                        }
-                    }
-                    .tint(.primary)
-
-                    // Contact
-                    Link(destination: URL(string: "mailto:apoorv@fud-ai.app")!) {
-                        Label {
-                            Text("Contact Us")
-                        } icon: {
-                            Image(systemName: "envelope.fill")
-                                .foregroundStyle(AppColors.calorie)
-                        }
-                    }
-                    .tint(.primary)
-
-                    // Follow on X
-                    Link(destination: URL(string: "https://x.com/apoorvdarshan")!) {
-                        Label {
-                            Text("Follow on X")
-                        } icon: {
-                            Image(systemName: "at")
-                                .foregroundStyle(AppColors.calorie)
-                        }
-                    }
-                    .tint(.primary)
-
-                    // Instagram
-                    Link(destination: URL(string: "https://www.instagram.com/fudai.app/")!) {
-                        Label {
-                            Text("Follow on Instagram")
-                        } icon: {
-                            Image(systemName: "camera.fill")
-                                .foregroundStyle(AppColors.calorie)
-                        }
-                    }
-                    .tint(.primary)
-
-                    // LinkedIn
-                    Link(destination: URL(string: "https://www.linkedin.com/company/fud-ai-app")!) {
-                        Label {
-                            Text("Follow on LinkedIn")
-                        } icon: {
-                            Image(systemName: "briefcase.fill")
-                                .foregroundStyle(AppColors.calorie)
-                        }
-                    }
-                    .tint(.primary)
                 }
-                .listRowBackground(AppColors.appCard)
+                .tint(.primary)
 
-                Section {
-                    // Privacy Policy
-                    Link(destination: URL(string: "https://fud-ai.app/privacy.html")!) {
-                        Label {
-                            Text("Privacy Policy")
-                        } icon: {
-                            Image(systemName: "lock.shield.fill")
-                                .foregroundStyle(AppColors.calorie)
-                        }
+                // Share the App — uses UIActivityViewController so both
+                // the personalized message AND the App Store URL get
+                // forwarded to every share target (SwiftUI ShareLink
+                // drops the message arg for most targets).
+                Button {
+                    showShareSheet = true
+                } label: {
+                    Label {
+                        Text("Share the App")
+                    } icon: {
+                        Image(systemName: "square.and.arrow.up.fill")
+                            .foregroundStyle(AppColors.calorie)
                     }
-                    .tint(.primary)
-
-                    // Terms of Service
-                    Link(destination: URL(string: "https://fud-ai.app/terms.html")!) {
-                        Label {
-                            Text("Terms of Service")
-                        } icon: {
-                            Image(systemName: "doc.text.fill")
-                                .foregroundStyle(AppColors.calorie)
-                        }
-                    }
-                    .tint(.primary)
                 }
-                .listRowBackground(AppColors.appCard)
+                .tint(.primary)
 
-                Section {
-                    VStack(spacing: 4) {
-                        Text("Made by Apoorv Darshan")
-                            .font(.system(.footnote, design: .rounded, weight: .medium))
-                            .foregroundStyle(.secondary)
-                        Text("with care, for everyone")
-                            .font(.system(.caption2, design: .rounded))
-                            .foregroundStyle(.tertiary)
+                // Support
+                Link(destination: URL(string: "https://ko-fi.com/apoorvdarshan")!) {
+                    Label {
+                        Text("Support on Ko-fi")
+                    } icon: {
+                        Image(systemName: "cup.and.saucer.fill")
+                            .foregroundStyle(AppColors.calorie)
                     }
-                    .frame(maxWidth: .infinity)
-                    .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
                 }
+                .tint(.primary)
+
+                // Open Source
+                Link(destination: URL(string: "https://github.com/apoorvdarshan/fud-ai")!) {
+                    Label {
+                        Text("Open Source (MIT)")
+                    } icon: {
+                        Image(systemName: "chevron.left.forwardslash.chevron.right")
+                            .foregroundStyle(AppColors.calorie)
+                    }
+                }
+                .tint(.primary)
+
+                // Star the Repo
+                Link(destination: URL(string: "https://github.com/apoorvdarshan/fud-ai")!) {
+                    Label {
+                        Text("Star on GitHub")
+                    } icon: {
+                        Image(systemName: "star.circle.fill")
+                            .foregroundStyle(AppColors.calorie)
+                    }
+                }
+                .tint(.primary)
+
+                // Vote on Product Hunt
+                Link(destination: URL(string: "https://www.producthunt.com/products/fud-ai-calorie-tracker")!) {
+                    Label {
+                        Text("Vote on Product Hunt")
+                    } icon: {
+                        Image(systemName: "hand.thumbsup.fill")
+                            .foregroundStyle(AppColors.calorie)
+                    }
+                }
+                .tint(.primary)
+
+                // Report an Issue
+                Link(destination: URL(string: "https://github.com/apoorvdarshan/fud-ai/issues/new?labels=bug&title=Bug:%20")!) {
+                    Label {
+                        Text("Report an Issue")
+                    } icon: {
+                        Image(systemName: "exclamationmark.bubble.fill")
+                            .foregroundStyle(AppColors.calorie)
+                    }
+                }
+                .tint(.primary)
+
+                // Request a Feature
+                Link(destination: URL(string: "https://github.com/apoorvdarshan/fud-ai/issues/new?labels=enhancement&title=Feature:%20")!) {
+                    Label {
+                        Text("Request a Feature")
+                    } icon: {
+                        Image(systemName: "lightbulb.fill")
+                            .foregroundStyle(AppColors.calorie)
+                    }
+                }
+                .tint(.primary)
+
+                // Contact
+                Link(destination: URL(string: "mailto:apoorv@fud-ai.app")!) {
+                    Label {
+                        Text("Contact Us")
+                    } icon: {
+                        Image(systemName: "envelope.fill")
+                            .foregroundStyle(AppColors.calorie)
+                    }
+                }
+                .tint(.primary)
+
+                // Follow on X
+                Link(destination: URL(string: "https://x.com/apoorvdarshan")!) {
+                    Label {
+                        Text("Follow on X")
+                    } icon: {
+                        Image(systemName: "at")
+                            .foregroundStyle(AppColors.calorie)
+                    }
+                }
+                .tint(.primary)
+
+                // Instagram
+                Link(destination: URL(string: "https://www.instagram.com/fudai.app/")!) {
+                    Label {
+                        Text("Follow on Instagram")
+                    } icon: {
+                        Image(systemName: "camera.fill")
+                            .foregroundStyle(AppColors.calorie)
+                    }
+                }
+                .tint(.primary)
+
+                // LinkedIn
+                Link(destination: URL(string: "https://www.linkedin.com/company/fud-ai-app")!) {
+                    Label {
+                        Text("Follow on LinkedIn")
+                    } icon: {
+                        Image(systemName: "briefcase.fill")
+                            .foregroundStyle(AppColors.calorie)
+                    }
+                }
+                .tint(.primary)
             }
-            .scrollContentBackground(.hidden)
-            .background(AppColors.appBackground)
-            .safeAreaInset(edge: .bottom) {
-                BannerAdView()
-                    .frame(height: 50)
-                    .frame(maxWidth: .infinity)
+            .listRowBackground(AppColors.appCard)
+
+            Section {
+                // Privacy Policy
+                Link(destination: URL(string: "https://fud-ai.app/privacy.html")!) {
+                    Label {
+                        Text("Privacy Policy")
+                    } icon: {
+                        Image(systemName: "lock.shield.fill")
+                            .foregroundStyle(AppColors.calorie)
+                    }
+                }
+                .tint(.primary)
+
+                // Terms of Service
+                Link(destination: URL(string: "https://fud-ai.app/terms.html")!) {
+                    Label {
+                        Text("Terms of Service")
+                    } icon: {
+                        Image(systemName: "doc.text.fill")
+                            .foregroundStyle(AppColors.calorie)
+                    }
+                }
+                .tint(.primary)
             }
-            .navigationBarHidden(true)
-            .sheet(isPresented: $showShareSheet) {
-                ActivityShareSheet(activityItems: [shareMessage, fudAIAppStoreURL])
+            .listRowBackground(AppColors.appCard)
+
+            Section {
+                VStack(spacing: 4) {
+                    Text("Made by Apoorv Darshan")
+                        .font(.system(.footnote, design: .rounded, weight: .medium))
+                        .foregroundStyle(.secondary)
+                    Text("with care, for everyone")
+                        .font(.system(.caption2, design: .rounded))
+                        .foregroundStyle(.tertiary)
+                }
+                .frame(maxWidth: .infinity)
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
             }
+        }
+        .sheet(isPresented: $showShareSheet) {
+            ActivityShareSheet(activityItems: [shareMessage, fudAIAppStoreURL])
         }
     }
 
@@ -2729,6 +2713,17 @@ struct ProfileView: View {
     @AppStorage(FoodMeasurementSettings.preferGramsByDefaultKey) private var preferGramsByDefault = false
     @AppStorage(AppThemeColor.storageKey) private var appThemeColorRaw = AppThemeColor.defaultColor.rawValue
 
+    // App-update state is owned by ContentView (it also drives the one-shot update
+    // notification). It's forwarded here so the About section — now the last section
+    // of Settings — can show the update row and the manual re-check.
+    @Binding private var updateState: AppUpdateState
+    private let refreshUpdateState: () async -> Void
+
+    init(updateState: Binding<AppUpdateState>, refreshUpdateState: @escaping () async -> Void) {
+        self._updateState = updateState
+        self.refreshUpdateState = refreshUpdateState
+    }
+
     enum ActiveSheet: String, Identifiable {
         case editBirthday, editHeight, editWeight, editBodyFat, editGoalBodyFat, editGoalWeight, editCalories, editProtein, editCarbs, editFat
         var id: String { rawValue }
@@ -3777,6 +3772,13 @@ struct ProfileView: View {
                     .buttonStyle(.plain)
                 }
                 .listRowBackground(AppColors.appCard)
+
+                // About — folded in from the former About tab so it's the last
+                // section of Settings (Home / Progress / Coach / Settings = 4 tabs).
+                AboutSettingsSections(
+                    updateState: $updateState,
+                    refreshUpdateState: refreshUpdateState
+                )
             }
             .scrollContentBackground(.hidden)
             .background(AppColors.appBackground)

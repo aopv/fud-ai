@@ -29,7 +29,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Forum
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -73,8 +72,7 @@ val BottomTabs = listOf(
     BottomTab(FudAIRoutes.HOME, Icons.Filled.Home, R.string.nav_home),
     BottomTab(FudAIRoutes.PROGRESS, Icons.Filled.BarChart, R.string.nav_progress),
     BottomTab(FudAIRoutes.COACH, Icons.Filled.Forum, R.string.nav_coach),
-    BottomTab(FudAIRoutes.SETTINGS, Icons.Filled.Settings, R.string.nav_settings),
-    BottomTab(FudAIRoutes.ABOUT, Icons.Filled.Info, R.string.nav_about)
+    BottomTab(FudAIRoutes.SETTINGS, Icons.Filled.Settings, R.string.nav_settings)
 )
 
 private val BarHeight = 72.dp
@@ -275,7 +273,7 @@ fun FudAIBottomNavBar(
                     TabItem(
                         tab = tab,
                         selected = selected,
-                        showBadge = showAboutBadge && tab.route == FudAIRoutes.ABOUT,
+                        showBadge = showAboutBadge && tab.route == FudAIRoutes.SETTINGS,
                         isDark = isDark,
                         modifier = Modifier
                             .width(tabWidthDp)
