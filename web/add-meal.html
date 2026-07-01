@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Add a meal · Fud AI</title>
+  <meta name="theme-color" content="#0C0B09" />
+  <meta name="robots" content="noindex" />
+
+  <!-- Social preview (WhatsApp/iMessage show this card for the link) -->
+  <meta property="og:title" content="Someone shared a meal with you" />
+  <meta property="og:description" content="Open in Fud AI to add it to your log in one tap." />
+  <meta property="og:image" content="https://www.fud-ai.app/assets/opengraph.jpg?v=20260701" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="icon" href="assets/calorie logo transparent.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Manrope:wght@500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --paper: #0C0B09;
+      --paper-deep: #15130E;
+      --paper-warm: #1A1813;
+      --ink: #F2EDE3;
+      --ink-soft: #A8A192;
+      --ink-mute: #6E6759;
+      --coral: #FF6B7A;
+      --coral-deep: #E63946;
+      --line: rgba(255, 255, 255, 0.08);
+      --sans: 'Manrope', system-ui, -apple-system, sans-serif;
+      --serif: 'Fraunces', Georgia, serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--sans);
+      background: radial-gradient(120% 90% at 50% 0%, var(--paper-warm), var(--paper) 60%);
+      color: var(--ink);
+      min-height: 100svh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 28px 20px calc(28px + env(safe-area-inset-bottom));
+      -webkit-font-smoothing: antialiased;
+    }
+    .card {
+      width: 100%;
+      max-width: 440px;
+      background: var(--paper-deep);
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      padding: 30px 24px 26px;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+    }
+    .brand {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 700; font-size: 15px; letter-spacing: 0.2px;
+      color: var(--ink-soft); margin-bottom: 22px;
+    }
+    .brand img { width: 26px; height: 26px; border-radius: 7px; }
+    h1 {
+      font-family: var(--serif);
+      font-weight: 600; font-size: 26px; line-height: 1.15;
+      margin-bottom: 6px;
+    }
+    .sub { color: var(--ink-soft); font-size: 14.5px; margin-bottom: 22px; }
+    .meal {
+      display: flex; align-items: center; gap: 14px;
+      padding: 15px 0; border-top: 1px solid var(--line);
+    }
+    .meal:last-of-type { border-bottom: 1px solid var(--line); }
+    .emoji {
+      width: 42px; height: 42px; flex: none;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; background: var(--paper-warm); border-radius: 12px;
+    }
+    .meal .name { font-weight: 600; font-size: 16px; }
+    .meal .macros { color: var(--ink-mute); font-size: 13px; margin-top: 2px; }
+    .meal .kcal { margin-left: auto; color: var(--coral); font-weight: 700; font-size: 15px; white-space: nowrap; }
+    .total { text-align: right; color: var(--ink-soft); font-size: 13.5px; margin: 14px 2px 0; }
+    .cta {
+      display: block; width: 100%; margin-top: 22px;
+      background: linear-gradient(180deg, var(--coral), var(--coral-deep));
+      color: #fff; font-family: var(--sans); font-weight: 700; font-size: 16.5px;
+      text-align: center; text-decoration: none;
+      padding: 16px; border: none; border-radius: 16px; cursor: pointer;
+      box-shadow: 0 12px 28px rgba(230, 57, 70, 0.35);
+    }
+    .cta:active { transform: translateY(1px); }
+    .note { text-align: center; color: var(--ink-mute); font-size: 12.5px; margin-top: 14px; line-height: 1.5; }
+    .stores { display: flex; gap: 10px; justify-content: center; margin-top: 16px; }
+    .stores a {
+      color: var(--ink-soft); text-decoration: none; font-size: 13px; font-weight: 600;
+      border: 1px solid var(--line); border-radius: 11px; padding: 9px 14px;
+    }
+    .stores a:hover { color: var(--ink); border-color: var(--ink-mute); }
+    .err { color: var(--ink-soft); font-size: 15px; line-height: 1.55; }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="brand">
+      <img src="assets/calorie logo transparent.png" alt="" />
+      Fud AI
+    </div>
+    <div id="content"><p class="err">Loading shared meal…</p></div>
+  </main>
+
+  <script>
+    var APP_STORE = "https://apps.apple.com/us/app/fud-ai-calorie-tracker/id6758935726";
+    var PLAY_STORE = "https://play.google.com/store/apps/details?id=com.apoorvdarshan.calorietracker";
+
+    function param(name) {
+      var m = new RegExp("[?&]" + name + "=([^&]+)").exec(window.location.search);
+      return m ? m[1] : null;
+    }
+
+    function decodePayload(d) {
+      var s = d.replace(/-/g, "+").replace(/_/g, "/");
+      while (s.length % 4) s += "=";
+      var bin = atob(s);
+      var bytes = Uint8Array.from(bin, function (c) { return c.charCodeAt(0); });
+      var text = new TextDecoder("utf-8").decode(bytes);
+      return JSON.parse(text);
+    }
+
+    function esc(s) {
+      return String(s).replace(/[&<>"']/g, function (c) {
+        return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+      });
+    }
+    function r(n) { return Math.round(Number(n) || 0); }
+
+    function storesHtml() {
+      return '<div class="stores"><a href="' + APP_STORE + '">App Store</a>' +
+             '<a href="' + PLAY_STORE + '">Google Play</a></div>';
+    }
+
+    function render() {
+      var content = document.getElementById("content");
+      var d = param("d");
+      if (!d) {
+        content.innerHTML = '<h1>Nothing to add</h1><p class="sub">This link doesn\'t contain a shared meal.</p>' + storesHtml();
+        return;
+      }
+      var data;
+      try { data = decodePayload(d); } catch (e) { data = null; }
+      var meals = data && Array.isArray(data.meals) ? data.meals : null;
+      if (!meals || !meals.length) {
+        content.innerHTML = '<h1>Couldn\'t read this meal</h1><p class="sub">The link may be incomplete. Ask your friend to share it again.</p>' + storesHtml();
+        return;
+      }
+
+      var total = 0;
+      var rows = meals.map(function (m) {
+        total += Number(m.calories) || 0;
+        var emoji = m.emoji ? esc(m.emoji) : "🍽️";
+        return '<div class="meal">' +
+          '<div class="emoji">' + emoji + '</div>' +
+          '<div><div class="name">' + esc(m.name || "Meal") + '</div>' +
+          '<div class="macros">' + r(m.protein) + "P · " + r(m.carbs) + "C · " + r(m.fat) + 'F</div></div>' +
+          '<div class="kcal">' + r(m.calories) + ' kcal</div></div>';
+      }).join("");
+
+      var title = meals.length === 1 ? "A meal was shared with you" : meals.length + " meals were shared with you";
+      var fudaiLink = "fudai://add-meal?d=" + d;
+
+      content.innerHTML =
+        '<h1>' + title + '</h1>' +
+        '<p class="sub">Add it to your Fud AI log — with the exact nutrients, no re-scanning.</p>' +
+        rows +
+        (meals.length > 1 ? '<div class="total">' + r(total) + ' kcal total</div>' : "") +
+        '<a class="cta" id="open" href="' + fudaiLink + '">Add to Fud AI</a>' +
+        '<p class="note">Opens the app to confirm. Don\'t have Fud AI yet?</p>' +
+        storesHtml();
+
+      // Best-effort auto-open for users who already have the app.
+      setTimeout(function () { try { window.location.href = fudaiLink; } catch (e) {} }, 350);
+    }
+
+    render();
+  </script>
+</body>
+</html>

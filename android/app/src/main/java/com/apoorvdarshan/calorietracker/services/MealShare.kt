@@ -24,14 +24,18 @@ object MealShare {
 
     // MARK: Encode
 
-    /** A `fudai://add-meal?d=…` link carrying every entry's nutrients (no image). */
+    /**
+     * A shareable link carrying every entry's nutrients (no image). Uses an https://fud-ai.app
+     * URL so messengers (WhatsApp etc.) make it tappable — the page then opens the app via the
+     * fudai://add-meal scheme. `d` is byte-identical to the scheme link, so import is unchanged.
+     */
     fun link(entries: List<FoodEntry>): String {
         val meals = JSONArray()
         entries.forEach { meals.put(mealJson(it)) }
         val payload = JSONObject().put("v", VERSION).put("meals", meals)
         val b64 = Base64.getUrlEncoder().withoutPadding()
             .encodeToString(payload.toString().toByteArray(Charsets.UTF_8))
-        return "$SCHEME://$HOST?d=$b64"
+        return "https://fud-ai.app/add-meal.html?d=$b64"
     }
 
     /** Fire the system share sheet with a readable summary + the fudai://add-meal link. */

@@ -12,15 +12,18 @@ enum MealShare {
 
     // MARK: - Encode
 
-    /// A `fudai://add-meal?d=…` link carrying every entry's nutrients (no image).
+    /// A shareable link carrying every entry's nutrients (no image). Uses an https://fud-ai.app
+    /// URL so messengers (WhatsApp etc.) make it tappable — the page then opens the app via the
+    /// fudai://add-meal scheme. `d` is byte-identical to the scheme link, so import is unchanged.
     static func link(for entries: [FoodEntry]) -> URL? {
         let payload: [String: Any] = ["v": version, "meals": entries.map(mealDict)]
         guard JSONSerialization.isValidJSONObject(payload),
               let data = try? JSONSerialization.data(withJSONObject: payload),
               !data.isEmpty else { return nil }
         var comps = URLComponents()
-        comps.scheme = scheme
-        comps.host = host
+        comps.scheme = "https"
+        comps.host = "fud-ai.app"
+        comps.path = "/add-meal.html"
         comps.queryItems = [URLQueryItem(name: "d", value: base64url(data))]
         return comps.url
     }
