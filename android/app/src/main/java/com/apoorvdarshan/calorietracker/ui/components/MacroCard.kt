@@ -1,6 +1,6 @@
 package com.apoorvdarshan.calorietracker.ui.components
 
-import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -15,7 +15,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,6 +32,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.apoorvdarshan.calorietracker.models.MacroValueFormatter
+import com.apoorvdarshan.calorietracker.ui.navigation.LocalLaunchFillEpoch
 import com.apoorvdarshan.calorietracker.ui.theme.AppColors
 
 /**
@@ -43,11 +49,22 @@ fun MacroCard(
     gradientColors: List<Color> = listOf(AppColors.CalorieStart, AppColors.CalorieEnd)
 ) {
     val progress = if (goal > 0) (current.toFloat() / goal).coerceIn(0f, 1f) else 0f
-    val animated by animateFloatAsState(
-        targetValue = progress,
-        animationSpec = spring(dampingRatio = 0.78f, stiffness = 60f),
-        label = "macroFill"
-    )
+    // Fill-from-zero on app open (see CalorieHero). Saveable lastEpoch survives tab
+    // switches so only a real app-open replays the fill; tab returns snap.
+    val epoch = LocalLaunchFillEpoch.current
+    var lastEpoch by rememberSaveable { mutableIntStateOf(0) }
+    val animatable = remember { Animatable(if (lastEpoch == epoch) progress else 0f) }
+    LaunchedEffect(epoch, progress) {
+        val spec = spring<Float>(dampingRatio = 0.85f, stiffness = 55f)
+        if (lastEpoch != epoch) {
+            animatable.snapTo(0f)
+            animatable.animateTo(progress, spec)
+            lastEpoch = epoch
+        } else {
+            animatable.animateTo(progress, spec)
+        }
+    }
+    val animated = animatable.value
     val firstColor = gradientColors.firstOrNull() ?: AppColors.Calorie
 
     Column(

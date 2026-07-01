@@ -7,9 +7,12 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.runtime.saveable.rememberSaveable
+import com.apoorvdarshan.calorietracker.ui.navigation.LocalLaunchFillEpoch
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -746,11 +749,22 @@ private fun shortDay(dow: DayOfWeek): String = when (dow) {
 @Composable
 private fun CalorieHero(current: Int, goal: Int) {
     val ratio = if (goal > 0) (current.toFloat() / goal).coerceIn(0f, 1f) else 0f
-    val animatedRatio by animateFloatAsState(
-        targetValue = ratio,
-        animationSpec = spring(dampingRatio = 0.78f, stiffness = 60f),
-        label = "calorieGauge"
-    )
+    // Fill-from-zero on app open. lastEpoch is saveable so it survives tab switches
+    // (where Home leaves/re-enters composition) — only a real app-open (new epoch)
+    // replays the sweep; tab returns snap to the current value.
+    val epoch = LocalLaunchFillEpoch.current
+    var lastEpoch by rememberSaveable { mutableIntStateOf(0) }
+    val animatedRatio = remember { Animatable(if (lastEpoch == epoch) ratio else 0f) }
+    LaunchedEffect(epoch, ratio) {
+        val spec = spring<Float>(dampingRatio = 0.85f, stiffness = 55f)
+        if (lastEpoch != epoch) {
+            animatedRatio.snapTo(0f)
+            animatedRatio.animateTo(ratio, spec)
+            lastEpoch = epoch
+        } else {
+            animatedRatio.animateTo(ratio, spec)
+        }
+    }
     val remaining = maxOf(0, goal - current)
     val gradientColors = listOf(AppColors.CalorieStart, AppColors.CalorieEnd)
     val trackColor = AppColors.Calorie.copy(alpha = 0.12f)
@@ -785,7 +799,7 @@ private fun CalorieHero(current: Int, goal: Int) {
             drawArc(
                 brush = Brush.horizontalGradient(gradientColors),
                 startAngle = 180f,
-                sweepAngle = 180f * animatedRatio,
+                sweepAngle = 180f * animatedRatio.value,
                 useCenter = false,
                 topLeft = topLeft,
                 size = arcSize,
