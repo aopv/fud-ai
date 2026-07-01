@@ -7,9 +7,12 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.runtime.saveable.rememberSaveable
+import com.apoorvdarshan.calorietracker.ui.navigation.LocalLaunchFillEpoch
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -19,9 +22,18 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -41,6 +53,9 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddAPhoto
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Calculate
+import androidx.compose.material.icons.filled.LocalFireDepartment
+import androidx.compose.material.icons.filled.DocumentScanner
+import androidx.compose.material.icons.filled.DriveFileRenameOutline
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.ChevronRight
@@ -262,216 +277,15 @@ fun HomeScreen(container: AppContainer) {
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background
                 ),
-                actions = {
-                    Box(modifier = Modifier.padding(end = 8.dp)) {
-                        // iOS 26 Liquid Glass + button. Compose can't do real backdrop
-                        // refraction blur, but we fake the look with:
-                        //   - Vertical gradient fill: brighter at top (specular hint),
-                        //     darker at bottom (depth)
-                        //   - Hairline white border with 0.45 -> 0.05 fall-off (glass rim)
-                        //   - Soft drop shadow for the floating-on-page feel
-                        //   - Press scale spring (0.85 damping, response 0.4) for the
-                        //     iOS Menu-button compress feel
-                        val pressed = remember { androidx.compose.runtime.mutableStateOf(false) }
-                        val scale by androidx.compose.animation.core.animateFloatAsState(
-                            targetValue = if (pressed.value) 0.92f else 1f,
-                            animationSpec = androidx.compose.animation.core.spring(
-                                dampingRatio = 0.85f,
-                                stiffness = 220f
-                            ),
-                            label = "plusPress"
-                        )
-                        // Light mode: white-on-translucent-white glass disappears into the
-                        // cream background, so swap to the brand pink gradient so the white
-                        // "+" pops. Dark mode: keep the original liquid-glass look (it reads
-                        // fine on the near-black background). Decide via the actual rendered
-                        // background luminance — isSystemInDarkTheme() can drift from
-                        // MaterialTheme on some OEM skins (OriginOS) that override uimode.
-                        val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
-                        val plusBg = if (isDark) {
-                            Brush.verticalGradient(
-                                listOf(
-                                    Color.White.copy(alpha = 0.22f),
-                                    Color.White.copy(alpha = 0.08f)
-                                )
-                            )
-                        } else {
-                            Brush.verticalGradient(
-                                listOf(AppColors.CalorieStart, AppColors.CalorieEnd)
-                            )
-                        }
-                        val plusBorder = if (isDark) {
-                            Brush.linearGradient(
-                                listOf(
-                                    Color.White.copy(alpha = 0.45f),
-                                    Color.White.copy(alpha = 0.05f)
-                                )
-                            )
-                        } else {
-                            Brush.linearGradient(
-                                listOf(
-                                    Color.White.copy(alpha = 0.85f),
-                                    Color.White.copy(alpha = 0.35f)
-                                )
-                            )
-                        }
-                        Box(
-                            modifier = Modifier
-                                .size(40.dp)
-                                .graphicsLayer {
-                                    scaleX = scale; scaleY = scale
-                                }
-                                .shadow(
-                                    elevation = 8.dp,
-                                    shape = CircleShape,
-                                    ambientColor = Color.Black.copy(alpha = 0.25f),
-                                    spotColor = Color.Black.copy(alpha = 0.25f)
-                                )
-                                .clip(CircleShape)
-                                .background(plusBg)
-                                .border(0.7.dp, plusBorder, CircleShape)
-                                .clickable(
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    indication = null
-                                ) {
-                                    pressed.value = true
-                                    showAddMenu = true
-                                },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                Icons.Filled.Add,
-                                contentDescription = "Add food",
-                                tint = Color.White,
-                                modifier = Modifier.size(26.dp)
-                            )
-                        }
-                        androidx.compose.runtime.LaunchedEffect(pressed.value) {
-                            if (pressed.value) {
-                                kotlinx.coroutines.delay(120)
-                                pressed.value = false
-                            }
-                        }
-                        val glassMenuShape = RoundedCornerShape(26.dp)
-                        val glassMenuContainer = if (isDark) {
-                            Color(0xF2141416)
-                        } else {
-                            Color(0xFFFAF3EE).copy(alpha = 0.98f)
-                        }
-                        val glassMenuSheen = Brush.verticalGradient(
-                            colors = if (isDark) {
-                                listOf(
-                                    Color.White.copy(alpha = 0.045f),
-                                    Color.White.copy(alpha = 0.015f),
-                                    AppColors.Calorie.copy(alpha = 0.025f)
-                                )
-                            } else {
-                                listOf(
-                                    Color.White.copy(alpha = 0.70f),
-                                    Color.White.copy(alpha = 0.24f),
-                                    AppColors.Calorie.copy(alpha = 0.040f)
-                                )
-                            }
-                        )
-                        val glassMenuBorder = Brush.linearGradient(
-                            colors = if (isDark) {
-                                listOf(
-                                    Color.White.copy(alpha = 0.18f),
-                                    Color.White.copy(alpha = 0.055f),
-                                    AppColors.Calorie.copy(alpha = 0.08f)
-                                )
-                            } else {
-                                listOf(
-                                    Color.White.copy(alpha = 0.95f),
-                                    Color.White.copy(alpha = 0.40f),
-                                    AppColors.Calorie.copy(alpha = 0.14f)
-                                )
-                            }
-                        )
-                        DropdownMenu(
-                            expanded = showAddMenu,
-                            onDismissRequest = { showAddMenu = false },
-                            shape = glassMenuShape,
-                            containerColor = glassMenuContainer,
-                            tonalElevation = 0.dp,
-                            shadowElevation = 0.dp,
-                            modifier = Modifier
-                                .width(248.dp)
-                                .background(glassMenuSheen, glassMenuShape)
-                                .border(0.8.dp, glassMenuBorder, glassMenuShape)
-                                .padding(vertical = 7.dp)
-                        ) {
-                            // Mirrors iOS HomeView toolbar Menu, in the same order:
-                            // Camera, Camera + Note, Camera + Camera, Nutrition Label,
-                            // From Photos, Text Input, Voice, Saved Meals.
-                            // Each leadingIcon is tinted pink to match iOS .tint(AppColors.calorie).
-                            MenuRow(
-                                label = "Camera",
-                                icon = Icons.Filled.CameraAlt
-                            ) { showAddMenu = false; openCamera() }
-                            MenuRow(
-                                label = "Camera + Note",
-                                icon = Icons.AutoMirrored.Filled.Note
-                            ) { showAddMenu = false; openCamera(withNote = true) }
-                            MenuRow(
-                                label = "Camera + Camera",
-                                icon = Icons.Filled.AddAPhoto
-                            ) { showAddMenu = false; openCamera(withSecondPhoto = true) }
-                            MenuRow(
-                                label = "Nutrition Label",
-                                icon = Icons.Filled.QrCodeScanner
-                            ) { showAddMenu = false; openCamera() }
-                            MenuRow(
-                                label = "Barcode",
-                                icon = Icons.Filled.QrCodeScanner
-                            ) { showAddMenu = false; openBarcodeScanner() }
-                            MenuRow(
-                                label = "From Photos",
-                                icon = Icons.Filled.PhotoLibrary
-                            ) {
-                                showAddMenu = false
-                                pendingPickedPhotoWantsNote = false
-                                photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                            }
-                            MenuRow(
-                                label = "From Photos + Note",
-                                icon = Icons.AutoMirrored.Filled.Note
-                            ) {
-                                showAddMenu = false
-                                pendingPickedPhotoWantsNote = true
-                                photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                            }
-                            MenuRow(
-                                label = "Text Input",
-                                icon = Icons.Filled.Edit
-                            ) { showAddMenu = false; showText = true }
-                            MenuRow(
-                                label = "Voice",
-                                icon = Icons.Filled.Mic
-                            ) { showAddMenu = false; showVoice = true }
-                            MenuRow(
-                                label = "Manual Entry",
-                                icon = Icons.Filled.Calculate
-                            ) { showAddMenu = false; showManual = true }
-                            MenuRow(
-                                label = "Saved Meals",
-                                icon = Icons.Filled.Bookmark
-                            ) { showAddMenu = false; showSaved = true }
-                            MenuRow(
-                                label = "Copy from Day",
-                                icon = Icons.Filled.CalendarMonth
-                            ) { showAddMenu = false; showCopyFromDay = true }
-                        }
-                    }
-                }
+                actions = {}
             )
-        }
+        },
     ) { padding ->
+        Box(Modifier.fillMaxSize().padding(padding)) {
         LazyColumn(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(padding),
-            contentPadding = androidx.compose.foundation.layout.PaddingValues(top = 8.dp, bottom = BottomNavScrollPadding)
+                .fillMaxSize(),
+            contentPadding = androidx.compose.foundation.layout.PaddingValues(top = 8.dp, bottom = BottomNavScrollPadding + 72.dp)
         ) {
             // Week strip — verbatim port of WeekEnergyStrip in HomeComponents.swift,
             // with horizontal pagination across 53 weeks of history.
@@ -516,7 +330,7 @@ fun HomeScreen(container: AppContainer) {
                         Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp),
-                        horizontalArrangement = Arrangement.spacedBy(20.dp)
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         ui.homeTopNutrients.forEach { nutrient ->
                             MacroCard(
@@ -544,7 +358,7 @@ fun HomeScreen(container: AppContainer) {
             // Food log
             item { Spacer(Modifier.height(8.dp)) }
             if (mealGroups.isEmpty()) {
-                item { SectionHeader("Today's Food") }
+                item { SectionHeader(if (isToday) "Today's Food" else "Food Log") }
                 item {
                     SectionCardWrapper(isFirst = true, isLast = true) {
                         Box(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 16.dp)) {
@@ -596,6 +410,64 @@ fun HomeScreen(container: AppContainer) {
                     }
                 }
             }
+        }
+
+        // Floating "+" add button — overlaid bottom-right and lifted above the docked
+        // bottom nav bar. The parent Scaffold renders content full-screen behind the
+        // bar, so the Scaffold FAB slot would sit hidden underneath it. Mirrors the iOS
+        // ContentView FAB: .overlay(alignment: .bottomTrailing) + .padding(.bottom).
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .navigationBarsPadding()
+                .padding(end = 24.dp, bottom = 100.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(60.dp)
+                    .clip(CircleShape)
+                    .background(AppColors.Calorie)
+                    .clickable { showAddMenu = true },
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    Icons.Filled.Add,
+                    contentDescription = "Add food",
+                    tint = Color.White,
+                    modifier = Modifier.size(30.dp)
+                )
+            }
+            // Glass-styled popup (matches the app's other sheet menus). Items are
+            // REVERSED vs the source order because the FAB sits at the bottom and the
+            // menu opens upward — iOS puts the first action (Camera) nearest the button,
+            // so Camera renders at the BOTTOM of the list and Copy from Day at the top.
+            SheetGlassDropdownMenu(
+                expanded = showAddMenu,
+                onDismissRequest = { showAddMenu = false },
+                menuWidth = 248.dp
+            ) {
+                SheetGlassDropdownMenuItem(label = "Copy from Day", leadingIcon = Icons.Filled.CalendarMonth) { showAddMenu = false; showCopyFromDay = true }
+                SheetGlassDropdownMenuItem(label = "Saved Meals", leadingIcon = Icons.Filled.Bookmark) { showAddMenu = false; showSaved = true }
+                SheetGlassDropdownMenuItem(label = "Manual Entry", leadingIcon = Icons.Filled.DriveFileRenameOutline) { showAddMenu = false; showManual = true }
+                SheetGlassDropdownMenuItem(label = "Voice", leadingIcon = Icons.Filled.Mic) { showAddMenu = false; showVoice = true }
+                SheetGlassDropdownMenuItem(label = "Text Input", leadingIcon = Icons.Filled.Edit) { showAddMenu = false; showText = true }
+                SheetGlassDropdownMenuItem(label = "From Photos + Note", leadingIcon = Icons.AutoMirrored.Filled.Note) {
+                    showAddMenu = false
+                    pendingPickedPhotoWantsNote = true
+                    photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                }
+                SheetGlassDropdownMenuItem(label = "From Photos", leadingIcon = Icons.Filled.PhotoLibrary) {
+                    showAddMenu = false
+                    pendingPickedPhotoWantsNote = false
+                    photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                }
+                SheetGlassDropdownMenuItem(label = "Barcode", leadingIcon = Icons.Filled.QrCodeScanner) { showAddMenu = false; openBarcodeScanner() }
+                SheetGlassDropdownMenuItem(label = "Nutrition Label", leadingIcon = Icons.Filled.DocumentScanner) { showAddMenu = false; openCamera() }
+                SheetGlassDropdownMenuItem(label = "Camera + Camera", leadingIcon = Icons.Filled.AddAPhoto) { showAddMenu = false; openCamera(withSecondPhoto = true) }
+                SheetGlassDropdownMenuItem(label = "Camera + Note", leadingIcon = Icons.AutoMirrored.Filled.Note) { showAddMenu = false; openCamera(withNote = true) }
+                SheetGlassDropdownMenuItem(label = "Camera", leadingIcon = Icons.Filled.CameraAlt) { showAddMenu = false; openCamera() }
+            }
+        }
         }
     }
 
@@ -877,89 +749,107 @@ private fun shortDay(dow: DayOfWeek): String = when (dow) {
 @Composable
 private fun CalorieHero(current: Int, goal: Int) {
     val ratio = if (goal > 0) (current.toFloat() / goal).coerceIn(0f, 1f) else 0f
-    val animatedRatio by animateFloatAsState(
-        targetValue = ratio,
-        animationSpec = spring(dampingRatio = 0.75f, stiffness = 60f), // response 0.8 ≈ stiffness 60
-        label = "calorieProgress"
-    )
+    // Fill-from-zero on app open. lastEpoch is saveable so it survives tab switches
+    // (where Home leaves/re-enters composition) — only a real app-open (new epoch)
+    // replays the sweep; tab returns snap to the current value.
+    val epoch = LocalLaunchFillEpoch.current
+    var lastEpoch by rememberSaveable { mutableIntStateOf(0) }
+    val animatedRatio = remember { Animatable(if (lastEpoch == epoch) ratio else 0f) }
+    LaunchedEffect(epoch, ratio) {
+        val spec = spring<Float>(dampingRatio = 0.85f, stiffness = 55f)
+        if (lastEpoch != epoch) {
+            animatedRatio.snapTo(0f)
+            animatedRatio.animateTo(ratio, spec)
+            lastEpoch = epoch
+        } else {
+            animatedRatio.animateTo(ratio, spec)
+        }
+    }
     val remaining = maxOf(0, goal - current)
+    val gradientColors = listOf(AppColors.CalorieStart, AppColors.CalorieEnd)
+    val trackColor = AppColors.Calorie.copy(alpha = 0.12f)
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 20.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(20.dp) // outer VStack(spacing: 20)
+            .padding(top = 8.dp, bottom = 4.dp),
+        contentAlignment = Alignment.TopCenter
     ) {
-        // Inner VStack(spacing: 4)
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+        // Segmented (dashed) semicircle speedometer arc. Fixed 260dp dome to mirror
+        // iOS CalorieGauge's hard .frame(width: 260) (244dp arc + 16dp stroke = 260dp).
+        Canvas(
+            modifier = Modifier
+                .width(260.dp)
+                .aspectRatio(2f)
         ) {
-            // 72pt bold rounded with linear gradient .topLeading -> .bottomTrailing
+            val stroke = 16.dp.toPx()
+            val inset = stroke / 2f
+            val arcSize = Size(size.width - stroke, size.width - stroke)
+            val topLeft = Offset(inset, inset)
+            val dash = PathEffect.dashPathEffect(floatArrayOf(4.dp.toPx(), 6.dp.toPx()), 0f)
+            drawArc(
+                color = trackColor,
+                startAngle = 180f,
+                sweepAngle = 180f,
+                useCenter = false,
+                topLeft = topLeft,
+                size = arcSize,
+                style = Stroke(width = stroke, cap = StrokeCap.Butt, pathEffect = dash)
+            )
+            drawArc(
+                brush = Brush.horizontalGradient(gradientColors),
+                startAngle = 180f,
+                sweepAngle = 180f * animatedRatio.value,
+                useCenter = false,
+                topLeft = topLeft,
+                size = arcSize,
+                style = Stroke(width = stroke, cap = StrokeCap.Butt, pathEffect = dash)
+            )
+        }
+
+        // Centered readout, sitting inside the dome
+        Column(
+            modifier = Modifier.padding(top = 44.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(2.dp)
+        ) {
+            Text(
+                "CALORIES",
+                fontSize = 12.sp,
+                fontWeight = FontWeight.SemiBold,
+                letterSpacing = 0.5.sp,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+            )
             Text(
                 "$current",
                 style = TextStyle(
-                    brush = Brush.linearGradient(
-                        colors = listOf(AppColors.CalorieStart, AppColors.CalorieEnd)
-                        // Compose's default linearGradient is top-left to bottom-right which matches iOS's .topLeading/.bottomTrailing.
-                    ),
-                    fontSize = 72.sp,
+                    brush = Brush.linearGradient(gradientColors),
+                    fontSize = 54.sp,
                     fontWeight = FontWeight.Bold
+                ),
+                maxLines = 1
+            )
+            // Flame + remaining, mirroring iOS HStack(spacing: 5) { flame.fill (11pt) ;
+            // Text("\(remaining) left") } tinted to AppColors.calorie — a pink monochrome
+            // glyph, not a multicolor emoji, and the count is un-grouped (no thousands comma).
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(5.dp)
+            ) {
+                Icon(
+                    Icons.Filled.LocalFireDepartment,
+                    contentDescription = null,
+                    tint = AppColors.Calorie,
+                    modifier = Modifier.size(13.dp)
                 )
-            )
-            // "of N kcal" .font(.callout) = 16sp .foregroundStyle(.tertiary) = ~0.3 alpha.
-            // iOS SwiftUI Text("\(Int)") auto-formats integers with locale grouping,
-            // so we explicitly format the goal with thousands-separators to match.
-            Text(
-                "of ${String.format(java.util.Locale.getDefault(), "%,d", goal)} kcal",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
-            )
+                Text(
+                    "$remaining left",
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = AppColors.Calorie
+                )
+            }
         }
-
-        // Progress capsule 10dp tall, padding(.horizontal, 24)
-        BoxWithConstraints(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp)
-                .height(10.dp)
-        ) {
-            val w = maxWidth
-            // Track Capsule.fill(Calorie.opacity(0.10))
-            Box(
-                Modifier
-                    .fillMaxWidth()
-                    .height(10.dp)
-                    .clip(CircleShape)
-                    .background(AppColors.Calorie.copy(alpha = 0.10f))
-            )
-            // Foreground Capsule with shadow Calorie*0.35, r=8, y=3
-            val barWidth = (w * animatedRatio).coerceAtLeast(10.dp)
-            Box(
-                Modifier
-                    .width(barWidth)
-                    .height(10.dp)
-                    .shadow(
-                        elevation = 8.dp,
-                        shape = CircleShape,
-                        ambientColor = AppColors.Calorie.copy(alpha = 0.35f),
-                        spotColor = AppColors.Calorie.copy(alpha = 0.35f)
-                    )
-                    .clip(CircleShape)
-                    .background(AppColors.CalorieGradient)
-            )
-        }
-
-        // "N left" .font(.footnote) = 13sp .foregroundStyle(.secondary) = ~0.6 alpha.
-        // iOS Text("\(Int)") groups thousands by locale; format explicitly so 2452 → "2,452".
-        Text(
-            "${String.format(java.util.Locale.getDefault(), "%,d", remaining)} left",
-            fontSize = 13.sp,
-            fontWeight = FontWeight.Medium,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-        )
     }
 }
 
@@ -968,38 +858,6 @@ private fun CalorieHero(current: Int, goal: Int) {
 // MacroCard moved to ui/components/MacroCard.kt as a verbatim port of
 // HomeComponents.swift's struct MacroCard. Imported above.
 
-/**
- * iOS-styled menu row used inside the + DropdownMenu. Pink leading icon,
- * 17sp body label, slightly larger row height than Material default to
- * match iOS Menu touch targets.
- */
-@Composable
-private fun MenuRow(label: String, icon: ImageVector, onClick: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 1.dp)
-            .clip(RoundedCornerShape(14.dp))
-            .clickable(onClick = onClick)
-            .padding(horizontal = 14.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        Icon(
-            icon,
-            contentDescription = null,
-            tint = AppColors.Calorie,
-            modifier = Modifier.size(24.dp)
-        )
-        Text(
-            label,
-            fontSize = 17.sp,
-            fontWeight = FontWeight.Medium,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.92f),
-            maxLines = 1
-        )
-    }
-}
 
 @Composable
 private fun ViewMoreButton() {
@@ -1012,14 +870,14 @@ private fun ViewMoreButton() {
             "View More",
             fontSize = 15.sp,
             fontWeight = FontWeight.Medium,
-            color = AppColors.Calorie.copy(alpha = 0.72f)
+            color = AppColors.Calorie.copy(alpha = 0.6f)
         )
         Spacer(Modifier.width(5.dp))
         Icon(
             Icons.Filled.ChevronRight,
             contentDescription = null,
-            tint = AppColors.Calorie.copy(alpha = 0.72f),
-            modifier = Modifier.size(15.dp)
+            tint = AppColors.Calorie.copy(alpha = 0.6f),
+            modifier = Modifier.size(11.dp)
         )
     }
 }

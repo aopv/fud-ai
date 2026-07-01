@@ -592,6 +592,11 @@ struct HomeView: View {
     @State private var currentEmoji: String?
     @State private var currentFoodSource: FoodSource = .snapFood
     @State private var showNutritionDetail = false
+    // Bumped each time the app is opened (cold launch = 1, then +1 on every
+    // return from background). Drives the gauge + macro "fill from zero" reveal.
+    // Not bumped on tab switches or data edits, so it only plays on app open.
+    @State private var launchFillEpoch = 1
+    @State private var wasBackgrounded = false
     @AppStorage("useMetric") private var useMetric = false
     @AppStorage(FoodLogSortOrder.storageKey) private var foodLogSortOrderRaw = FoodLogSortOrder.defaultOrder.rawValue
     @AppStorage(HomeTopNutrient.storageKey) private var homeTopNutrientsRaw = HomeTopNutrient.storageValue(for: HomeTopNutrient.defaultSelection)
@@ -681,7 +686,7 @@ struct HomeView: View {
 
                 // Calorie hero (semicircle gauge)
                 Section {
-                    CalorieGauge(eaten: selectedCalories, goal: calorieGoal, remaining: caloriesRemaining)
+                    CalorieGauge(eaten: selectedCalories, goal: calorieGoal, remaining: caloriesRemaining, launchFillEpoch: launchFillEpoch)
                         .frame(maxWidth: .infinity)
                         .padding(.top, 8)
                         .padding(.bottom, 4)
@@ -691,16 +696,17 @@ struct HomeView: View {
                         .listRowSeparator(.hidden)
                 }
 
-                // Top nutrient trio (vertical bars)
+                // Top nutrient row (vertical bars)
                 Section {
-                    HStack(alignment: .top, spacing: 8) {
+                    HStack(alignment: .top, spacing: 4) {
                         ForEach(homeTopNutrients) { nutrient in
                             MacroVerticalBar(
                                 label: nutrient.displayName,
                                 current: nutrient.value(from: foodStore, on: selectedDate),
                                 goal: nutrient.goal(for: userProfile, optionalGoals: optionalNutrientGoals),
                                 unit: nutrient.unit,
-                                gradient: nutrient.gradientColors
+                                gradient: nutrient.gradientColors,
+                                launchFillEpoch: launchFillEpoch
                             )
                         }
                     }
@@ -1196,6 +1202,15 @@ struct HomeView: View {
             .onChange(of: scenePhase) { _, newPhase in
                 if newPhase == .active {
                     checkAndConsumeSharedImage()
+                    // Returned to the foreground -> replay the fill-from-zero reveal.
+                    // Gated on wasBackgrounded so transient .inactive blips (control
+                    // center, app switcher) don't retrigger it.
+                    if wasBackgrounded {
+                        launchFillEpoch += 1
+                        wasBackgrounded = false
+                    }
+                } else if newPhase == .background {
+                    wasBackgrounded = true
                 }
             }
         }
