@@ -48,10 +48,10 @@ import com.apoorvdarshan.calorietracker.services.speech.AudioRecorder
 import com.apoorvdarshan.calorietracker.services.speech.NativeSpeechRecognizer
 import com.apoorvdarshan.calorietracker.services.speech.SttEvent
 import com.apoorvdarshan.calorietracker.ui.theme.AppColors
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
@@ -167,31 +167,52 @@ class CoachVoiceController(
         }
     }
 
+    private var nativeMode = CoachNativeMode.OFFLINE_LANGUAGE
+
     private fun startNative() {
+        nativeMode = CoachNativeMode.OFFLINE_LANGUAGE
+        launchNativeLoop()
+    }
+
+    // Mirrors VoiceInputSheet: spin a fresh recognizer session, accumulating Finals
+    // so a pause doesn't end recording. On a language/offline-model error (common on
+    // devices with no offline model) fall back offline -> online -> auto-locale; on a
+    // transient end-of-session (timeout / no-match / busy / disconnect) just re-arm.
+    private fun launchNativeLoop() {
+        listenJob?.cancel()
+        val mode = nativeMode
         listenJob = scope.launch {
-            while (isActive) {
-                try {
-                    native.listen(locale = nativeLocale, preferOffline = true).collect { ev ->
-                        when (ev) {
-                            is SttEvent.Partial -> liveText = join(committed, ev.text)
-                            is SttEvent.Final -> {
-                                committed = join(committed, ev.text)
-                                liveText = committed
-                            }
-                            is SttEvent.Error ->
-                                if (!NativeSpeechRecognizer.isRecoverableSessionError(ev.code)) {
-                                    throw CancellationException("stt-unrecoverable")
-                                }
-                            else -> {}
+            native.listen(
+                locale = if (mode == CoachNativeMode.ONLINE_AUTO) null else nativeLocale,
+                preferOffline = mode == CoachNativeMode.OFFLINE_LANGUAGE
+            ).collectLatest { ev ->
+                when (ev) {
+                    is SttEvent.Partial -> liveText = join(committed, ev.text)
+                    is SttEvent.Final -> {
+                        committed = join(committed, ev.text)
+                        liveText = committed
+                        if (recording) {
+                            delay(250)
+                            if (recording) launchNativeLoop()
                         }
                     }
-                } catch (c: CancellationException) {
-                    throw c
-                } catch (_: Exception) {
-                    // transient session failure — fall through and re-arm
+                    is SttEvent.Error -> {
+                        val fallback = if (NativeSpeechRecognizer.isLanguageSupportError(ev.code)) {
+                            nativeMode.next()
+                        } else null
+                        if (fallback != null && recording) {
+                            nativeMode = fallback
+                            delay(300)
+                            if (recording) launchNativeLoop()
+                            return@collectLatest
+                        }
+                        if (NativeSpeechRecognizer.isRecoverableSessionError(ev.code) && recording) {
+                            delay(300)
+                            if (recording) launchNativeLoop()
+                        }
+                    }
+                    else -> Unit
                 }
-                if (!isActive) break
-                delay(250) // re-arm so a silence gap doesn't end the session
             }
         }
     }
@@ -205,6 +226,15 @@ class CoachVoiceController(
 fun formatElapsed(ms: Long): String {
     val totalSec = (ms / 1000).toInt()
     return "%d:%02d".format(totalSec / 60, totalSec % 60)
+}
+
+/** Native STT fallback ladder: on-device model -> online (same locale) -> online (auto). */
+private enum class CoachNativeMode { OFFLINE_LANGUAGE, ONLINE_LANGUAGE, ONLINE_AUTO }
+
+private fun CoachNativeMode.next(): CoachNativeMode? = when (this) {
+    CoachNativeMode.OFFLINE_LANGUAGE -> CoachNativeMode.ONLINE_LANGUAGE
+    CoachNativeMode.ONLINE_LANGUAGE -> CoachNativeMode.ONLINE_AUTO
+    CoachNativeMode.ONLINE_AUTO -> null
 }
 
 /**

@@ -27,9 +27,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.isImeVisible
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -234,13 +237,19 @@ fun CoachScreen(container: AppContainer) {
         // The app is edge-to-edge, so the IME would otherwise overlay the input bar.
         // Lift the whole column above the keyboard (imePadding) with a small gap; when
         // the keyboard is down, keep the docked-nav clearance instead.
-        val imeVisible = WindowInsets.isImeVisible
         Column(
             Modifier
                 .fillMaxSize()
-                .padding(padding)
-                .imePadding()
-                .padding(bottom = if (imeVisible) 8.dp else BottomNavDockedControlPadding)
+                .padding(top = padding.calculateTopPadding())
+                // Track the keyboard rigidly: bottom inset = max(ime, docked-nav
+                // clearance). windowInsetsPadding animates it in the layout phase, so the
+                // bar sits tight on the keyboard with no bounce and no floaty gap (a plain
+                // conditional pad jumps discretely against the smooth IME animation).
+                .windowInsetsPadding(
+                    WindowInsets.ime
+                        .union(WindowInsets(bottom = BottomNavDockedControlPadding))
+                        .only(WindowInsetsSides.Bottom)
+                )
         ) {
             // Top region — empty state OR message list
             Box(
