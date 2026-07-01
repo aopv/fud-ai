@@ -411,6 +411,7 @@
     <string name="coach_title">教练</string>
     <string name="coach_reset_chat_a11y">重置聊天</string>
     <string name="coach_send_a11y">发送</string>
+    <string name="coach_input_voice_a11y">语音输入</string>
     <string name="coach_input_placeholder">问教练…</string>
     <string name="coach_empty_title">问问你的教练</string>
     <string name="coach_empty_subtitle">你的教练可以查看你的体重记录、卡路里日志和目标。问问预期体重、吃什么或如何达成目标。</string>

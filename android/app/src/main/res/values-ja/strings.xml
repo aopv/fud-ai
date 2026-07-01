@@ -411,6 +411,7 @@
     <string name="coach_title">コーチ</string>
     <string name="coach_reset_chat_a11y">チャットをリセット</string>
     <string name="coach_send_a11y">送信</string>
+    <string name="coach_input_voice_a11y">音声入力</string>
     <string name="coach_input_placeholder">コーチに質問…</string>
     <string name="coach_empty_title">コーチに聞いてみよう</string>
     <string name="coach_empty_subtitle">コーチはあなたの体重履歴、カロリー記録、目標を確認できます。予想体重、食事内容、目標達成の方法を聞いてみましょう。</string>

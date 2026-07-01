@@ -411,6 +411,7 @@
     <string name="coach_title">Coach</string>
     <string name="coach_reset_chat_a11y">Reimposta chat</string>
     <string name="coach_send_a11y">Invia</string>
+    <string name="coach_input_voice_a11y">Input vocale</string>
     <string name="coach_input_placeholder">Chiedi al Coach…</string>
     <string name="coach_empty_title">Chiedi al tuo Coach</string>
     <string name="coach_empty_subtitle">Il tuo coach può vedere la cronologia del peso, il registro delle calorie e gli obiettivi. Chiedi del peso previsto, di cosa mangiare o di come raggiungere il tuo obiettivo.</string>

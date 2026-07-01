@@ -23,6 +23,9 @@ struct ChatView: View {
     @State private var showResetConfirmation = false
     @State private var showCamera = false
     @State private var showPhotoPicker = false
+    @State private var voice = CoachVoiceRecorder()
+    @State private var voicePressStart: Date?
+    @State private var voicePulse = false
     @FocusState private var isInputFocused: Bool
 
     private var userProfile: UserProfile { profileStore.profile }
@@ -298,6 +301,12 @@ struct ChatView: View {
             inputBar
         }
         .animation(.easeInOut(duration: 0.18), value: attachedImage == nil)
+        .onChange(of: voice.submittedTranscript) { _, newValue in
+            guard let text = newValue, !text.isEmpty else { return }
+            draft = text
+            send()
+            voice.submittedTranscript = nil
+        }
     }
 
     private func attachmentPreview(_ image: UIImage) -> some View {
@@ -345,55 +354,26 @@ struct ChatView: View {
 
     private var inputBar: some View {
         HStack(spacing: 8) {
-            Menu {
-                Button {
-                    openCamera()
-                } label: {
-                    Label("Camera", systemImage: "camera.fill")
+            // Left region: attach + text field, or the live recording indicator.
+            Group {
+                if voice.phase == .idle {
+                    HStack(spacing: 8) {
+                        attachMenu
+                        TextField("Ask Coach…", text: $draft, axis: .vertical)
+                            .font(.system(.body, design: .rounded))
+                            .lineLimit(1...5)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 12)
+                            .focused($isInputFocused)
+                    }
+                } else {
+                    recordingIndicator
                 }
-
-                Button {
-                    showPhotoPicker = true
-                } label: {
-                    Label("Photo Library", systemImage: "photo.on.rectangle")
-                }
-            } label: {
-                Image(systemName: attachedImage == nil ? "plus.circle.fill" : "photo.fill")
-                    .font(.system(size: 24, weight: .semibold))
-                    .foregroundStyle(AppColors.calorie)
-                    .frame(width: 34, height: 34)
             }
-            .disabled(isSending)
-            .padding(.leading, 8)
+            .frame(maxWidth: .infinity, alignment: .leading)
 
-            TextField("Ask Coach…", text: $draft, axis: .vertical)
-                .font(.system(.body, design: .rounded))
-                .lineLimit(1...5)
-                .padding(.horizontal, 8)
-                .padding(.vertical, 12)
-                .focused($isInputFocused)
-
-            Button {
-                send()
-            } label: {
-                Image(systemName: "arrow.up")
-                    .font(.system(size: 16, weight: .bold))
-                    .foregroundStyle(.white)
-                    .frame(width: 34, height: 34)
-                    .background(
-                        canSend
-                            ? AnyShapeStyle(LinearGradient(colors: AppColors.calorieGradient, startPoint: .topLeading, endPoint: .bottomTrailing))
-                            : AnyShapeStyle(Color.secondary.opacity(0.35)),
-                        in: Circle()
-                    )
-                    .overlay(
-                        Circle().stroke(Color.white.opacity(canSend ? 0.25 : 0.10), lineWidth: 0.6)
-                    )
-                    .shadow(color: canSend ? AppColors.calorie.opacity(0.35) : .clear, radius: 8, x: 0, y: 4)
-            }
-            .disabled(!canSend)
-            .padding(.trailing, 5)
-            .animation(.easeInOut(duration: 0.15), value: canSend)
+            // Trailing control (kept as the stable last child).
+            trailingControl
         }
         .background(
             Capsule(style: .continuous).fill(.ultraThinMaterial)
@@ -413,6 +393,169 @@ struct ChatView: View {
         .padding(.horizontal, 12)
         .padding(.bottom, 10)
         .padding(.top, 4)
+    }
+
+    private var attachMenu: some View {
+        Menu {
+            Button { openCamera() } label: { Label("Camera", systemImage: "camera.fill") }
+            Button { showPhotoPicker = true } label: { Label("Photo Library", systemImage: "photo.on.rectangle") }
+        } label: {
+            Image(systemName: attachedImage == nil ? "plus.circle.fill" : "photo.fill")
+                .font(.system(size: 24, weight: .semibold))
+                .foregroundStyle(AppColors.calorie)
+                .frame(width: 34, height: 34)
+        }
+        .disabled(isSending)
+        .padding(.leading, 8)
+    }
+
+    @ViewBuilder private var trailingControl: some View {
+        switch voice.phase {
+        case .locked:
+            HStack(spacing: 8) {
+                voiceCancelButton
+                voiceSendButton
+            }
+            .padding(.trailing, 5)
+        case .transcribing:
+            ProgressView()
+                .frame(width: 34, height: 34)
+                .padding(.trailing, 8)
+        case .idle where canSend:
+            sendButton
+                .padding(.trailing, 5)
+                .animation(.easeInOut(duration: 0.15), value: canSend)
+        default: // idle-empty or holding — keep the mic mounted through the press
+            micButton
+                .padding(.trailing, 5)
+        }
+    }
+
+    private var sendButton: some View {
+        Button {
+            send()
+        } label: {
+            Image(systemName: "arrow.up")
+                .font(.system(size: 16, weight: .bold))
+                .foregroundStyle(.white)
+                .frame(width: 34, height: 34)
+                .background(
+                    canSend
+                        ? AnyShapeStyle(LinearGradient(colors: AppColors.calorieGradient, startPoint: .topLeading, endPoint: .bottomTrailing))
+                        : AnyShapeStyle(Color.secondary.opacity(0.35)),
+                    in: Circle()
+                )
+                .overlay(Circle().stroke(Color.white.opacity(canSend ? 0.25 : 0.10), lineWidth: 0.6))
+                .shadow(color: canSend ? AppColors.calorie.opacity(0.35) : .clear, radius: 8, x: 0, y: 4)
+        }
+        .disabled(!canSend)
+    }
+
+    private var micButton: some View {
+        let holding = voice.phase == .holding
+        return Image(systemName: "mic.fill")
+            .font(.system(size: 16, weight: .bold))
+            .foregroundStyle(holding ? .white : AppColors.calorie)
+            .frame(width: 34, height: 34)
+            .background(
+                holding ? AnyShapeStyle(Color.red) : AnyShapeStyle(AppColors.calorie.opacity(0.14)),
+                in: Circle()
+            )
+            .scaleEffect(holding ? 1.25 : 1.0)
+            .animation(.easeInOut(duration: 0.15), value: holding)
+            .contentShape(Circle())
+            .gesture(micGesture)
+            .id("coachMic")
+    }
+
+    private var micGesture: some Gesture {
+        DragGesture(minimumDistance: 0)
+            .onChanged { value in
+                if voice.phase == .idle {
+                    isInputFocused = false
+                    voicePressStart = Date()
+                    voice.begin()
+                }
+                voice.updateDrag(value.translation.width, threshold: 90)
+            }
+            .onEnded { value in
+                let held = voicePressStart.map { Date().timeIntervalSince($0) } ?? 0
+                if value.translation.width < -90 {
+                    voice.cancel()
+                } else if held < 0.35 && abs(value.translation.width) < 24 {
+                    voice.lock()
+                } else {
+                    voice.stopAndSend()
+                }
+                voicePressStart = nil
+            }
+    }
+
+    private var voiceSendButton: some View {
+        Button {
+            voice.stopAndSend()
+        } label: {
+            Image(systemName: "arrow.up")
+                .font(.system(size: 16, weight: .bold))
+                .foregroundStyle(.white)
+                .frame(width: 34, height: 34)
+                .background(
+                    LinearGradient(colors: AppColors.calorieGradient, startPoint: .topLeading, endPoint: .bottomTrailing),
+                    in: Circle()
+                )
+                .shadow(color: AppColors.calorie.opacity(0.35), radius: 8, x: 0, y: 4)
+        }
+    }
+
+    private var voiceCancelButton: some View {
+        Button {
+            voice.cancel()
+        } label: {
+            Image(systemName: "trash")
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundStyle(.red)
+                .frame(width: 34, height: 34)
+                .background(Color.secondary.opacity(0.14), in: Circle())
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var recordingIndicator: some View {
+        HStack(spacing: 8) {
+            if voice.phase == .transcribing {
+                ProgressView().controlSize(.small)
+                Text("Transcribing…")
+                    .font(.system(.callout, design: .rounded))
+                    .foregroundStyle(.secondary)
+            } else {
+                Circle()
+                    .fill(Color.red)
+                    .frame(width: 9, height: 9)
+                    .opacity(voicePulse ? 0.3 : 1.0)
+                    .onAppear {
+                        withAnimation(.easeInOut(duration: 0.7).repeatForever(autoreverses: true)) {
+                            voicePulse = true
+                        }
+                    }
+                    .onDisappear { voicePulse = false }
+                Text(formatVoiceElapsed(voice.elapsed))
+                    .font(.system(.callout, design: .rounded, weight: .medium))
+                    .monospacedDigit()
+                Text(voiceHint)
+                    .font(.system(.callout, design: .rounded))
+                    .foregroundStyle(voice.cancelArmed ? .red : .secondary)
+                    .lineLimit(1)
+            }
+        }
+        .padding(.leading, 14)
+        .padding(.vertical, 12)
+    }
+
+    private var voiceHint: String {
+        if voice.phase == .holding {
+            return voice.cancelArmed ? "Release to cancel" : "‹ slide to cancel"
+        }
+        return voice.liveText.isEmpty ? "Listening…" : voice.liveText
     }
 
     private var canSend: Bool {
