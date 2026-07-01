@@ -919,13 +919,22 @@ struct GeminiService {
     }
 
     private static func friendlyMessage(for status: Int, raw: String) -> String {
+        let keyRejected = "Your API key was rejected. Open Settings → AI Provider and re-paste a valid key."
+        // A bad/expired Gemini key comes back as HTTP 400 (INVALID_ARGUMENT), not 401/403, so
+        // match the key-invalid markers in the provider message (mirrors Android #99/#113).
+        let hasKeyInvalidMarker = raw.range(of: "api key not valid", options: .caseInsensitive) != nil
+            || raw.range(of: "api_key_invalid", options: .caseInsensitive) != nil
+            || raw.range(of: "api key expired", options: .caseInsensitive) != nil
+            || raw.range(of: "api_key_expired", options: .caseInsensitive) != nil
         switch status {
         case 503, 529:
             return "The AI provider is overloaded right now. We retried a few times — please try again in a minute, or switch to a different provider/model in Settings → AI Provider."
         case 429:
             return "Rate limit hit on your API key. Wait a minute, or switch to another provider in Settings → AI Provider."
+        case 400 where hasKeyInvalidMarker:
+            return keyRejected
         case 401, 403:
-            return "Your API key was rejected. Open Settings → AI Provider and re-paste a valid key."
+            return keyRejected
         default:
             return raw
         }
