@@ -31,27 +31,7 @@ class TestDataSeeder(private val container: AppContainer) {
     private val json = Json { ignoreUnknownKeys = true }
 
     suspend fun seedYear() {
-        // Only snapshot the user's real data on the first seed run. Subsequent
-        // re-seeds (e.g. tweaking the synthetic dataset) must not overwrite the
-        // original backup — otherwise restore would put seed data back, not real.
-        if (container.prefs.testSeedBackupJson.first() == null) {
-            val backup = SeedBackup(
-                entriesJson = json.encodeToString(
-                    ListSerializer(FoodEntry.serializer()),
-                    container.foodRepository.entries.first()
-                ),
-                weightsJson = json.encodeToString(
-                    ListSerializer(WeightEntry.serializer()),
-                    container.weightRepository.entries.first()
-                ),
-                profileJson = container.profileRepository.profile.first()?.let {
-                    json.encodeToString(UserProfile.serializer(), it)
-                },
-                healthConnectEnabled = container.prefs.healthConnectEnabled.first(),
-                onboarded = container.prefs.hasCompletedOnboarding.first()
-            )
-            container.prefs.setTestSeedBackupJson(json.encodeToString(SeedBackup.serializer(), backup))
-        }
+        snapshotRealDataIfNeeded()
 
         container.prefs.setHealthConnectEnabled(false)
 
@@ -78,24 +58,7 @@ class TestDataSeeder(private val container: AppContainer) {
      * recovers the original state regardless of which seeder was last invoked.
      */
     suspend fun seedBodyMetrics() {
-        if (container.prefs.testSeedBackupJson.first() == null) {
-            val backup = SeedBackup(
-                entriesJson = json.encodeToString(
-                    ListSerializer(FoodEntry.serializer()),
-                    container.foodRepository.entries.first()
-                ),
-                weightsJson = json.encodeToString(
-                    ListSerializer(WeightEntry.serializer()),
-                    container.weightRepository.entries.first()
-                ),
-                profileJson = container.profileRepository.profile.first()?.let {
-                    json.encodeToString(UserProfile.serializer(), it)
-                },
-                healthConnectEnabled = container.prefs.healthConnectEnabled.first(),
-                onboarded = container.prefs.hasCompletedOnboarding.first()
-            )
-            container.prefs.setTestSeedBackupJson(json.encodeToString(SeedBackup.serializer(), backup))
-        }
+        snapshotRealDataIfNeeded()
 
         // Disable HC so the synthetic entries can't echo to the production
         // install's HC sync relationship. (Ports the same guard from seedYear.)
@@ -116,8 +79,72 @@ class TestDataSeeder(private val container: AppContainer) {
         )
         container.prefs.setOnboardingCompleted(true)
 
-        container.weightRepository.replaceAll(generateMonthOfWeights())
-        container.bodyFatRepository.replaceAll(generateMonthOfBodyFats())
+        container.weightRepository.replaceAll(
+            generateWeightSeries(totalDays = 30, startKg = 75.5, endKg = 73.0, seed = 0xBEEF)
+        )
+        container.bodyFatRepository.replaceAll(
+            generateBodyFatSeries(totalDays = 30, startFraction = 0.180, endFraction = 0.165, seed = 0xFA7)
+        )
+    }
+
+    /**
+     * Long-range variant of seedBodyMetrics — 2 years (730 days) of weight +
+     * body-fat readings so the 6M / 1Y / All Progress ranges and the history
+     * lists can be eyeballed with realistic volume (~580 weights, ~440 fats).
+     *
+     *   adb shell am start -n com.apoorvdarshan.calorietracker.debug/com.apoorvdarshan.calorietracker.MainActivity --ez seed_body_metrics_2y true
+     *   adb shell am start -n com.apoorvdarshan.calorietracker.debug/com.apoorvdarshan.calorietracker.MainActivity --ez restore_real_data true
+     */
+    suspend fun seedTwoYearsBodyMetrics() {
+        snapshotRealDataIfNeeded()
+
+        container.prefs.setHealthConnectEnabled(false)
+
+        val baseProfile = container.profileRepository.profile.first()
+            ?: UserProfile(weightKg = 75.0, goalWeightKg = 70.0)
+        container.profileRepository.save(
+            baseProfile.copy(
+                weightKg = 73.0,
+                goalWeightKg = 70.0,
+                bodyFatPercentage = 0.165,
+                goalBodyFatPercentage = 0.15
+            )
+        )
+        container.prefs.setOnboardingCompleted(true)
+
+        container.weightRepository.replaceAll(
+            generateWeightSeries(totalDays = 730, startKg = 82.0, endKg = 73.0, seed = 0x2BEEF)
+        )
+        container.bodyFatRepository.replaceAll(
+            generateBodyFatSeries(totalDays = 730, startFraction = 0.240, endFraction = 0.165, seed = 0x2FA7)
+        )
+    }
+
+    /** Snapshot the user's real data into the backup blob — first seed run only.
+     *  Re-seeds (e.g. switching from the 30-day to the 2-year dataset) must not
+     *  overwrite the original backup, or restore would put seed data back. */
+    private suspend fun snapshotRealDataIfNeeded() {
+        if (container.prefs.testSeedBackupJson.first() != null) return
+        val backup = SeedBackup(
+            entriesJson = json.encodeToString(
+                ListSerializer(FoodEntry.serializer()),
+                container.foodRepository.entries.first()
+            ),
+            weightsJson = json.encodeToString(
+                ListSerializer(WeightEntry.serializer()),
+                container.weightRepository.entries.first()
+            ),
+            bodyFatsJson = json.encodeToString(
+                ListSerializer(BodyFatEntry.serializer()),
+                container.bodyFatRepository.entries.first()
+            ),
+            profileJson = container.profileRepository.profile.first()?.let {
+                json.encodeToString(UserProfile.serializer(), it)
+            },
+            healthConnectEnabled = container.prefs.healthConnectEnabled.first(),
+            onboarded = container.prefs.hasCompletedOnboarding.first()
+        )
+        container.prefs.setTestSeedBackupJson(json.encodeToString(SeedBackup.serializer(), backup))
     }
 
     suspend fun restore() {
@@ -132,12 +159,13 @@ class TestDataSeeder(private val container: AppContainer) {
         container.weightRepository.replaceAll(
             json.decodeFromString(ListSerializer(WeightEntry.serializer()), backup.weightsJson)
         )
-        // Body fat entries weren't snapshotted in the original SeedBackup
-        // shape (it predates the BodyFatRepository). seedBodyMetrics is the
-        // only path that writes them, so always clear on restore — the user's
-        // real body-fat history (if any) is preserved via profile.bodyFatPercentage
-        // which is restored from profileJson below.
-        container.bodyFatRepository.replaceAll(emptyList())
+        // bodyFatsJson is null for backups written before the field existed —
+        // those predate any real body-fat history, so clearing is still right.
+        container.bodyFatRepository.replaceAll(
+            backup.bodyFatsJson?.let {
+                json.decodeFromString(ListSerializer(BodyFatEntry.serializer()), it)
+            } ?: emptyList()
+        )
         backup.profileJson?.let {
             container.profileRepository.save(json.decodeFromString(UserProfile.serializer(), it))
         }
@@ -213,14 +241,12 @@ class TestDataSeeder(private val container: AppContainer) {
         return out
     }
 
-    /** 30 days of weight readings, slight downward trend, ~25% skipped days for realism. */
-    private fun generateMonthOfWeights(): List<WeightEntry> {
+    /** Weight readings over [totalDays], linear [startKg]→[endKg] trend with
+     *  day-to-day noise, ~20% skipped days for realism. */
+    private fun generateWeightSeries(totalDays: Int, startKg: Double, endKg: Double, seed: Long): List<WeightEntry> {
         val zone = ZoneId.systemDefault()
         val today = LocalDate.now()
-        val rng = Random(seed = 0xBEEF)
-        val startKg = 75.5
-        val endKg = 73.0
-        val totalDays = 30
+        val rng = Random(seed)
         val out = mutableListOf<WeightEntry>()
         for (daysAgo in (totalDays - 1) downTo 0) {
             // Always log today + yesterday so the 1W view always shows 2+ points.
@@ -235,15 +261,12 @@ class TestDataSeeder(private val container: AppContainer) {
         return out
     }
 
-    /** 30 days of body-fat readings, slight downward trend (~18% → 16.5%), ~40%
-     *  skipped days since people don't measure body fat as often as weight. */
-    private fun generateMonthOfBodyFats(): List<BodyFatEntry> {
+    /** Body-fat readings over [totalDays], linear [startFraction]→[endFraction]
+     *  trend, ~40% skipped days since people measure body fat less often. */
+    private fun generateBodyFatSeries(totalDays: Int, startFraction: Double, endFraction: Double, seed: Long): List<BodyFatEntry> {
         val zone = ZoneId.systemDefault()
         val today = LocalDate.now()
-        val rng = Random(seed = 0xFA7)
-        val startFraction = 0.180
-        val endFraction = 0.165
-        val totalDays = 30
+        val rng = Random(seed)
         val out = mutableListOf<BodyFatEntry>()
         for (daysAgo in (totalDays - 1) downTo 0) {
             // Always log today + yesterday so the 1W chart isn't empty.
@@ -290,7 +313,9 @@ private data class SeedBackup(
     val weightsJson: String,
     val profileJson: String?,
     val healthConnectEnabled: Boolean,
-    val onboarded: Boolean
+    val onboarded: Boolean,
+    // Added after BodyFatRepository shipped — null in older backups.
+    val bodyFatsJson: String? = null
 )
 
 private data class Quad(

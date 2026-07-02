@@ -87,6 +87,13 @@ open class MainActivity : ComponentActivity() {
             runBlocking { container.testDataSeeder.seedBodyMetrics() }
             intent.removeExtra("seed_body_metrics")
         }
+        // Long-range variant: 2 years of weight + body-fat for the 1Y / All
+        // ranges and the history lists.
+        // adb shell am start -n com.apoorvdarshan.calorietracker.debug/com.apoorvdarshan.calorietracker.MainActivity --ez seed_body_metrics_2y true
+        if (intent?.getBooleanExtra("seed_body_metrics_2y", false) == true) {
+            runBlocking { container.testDataSeeder.seedTwoYearsBodyMetrics() }
+            intent.removeExtra("seed_body_metrics_2y")
+        }
         if (intent?.getBooleanExtra("restore_real_data", false) == true) {
             runBlocking { container.testDataSeeder.restore() }
             intent.removeExtra("restore_real_data")
