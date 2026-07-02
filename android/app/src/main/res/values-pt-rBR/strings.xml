@@ -497,6 +497,8 @@
     <string name="settings_appearance_light">Claro</string>
     <string name="settings_appearance_dark">Escuro</string>
     <string name="settings_metric_units">Unidades métricas</string>
+    <string name="settings_height_unit">Unidade de altura</string>
+    <string name="settings_weight_unit">Unidade de peso</string>
     <string name="settings_week_starts">Semana começa em</string>
     <string name="settings_week_monday">Segunda-feira</string>
     <string name="settings_week_sunday">Domingo</string>

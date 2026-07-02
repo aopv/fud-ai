@@ -497,6 +497,8 @@
     <string name="settings_appearance_light">浅色</string>
     <string name="settings_appearance_dark">深色</string>
     <string name="settings_metric_units">公制单位</string>
+    <string name="settings_height_unit">身高单位</string>
+    <string name="settings_weight_unit">体重单位</string>
     <string name="settings_week_starts">每周起始日</string>
     <string name="settings_week_monday">星期一</string>
     <string name="settings_week_sunday">星期日</string>

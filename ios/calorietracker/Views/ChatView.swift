@@ -12,7 +12,8 @@ struct ChatView: View {
     @Environment(BodyFatStore.self) private var bodyFatStore
     @Environment(BodyMeasurementStore.self) private var bodyMeasurementStore
     @Environment(FoodStore.self) private var foodStore
-    @AppStorage("useMetric") private var useMetric = false
+    @AppStorage("heightUnit") private var heightUnitRaw = "ftin"
+    @AppStorage("weightUnit") private var weightUnitRaw = "lbs"
 
     @State private var draft = ""
     @State private var attachedImage: UIImage?
@@ -600,7 +601,8 @@ struct ChatView: View {
                     bodyFats: bodyFatStore.entries,
                     measurements: bodyMeasurementStore.entries,
                     foods: foodStore.entries,
-                    useMetric: useMetric
+                    heightMetric: heightUnitRaw == "cm",
+                    weightMetric: weightUnitRaw == "kg"
                 )
                 chatStore.append(ChatMessage(role: .assistant, content: reply))
             } catch {

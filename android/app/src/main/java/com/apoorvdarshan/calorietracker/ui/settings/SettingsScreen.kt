@@ -327,14 +327,14 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController) {
                     HorizontalDivider()
                     SettingRow(
                         stringResource(R.string.settings_height),
-                        if (ui.useMetric) stringResource(R.string.height_cm_format, p.heightCm.toInt())
+                        if (ui.heightMetric) stringResource(R.string.height_cm_format, p.heightCm.toInt())
                         else feetInchesLabel(p.heightCm.toInt()),
                         icon = Icons.Outlined.Height
                     ) { sheet = SettingsSheet.HEIGHT }
                     HorizontalDivider()
                     SettingRow(
                         stringResource(R.string.settings_weight),
-                        if (ui.useMetric) String.format(Locale.US, "%.1f kg", p.weightKg)
+                        if (ui.weightMetric) String.format(Locale.US, "%.1f kg", p.weightKg)
                         else String.format(Locale.US, "%.1f lbs", p.weightKg * 2.20462),
                         icon = Icons.Outlined.MonitorWeight
                     ) { sheet = SettingsSheet.WEIGHT }
@@ -363,7 +363,7 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController) {
                     SettingRow(
                         "Body Measurements",
                         latestMeasurement?.waistCm?.let { waist ->
-                            if (ui.useMetric) String.format(Locale.US, "Waist %.0f cm", waist)
+                            if (ui.heightMetric) String.format(Locale.US, "Waist %.0f cm", waist)
                             else String.format(Locale.US, "Waist %.0f in", waist / 2.54)
                         } ?: stringResource(R.string.settings_not_set),
                         icon = Icons.Outlined.Straighten
@@ -382,7 +382,7 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController) {
                         SettingRow(
                             stringResource(R.string.settings_weekly_change),
                             p.weeklyChangeKg?.let {
-                                if (ui.useMetric) String.format(Locale.US, "%.2f kg/wk", it)
+                                if (ui.weightMetric) String.format(Locale.US, "%.2f kg/wk", it)
                                 else String.format(Locale.US, "%.2f lbs/wk", it * 2.20462)
                             } ?: stringResource(R.string.settings_weekly_default),
                             icon = Icons.Outlined.Speed
@@ -391,7 +391,7 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController) {
                         SettingRow(
                             stringResource(R.string.settings_goal_weight),
                             p.goalWeightKg?.let {
-                                if (ui.useMetric) String.format(Locale.US, "%.1f kg", it)
+                                if (ui.weightMetric) String.format(Locale.US, "%.1f kg", it)
                                 else String.format(Locale.US, "%.1f lbs", it * 2.20462)
                             } ?: stringResource(R.string.settings_not_set),
                             icon = Icons.AutoMirrored.Outlined.TrendingUp
@@ -553,8 +553,6 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController) {
                         }
                     }
                 }
-                HorizontalDivider()
-                ToggleRow(stringResource(R.string.settings_metric_units), ui.useMetric, icon = Icons.Outlined.Straighten, onChange = vm::setUseMetric)
                 HorizontalDivider()
                 ToggleRowWithInfo(
                     label = stringResource(R.string.settings_default_to_grams),
@@ -1526,7 +1524,8 @@ private fun SettingsSheets(
                     val cm = ui.profile?.heightCm?.toInt() ?: 175
                     HeightSheet(
                         current = cm,
-                        useMetric = ui.useMetric,
+                        useMetric = ui.heightMetric,
+                        onUnitChange = { metric -> vm.setHeightUnit(if (metric) "cm" else "ftin") },
                         onSave = { newCm -> vm.updateProfile { it.copy(heightCm = newCm.toDouble()) }; onDismiss() }
                     )
                 }
@@ -1535,7 +1534,8 @@ private fun SettingsSheets(
                     WeightSheet(
                         titleText = stringResource(R.string.sheet_weight),
                         current = kg,
-                        useMetric = ui.useMetric,
+                        useMetric = ui.weightMetric,
+                        onUnitChange = { metric -> vm.setWeightUnit(if (metric) "kg" else "lbs") },
                         onSave = { newKg -> vm.saveCurrentWeight(newKg); onDismiss() }
                     )
                 }
@@ -1609,7 +1609,8 @@ private fun SettingsSheets(
                     WeightSheet(
                         titleText = stringResource(R.string.sheet_target_weight),
                         current = kg,
-                        useMetric = ui.useMetric,
+                        useMetric = ui.weightMetric,
+                        onUnitChange = { metric -> vm.setWeightUnit(if (metric) "kg" else "lbs") },
                         onSave = { newKg ->
                             // Mirrors iOS ContentView.swift case .editGoalWeight: a Lose goal
                             // requires target < current weight; a Gain goal requires target >
@@ -1638,7 +1639,7 @@ private fun SettingsSheets(
                 SettingsSheet.GOAL_SPEED -> GoalSpeedSheet(
                     current = ui.profile?.weeklyChangeKg ?: 0.5,
                     goal = ui.profile?.goal ?: WeightGoal.MAINTAIN,
-                    useMetric = ui.useMetric,
+                    useMetric = ui.weightMetric,
                     onSave = { kg -> vm.updateProfile { it.copy(weeklyChangeKg = kg) }; onDismiss() }
                 )
                 SettingsSheet.BIRTHDAY -> BirthdaySheet(
@@ -2001,12 +2002,12 @@ private fun TextFieldSheet(
 }
 
 @Composable
-private fun HeightSheet(current: Int, useMetric: Boolean, onSave: (Int) -> Unit) {
+private fun HeightSheet(current: Int, useMetric: Boolean, onUnitChange: (Boolean) -> Unit, onSave: (Int) -> Unit) {
     var cm by remember(current) { mutableStateOf(current) }
     var metric by remember { mutableStateOf(useMetric) }
     Text(stringResource(R.string.sheet_height), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
     Spacer(Modifier.height(12.dp))
-    UnitToggle(stringResource(R.string.unit_cm), stringResource(R.string.unit_ft_in), metric, { metric = it }, Modifier.fillMaxWidth())
+    UnitToggle(stringResource(R.string.unit_cm), stringResource(R.string.unit_ft_in), metric, { metric = it; onUnitChange(it) }, Modifier.fillMaxWidth())
     Spacer(Modifier.height(20.dp))
     if (metric) NumericWheelPicker(cm, { cm = it }, 100, 250, stringResource(R.string.unit_cm))
     else FeetInchesWheelPicker(cm, { cm = it })
@@ -2016,12 +2017,12 @@ private fun HeightSheet(current: Int, useMetric: Boolean, onSave: (Int) -> Unit)
 }
 
 @Composable
-private fun WeightSheet(titleText: String, current: Double, useMetric: Boolean, onSave: (Double) -> Unit) {
+private fun WeightSheet(titleText: String, current: Double, useMetric: Boolean, onUnitChange: (Boolean) -> Unit, onSave: (Double) -> Unit) {
     var kg by remember(current) { mutableStateOf(current) }
     var metric by remember { mutableStateOf(useMetric) }
     Text(titleText, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
     Spacer(Modifier.height(12.dp))
-    UnitToggle(stringResource(R.string.unit_kg), stringResource(R.string.unit_lbs), metric, { metric = it }, Modifier.fillMaxWidth())
+    UnitToggle(stringResource(R.string.unit_kg), stringResource(R.string.unit_lbs), metric, { metric = it; onUnitChange(it) }, Modifier.fillMaxWidth())
     Spacer(Modifier.height(20.dp))
     if (metric) {
         SplitDecimalWheelPicker(kg, { kg = it }, 30, 250, stringResource(R.string.unit_kg))

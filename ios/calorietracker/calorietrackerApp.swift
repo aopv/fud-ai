@@ -23,7 +23,6 @@ struct calorietrackerApp: App {
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
     @AppStorage("appearanceMode") private var appearanceMode = "system"
     @AppStorage("notificationsEnabled") private var notificationsEnabled = false
-    @AppStorage("useMetric") private var useMetric = false
     @AppStorage(AppThemeColor.storageKey) private var appThemeColorRaw = AppThemeColor.defaultColor.rawValue
     @Environment(\.scenePhase) private var scenePhase
     @State private var isAutoRefreshingAdaptiveGoals = false
@@ -37,6 +36,9 @@ struct calorietrackerApp: App {
     }
 
     init() {
+        // Derive the split height/weight unit prefs from the legacy useMetric flag
+        // before any view reads them.
+        UnitPreferenceMigration.runIfNeeded()
         if CommandLine.arguments.contains("--reset-onboarding") {
             UserDefaults.standard.removeObject(forKey: "hasCompletedOnboarding")
             UserDefaults.standard.removeObject(forKey: "userProfile")
@@ -324,7 +326,8 @@ struct calorietrackerApp: App {
         isAutoRefreshingAdaptiveGoals = true
         let healthOn = UserDefaults.standard.bool(forKey: "healthKitEnabled")
         let energyBurnOn = UserDefaults.standard.bool(forKey: EnergyBurnSettings.enabledKey)
-        let useMetric = UserDefaults.standard.bool(forKey: "useMetric")
+        let heightMetric = HeightUnit.current == .cm
+        let weightMetric = WeightUnit.current == .kg
         let weights = weightStore.entries
         let foods = foodStore.entries
         Task {
@@ -338,7 +341,7 @@ struct calorietrackerApp: App {
             }
             let forecast = WeightAnalysisService.compute(weights: weights, foods: foods, profile: profile)
             do {
-                let result = try await GeminiService.calculateGoals(profile: profile, forecast: forecast, measuredTdee: measuredTdee, measurement: bodyMeasurementStore.latestEntry, useMetric: useMetric)
+                let result = try await GeminiService.calculateGoals(profile: profile, forecast: forecast, measuredTdee: measuredTdee, measurement: bodyMeasurementStore.latestEntry, heightMetric: heightMetric, weightMetric: weightMetric)
                 AdaptiveGoalSettings.savePreviousTargetsIfNeeded(from: profile)
                 var next = profile
                 next.customCalories = result.calories

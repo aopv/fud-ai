@@ -497,6 +497,8 @@
     <string name="settings_appearance_light">Светлая</string>
     <string name="settings_appearance_dark">Тёмная</string>
     <string name="settings_metric_units">Метрические единицы</string>
+    <string name="settings_height_unit">Единица роста</string>
+    <string name="settings_weight_unit">Единица веса</string>
     <string name="settings_week_starts">Начало недели</string>
     <string name="settings_week_monday">Понедельник</string>
     <string name="settings_week_sunday">Воскресенье</string>

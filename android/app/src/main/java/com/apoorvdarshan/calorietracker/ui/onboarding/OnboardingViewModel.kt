@@ -40,8 +40,11 @@ data class OnboardingState(
     val goalWeightKg: Double = 70.0,
     /** 0.25 (slow), 0.5 (moderate), 1.0 (fast) kg/week */
     val weeklyChangeKg: Double = 0.5,
-    /** iOS defaults onboarding to Imperial (useMetric = false); match that. */
-    val useMetric: Boolean = false,
+    /** iOS defaults onboarding to Imperial; match that. Seeded from the persisted
+     *  heightUnit/weightUnit prefs in init, and the single Imperial|Metric toggle
+     *  writes both together so they stay coherent during onboarding. */
+    val heightMetric: Boolean = false,
+    val weightMetric: Boolean = false,
     val notificationsEnabled: Boolean = false,
     val healthConnectEnabled: Boolean = false,
     val aiProvider: AIProvider = AIProvider.GEMINI,
@@ -88,8 +91,9 @@ class OnboardingViewModel(private val container: AppContainer) : ViewModel() {
 
     init {
         viewModelScope.launch {
-            val metric = container.prefs.useMetric.first()
-            _ui.value = _ui.value.copy(useMetric = metric)
+            val heightMetric = container.prefs.heightUnit.first() == "cm"
+            val weightMetric = container.prefs.weightUnit.first() == "kg"
+            _ui.value = _ui.value.copy(heightMetric = heightMetric, weightMetric = weightMetric)
         }
     }
 
@@ -145,9 +149,14 @@ class OnboardingViewModel(private val container: AppContainer) : ViewModel() {
             container.keyStore.setApiKey(_ui.value.aiProvider, key.trim().takeIf { it.isNotBlank() })
         }
     }
+    /** The single Imperial|Metric segmented control writes BOTH unit prefs coherently:
+     *  Imperial -> ftin + lbs, Metric -> cm + kg. */
     fun setUseMetric(v: Boolean) {
-        _ui.value = _ui.value.copy(useMetric = v)
-        viewModelScope.launch { container.prefs.setUseMetric(v) }
+        _ui.value = _ui.value.copy(heightMetric = v, weightMetric = v)
+        viewModelScope.launch {
+            container.prefs.setHeightUnit(if (v) "cm" else "ftin")
+            container.prefs.setWeightUnit(if (v) "kg" else "lbs")
+        }
     }
 
     fun setCustomCalories(v: Int?) { _ui.value = _ui.value.copy(customCalories = v) }
@@ -162,7 +171,7 @@ class OnboardingViewModel(private val container: AppContainer) : ViewModel() {
         viewModelScope.launch {
             val state = _ui.value
             val result = runCatching {
-                container.foodAnalysis.calculateGoals(state.buildProfile(), forecast = null, useMetric = state.useMetric)
+                container.foodAnalysis.calculateGoals(state.buildProfile(), forecast = null, heightMetric = state.heightMetric, weightMetric = state.weightMetric)
             }.getOrNull()
             if (result != null) {
                 val carbs = maxOf(0, (result.calories - result.protein * 4 - result.fat * 9) / 4)

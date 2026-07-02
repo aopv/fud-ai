@@ -2,7 +2,6 @@ import SwiftUI
 
 struct OptionalNutrientGoalsSettingsView: View {
     let profile: UserProfile
-    let useMetric: Bool
 
     @AppStorage(OptionalNutrientGoals.storageKey) private var storedGoalsData = Data()
     @State private var goals: OptionalNutrientGoals = .current

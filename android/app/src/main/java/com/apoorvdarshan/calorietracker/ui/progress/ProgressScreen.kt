@@ -80,6 +80,7 @@ import com.apoorvdarshan.calorietracker.ui.components.FudGlassSurface
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassTextButton
 import com.apoorvdarshan.calorietracker.ui.components.FudIconBubble
 import com.apoorvdarshan.calorietracker.ui.components.SplitDecimalWheelPicker
+import com.apoorvdarshan.calorietracker.ui.components.UnitToggle
 import com.apoorvdarshan.calorietracker.ui.settings.NutritionPickerSheet
 import androidx.annotation.StringRes
 import com.apoorvdarshan.calorietracker.R
@@ -135,7 +136,8 @@ fun ProgressScreen(container: AppContainer) {
     val vm: ProgressViewModel = viewModel(factory = ProgressViewModel.Factory(container))
     val ui by vm.ui.collectAsState()
     val foods by container.foodRepository.entries.collectAsState(initial = emptyList())
-    val useMetric by container.prefs.useMetric.collectAsState(initial = true)
+    val weightUnit by container.prefs.weightUnit.collectAsState(initial = "kg")
+    val weightMetric = weightUnit == "kg"
 
     var range by remember { mutableStateOf(TimeRange.WEEK) }
     var showAddDialog by remember { mutableStateOf(false) }
@@ -212,7 +214,7 @@ fun ProgressScreen(container: AppContainer) {
                                     entries = filteredWeights,
                                     latest = ui.entries.maxByOrNull { it.date },
                                     goalKg = ui.profile?.goalWeightKg,
-                                    useMetric = useMetric,
+                                    useMetric = weightMetric,
                                     onLogWeight = { showAddDialog = true }
                                 )
                                 BodyMetric.BODY_FAT -> BodyFatSection(
@@ -231,7 +233,7 @@ fun ProgressScreen(container: AppContainer) {
                             entries = filteredWeights,
                             latest = ui.entries.maxByOrNull { it.date },
                             goalKg = ui.profile?.goalWeightKg,
-                            useMetric = useMetric,
+                            useMetric = weightMetric,
                             onLogWeight = { showAddDialog = true }
                         )
                     }
@@ -280,7 +282,15 @@ fun ProgressScreen(container: AppContainer) {
         val seedKg = ui.entries.maxByOrNull { it.date }?.weightKg
             ?: ui.profile?.weightKg
             ?: 70.0
-        AddWeightDialog(useMetric = useMetric, initialKg = seedKg, onDismiss = { showAddDialog = false }) { kg ->
+        val scope = rememberCoroutineScope()
+        AddWeightDialog(
+            useMetric = weightMetric,
+            initialKg = seedKg,
+            onUnitChange = { metric ->
+                scope.launch { container.prefs.setWeightUnit(if (metric) "kg" else "lbs") }
+            },
+            onDismiss = { showAddDialog = false }
+        ) { kg ->
             vm.addWeight(kg); showAddDialog = false
         }
     }
@@ -296,7 +306,7 @@ fun ProgressScreen(container: AppContainer) {
     if (showAllWeights) {
         AllWeightHistorySheet(
             entries = ui.entries.sortedByDescending { it.date },
-            useMetric = useMetric,
+            useMetric = weightMetric,
             onDelete = vm::deleteWeight,
             onDismiss = { showAllWeights = false }
         )
@@ -945,15 +955,19 @@ private fun AllWeightHistorySheet(
 private fun AddWeightDialog(
     useMetric: Boolean,
     initialKg: Double,
+    onUnitChange: (Boolean) -> Unit,
     onDismiss: () -> Unit,
     onSubmit: (Double) -> Unit
 ) {
     // Wheel picker matches Settings → Goal Weight + the onboarding height/weight
     // step — split-decimal so users land on e.g. 72.4 without typing.
     var pickerKg by remember { mutableStateOf(initialKg) }
+    var metric by remember { mutableStateOf(useMetric) }
     FudGlassDialog(onDismissRequest = onDismiss) {
         Text(stringResource(R.string.progress_log_weight_title), fontSize = 21.sp, fontWeight = FontWeight.Bold)
-        if (useMetric) {
+        Spacer(Modifier.height(10.dp))
+        UnitToggle(stringResource(R.string.unit_kg), stringResource(R.string.unit_lbs), metric, { metric = it; onUnitChange(it) }, Modifier.fillMaxWidth())
+        if (metric) {
             SplitDecimalWheelPicker(
                 value = pickerKg.coerceIn(30.0, 250.0),
                 onValueChange = { pickerKg = it },
@@ -1394,18 +1408,19 @@ fun BodyMeasurementsScreen(container: AppContainer, onBack: () -> Unit) {
     val scope = rememberCoroutineScope()
     val entries by container.bodyMeasurementRepository.entries.collectAsState(initial = emptyList())
     val profile by container.profileRepository.profile.collectAsState(initial = null)
-    val useMetric by container.prefs.useMetric.collectAsState(initial = true)
+    val heightUnit by container.prefs.heightUnit.collectAsState(initial = "cm")
+    val heightMetric = heightUnit == "cm"
     val gender = profile?.gender ?: Gender.MALE
     val heightCm = profile?.heightCm ?: 0.0
     val latest = entries.maxByOrNull { it.date }
-    val unit = if (useMetric) "cm" else "in"
+    val unit = if (heightMetric) "cm" else "in"
 
     var editing by remember { mutableStateOf<BodyMeasurement.Site?>(null) }
     var showHistory by remember { mutableStateOf(false) }
 
     fun displayValue(site: BodyMeasurement.Site): String {
         val cm = latest?.value(site) ?: return "Not set"
-        return if (useMetric) String.format(Locale.US, "%.0f cm", cm) else String.format(Locale.US, "%.0f in", cm / 2.54)
+        return if (heightMetric) String.format(Locale.US, "%.0f cm", cm) else String.format(Locale.US, "%.0f in", cm / 2.54)
     }
 
     Scaffold(containerColor = MaterialTheme.colorScheme.background) { padding ->
@@ -1500,16 +1515,16 @@ fun BodyMeasurementsScreen(container: AppContainer, onBack: () -> Unit) {
 
     editing?.let { site ->
         val current = latest?.value(site)
-        val currentDisplay = current?.let { if (useMetric) Math.round(it).toInt() else Math.round(it / 2.54).toInt() }
+        val currentDisplay = current?.let { if (heightMetric) Math.round(it).toInt() else Math.round(it / 2.54).toInt() }
         FudGlassDialog(onDismissRequest = { editing = null }) {
             NutritionPickerSheet(
                 label = site.label,
                 unit = unit,
-                currentValue = currentDisplay ?: if (useMetric) 80 else 32,
-                range = if (useMetric) 10..250 else 4..100,
+                currentValue = currentDisplay ?: if (heightMetric) 80 else 32,
+                range = if (heightMetric) 10..250 else 4..100,
                 step = 1,
                 onSave = { v ->
-                    val cm = if (useMetric) v.toDouble() else v * 2.54
+                    val cm = if (heightMetric) v.toDouble() else v * 2.54
                     scope.launch { container.bodyMeasurementRepository.setValue(site, cm) }
                     editing = null
                 },
@@ -1525,7 +1540,7 @@ fun BodyMeasurementsScreen(container: AppContainer, onBack: () -> Unit) {
             entries = entries.sortedByDescending { it.date },
             gender = gender,
             heightCm = heightCm,
-            useMetric = useMetric,
+            useMetric = heightMetric,
             onDelete = { id -> scope.launch { container.bodyMeasurementRepository.deleteEntry(id) } },
             onDismiss = { showHistory = false }
         )

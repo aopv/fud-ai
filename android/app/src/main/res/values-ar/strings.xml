@@ -497,6 +497,8 @@
     <string name="settings_appearance_light">فاتح</string>
     <string name="settings_appearance_dark">داكن</string>
     <string name="settings_metric_units">وحدات متريّة</string>
+    <string name="settings_height_unit">وحدة الطول</string>
+    <string name="settings_weight_unit">وحدة الوزن</string>
     <string name="settings_week_starts">يبدأ الأسبوع يوم</string>
     <string name="settings_week_monday">الإثنين</string>
     <string name="settings_week_sunday">الأحد</string>

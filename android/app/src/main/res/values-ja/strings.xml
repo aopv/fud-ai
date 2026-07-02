@@ -497,6 +497,8 @@
     <string name="settings_appearance_light">ライト</string>
     <string name="settings_appearance_dark">ダーク</string>
     <string name="settings_metric_units">メートル単位</string>
+    <string name="settings_height_unit">身長の単位</string>
+    <string name="settings_weight_unit">体重の単位</string>
     <string name="settings_week_starts">週の始まり</string>
     <string name="settings_week_monday">月曜日</string>
     <string name="settings_week_sunday">日曜日</string>

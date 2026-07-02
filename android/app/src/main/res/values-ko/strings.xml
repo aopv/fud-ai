@@ -497,6 +497,8 @@
     <string name="settings_appearance_light">라이트</string>
     <string name="settings_appearance_dark">다크</string>
     <string name="settings_metric_units">미터 단위</string>
+    <string name="settings_height_unit">키 단위</string>
+    <string name="settings_weight_unit">체중 단위</string>
     <string name="settings_week_starts">주 시작 요일</string>
     <string name="settings_week_monday">월요일</string>
     <string name="settings_week_sunday">일요일</string>

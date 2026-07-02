@@ -51,10 +51,11 @@ class ChatService(
         bodyFats: List<BodyFatEntry>,
         measurements: List<BodyMeasurement> = emptyList(),
         foods: List<FoodEntry>,
-        useMetric: Boolean,
+        heightMetric: Boolean,
+        weightMetric: Boolean,
         imageBytes: ByteArray? = null
     ): String {
-        val baseSystemPrompt = buildSystemPrompt(profile, weights, bodyFats, measurements, foods, useMetric)
+        val baseSystemPrompt = buildSystemPrompt(profile, weights, bodyFats, measurements, foods, heightMetric, weightMetric)
         val userContext = prefs.userContext.first()
         val systemPrompt = if (userContext.isNotBlank())
             "$baseSystemPrompt\n\n## User-provided context\n$userContext"
@@ -85,7 +86,8 @@ class ChatService(
         bodyFats: List<BodyFatEntry>,
         measurements: List<BodyMeasurement> = emptyList(),
         foods: List<FoodEntry>,
-        useMetric: Boolean
+        heightMetric: Boolean,
+        weightMetric: Boolean
     ): String {
         val forecast: WeightForecast = WeightAnalysisService.compute(weights, foods, profile)
         val zone = ZoneId.systemDefault()
@@ -93,11 +95,11 @@ class ChatService(
         val currentTimeZone = zone.id
 
         fun wUnit(kg: Double): String =
-            if (useMetric) String.format(Locale.US, "%.1f kg", kg)
+            if (weightMetric) String.format(Locale.US, "%.1f kg", kg)
             else String.format(Locale.US, "%.1f lbs", kg * 2.20462)
 
         fun weekly(kg: Double): String =
-            if (useMetric) String.format(Locale.US, "%+.2f kg/week", kg)
+            if (weightMetric) String.format(Locale.US, "%+.2f kg/week", kg)
             else String.format(Locale.US, "%+.2f lbs/week", kg * 2.20462)
 
         val bmrFormula = when {
@@ -123,7 +125,7 @@ class ChatService(
         lines.add("## User profile")
         lines.add("- Gender: ${profile.gender.name.lowercase()}")
         lines.add("- Age: ${profile.age}")
-        val heightStr = if (useMetric) String.format(Locale.US, "%.0f cm", profile.heightCm)
+        val heightStr = if (heightMetric) String.format(Locale.US, "%.0f cm", profile.heightCm)
         else String.format(Locale.US, "%.1f in", profile.heightCm / 2.54)
         lines.add("- Height: $heightStr")
         lines.add("- Current weight: ${wUnit(profile.weightKg)}")

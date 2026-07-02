@@ -497,6 +497,8 @@
     <string name="settings_appearance_light">Hell</string>
     <string name="settings_appearance_dark">Dunkel</string>
     <string name="settings_metric_units">Metrische Einheiten</string>
+    <string name="settings_height_unit">Größeneinheit</string>
+    <string name="settings_weight_unit">Gewichtseinheit</string>
     <string name="settings_week_starts">Wochenbeginn</string>
     <string name="settings_week_monday">Montag</string>
     <string name="settings_week_sunday">Sonntag</string>

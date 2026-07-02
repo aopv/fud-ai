@@ -18,7 +18,6 @@ struct CoachTools {
     let weights: [WeightEntry]
     let bodyFats: [BodyFatEntry]
     let foods: [FoodEntry]
-    let useMetric: Bool
 
     /// All available tool names — used by per-provider schema builders to stay
     /// in sync with the executor.

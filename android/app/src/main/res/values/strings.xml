@@ -544,6 +544,8 @@
     <string name="theme_color_baby_pink">Baby Pink</string>
     <string name="theme_color_lime">Lime</string>
     <string name="settings_metric_units">Metric Units</string>
+    <string name="settings_height_unit">Height Unit</string>
+    <string name="settings_weight_unit">Weight Unit</string>
     <string name="settings_default_to_grams">Default to Grams</string>
     <string name="settings_default_to_grams_info">New food review sheets open with grams selected first. You can still switch to serving, slice, cup, or any other detected unit before logging.</string>
     <string name="settings_week_starts">Week Starts On</string>

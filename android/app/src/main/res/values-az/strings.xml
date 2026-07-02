@@ -497,6 +497,8 @@
     <string name="settings_appearance_light">İşıqlı</string>
     <string name="settings_appearance_dark">Qaranlıq</string>
     <string name="settings_metric_units">Metrik Vahidlər</string>
+    <string name="settings_height_unit">Boy vahidi</string>
+    <string name="settings_weight_unit">Çəki vahidi</string>
     <string name="settings_week_starts">Həftənin Başlanğıc Günü</string>
     <string name="settings_week_monday">Bazar ertəsi</string>
     <string name="settings_week_sunday">Bazar</string>

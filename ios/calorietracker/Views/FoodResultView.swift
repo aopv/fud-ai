@@ -51,7 +51,7 @@ struct FoodResultView: View {
     let logDate: Date
     let profile: UserProfile
     let dayEntries: [FoodEntry]
-    let useMetric: Bool
+    let weightMetric: Bool
     var onLog: (FoodEntry) -> Void
     @Environment(\.dismiss) private var dismiss
 
@@ -133,7 +133,7 @@ struct FoodResultView: View {
         logDate: Date = .now,
         profile: UserProfile,
         dayEntries: [FoodEntry],
-        useMetric: Bool,
+        weightMetric: Bool,
         onLog: @escaping (FoodEntry) -> Void
     ) {
         let normalizedServingUnitOptions = ServingUnitOption.normalizedOptions(servingUnitOptions, totalGrams: servingSizeGrams)
@@ -186,7 +186,7 @@ struct FoodResultView: View {
         self.logDate = logDate
         self.profile = profile
         self.dayEntries = dayEntries
-        self.useMetric = useMetric
+        self.weightMetric = weightMetric
         self.onLog = onLog
     }
 
@@ -426,7 +426,7 @@ struct FoodResultView: View {
                         entry: makeFoodEntry(includeImage: false),
                         dayEntries: dayEntries,
                         profile: profile,
-                        useMetric: useMetric
+                        weightMetric: weightMetric
                     )
                 }
             }
@@ -494,7 +494,7 @@ private struct WhatIfMealImpactSheet: View {
     let entry: FoodEntry
     let dayEntries: [FoodEntry]
     let profile: UserProfile
-    let useMetric: Bool
+    let weightMetric: Bool
 
     @Environment(\.dismiss) private var dismiss
     @State private var isLoadingSuggestion = true
@@ -649,7 +649,7 @@ private struct WhatIfMealImpactSheet: View {
                 entry: entry,
                 dayEntries: dayEntries,
                 profile: profile,
-                useMetric: useMetric
+                weightMetric: weightMetric
             )
             suggestion = text.isEmpty ? "No suggestion returned. You can still review the numbers above before logging." : text
         } catch {

@@ -229,6 +229,18 @@ class PreferencesStore(private val context: Context) {
     val useMetric: Flow<Boolean> = ds.data.map { it[Keys.USE_METRIC] ?: true }
     suspend fun setUseMetric(v: Boolean) { ds.edit { it[Keys.USE_METRIC] = v } }
 
+    /** "cm" | "ftin". Falls back to the legacy useMetric flag when unset. */
+    val heightUnit: Flow<String> = ds.data.map {
+        it[Keys.HEIGHT_UNIT] ?: (if (it[Keys.USE_METRIC] ?: true) "cm" else "ftin")
+    }
+    suspend fun setHeightUnit(v: String) { ds.edit { it[Keys.HEIGHT_UNIT] = v } }
+
+    /** "kg" | "lbs". Falls back to the legacy useMetric flag when unset. */
+    val weightUnit: Flow<String> = ds.data.map {
+        it[Keys.WEIGHT_UNIT] ?: (if (it[Keys.USE_METRIC] ?: true) "kg" else "lbs")
+    }
+    suspend fun setWeightUnit(v: String) { ds.edit { it[Keys.WEIGHT_UNIT] = v } }
+
     val preferGramsByDefault: Flow<Boolean> = ds.data.map { it[Keys.PREFER_GRAMS_BY_DEFAULT] ?: false }
     suspend fun setPreferGramsByDefault(v: Boolean) { ds.edit { it[Keys.PREFER_GRAMS_BY_DEFAULT] = v } }
 
@@ -511,6 +523,8 @@ class PreferencesStore(private val context: Context) {
         val ADAPTIVE_GOALS_PREVIOUS_TARGETS = stringPreferencesKey("adaptiveGoalsPreviousTargets")
         val ADAPTIVE_GOALS_LAST_CHECK_DAY = stringPreferencesKey("adaptiveGoalsLastCheckDay")
         val USE_METRIC = booleanPreferencesKey("useMetric")
+        val HEIGHT_UNIT = stringPreferencesKey("heightUnit")
+        val WEIGHT_UNIT = stringPreferencesKey("weightUnit")
         val PREFER_GRAMS_BY_DEFAULT = booleanPreferencesKey("foodMeasurementPreferGramsByDefault")
         val APPEARANCE_MODE = stringPreferencesKey("appearanceMode")
         val APP_THEME_COLOR = stringPreferencesKey("appThemeColor")

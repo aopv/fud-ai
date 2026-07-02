@@ -12,10 +12,14 @@ struct OnboardingView: View {
     @State private var step = 0
     @State private var gender: Gender = .male
     @State private var birthday: Date = Calendar.current.date(byAdding: .year, value: -25, to: Date()) ?? Date()
-    @AppStorage("useMetric") private var useMetric = false
+    @AppStorage("heightUnit") private var heightUnitRaw = "ftin"
+    @AppStorage("weightUnit") private var weightUnitRaw = "lbs"
     @AppStorage("aiAnalysisConsentGiven") private var aiConsentGiven = false
     @AppStorage("acceptedTermsAndPrivacy") private var acceptedTermsAndPrivacy = false
-    @State private var isMetric = false
+    // Segmented Imperial | Metric control state. Seeded from the split unit prefs
+    // (Metric only when both are metric) and writes BOTH prefs coherently onChange.
+    @State private var isMetric = UserDefaults.standard.string(forKey: "heightUnit") == "cm"
+        && UserDefaults.standard.string(forKey: "weightUnit") == "kg"
     @State private var heightFeet = 5
     @State private var heightInches = 9
     @State private var heightCm = 175
@@ -75,17 +79,15 @@ struct OnboardingView: View {
     private var targetWeightKg: Double { combine(targetWeightKgWhole, targetWeightKgTenth) }
     private var targetWeightLbs: Double { combine(targetWeightLbsWhole, targetWeightLbsTenth) }
 
+    private var isHeightMetric: Bool { heightUnitRaw == "cm" }
+    private var isWeightMetric: Bool { weightUnitRaw == "kg" }
+
     private var profile: UserProfile {
-        let cm: Double
-        let kg: Double
-        if isMetric {
-            cm = Double(heightCm)
-            kg = weightKg
-        } else {
-            cm = Double(heightFeet) * 30.48 + Double(heightInches) * 2.54
-            kg = weightLbs * 0.453592
-        }
-        let targetKg: Double? = goal == .maintain ? nil : (isMetric ? targetWeightKg : targetWeightLbs * 0.453592)
+        let cm: Double = isHeightMetric
+            ? Double(heightCm)
+            : Double(heightFeet) * 30.48 + Double(heightInches) * 2.54
+        let kg: Double = isWeightMetric ? weightKg : weightLbs * 0.453592
+        let targetKg: Double? = goal == .maintain ? nil : (isWeightMetric ? targetWeightKg : targetWeightLbs * 0.453592)
         return UserProfile(
             gender: gender,
             birthday: birthday,
@@ -267,7 +269,10 @@ struct OnboardingView: View {
             .pickerStyle(.segmented)
             .padding(.horizontal, 24)
             .padding(.top, 16)
-            .onChange(of: isMetric) { _, newValue in useMetric = newValue }
+            .onChange(of: isMetric) { _, newValue in
+                heightUnitRaw = newValue ? "cm" : "ftin"
+                weightUnitRaw = newValue ? "kg" : "lbs"
+            }
             Spacer()
             // Stack height + weight as two rows so the weight picker (whole +
             // "." + tenth + unit = 4 sub-cells) gets the full screen width
@@ -275,22 +280,17 @@ struct OnboardingView: View {
             // 3-column imperial layout used to render the lbs whole-number
             // wheel as "..." because there wasn't enough width for 3-digit
             // values like 152 alongside the decimal column.
-            if isMetric {
-                VStack(spacing: 8) {
+            // Each wheel reads its own split unit pref, so mixed configurations
+            // (e.g. ft/in + kg) render correctly when re-entering onboarding.
+            VStack(spacing: 8) {
+                if isHeightMetric {
                     VStack(spacing: 4) {
                         Text("Height").font(.system(.caption, design: .rounded, weight: .medium)).foregroundStyle(.secondary)
                         Picker("cm", selection: $heightCm) {
                             ForEach(100...250, id: \.self) { cm in Text("\(cm) cm").tag(cm) }
                         }.pickerStyle(.wheel).frame(height: 130)
                     }
-                    VStack(spacing: 4) {
-                        Text(LocalizedDisplayText.text("Weight")).font(.system(.caption, design: .rounded, weight: .medium)).foregroundStyle(.secondary)
-                        decimalWeightWheel(whole: $weightKgWhole, tenth: $weightKgTenth, range: 30...250, unit: "kg")
-                            .frame(height: 130)
-                    }
-                }.padding(.horizontal, 24)
-            } else {
-                VStack(spacing: 8) {
+                } else {
                     HStack(spacing: 8) {
                         VStack(spacing: 4) {
                             Text("Feet").font(.system(.caption, design: .rounded, weight: .medium)).foregroundStyle(.secondary)
@@ -305,13 +305,18 @@ struct OnboardingView: View {
                             }.pickerStyle(.wheel).frame(height: 130)
                         }
                     }
-                    VStack(spacing: 4) {
-                        Text(LocalizedDisplayText.text("Weight")).font(.system(.caption, design: .rounded, weight: .medium)).foregroundStyle(.secondary)
+                }
+                VStack(spacing: 4) {
+                    Text(LocalizedDisplayText.text("Weight")).font(.system(.caption, design: .rounded, weight: .medium)).foregroundStyle(.secondary)
+                    if isWeightMetric {
+                        decimalWeightWheel(whole: $weightKgWhole, tenth: $weightKgTenth, range: 30...250, unit: "kg")
+                            .frame(height: 130)
+                    } else {
                         decimalWeightWheel(whole: $weightLbsWhole, tenth: $weightLbsTenth, range: 60...500, unit: "lbs")
                             .frame(height: 130)
                     }
-                }.padding(.horizontal, 24)
-            }
+                }
+            }.padding(.horizontal, 24)
             Spacer()
             continueButton()
         }
@@ -471,11 +476,11 @@ struct OnboardingView: View {
 
     // MARK: - 7: Desired Weight
 
-    private var weightUnit: String { isMetric ? "kg" : "lbs" }
+    private var weightUnit: String { isWeightMetric ? "kg" : "lbs" }
 
     private var weightDiffKg: Double {
-        let currentKg = isMetric ? weightKg : weightLbs * 0.453592
-        let targetKg = isMetric ? targetWeightKg : targetWeightLbs * 0.453592
+        let currentKg = isWeightMetric ? weightKg : weightLbs * 0.453592
+        let targetKg = isWeightMetric ? targetWeightKg : targetWeightLbs * 0.453592
         return abs(targetKg - currentKg)
     }
 
@@ -483,7 +488,7 @@ struct OnboardingView: View {
         VStack(alignment: .leading, spacing: 0) {
             stepHeader(title: "What's your\ndesired weight?", subtitle: goal.displayName)
             Spacer()
-            if isMetric {
+            if isWeightMetric {
                 decimalWeightWheel(whole: $targetWeightKgWhole, tenth: $targetWeightKgTenth, range: 30...250, unit: "kg")
                     .frame(height: 150).padding(.horizontal, 24)
             } else {
@@ -559,7 +564,7 @@ struct OnboardingView: View {
                 Spacer()
                 VStack(spacing: 24) {
                     VStack(spacing: 4) {
-                        Text(String(format: "%.1f %@", weeklyChangeKg * (isMetric ? 1 : 2.205), weightUnit))
+                        Text(String(format: "%.1f %@", weeklyChangeKg * (isWeightMetric ? 1 : 2.205), weightUnit))
                             .font(.system(size: 40, weight: .bold, design: .rounded))
                             .contentTransition(.numericText()).animation(.snappy, value: goalSpeed)
                         Text("per week").font(.system(.callout, design: .rounded)).foregroundStyle(.secondary)
@@ -1161,7 +1166,7 @@ struct OnboardingView: View {
     // MARK: - 12: Building Plan
 
     private var buildingPlanStep: some View {
-        BuildingPlanStepView(profile: profile, useMetric: useMetric) { result in
+        BuildingPlanStepView(profile: profile, heightMetric: isHeightMetric, weightMetric: isWeightMetric) { result in
             aiGoal = result
             withAnimation(.snappy) { step += 1 }
         }
@@ -1438,7 +1443,8 @@ struct OnboardingView: View {
 
 struct BuildingPlanStepView: View {
     let profile: UserProfile
-    let useMetric: Bool
+    let heightMetric: Bool
+    let weightMetric: Bool
     let onComplete: (GeminiService.GoalCalculation?) -> Void
 
     @State private var progress: Double = 0
@@ -1544,7 +1550,7 @@ struct BuildingPlanStepView: View {
     private func startAICalc() {
         Task {
             // New user → no logs yet, so forecast is nil; AI computes from profile + formulas.
-            let result = try? await GeminiService.calculateGoals(profile: profile, forecast: nil, useMetric: useMetric)
+            let result = try? await GeminiService.calculateGoals(profile: profile, forecast: nil, heightMetric: heightMetric, weightMetric: weightMetric)
             await MainActor.run {
                 aiResult = result
                 aiDone = true

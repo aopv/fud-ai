@@ -81,7 +81,7 @@ enum SiriLoggingService {
             throw WeightInputError.missingNumber
         }
 
-        let usesMetric = UserDefaults.standard.bool(forKey: "useMetric")
+        let usesMetric = WeightUnit.current == .kg
         let unitIsPounds = normalized.contains("lb")
             || normalized.contains("lbs")
             || normalized.contains("pound")

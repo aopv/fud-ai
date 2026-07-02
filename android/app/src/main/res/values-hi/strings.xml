@@ -497,6 +497,8 @@
     <string name="settings_appearance_light">लाइट</string>
     <string name="settings_appearance_dark">डार्क</string>
     <string name="settings_metric_units">मीट्रिक इकाइयाँ</string>
+    <string name="settings_height_unit">ऊंचाई की इकाई</string>
+    <string name="settings_weight_unit">वज़न की इकाई</string>
     <string name="settings_week_starts">सप्ताह शुरू होता है</string>
     <string name="settings_week_monday">सोमवार</string>
     <string name="settings_week_sunday">रविवार</string>

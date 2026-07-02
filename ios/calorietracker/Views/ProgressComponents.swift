@@ -37,7 +37,9 @@ struct WeightChartSection: View {
     let goalWeightKg: Double?
     let currentWeightKg: Double?
     let onLogWeight: () -> Void
-    @AppStorage("useMetric") private var useMetric = false
+    @AppStorage("weightUnit") private var weightUnitRaw = "lbs"
+
+    private var useMetric: Bool { weightUnitRaw == "kg" }
 
     private func displayWeight(_ kg: Double) -> Double {
         useMetric ? kg : kg * 2.20462
@@ -358,7 +360,7 @@ struct StatBadge: View {
 
 struct LogWeightSheet: View {
     @Environment(\.dismiss) private var dismiss
-    @AppStorage("useMetric") private var useMetric = false
+    @AppStorage("weightUnit") private var weightUnitRaw = "lbs"
     let currentWeightKg: Double
     let onSave: (Double) -> Void
 
@@ -369,13 +371,15 @@ struct LogWeightSheet: View {
         self.currentWeightKg = currentWeightKg
         self.onSave = onSave
         // Respect @AppStorage at the time the sheet is created.
-        let metric = UserDefaults.standard.bool(forKey: "useMetric")
+        let metric = UserDefaults.standard.string(forKey: "weightUnit") == "kg"
         let displayValue = metric ? currentWeightKg : currentWeightKg * 2.20462
         let whole = Int(displayValue)
         let dec = min(9, max(0, Int((displayValue - Double(whole)) * 10 + 0.5)))
         _wholeNumber = State(initialValue: whole)
         _decimal = State(initialValue: dec)
     }
+
+    private var useMetric: Bool { weightUnitRaw == "kg" }
 
     private var selectedValue: Double {
         Double(wholeNumber) + Double(decimal) / 10.0
@@ -393,6 +397,25 @@ struct LogWeightSheet: View {
             VStack(spacing: 20) {
                 Text("Log Weight")
                     .font(.system(.title2, design: .rounded, weight: .bold))
+
+                Picker("Unit", selection: $weightUnitRaw) {
+                    Text("kg").tag("kg")
+                    Text("lbs").tag("lbs")
+                }
+                .pickerStyle(.segmented)
+                .padding(.horizontal, 24)
+                .onChange(of: weightUnitRaw) { _, newValue in
+                    // Convert the currently selected value so toggling mid-edit keeps it,
+                    // clamped into the destination wheel's rows (20...250 kg / 50...500 lbs)
+                    // so the selection never lands on a tag the wheel doesn't offer.
+                    let value = Double(wholeNumber) + Double(decimal) / 10.0
+                    let converted = newValue == "kg" ? value / 2.20462 : value * 2.20462
+                    let bounds = newValue == "kg" ? 20.0...250.0 : 50.0...500.0
+                    let clamped = min(bounds.upperBound, max(bounds.lowerBound, converted))
+                    let whole = Int(clamped)
+                    wholeNumber = whole
+                    decimal = min(9, max(0, Int((clamped - Double(whole)) * 10 + 0.5)))
+                }
 
                 // Scroll wheel pickers
                 HStack(spacing: 0) {
@@ -906,9 +929,11 @@ private func derivedMetricChips(_ m: BodyMeasurement, gender: Gender, heightCm: 
 /// Lives in Settings (not Progress) so it sits with the other body inputs.
 struct BodyMeasurementsDetailView: View {
     @Environment(BodyMeasurementStore.self) private var store
-    @AppStorage("useMetric") private var useMetric = false
+    @AppStorage("heightUnit") private var heightUnitRaw = "ftin"
     let gender: Gender
     let heightCm: Double
+
+    private var useMetric: Bool { heightUnitRaw == "cm" }
 
     @State private var editingSite: BodyMeasurement.Site?
     @State private var showHistory = false

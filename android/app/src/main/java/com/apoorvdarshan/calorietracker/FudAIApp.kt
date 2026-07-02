@@ -231,7 +231,8 @@ class AppContainer(app: FudAIApp) {
             }
 
             val profile = profileRepository.current() ?: return null
-            val useMetric = prefs.useMetric.first()
+            val heightMetric = prefs.heightUnit.first() == "cm"
+            val weightMetric = prefs.weightUnit.first() == "kg"
             val measuredTdee = measuredEnergyTdeeIfEnabled(profile)
             val forecast = WeightAnalysisService.compute(
                 weights = weightRepository.entries.first(),
@@ -239,7 +240,7 @@ class AppContainer(app: FudAIApp) {
                 profile = profile
             )
             val result = runCatching {
-                foodAnalysis.calculateGoals(profile, forecast, useMetric, measuredTdee, bodyMeasurementRepository.latestSnapshot())
+                foodAnalysis.calculateGoals(profile, forecast, heightMetric, weightMetric, measuredTdee, bodyMeasurementRepository.latestSnapshot())
             }.getOrNull()
             // Mark checked on success OR AI failure so a misconfigured provider isn't hit on every
             // foreground; the weekly cadence simply resumes next week.

@@ -101,7 +101,8 @@ class CoachViewModel(private val container: AppContainer) : ViewModel() {
                 val bodyFats = container.bodyFatRepository.entries.first()
                 val measurements = container.bodyMeasurementRepository.entries.first()
                 val foods = container.foodRepository.entries.first()
-                val useMetric = container.prefs.useMetric.first()
+                val heightMetric = container.prefs.heightUnit.first() == "cm"
+                val weightMetric = container.prefs.weightUnit.first() == "kg"
 
                 val reply = container.chatService.sendMessage(
                     history = history,
@@ -111,7 +112,8 @@ class CoachViewModel(private val container: AppContainer) : ViewModel() {
                     bodyFats = bodyFats,
                     measurements = measurements,
                     foods = foods,
-                    useMetric = useMetric,
+                    heightMetric = heightMetric,
+                    weightMetric = weightMetric,
                     imageBytes = imageBytes
                 )
                 container.chatRepository.append(ChatMessage(role = ChatMessage.Role.ASSISTANT, content = reply.trim()))

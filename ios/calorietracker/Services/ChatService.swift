@@ -43,7 +43,8 @@ struct ChatService {
         bodyFats: [BodyFatEntry],
         measurements: [BodyMeasurement] = [],
         foods: [FoodEntry],
-        useMetric: Bool
+        heightMetric: Bool,
+        weightMetric: Bool
     ) async throws -> String {
         let systemPrompt = buildSystemPrompt(
             profile: profile,
@@ -51,9 +52,10 @@ struct ChatService {
             bodyFats: bodyFats,
             measurements: measurements,
             foods: foods,
-            useMetric: useMetric
+            heightMetric: heightMetric,
+            weightMetric: weightMetric
         )
-        let tools = CoachTools(weights: weights, bodyFats: bodyFats, foods: foods, useMetric: useMetric)
+        let tools = CoachTools(weights: weights, bodyFats: bodyFats, foods: foods)
 
         let provider: AIProvider = AIProviderSettings.selectedProvider
         let model = AIProviderSettings.selectedModel
@@ -80,7 +82,7 @@ struct ChatService {
     /// gone — Coach calls tools when it actually needs older data, so token
     /// cost per message stays low and Coach can reach **all** of the user's
     /// history (not just the previously-hardcoded last 10/14 entries).
-    private static func buildSystemPrompt(profile: UserProfile, weights: [WeightEntry], bodyFats: [BodyFatEntry], measurements: [BodyMeasurement] = [], foods: [FoodEntry], useMetric: Bool) -> String {
+    private static func buildSystemPrompt(profile: UserProfile, weights: [WeightEntry], bodyFats: [BodyFatEntry], measurements: [BodyMeasurement] = [], foods: [FoodEntry], heightMetric: Bool, weightMetric: Bool) -> String {
         let forecast = WeightAnalysisService.compute(weights: weights, foods: foods, profile: profile)
         let currentDateFormatter = DateFormatter()
         currentDateFormatter.dateFormat = "yyyy-MM-dd"
@@ -90,10 +92,10 @@ struct ChatService {
         let currentTimeZone = TimeZone.current.identifier
 
         let wUnit: (Double) -> String = { kg in
-            useMetric ? String(format: "%.1f kg", kg) : String(format: "%.1f lbs", kg * 2.20462)
+            weightMetric ? String(format: "%.1f kg", kg) : String(format: "%.1f lbs", kg * 2.20462)
         }
         let weekly: (Double) -> String = { kg in
-            useMetric ? String(format: "%+.2f kg/week", kg) : String(format: "%+.2f lbs/week", kg * 2.20462)
+            weightMetric ? String(format: "%+.2f kg/week", kg) : String(format: "%+.2f lbs/week", kg * 2.20462)
         }
 
         let bmrFormula: String
@@ -122,7 +124,7 @@ struct ChatService {
         lines.append("## User profile")
         lines.append("- Gender: \(profile.gender.rawValue)")
         lines.append("- Age: \(profile.age)")
-        lines.append("- Height: \(useMetric ? String(format: "%.0f cm", profile.heightCm) : String(format: "%.1f in", profile.heightCm / 2.54))")
+        lines.append("- Height: \(heightMetric ? String(format: "%.0f cm", profile.heightCm) : String(format: "%.1f in", profile.heightCm / 2.54))")
         lines.append("- Current weight: \(wUnit(profile.weightKg))")
         lines.append("- Activity: \(profile.activityLevel.displayName)")
         lines.append("- Goal: \(profile.goal.displayName)")

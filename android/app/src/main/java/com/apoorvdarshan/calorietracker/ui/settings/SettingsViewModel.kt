@@ -31,7 +31,10 @@ data class SettingsUiState(
     val maxResponseTokens: Int = 1024,
     val selectedSpeech: SpeechProvider = SpeechProvider.NATIVE,
     val selectedSpeechLanguage: SpeechLanguage = SpeechLanguage.defaultFor(SpeechProvider.NATIVE),
-    val useMetric: Boolean = true,
+    /** "cm" | "ftin" — governs all length display/input. */
+    val heightUnit: String = "cm",
+    /** "kg" | "lbs" — governs all mass display/input. */
+    val weightUnit: String = "kg",
     val preferGramsByDefault: Boolean = false,
     val profile: UserProfile? = null,
     val notificationsEnabled: Boolean = false,
@@ -65,7 +68,10 @@ data class SettingsUiState(
     /** A goal-relevant input changed since the last Recalculate. Drives a soft nudge on the
      *  Recalculate row; the button stays tappable at all times — this never disables it. */
     val goalsNeedRecalc: Boolean = false
-)
+) {
+    val heightMetric: Boolean get() = heightUnit == "cm"
+    val weightMetric: Boolean get() = weightUnit == "kg"
+}
 
 class SettingsViewModel(val container: AppContainer) : ViewModel() {
     private val _ui = MutableStateFlow(SettingsUiState())
@@ -90,7 +96,8 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
             val model = provider.supportedModelOrDefault(container.prefs.selectedAIModel.first())
             val speech = container.prefs.selectedSpeechProvider.first()
             val speechLanguage = container.prefs.selectedSpeechLanguage(speech).first()
-            val useMetric = container.prefs.useMetric.first()
+            val heightUnit = container.prefs.heightUnit.first()
+            val weightUnit = container.prefs.weightUnit.first()
             val preferGramsByDefault = container.prefs.preferGramsByDefault.first()
             val notif = container.prefs.notificationsEnabled.first()
             val streakReminder = container.prefs.streakReminderEnabled.first()
@@ -128,7 +135,8 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
                 maxResponseTokens = maxTokens,
                 selectedSpeech = speech,
                 selectedSpeechLanguage = speechLanguage,
-                useMetric = useMetric,
+                heightUnit = heightUnit,
+                weightUnit = weightUnit,
                 preferGramsByDefault = preferGramsByDefault,
                 profile = profile,
                 notificationsEnabled = notif,
@@ -292,10 +300,17 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
         }
     }
 
-    fun setUseMetric(v: Boolean) {
+    fun setHeightUnit(v: String) {
         viewModelScope.launch {
-            container.prefs.setUseMetric(v)
-            _ui.value = _ui.value.copy(useMetric = v)
+            container.prefs.setHeightUnit(v)
+            _ui.value = _ui.value.copy(heightUnit = v)
+        }
+    }
+
+    fun setWeightUnit(v: String) {
+        viewModelScope.launch {
+            container.prefs.setWeightUnit(v)
+            _ui.value = _ui.value.copy(weightUnit = v)
         }
     }
 
@@ -628,7 +643,8 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
             if (_ui.value.recalculatingGoals) return@launch
             val current = container.profileRepository.current() ?: return@launch
             _ui.value = _ui.value.copy(recalculatingGoals = true)
-            val useMetric = container.prefs.useMetric.first()
+            val heightMetric = container.prefs.heightUnit.first() == "cm"
+            val weightMetric = container.prefs.weightUnit.first() == "kg"
             // Empirical signal: recent logged intake + observed weight trend, so the AI can
             // estimate true maintenance (hit-and-trial) instead of trusting the formula alone.
             val forecast = WeightAnalysisService.compute(
@@ -641,7 +657,7 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
             // AI-only — no formula fallback. If the AI provider is unavailable, leave the
             // existing goals untouched and tell the user so they can fix their key and retry.
             val result = try {
-                container.foodAnalysis.calculateGoals(current, forecast, useMetric, measuredTdee, container.bodyMeasurementRepository.latestSnapshot())
+                container.foodAnalysis.calculateGoals(current, forecast, heightMetric, weightMetric, measuredTdee, container.bodyMeasurementRepository.latestSnapshot())
             } catch (e: Throwable) {
                 _ui.value = _ui.value.copy(
                     recalculatingGoals = false,

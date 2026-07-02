@@ -46,7 +46,7 @@ data class HomeUiState(
     val optionalNutrientGoals: OptionalNutrientGoals = OptionalNutrientGoals.Default,
     val foodLogSortOrder: FoodLogSortOrder = FoodLogSortOrder.STANDARD,
     val preferGramsByDefault: Boolean = false,
-    val useMetric: Boolean = true,
+    val weightMetric: Boolean = true,
     val favoriteKeys: Set<String> = emptySet(),
     val pendingAnalysis: FoodAnalysis? = null,
     val pendingImageBytes: ByteArray? = null,
@@ -115,9 +115,9 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
             }
             .launchIn(viewModelScope)
 
-        container.prefs.useMetric
-            .onEach { useMetric ->
-                _ui.value = _ui.value.copy(useMetric = useMetric)
+        container.prefs.weightUnit
+            .onEach { unit ->
+                _ui.value = _ui.value.copy(weightMetric = unit == "kg")
             }
             .launchIn(viewModelScope)
 
@@ -369,7 +369,7 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
             entry = entry,
             dayEntries = snapshot.todayEntries,
             profile = profile,
-            useMetric = snapshot.useMetric
+            weightMetric = snapshot.weightMetric
         )
     }
 

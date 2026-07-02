@@ -67,14 +67,15 @@ class FoodAnalysisService(
     suspend fun suggestHealthEnergyGoals(
         profile: UserProfile,
         energy: HealthEnergySummary,
-        useMetric: Boolean
+        heightMetric: Boolean,
+        weightMetric: Boolean
     ): HealthEnergyGoalSuggestion {
-        val weight = if (useMetric) {
+        val weight = if (weightMetric) {
             String.format(java.util.Locale.US, "%.1f kg", profile.weightKg)
         } else {
             String.format(java.util.Locale.US, "%.1f lb", profile.weightKg * 2.20462)
         }
-        val height = if (useMetric) {
+        val height = if (heightMetric) {
             String.format(java.util.Locale.US, "%.0f cm", profile.heightCm)
         } else {
             String.format(java.util.Locale.US, "%.1f in", profile.heightCm / 2.54)
@@ -83,7 +84,7 @@ class FoodAnalysisService(
             ?.let { "${(it * 100).toInt()}%" }
             ?: "not set"
         val goalWeight = profile.goalWeightKg?.let { kg ->
-            if (useMetric) String.format(java.util.Locale.US, "%.1f kg", kg)
+            if (weightMetric) String.format(java.util.Locale.US, "%.1f kg", kg)
             else String.format(java.util.Locale.US, "%.1f lb", kg * 2.20462)
         } ?: "not set"
         val healthTotalLine = energy.totalAverageCalories
@@ -135,17 +136,18 @@ class FoodAnalysisService(
     suspend fun calculateGoals(
         profile: UserProfile,
         forecast: WeightForecast?,
-        useMetric: Boolean,
+        heightMetric: Boolean,
+        weightMetric: Boolean,
         measuredTdee: Int? = null,
         measurement: BodyMeasurement? = null
     ): GoalCalculation {
-        val weight = if (useMetric) String.format(Locale.US, "%.1f kg", profile.weightKg)
+        val weight = if (weightMetric) String.format(Locale.US, "%.1f kg", profile.weightKg)
             else String.format(Locale.US, "%.1f lb", profile.weightKg * 2.20462)
-        val height = if (useMetric) String.format(Locale.US, "%.0f cm", profile.heightCm)
+        val height = if (heightMetric) String.format(Locale.US, "%.0f cm", profile.heightCm)
             else String.format(Locale.US, "%.1f in", profile.heightCm / 2.54)
         val bodyFat = profile.bodyFatPercentage?.let { "${(it * 100).toInt()}%" } ?: "not set"
         val goalWeight = profile.goalWeightKg?.let { kg ->
-            if (useMetric) String.format(Locale.US, "%.1f kg", kg) else String.format(Locale.US, "%.1f lb", kg * 2.20462)
+            if (weightMetric) String.format(Locale.US, "%.1f kg", kg) else String.format(Locale.US, "%.1f lb", kg * 2.20462)
         } ?: "not set"
         val weekly = profile.weeklyChangeKg?.let { String.format(Locale.US, "%.2f kg/week", it) } ?: "not set (maintain)"
         val bmrMethod = if (profile.usesBodyFatForBMR) "Katch-McArdle (body fat known and enabled)" else "Mifflin-St Jeor"
@@ -157,7 +159,7 @@ class FoodAnalysisService(
                 appendLine("- Logged intake: avg ${forecast.avgDailyCalories} kcal/day across ${forecast.daysOfFoodData} logged days")
                 val obs = forecast.observedWeeklyChangeKg
                 if (obs != null) {
-                    val obsStr = if (useMetric) String.format(Locale.US, "%+.2f kg/week", obs)
+                    val obsStr = if (weightMetric) String.format(Locale.US, "%+.2f kg/week", obs)
                         else String.format(Locale.US, "%+.2f lb/week", obs * 2.20462)
                     val empiricalTdee = forecast.avgDailyCalories - (obs * 7700.0 / 7.0).roundToInt()
                     appendLine("- Observed weight trend: $obsStr from ${forecast.weightEntriesUsed} weigh-ins")
@@ -230,7 +232,7 @@ class FoodAnalysisService(
         entry: FoodEntry,
         dayEntries: List<FoodEntry>,
         profile: UserProfile,
-        useMetric: Boolean
+        weightMetric: Boolean
     ): String {
         val beforeCalories = dayEntries.sumOf { it.calories }
         val beforeProtein = dayEntries.sumOf { it.protein }
@@ -240,7 +242,7 @@ class FoodAnalysisService(
         val afterProtein = beforeProtein + entry.protein
         val afterCarbs = beforeCarbs + entry.carbs
         val afterFat = beforeFat + entry.fat
-        val weight = if (useMetric) {
+        val weight = if (weightMetric) {
             String.format(Locale.US, "%.1f kg", profile.weightKg)
         } else {
             String.format(Locale.US, "%.1f lb", profile.weightKg * 2.20462)

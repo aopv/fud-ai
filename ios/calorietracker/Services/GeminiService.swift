@@ -177,7 +177,7 @@ struct GeminiService {
         entry: FoodEntry,
         dayEntries: [FoodEntry],
         profile: UserProfile,
-        useMetric: Bool
+        weightMetric: Bool
     ) async throws -> String {
         let current = macroTotals(for: dayEntries)
         let meal = macroTotals(for: entry)
@@ -200,7 +200,7 @@ struct GeminiService {
                 .prefix(12)
                 .map { "- \($0.name): \($0.calories) kcal, \(formatGrams($0.protein))g protein, \(formatGrams($0.carbs))g carbs, \(formatGrams($0.fat))g fat" }
                 .joined(separator: "\n")
-        let weight = useMetric
+        let weight = weightMetric
             ? String(format: "%.1f kg", profile.weightKg)
             : String(format: "%.1f lb", profile.weightKg * 2.20462)
         let bodyFat = profile.bodyFatPercentage.map { "\(Int(($0 * 100).rounded()))%" } ?? "not set"
@@ -348,17 +348,18 @@ struct GeminiService {
     static func suggestOptionalNutrientGoals(
         profile: UserProfile,
         currentGoals: OptionalNutrientGoals,
-        useMetric: Bool
+        heightMetric: Bool,
+        weightMetric: Bool
     ) async throws -> OptionalNutrientGoals {
-        let weight = useMetric
+        let weight = weightMetric
             ? String(format: "%.1f kg", profile.weightKg)
             : String(format: "%.1f lb", profile.weightKg * 2.20462)
-        let height = useMetric
+        let height = heightMetric
             ? String(format: "%.0f cm", profile.heightCm)
             : String(format: "%.1f in", profile.heightCm / 2.54)
         let bodyFat = profile.bodyFatPercentage.map { "\(Int(($0 * 100).rounded()))%" } ?? "not set"
         let goalWeight = profile.goalWeightKg.map { kg in
-            useMetric ? String(format: "%.1f kg", kg) : String(format: "%.1f lb", kg * 2.20462)
+            weightMetric ? String(format: "%.1f kg", kg) : String(format: "%.1f lb", kg * 2.20462)
         } ?? "not set"
         let currentGoalLines = OptionalNutrient.allCases
             .map { "- \($0.displayName): \(currentGoals.goal(for: $0)) \($0.unit) (\($0.goalStyle))" }
@@ -404,16 +405,16 @@ struct GeminiService {
     /// (hit-and-trial / adaptive) rather than trusting the formula alone. Routes through the
     /// user's selected provider. The deterministic math stays as the caller's
     /// fallback when AI is unavailable. ONLY for goal targets — does not touch food estimation.
-    static func calculateGoals(profile: UserProfile, forecast: WeightForecast?, measuredTdee: Int? = nil, measurement: BodyMeasurement? = nil, useMetric: Bool) async throws -> GoalCalculation {
-        let weight = useMetric
+    static func calculateGoals(profile: UserProfile, forecast: WeightForecast?, measuredTdee: Int? = nil, measurement: BodyMeasurement? = nil, heightMetric: Bool, weightMetric: Bool) async throws -> GoalCalculation {
+        let weight = weightMetric
             ? String(format: "%.1f kg", profile.weightKg)
             : String(format: "%.1f lb", profile.weightKg * 2.20462)
-        let height = useMetric
+        let height = heightMetric
             ? String(format: "%.0f cm", profile.heightCm)
             : String(format: "%.1f in", profile.heightCm / 2.54)
         let bodyFat = profile.bodyFatPercentage.map { "\(Int(($0 * 100).rounded()))%" } ?? "not set"
         let goalWeight = profile.goalWeightKg.map { kg in
-            useMetric ? String(format: "%.1f kg", kg) : String(format: "%.1f lb", kg * 2.20462)
+            weightMetric ? String(format: "%.1f kg", kg) : String(format: "%.1f lb", kg * 2.20462)
         } ?? "not set"
         let weekly = profile.weeklyChangeKg.map { String(format: "%.2f kg/week", $0) } ?? "not set (maintain)"
         let bmrMethod = profile.usesBodyFatForBMR ? "Katch-McArdle (body fat known and enabled)" : "Mifflin-St Jeor"
@@ -425,7 +426,7 @@ struct GeminiService {
             var lines: [String] = ["", "OBSERVED DATA — from the user's OWN logs (prefer this over the formula when reliable):"]
             lines.append("- Logged intake: avg \(f.avgDailyCalories) kcal/day across \(f.daysOfFoodData) logged days")
             if let obs = f.observedWeeklyChangeKg {
-                let obsStr = useMetric ? String(format: "%+.2f kg/week", obs) : String(format: "%+.2f lb/week", obs * 2.20462)
+                let obsStr = weightMetric ? String(format: "%+.2f kg/week", obs) : String(format: "%+.2f lb/week", obs * 2.20462)
                 let empiricalTDEE = f.avgDailyCalories - Int((obs * 7_700.0 / 7.0).rounded())
                 lines.append("- Observed weight trend: \(obsStr) from \(f.weightEntriesUsed) weigh-ins")
                 lines.append("- Implied actual maintenance (logged intake minus the weekly change): ~\(empiricalTDEE) kcal/day")
@@ -509,21 +510,22 @@ struct GeminiService {
         profile: UserProfile,
         forecast: WeightForecast,
         recentAvgMacros: (protein: Int, carbs: Int, fat: Int)?,
-        useMetric: Bool
+        heightMetric: Bool,
+        weightMetric: Bool
     ) async throws -> String {
-        let unit = useMetric ? "kg" : "lbs"
+        let unit = weightMetric ? "kg" : "lbs"
         let wUnit: (Double) -> String = { kg in
-            useMetric ? String(format: "%.1f kg", kg) : String(format: "%.1f lbs", kg * 2.20462)
+            weightMetric ? String(format: "%.1f kg", kg) : String(format: "%.1f lbs", kg * 2.20462)
         }
         let weekly: (Double) -> String = { kg in
-            useMetric ? String(format: "%+.2f kg/week", kg) : String(format: "%+.2f lbs/week", kg * 2.20462)
+            weightMetric ? String(format: "%+.2f kg/week", kg) : String(format: "%+.2f lbs/week", kg * 2.20462)
         }
 
         var lines: [String] = []
         lines.append("User profile:")
         lines.append("- Gender: \(profile.gender.rawValue)")
         lines.append("- Age: \(profile.age)")
-        lines.append("- Height: \(useMetric ? String(format: "%.0f cm", profile.heightCm) : String(format: "%.1f in", profile.heightCm / 2.54))")
+        lines.append("- Height: \(heightMetric ? String(format: "%.0f cm", profile.heightCm) : String(format: "%.1f in", profile.heightCm / 2.54))")
         lines.append("- Current weight: \(wUnit(forecast.currentWeightKg))")
         lines.append("- Activity level: \(profile.activityLevel.displayName)")
         lines.append("- Goal: \(profile.goal.displayName)")

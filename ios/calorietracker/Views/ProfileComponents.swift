@@ -74,7 +74,7 @@ struct ProfileInfoRow: View {
 
 struct HeightPickerSheet: View {
     @Environment(\.dismiss) private var dismiss
-    let useMetric: Bool
+    @AppStorage("heightUnit") private var heightUnitRaw = "ftin"
     let currentHeightCm: Double
     let onSave: (Double) -> Void
 
@@ -82,8 +82,7 @@ struct HeightPickerSheet: View {
     @State private var inches: Int
     @State private var cm: Int
 
-    init(useMetric: Bool, currentHeightCm: Double, onSave: @escaping (Double) -> Void) {
-        self.useMetric = useMetric
+    init(currentHeightCm: Double, onSave: @escaping (Double) -> Void) {
         self.currentHeightCm = currentHeightCm
         self.onSave = onSave
         // Round to the nearest inch — truncating shows 5'6" for a 170 cm / 5'7" pick.
@@ -93,11 +92,32 @@ struct HeightPickerSheet: View {
         _inches = State(initialValue: totalInches % 12)
     }
 
+    private var useMetric: Bool { heightUnitRaw == "cm" }
+
     var body: some View {
         NavigationStack {
             VStack(spacing: 20) {
                 Text("Height")
                     .font(.system(.title2, design: .rounded, weight: .bold))
+
+                Picker("Unit", selection: $heightUnitRaw) {
+                    Text("cm").tag("cm")
+                    Text("ft / in").tag("ftin")
+                }
+                .pickerStyle(.segmented)
+                .padding(.horizontal, 24)
+                .onChange(of: heightUnitRaw) { _, newValue in
+                    // Convert the currently selected value so toggling mid-edit keeps it,
+                    // clamped into the destination wheel's rows (100...250 cm / 3'0"...8'11")
+                    // so the selection never lands on a tag the wheel doesn't offer.
+                    if newValue == "cm" {
+                        cm = min(250, max(100, Int((Double(feet) * 30.48 + Double(inches) * 2.54).rounded())))
+                    } else {
+                        let totalInches = min(107, max(36, Int((Double(cm) / 2.54).rounded())))
+                        feet = totalInches / 12
+                        inches = totalInches % 12
+                    }
+                }
 
                 if useMetric {
                     HStack(spacing: 0) {
@@ -187,24 +207,26 @@ struct HeightPickerSheet: View {
 
 struct WeightPickerSheet: View {
     @Environment(\.dismiss) private var dismiss
-    let useMetric: Bool
+    @AppStorage("weightUnit") private var weightUnitRaw = "lbs"
     let currentWeightKg: Double
     let onSave: (Double) -> Void
 
     @State private var wholeNumber: Int
     @State private var decimal: Int
 
-    init(useMetric: Bool, currentWeightKg: Double, onSave: @escaping (Double) -> Void) {
-        self.useMetric = useMetric
+    init(currentWeightKg: Double, onSave: @escaping (Double) -> Void) {
         self.currentWeightKg = currentWeightKg
         self.onSave = onSave
-        let displayValue = useMetric ? currentWeightKg : currentWeightKg * 2.20462
+        // Respect the stored preference at the time the sheet is created.
+        let metric = UserDefaults.standard.string(forKey: "weightUnit") == "kg"
+        let displayValue = metric ? currentWeightKg : currentWeightKg * 2.20462
         let whole = Int(displayValue)
         let dec = min(9, max(0, Int((displayValue - Double(whole)) * 10 + 0.5)))
         _wholeNumber = State(initialValue: whole)
         _decimal = State(initialValue: dec)
     }
 
+    private var useMetric: Bool { weightUnitRaw == "kg" }
     private var label: String { useMetric ? "kg" : "lbs" }
 
     var body: some View {
@@ -212,6 +234,25 @@ struct WeightPickerSheet: View {
             VStack(spacing: 20) {
                 Text(LocalizedDisplayText.text("Weight"))
                     .font(.system(.title2, design: .rounded, weight: .bold))
+
+                Picker("Unit", selection: $weightUnitRaw) {
+                    Text("kg").tag("kg")
+                    Text("lbs").tag("lbs")
+                }
+                .pickerStyle(.segmented)
+                .padding(.horizontal, 24)
+                .onChange(of: weightUnitRaw) { _, newValue in
+                    // Convert the currently selected value so toggling mid-edit keeps it,
+                    // clamped into the destination wheel's rows (30...300 kg / 50...500 lbs)
+                    // so the selection never lands on a tag the wheel doesn't offer.
+                    let value = Double(wholeNumber) + Double(decimal) / 10.0
+                    let converted = newValue == "kg" ? value / 2.20462 : value * 2.20462
+                    let bounds = newValue == "kg" ? 30.0...300.0 : 50.0...500.0
+                    let clamped = min(bounds.upperBound, max(bounds.lowerBound, converted))
+                    let whole = Int(clamped)
+                    wholeNumber = whole
+                    decimal = min(9, max(0, Int((clamped - Double(whole)) * 10 + 0.5)))
+                }
 
                 HStack(spacing: 0) {
                     Picker("Whole", selection: $wholeNumber) {

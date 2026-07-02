@@ -591,7 +591,7 @@ struct HomeView: View {
     // Not bumped on tab switches or data edits, so it only plays on app open.
     @State private var launchFillEpoch = 1
     @State private var wasBackgrounded = false
-    @AppStorage("useMetric") private var useMetric = false
+    @AppStorage("weightUnit") private var weightUnitRaw = "lbs"
     @AppStorage(FoodLogSortOrder.storageKey) private var foodLogSortOrderRaw = FoodLogSortOrder.defaultOrder.rawValue
     @AppStorage(HomeTopNutrient.storageKey) private var homeTopNutrientsRaw = HomeTopNutrient.storageValue(for: HomeTopNutrient.defaultSelection)
     @AppStorage(OptionalNutrientGoals.storageKey) private var optionalNutrientGoalsData = Data()
@@ -1103,7 +1103,7 @@ struct HomeView: View {
                             logDate: logDateForSelectedDay,
                             profile: userProfile,
                             dayEntries: foodStore.entries(for: logDateForSelectedDay),
-                            useMetric: useMetric,
+                            weightMetric: weightUnitRaw == "kg",
                             onLog: { entry in
                                 foodStore.addEntry(entry)
                             }
@@ -2529,7 +2529,7 @@ struct ProgressTabView: View {
     @Environment(WeightStore.self) private var weightStore
     @Environment(BodyFatStore.self) private var bodyFatStore
     @Environment(ProfileStore.self) private var profileStore
-    @AppStorage("useMetric") private var useMetric = false
+    @AppStorage("weightUnit") private var weightUnitRaw = "lbs"
     @State private var timeRange: TimeRange = .week
     @State private var showLogWeight = false
     @State private var showLogBodyFat = false
@@ -2687,7 +2687,7 @@ struct ProgressTabView: View {
             .sheet(isPresented: $showAllWeights) {
                 AllWeightHistoryView(
                     entries: weightStore.entries.sorted { $0.date > $1.date },
-                    useMetric: useMetric,
+                    useMetric: weightUnitRaw == "kg",
                     onDelete: { entry in weightStore.deleteEntry(entry) }
                 )
             }
@@ -2713,7 +2713,8 @@ struct ProfileView: View {
         Binding(get: { profileStore.profile }, set: { profileStore.profile = $0 })
     }
     @AppStorage("appearanceMode") private var appearanceMode = "system"
-    @AppStorage("useMetric") private var useMetric = false
+    @AppStorage("heightUnit") private var heightUnitRaw = "ftin"
+    @AppStorage("weightUnit") private var weightUnitRaw = "lbs"
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = true
     @AppStorage("healthKitEnabled") private var healthKitEnabled = false
     @AppStorage(AdaptiveGoalSettings.enabledKey) private var adaptiveGoalsEnabled = false
@@ -2775,9 +2776,12 @@ struct ProfileView: View {
     @State private var speechApiKeyText: String = SpeechSettings.apiKey(for: SpeechSettings.selectedProvider) ?? ""
     @State private var showSpeechAPIKey = false
 
+    private var heightMetric: Bool { heightUnitRaw == "cm" }
+    private var weightMetric: Bool { weightUnitRaw == "kg" }
+
     // Height formatting
     private var heightDisplay: String {
-        if useMetric {
+        if heightMetric {
             return "\(Int(profile.heightCm)) cm"
         }
         // Round to the nearest inch — truncating shows 5'6" for a 170 cm / 5'7" pick.
@@ -2789,7 +2793,7 @@ struct ProfileView: View {
 
     // Weight formatting
     private var weightDisplay: String {
-        if useMetric {
+        if weightMetric {
             return String(format: "%.1f kg", profile.weightKg)
         }
         return String(format: "%.1f lbs", profile.weightKg * 2.20462)
@@ -2805,7 +2809,7 @@ struct ProfileView: View {
     // Goal weight display
     private var goalWeightDisplay: String {
         guard let gw = profile.goalWeightKg else { return "Not set" }
-        if useMetric {
+        if weightMetric {
             return String(format: "%.1f kg", gw)
         }
         return String(format: "%.1f lbs", gw * 2.20462)
@@ -2815,7 +2819,7 @@ struct ProfileView: View {
     private var bodyMeasurementsRowValue: String {
         guard let latest = bodyMeasurementStore.latestEntry else { return "Not set" }
         if let waist = latest.waistCm {
-            return useMetric ? String(format: "Waist %.0f cm", waist) : String(format: "Waist %.0f in", waist / 2.54)
+            return heightMetric ? String(format: "Waist %.0f cm", waist) : String(format: "Waist %.0f in", waist / 2.54)
         }
         return "Logged"
     }
@@ -2823,7 +2827,7 @@ struct ProfileView: View {
     // Weekly change display
     private var weeklyChangeDisplay: String {
         let rate = profile.weeklyChangeKg ?? 0.5
-        if useMetric {
+        if weightMetric {
             return String(format: "%.2f kg/week", rate)
         }
         return String(format: "%.1f lbs/week", rate * 2.20462)
@@ -3057,7 +3061,7 @@ struct ProfileView: View {
                     lockableGoalRow(icon: "f.circle", label: "Fat", valueText: "\(profile.effectiveFat)g", macro: .fat, sheet: .editFat)
 
                     NavigationLink {
-                        OptionalNutrientGoalsSettingsView(profile: profile, useMetric: useMetric)
+                        OptionalNutrientGoalsSettingsView(profile: profile)
                     } label: {
                         Label {
                             HStack {
@@ -3147,16 +3151,6 @@ struct ProfileView: View {
                     }
                     .pickerStyle(.menu)
                     .tint(.secondary)
-
-                    Toggle(isOn: $useMetric) {
-                        Label {
-                            Text("Metric Units")
-                        } icon: {
-                            Image(systemName: "ruler")
-                                .foregroundStyle(AppColors.calorie)
-                        }
-                    }
-                    .tint(AppColors.calorie)
 
                     HStack {
                         Label {
@@ -3843,7 +3837,6 @@ struct ProfileView: View {
 
                 case .editHeight:
                     HeightPickerSheet(
-                        useMetric: useMetric,
                         currentHeightCm: profile.heightCm
                     ) { newHeight in
                         profile.heightCm = newHeight
@@ -3852,7 +3845,6 @@ struct ProfileView: View {
 
                 case .editWeight:
                     WeightPickerSheet(
-                        useMetric: useMetric,
                         currentWeightKg: profile.weightKg
                     ) { newWeight in
                         profile.weightKg = newWeight
@@ -3891,7 +3883,6 @@ struct ProfileView: View {
 
                 case .editGoalWeight:
                     WeightPickerSheet(
-                        useMetric: useMetric,
                         currentWeightKg: profile.goalWeightKg ?? profile.weightKg
                     ) { newGoalWeight in
                         // Validate against current goal direction.
@@ -4163,7 +4154,7 @@ struct ProfileView: View {
         // Energy Burn toggle: when on, anchor maintenance to the user's measured Apple Health burn.
         let measuredTdee = await measuredEnergyTdee(for: snapshot)
         do {
-            let result = try await GeminiService.calculateGoals(profile: snapshot, forecast: forecast, measuredTdee: measuredTdee, measurement: bodyMeasurementStore.latestEntry, useMetric: useMetric)
+            let result = try await GeminiService.calculateGoals(profile: snapshot, forecast: forecast, measuredTdee: measuredTdee, measurement: bodyMeasurementStore.latestEntry, heightMetric: heightMetric, weightMetric: weightMetric)
             guard goalInputsUnchanged(snapshot, profile) else { return }
             // Apply the AI's calorie + protein targets. Protein is the AI's choice within a range
             // near the activity multiplier (it can flex with the goal + history), not a rigid lock.
@@ -4194,7 +4185,8 @@ struct ProfileView: View {
             let suggested = try await GeminiService.suggestOptionalNutrientGoals(
                 profile: profile,
                 currentGoals: OptionalNutrientGoals.current,
-                useMetric: useMetric
+                heightMetric: heightMetric,
+                weightMetric: weightMetric
             )
             OptionalNutrientGoals.save(suggested)
         } catch {
@@ -4336,7 +4328,7 @@ struct ProfileView: View {
         let measuredTdee = await measuredEnergyTdee(for: snapshot)
         let forecast = WeightAnalysisService.compute(weights: weightStore.entries, foods: foodStore.entries, profile: snapshot)
         do {
-            let result = try await GeminiService.calculateGoals(profile: snapshot, forecast: forecast, measuredTdee: measuredTdee, measurement: bodyMeasurementStore.latestEntry, useMetric: useMetric)
+            let result = try await GeminiService.calculateGoals(profile: snapshot, forecast: forecast, measuredTdee: measuredTdee, measurement: bodyMeasurementStore.latestEntry, heightMetric: heightMetric, weightMetric: weightMetric)
             guard goalInputsUnchanged(snapshot, profile) else { return }
             AdaptiveGoalSettings.savePreviousTargetsIfNeeded(from: profile)
             profile.customCalories = result.calories

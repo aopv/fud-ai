@@ -497,6 +497,8 @@
     <string name="settings_appearance_light">Luminos</string>
     <string name="settings_appearance_dark">Întunecat</string>
     <string name="settings_metric_units">Unități metrice</string>
+    <string name="settings_height_unit">Unitate de înălțime</string>
+    <string name="settings_weight_unit">Unitate de greutate</string>
     <string name="settings_week_starts">Săptămâna începe în</string>
     <string name="settings_week_monday">Luni</string>
     <string name="settings_week_sunday">Duminică</string>
