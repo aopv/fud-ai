@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
@@ -27,6 +28,9 @@ import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.height
 import androidx.glance.layout.padding
 import androidx.glance.layout.width
+import androidx.glance.text.FontWeight
+import androidx.glance.text.Text
+import androidx.glance.text.TextStyle
 import com.apoorvdarshan.calorietracker.MainActivity
 import com.apoorvdarshan.calorietracker.R
 import com.apoorvdarshan.calorietracker.data.PreferencesStore
@@ -92,24 +96,29 @@ private fun AllMetricsWide(snapshot: WidgetSnapshot) {
         modifier = GlanceModifier.fillMaxSize(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        RingWithCenter(
-            progress = snapshot.calorieProgress.toFloat(),
-            ringSizeDp = 96,
-            strokeDp = 9,
-            centerLarge = snapshot.calories.toString(),
-            centerSmall = "/ ${snapshot.calorieGoal}",
-            centerCaption = "kcal"
-        )
-        Spacer(modifier = GlanceModifier.width(14.dp))
-        Column(
-            modifier = GlanceModifier.fillMaxHeight().defaultWeight(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            CapsuleMacroRow("Protein", snapshot.protein, snapshot.proteinGoal, snapshot.proteinProgress.toFloat(), unit = "g")
-            Spacer(modifier = GlanceModifier.height(8.dp))
-            CapsuleMacroRow("Carbs", snapshot.carbs, snapshot.carbsGoal, snapshot.carbsProgress.toFloat(), unit = "g")
-            Spacer(modifier = GlanceModifier.height(8.dp))
-            CapsuleMacroRow("Fat", snapshot.fat, snapshot.fatGoal, snapshot.fatProgress.toFloat(), unit = "g")
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            SpeedometerWithCenter(
+                progress = snapshot.calorieProgress.toFloat(),
+                gaugeWidthDp = 96,
+                strokeDp = 8,
+                startHex = snapshot.themeStartHex,
+                endHex = snapshot.themeEndHex,
+                centerLarge = snapshot.calories.toString(),
+                centerSmall = "/ ${snapshot.calorieGoal}"
+            )
+            Spacer(modifier = GlanceModifier.height(2.dp))
+            Text(
+                text = "${snapshot.caloriesRemaining} left",
+                style = TextStyle(
+                    color = WidgetTheme.themeTextProvider(snapshot.themeStartHex),
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 10.sp
+                )
+            )
+        }
+        Spacer(modifier = GlanceModifier.width(10.dp))
+        Box(modifier = GlanceModifier.defaultWeight()) {
+            NutrientBarsRow(snapshot, barHeightDp = 36, valueFontSp = 12)
         }
     }
 }
@@ -118,25 +127,35 @@ private fun AllMetricsWide(snapshot: WidgetSnapshot) {
 private fun AllMetricsTall(snapshot: WidgetSnapshot) {
     Column(modifier = GlanceModifier.fillMaxSize()) {
         WidgetHeader(iconRes = R.drawable.ic_widget_flame, label = "Today")
-        Spacer(modifier = GlanceModifier.height(8.dp))
+        Spacer(modifier = GlanceModifier.height(4.dp))
         Box(
             modifier = GlanceModifier.fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
-            RingWithCenter(
+            SpeedometerWithCenter(
                 progress = snapshot.calorieProgress.toFloat(),
-                ringSizeDp = 104,
+                gaugeWidthDp = 112,
                 strokeDp = 10,
+                startHex = snapshot.themeStartHex,
+                endHex = snapshot.themeEndHex,
                 centerLarge = snapshot.calories.toString(),
-                centerSmall = "/ ${snapshot.calorieGoal}",
-                centerCaption = "kcal"
+                centerSmall = "/ ${snapshot.calorieGoal}"
             )
         }
-        Spacer(modifier = GlanceModifier.height(12.dp))
-        CapsuleMacroRow("Protein", snapshot.protein, snapshot.proteinGoal, snapshot.proteinProgress.toFloat(), unit = "g")
-        Spacer(modifier = GlanceModifier.height(8.dp))
-        CapsuleMacroRow("Carbs", snapshot.carbs, snapshot.carbsGoal, snapshot.carbsProgress.toFloat(), unit = "g")
-        Spacer(modifier = GlanceModifier.height(8.dp))
-        CapsuleMacroRow("Fat", snapshot.fat, snapshot.fatGoal, snapshot.fatProgress.toFloat(), unit = "g")
+        Box(
+            modifier = GlanceModifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "${snapshot.caloriesRemaining} kcal left",
+                style = TextStyle(
+                    color = WidgetTheme.themeTextProvider(snapshot.themeStartHex),
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 11.sp
+                )
+            )
+        }
+        Spacer(modifier = GlanceModifier.height(10.dp))
+        NutrientBarsRow(snapshot, barHeightDp = 46)
     }
 }

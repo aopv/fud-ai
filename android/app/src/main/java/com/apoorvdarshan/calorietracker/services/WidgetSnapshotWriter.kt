@@ -2,18 +2,23 @@ package com.apoorvdarshan.calorietracker.services
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.ui.graphics.toArgb
 import androidx.glance.appwidget.updateAll
 import com.apoorvdarshan.calorietracker.data.FoodRepository
 import com.apoorvdarshan.calorietracker.data.PreferencesStore
 import com.apoorvdarshan.calorietracker.data.ProfileRepository
 import com.apoorvdarshan.calorietracker.models.FoodEntry
+import com.apoorvdarshan.calorietracker.models.HomeTopNutrient
 import com.apoorvdarshan.calorietracker.models.UserProfile
+import com.apoorvdarshan.calorietracker.models.WidgetNutrient
 import com.apoorvdarshan.calorietracker.models.WidgetSnapshot
+import com.apoorvdarshan.calorietracker.ui.theme.AppThemeColor
 import com.apoorvdarshan.calorietracker.widget.AllMetricsAppWidget
 import com.apoorvdarshan.calorietracker.widget.CalorieAppWidget
 import com.apoorvdarshan.calorietracker.widget.ProteinAppWidget
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onEach
 import java.time.Instant
 import java.time.LocalDate
@@ -32,7 +37,15 @@ class WidgetSnapshotWriter(
     private val foodRepository: FoodRepository,
     private val profileRepository: ProfileRepository
 ) {
-    fun observe() = combine(foodRepository.entries, profileRepository.profile) { entries, profile ->
+    fun observe() = combine(
+        foodRepository.entries,
+        profileRepository.profile,
+        prefs.homeTopNutrients,
+        prefs.appThemeColor,
+        prefs.optionalNutrientGoals
+    ) { entries, profile, _, _, _ ->
+        // Selection / theme / goals are re-read inside publish; they're combined
+        // here only so their changes re-trigger a snapshot write.
         entries to profile
     }
         .distinctUntilChanged()
@@ -45,6 +58,9 @@ class WidgetSnapshotWriter(
         if (profile == null) {
             prefs.clearWidgetSnapshot()
         } else {
+            val selection = HomeTopNutrient.fromStorage(prefs.homeTopNutrients.first())
+            val optionalGoals = prefs.optionalNutrientGoals.first()
+            val theme = AppThemeColor.fromKey(prefs.appThemeColor.first())
             val snapshot = WidgetSnapshot(
                 date = Instant.now(),
                 dayStart = WidgetSnapshot.todayStart(),
@@ -55,7 +71,18 @@ class WidgetSnapshotWriter(
                 carbs = todaysEntries.sumOf { it.carbs },
                 carbsGoal = profile.effectiveCarbs,
                 fat = todaysEntries.sumOf { it.fat },
-                fatGoal = profile.effectiveFat
+                fatGoal = profile.effectiveFat,
+                homeNutrients = selection.map { nutrient ->
+                    WidgetNutrient(
+                        id = nutrient.storageKey,
+                        label = nutrient.displayName,
+                        unit = nutrient.unit,
+                        value = nutrient.current(todaysEntries),
+                        goal = nutrient.goal(profile, optionalGoals).toDouble()
+                    )
+                },
+                themeStartHex = theme.start.toArgb() and 0xFFFFFF,
+                themeEndHex = theme.end.toArgb() and 0xFFFFFF
             )
             prefs.setWidgetSnapshot(snapshot)
         }

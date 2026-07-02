@@ -6,6 +6,21 @@ import java.time.LocalDate
 import java.time.ZoneId
 
 /**
+ * One user-selected Home nutrient carried in the widget snapshot. Mirrors the
+ * iOS WidgetNutrientValue payload shape.
+ */
+@Serializable
+data class WidgetNutrient(
+    val id: String,
+    val label: String,
+    val unit: String,
+    val value: Double,
+    val goal: Double
+) {
+    val progress: Double get() = if (goal > 0) minOf(1.0, value / goal) else 0.0
+}
+
+/**
  * Small Codable snapshot of today's totals + goals that the widget reads out of DataStore.
  * The main app writes it on every FoodStore / profile change; the widget re-reads on every
  * timeline refresh and on explicit updateAll() calls.
@@ -21,7 +36,12 @@ data class WidgetSnapshot(
     val carbs: Double,
     val carbsGoal: Int,
     val fat: Double,
-    val fatGoal: Int
+    val fatGoal: Int,
+    /** The user's 4 selected Home nutrients. Null in snapshots persisted by older builds. */
+    val homeNutrients: List<WidgetNutrient>? = null,
+    /** User's theme gradient as raw RGB hex (e.g. 0xFF375F). Fud Pink when absent. */
+    val themeStartHex: Int? = null,
+    val themeEndHex: Int? = null
 ) {
     val caloriesRemaining: Int get() = maxOf(0, calorieGoal - calories)
     val proteinRemaining: Double get() = maxOf(0.0, proteinGoal.toDouble() - protein)
@@ -36,6 +56,20 @@ data class WidgetSnapshot(
         val snapshotDay = dayStart.atZone(ZoneId.systemDefault()).toLocalDate()
         return snapshotDay != LocalDate.now()
     }
+
+    /**
+     * The 4 nutrient bars to render, matching the user's Home selection.
+     * Legacy snapshots (no homeNutrients) yield the classic protein/carbs/fat.
+     */
+    val displayedHomeNutrients: List<WidgetNutrient> get() =
+        homeNutrients?.takeIf { it.isNotEmpty() }?.take(4) ?: listOf(
+            WidgetNutrient("protein", "Protein", "g", protein, proteinGoal.toDouble()),
+            WidgetNutrient("carbs", "Carbs", "g", carbs, carbsGoal.toDouble()),
+            WidgetNutrient("fat", "Fat", "g", fat, fatGoal.toDouble())
+        )
+
+    /** First selected nutrient — what the "Protein" widget actually tracks. */
+    val primaryHomeNutrient: WidgetNutrient get() = displayedHomeNutrients.first()
 
     companion object {
         fun placeholder(): WidgetSnapshot {

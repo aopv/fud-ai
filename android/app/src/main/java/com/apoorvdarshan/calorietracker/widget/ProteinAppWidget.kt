@@ -89,26 +89,28 @@ private fun ProteinWidgetContent(snapshot: WidgetSnapshot) {
 
 @Composable
 private fun ProteinSmall(snapshot: WidgetSnapshot) {
+    val nutrient = snapshot.primaryHomeNutrient
+    val remaining = maxOf(0.0, nutrient.goal - nutrient.value)
     Column(modifier = GlanceModifier.fillMaxSize()) {
-        WidgetHeader(iconRes = R.drawable.ic_widget_bolt, label = "Protein")
-        Spacer(modifier = GlanceModifier.height(4.dp))
+        WidgetHeader(iconRes = R.drawable.ic_widget_bolt, label = nutrient.label)
         Box(
             modifier = GlanceModifier.fillMaxWidth().defaultWeight(),
             contentAlignment = Alignment.Center
         ) {
-            RingWithCenter(
-                progress = snapshot.proteinProgress.toFloat(),
-                ringSizeDp = 92,
+            SpeedometerWithCenter(
+                progress = nutrient.progress.toFloat(),
+                gaugeWidthDp = 104,
                 strokeDp = 9,
-                centerLarge = "${MacroValueFormatter.string(snapshot.protein)}g",
-                centerSmall = "/ ${snapshot.proteinGoal}g"
+                startHex = snapshot.themeStartHex,
+                endHex = snapshot.themeEndHex,
+                centerLarge = "${MacroValueFormatter.string(nutrient.value)}${nutrient.unit}",
+                centerSmall = "/ ${MacroValueFormatter.string(nutrient.goal)}${nutrient.unit}"
             )
         }
-        Spacer(modifier = GlanceModifier.height(4.dp))
         Text(
-            text = "${MacroValueFormatter.string(snapshot.proteinRemaining)}g left",
+            text = "${MacroValueFormatter.string(remaining)}${nutrient.unit} left",
             style = TextStyle(
-                color = WidgetTheme.secondaryTextProvider,
+                color = WidgetTheme.themeTextProvider(snapshot.themeStartHex),
                 fontWeight = FontWeight.Medium,
                 fontSize = 11.sp
             )
@@ -118,28 +120,35 @@ private fun ProteinSmall(snapshot: WidgetSnapshot) {
 
 @Composable
 private fun ProteinMedium(snapshot: WidgetSnapshot) {
+    val nutrient = snapshot.primaryHomeNutrient
+    val remaining = maxOf(0.0, nutrient.goal - nutrient.value)
     Row(
         modifier = GlanceModifier.fillMaxSize(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        RingWithCenter(
-            progress = snapshot.proteinProgress.toFloat(),
-            ringSizeDp = 100,
-            strokeDp = 9,
-            centerLarge = MacroValueFormatter.string(snapshot.protein),
-            centerSmall = "/ ${snapshot.proteinGoal}",
-            centerCaption = "protein g"
-        )
-        Spacer(modifier = GlanceModifier.width(14.dp))
-        Column(
-            modifier = GlanceModifier.fillMaxHeight().defaultWeight(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            CapsuleMacroRow("Calories", snapshot.calories.toDouble(), snapshot.calorieGoal, snapshot.calorieProgress.toFloat(), unit = "")
-            Spacer(modifier = GlanceModifier.height(8.dp))
-            CapsuleMacroRow("Carbs", snapshot.carbs, snapshot.carbsGoal, snapshot.carbsProgress.toFloat(), unit = "g")
-            Spacer(modifier = GlanceModifier.height(8.dp))
-            CapsuleMacroRow("Fat", snapshot.fat, snapshot.fatGoal, snapshot.fatProgress.toFloat(), unit = "g")
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            SpeedometerWithCenter(
+                progress = nutrient.progress.toFloat(),
+                gaugeWidthDp = 108,
+                strokeDp = 9,
+                startHex = snapshot.themeStartHex,
+                endHex = snapshot.themeEndHex,
+                centerLarge = "${MacroValueFormatter.string(nutrient.value)}${nutrient.unit}",
+                centerSmall = "/ ${MacroValueFormatter.string(nutrient.goal)}${nutrient.unit}"
+            )
+            Spacer(modifier = GlanceModifier.height(2.dp))
+            Text(
+                text = "${MacroValueFormatter.string(remaining)}${nutrient.unit} left",
+                style = TextStyle(
+                    color = WidgetTheme.themeTextProvider(snapshot.themeStartHex),
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 11.sp
+                )
+            )
+        }
+        Spacer(modifier = GlanceModifier.width(10.dp))
+        Box(modifier = GlanceModifier.defaultWeight()) {
+            NutrientBarsRow(snapshot, barHeightDp = 44)
         }
     }
 }

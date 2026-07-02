@@ -39,6 +39,7 @@ import com.apoorvdarshan.calorietracker.MainActivity
 import com.apoorvdarshan.calorietracker.R
 import com.apoorvdarshan.calorietracker.data.PreferencesStore
 import com.apoorvdarshan.calorietracker.models.MacroValueFormatter
+import com.apoorvdarshan.calorietracker.models.WidgetNutrient
 import com.apoorvdarshan.calorietracker.models.WidgetSnapshot
 import kotlinx.coroutines.flow.first
 
@@ -95,24 +96,24 @@ private fun CalorieWidgetContent(snapshot: WidgetSnapshot) {
 private fun CalorieSmall(snapshot: WidgetSnapshot) {
     Column(modifier = GlanceModifier.fillMaxSize()) {
         WidgetHeader(iconRes = R.drawable.ic_widget_flame, label = "Today")
-        Spacer(modifier = GlanceModifier.height(4.dp))
         Box(
             modifier = GlanceModifier.fillMaxWidth().defaultWeight(),
             contentAlignment = Alignment.Center
         ) {
-            RingWithCenter(
+            SpeedometerWithCenter(
                 progress = snapshot.calorieProgress.toFloat(),
-                ringSizeDp = 92,
+                gaugeWidthDp = 104,
                 strokeDp = 9,
+                startHex = snapshot.themeStartHex,
+                endHex = snapshot.themeEndHex,
                 centerLarge = snapshot.calories.toString(),
                 centerSmall = "/ ${snapshot.calorieGoal}"
             )
         }
-        Spacer(modifier = GlanceModifier.height(4.dp))
         Text(
             text = "${snapshot.caloriesRemaining} kcal left",
             style = TextStyle(
-                color = WidgetTheme.secondaryTextProvider,
+                color = WidgetTheme.themeTextProvider(snapshot.themeStartHex),
                 fontWeight = FontWeight.Medium,
                 fontSize = 11.sp
             )
@@ -126,24 +127,29 @@ private fun CalorieMedium(snapshot: WidgetSnapshot) {
         modifier = GlanceModifier.fillMaxSize(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        RingWithCenter(
-            progress = snapshot.calorieProgress.toFloat(),
-            ringSizeDp = 100,
-            strokeDp = 9,
-            centerLarge = snapshot.calories.toString(),
-            centerSmall = "/ ${snapshot.calorieGoal}",
-            centerCaption = "kcal"
-        )
-        Spacer(modifier = GlanceModifier.width(14.dp))
-        Column(
-            modifier = GlanceModifier.fillMaxHeight().defaultWeight(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            CapsuleMacroRow("Protein", snapshot.protein, snapshot.proteinGoal, snapshot.proteinProgress.toFloat(), unit = "g")
-            Spacer(modifier = GlanceModifier.height(8.dp))
-            CapsuleMacroRow("Carbs", snapshot.carbs, snapshot.carbsGoal, snapshot.carbsProgress.toFloat(), unit = "g")
-            Spacer(modifier = GlanceModifier.height(8.dp))
-            CapsuleMacroRow("Fat", snapshot.fat, snapshot.fatGoal, snapshot.fatProgress.toFloat(), unit = "g")
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            SpeedometerWithCenter(
+                progress = snapshot.calorieProgress.toFloat(),
+                gaugeWidthDp = 108,
+                strokeDp = 9,
+                startHex = snapshot.themeStartHex,
+                endHex = snapshot.themeEndHex,
+                centerLarge = snapshot.calories.toString(),
+                centerSmall = "/ ${snapshot.calorieGoal}"
+            )
+            Spacer(modifier = GlanceModifier.height(2.dp))
+            Text(
+                text = "${snapshot.caloriesRemaining} kcal left",
+                style = TextStyle(
+                    color = WidgetTheme.themeTextProvider(snapshot.themeStartHex),
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 11.sp
+                )
+            )
+        }
+        Spacer(modifier = GlanceModifier.width(10.dp))
+        Box(modifier = GlanceModifier.defaultWeight()) {
+            NutrientBarsRow(snapshot, barHeightDp = 44)
         }
     }
 }
@@ -170,23 +176,34 @@ internal fun WidgetHeader(iconRes: Int, label: String) {
     }
 }
 
+/**
+ * Home-style dashed speedometer with the readout inside the dome. The gauge
+ * bitmap is gaugeWidth x (0.58 * gaugeWidth); texts are centered over it.
+ */
 @Composable
-internal fun RingWithCenter(
+internal fun SpeedometerWithCenter(
     progress: Float,
-    ringSizeDp: Int,
+    gaugeWidthDp: Int,
     strokeDp: Int,
+    startHex: Int?,
+    endHex: Int?,
     centerLarge: String,
-    centerSmall: String,
-    centerCaption: String? = null
+    centerSmall: String
 ) {
     val density = Resources.getSystem().displayMetrics.density
-    val sizePx = (ringSizeDp * density).toInt().coerceAtLeast(1)
-    val strokePx = strokeDp * density
-    val bitmap = ringBitmap(sizePx = sizePx, progress = progress, strokeWidthPx = strokePx)
-    val centerLargeFontSize = if (centerLarge.length > 5) 17.sp else 20.sp
+    val sizePx = (gaugeWidthDp * density).toInt().coerceAtLeast(1)
+    val bitmap = speedometerBitmap(
+        diameterPx = sizePx,
+        progress = progress,
+        strokeWidthPx = strokeDp * density,
+        startRgb = WidgetTheme.themeStart(startHex),
+        endRgb = WidgetTheme.themeEnd(endHex)
+    )
+    val gaugeHeightDp = (gaugeWidthDp * 0.58f).toInt()
+    val centerLargeFontSize = if (centerLarge.length > 5) 15.sp else 19.sp
 
     Box(
-        modifier = GlanceModifier.size(ringSizeDp.dp),
+        modifier = GlanceModifier.size(gaugeWidthDp.dp, gaugeHeightDp.dp),
         contentAlignment = Alignment.Center
     ) {
         Image(
@@ -198,7 +215,7 @@ internal fun RingWithCenter(
             Text(
                 text = centerLarge,
                 style = TextStyle(
-                    color = WidgetTheme.primaryTextProvider,
+                    color = WidgetTheme.themeTextProvider(startHex),
                     fontWeight = FontWeight.Bold,
                     fontSize = centerLargeFontSize
                 )
@@ -210,14 +227,31 @@ internal fun RingWithCenter(
                     fontSize = 10.sp
                 )
             )
-            if (centerCaption != null) {
-                Text(
-                    text = centerCaption,
-                    style = TextStyle(
-                        color = WidgetTheme.secondaryTextProvider,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 10.sp
-                    )
+        }
+    }
+}
+
+/** The user's 4 selected Home nutrients as vertical fill tubes, like the app's Home bars. */
+@Composable
+internal fun NutrientBarsRow(
+    snapshot: WidgetSnapshot,
+    barHeightDp: Int,
+    barWidthDp: Int = 11,
+    valueFontSp: Int = 13
+) {
+    Row(
+        modifier = GlanceModifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        snapshot.displayedHomeNutrients.forEach { nutrient ->
+            Box(modifier = GlanceModifier.defaultWeight()) {
+                VerticalNutrientBarCell(
+                    nutrient = nutrient,
+                    startHex = snapshot.themeStartHex,
+                    endHex = snapshot.themeEndHex,
+                    barHeightDp = barHeightDp,
+                    barWidthDp = barWidthDp,
+                    valueFontSp = valueFontSp
                 )
             }
         }
@@ -225,44 +259,58 @@ internal fun RingWithCenter(
 }
 
 @Composable
-internal fun CapsuleMacroRow(label: String, value: Double, goal: Int, progress: Float, unit: String) {
-    val valueText = "${MacroValueFormatter.string(value)}${unit} / ${goal}${unit}"
-    val valueFontSize = if (valueText.length > 12) 10.sp else 11.sp
-
-    Column(modifier = GlanceModifier.fillMaxWidth()) {
-        Row(modifier = GlanceModifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = label,
-                style = TextStyle(
-                    color = WidgetTheme.secondaryTextProvider,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 11.sp
-                ),
-                modifier = GlanceModifier.defaultWeight()
-            )
-            Text(
-                text = valueText,
-                style = TextStyle(
-                    color = WidgetTheme.primaryTextProvider,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = valueFontSize
-                )
-            )
-        }
-        Spacer(modifier = GlanceModifier.height(3.dp))
-        CapsuleBar(progress = progress)
-    }
-}
-
-@Composable
-internal fun CapsuleBar(progress: Float, widthDp: Int = 130, heightDp: Int = 6) {
+internal fun VerticalNutrientBarCell(
+    nutrient: WidgetNutrient,
+    startHex: Int?,
+    endHex: Int?,
+    barHeightDp: Int,
+    barWidthDp: Int,
+    valueFontSp: Int
+) {
     val density = Resources.getSystem().displayMetrics.density
-    val widthPx = (widthDp * density).toInt().coerceAtLeast(2)
-    val heightPx = (heightDp * density).toInt().coerceAtLeast(2)
-    val bitmap = capsuleBitmap(widthPx, heightPx, progress)
-    Image(
-        provider = ImageProvider(bitmap),
-        contentDescription = null,
-        modifier = GlanceModifier.fillMaxWidth().height(heightDp.dp)
+    val bitmap = verticalBarBitmap(
+        widthPx = (barWidthDp * density).toInt().coerceAtLeast(2),
+        heightPx = (barHeightDp * density).toInt().coerceAtLeast(2),
+        progress = nutrient.progress.toFloat(),
+        startRgb = WidgetTheme.themeStart(startHex),
+        endRgb = WidgetTheme.themeEnd(endHex)
     )
+    Column(
+        modifier = GlanceModifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = MacroValueFormatter.string(nutrient.value),
+            style = TextStyle(
+                color = WidgetTheme.themeTextProvider(startHex),
+                fontWeight = FontWeight.Bold,
+                fontSize = valueFontSp.sp
+            ),
+            maxLines = 1
+        )
+        Spacer(modifier = GlanceModifier.height(3.dp))
+        Image(
+            provider = ImageProvider(bitmap),
+            contentDescription = null,
+            modifier = GlanceModifier.size(barWidthDp.dp, barHeightDp.dp)
+        )
+        Spacer(modifier = GlanceModifier.height(3.dp))
+        Text(
+            text = nutrient.label,
+            style = TextStyle(
+                color = WidgetTheme.primaryTextProvider,
+                fontWeight = FontWeight.Medium,
+                fontSize = 10.sp
+            ),
+            maxLines = 1
+        )
+        Text(
+            text = "/${MacroValueFormatter.string(nutrient.goal)}${nutrient.unit}",
+            style = TextStyle(
+                color = WidgetTheme.secondaryTextProvider,
+                fontSize = 9.sp
+            ),
+            maxLines = 1
+        )
+    }
 }
