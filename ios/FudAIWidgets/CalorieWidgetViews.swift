@@ -334,12 +334,24 @@ private struct RectangularCalorieView: View {
     let snapshot: WidgetSnapshot
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 3) {
-            AccessoryMetricRow(
-                iconName: "flame.fill",
-                label: "Calories",
-                value: "\(snapshot.calories) / \(snapshot.calorieGoal)"
-            )
+        VStack(alignment: .leading, spacing: 4) {
+            // Header: just the name and today's eaten count, rendered large —
+            // no flame icon, no goal (matches the label+eaten style of the grid).
+            HStack(alignment: .firstTextBaseline, spacing: 6) {
+                Text("Calories")
+                    .font(.system(size: 16, weight: .semibold, design: .rounded))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
+
+                Spacer(minLength: 4)
+
+                Text("\(snapshot.calories)")
+                    .font(.system(size: 17, weight: .bold, design: .rounded))
+                    .monospacedDigit()
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
+                    .widgetAccentable()
+            }
 
             // All 4 selected nutrients as a 2x2 grid — five stacked labeled rows
             // don't fit the rectangular family's height. Name + eaten amount
