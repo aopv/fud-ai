@@ -54,73 +54,75 @@ enum class AIProvider {
         CUSTOM_OPENAI -> ""
     }
 
-    /** Only models that are currently in service AND accept image input + return structured text. */
+    /**
+     * Only models that are currently in service AND accept image input + return structured text.
+     * Lineups verified against provider docs on 2026-07-02. Mirrors iOS AIProvider.swift.
+     */
     val models: List<String> get() = when (this) {
         GEMINI -> listOf(
             "gemini-3.5-flash",
             "gemini-3.1-flash-lite",
             "gemini-3.1-pro-preview",
-            "gemini-3-flash-preview",
             "gemini-2.5-flash",
-            "gemini-2.5-pro",
-            "gemini-2.0-flash"
+            "gemini-2.5-pro"
         )
         OPENAI -> listOf(
-            "gpt-5",
-            "gpt-5-mini",
-            "gpt-5-nano",
-            "gpt-4o",
-            "gpt-4o-mini",
+            "gpt-5.4-mini",
+            "gpt-5.5",
+            "gpt-5.4-nano",
             "gpt-4.1",
-            "gpt-4.1-mini"
+            "gpt-4.1-mini",
+            "gpt-4o-mini"
         )
         ANTHROPIC -> listOf(
-            "claude-sonnet-4-6",
-            "claude-opus-4-7",
+            "claude-sonnet-5",
+            "claude-opus-4-8",
             "claude-haiku-4-5",
-            "claude-opus-4-5",
-            "claude-sonnet-4-5-20250929",
-            "claude-opus-4-1-20250805"
+            "claude-sonnet-4-6",
+            "claude-opus-4-7"
         )
         XAI -> listOf(
-            "grok-4",
-            "grok-2-vision-latest"
+            "grok-4.3"
         )
         OPENROUTER -> listOf(
             "openrouter/free",
-            "google/gemini-2.5-flash",
-            "openai/gpt-4o",
-            "anthropic/claude-sonnet-4",
-            "meta-llama/llama-4-maverick"
+            "google/gemini-3.1-flash-lite",
+            "openai/gpt-5-mini",
+            "anthropic/claude-sonnet-5",
+            "qwen/qwen3-vl-8b-instruct"
         )
         TOGETHER_AI -> listOf(
-            "meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8",
-            "meta-llama/Llama-3.2-90B-Vision-Instruct-Turbo",
-            "Qwen/Qwen2.5-VL-72B-Instruct"
+            "Qwen/Qwen3.5-9B",
+            "google/gemma-4-31B-it",
+            "MiniMaxAI/MiniMax-M3"
         )
         GROQ -> listOf(
-            "meta-llama/llama-4-scout-17b-16e-instruct"
+            "qwen/qwen3.6-27b"
         )
         HUGGING_FACE -> listOf(
+            "google/gemma-4-31B-it",
             "google/gemma-3-27b-it",
-            "Qwen/Qwen2.5-VL-72B-Instruct",
-            "meta-llama/Llama-3.2-90B-Vision-Instruct"
+            "Qwen/Qwen3.5-9B",
+            "Qwen/Qwen2.5-VL-72B-Instruct"
         )
         FIREWORKS -> listOf(
-            "accounts/fireworks/models/qwen2-vl-72b-instruct",
-            "accounts/fireworks/models/llama-v3p2-90b-vision-instruct",
-            "accounts/fireworks/models/phi-3-vision-128k-instruct"
+            "accounts/fireworks/models/qwen3p7-plus",
+            "accounts/fireworks/models/minimax-m3",
+            "accounts/fireworks/models/kimi-k2p6"
         )
         DEEP_INFRA -> listOf(
             "google/gemma-3-27b-it",
-            "meta-llama/Llama-3.2-90B-Vision-Instruct",
-            "Qwen/Qwen2.5-VL-72B-Instruct"
+            "google/gemma-4-31B-it",
+            "google/gemma-4-26B-A4B-it"
         )
         MISTRAL -> listOf(
-            "pixtral-large-latest",
-            "pixtral-12b-latest"
+            "mistral-small-2603",
+            "mistral-medium-2604",
+            "ministral-14b-2512"
         )
         OLLAMA -> listOf(
+            "qwen3-vl",
+            "gemma4",
             "llama3.2-vision",
             "llava",
             "moondream"

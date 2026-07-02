@@ -38,8 +38,8 @@ enum SpeechProvider: String, CaseIterable, Codable, Identifiable {
     var defaultModel: String {
         switch self {
         case .nativeIOS: ""
-        case .gemini: "gemini-2.5-flash"
-        case .openai: "whisper-1"
+        case .gemini: "gemini-3.5-flash"          // 2.5-flash deprecated, shutdown Oct 2026
+        case .openai: "gpt-4o-mini-transcribe"    // same $/min as whisper-1, better accuracy
         case .groq: "whisper-large-v3"
         case .deepgram: "nova-3"
         case .assemblyai: "universal"

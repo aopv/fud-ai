@@ -77,73 +77,73 @@ enum AIProvider: String, CaseIterable, Codable, Identifiable {
 
     /// Only models that are currently in service AND accept image input + return structured text.
     /// Text-only and deprecated/preview models are excluded since this app needs vision for food photos.
+    /// Lineups verified against provider docs on 2026-07-02.
     var models: [String] {
         switch self {
         case .gemini: [
-            "gemini-3.1-flash-lite",         // vision, newest, cheapest
-            "gemini-3.5-flash",              // vision, requested fast model
-            "gemini-3.1-pro-preview",        // vision, newest flagship
-            "gemini-3-flash-preview",        // vision, newest fast
-            "gemini-2.5-flash",              // vision, prior fast
-            "gemini-2.5-pro",                // vision, prior flagship
-            "gemini-2.0-flash",              // vision, legacy fallback
+            "gemini-3.5-flash",              // vision, current fast default (GA 2026-05)
+            "gemini-3.1-flash-lite",         // vision, cheapest
+            "gemini-3.1-pro-preview",        // vision, current flagship (still preview-only)
+            "gemini-2.5-flash",              // vision, deprecated — shutdown Oct 2026
+            "gemini-2.5-pro",                // vision, deprecated — shutdown Oct 2026
         ]
         case .openai: [
-            "gpt-5",                     // vision, current flagship
-            "gpt-5-mini",                // vision, cheap
-            "gpt-5-nano",                // vision, cheapest
-            "gpt-4o",                    // vision, legacy
-            "gpt-4o-mini",               // vision, legacy cheap
+            "gpt-5.4-mini",              // vision, best price/perf
+            "gpt-5.5",                   // vision, current flagship
+            "gpt-5.4-nano",              // vision, cheapest
             "gpt-4.1",                   // vision, legacy
-            "gpt-4.1-mini",              // vision, legacy
+            "gpt-4.1-mini",              // vision, legacy cheap
+            "gpt-4o-mini",               // vision, legacy cheap
         ]
         case .anthropic: [
-            "claude-sonnet-4-6",           // vision, current Sonnet (default)
-            "claude-opus-4-7",             // vision, current flagship
+            "claude-sonnet-5",             // vision, current Sonnet (default)
+            "claude-opus-4-8",             // vision, current flagship
             "claude-haiku-4-5",            // vision, current Haiku, fastest
-            "claude-opus-4-5",             // vision, prior Opus
-            "claude-sonnet-4-5-20250929",  // vision, prior Sonnet (dated)
-            "claude-opus-4-1-20250805",    // vision, legacy Opus
+            "claude-sonnet-4-6",           // vision, prior Sonnet
+            "claude-opus-4-7",             // vision, prior Opus
         ]
         case .xai: [
-            "grok-4",                    // vision, current flagship
-            "grok-2-vision-latest",      // vision, rolling alias for legacy compat
+            "grok-4.3",                  // vision, current (grok-4 and grok-2-vision retired)
         ]
         case .openrouter: [
             "openrouter/free",           // free tier, vision, no credits required
-            "google/gemini-2.5-flash",
-            "openai/gpt-4o",
-            "anthropic/claude-sonnet-4",
-            "meta-llama/llama-4-maverick",
+            "google/gemini-3.1-flash-lite",
+            "openai/gpt-5-mini",
+            "anthropic/claude-sonnet-5",
+            "qwen/qwen3-vl-8b-instruct",
         ]
         case .togetherai: [
-            "meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8",  // vision
-            "meta-llama/Llama-3.2-90B-Vision-Instruct-Turbo",     // vision
-            "Qwen/Qwen2.5-VL-72B-Instruct",                       // vision
+            "Qwen/Qwen3.5-9B",                                    // vision
+            "google/gemma-4-31B-it",                              // vision
+            "MiniMaxAI/MiniMax-M3",                               // vision
         ]
         case .groq: [
-            "meta-llama/llama-4-scout-17b-16e-instruct",          // vision
+            "qwen/qwen3.6-27b",                                   // vision (llama-4-scout shutdown 2026-07-17)
         ]
         case .huggingface: [
+            "google/gemma-4-31B-it",                              // vision, widest provider coverage
             "google/gemma-3-27b-it",                              // vision, open-weight Gemma 3
+            "Qwen/Qwen3.5-9B",                                    // vision, open-weight Qwen
             "Qwen/Qwen2.5-VL-72B-Instruct",                       // vision, open-weight Qwen VL
-            "meta-llama/Llama-3.2-90B-Vision-Instruct",           // vision, open-weight Llama
         ]
         case .fireworks: [
-            "accounts/fireworks/models/qwen2-vl-72b-instruct",    // vision
-            "accounts/fireworks/models/llama-v3p2-90b-vision-instruct",  // vision
-            "accounts/fireworks/models/phi-3-vision-128k-instruct",      // vision, small
+            "accounts/fireworks/models/qwen3p7-plus",             // vision, serverless
+            "accounts/fireworks/models/minimax-m3",               // vision, serverless
+            "accounts/fireworks/models/kimi-k2p6",                // vision, serverless
         ]
         case .deepinfra: [
-            "google/gemma-3-27b-it",                              // vision, open-weight Gemma 3
-            "meta-llama/Llama-3.2-90B-Vision-Instruct",           // vision
-            "Qwen/Qwen2.5-VL-72B-Instruct",                       // vision
+            "google/gemma-3-27b-it",                              // vision, cheapest
+            "google/gemma-4-31B-it",                              // vision
+            "google/gemma-4-26B-A4B-it",                          // vision
         ]
         case .mistral: [
-            "pixtral-large-latest",                               // vision, open-weight Pixtral
-            "pixtral-12b-latest",                                 // vision, smaller Pixtral
+            "mistral-small-2603",                                 // vision, best value (Pixtral line retired)
+            "mistral-medium-2604",                                // vision, frontier
+            "ministral-14b-2512",                                 // vision, small
         ]
         case .ollama: [
+            "qwen3-vl",
+            "gemma4",
             "llama3.2-vision",
             "llava",
             "moondream",
