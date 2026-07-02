@@ -147,6 +147,9 @@ struct ContentView: View {
                 .badge(appUpdateState.isUpdateAvailable ? "!" : nil)
 
             WorkoutsView()
+                // Workouts reads its palette via static Color.workout* accessors, so
+                // nothing observes the theme; re-key the subtree to re-tint instantly.
+                .id(appThemeColorRaw)
                 .tabItem {
                     Image(systemName: "list.clipboard.fill")
                     Text("Workouts")
