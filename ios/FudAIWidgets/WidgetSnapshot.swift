@@ -53,6 +53,10 @@ struct WidgetSnapshot: Codable, Equatable {
     let fat: Double
     let fatGoal: Int
     let homeNutrients: [WidgetNutrientValue]?
+    /// User's theme gradient as raw hex (e.g. 0xFF375F). Optional so snapshots
+    /// written by older builds still decode; consumers fall back to Fud Pink.
+    var themeStartHex: UInt?
+    var themeEndHex: UInt?
 
     static var appGroupID: String {
         Bundle.main.object(forInfoDictionaryKey: "AppGroupIdentifier") as? String
@@ -118,7 +122,7 @@ struct WidgetSnapshot: Codable, Equatable {
         for nutrient in selected + defaultHomeNutrients {
             guard !merged.contains(where: { $0.id == nutrient.id }) else { continue }
             merged.append(nutrient)
-            if merged.count == 3 { break }
+            if merged.count == 4 { break }
         }
         return merged
     }
@@ -145,7 +149,9 @@ struct WidgetSnapshot: Codable, Equatable {
             carbsGoal: carbsGoal,
             fat: 0,
             fatGoal: fatGoal,
-            homeNutrients: displayedHomeNutrients.map { $0.zeroedForToday() }
+            homeNutrients: displayedHomeNutrients.map { $0.zeroedForToday() },
+            themeStartHex: themeStartHex,
+            themeEndHex: themeEndHex
         )
     }
 
