@@ -706,4 +706,31 @@
 
     <string name="widget_all_metrics_label">Fud AI Today</string>
     <string name="widget_all_metrics_description">See today\'s calories, protein, carbs, and fat in one widget.</string>
+
+    <!-- Workouts tab (exercise library ported from Delts) -->
+    <string name="nav_workouts">Workouts</string>
+    <string name="back">Back</string>
+    <string name="clear_search">Clear search</string>
+    <string name="empty_subtitle">Try a different muscle, equipment, or search — or reset the filters above.</string>
+    <string name="empty_title">No exercises match</string>
+    <string name="filter_all">All</string>
+    <string name="filter_all_count">All %d</string>
+    <string name="hide_details">Hide details</string>
+    <string name="instructions">Instructions</string>
+    <string name="label_category">Category</string>
+    <string name="label_equipment">Equipment</string>
+    <string name="label_force">Force</string>
+    <string name="label_level">Level</string>
+    <string name="label_mechanic">Mechanic</string>
+    <string name="label_name">Name</string>
+    <string name="label_primary">Primary</string>
+    <string name="label_secondary">Secondary</string>
+    <string name="reset">Reset</string>
+    <string name="search">Search</string>
+    <string name="show_details">Show details</string>
+    <string name="sort">Sort</string>
+    <plurals name="exercises_count">
+        <item quantity="one">%d exercise</item>
+        <item quantity="other">%d exercises</item>
+    </plurals>
 </resources>

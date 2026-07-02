@@ -145,6 +145,12 @@ struct ContentView: View {
                     Text("Settings")
                 }
                 .badge(appUpdateState.isUpdateAvailable ? "!" : nil)
+
+            WorkoutsView()
+                .tabItem {
+                    Image(systemName: "list.clipboard.fill")
+                    Text("Workouts")
+                }
         }
         .tint(AppThemeColor.color(for: appThemeColorRaw).color)
         .task {

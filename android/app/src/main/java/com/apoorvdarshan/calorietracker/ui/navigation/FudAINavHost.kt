@@ -36,6 +36,7 @@ import com.apoorvdarshan.calorietracker.ui.progress.ProgressScreen
 import com.apoorvdarshan.calorietracker.ui.settings.CalculationMethodsScreen
 import com.apoorvdarshan.calorietracker.ui.settings.OptionalNutrientGoalsScreen
 import com.apoorvdarshan.calorietracker.ui.settings.SettingsScreen
+import com.apoorvdarshan.calorietracker.ui.workouts.WorkoutsScreen
 
 /**
  * Increments each time the app is opened: 1 on cold launch, then +1 on every
@@ -149,6 +150,7 @@ fun FudAINavHost(
                 composable(FudAIRoutes.BODY_MEASUREMENTS) {
                     BodyMeasurementsScreen(container = container, onBack = { nav.popBackStack() })
                 }
+                composable(FudAIRoutes.WORKOUTS) { WorkoutsScreen() }
             }
         }
     }

@@ -18,11 +18,15 @@ kotlinxSerialization = "1.7.3"
 kotlinxCoroutines = "1.9.0"
 playAppUpdate = "2.1.0"
 cameraX = "1.4.0"
+coil = "2.7.0"
+gson = "2.11.0"
 mlkitBarcode = "17.3.0"
 vico = "2.0.2"
 splashscreen = "1.0.1"
 
 [libraries]
+coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
+gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
