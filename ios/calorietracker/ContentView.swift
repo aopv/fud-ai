@@ -2079,6 +2079,21 @@ struct CameraView: UIViewControllerRepresentable {
         picker.edgesForExtendedLayout = .all
         picker.showsCameraControls = false
 
+        // The camera preview is a 4:3 frame pinned to the top of the screen,
+        // which leaves a dead black band above the shutter bar on tall phones.
+        // Center it, then scale it up to fill the full screen height. The
+        // capture is unchanged (full 4:3 sensor frame) — the photo just
+        // includes a little more scene on the left/right than the preview.
+        let screenSize = UIScreen.main.bounds.size
+        let previewHeight = screenSize.width * 4.0 / 3.0
+        if screenSize.height > previewHeight {
+            let scale = screenSize.height / previewHeight
+            picker.cameraViewTransform = CGAffineTransform(
+                translationX: 0,
+                y: (screenSize.height - previewHeight) / 2
+            ).scaledBy(x: scale, y: scale)
+        }
+
         // Custom overlay with shutter + cancel buttons
         let overlay = UIView(frame: UIScreen.main.bounds)
         overlay.isUserInteractionEnabled = true
