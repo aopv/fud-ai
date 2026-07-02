@@ -40,9 +40,8 @@ import kotlinx.coroutines.flow.first
 
 class ProteinAppWidget : GlanceAppWidget() {
 
-    override val sizeMode: SizeMode = SizeMode.Responsive(
-        setOf(SMALL_SIZE, MEDIUM_SIZE)
-    )
+    // Exact so LocalSize reports the real widget dimensions (see CalorieAppWidget).
+    override val sizeMode: SizeMode = SizeMode.Exact
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         // Never let a data-read failure leave the widget stuck on the loading layout — fall back to
@@ -91,6 +90,11 @@ private fun ProteinWidgetContent(snapshot: WidgetSnapshot) {
 private fun ProteinSmall(snapshot: WidgetSnapshot) {
     val nutrient = snapshot.primaryHomeNutrient
     val remaining = maxOf(0.0, nutrient.goal - nutrient.value)
+    val size = LocalSize.current
+    val contentW = size.width.value - 28f
+    val contentH = size.height.value - 28f
+    val gaugeW = minOf(contentW, (contentH - 44f) / 0.58f).toInt().coerceAtLeast(80)
+
     Column(modifier = GlanceModifier.fillMaxSize()) {
         WidgetHeader(iconRes = R.drawable.ic_widget_bolt, label = nutrient.label)
         Box(
@@ -99,8 +103,7 @@ private fun ProteinSmall(snapshot: WidgetSnapshot) {
         ) {
             SpeedometerWithCenter(
                 progress = nutrient.progress.toFloat(),
-                gaugeWidthDp = 104,
-                strokeDp = 9,
+                gaugeWidthDp = gaugeW,
                 startHex = snapshot.themeStartHex,
                 endHex = snapshot.themeEndHex,
                 centerLarge = "${MacroValueFormatter.string(nutrient.value)}${nutrient.unit}",
@@ -112,7 +115,7 @@ private fun ProteinSmall(snapshot: WidgetSnapshot) {
             style = TextStyle(
                 color = WidgetTheme.themeTextProvider(snapshot.themeStartHex),
                 fontWeight = FontWeight.Medium,
-                fontSize = 11.sp
+                fontSize = 12.sp
             )
         )
     }
@@ -122,6 +125,11 @@ private fun ProteinSmall(snapshot: WidgetSnapshot) {
 private fun ProteinMedium(snapshot: WidgetSnapshot) {
     val nutrient = snapshot.primaryHomeNutrient
     val remaining = maxOf(0.0, nutrient.goal - nutrient.value)
+    val size = LocalSize.current
+    val contentH = size.height.value - 28f
+    val gaugeW = minOf(size.width.value * 0.40f, (contentH - 22f) / 0.58f).toInt().coerceAtLeast(90)
+    val barH = (contentH - 58f).toInt().coerceAtLeast(36)
+
     Row(
         modifier = GlanceModifier.fillMaxSize(),
         verticalAlignment = Alignment.CenterVertically
@@ -129,8 +137,7 @@ private fun ProteinMedium(snapshot: WidgetSnapshot) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             SpeedometerWithCenter(
                 progress = nutrient.progress.toFloat(),
-                gaugeWidthDp = 108,
-                strokeDp = 9,
+                gaugeWidthDp = gaugeW,
                 startHex = snapshot.themeStartHex,
                 endHex = snapshot.themeEndHex,
                 centerLarge = "${MacroValueFormatter.string(nutrient.value)}${nutrient.unit}",
@@ -142,13 +149,18 @@ private fun ProteinMedium(snapshot: WidgetSnapshot) {
                 style = TextStyle(
                     color = WidgetTheme.themeTextProvider(snapshot.themeStartHex),
                     fontWeight = FontWeight.Medium,
-                    fontSize = 11.sp
+                    fontSize = 12.sp
                 )
             )
         }
         Spacer(modifier = GlanceModifier.width(10.dp))
         Box(modifier = GlanceModifier.defaultWeight()) {
-            NutrientBarsRow(snapshot, barHeightDp = 44)
+            NutrientBarsRow(
+                snapshot,
+                barHeightDp = barH,
+                barWidthDp = (barH * 0.26f).toInt().coerceIn(11, 18),
+                valueFontSp = 15
+            )
         }
     }
 }

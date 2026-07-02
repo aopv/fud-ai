@@ -44,9 +44,8 @@ import kotlinx.coroutines.flow.first
  */
 class AllMetricsAppWidget : GlanceAppWidget() {
 
-    override val sizeMode: SizeMode = SizeMode.Responsive(
-        setOf(WIDE_SIZE, TALL_SIZE)
-    )
+    // Exact so LocalSize reports the real widget dimensions (see CalorieAppWidget).
+    override val sizeMode: SizeMode = SizeMode.Exact
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         // Never let a data-read failure leave the widget stuck on the loading layout.
@@ -92,6 +91,11 @@ private fun AllMetricsContent(snapshot: WidgetSnapshot) {
 
 @Composable
 private fun AllMetricsWide(snapshot: WidgetSnapshot) {
+    val size = LocalSize.current
+    val contentH = size.height.value - 28f
+    val gaugeW = minOf(size.width.value * 0.36f, (contentH - 20f) / 0.58f).toInt().coerceAtLeast(80)
+    val barH = (contentH - 54f).toInt().coerceAtLeast(30)
+
     Row(
         modifier = GlanceModifier.fillMaxSize(),
         verticalAlignment = Alignment.CenterVertically
@@ -99,8 +103,7 @@ private fun AllMetricsWide(snapshot: WidgetSnapshot) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             SpeedometerWithCenter(
                 progress = snapshot.calorieProgress.toFloat(),
-                gaugeWidthDp = 96,
-                strokeDp = 8,
+                gaugeWidthDp = gaugeW,
                 startHex = snapshot.themeStartHex,
                 endHex = snapshot.themeEndHex,
                 centerLarge = snapshot.calories.toString(),
@@ -112,19 +115,30 @@ private fun AllMetricsWide(snapshot: WidgetSnapshot) {
                 style = TextStyle(
                     color = WidgetTheme.themeTextProvider(snapshot.themeStartHex),
                     fontWeight = FontWeight.Medium,
-                    fontSize = 10.sp
+                    fontSize = 11.sp
                 )
             )
         }
         Spacer(modifier = GlanceModifier.width(10.dp))
         Box(modifier = GlanceModifier.defaultWeight()) {
-            NutrientBarsRow(snapshot, barHeightDp = 36, valueFontSp = 12)
+            NutrientBarsRow(
+                snapshot,
+                barHeightDp = barH,
+                barWidthDp = (barH * 0.28f).toInt().coerceIn(10, 18),
+                valueFontSp = 14
+            )
         }
     }
 }
 
 @Composable
 private fun AllMetricsTall(snapshot: WidgetSnapshot) {
+    val size = LocalSize.current
+    val contentW = size.width.value - 28f
+    val contentH = size.height.value - 28f
+    val gaugeW = minOf(contentW * 0.60f, contentH * 0.42f / 0.58f).toInt().coerceAtLeast(96)
+    val barH = (contentH - 34f - gaugeW * 0.58f - 66f).toInt().coerceAtLeast(40)
+
     Column(modifier = GlanceModifier.fillMaxSize()) {
         WidgetHeader(iconRes = R.drawable.ic_widget_flame, label = "Today")
         Spacer(modifier = GlanceModifier.height(4.dp))
@@ -134,8 +148,7 @@ private fun AllMetricsTall(snapshot: WidgetSnapshot) {
         ) {
             SpeedometerWithCenter(
                 progress = snapshot.calorieProgress.toFloat(),
-                gaugeWidthDp = 112,
-                strokeDp = 10,
+                gaugeWidthDp = gaugeW,
                 startHex = snapshot.themeStartHex,
                 endHex = snapshot.themeEndHex,
                 centerLarge = snapshot.calories.toString(),
@@ -151,11 +164,16 @@ private fun AllMetricsTall(snapshot: WidgetSnapshot) {
                 style = TextStyle(
                     color = WidgetTheme.themeTextProvider(snapshot.themeStartHex),
                     fontWeight = FontWeight.Medium,
-                    fontSize = 11.sp
+                    fontSize = 12.sp
                 )
             )
         }
-        Spacer(modifier = GlanceModifier.height(10.dp))
-        NutrientBarsRow(snapshot, barHeightDp = 46)
+        Spacer(modifier = GlanceModifier.height(8.dp))
+        NutrientBarsRow(
+            snapshot,
+            barHeightDp = barH,
+            barWidthDp = (barH * 0.26f).toInt().coerceIn(11, 18),
+            valueFontSp = 15
+        )
     }
 }

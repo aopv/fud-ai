@@ -45,9 +45,9 @@ import kotlinx.coroutines.flow.first
 
 class CalorieAppWidget : GlanceAppWidget() {
 
-    override val sizeMode: SizeMode = SizeMode.Responsive(
-        setOf(SMALL_SIZE, MEDIUM_SIZE)
-    )
+    // Exact so LocalSize reports the real widget dimensions — the gauge and
+    // bars scale to fill instead of floating at bucket-minimum size.
+    override val sizeMode: SizeMode = SizeMode.Exact
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         // Never let a data-read failure leave the widget stuck on the loading layout — fall back to
@@ -94,6 +94,13 @@ private fun CalorieWidgetContent(snapshot: WidgetSnapshot) {
 
 @Composable
 private fun CalorieSmall(snapshot: WidgetSnapshot) {
+    val size = LocalSize.current
+    // Content area after the outer 14dp padding; the gauge fills whatever the
+    // header (~18dp) and the bottom line (~16dp) leave over.
+    val contentW = size.width.value - 28f
+    val contentH = size.height.value - 28f
+    val gaugeW = minOf(contentW, (contentH - 44f) / 0.58f).toInt().coerceAtLeast(80)
+
     Column(modifier = GlanceModifier.fillMaxSize()) {
         WidgetHeader(iconRes = R.drawable.ic_widget_flame, label = "Today")
         Box(
@@ -102,8 +109,7 @@ private fun CalorieSmall(snapshot: WidgetSnapshot) {
         ) {
             SpeedometerWithCenter(
                 progress = snapshot.calorieProgress.toFloat(),
-                gaugeWidthDp = 104,
-                strokeDp = 9,
+                gaugeWidthDp = gaugeW,
                 startHex = snapshot.themeStartHex,
                 endHex = snapshot.themeEndHex,
                 centerLarge = snapshot.calories.toString(),
@@ -115,7 +121,7 @@ private fun CalorieSmall(snapshot: WidgetSnapshot) {
             style = TextStyle(
                 color = WidgetTheme.themeTextProvider(snapshot.themeStartHex),
                 fontWeight = FontWeight.Medium,
-                fontSize = 11.sp
+                fontSize = 12.sp
             )
         )
     }
@@ -123,6 +129,11 @@ private fun CalorieSmall(snapshot: WidgetSnapshot) {
 
 @Composable
 private fun CalorieMedium(snapshot: WidgetSnapshot) {
+    val size = LocalSize.current
+    val contentH = size.height.value - 28f
+    val gaugeW = minOf(size.width.value * 0.40f, (contentH - 22f) / 0.58f).toInt().coerceAtLeast(90)
+    val barH = (contentH - 58f).toInt().coerceAtLeast(36)
+
     Row(
         modifier = GlanceModifier.fillMaxSize(),
         verticalAlignment = Alignment.CenterVertically
@@ -130,8 +141,7 @@ private fun CalorieMedium(snapshot: WidgetSnapshot) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             SpeedometerWithCenter(
                 progress = snapshot.calorieProgress.toFloat(),
-                gaugeWidthDp = 108,
-                strokeDp = 9,
+                gaugeWidthDp = gaugeW,
                 startHex = snapshot.themeStartHex,
                 endHex = snapshot.themeEndHex,
                 centerLarge = snapshot.calories.toString(),
@@ -143,13 +153,18 @@ private fun CalorieMedium(snapshot: WidgetSnapshot) {
                 style = TextStyle(
                     color = WidgetTheme.themeTextProvider(snapshot.themeStartHex),
                     fontWeight = FontWeight.Medium,
-                    fontSize = 11.sp
+                    fontSize = 12.sp
                 )
             )
         }
         Spacer(modifier = GlanceModifier.width(10.dp))
         Box(modifier = GlanceModifier.defaultWeight()) {
-            NutrientBarsRow(snapshot, barHeightDp = 44)
+            NutrientBarsRow(
+                snapshot,
+                barHeightDp = barH,
+                barWidthDp = (barH * 0.26f).toInt().coerceIn(11, 18),
+                valueFontSp = 15
+            )
         }
     }
 }
@@ -184,7 +199,6 @@ internal fun WidgetHeader(iconRes: Int, label: String) {
 internal fun SpeedometerWithCenter(
     progress: Float,
     gaugeWidthDp: Int,
-    strokeDp: Int,
     startHex: Int?,
     endHex: Int?,
     centerLarge: String,
@@ -192,15 +206,20 @@ internal fun SpeedometerWithCenter(
 ) {
     val density = Resources.getSystem().displayMetrics.density
     val sizePx = (gaugeWidthDp * density).toInt().coerceAtLeast(1)
+    // Stroke and fonts scale with the gauge so bigger widgets get a
+    // proportionally bigger dial, not the same dial with more air.
+    val strokePx = (gaugeWidthDp * 0.085f * density).coerceAtLeast(6f)
     val bitmap = speedometerBitmap(
         diameterPx = sizePx,
         progress = progress,
-        strokeWidthPx = strokeDp * density,
+        strokeWidthPx = strokePx,
         startRgb = WidgetTheme.themeStart(startHex),
         endRgb = WidgetTheme.themeEnd(endHex)
     )
     val gaugeHeightDp = (gaugeWidthDp * 0.58f).toInt()
-    val centerLargeFontSize = if (centerLarge.length > 5) 15.sp else 19.sp
+    val largeSp = (gaugeWidthDp * 0.19f).toInt().coerceIn(17, 34)
+    val centerLargeFontSize = (if (centerLarge.length > 5) largeSp - 4 else largeSp).sp
+    val centerSmallFontSize = (gaugeWidthDp * 0.10f).toInt().coerceIn(10, 15).sp
 
     Box(
         modifier = GlanceModifier.size(gaugeWidthDp.dp, gaugeHeightDp.dp),
@@ -224,7 +243,7 @@ internal fun SpeedometerWithCenter(
                 text = centerSmall,
                 style = TextStyle(
                     color = WidgetTheme.secondaryTextProvider,
-                    fontSize = 10.sp
+                    fontSize = centerSmallFontSize
                 )
             )
         }
@@ -300,7 +319,7 @@ internal fun VerticalNutrientBarCell(
             style = TextStyle(
                 color = WidgetTheme.primaryTextProvider,
                 fontWeight = FontWeight.Medium,
-                fontSize = 10.sp
+                fontSize = (valueFontSp - 3).coerceAtLeast(10).sp
             ),
             maxLines = 1
         )
@@ -308,7 +327,7 @@ internal fun VerticalNutrientBarCell(
             text = "/${MacroValueFormatter.string(nutrient.goal)}${nutrient.unit}",
             style = TextStyle(
                 color = WidgetTheme.secondaryTextProvider,
-                fontSize = 9.sp
+                fontSize = (valueFontSp - 4).coerceAtLeast(9).sp
             ),
             maxLines = 1
         )
