@@ -10,6 +10,16 @@ enum AppThemeColor: String, CaseIterable, Identifiable {
     case teal
     case blue
     case purple
+    case yellow
+    case coral
+    case roseGold
+    case mochaBrown
+    case indigo
+    case lavender
+    case skyCyan
+    case graphite
+    case babyPink
+    case lime
 
     static let storageKey = "appThemeColor"
     static let defaultColor: AppThemeColor = .fudPink
@@ -26,6 +36,16 @@ enum AppThemeColor: String, CaseIterable, Identifiable {
         case .teal: return LocalizedDisplayText.text("Teal", polish: "Turkusowy")
         case .blue: return LocalizedDisplayText.text("Blue", polish: "Niebieski")
         case .purple: return LocalizedDisplayText.text("Purple", polish: "Fioletowy")
+        case .yellow: return LocalizedDisplayText.text("Yellow", polish: "Żółty")
+        case .coral: return LocalizedDisplayText.text("Coral", polish: "Koralowy")
+        case .roseGold: return LocalizedDisplayText.text("Rose Gold", polish: "Różowe złoto")
+        case .mochaBrown: return LocalizedDisplayText.text("Mocha Brown", polish: "Brąz mokka")
+        case .indigo: return LocalizedDisplayText.text("Indigo", polish: "Indygo")
+        case .lavender: return LocalizedDisplayText.text("Lavender", polish: "Lawendowy")
+        case .skyCyan: return LocalizedDisplayText.text("Sky Cyan", polish: "Błękit")
+        case .graphite: return LocalizedDisplayText.text("Graphite", polish: "Grafitowy")
+        case .babyPink: return LocalizedDisplayText.text("Baby Pink", polish: "Pastelowy róż")
+        case .lime: return LocalizedDisplayText.text("Lime", polish: "Limonkowy")
         }
     }
 
@@ -47,6 +67,16 @@ enum AppThemeColor: String, CaseIterable, Identifiable {
         case .teal: return "AppIconTeal"
         case .blue: return "AppIconBlue"
         case .purple: return "AppIconPurple"
+        case .yellow: return "AppIconYellow"
+        case .coral: return "AppIconCoral"
+        case .roseGold: return "AppIconRoseGold"
+        case .mochaBrown: return "AppIconMochaBrown"
+        case .indigo: return "AppIconIndigo"
+        case .lavender: return "AppIconLavender"
+        case .skyCyan: return "AppIconSkyCyan"
+        case .graphite: return "AppIconGraphite"
+        case .babyPink: return "AppIconBabyPink"
+        case .lime: return "AppIconLime"
         }
     }
 
@@ -83,6 +113,16 @@ enum AppThemeColor: String, CaseIterable, Identifiable {
         case .teal: return 0x30B0C7
         case .blue: return 0x0A84FF
         case .purple: return 0xAF52DE
+        case .yellow: return 0xFFCC00
+        case .coral: return 0xFF7F50
+        case .roseGold: return 0xC9807C
+        case .mochaBrown: return 0xA2845E
+        case .indigo: return 0x5856D6
+        case .lavender: return 0xB57EDC
+        case .skyCyan: return 0x32ADE6
+        case .graphite: return 0x8E8E93
+        case .babyPink: return 0xFF8FAB
+        case .lime: return 0xA0D911
         }
     }
 
@@ -96,6 +136,16 @@ enum AppThemeColor: String, CaseIterable, Identifiable {
         case .teal: return 0x64D2FF
         case .blue: return 0x5EAEFF
         case .purple: return 0xBF5AF2
+        case .yellow: return 0xFFD60A
+        case .coral: return 0xFFA382
+        case .roseGold: return 0xE8B4B0
+        case .mochaBrown: return 0xC9A57E
+        case .indigo: return 0x7D7AFF
+        case .lavender: return 0xD0A9F5
+        case .skyCyan: return 0x70CFFF
+        case .graphite: return 0xB8B8BE
+        case .babyPink: return 0xFFB3C6
+        case .lime: return 0xC3E956
         }
     }
 }

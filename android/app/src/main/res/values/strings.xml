@@ -533,6 +533,16 @@
     <string name="theme_color_teal">Teal</string>
     <string name="theme_color_blue">Blue</string>
     <string name="theme_color_purple">Purple</string>
+    <string name="theme_color_yellow">Yellow</string>
+    <string name="theme_color_coral">Coral</string>
+    <string name="theme_color_rose_gold">Rose Gold</string>
+    <string name="theme_color_mocha_brown">Mocha Brown</string>
+    <string name="theme_color_indigo">Indigo</string>
+    <string name="theme_color_lavender">Lavender</string>
+    <string name="theme_color_sky_cyan">Sky Cyan</string>
+    <string name="theme_color_graphite">Graphite</string>
+    <string name="theme_color_baby_pink">Baby Pink</string>
+    <string name="theme_color_lime">Lime</string>
     <string name="settings_metric_units">Metric Units</string>
     <string name="settings_default_to_grams">Default to Grams</string>
     <string name="settings_default_to_grams_info">New food review sheets open with grams selected first. You can still switch to serving, slice, cup, or any other detected unit before logging.</string>

@@ -1035,6 +1035,17 @@
         }
       }
     },
+    "Baby Pink" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pastelowy róż"
+          }
+        }
+      }
+    },
     "Category" : {
       "localizations" : {
         "ar" : {
@@ -1125,6 +1136,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "类别"
+          }
+        }
+      }
+    },
+    "Coral" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Koralowy"
           }
         }
       }
@@ -1411,6 +1433,17 @@
         }
       }
     },
+    "Graphite" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grafitowy"
+          }
+        }
+      }
+    },
     "Hide exercise details" : {
       "localizations" : {
         "ar" : {
@@ -1501,6 +1534,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "隐藏动作详情"
+          }
+        }
+      }
+    },
+    "Indigo" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indygo"
           }
         }
       }
@@ -1599,6 +1643,17 @@
         }
       }
     },
+    "Lavender" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lawendowy"
+          }
+        }
+      }
+    },
     "Level" : {
       "localizations" : {
         "ar" : {
@@ -1693,6 +1748,17 @@
         }
       }
     },
+    "Lime" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limonkowy"
+          }
+        }
+      }
+    },
     "Mechanic" : {
       "localizations" : {
         "ar" : {
@@ -1783,6 +1849,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "机制"
+          }
+        }
+      }
+    },
+    "Mocha Brown" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brąz mokka"
           }
         }
       }
@@ -1971,6 +2048,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "主要"
+          }
+        }
+      }
+    },
+    "Rose Gold" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Różowe złoto"
           }
         }
       }
@@ -2769,6 +2857,17 @@
         }
       }
     },
+    "Sky Cyan" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Błękit"
+          }
+        }
+      }
+    },
     "Try a different muscle, equipment, or search — or reset the filters above." : {
       "localizations" : {
         "ar" : {
@@ -2953,6 +3052,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "训练"
+          }
+        }
+      }
+    },
+    "Yellow" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Żółty"
           }
         }
       }

@@ -19,7 +19,17 @@ object AndroidAppIconManager {
         AppThemeColor.MINT to "MintLauncherActivity",
         AppThemeColor.TEAL to "TealLauncherActivity",
         AppThemeColor.BLUE to "BlueLauncherActivity",
-        AppThemeColor.PURPLE to "PurpleLauncherActivity"
+        AppThemeColor.PURPLE to "PurpleLauncherActivity",
+        AppThemeColor.YELLOW to "YellowLauncherActivity",
+        AppThemeColor.CORAL to "CoralLauncherActivity",
+        AppThemeColor.ROSE_GOLD to "RoseGoldLauncherActivity",
+        AppThemeColor.MOCHA_BROWN to "MochaBrownLauncherActivity",
+        AppThemeColor.INDIGO to "IndigoLauncherActivity",
+        AppThemeColor.LAVENDER to "LavenderLauncherActivity",
+        AppThemeColor.SKY_CYAN to "SkyCyanLauncherActivity",
+        AppThemeColor.GRAPHITE to "GraphiteLauncherActivity",
+        AppThemeColor.BABY_PINK to "BabyPinkLauncherActivity",
+        AppThemeColor.LIME to "LimeLauncherActivity"
     )
 
     fun apply(context: Context, themeColor: AppThemeColor) {
