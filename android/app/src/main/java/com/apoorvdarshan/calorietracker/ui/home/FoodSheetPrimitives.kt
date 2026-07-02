@@ -520,7 +520,9 @@ internal fun SheetGlassDropdownMenuItem(
             .padding(horizontal = 7.dp, vertical = 1.dp)
             .clip(RoundedCornerShape(14.dp))
             .clickable(onClick = onClick)
-            .padding(horizontal = 10.dp, vertical = 7.dp),
+            // ~48dp tap target per row (Material menu guidance), matching the
+            // roomier iOS add-menu rows instead of the old cramped ~36dp.
+            .padding(horizontal = 10.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         when {

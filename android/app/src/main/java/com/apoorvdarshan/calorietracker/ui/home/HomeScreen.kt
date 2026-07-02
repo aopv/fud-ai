@@ -452,7 +452,7 @@ fun HomeScreen(container: AppContainer) {
             SheetGlassDropdownMenu(
                 expanded = showAddMenu,
                 onDismissRequest = { showAddMenu = false },
-                menuWidth = 248.dp
+                menuWidth = 224.dp
             ) {
                 SheetGlassDropdownMenuItem(label = "Copy from Day", leadingIcon = Icons.Filled.CalendarMonth) { showAddMenu = false; showCopyFromDay = true }
                 SheetGlassDropdownMenuItem(label = "Saved Meals", leadingIcon = Icons.Filled.Bookmark) { showAddMenu = false; showSaved = true }
