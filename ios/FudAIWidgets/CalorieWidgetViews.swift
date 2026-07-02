@@ -334,22 +334,38 @@ private struct RectangularCalorieView: View {
     let snapshot: WidgetSnapshot
 
     var body: some View {
-        AccessoryMetricList {
+        VStack(alignment: .leading, spacing: 3) {
             AccessoryMetricRow(
                 iconName: "flame.fill",
                 label: "Calories",
                 value: "\(snapshot.calories) / \(snapshot.calorieGoal)"
             )
 
-            // Rectangular fits 4 rows: calories + the first 3 selected nutrients.
-            ForEach(Array(snapshot.displayedHomeNutrients.prefix(3))) { nutrient in
-                AccessoryMetricRow(
-                    iconName: nutrient.lockScreenIconName,
-                    label: nutrient.label,
-                    value: nutrient.displayPair
-                )
+            // All 4 selected nutrients as a 2x2 grid — five stacked labeled rows
+            // don't fit the rectangular family's height, so the nutrients drop
+            // their text labels and lead with their icon instead.
+            LazyVGrid(
+                columns: [GridItem(.flexible(), spacing: 8), GridItem(.flexible(), spacing: 8)],
+                alignment: .leading,
+                spacing: 3
+            ) {
+                ForEach(snapshot.displayedHomeNutrients) { nutrient in
+                    HStack(spacing: 4) {
+                        Image(systemName: nutrient.lockScreenIconName)
+                            .font(.system(size: 9, weight: .semibold))
+                            .frame(width: 12)
+                            .widgetAccentable()
+
+                        Text("\(nutrient.displayValue)/\(nutrient.displayGoal)\(nutrient.unit)")
+                            .font(.system(size: 11, weight: .semibold, design: .rounded))
+                            .monospacedDigit()
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.6)
+                    }
+                }
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
     }
 }
 
