@@ -36,7 +36,8 @@ extension WidgetSnapshot {
 }
 
 /// Dashed top-semicircle speedometer gauge, same design as the app's Home.
-private struct SpeedometerGauge<Center: View>: View {
+/// Shared by the Calorie and Protein widget views.
+struct SpeedometerGauge<Center: View>: View {
     let progress: Double
     let colors: [Color]
     let diameter: CGFloat
@@ -73,7 +74,7 @@ private struct SpeedometerGauge<Center: View>: View {
 
 /// One nutrient as a vertical fill tube, like the app's Home macro bars:
 /// value on top, tube in the middle, name + goal beneath.
-private struct VerticalNutrientBar: View {
+struct VerticalNutrientBar: View {
     let nutrient: WidgetNutrientValue
     let colors: [Color]
     let barHeight: CGFloat
@@ -152,31 +153,35 @@ private struct SmallCalorieView: View {
                 Spacer()
             }
 
-            ZStack {
-                Circle()
-                    .stroke(snapshot.themeColor.opacity(0.15), lineWidth: 10)
-                Circle()
-                    .trim(from: 0, to: snapshot.calorieProgress)
-                    .stroke(
-                        LinearGradient(colors: snapshot.themeColors, startPoint: .topLeading, endPoint: .bottomTrailing),
-                        style: StrokeStyle(lineWidth: 10, lineCap: .round)
-                    )
-                    .rotationEffect(.degrees(-90))
+            Spacer(minLength: 2)
+
+            SpeedometerGauge(
+                progress: snapshot.calorieProgress,
+                colors: snapshot.themeColors,
+                diameter: 118,
+                lineWidth: 9
+            ) {
                 VStack(spacing: 0) {
                     Text("\(snapshot.calories)")
-                        .font(.system(.title3, design: .rounded, weight: .bold))
-                        .minimumScaleFactor(0.7)
+                        .font(.system(.title3, design: .rounded, weight: .bold).monospacedDigit())
+                        .foregroundStyle(snapshot.themeGradient)
+                        .minimumScaleFactor(0.6)
                         .lineLimit(1)
+                        .padding(.horizontal, 16)
                     Text("/ \(snapshot.calorieGoal)")
                         .font(.system(.caption2, design: .rounded))
                         .foregroundStyle(.secondary)
                 }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .frame(maxWidth: .infinity)
+
+            Spacer(minLength: 2)
 
             Text("\(snapshot.caloriesRemaining) kcal left")
-                .font(.system(.caption2, design: .rounded, weight: .medium))
-                .foregroundStyle(.secondary)
+                .font(.system(.caption2, design: .rounded, weight: .semibold))
+                .foregroundStyle(snapshot.themeColor)
+                .lineLimit(1)
+                .minimumScaleFactor(0.75)
         }
     }
 }

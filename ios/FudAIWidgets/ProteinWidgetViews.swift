@@ -28,35 +28,40 @@ private struct SmallProteinView: View {
             HStack(spacing: 6) {
                 Image(systemName: nutrient.iconName)
                     .font(.system(size: 11, weight: .bold))
-                    .foregroundStyle(WidgetPalette.calorieGradient)
+                    .foregroundStyle(snapshot.themeGradient)
                 Text(nutrient.label)
                     .font(.system(.caption, design: .rounded, weight: .semibold))
                     .foregroundStyle(.secondary)
                 Spacer()
             }
 
-            ZStack {
-                Circle()
-                    .stroke(WidgetPalette.calorie.opacity(0.15), lineWidth: 10)
-                Circle()
-                    .trim(from: 0, to: nutrient.progress)
-                    .stroke(WidgetPalette.calorieGradient, style: StrokeStyle(lineWidth: 10, lineCap: .round))
-                    .rotationEffect(.degrees(-90))
+            Spacer(minLength: 2)
+
+            SpeedometerGauge(
+                progress: nutrient.progress,
+                colors: snapshot.themeColors,
+                diameter: 118,
+                lineWidth: 9
+            ) {
                 VStack(spacing: 0) {
                     Text(nutrient.displayCurrentWithUnit)
-                        .font(.system(.title3, design: .rounded, weight: .bold))
-                        .minimumScaleFactor(0.7)
+                        .font(.system(.title3, design: .rounded, weight: .bold).monospacedDigit())
+                        .foregroundStyle(snapshot.themeGradient)
+                        .minimumScaleFactor(0.6)
                         .lineLimit(1)
+                        .padding(.horizontal, 16)
                     Text("/ \(nutrient.displayGoalWithUnit)")
                         .font(.system(.caption2, design: .rounded))
                         .foregroundStyle(.secondary)
                 }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .frame(maxWidth: .infinity)
+
+            Spacer(minLength: 2)
 
             Text(nutrient.displayRemaining)
-                .font(.system(.caption2, design: .rounded, weight: .medium))
-                .foregroundStyle(.secondary)
+                .font(.system(.caption2, design: .rounded, weight: .semibold))
+                .foregroundStyle(snapshot.themeColor)
                 .lineLimit(1)
                 .minimumScaleFactor(0.75)
         }
@@ -68,65 +73,48 @@ private struct MediumProteinView: View {
     private var nutrient: WidgetNutrientValue { snapshot.primaryHomeNutrient }
 
     var body: some View {
-        HStack(spacing: 14) {
-            ZStack {
-                Circle()
-                    .stroke(WidgetPalette.calorie.opacity(0.15), lineWidth: 9)
-                Circle()
-                    .trim(from: 0, to: nutrient.progress)
-                    .stroke(WidgetPalette.calorieGradient, style: StrokeStyle(lineWidth: 9, lineCap: .round))
-                    .rotationEffect(.degrees(-90))
-                VStack(spacing: 0) {
-                    Text(nutrient.displayValue)
-                        .font(.system(.title2, design: .rounded, weight: .bold))
-                        .minimumScaleFactor(0.6)
-                        .lineLimit(1)
-                    Text("/ \(nutrient.displayGoal)")
-                        .font(.system(.caption2, design: .rounded))
-                        .foregroundStyle(.secondary)
-                    Text("\(nutrient.label.lowercased()) \(nutrient.unit)")
-                        .font(.system(.caption2, design: .rounded, weight: .medium))
-                        .foregroundStyle(.secondary)
+        HStack(alignment: .center, spacing: 12) {
+            VStack(spacing: 2) {
+                SpeedometerGauge(
+                    progress: nutrient.progress,
+                    colors: snapshot.themeColors,
+                    diameter: 126,
+                    lineWidth: 10
+                ) {
+                    VStack(spacing: 0) {
+                        Text(nutrient.displayValue)
+                            .font(.system(size: 24, weight: .bold, design: .rounded).monospacedDigit())
+                            .foregroundStyle(snapshot.themeGradient)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.55)
+                            .padding(.horizontal, 18)
+                        Text("/ \(nutrient.displayGoalWithUnit)")
+                            .font(.system(.caption2, design: .rounded))
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                    }
                 }
-            }
-            .frame(width: 92, height: 92)
 
-            VStack(alignment: .leading, spacing: 8) {
+                Text(nutrient.displayRemaining)
+                    .font(.system(.caption, design: .rounded, weight: .semibold))
+                    .foregroundStyle(snapshot.themeColor)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
+            }
+            .frame(width: 128)
+
+            HStack(alignment: .center, spacing: 6) {
                 ForEach(snapshot.displayedHomeNutrients) { nutrient in
-                    ProteinMacroBar(nutrient: nutrient)
+                    VerticalNutrientBar(
+                        nutrient: nutrient,
+                        colors: snapshot.themeColors,
+                        barHeight: 52,
+                        barWidth: 11,
+                        valueSize: 14
+                    )
                 }
             }
             .frame(maxWidth: .infinity)
-        }
-    }
-}
-
-private struct ProteinMacroBar: View {
-    let nutrient: WidgetNutrientValue
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 3) {
-            HStack {
-                Text(nutrient.label)
-                    .font(.system(.caption2, design: .rounded, weight: .semibold))
-                    .foregroundStyle(.secondary)
-                Spacer()
-                Text(nutrient.displayPair)
-                    .font(.system(.caption2, design: .rounded, weight: .medium))
-                    .foregroundStyle(.primary)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.75)
-            }
-            GeometryReader { geo in
-                ZStack(alignment: .leading) {
-                    Capsule()
-                        .fill(WidgetPalette.calorie.opacity(0.15))
-                    Capsule()
-                        .fill(WidgetPalette.calorieGradient)
-                        .frame(width: max(4, geo.size.width * nutrient.progress))
-                }
-            }
-            .frame(height: 6)
         }
     }
 }
