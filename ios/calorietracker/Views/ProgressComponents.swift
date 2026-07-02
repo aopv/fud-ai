@@ -32,6 +32,79 @@ enum TimeRange: String, CaseIterable {
 
 // MARK: - Weight Chart Section
 
+// MARK: - Trend chart plotting helpers (shared by Weight + Body Fat charts)
+
+/// One plotted point on a trend chart — either a raw entry or the average of
+/// a date bucket when the range is too dense to draw every reading.
+private struct TrendPoint: Identifiable {
+    let date: Date
+    let value: Double
+    var id: Date { date }
+}
+
+/// Averages a date-sorted series into equal date buckets once it outgrows
+/// `maxPoints`. Hundreds of raw readings drew every dot on top of its
+/// neighbours and turned the line into a solid band — ~60 bucket averages
+/// keep the trend shape readable. Sparse series pass through untouched.
+private func downsampled(_ points: [TrendPoint], maxPoints: Int = 60) -> [TrendPoint] {
+    guard points.count > maxPoints,
+          let first = points.first?.date, let last = points.last?.date else { return points }
+    let calendar = Calendar.current
+    let spanDays = max(1, calendar.dateComponents([.day], from: first, to: last).day ?? 1)
+    let bucketDays = max(1, Int((Double(spanDays) / Double(maxPoints)).rounded(.up)))
+    var buckets: [Int: (dateSum: TimeInterval, valueSum: Double, count: Int)] = [:]
+    for point in points {
+        let day = calendar.dateComponents([.day], from: first, to: point.date).day ?? 0
+        var bucket = buckets[day / bucketDays] ?? (0, 0, 0)
+        bucket.dateSum += point.date.timeIntervalSince1970
+        bucket.valueSum += point.value
+        bucket.count += 1
+        buckets[day / bucketDays] = bucket
+    }
+    return buckets.keys.sorted().map { index in
+        let bucket = buckets[index]!
+        return TrendPoint(
+            date: Date(timeIntervalSince1970: bucket.dateSum / Double(bucket.count)),
+            value: bucket.valueSum / Double(bucket.count)
+        )
+    }
+}
+
+/// X-axis policy for the trend charts. Strides derive from the plotted DATE
+/// SPAN — the old entry-count strides collapsed once users logged multiple
+/// readings per day (506 entries over 2 years still picked a 60-day stride
+/// and mashed the "All" labels into each other). Labels pick up the year
+/// whenever a longer range crosses a calendar-year boundary, so "going back
+/// into 2025" reads "Sep 2025" instead of an ambiguous "Sep 20".
+private struct TrendXAxis {
+    private let spanDays: Int
+    private let showsYear: Bool
+
+    init(first: Date?, last: Date?) {
+        guard let first, let last else {
+            spanDays = 1
+            showsYear = false
+            return
+        }
+        spanDays = max(1, Calendar.current.dateComponents([.day], from: first, to: last).day ?? 1)
+        showsYear = spanDays > 150
+            && !Calendar.current.isDate(first, equalTo: last, toGranularity: .year)
+    }
+
+    var strideDays: Int {
+        if showsYear { return max(75, spanDays / 4) }
+        if spanDays <= 8 { return 1 }
+        if spanDays <= 35 { return 5 }
+        if spanDays <= 100 { return 14 }
+        if spanDays <= 200 { return 30 }
+        return 60
+    }
+
+    var labelFormat: Date.FormatStyle {
+        showsYear ? .dateTime.month(.abbreviated).year() : .dateTime.month(.abbreviated).day()
+    }
+}
+
 struct WeightChartSection: View {
     let weightEntries: [WeightEntry]
     let goalWeightKg: Double?
@@ -75,21 +148,23 @@ struct WeightChartSection: View {
                 }
 
                 Chart {
-                    ForEach(weightEntries) { entry in
+                    ForEach(plottedPoints) { point in
                         LineMark(
-                            x: .value("Date", entry.date, unit: .day),
-                            y: .value("Weight", displayWeight(entry.weightKg))
+                            x: .value("Date", point.date, unit: .day),
+                            y: .value("Weight", point.value)
                         )
                         .foregroundStyle(AppColors.calorie)
                         .interpolationMethod(.catmullRom)
                         .lineStyle(StrokeStyle(lineWidth: 2))
 
-                        PointMark(
-                            x: .value("Date", entry.date, unit: .day),
-                            y: .value("Weight", displayWeight(entry.weightKg))
-                        )
-                        .foregroundStyle(AppColors.calorie)
-                        .symbolSize(30)
+                        if showsPointMarks {
+                            PointMark(
+                                x: .value("Date", point.date, unit: .day),
+                                y: .value("Weight", point.value)
+                            )
+                            .foregroundStyle(AppColors.calorie)
+                            .symbolSize(30)
+                        }
                     }
 
                     if let goalKg = goalWeightKg {
@@ -100,9 +175,9 @@ struct WeightChartSection: View {
                 }
                 .chartYScale(domain: weightYDomain)
                 .chartXAxis {
-                    AxisMarks(values: .stride(by: .day, count: xAxisStride)) { _ in
+                    AxisMarks(values: .stride(by: .day, count: xAxis.strideDays)) { _ in
                         AxisGridLine()
-                        AxisValueLabel(format: .dateTime.month(.abbreviated).day())
+                        AxisValueLabel(format: xAxis.labelFormat)
                     }
                 }
                 .frame(height: 180)
@@ -114,13 +189,17 @@ struct WeightChartSection: View {
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
-    private var xAxisStride: Int {
-        let count = weightEntries.count
-        if count <= 7 { return 1 }
-        if count <= 30 { return 5 }
-        if count <= 90 { return 14 }
-        if count <= 180 { return 30 }
-        return 60
+    /// What actually gets drawn: every entry for short ranges, bucket
+    /// averages for dense ones. Dots only render while each reading is
+    /// still individually distinguishable.
+    private var plottedPoints: [TrendPoint] {
+        downsampled(sortedWeightEntries.map { TrendPoint(date: $0.date, value: displayWeight($0.weightKg)) })
+    }
+
+    private var showsPointMarks: Bool { plottedPoints.count <= 31 }
+
+    private var xAxis: TrendXAxis {
+        TrendXAxis(first: sortedWeightEntries.first?.date, last: sortedWeightEntries.last?.date)
     }
 
     private var weightYDomain: ClosedRange<Double> {
@@ -823,21 +902,23 @@ struct BodyFatChartSection: View {
                 }
 
                 Chart {
-                    ForEach(entries) { entry in
+                    ForEach(plottedPoints) { point in
                         LineMark(
-                            x: .value("Date", entry.date, unit: .day),
-                            y: .value("Body Fat", displayPercent(entry.bodyFatFraction))
+                            x: .value("Date", point.date, unit: .day),
+                            y: .value("Body Fat", point.value)
                         )
                         .foregroundStyle(AppColors.calorie)
                         .interpolationMethod(.catmullRom)
                         .lineStyle(StrokeStyle(lineWidth: 2))
 
-                        PointMark(
-                            x: .value("Date", entry.date, unit: .day),
-                            y: .value("Body Fat", displayPercent(entry.bodyFatFraction))
-                        )
-                        .foregroundStyle(AppColors.calorie)
-                        .symbolSize(30)
+                        if showsPointMarks {
+                            PointMark(
+                                x: .value("Date", point.date, unit: .day),
+                                y: .value("Body Fat", point.value)
+                            )
+                            .foregroundStyle(AppColors.calorie)
+                            .symbolSize(30)
+                        }
                     }
 
                     if let goalFraction = goalBodyFatFraction {
@@ -848,9 +929,9 @@ struct BodyFatChartSection: View {
                 }
                 .chartYScale(domain: bodyFatYDomain)
                 .chartXAxis {
-                    AxisMarks(values: .stride(by: .day, count: xAxisStride)) { _ in
+                    AxisMarks(values: .stride(by: .day, count: xAxis.strideDays)) { _ in
                         AxisGridLine()
-                        AxisValueLabel(format: .dateTime.month(.abbreviated).day())
+                        AxisValueLabel(format: xAxis.labelFormat)
                     }
                 }
                 .frame(height: 180)
@@ -862,13 +943,17 @@ struct BodyFatChartSection: View {
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
-    private var xAxisStride: Int {
-        let count = entries.count
-        if count <= 7 { return 1 }
-        if count <= 30 { return 5 }
-        if count <= 90 { return 14 }
-        if count <= 180 { return 30 }
-        return 60
+    /// Same plotting policy as WeightChartSection — raw entries for short
+    /// ranges, bucket averages once the series gets dense, dots only while
+    /// each reading is distinguishable.
+    private var plottedPoints: [TrendPoint] {
+        downsampled(sortedEntries.map { TrendPoint(date: $0.date, value: displayPercent($0.bodyFatFraction)) })
+    }
+
+    private var showsPointMarks: Bool { plottedPoints.count <= 31 }
+
+    private var xAxis: TrendXAxis {
+        TrendXAxis(first: sortedEntries.first?.date, last: sortedEntries.last?.date)
     }
 
     private var bodyFatYDomain: ClosedRange<Double> {
