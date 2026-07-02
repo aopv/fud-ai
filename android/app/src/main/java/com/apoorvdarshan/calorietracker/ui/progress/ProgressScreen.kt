@@ -66,6 +66,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -545,7 +546,16 @@ private fun WeightChartCanvas(entries: List<WeightEntry>, goalKg: Double?, useMe
     val secondaryColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
     val ticks = niceAxisTicks(yMin, yMax, count = 5)
     val zone = ZoneId.systemDefault()
-    val xLabelFmt = DateTimeFormatter.ofPattern("MMM d", Locale.US).withZone(zone)
+    // Labels pick up the year once a longer range crosses a calendar-year
+    // boundary — "Jul 2024" instead of an ambiguous "Jul 3" (same iOS rule).
+    val spanDays = maxOf(1L, (tEnd - tStart) / 86_400_000L)
+    val showsYear = spanDays > 150 &&
+        Instant.ofEpochMilli(tStart).atZone(zone).year != Instant.ofEpochMilli(tEnd).atZone(zone).year
+    val xLabelFmt = DateTimeFormatter.ofPattern(if (showsYear) "MMM yyyy" else "MMM d", Locale.US).withZone(zone)
+    // Dense ranges plot bucket averages so the line stays a readable curve;
+    // dots only render while each reading is still distinguishable.
+    val points = downsampleTrend(entries.map { TrendPoint(it.date.toEpochMilli(), displayKg(it.weightKg)) })
+    val showsDots = points.size <= 31
 
     Row(Modifier.fillMaxWidth().height(180.dp)) {
         Canvas(Modifier.weight(1f).fillMaxSize()) {
@@ -579,21 +589,20 @@ private fun WeightChartCanvas(entries: List<WeightEntry>, goalKg: Double?, useMe
                     pathEffect = PathEffect.dashPathEffect(floatArrayOf(18f, 12f))
                 )
             }
-            val xFor: (com.apoorvdarshan.calorietracker.models.WeightEntry) -> Float = { e ->
-                if (singleEntry) w / 2f
-                else ((e.date.toEpochMilli() - tStart).toDouble() / tRange * w).toFloat()
+            val offsets = points.map { p ->
+                Offset(
+                    if (singleEntry) w / 2f
+                    else ((p.timeMs - tStart).toDouble() / tRange * w).toFloat(),
+                    h - (((p.value - yMin) / (yMax - yMin)).toFloat() * h)
+                )
             }
-            val path = Path()
-            entries.forEachIndexed { i, e ->
-                val x = xFor(e)
-                val y = h - (((displayKg(e.weightKg) - yMin) / (yMax - yMin)).toFloat() * h)
-                if (i == 0) path.moveTo(x, y) else path.lineTo(x, y)
-            }
-            drawPath(path, AppColors.Calorie, style = Stroke(width = 5f))
-            entries.forEach { e ->
-                val x = xFor(e)
-                val y = h - (((displayKg(e.weightKg) - yMin) / (yMax - yMin)).toFloat() * h)
-                drawCircle(AppColors.Calorie, radius = 5.5f, center = Offset(x, y))
+            // clipRect: the smoothed curve can overshoot the value range a
+            // touch between points — keep it inside the plot like iOS .clipped()
+            clipRect {
+                drawPath(smoothTrendPath(offsets), AppColors.Calorie, style = Stroke(width = 5f))
+                if (showsDots) {
+                    offsets.forEach { drawCircle(AppColors.Calorie, radius = 5.5f, center = it) }
+                }
             }
         }
         // Y-axis labels on the right
@@ -610,7 +619,7 @@ private fun WeightChartCanvas(entries: List<WeightEntry>, goalKg: Double?, useMe
             }
         }
     }
-    // X-axis date labels
+    // X-axis date labels — first / (middle on multi-year spans) / last
     Row(Modifier.fillMaxWidth().padding(top = 4.dp, end = 36.dp)) {
         Text(
             xLabelFmt.format(entries.first().date),
@@ -618,6 +627,14 @@ private fun WeightChartCanvas(entries: List<WeightEntry>, goalKg: Double?, useMe
             color = secondaryColor
         )
         Spacer(Modifier.weight(1f))
+        if (showsYear) {
+            Text(
+                xLabelFmt.format(Instant.ofEpochMilli((tStart + tEnd) / 2)),
+                fontSize = 11.sp,
+                color = secondaryColor
+            )
+            Spacer(Modifier.weight(1f))
+        }
         if (!singleEntry) {
             Text(
                 xLabelFmt.format(entries.last().date),
@@ -626,6 +643,53 @@ private fun WeightChartCanvas(entries: List<WeightEntry>, goalKg: Double?, useMe
             )
         }
     }
+}
+
+/** One plotted point on a trend chart — either a raw entry or the average of
+ *  a date bucket when the range is too dense to draw every reading. Mirrors
+ *  the iOS TrendPoint/downsampled helpers in ProgressComponents.swift. */
+private data class TrendPoint(val timeMs: Long, val value: Double)
+
+/** Averages a date-sorted series into equal date buckets once it outgrows
+ *  [maxPoints]. Hundreds of raw readings drew every dot on top of its
+ *  neighbours and turned the line into a solid band — ~60 bucket averages
+ *  keep the trend shape readable. Sparse series pass through untouched. */
+private fun downsampleTrend(points: List<TrendPoint>, maxPoints: Int = 60): List<TrendPoint> {
+    if (points.size <= maxPoints) return points
+    val dayMs = 86_400_000L
+    val first = points.first().timeMs
+    val spanDays = maxOf(1L, (points.last().timeMs - first) / dayMs)
+    val bucketMs = Math.ceil(spanDays.toDouble() / maxPoints).toLong().coerceAtLeast(1L) * dayMs
+    return points
+        .groupBy { (it.timeMs - first) / bucketMs }
+        .toSortedMap()
+        .values
+        .map { bucket ->
+            TrendPoint(
+                timeMs = bucket.map { it.timeMs }.average().toLong(),
+                value = bucket.map { it.value }.average()
+            )
+        }
+}
+
+/** Catmull-Rom smoothed path through [points] — same curve the iOS charts
+ *  get from interpolationMethod(.catmullRom). */
+private fun smoothTrendPath(points: List<Offset>): Path {
+    val path = Path()
+    if (points.isEmpty()) return path
+    path.moveTo(points.first().x, points.first().y)
+    for (i in 1 until points.size) {
+        val p0 = points[maxOf(i - 2, 0)]
+        val p1 = points[i - 1]
+        val p2 = points[i]
+        val p3 = points[minOf(i + 1, points.size - 1)]
+        path.cubicTo(
+            p1.x + (p2.x - p0.x) / 6f, p1.y + (p2.y - p0.y) / 6f,
+            p2.x - (p3.x - p1.x) / 6f, p2.y - (p3.y - p1.y) / 6f,
+            p2.x, p2.y
+        )
+    }
+    return path
 }
 
 /** Compute "nice" axis tick values across [min, max] with approx [count] divisions. */
@@ -1278,7 +1342,13 @@ private fun BodyFatChartCanvas(entries: List<BodyFatEntry>, goalFraction: Double
     val secondaryColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
     val ticks = niceAxisTicks(yMin, yMax, count = 5)
     val zone = ZoneId.systemDefault()
-    val xLabelFmt = DateTimeFormatter.ofPattern("MMM d", Locale.US).withZone(zone)
+    // Same year-label + downsampling policy as WeightChartCanvas.
+    val spanDays = maxOf(1L, (tEnd - tStart) / 86_400_000L)
+    val showsYear = spanDays > 150 &&
+        Instant.ofEpochMilli(tStart).atZone(zone).year != Instant.ofEpochMilli(tEnd).atZone(zone).year
+    val xLabelFmt = DateTimeFormatter.ofPattern(if (showsYear) "MMM yyyy" else "MMM d", Locale.US).withZone(zone)
+    val points = downsampleTrend(entries.map { TrendPoint(it.date.toEpochMilli(), it.bodyFatFraction * 100) })
+    val showsDots = points.size <= 31
 
     Row(Modifier.fillMaxWidth().height(180.dp)) {
         Canvas(Modifier.weight(1f).fillMaxSize()) {
@@ -1312,21 +1382,18 @@ private fun BodyFatChartCanvas(entries: List<BodyFatEntry>, goalFraction: Double
                     pathEffect = PathEffect.dashPathEffect(floatArrayOf(18f, 12f))
                 )
             }
-            val xFor: (BodyFatEntry) -> Float = { e ->
-                if (singleEntry) w / 2f
-                else ((e.date.toEpochMilli() - tStart).toDouble() / tRange * w).toFloat()
+            val offsets = points.map { p ->
+                Offset(
+                    if (singleEntry) w / 2f
+                    else ((p.timeMs - tStart).toDouble() / tRange * w).toFloat(),
+                    h - (((p.value - yMin) / (yMax - yMin)).toFloat() * h)
+                )
             }
-            val path = Path()
-            entries.forEachIndexed { i, e ->
-                val x = xFor(e)
-                val y = h - (((e.bodyFatFraction * 100 - yMin) / (yMax - yMin)).toFloat() * h)
-                if (i == 0) path.moveTo(x, y) else path.lineTo(x, y)
-            }
-            drawPath(path, AppColors.Calorie, style = Stroke(width = 5f))
-            entries.forEach { e ->
-                val x = xFor(e)
-                val y = h - (((e.bodyFatFraction * 100 - yMin) / (yMax - yMin)).toFloat() * h)
-                drawCircle(AppColors.Calorie, radius = 5.5f, center = Offset(x, y))
+            clipRect {
+                drawPath(smoothTrendPath(offsets), AppColors.Calorie, style = Stroke(width = 5f))
+                if (showsDots) {
+                    offsets.forEach { drawCircle(AppColors.Calorie, radius = 5.5f, center = it) }
+                }
             }
         }
         // Y-axis labels on the right
@@ -1343,7 +1410,7 @@ private fun BodyFatChartCanvas(entries: List<BodyFatEntry>, goalFraction: Double
             }
         }
     }
-    // X-axis date labels
+    // X-axis date labels — first / (middle on multi-year spans) / last
     Row(Modifier.fillMaxWidth().padding(top = 4.dp, end = 40.dp)) {
         Text(
             xLabelFmt.format(entries.first().date),
@@ -1351,6 +1418,14 @@ private fun BodyFatChartCanvas(entries: List<BodyFatEntry>, goalFraction: Double
             color = secondaryColor
         )
         Spacer(Modifier.weight(1f))
+        if (showsYear) {
+            Text(
+                xLabelFmt.format(Instant.ofEpochMilli((tStart + tEnd) / 2)),
+                fontSize = 11.sp,
+                color = secondaryColor
+            )
+            Spacer(Modifier.weight(1f))
+        }
         if (!singleEntry) {
             Text(
                 xLabelFmt.format(entries.last().date),
