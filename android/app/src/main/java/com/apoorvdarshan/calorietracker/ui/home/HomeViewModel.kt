@@ -11,9 +11,11 @@ import com.apoorvdarshan.calorietracker.models.MealType
 import com.apoorvdarshan.calorietracker.models.OptionalNutrientGoals
 import com.apoorvdarshan.calorietracker.models.PendingFoodAnalysisDraft
 import com.apoorvdarshan.calorietracker.models.UserProfile
+import com.apoorvdarshan.calorietracker.services.FoodImageComposer
 import com.apoorvdarshan.calorietracker.services.OpenFoodFactsService
 import com.apoorvdarshan.calorietracker.services.ai.AiError
 import com.apoorvdarshan.calorietracker.services.ai.FoodAnalysis
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,6 +24,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -200,11 +203,16 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
         viewModelScope.launch {
             val previousDraftImage = _ui.value.pendingDraftImageFilename
             container.analyzingFood.value = true
+            // Both shots side by side — this composite becomes the entry's stored
+            // image, so the log row and edit sheet show both photos (mirrors iOS).
+            val combinedBytes = withContext(Dispatchers.Default) {
+                FoodImageComposer.sideBySide(firstBytes, secondBytes)
+            }
             _ui.value = _ui.value.copy(
                 analyzing = true,
                 error = null,
                 pendingAnalysis = null,
-                pendingImageBytes = firstBytes,
+                pendingImageBytes = combinedBytes,
                 pendingFoodSource = FoodSource.SNAP_FOOD,
                 pendingDraftImageFilename = null,
                 pendingReviewSource = null
@@ -212,7 +220,7 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
             discardPendingDraft(previousDraftImage)
             try {
                 val analysis = container.foodAnalysis.analyzeFood(listOf(firstBytes, secondBytes))
-                savePendingDraft(analysis, imageBytes = firstBytes, source = FoodSource.SNAP_FOOD)
+                savePendingDraft(analysis, imageBytes = combinedBytes, source = FoodSource.SNAP_FOOD)
             } catch (e: AiError) {
                 _ui.value = _ui.value.copy(analyzing = false, error = e.message)
             } catch (e: Throwable) {
