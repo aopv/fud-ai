@@ -1516,25 +1516,42 @@ fun BodyMeasurementsScreen(container: AppContainer, onBack: () -> Unit) {
 
     editing?.let { site ->
         val current = latest?.value(site)
-        val currentDisplay = current?.let { if (heightMetric) Math.round(it).toInt() else Math.round(it / 2.54).toInt() }
+        // Editor-owned display value: a unit flip CONVERTS what's on the wheel
+        // (clamped into the destination rows), matching the height/weight editors,
+        // instead of re-seeding from the saved value.
+        var editorValue by remember(site) {
+            mutableStateOf(
+                current?.let { if (heightMetric) Math.round(it).toInt() else Math.round(it / 2.54).toInt() }
+                    ?: if (heightMetric) 80 else 32
+            )
+        }
         FudGlassDialog(onDismissRequest = { editing = null }) {
             // Flipping here persists the shared length standard (same pref as the
-            // Height editor); the collected pref recomposes seed + range + labels.
+            // Height editor); the collected pref recomposes range + labels.
             UnitToggle(
                 stringResource(R.string.unit_cm),
                 stringResource(R.string.unit_in),
                 heightMetric,
-                { metric -> scope.launch { container.prefs.setHeightUnit(if (metric) "cm" else "ftin") } },
+                { metric ->
+                    if (metric != heightMetric) {
+                        editorValue = if (metric) {
+                            Math.round(editorValue * 2.54).toInt().coerceIn(10, 250)
+                        } else {
+                            Math.round(editorValue / 2.54).toInt().coerceIn(4, 100)
+                        }
+                        scope.launch { container.prefs.setHeightUnit(if (metric) "cm" else "ftin") }
+                    }
+                },
                 Modifier.fillMaxWidth()
             )
             Spacer(Modifier.height(10.dp))
-            // key() so a unit flip rebuilds the wheel: its internal scroll state
-            // otherwise survives the range swap and lands on an unrelated row.
+            // key() so a unit flip rebuilds the wheel seeded with the converted
+            // value: its internal scroll state otherwise survives the range swap.
             key(heightMetric) {
                 NutritionPickerSheet(
                     label = site.label,
                     unit = unit,
-                    currentValue = currentDisplay ?: if (heightMetric) 80 else 32,
+                    currentValue = editorValue,
                     range = if (heightMetric) 10..250 else 4..100,
                     step = 1,
                     onSave = { v ->
@@ -1545,7 +1562,8 @@ fun BodyMeasurementsScreen(container: AppContainer, onBack: () -> Unit) {
                     onResetToAuto = if (current != null) {
                         { scope.launch { container.bodyMeasurementRepository.setValue(site, null) }; editing = null }
                     } else null,
-                    resetLabel = "Clear"
+                    resetLabel = "Clear",
+                    onValueChange = { editorValue = it }
                 )
             }
         }

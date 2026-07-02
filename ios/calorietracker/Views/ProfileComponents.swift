@@ -770,6 +770,9 @@ struct NutritionPickerSheet: View {
     var onResetToAuto: (() -> Void)? = nil
     /// Label for the reset button (defaults to the macro "Reset to Auto-balance" wording).
     var resetLabel: String = "Reset to Auto-balance"
+    /// Optional live wheel-selection reporter, for hosts that need the current
+    /// value before Save (e.g. to convert it when a unit switcher flips).
+    var onValueChange: ((Int) -> Void)? = nil
 
     @State private var selectedValue: Int
 
@@ -781,7 +784,8 @@ struct NutritionPickerSheet: View {
         step: Int,
         onSave: @escaping (Int) -> Void,
         onResetToAuto: (() -> Void)? = nil,
-        resetLabel: String = "Reset to Auto-balance"
+        resetLabel: String = "Reset to Auto-balance",
+        onValueChange: ((Int) -> Void)? = nil
     ) {
         self.label = label
         self.unit = unit
@@ -791,6 +795,7 @@ struct NutritionPickerSheet: View {
         self.onSave = onSave
         self.onResetToAuto = onResetToAuto
         self.resetLabel = resetLabel
+        self.onValueChange = onValueChange
         // Snap to nearest step and clamp into range so the wheel opens at the current value.
         let snapped = (currentValue / step) * step
         let clamped = min(max(snapped, range.lowerBound), range.upperBound)
@@ -813,6 +818,9 @@ struct NutritionPickerSheet: View {
                     .pickerStyle(.wheel)
                     .frame(width: 120)
                     .clipped()
+                    .onChange(of: selectedValue) { _, newValue in
+                        onValueChange?(newValue)
+                    }
 
                     Text(unit)
                         .font(.system(.title3, design: .rounded))

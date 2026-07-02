@@ -1020,35 +1020,12 @@ struct BodyMeasurementsDetailView: View {
         .navigationTitle("Body Measurements")
         .navigationBarTitleDisplayMode(.inline)
         .sheet(item: $editingSite) { site in
-            let current = latest?.value(for: site)
-            let currentDisplay = current.map { useMetric ? Int($0.rounded()) : Int(($0 / 2.54).rounded()) }
-            VStack(spacing: 0) {
-                // Flipping here persists the shared length standard (same pref as the
-                // Height editor), so height + all measurements follow together.
-                Picker("Unit", selection: $heightUnitRaw) {
-                    Text("cm").tag("cm")
-                    Text("in").tag("ftin")
-                }
-                .pickerStyle(.segmented)
-                .padding(.horizontal, 24)
-                .padding(.top, 20)
-
-                NutritionPickerSheet(
-                    label: site.label,
-                    unit: unit,
-                    currentValue: currentDisplay ?? (useMetric ? 80 : 32),
-                    range: useMetric ? 10...250 : 4...100,
-                    step: 1,
-                    onSave: { value in
-                        store.setValue(site, cm: useMetric ? Double(value) : Double(value) * 2.54)
-                    },
-                    onResetToAuto: current != nil ? { store.setValue(site, cm: nil) } : nil,
-                    resetLabel: "Clear"
-                )
-                // The wheel's selection is seeded in init; re-key so a unit flip
-                // rebuilds it with the converted seed instead of a stale row.
-                .id(heightUnitRaw)
-            }
+            MeasurementEditSheet(
+                site: site,
+                currentCm: latest?.value(for: site),
+                onSave: { cm in store.setValue(site, cm: cm) },
+                onClear: { store.setValue(site, cm: nil) }
+            )
         }
         .sheet(isPresented: $showHistory) {
             AllBodyMeasurementsHistoryView(
@@ -1058,6 +1035,81 @@ struct BodyMeasurementsDetailView: View {
                 useMetric: useMetric,
                 onDelete: { entry in store.deleteEntry(entry) }
             )
+        }
+    }
+}
+
+/// Editor for one measurement site. The cm|in switcher persists the shared
+/// length standard (same pref as the Height editor), and — matching the
+/// height/weight editors — flipping it converts the value currently on the
+/// wheel (clamped into the destination wheel's rows) instead of re-seeding.
+private struct MeasurementEditSheet: View {
+    let site: BodyMeasurement.Site
+    let hasCurrent: Bool
+    let onSave: (Double) -> Void
+    let onClear: () -> Void
+
+    @AppStorage("heightUnit") private var heightUnitRaw = "ftin"
+    @State private var displayValue: Int
+
+    init(
+        site: BodyMeasurement.Site,
+        currentCm: Double?,
+        onSave: @escaping (Double) -> Void,
+        onClear: @escaping () -> Void
+    ) {
+        self.site = site
+        self.hasCurrent = currentCm != nil
+        self.onSave = onSave
+        self.onClear = onClear
+        let metric = UserDefaults.standard.string(forKey: "heightUnit") == "cm"
+        let seed = currentCm.map { metric ? Int($0.rounded()) : Int(($0 / 2.54).rounded()) } ?? (metric ? 80 : 32)
+        _displayValue = State(initialValue: seed)
+    }
+
+    private var useMetric: Bool { heightUnitRaw == "cm" }
+
+    // Converts in the binding's setter so the new unit and the converted value
+    // land in the same update — the re-keyed wheel below then seeds correctly.
+    private var unitSelection: Binding<String> {
+        Binding(
+            get: { heightUnitRaw },
+            set: { newValue in
+                guard newValue != heightUnitRaw else { return }
+                if newValue == "cm" {
+                    displayValue = min(250, max(10, Int((Double(displayValue) * 2.54).rounded())))
+                } else {
+                    displayValue = min(100, max(4, Int((Double(displayValue) / 2.54).rounded())))
+                }
+                heightUnitRaw = newValue
+            }
+        )
+    }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            Picker("Unit", selection: unitSelection) {
+                Text("cm").tag("cm")
+                Text("in").tag("ftin")
+            }
+            .pickerStyle(.segmented)
+            .padding(.horizontal, 24)
+            .padding(.top, 20)
+
+            NutritionPickerSheet(
+                label: site.label,
+                unit: useMetric ? "cm" : "in",
+                currentValue: displayValue,
+                range: useMetric ? 10...250 : 4...100,
+                step: 1,
+                onSave: { value in onSave(useMetric ? Double(value) : Double(value) * 2.54) },
+                onResetToAuto: hasCurrent ? onClear : nil,
+                resetLabel: "Clear",
+                onValueChange: { displayValue = $0 }
+            )
+            // Re-key so a unit flip rebuilds the wheel seeded with the value
+            // converted above (its selection state is set once, in init).
+            .id(heightUnitRaw)
         }
     }
 }

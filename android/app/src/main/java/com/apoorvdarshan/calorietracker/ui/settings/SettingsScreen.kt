@@ -2137,7 +2137,10 @@ fun NutritionPickerSheet(
     step: Int,
     onSave: (Int) -> Unit,
     onResetToAuto: (() -> Unit)? = null,
-    resetLabel: String = "Reset to Auto-balance"
+    resetLabel: String = "Reset to Auto-balance",
+    // Live wheel-selection reporter, for hosts that need the current value
+    // before Save (e.g. to convert it when a unit switcher flips).
+    onValueChange: ((Int) -> Unit)? = null
 ) {
     val items = remember(range, step) { (range.first..range.last step step).toList() }
     val snapped = (currentValue / step) * step
@@ -2155,7 +2158,7 @@ fun NutritionPickerSheet(
         com.apoorvdarshan.calorietracker.ui.components.WheelPicker(
             items = items,
             selected = selected,
-            onSelect = { selected = it },
+            onSelect = { selected = it; onValueChange?.invoke(it) },
             modifier = Modifier.width(120.dp)
         )
         Spacer(Modifier.width(8.dp))
