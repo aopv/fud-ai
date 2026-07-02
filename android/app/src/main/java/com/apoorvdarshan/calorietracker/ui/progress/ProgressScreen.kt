@@ -48,6 +48,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -1517,22 +1518,36 @@ fun BodyMeasurementsScreen(container: AppContainer, onBack: () -> Unit) {
         val current = latest?.value(site)
         val currentDisplay = current?.let { if (heightMetric) Math.round(it).toInt() else Math.round(it / 2.54).toInt() }
         FudGlassDialog(onDismissRequest = { editing = null }) {
-            NutritionPickerSheet(
-                label = site.label,
-                unit = unit,
-                currentValue = currentDisplay ?: if (heightMetric) 80 else 32,
-                range = if (heightMetric) 10..250 else 4..100,
-                step = 1,
-                onSave = { v ->
-                    val cm = if (heightMetric) v.toDouble() else v * 2.54
-                    scope.launch { container.bodyMeasurementRepository.setValue(site, cm) }
-                    editing = null
-                },
-                onResetToAuto = if (current != null) {
-                    { scope.launch { container.bodyMeasurementRepository.setValue(site, null) }; editing = null }
-                } else null,
-                resetLabel = "Clear"
+            // Flipping here persists the shared length standard (same pref as the
+            // Height editor); the collected pref recomposes seed + range + labels.
+            UnitToggle(
+                stringResource(R.string.unit_cm),
+                stringResource(R.string.unit_in),
+                heightMetric,
+                { metric -> scope.launch { container.prefs.setHeightUnit(if (metric) "cm" else "ftin") } },
+                Modifier.fillMaxWidth()
             )
+            Spacer(Modifier.height(10.dp))
+            // key() so a unit flip rebuilds the wheel: its internal scroll state
+            // otherwise survives the range swap and lands on an unrelated row.
+            key(heightMetric) {
+                NutritionPickerSheet(
+                    label = site.label,
+                    unit = unit,
+                    currentValue = currentDisplay ?: if (heightMetric) 80 else 32,
+                    range = if (heightMetric) 10..250 else 4..100,
+                    step = 1,
+                    onSave = { v ->
+                        val cm = if (heightMetric) v.toDouble() else v * 2.54
+                        scope.launch { container.bodyMeasurementRepository.setValue(site, cm) }
+                        editing = null
+                    },
+                    onResetToAuto = if (current != null) {
+                        { scope.launch { container.bodyMeasurementRepository.setValue(site, null) }; editing = null }
+                    } else null,
+                    resetLabel = "Clear"
+                )
+            }
         }
     }
     if (showHistory) {

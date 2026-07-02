@@ -1022,18 +1022,33 @@ struct BodyMeasurementsDetailView: View {
         .sheet(item: $editingSite) { site in
             let current = latest?.value(for: site)
             let currentDisplay = current.map { useMetric ? Int($0.rounded()) : Int(($0 / 2.54).rounded()) }
-            NutritionPickerSheet(
-                label: site.label,
-                unit: unit,
-                currentValue: currentDisplay ?? (useMetric ? 80 : 32),
-                range: useMetric ? 10...250 : 4...100,
-                step: 1,
-                onSave: { value in
-                    store.setValue(site, cm: useMetric ? Double(value) : Double(value) * 2.54)
-                },
-                onResetToAuto: current != nil ? { store.setValue(site, cm: nil) } : nil,
-                resetLabel: "Clear"
-            )
+            VStack(spacing: 0) {
+                // Flipping here persists the shared length standard (same pref as the
+                // Height editor), so height + all measurements follow together.
+                Picker("Unit", selection: $heightUnitRaw) {
+                    Text("cm").tag("cm")
+                    Text("in").tag("ftin")
+                }
+                .pickerStyle(.segmented)
+                .padding(.horizontal, 24)
+                .padding(.top, 20)
+
+                NutritionPickerSheet(
+                    label: site.label,
+                    unit: unit,
+                    currentValue: currentDisplay ?? (useMetric ? 80 : 32),
+                    range: useMetric ? 10...250 : 4...100,
+                    step: 1,
+                    onSave: { value in
+                        store.setValue(site, cm: useMetric ? Double(value) : Double(value) * 2.54)
+                    },
+                    onResetToAuto: current != nil ? { store.setValue(site, cm: nil) } : nil,
+                    resetLabel: "Clear"
+                )
+                // The wheel's selection is seeded in init; re-key so a unit flip
+                // rebuilds it with the converted seed instead of a stale row.
+                .id(heightUnitRaw)
+            }
         }
         .sheet(isPresented: $showHistory) {
             AllBodyMeasurementsHistoryView(
