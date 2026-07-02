@@ -86,6 +86,7 @@ import com.apoorvdarshan.calorietracker.ui.components.UnitToggle
 import com.apoorvdarshan.calorietracker.ui.settings.NutritionPickerSheet
 import androidx.annotation.StringRes
 import com.apoorvdarshan.calorietracker.R
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -619,29 +620,37 @@ private fun WeightChartCanvas(entries: List<WeightEntry>, goalKg: Double?, useMe
             }
         }
     }
-    // X-axis date labels — first / (middle on multi-year spans) / last
-    Row(Modifier.fillMaxWidth().padding(top = 4.dp, end = 36.dp)) {
-        Text(
-            xLabelFmt.format(entries.first().date),
-            fontSize = 11.sp,
-            color = secondaryColor
-        )
-        Spacer(Modifier.weight(1f))
-        if (showsYear) {
-            Text(
-                xLabelFmt.format(Instant.ofEpochMilli((tStart + tEnd) / 2)),
-                fontSize = 11.sp,
-                color = secondaryColor
-            )
-            Spacer(Modifier.weight(1f))
-        }
-        if (!singleEntry) {
-            Text(
-                xLabelFmt.format(entries.last().date),
-                fontSize = 11.sp,
-                color = secondaryColor
-            )
-        }
+    TrendXAxisLabels(tStart, tEnd, showsYear, singleEntry, xLabelFmt, secondaryColor, endPadding = 36.dp)
+}
+
+/** X-axis labels under a trend chart, matching the label density of the iOS
+ *  charts: five dates aligned with the canvas' quarter gridlines, or
+ *  first/middle/last with the year on multi-year spans (wider "MMM yyyy"
+ *  labels need the extra room). */
+@Composable
+private fun TrendXAxisLabels(
+    tStart: Long,
+    tEnd: Long,
+    showsYear: Boolean,
+    singleEntry: Boolean,
+    fmt: DateTimeFormatter,
+    color: Color,
+    endPadding: Dp
+) {
+    val labels = when {
+        singleEntry -> listOf(fmt.format(Instant.ofEpochMilli(tStart)))
+        showsYear -> listOf(tStart, (tStart + tEnd) / 2, tEnd)
+            .map { fmt.format(Instant.ofEpochMilli(it)) }
+        else -> (0..4)
+            .map { i -> fmt.format(Instant.ofEpochMilli(tStart + (tEnd - tStart) * i / 4)) }
+            // Spans of a couple days format to repeating dates — drop the dupes.
+            .let { all -> all.filterIndexed { i, label -> i == 0 || label != all[i - 1] } }
+    }
+    Row(
+        Modifier.fillMaxWidth().padding(top = 4.dp, end = endPadding),
+        horizontalArrangement = if (labels.size == 1) Arrangement.Center else Arrangement.SpaceBetween
+    ) {
+        labels.forEach { Text(it, fontSize = 11.sp, color = color) }
     }
 }
 
@@ -1410,30 +1419,7 @@ private fun BodyFatChartCanvas(entries: List<BodyFatEntry>, goalFraction: Double
             }
         }
     }
-    // X-axis date labels — first / (middle on multi-year spans) / last
-    Row(Modifier.fillMaxWidth().padding(top = 4.dp, end = 40.dp)) {
-        Text(
-            xLabelFmt.format(entries.first().date),
-            fontSize = 11.sp,
-            color = secondaryColor
-        )
-        Spacer(Modifier.weight(1f))
-        if (showsYear) {
-            Text(
-                xLabelFmt.format(Instant.ofEpochMilli((tStart + tEnd) / 2)),
-                fontSize = 11.sp,
-                color = secondaryColor
-            )
-            Spacer(Modifier.weight(1f))
-        }
-        if (!singleEntry) {
-            Text(
-                xLabelFmt.format(entries.last().date),
-                fontSize = 11.sp,
-                color = secondaryColor
-            )
-        }
-    }
+    TrendXAxisLabels(tStart, tEnd, showsYear, singleEntry, xLabelFmt, secondaryColor, endPadding = 40.dp)
 }
 
 /** Format a body-fat tick value for the Y-axis label (e.g. 17.5 → "17.5%"
