@@ -96,6 +96,8 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.IconButton
@@ -176,7 +178,7 @@ private enum class SettingsSheet {
     FALLBACK_PROVIDER, FALLBACK_MODEL, FALLBACK_KEY, FALLBACK_BASE_URL,
     GENDER, BIRTHDAY, HEIGHT, WEIGHT, BODY_FAT, GOAL_BODY_FAT, ACTIVITY, GOAL, GOAL_WEIGHT, GOAL_SPEED,
     CALORIES, PROTEIN, CARBS, FAT, OPTIONAL_NUTRIENTS,
-    APPEARANCE, THEME_COLOR, WEEK_START
+    APPEARANCE, WEEK_START
 }
 
 private enum class HealthConnectPermissionAction {
@@ -512,11 +514,45 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController) {
                     icon = Icons.Outlined.Brightness6
                 ) { sheet = SettingsSheet.APPEARANCE }
                 HorizontalDivider()
-                SettingRow(
-                    stringResource(R.string.settings_theme_color),
-                    stringResource(ui.appThemeColor.displayNameRes),
-                    icon = Icons.Outlined.Palette
-                ) { sheet = SettingsSheet.THEME_COLOR }
+                var themeMenuExpanded by remember { mutableStateOf(false) }
+                Box {
+                    SettingRow(
+                        stringResource(R.string.settings_theme_color),
+                        stringResource(ui.appThemeColor.displayNameRes),
+                        icon = Icons.Outlined.Palette,
+                        inlineMenu = true
+                    ) { themeMenuExpanded = true }
+                    // Zero-size anchor at the row's trailing edge so the menu drops
+                    // under the value text (right side), not the row's left edge.
+                    Box(Modifier.align(Alignment.BottomEnd)) {
+                        DropdownMenu(
+                            expanded = themeMenuExpanded,
+                            onDismissRequest = { themeMenuExpanded = false },
+                            modifier = Modifier.heightIn(max = 420.dp)
+                        ) {
+                            AppThemeColor.values().forEach { themeColor ->
+                                DropdownMenuItem(
+                                    text = { Text(stringResource(themeColor.displayNameRes)) },
+                                    leadingIcon = { ThemeColorSwatch(themeColor, Modifier.size(22.dp)) },
+                                    trailingIcon = if (themeColor == ui.appThemeColor) {
+                                        {
+                                            Icon(
+                                                Icons.Filled.Check,
+                                                contentDescription = stringResource(R.string.sheet_selected_a11y),
+                                                tint = AppColors.Calorie,
+                                                modifier = Modifier.size(18.dp)
+                                            )
+                                        }
+                                    } else null,
+                                    onClick = {
+                                        vm.setAppThemeColor(themeColor)
+                                        themeMenuExpanded = false
+                                    }
+                                )
+                            }
+                        }
+                    }
+                }
                 HorizontalDivider()
                 ToggleRow(stringResource(R.string.settings_metric_units), ui.useMetric, icon = Icons.Outlined.Straighten, onChange = vm::setUseMetric)
                 HorizontalDivider()
@@ -1624,10 +1660,6 @@ private fun SettingsSheets(
                     onSelect = { vm.setAppearanceMode(it.first); onDismiss() },
                     icon = { appearanceIcon(it.first) }
                 )
-                SettingsSheet.THEME_COLOR -> ThemeColorSheet(
-                    selected = ui.appThemeColor,
-                    onSelect = { vm.setAppThemeColor(it); onDismiss() }
-                )
                 SettingsSheet.WEEK_START -> ListSheet(
                     title = stringResource(R.string.sheet_week_starts),
                     items = listOf(
@@ -1801,57 +1833,6 @@ private fun OptionalNutrientGoalRow(
             modifier = Modifier.size(18.dp)
         )
     }
-}
-
-@Composable
-private fun ThemeColorSheet(
-    selected: AppThemeColor,
-    onSelect: (AppThemeColor) -> Unit
-) {
-    val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
-    Text(stringResource(R.string.sheet_theme_color), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-    Spacer(Modifier.height(12.dp))
-    LazyColumn(Modifier.fillMaxWidth().heightIn(max = 420.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        items(AppThemeColor.values().toList()) { themeColor ->
-            val isSel = selected == themeColor
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(14.dp))
-                    .background(
-                        if (isSel) AppColors.Calorie.copy(alpha = 0.13f)
-                        else if (isDark) MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.45f)
-                        else Color(0xFFEDE3DD).copy(alpha = 0.78f)
-                    )
-                    .clickable { onSelect(themeColor) }
-                    .padding(horizontal = 14.dp, vertical = 14.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                ThemeColorSwatch(themeColor, Modifier.size(30.dp))
-                Spacer(Modifier.width(14.dp))
-                Text(
-                    stringResource(themeColor.displayNameRes),
-                    modifier = Modifier.weight(1f),
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Medium
-                )
-                if (isSel) {
-                    Icon(
-                        Icons.Filled.Check,
-                        contentDescription = stringResource(R.string.sheet_selected_a11y),
-                        tint = AppColors.Calorie,
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
-            }
-        }
-    }
-    Spacer(Modifier.height(8.dp))
-    Text(
-        stringResource(R.string.sheet_theme_color_footer),
-        style = MaterialTheme.typography.bodySmall,
-        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-    )
 }
 
 @Composable

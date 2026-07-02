@@ -92,6 +92,30 @@ enum AppThemeColor: String, CaseIterable, Identifiable {
         AppThemeColor(rawValue: rawValue) ?? defaultColor
     }
 
+    // Menu (dropdown) rows render SwiftUI colors as monochrome templates, so the
+    // swatch has to be a pre-rendered UIImage marked alwaysOriginal to keep its color.
+    var menuSwatchImage: UIImage {
+        let size = CGSize(width: 22, height: 22)
+        let image = UIGraphicsImageRenderer(size: size).image { context in
+            let rect = CGRect(origin: .zero, size: size)
+            UIBezierPath(ovalIn: rect).addClip()
+            let colors = [UIColor(color), UIColor(gradientColors.last ?? color)].map(\.cgColor)
+            if let gradient = CGGradient(
+                colorsSpace: CGColorSpaceCreateDeviceRGB(),
+                colors: colors as CFArray,
+                locations: [0, 1]
+            ) {
+                context.cgContext.drawLinearGradient(
+                    gradient,
+                    start: .zero,
+                    end: CGPoint(x: size.width, y: size.height),
+                    options: []
+                )
+            }
+        }
+        return image.withRenderingMode(.alwaysOriginal)
+    }
+
     @MainActor
     static func applyAppIconIfNeeded(for themeColor: AppThemeColor) {
         let application = UIApplication.shared

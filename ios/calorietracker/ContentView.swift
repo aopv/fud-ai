@@ -2826,10 +2826,6 @@ struct ProfileView: View {
         return String(format: "%.1f lbs/week", rate * 2.20462)
     }
 
-    private var selectedThemeColor: AppThemeColor {
-        AppThemeColor.color(for: appThemeColorRaw)
-    }
-
     var body: some View {
         NavigationStack {
             List {
@@ -3129,24 +3125,25 @@ struct ProfileView: View {
                     .pickerStyle(.menu)
                     .tint(.secondary)
 
-                    NavigationLink {
-                        ThemeColorSettingsView(selectedColorRaw: $appThemeColorRaw)
+                    Picker(selection: $appThemeColorRaw) {
+                        ForEach(AppThemeColor.allCases) { themeColor in
+                            Label {
+                                Text(themeColor.displayName)
+                            } icon: {
+                                Image(uiImage: themeColor.menuSwatchImage)
+                            }
+                            .tag(themeColor.rawValue)
+                        }
                     } label: {
                         Label {
-                            HStack {
-                                Text("Theme Color")
-                                Spacer()
-                                HStack(spacing: 8) {
-                                    ThemeColorSwatch(themeColor: selectedThemeColor, size: 22)
-                                    Text(selectedThemeColor.displayName)
-                                        .foregroundStyle(.secondary)
-                                }
-                            }
+                            Text("Theme Color")
                         } icon: {
                             Image(systemName: "paintpalette.fill")
                                 .foregroundStyle(AppColors.calorie)
                         }
                     }
+                    .pickerStyle(.menu)
+                    .tint(.secondary)
 
                     Toggle(isOn: $useMetric) {
                         Label {
@@ -4367,67 +4364,6 @@ struct ProfileView: View {
         showAdaptiveGoalAlert = true
     }
 
-}
-
-private struct ThemeColorSettingsView: View {
-    @Binding var selectedColorRaw: String
-
-    private var selectedColor: AppThemeColor {
-        AppThemeColor.color(for: selectedColorRaw)
-    }
-
-    var body: some View {
-        List {
-            Section {
-                ForEach(AppThemeColor.allCases) { themeColor in
-                    Button {
-                        selectedColorRaw = themeColor.rawValue
-                    } label: {
-                        HStack(spacing: 14) {
-                            ThemeColorSwatch(themeColor: themeColor, size: 30)
-                            Text(themeColor.displayName)
-                                .foregroundStyle(.primary)
-                            Spacer()
-                            if selectedColor == themeColor {
-                                Image(systemName: "checkmark.circle.fill")
-                                    .foregroundStyle(AppColors.calorie)
-                            }
-                        }
-                    }
-                    .tint(.primary)
-                }
-            } footer: {
-                Text("Changes the main app color and home screen icon used for tabs, buttons, icons, charts, and progress rings.")
-            }
-            .listRowBackground(AppColors.appCard)
-        }
-        .scrollContentBackground(.hidden)
-        .background(AppColors.appBackground)
-        .navigationTitle("Theme Color")
-        .navigationBarTitleDisplayMode(.inline)
-    }
-}
-
-private struct ThemeColorSwatch: View {
-    let themeColor: AppThemeColor
-    var size: CGFloat = 24
-
-    var body: some View {
-        Circle()
-            .fill(
-                LinearGradient(
-                    colors: themeColor.gradientColors,
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-            )
-            .frame(width: size, height: size)
-            .overlay(
-                Circle()
-                    .strokeBorder(Color.white.opacity(0.35), lineWidth: 1)
-            )
-            .shadow(color: themeColor.color.opacity(0.28), radius: 4, y: 2)
-    }
 }
 
 #Preview {
