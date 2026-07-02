@@ -1010,7 +1010,9 @@ struct HomeView: View {
                 if cameraMode == .snapFoodWithSecondPhoto {
                     if let firstImage = pendingSecondCameraImage {
                         pendingSecondCameraImage = nil
-                        currentImage = firstImage
+                        // Both shots side by side — this composite becomes the entry's
+                        // stored image, so the log row and edit page show both photos.
+                        currentImage = FoodImageComposer.sideBySide(firstImage, image)
                         startAnalysis(images: [firstImage, image], mode: .snapFoodWithSecondPhoto)
                     } else {
                         pendingSecondCameraImage = image
