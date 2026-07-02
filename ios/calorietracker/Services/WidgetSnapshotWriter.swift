@@ -23,6 +23,9 @@ enum WidgetSnapshotWriter {
                 ?? HomeTopNutrient.storageValue(for: HomeTopNutrient.defaultSelection)
         )
         let optionalGoals = OptionalNutrientGoals.current
+        let theme = AppThemeColor(
+            rawValue: UserDefaults.standard.string(forKey: AppThemeColor.storageKey) ?? ""
+        ) ?? .defaultColor
 
         let snapshot = WidgetSnapshot(
             date: Date(),
@@ -37,7 +40,9 @@ enum WidgetSnapshotWriter {
             fatGoal: profile.effectiveFat,
             homeNutrients: selectedHomeNutrients.map {
                 homeNutrientValue(for: $0, foods: today, profile: profile, optionalGoals: optionalGoals)
-            }
+            },
+            themeStartHex: theme.startHex,
+            themeEndHex: theme.endHex
         )
 
         if WidgetSnapshot.read() != snapshot {

@@ -97,6 +97,8 @@ final class WatchSnapshotSync: NSObject, WCSessionDelegate {
         let fat: Double
         let fatGoal: Int
         let homeNutrients: [WidgetNutrientValue]?
+        let themeStartHex: UInt?
+        let themeEndHex: UInt?
 
         init(_ snapshot: WidgetSnapshot) {
             dayStart = snapshot.dayStart
@@ -109,6 +111,8 @@ final class WatchSnapshotSync: NSObject, WCSessionDelegate {
             fat = snapshot.fat
             fatGoal = snapshot.fatGoal
             homeNutrients = snapshot.homeNutrients
+            themeStartHex = snapshot.themeStartHex
+            themeEndHex = snapshot.themeEndHex
         }
     }
 }

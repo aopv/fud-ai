@@ -1,168 +1,155 @@
 import SwiftUI
 
+/// Mini iPhone-Home for the wrist: the speedometer calorie gauge on top and the
+/// user's 4 selected nutrients as vertical fill bars beneath, all tinted with
+/// the theme gradient synced from the phone (Fud Pink by default).
 struct WatchNutritionView: View {
     @EnvironmentObject private var receiver: WatchSnapshotReceiver
 
-    var body: some View {
-        VStack(spacing: 9) {
-            CalorieSummary(snapshot: receiver.snapshot)
+    private var themeGradient: [Color] {
+        [
+            Color(hex: receiver.snapshot.themeStartHex ?? 0xFF375F),
+            Color(hex: receiver.snapshot.themeEndHex ?? 0xFF6B8A),
+        ]
+    }
 
-            HStack(spacing: 5) {
-                NutrientCompactCard(
-                    title: "Protein",
-                    value: receiver.snapshot.protein,
-                    goal: receiver.snapshot.proteinGoal,
-                    unit: "g",
-                    progress: receiver.snapshot.proteinProgress,
-                    color: .blue
+    var body: some View {
+        ScrollView {
+            VStack(spacing: 6) {
+                WatchCalorieGauge(
+                    eaten: receiver.snapshot.calories,
+                    remaining: receiver.snapshot.caloriesRemaining,
+                    progress: receiver.snapshot.calorieProgress,
+                    gradient: themeGradient
                 )
-                NutrientCompactCard(
-                    title: "Carbs",
-                    value: receiver.snapshot.carbs,
-                    goal: receiver.snapshot.carbsGoal,
-                    unit: "g",
-                    progress: receiver.snapshot.carbsProgress,
-                    color: .green
-                )
-                NutrientCompactCard(
-                    title: "Fat",
-                    value: receiver.snapshot.fat,
-                    goal: receiver.snapshot.fatGoal,
-                    unit: "g",
-                    progress: receiver.snapshot.fatProgress,
-                    color: .orange
-                )
+
+                HStack(alignment: .top, spacing: 6) {
+                    ForEach(receiver.snapshot.displayedHomeNutrients) { nutrient in
+                        WatchNutrientBar(nutrient: nutrient, gradient: themeGradient)
+                    }
+                }
             }
+            .padding(.horizontal, 4)
         }
-        .padding(.horizontal, 8)
-        .padding(.vertical, 5)
-        .navigationTitle("Fud AI")
         .onAppear {
             receiver.refreshFromDisk()
         }
     }
 }
 
-private struct CalorieSummary: View {
-    let snapshot: WidgetSnapshot
-
-    var body: some View {
-        HStack(alignment: .center, spacing: 8) {
-            ProgressRing(
-                progress: snapshot.calorieProgress,
-                color: .red,
-                lineWidth: 6
-            ) {
-                Image(systemName: "flame.fill")
-                    .font(.system(size: 14, weight: .bold))
-                    .foregroundStyle(.red)
-            }
-            .frame(width: 43, height: 43)
-
-            VStack(alignment: .leading, spacing: 1) {
-                Text("Today")
-                    .font(.system(size: 11, weight: .semibold))
-                    .foregroundStyle(.secondary)
-                HStack(alignment: .firstTextBaseline, spacing: 4) {
-                    Text("\(snapshot.calories)")
-                        .font(.system(size: 24, weight: .bold, design: .rounded))
-                    Text("/ \(snapshot.calorieGoal)")
-                        .font(.system(size: 11, weight: .medium, design: .rounded))
-                        .foregroundStyle(.secondary)
-                }
-                .lineLimit(1)
-                .minimumScaleFactor(0.55)
-                Text("\(snapshot.caloriesRemaining) kcal left")
-                    .font(.system(size: 13, weight: .semibold, design: .rounded))
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.7)
-            }
-            Spacer(minLength: 0)
-        }
-        .frame(maxWidth: .infinity)
-    }
-}
-
-private struct NutrientCompactCard: View {
-    let title: String
-    let value: Double
-    let goal: Int
-    let unit: String
+/// Scaled-down version of the iPhone Home CalorieGauge — dashed top-semicircle
+/// track with the eaten count and remaining readout inside the dome.
+private struct WatchCalorieGauge: View {
+    let eaten: Int
+    let remaining: Int
     let progress: Double
-    let color: Color
+    let gradient: [Color]
 
-    var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(title)
-                .font(.system(size: 10, weight: .semibold))
-                .foregroundStyle(.secondary)
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
+    private let diameter: CGFloat = 132
+    private let lineWidth: CGFloat = 9
 
-            VStack(alignment: .leading, spacing: 0) {
-                Text("\(Self.format(value))\(unit)")
-                    .font(.system(size: 14, weight: .bold, design: .rounded).monospacedDigit())
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.6)
-                Text("/ \(goal)\(unit)")
-                    .font(.system(size: 9, weight: .medium, design: .rounded).monospacedDigit())
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.65)
-            }
-
-            GeometryReader { geometry in
-                ZStack(alignment: .leading) {
-                    Capsule()
-                        .fill(color.opacity(0.18))
-                    Capsule()
-                        .fill(color)
-                        .frame(width: max(4, geometry.size.width * progress))
-                }
-            }
-            .frame(height: 5)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, 6)
-        .padding(.vertical, 6)
-        .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 7, style: .continuous))
-    }
-
-    private static func format(_ value: Double) -> String {
-        if abs(value.rounded() - value) < 0.0001 {
-            return "\(Int(value.rounded()))"
-        }
-        return String(format: "%.1f", value)
-    }
-}
-
-private struct ProgressRing<Content: View>: View {
-    let progress: Double
-    let color: Color
-    let lineWidth: CGFloat
-    private let content: () -> Content
-
-    init(
-        progress: Double,
-        color: Color,
-        lineWidth: CGFloat,
-        @ViewBuilder content: @escaping () -> Content
-    ) {
-        self.progress = progress
-        self.color = color
-        self.lineWidth = lineWidth
-        self.content = content
+    private var dashedStroke: StrokeStyle {
+        StrokeStyle(lineWidth: lineWidth, lineCap: .butt, dash: [2.5, 3.8])
     }
 
     var body: some View {
         ZStack {
             Circle()
-                .stroke(color.opacity(0.18), lineWidth: lineWidth)
+                .trim(from: 0.5, to: 1.0)
+                .stroke((gradient.first ?? .pink).opacity(0.15), style: dashedStroke)
+                .padding(lineWidth / 2)
+
             Circle()
-                .trim(from: 0, to: progress)
-                .stroke(color, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
-                .rotationEffect(.degrees(-90))
-            content()
+                .trim(from: 0.5, to: 0.5 + 0.5 * progress)
+                .stroke(
+                    LinearGradient(colors: gradient, startPoint: .leading, endPoint: .trailing),
+                    style: dashedStroke
+                )
+                .padding(lineWidth / 2)
+                .shadow(color: (gradient.first ?? .pink).opacity(0.35), radius: 4, y: 1)
+
+            VStack(spacing: 0) {
+                Text("\(eaten)")
+                    .font(.system(size: 30, weight: .bold, design: .rounded))
+                    .foregroundStyle(
+                        LinearGradient(colors: gradient, startPoint: .topLeading, endPoint: .bottomTrailing)
+                    )
+                    .contentTransition(.numericText())
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
+
+                HStack(spacing: 3) {
+                    Image(systemName: "flame.fill")
+                        .font(.system(size: 9, weight: .semibold))
+                    Text("\(remaining) left")
+                        .font(.system(size: 12, weight: .semibold, design: .rounded))
+                }
+                .foregroundStyle(gradient.first ?? .pink)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+            }
+            .offset(y: -diameter * 0.16)
         }
+        .frame(width: diameter, height: diameter)
+        .frame(height: diameter * 0.56, alignment: .top)
+        .clipped()
+    }
+}
+
+/// One nutrient as a vertical fill tube, like the iPhone Home macro bars:
+/// value on top, tube in the middle, name + goal beneath.
+private struct WatchNutrientBar: View {
+    let nutrient: WidgetNutrientValue
+    let gradient: [Color]
+
+    private let barWidth: CGFloat = 10
+    private let barHeight: CGFloat = 42
+
+    var body: some View {
+        VStack(spacing: 4) {
+            Text(nutrient.displayValue)
+                .font(.system(size: 13, weight: .bold, design: .rounded).monospacedDigit())
+                .foregroundStyle(
+                    LinearGradient(colors: gradient, startPoint: .top, endPoint: .bottom)
+                )
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
+
+            ZStack(alignment: .bottom) {
+                Capsule()
+                    .fill((gradient.first ?? .pink).opacity(0.15))
+                    .frame(width: barWidth, height: barHeight)
+
+                if nutrient.progress > 0 {
+                    Capsule()
+                        .fill(LinearGradient(colors: gradient, startPoint: .bottom, endPoint: .top))
+                        .frame(width: barWidth, height: max(barWidth, barHeight * nutrient.progress))
+                        .shadow(color: (gradient.first ?? .pink).opacity(0.4), radius: 3)
+                }
+            }
+
+            VStack(spacing: 0) {
+                Text(nutrient.label)
+                    .font(.system(size: 9, weight: .semibold))
+                    .foregroundStyle(.primary)
+                Text("/\(nutrient.displayGoal)\(nutrient.unit)")
+                    .font(.system(size: 8, weight: .medium, design: .rounded))
+                    .foregroundStyle(.secondary)
+            }
+            .lineLimit(1)
+            .minimumScaleFactor(0.55)
+        }
+        .frame(maxWidth: .infinity)
+    }
+}
+
+extension Color {
+    init(hex: UInt, opacity: Double = 1.0) {
+        self.init(
+            red: Double((hex >> 16) & 0xFF) / 255,
+            green: Double((hex >> 8) & 0xFF) / 255,
+            blue: Double(hex & 0xFF) / 255,
+            opacity: opacity
+        )
     }
 }

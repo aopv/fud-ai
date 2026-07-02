@@ -127,7 +127,9 @@ enum AppThemeColor: String, CaseIterable, Identifiable {
         application.setAlternateIconName(themeColor.alternateIconName)
     }
 
-    private var startHex: UInt {
+    // Internal (not private) so WidgetSnapshotWriter can ship the raw hexes to
+    // the Watch, which has no AppThemeColor and rebuilds Colors from the values.
+    var startHex: UInt {
         switch self {
         case .fudPink: return 0xFF375F
         case .red: return 0xFF3B30
@@ -150,7 +152,7 @@ enum AppThemeColor: String, CaseIterable, Identifiable {
         }
     }
 
-    private var endHex: UInt {
+    var endHex: UInt {
         switch self {
         case .fudPink: return 0xFF6B8A
         case .red: return 0xFF6961
