@@ -342,25 +342,29 @@ private struct RectangularCalorieView: View {
             )
 
             // All 4 selected nutrients as a 2x2 grid — five stacked labeled rows
-            // don't fit the rectangular family's height, so the nutrients drop
-            // their text labels and lead with their icon instead.
+            // don't fit the rectangular family's height. Name + eaten amount
+            // only; goals are dropped since value-vs-goal pairs read as number
+            // soup at this size.
             LazyVGrid(
-                columns: [GridItem(.flexible(), spacing: 8), GridItem(.flexible(), spacing: 8)],
+                columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)],
                 alignment: .leading,
                 spacing: 3
             ) {
                 ForEach(snapshot.displayedHomeNutrients) { nutrient in
-                    HStack(spacing: 4) {
-                        Image(systemName: nutrient.lockScreenIconName)
-                            .font(.system(size: 9, weight: .semibold))
-                            .frame(width: 12)
-                            .widgetAccentable()
-
-                        Text("\(nutrient.displayValue)/\(nutrient.displayGoal)\(nutrient.unit)")
+                    HStack(spacing: 3) {
+                        Text(nutrient.label)
                             .font(.system(size: 11, weight: .semibold, design: .rounded))
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.6)
+
+                        Spacer(minLength: 2)
+
+                        Text("\(nutrient.displayValue)\(nutrient.unit)")
+                            .font(.system(size: 11, weight: .bold, design: .rounded))
                             .monospacedDigit()
                             .lineLimit(1)
                             .minimumScaleFactor(0.6)
+                            .widgetAccentable()
                     }
                 }
             }
