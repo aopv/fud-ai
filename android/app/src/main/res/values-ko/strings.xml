@@ -450,6 +450,7 @@
     <string name="progress_log_first_weight">추세를 보려면 첫 체중을 기록하세요</string>
 
     <string name="progress_weight_history">체중 기록</string>
+    <string name="progress_body_fat_history">체지방 기록</string>
     <string name="progress_history_count_format">%1$d개 항목 · 탭하여 보거나 삭제</string>
 
     <string name="progress_calories_section">칼로리</string>

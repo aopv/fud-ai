@@ -450,6 +450,7 @@
     <string name="progress_log_first_weight">سجّل وزنك الأول لرؤية الاتجاهات</string>
 
     <string name="progress_weight_history">سجل الوزن</string>
+    <string name="progress_body_fat_history">سجل نسبة الدهون</string>
     <string name="progress_history_count_format">%1$d إدخالات · اضغط للعرض أو الحذف</string>
 
     <string name="progress_calories_section">السعرات الحرارية</string>

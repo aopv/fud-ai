@@ -450,6 +450,7 @@
     <string name="progress_log_first_weight">ट्रेंड देखने के लिए अपना पहला वज़न लॉग करें</string>
 
     <string name="progress_weight_history">वज़न इतिहास</string>
+    <string name="progress_body_fat_history">बॉडी फैट इतिहास</string>
     <string name="progress_history_count_format">%1$d प्रविष्टियाँ · देखने या हटाने के लिए टैप करें</string>
 
     <string name="progress_calories_section">कैलोरी</string>

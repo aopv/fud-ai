@@ -110,7 +110,8 @@ import java.util.Locale
  *   2. WeightChartSection — Weight title + Log Weight pill + StatBadges
  *      (Current, Goal, Net Change, Average) + line chart with green dashed goal rule
  *   3. WeightHistoryLink — only shown if any weight entries exist; shows
- *      count + chevron, opens AllWeightHistorySheet
+ *      count + chevron, opens AllWeightHistorySheet. BodyFatHistoryLink
+ *      mirrors it for body-fat entries, opening AllBodyFatHistorySheet
  *   4. CalorieChartSection — Calories title + Avg badge + bar chart of
  *      per-day calories with calorieGradient bars (dimmed below goal,
  *      pink above goal — same as iOS)
@@ -144,6 +145,7 @@ fun ProgressScreen(container: AppContainer) {
     var showAddDialog by remember { mutableStateOf(false) }
     var showAddBodyFatDialog by remember { mutableStateOf(false) }
     var showAllWeights by remember { mutableStateOf(false) }
+    var showAllBodyFats by remember { mutableStateOf(false) }
     var bodyMetric by remember { mutableStateOf(BodyMetric.WEIGHT) }
 
     // Filter weights + body fats to range
@@ -248,6 +250,13 @@ fun ProgressScreen(container: AppContainer) {
                 }
             }
 
+            // 3b. Body fat history link (if any)
+            if (ui.bodyFatEntries.isNotEmpty()) {
+                item {
+                    BodyFatHistoryLink(count = ui.bodyFatEntries.size) { showAllBodyFats = true }
+                }
+            }
+
             // 4. Calorie chart section
             item {
                 CardSection {
@@ -310,6 +319,13 @@ fun ProgressScreen(container: AppContainer) {
             useMetric = weightMetric,
             onDelete = vm::deleteWeight,
             onDismiss = { showAllWeights = false }
+        )
+    }
+    if (showAllBodyFats) {
+        AllBodyFatHistorySheet(
+            entries = ui.bodyFatEntries.sortedByDescending { it.date },
+            onDelete = vm::deleteBodyFat,
+            onDismiss = { showAllBodyFats = false }
         )
     }
     if (ui.goalReached) {
@@ -675,6 +691,40 @@ private fun WeightHistoryLink(count: Int, onClick: () -> Unit) {
 }
 
 @Composable
+private fun BodyFatHistoryLink(count: Int, onClick: () -> Unit) {
+    FudGlassSurface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+        cornerRadius = 16.dp,
+        padding = 14.dp
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            FudIconBubble(
+                icon = Icons.AutoMirrored.Filled.ListAlt,
+                size = 28.dp,
+                iconSize = 16.dp
+            )
+            Spacer(Modifier.width(12.dp))
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                Text(stringResource(R.string.progress_body_fat_history), fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
+                Text(
+                    stringResource(R.string.progress_history_count_format, count),
+                    fontSize = 13.sp,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                )
+            }
+            Icon(
+                Icons.Filled.ChevronRight,
+                null,
+                tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                modifier = Modifier.size(18.dp)
+            )
+        }
+    }
+}
+
+@Composable
 private fun CalorieSection(dailyCalories: List<Pair<LocalDate, Int>>, calorieGoal: Int) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -931,6 +981,69 @@ private fun AllWeightHistorySheet(
                         ) {
                             Column(Modifier.weight(1f)) {
                                 Text(formatWeight(entry.weightKg, useMetric), fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
+                                Spacer(Modifier.height(2.dp))
+                                Text(fmt.format(entry.date), fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f))
+                            }
+                            IconButton(onClick = { onDelete(entry.id) }) {
+                                Icon(
+                                    Icons.Filled.Delete,
+                                    contentDescription = stringResource(R.string.action_delete),
+                                    tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.42f),
+                                    modifier = Modifier.size(18.dp)
+                                )
+                            }
+                        }
+                        Box(Modifier.padding(start = 16.dp).fillMaxWidth().height(0.5.dp).background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f)))
+                    }
+                }
+            }
+            Spacer(Modifier.height(16.dp))
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun AllBodyFatHistorySheet(
+    entries: List<BodyFatEntry>,
+    onDelete: (java.util.UUID) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val fmt = DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.US).withZone(ZoneId.systemDefault())
+    val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
+    val sheetSurface = if (isDark) MaterialTheme.colorScheme.surface else Color(0xFFFAF3EE)
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = state,
+        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
+        containerColor = sheetSurface
+    ) {
+        Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 10.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(stringResource(R.string.progress_body_fat_history), fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
+                Spacer(Modifier.weight(1f))
+                TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_done), color = AppColors.Calorie) }
+            }
+            Spacer(Modifier.height(12.dp))
+            FudGlassSurface(
+                modifier = Modifier.fillMaxWidth(),
+                cornerRadius = 22.dp,
+                padding = 0.dp
+            ) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(max = 560.dp)
+                        .padding(vertical = 4.dp)
+                ) {
+                    items(entries, key = { it.id }) { entry ->
+                        Row(
+                            Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column(Modifier.weight(1f)) {
+                                Text(String.format(Locale.US, "%.1f%%", entry.bodyFatPercent), fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
                                 Spacer(Modifier.height(2.dp))
                                 Text(fmt.format(entry.date), fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f))
                             }

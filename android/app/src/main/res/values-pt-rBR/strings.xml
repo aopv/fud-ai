@@ -450,6 +450,7 @@
     <string name="progress_log_first_weight">Registre seu primeiro peso para ver tendências</string>
 
     <string name="progress_weight_history">Histórico de peso</string>
+    <string name="progress_body_fat_history">Histórico de gordura corporal</string>
     <string name="progress_history_count_format">%1$d registros · toque para ver ou apagar</string>
 
     <string name="progress_calories_section">Calorias</string>

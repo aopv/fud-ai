@@ -450,6 +450,7 @@
     <string name="progress_log_first_weight">最初の体重を記録して傾向を確認</string>
 
     <string name="progress_weight_history">体重履歴</string>
+    <string name="progress_body_fat_history">体脂肪履歴</string>
     <string name="progress_history_count_format">%1$d件 · タップして表示・削除</string>
 
     <string name="progress_calories_section">カロリー</string>

@@ -473,6 +473,7 @@
     <string name="progress_log_first_weight">Log your first weight to see trends</string>
 
     <string name="progress_weight_history">Weight History</string>
+    <string name="progress_body_fat_history">Body Fat History</string>
     <string name="progress_history_count_format">%1$d entries · tap to view or delete</string>
 
     <string name="progress_calories_section">Calories</string>

@@ -592,6 +592,106 @@ private func displayWeight(_ kg: Double, useMetric: Bool) -> String {
     return String(format: "%.1f lb", lbs)
 }
 
+// MARK: - Body Fat History (link + full list, mirroring Weight History)
+
+struct BodyFatHistoryLink: View {
+    let totalCount: Int
+    let onTap: () -> Void
+
+    var body: some View {
+        Button(action: onTap) {
+            HStack(spacing: 12) {
+                Image(systemName: "list.bullet.rectangle")
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundStyle(AppColors.calorie)
+                    .frame(width: 28, height: 28)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Body Fat History")
+                        .font(.system(.body, design: .rounded, weight: .medium))
+                        .foregroundStyle(.primary)
+                    Text("\(totalCount) \(totalCount == 1 ? "entry" : "entries") · tap to view or delete")
+                        .font(.system(.caption, design: .rounded))
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(.tertiary)
+            }
+            .padding(.vertical, 12)
+            .padding(.horizontal, 14)
+            .background(AppColors.appCard, in: RoundedRectangle(cornerRadius: 14))
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+struct AllBodyFatHistoryView: View {
+    let entries: [BodyFatEntry]
+    let onDelete: (BodyFatEntry) -> Void
+
+    @Environment(\.dismiss) private var dismiss
+    @State private var pendingDeletion: BodyFatEntry?
+    // Local mirror so the list updates immediately after deletion without needing the parent to re-bind.
+    @State private var visibleEntries: [BodyFatEntry] = []
+
+    var body: some View {
+        NavigationStack {
+            List {
+                ForEach(visibleEntries) { entry in
+                    HStack {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(displayBodyFat(entry.bodyFatFraction))
+                                .font(.system(.body, design: .rounded, weight: .medium))
+                            Text(weightHistoryFormatter.string(from: entry.date))
+                                .font(.system(.caption, design: .rounded))
+                                .foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                    }
+                    .swipeActions(edge: .trailing) {
+                        Button(role: .destructive) {
+                            pendingDeletion = entry
+                        } label: {
+                            Label("Delete", systemImage: "trash")
+                        }
+                    }
+                }
+            }
+            .listStyle(.insetGrouped)
+            .navigationTitle("Body Fat History")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { dismiss() }
+                }
+            }
+        }
+        .onAppear { visibleEntries = entries }
+        .alert("Delete Body Fat Entry", isPresented: Binding(
+            get: { pendingDeletion != nil },
+            set: { if !$0 { pendingDeletion = nil } }
+        )) {
+            Button("Cancel", role: .cancel) { pendingDeletion = nil }
+            Button("Delete", role: .destructive) {
+                if let entry = pendingDeletion {
+                    visibleEntries.removeAll { $0.id == entry.id }
+                    onDelete(entry)
+                }
+                pendingDeletion = nil
+            }
+        } message: {
+            if let entry = pendingDeletion {
+                Text("Remove \(weightHistoryFormatter.string(from: entry.date))'s entry of \(displayBodyFat(entry.bodyFatFraction))? This also deletes the matching sample from Apple Health.")
+            }
+        }
+    }
+}
+
+private func displayBodyFat(_ fraction: Double) -> String {
+    String(format: "%.1f%%", fraction * 100)
+}
+
 // MARK: - Body Metrics Section (Weight / Body Fat toggle)
 
 enum BodyMetric: String, CaseIterable, Identifiable {

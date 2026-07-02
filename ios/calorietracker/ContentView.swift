@@ -2535,6 +2535,7 @@ struct ProgressTabView: View {
     @State private var showLogBodyFat = false
     @State private var showGoalReached = false
     @State private var showAllWeights = false
+    @State private var showAllBodyFat = false
 
     private var userProfile: UserProfile { profileStore.profile }
 
@@ -2630,6 +2631,15 @@ struct ProgressTabView: View {
                         .padding(.horizontal)
                     }
 
+                    // Body Fat History — tap to view/delete entries
+                    if !bodyFatStore.entries.isEmpty {
+                        BodyFatHistoryLink(
+                            totalCount: bodyFatStore.entries.count,
+                            onTap: { showAllBodyFat = true }
+                        )
+                        .padding(.horizontal)
+                    }
+
                     // Calorie Trend
                     CalorieChartSection(
                         dailyCalories: dailyCalories,
@@ -2689,6 +2699,12 @@ struct ProgressTabView: View {
                     entries: weightStore.entries.sorted { $0.date > $1.date },
                     useMetric: weightUnitRaw == "kg",
                     onDelete: { entry in weightStore.deleteEntry(entry) }
+                )
+            }
+            .sheet(isPresented: $showAllBodyFat) {
+                AllBodyFatHistoryView(
+                    entries: bodyFatStore.entries.sorted { $0.date > $1.date },
+                    onDelete: { entry in bodyFatStore.deleteEntry(entry) }
                 )
             }
         }
