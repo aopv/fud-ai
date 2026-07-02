@@ -390,3 +390,7 @@ Thanks to everyone who has contributed to making Fud AI better:
 <a href="https://github.com/apoorvdarshan/fud-ai/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=apoorvdarshan/fud-ai&amp;max=100&amp;columns=12" alt="Contributors" />
 </a>
+
+## Credits
+
+Exercise data, muscle glyphs, and barcode nutrition data come from open projects — see [ASSET_CREDITS.md](ASSET_CREDITS.md).
