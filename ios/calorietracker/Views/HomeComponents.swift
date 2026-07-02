@@ -494,6 +494,10 @@ struct CalorieGauge: View {
 
     @State private var shownProgress: Double = 0
     @State private var lastEpoch = 0
+    // The arc reads its colors from static AppColors accessors and none of the
+    // stored inputs change with the theme, so SwiftUI skips this view on theme
+    // switches. Observing the setting re-renders it in place (state intact).
+    @AppStorage(AppThemeColor.storageKey) private var appThemeColorRaw = AppThemeColor.defaultColor.rawValue
 
     private var progress: Double {
         goal > 0 ? min(Double(eaten) / Double(goal), 1.0) : 0
