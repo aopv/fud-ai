@@ -165,7 +165,7 @@ fun HomeScreen(container: AppContainer) {
     val vm: HomeViewModel = viewModel(factory = HomeViewModel.Factory(container))
     val ui by vm.ui.collectAsState()
     val ctx = LocalContext.current
-    val weekStartsOnMonday by container.prefs.weekStartsOnMonday.collectAsState(initial = false)
+    val weekStartsOnMonday by container.prefs.weekStartsOnMonday.collectAsState(initial = true)
     val allEntries by container.foodRepository.entries.collectAsState(initial = emptyList())
 
     var showText by remember { mutableStateOf(false) }

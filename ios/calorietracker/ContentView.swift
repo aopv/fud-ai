@@ -2735,7 +2735,7 @@ struct ProfileView: View {
     @AppStorage("healthKitEnabled") private var healthKitEnabled = false
     @AppStorage(AdaptiveGoalSettings.enabledKey) private var adaptiveGoalsEnabled = false
     @AppStorage(EnergyBurnSettings.enabledKey) private var energyBurnEnabled = false
-    @AppStorage("weekStartsOnMonday") private var weekStartsOnMonday = false
+    @AppStorage("weekStartsOnMonday") private var weekStartsOnMonday = true
     @AppStorage(FoodMeasurementSettings.preferGramsByDefaultKey) private var preferGramsByDefault = false
     @AppStorage(AppThemeColor.storageKey) private var appThemeColorRaw = AppThemeColor.defaultColor.rawValue
 

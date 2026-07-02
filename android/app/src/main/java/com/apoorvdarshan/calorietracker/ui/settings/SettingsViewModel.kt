@@ -58,7 +58,7 @@ data class SettingsUiState(
     val speechApiKeyMasked: String = "",
     val appearanceMode: String = "system",
     val appThemeColor: AppThemeColor = AppThemeColor.FUD_PINK,
-    val weekStartsOnMonday: Boolean = false,
+    val weekStartsOnMonday: Boolean = true,
     val userContext: String = "",
     val fallbackEnabled: Boolean = false,
     val fallbackProvider: AIProvider = AIProvider.GEMINI,

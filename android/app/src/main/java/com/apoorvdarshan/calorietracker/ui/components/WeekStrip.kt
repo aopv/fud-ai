@@ -83,7 +83,7 @@ fun WeekEnergyStrip(
     selectedDate: LocalDate,
     onSelect: (LocalDate) -> Unit,
     modifier: Modifier = Modifier,
-    weekStartsOnMonday: Boolean = false
+    weekStartsOnMonday: Boolean = true
 ) {
     val firstDow = remember(weekStartsOnMonday) {
         if (weekStartsOnMonday) DayOfWeek.MONDAY else DayOfWeek.SUNDAY

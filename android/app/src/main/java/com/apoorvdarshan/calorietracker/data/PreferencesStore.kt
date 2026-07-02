@@ -252,8 +252,8 @@ class PreferencesStore(private val context: Context) {
     val appThemeColor: Flow<String> = ds.data.map { it[Keys.APP_THEME_COLOR] ?: AppThemeColor.DEFAULT_KEY }
     suspend fun setAppThemeColor(v: String) { ds.edit { it[Keys.APP_THEME_COLOR] = v } }
 
-    /** false = Sunday, true = Monday. Mirrors iOS @AppStorage("weekStartsOnMonday"). */
-    val weekStartsOnMonday: Flow<Boolean> = ds.data.map { it[Keys.WEEK_STARTS_MONDAY] ?: false }
+    /** false = Sunday, true = Monday (default). Mirrors iOS @AppStorage("weekStartsOnMonday"). */
+    val weekStartsOnMonday: Flow<Boolean> = ds.data.map { it[Keys.WEEK_STARTS_MONDAY] ?: true }
     suspend fun setWeekStartsOnMonday(v: Boolean) { ds.edit { it[Keys.WEEK_STARTS_MONDAY] = v } }
 
     /** "RECENTS" | "FREQUENT" | "FAVORITES". Mirrors iOS @AppStorage("lastRecentsSegment"). */

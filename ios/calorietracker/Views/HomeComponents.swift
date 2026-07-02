@@ -6,7 +6,7 @@ struct WeekEnergyStrip: View {
     @Binding var selectedDate: Date
     let caloriesForDate: (Date) -> Int
     let calorieGoal: Int
-    @AppStorage("weekStartsOnMonday") private var weekStartsOnMonday = false
+    @AppStorage("weekStartsOnMonday") private var weekStartsOnMonday = true
     /// Two-way scroll position (the visible week's index). Driven programmatically when the selected
     /// day moves to another week, and updated by the user's own paging.
     @State private var scrolledWeek: Int?
