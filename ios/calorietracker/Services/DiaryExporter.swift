@@ -122,7 +122,7 @@ enum DiaryExporter {
         source == .manual ? "manually_edited" : "ai_estimated"
     }
 
-    private static func r1(_ x: Double) -> Double { (x * 10).rounded() / 10 }
+    private nonisolated static func r1(_ x: Double) -> Double { (x * 10).rounded() / 10 }
 
     private static let dayFmt: DateFormatter = {
         let f = DateFormatter(); f.locale = Locale(identifier: "en_US_POSIX"); f.dateFormat = "yyyy-MM-dd"; return f
@@ -229,7 +229,7 @@ enum DiaryExporter {
         return s
     }
 
-    private static func csvEscape(_ field: String) -> String {
+    private nonisolated static func csvEscape(_ field: String) -> String {
         if field.contains(",") || field.contains("\"") || field.contains("\n") {
             return "\"" + field.replacingOccurrences(of: "\"", with: "\"\"") + "\""
         }

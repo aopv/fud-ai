@@ -47,7 +47,7 @@ enum MealShare {
         return lines.joined(separator: "\n")
     }
 
-    private static func mealDict(_ e: FoodEntry) -> [String: Any] {
+    private nonisolated static func mealDict(_ e: FoodEntry) -> [String: Any] {
         var d: [String: Any] = [
             "name": e.name,
             "calories": e.calories,
@@ -98,7 +98,7 @@ enum MealShare {
         return entries.isEmpty ? nil : entries
     }
 
-    private static func entry(from d: [String: Any]) -> FoodEntry? {
+    private nonisolated static func entry(from d: [String: Any]) -> FoodEntry? {
         guard let name = (d["name"] as? String), !name.isEmpty,
               let calories = (d["calories"] as? NSNumber)?.intValue else { return nil }
         func dbl(_ k: String) -> Double? { (d[k] as? NSNumber)?.doubleValue }

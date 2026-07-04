@@ -229,7 +229,7 @@ struct FoodEntry: Identifiable, Codable {
     var selectedServingQuantity: Double?
     var customNote: String?
 
-    init(
+    nonisolated init(
         id: UUID = UUID(),
         name: String,
         calories: Int,
