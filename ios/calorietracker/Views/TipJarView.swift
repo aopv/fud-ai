@@ -6,79 +6,73 @@
 import SwiftUI
 import RevenueCat
 
-/// Food-themed tip jar. Tips are consumable IAPs that fund development —
-/// everything in the app is already unlocked, so they deliberately grant nothing.
-struct TipJarView: View {
-    @Environment(\.dismiss) private var dismiss
-
+/// Food-themed tip jar, inlined in the Settings About section as a disclosure row
+/// (same pattern as What's New) — no separate sheet. Tips are consumable IAPs that
+/// fund development; everything in the app is already unlocked, so they grant nothing.
+struct TipJarDisclosureRow: View {
     private struct Tier: Identifiable {
         let productID: String
-        let emoji: String
+        let icon: String
         let name: String
         var id: String { productID }
     }
 
     private static let tiers: [Tier] = [
         Tier(productID: "com.apoorvdarshan.calorietracker.tip.snack",
-             emoji: "🍎", name: String(localized: "Snack")),
+             icon: "tip_snack", name: String(localized: "Snack")),
         Tier(productID: "com.apoorvdarshan.calorietracker.tip.proteinshake",
-             emoji: "🥤", name: String(localized: "Protein Shake")),
+             icon: "tip_proteinshake", name: String(localized: "Protein Shake")),
         Tier(productID: "com.apoorvdarshan.calorietracker.tip.lunch",
-             emoji: "🍱", name: String(localized: "Lunch")),
+             icon: "tip_lunch", name: String(localized: "Lunch")),
         Tier(productID: "com.apoorvdarshan.calorietracker.tip.feast",
-             emoji: "🎉", name: String(localized: "Feast"))
+             icon: "tip_feast", name: String(localized: "Feast"))
     ]
 
+    @State private var isExpanded = false
     @State private var products: [String: StoreProduct] = [:]
     @State private var isLoading = true
     @State private var purchasingID: String?
-    @State private var showThanks = false
+    @State private var didTip = false
 
     var body: some View {
-        NavigationStack {
-            Group {
-                if showThanks {
-                    thanksView
+        DisclosureGroup(isExpanded: $isExpanded) {
+            VStack(alignment: .leading, spacing: 10) {
+                if didTip {
+                    HStack(spacing: 8) {
+                        Text("🩷")
+                        Text("Thank you!")
+                            .font(.subheadline.weight(.semibold))
+                        Text("Your support keeps Fud AI free for everyone.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
                 } else {
-                    tipList
-                }
-            }
-            .background(AppColors.appBackground)
-            .navigationTitle(Text("Tip Jar"))
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Done") { dismiss() }
-                }
-            }
-        }
-        .task { await loadProducts() }
-    }
-
-    private var tipList: some View {
-        List {
-            Section {
-                VStack(alignment: .leading, spacing: 10) {
                     Text("Fud AI is free and open source — no subscriptions, no paywalls, everything already unlocked. If it's helped you, a tip keeps it that way.")
-                        .font(.system(.subheadline, design: .rounded))
-                        .foregroundStyle(.primary)
-                    Text("Don't worry — tips have zero calories.")
-                        .font(.system(.footnote, design: .rounded))
+                        .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
-                .listRowBackground(Color.clear)
-                .listRowSeparator(.hidden)
-                .listRowInsets(EdgeInsets(top: 8, leading: 4, bottom: 4, trailing: 4))
-            }
 
-            Section {
                 ForEach(Self.tiers) { tier in
                     tierRow(tier)
                 }
+
+                Text("Don't worry — tips have zero calories.")
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
             }
-            .listRowBackground(AppColors.appCard)
+            .padding(.vertical, 4)
+        } label: {
+            Label {
+                Text("Leave a Tip")
+            } icon: {
+                Image(systemName: "heart.fill")
+                    .foregroundStyle(AppColors.calorie)
+            }
         }
-        .scrollContentBackground(.hidden)
+        .tint(.primary)
+        .task(id: isExpanded) {
+            if isExpanded && products.isEmpty { await loadProducts() }
+        }
     }
 
     @ViewBuilder
@@ -87,57 +81,37 @@ struct TipJarView: View {
         Button {
             if let product { Task { await purchase(product) } }
         } label: {
-            HStack(spacing: 12) {
-                Text(tier.emoji)
-                    .font(.title2)
+            HStack(spacing: 10) {
+                // PixelLab-generated pixel art; .none interpolation keeps pixels crisp.
+                Image(tier.icon)
+                    .resizable()
+                    .interpolation(.none)
+                    .scaledToFit()
+                    .frame(width: 26, height: 26)
                 Text(tier.name)
-                    .font(.system(.body, design: .rounded, weight: .medium))
+                    .font(.subheadline.weight(.medium))
                     .foregroundStyle(.primary)
                 Spacer()
-                if purchasingID == tier.productID {
+                if purchasingID == tier.productID || (product == nil && isLoading) {
                     ProgressView()
                 } else if let product {
                     Text(product.localizedPriceString)
-                        .font(.system(.subheadline, design: .rounded, weight: .semibold))
+                        .font(.subheadline.weight(.semibold))
                         .foregroundStyle(AppColors.calorie)
-                } else if isLoading {
-                    ProgressView()
                 } else {
                     // Store unreachable (offline, or products still propagating).
                     Image(systemName: "wifi.slash")
                         .foregroundStyle(.secondary)
                 }
             }
+            .contentShape(Rectangle())
         }
+        .buttonStyle(.plain)
         .disabled(product == nil || purchasingID != nil)
     }
 
-    private var thanksView: some View {
-        VStack(spacing: 14) {
-            Text("🩷")
-                .font(.system(size: 64))
-            Text("Thank you!")
-                .font(.system(.title2, design: .rounded, weight: .bold))
-            Text("Your support keeps Fud AI free for everyone.")
-                .font(.system(.subheadline, design: .rounded))
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-            Button {
-                dismiss()
-            } label: {
-                Text("Done")
-                    .font(.system(.body, design: .rounded, weight: .semibold))
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 12)
-                    .background(AppColors.calorie, in: Capsule())
-                    .foregroundStyle(.white)
-            }
-            .padding(.top, 12)
-        }
-        .padding(28)
-    }
-
     private func loadProducts() async {
+        isLoading = true
         let fetched = await Purchases.shared.products(Self.tiers.map(\.productID))
         products = Dictionary(uniqueKeysWithValues: fetched.map { ($0.productIdentifier, $0) })
         isLoading = false
@@ -149,10 +123,10 @@ struct TipJarView: View {
         do {
             let result = try await Purchases.shared.purchase(product: product)
             if !result.userCancelled {
-                showThanks = true
+                didTip = true
             }
         } catch {
-            // Cancelled or failed — no alert needed; the sheet simply stays usable.
+            // Cancelled or failed — the rows simply stay usable.
         }
     }
 }

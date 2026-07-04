@@ -6,6 +6,8 @@ Barcode product lookups are powered by the [Open Food Facts](https://world.openf
 
 App icon artwork was provided by the project owner and bundled locally in the asset catalogs.
 
+The pixel-art tip icons in the iOS Tip Jar (Settings → Leave a Tip) were generated with [PixelLab](https://www.pixellab.ai) and are bundled in the iOS asset catalog.
+
 Muscle glyph assets (the muscle-filter icons in the Workouts tab) are cropped/rasterized derivatives of SVG muscle paths from [`react-muscle-highlighter`](https://github.com/soroojshehryar/react-muscle-highlighter) 1.2.0, MIT License. The generated app assets are bundled locally (iOS asset catalog, Android `app/src/main/assets/muscle/`) and do not depend on the upstream repository at runtime.
 
 Copyright (c) 2024 My Muscle Contributors

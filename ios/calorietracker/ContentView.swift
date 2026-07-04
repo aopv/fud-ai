@@ -186,7 +186,6 @@ private struct AboutSettingsSections: View {
 
     @State private var showShareSheet = false
     @State private var showWhatsNew = false
-    @State private var showTipJar = false
 
     init(updateState: Binding<AppUpdateState>, refreshUpdateState: @escaping () async -> Void) {
         self._updateState = updateState
@@ -232,23 +231,10 @@ private struct AboutSettingsSections: View {
                 }
                 .tint(.primary)
 
-                // Support — native tip jar. App Review treats "donate to the developer"
-                // links as digital payments (guideline 3.1.1), so no Ko-fi link on iOS;
-                // Android keeps Ko-fi.
-                Button {
-                    showTipJar = true
-                } label: {
-                    Label {
-                        Text("Leave a Tip")
-                    } icon: {
-                        Image(systemName: "heart.fill")
-                            .foregroundStyle(AppColors.calorie)
-                    }
-                }
-                .tint(.primary)
-                .sheet(isPresented: $showTipJar) {
-                    TipJarView()
-                }
+                // Support — native tip jar, expanded inline like What's New. App Review
+                // treats "donate to the developer" links as digital payments (guideline
+                // 3.1.1), so no Ko-fi link on iOS; Android keeps Ko-fi.
+                TipJarDisclosureRow()
 
                 // Open Source
                 Link(destination: URL(string: "https://github.com/apoorvdarshan/fud-ai")!) {
