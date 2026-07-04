@@ -159,6 +159,7 @@ private struct ExerciseLibraryBrowserView: View {
             .padding(.bottom, 112)
         }
         .contentMargins(.bottom, 104, for: .scrollContent)
+        .scrollDismissesKeyboard(.immediately)
     }
 
     private var filters: some View {
