@@ -39,7 +39,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="styles.css?v=20260603b">
+<link rel="stylesheet" href="styles.css?v=20260705">
 <!-- Structured Data -->
 <script type="application/ld+json">
 {
@@ -313,6 +313,13 @@
               <img src="assets/screenshots/home.png" alt="Fud AI Home dashboard with calorie ring and macro bars" width="1179" height="2556" decoding="async" fetchpriority="high">
             </div>
           </div>
+          <span class="hero-barcode" aria-hidden="true"><span class="bars"></span><span class="code">FUD·ISSUE·03</span></span>
+          <svg class="hero-stamp" viewBox="0 0 128 128" aria-hidden="true">
+            <defs><path id="stamp-arc" d="M 64,14 a 50,50 0 1,1 -0.01,0"/></defs>
+            <circle cx="64" cy="64" r="62"/>
+            <text class="stamp-ring"><textPath href="#stamp-arc">OPEN SOURCE · FREE FOREVER ·</textPath></text>
+            <text class="stamp-core" x="64" y="75" text-anchor="middle">Fud</text>
+          </svg>
         </div>
       </aside>
     </div>
@@ -783,6 +790,16 @@
   document.querySelectorAll('.nav-links a').forEach(link => {
     link.addEventListener('click', () => { if (navToggle) navToggle.checked = false; });
   });
+  // Editorial scroll reveals — content stays visible if JS or IO is absent
+  if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('in-view'); io.unobserve(e.target); }
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.06 });
+    document.querySelectorAll('.chapter, .process-step, .faq-item, .stat-card, .section-head, .cta-content')
+      .forEach(el => { el.classList.add('reveal'); io.observe(el); });
+  }
 </script>
 <script>
   window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
