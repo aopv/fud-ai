@@ -126,49 +126,50 @@ fun WorkoutsScreen(modifier: Modifier = Modifier) {
     }
 
     // Fud AI's tab bar floats over content (no Scaffold inset like Delts), so the
-    // list paints the screen background, starts below the status bar, and keeps
-    // its tail clear of the floating bar.
-    LazyColumn(
-        state = listState,
+    // screen paints its own background, starts below the status bar, and the list
+    // keeps its tail clear of the floating bar. Search, filter chips, and the
+    // results header stay pinned; only the exercise list scrolls (matches iOS).
+    Column(
         modifier = modifier
             .fillMaxSize()
             .background(workoutsColors().background)
-            .statusBarsPadding(),
-        contentPadding = PaddingValues(bottom = BottomNavScrollPadding)
+            .statusBarsPadding()
     ) {
-        item(key = "filters") {
-            Column(
-                Modifier.padding(start = 20.dp, end = 20.dp, top = 14.dp, bottom = 18.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                SearchPill(value = vm.search, onValueChange = { vm.search = it })
-                FilterRow(repo, vm)
+        Column(
+            Modifier.padding(start = 20.dp, end = 20.dp, top = 14.dp, bottom = 18.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            SearchPill(value = vm.search, onValueChange = { vm.search = it })
+            FilterRow(repo, vm)
+        }
+        ResultsHeader(
+            count = items.size,
+            sortTitle = stringResource(vm.sort.titleRes),
+            canReset = vm.hasActiveFilters,
+            onReset = vm::reset,
+            selectedSort = vm.sort,
+            onSort = { vm.sort = it },
+            modifier = Modifier.padding(horizontal = 20.dp, vertical = 4.dp)
+        )
+        LazyColumn(
+            state = listState,
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(bottom = BottomNavScrollPadding)
+        ) {
+            if (items.isEmpty()) {
+                item(key = "empty") { EmptyState() }
+            } else {
+                items(items, key = { it.id }) { item ->
+                    ExerciseRow(item = item, onClick = { vm.openExerciseId = item.id })
+                    HorizontalDivider(
+                        color = workoutsColors().hairline.copy(alpha = 0.28f),
+                        thickness = 0.5.dp,
+                        modifier = Modifier.padding(start = 144.dp, end = 20.dp)
+                    )
+                }
             }
+            item(key = "bottompad") { Spacer(Modifier.size(24.dp)) }
         }
-        item(key = "header") {
-            ResultsHeader(
-                count = items.size,
-                sortTitle = stringResource(vm.sort.titleRes),
-                canReset = vm.hasActiveFilters,
-                onReset = vm::reset,
-                selectedSort = vm.sort,
-                onSort = { vm.sort = it },
-                modifier = Modifier.padding(horizontal = 20.dp, vertical = 4.dp)
-            )
-        }
-        if (items.isEmpty()) {
-            item(key = "empty") { EmptyState() }
-        } else {
-            items(items, key = { it.id }) { item ->
-                ExerciseRow(item = item, onClick = { vm.openExerciseId = item.id })
-                HorizontalDivider(
-                    color = workoutsColors().hairline.copy(alpha = 0.28f),
-                    thickness = 0.5.dp,
-                    modifier = Modifier.padding(start = 144.dp, end = 20.dp)
-                )
-            }
-        }
-        item(key = "bottompad") { Spacer(Modifier.size(24.dp)) }
     }
 }
 
