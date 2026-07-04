@@ -2674,7 +2674,7 @@ struct ProgressTabView: View {
                 .padding(.vertical)
             }
             .background(AppColors.appBackground)
-            .safeAreaInset(edge: .bottom) {
+            .safeAreaInset(edge: .top) {
                 BannerAdView()
                     .frame(height: 50)
                     .frame(maxWidth: .infinity)
@@ -3806,7 +3806,7 @@ struct ProfileView: View {
             }
             .scrollContentBackground(.hidden)
             .background(AppColors.appBackground)
-            .safeAreaInset(edge: .bottom) {
+            .safeAreaInset(edge: .top) {
                 BannerAdView()
                     .frame(height: 50)
                     .frame(maxWidth: .infinity)
