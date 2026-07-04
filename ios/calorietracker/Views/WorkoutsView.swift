@@ -7,9 +7,7 @@ struct WorkoutsView: View {
             ExerciseLibraryBrowserView()
                 .background(WorkoutsScreenBackground())
                 .safeAreaInset(edge: .top) {
-                    BannerAdView()
-                        .frame(height: 50)
-                        .frame(maxWidth: .infinity)
+                    AdBannerStrip()
                 }
                 .navigationTitle("Workouts")
                 .navigationBarTitleDisplayMode(.inline)

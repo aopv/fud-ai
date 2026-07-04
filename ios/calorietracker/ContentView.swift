@@ -808,9 +808,7 @@ struct HomeView: View {
             .animation(.snappy, value: selectedDate)
             .contentMargins(.bottom, 96, for: .scrollContent)
             .safeAreaInset(edge: .top) {
-                BannerAdView()
-                    .frame(height: 50)
-                    .frame(maxWidth: .infinity)
+                AdBannerStrip()
             }
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
@@ -2675,9 +2673,7 @@ struct ProgressTabView: View {
             }
             .background(AppColors.appBackground)
             .safeAreaInset(edge: .top) {
-                BannerAdView()
-                    .frame(height: 50)
-                    .frame(maxWidth: .infinity)
+                AdBannerStrip()
             }
             .navigationBarHidden(true)
             .sheet(isPresented: $showLogWeight) {
@@ -3807,9 +3803,7 @@ struct ProfileView: View {
             .scrollContentBackground(.hidden)
             .background(AppColors.appBackground)
             .safeAreaInset(edge: .top) {
-                BannerAdView()
-                    .frame(height: 50)
-                    .frame(maxWidth: .infinity)
+                AdBannerStrip()
             }
             .navigationBarHidden(true)
             .sheet(isPresented: $showExportDiary) {
