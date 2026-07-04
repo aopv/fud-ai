@@ -8,6 +8,7 @@
 import SwiftUI
 import HealthKit
 import WidgetKit
+import RevenueCat
 
 @main
 struct calorietrackerApp: App {
@@ -36,6 +37,9 @@ struct calorietrackerApp: App {
     }
 
     init() {
+        // Tip-jar IAPs are tracked through RevenueCat (public SDK key, safe to ship).
+        Purchases.logLevel = .warn
+        Purchases.configure(withAPIKey: "appl_kOERxwXPyEUPZVCKhuuuNnUuGUZ")
         // Derive the split height/weight unit prefs from the legacy useMetric flag
         // before any view reads them.
         UnitPreferenceMigration.runIfNeeded()

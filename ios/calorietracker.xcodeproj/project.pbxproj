@@ -12,6 +12,7 @@
 		F00D10000000000000000001 /* FudAIWatchApp.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = F00D10000000000000000007 /* FudAIWatchApp.app */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F00D10000000000000000002 /* FudAIWatchWidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F00D10000000000000000008 /* FudAIWatchWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F00DAD000000000000000001 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = F00DAD000000000000000003 /* GoogleMobileAds */; };
+		F00DAD000000000000000011 /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = F00DAD000000000000000013 /* RevenueCat */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -203,6 +204,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F00DAD000000000000000001 /* GoogleMobileAds in Frameworks */,
+				F00DAD000000000000000011 /* RevenueCat in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -305,6 +307,7 @@
 			name = calorietracker;
 			packageProductDependencies = (
 				F00DAD000000000000000003 /* GoogleMobileAds */,
+				F00DAD000000000000000013 /* RevenueCat */,
 			);
 			productName = calorietracker;
 			productReference = BA8E0DF32F33F197007DD537 /* calorietracker.app */;
@@ -507,6 +510,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				F00DAD000000000000000002 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
+				F00DAD000000000000000012 /* XCRemoteSwiftPackageReference "purchases-ios" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = BA8E0DF42F33F197007DD537 /* Products */;
@@ -1374,6 +1378,14 @@
 				minimumVersion = 13.0.0;
 			};
 		};
+		F00DAD000000000000000012 /* XCRemoteSwiftPackageReference "purchases-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/RevenueCat/purchases-ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1381,6 +1393,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = F00DAD000000000000000002 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
 			productName = GoogleMobileAds;
+		};
+		F00DAD000000000000000013 /* RevenueCat */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F00DAD000000000000000012 /* XCRemoteSwiftPackageReference "purchases-ios" */;
+			productName = RevenueCat;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

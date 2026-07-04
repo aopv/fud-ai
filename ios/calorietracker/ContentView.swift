@@ -186,6 +186,7 @@ private struct AboutSettingsSections: View {
 
     @State private var showShareSheet = false
     @State private var showWhatsNew = false
+    @State private var showTipJar = false
 
     init(updateState: Binding<AppUpdateState>, refreshUpdateState: @escaping () async -> Void) {
         self._updateState = updateState
@@ -231,16 +232,23 @@ private struct AboutSettingsSections: View {
                 }
                 .tint(.primary)
 
-                // Support
-                Link(destination: URL(string: "https://ko-fi.com/apoorvdarshan")!) {
+                // Support — native tip jar. App Review treats "donate to the developer"
+                // links as digital payments (guideline 3.1.1), so no Ko-fi link on iOS;
+                // Android keeps Ko-fi.
+                Button {
+                    showTipJar = true
+                } label: {
                     Label {
-                        Text("Support on Ko-fi")
+                        Text("Leave a Tip")
                     } icon: {
-                        Image(systemName: "cup.and.saucer.fill")
+                        Image(systemName: "heart.fill")
                             .foregroundStyle(AppColors.calorie)
                     }
                 }
                 .tint(.primary)
+                .sheet(isPresented: $showTipJar) {
+                    TipJarView()
+                }
 
                 // Open Source
                 Link(destination: URL(string: "https://github.com/apoorvdarshan/fud-ai")!) {
