@@ -645,4 +645,17 @@
     <string name="onboarding_feature_library">Bibliothèque de 870+ exercices</string>
     <string name="onboarding_feature_widgets">Widgets d\'écran d\'accueil</string>
     <string name="onboarding_ads_note">La pub garde l\'app gratuite — une petite bannière soutient le développement. Vos données de santé ne sont jamais utilisées pour la pub.</string>
+    <string name="whats_new_v30_workouts">Nouvel onglet Entraînements — parcourez 873 exercices avec photos, filtres par muscle et équipement, recherche et pages de détail.</string>
+    <string name="whats_new_v30_home">Refonte de l\'accueil : compteur de calories façon tachymètre, barres de macros verticales, quatre cartes de nutriments et un bouton d\'ajout flottant.</string>
+    <string name="whats_new_v30_coach_voice">Interrogez le Coach à la voix avec le nouvel enregistreur intégré.</string>
+    <string name="whats_new_v30_share">Partagez un repas sous forme de lien qui s\'ouvre directement dans Fud AI, sur iPhone ou Android.</string>
+    <string name="whats_new_v30_export">Exportez votre journal alimentaire en JSON, Markdown ou CSV depuis les Réglages.</string>
+    <string name="whats_new_v30_reprocess">Retraitez un repas enregistré avec l\'IA — ajustez le nom, la portion ou la note, puis relancez l\'analyse.</string>
+    <string name="whats_new_v30_camera">Caméra + Caméra conserve les deux prises, assemblées côte à côte.</string>
+    <string name="whats_new_v30_colors">10 nouvelles couleurs de thème, désormais choisies directement dans les Réglages.</string>
+    <string name="whats_new_v30_bodyfat">Historique de masse grasse : consultez et supprimez chaque entrée, comme pour le poids.</string>
+    <string name="whats_new_v30_units">Les unités de taille et de poids se règlent désormais indépendamment.</string>
+    <string name="whats_new_v30_adaptive">Objectifs adaptatifs et Énergie brûlée sortent de l\'expérimental et sont activés par défaut pour les nouvelles installations.</string>
+    <string name="whats_new_v30_widgets">Refonte des widgets : le style tachymètre de l\'accueil, dessiné à la taille réelle de chaque widget.</string>
+    <string name="whats_new_v30_ads">Une petite bannière publicitaire garde désormais Fud AI gratuit.</string>
 </resources>

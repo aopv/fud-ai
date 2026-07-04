@@ -645,4 +645,17 @@
     <string name="onboarding_feature_library">Biblioteca com 870+ exercícios</string>
     <string name="onboarding_feature_widgets">Widgets na tela inicial</string>
     <string name="onboarding_ads_note">Anúncios mantêm o app gratuito — um pequeno banner apoia o desenvolvimento. Seus dados de saúde nunca são usados para anúncios.</string>
+    <string name="whats_new_v30_workouts">Nova aba Treinos — navegue por 873 exercícios com fotos, filtros de músculo e equipamento, busca e páginas de detalhes.</string>
+    <string name="whats_new_v30_home">Nova tela inicial: velocímetro de calorias, barras verticais de macros, quatro cartões de nutrientes e um botão flutuante de adicionar.</string>
+    <string name="whats_new_v30_coach_voice">Pergunte ao Coach por voz com o novo gravador integrado.</string>
+    <string name="whats_new_v30_share">Compartilhe qualquer refeição como um link que abre direto no Fud AI — no iPhone ou Android.</string>
+    <string name="whats_new_v30_export">Exporte seu diário alimentar em JSON, Markdown ou CSV nos Ajustes.</string>
+    <string name="whats_new_v30_reprocess">Reprocesse uma refeição registrada com IA — ajuste o nome, a porção ou a nota e analise de novo.</string>
+    <string name="whats_new_v30_camera">Câmera + Câmera mantém as duas fotos, unidas lado a lado.</string>
+    <string name="whats_new_v30_colors">10 novas cores de tema, agora escolhidas direto nos Ajustes.</string>
+    <string name="whats_new_v30_bodyfat">Histórico de gordura corporal: veja e exclua entradas individuais, como no peso.</string>
+    <string name="whats_new_v30_units">As unidades de altura e peso agora são definidas separadamente.</string>
+    <string name="whats_new_v30_adaptive">Metas adaptativas e Queima de energia saíram da fase experimental e vêm ativadas por padrão em novas instalações.</string>
+    <string name="whats_new_v30_widgets">Widgets redesenhados: o estilo velocímetro da tela inicial, desenhado no tamanho real de cada widget.</string>
+    <string name="whats_new_v30_ads">Um pequeno banner de anúncio agora mantém o Fud AI gratuito.</string>
 </resources>

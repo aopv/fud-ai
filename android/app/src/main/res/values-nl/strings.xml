@@ -645,4 +645,17 @@
     <string name="onboarding_feature_library">Bibliotheek met 870+ oefeningen</string>
     <string name="onboarding_feature_widgets">Widgets op het startscherm</string>
     <string name="onboarding_ads_note">Advertenties houden de app gratis — een kleine banner ondersteunt de ontwikkeling. Je gezondheidsgegevens worden nooit voor advertenties gebruikt.</string>
+    <string name="whats_new_v30_workouts">Nieuw Workouts-tabblad — blader door 873 oefeningen met foto\'s, spier- en materiaalfilters, zoeken en detailpagina\'s.</string>
+    <string name="whats_new_v30_home">Home vernieuwd: snelheidsmeter voor calorieën, verticale macrobalken, vier voedingskaarten en een zwevende toevoegknop.</string>
+    <string name="whats_new_v30_coach_voice">Stel de Coach een vraag met je stem via de nieuwe ingebouwde recorder.</string>
+    <string name="whats_new_v30_share">Deel elke maaltijd als een link die direct in Fud AI opent — op iPhone of Android.</string>
+    <string name="whats_new_v30_export">Exporteer je eetdagboek als JSON, Markdown of CSV via Instellingen.</string>
+    <string name="whats_new_v30_reprocess">Verwerk een gelogde maaltijd opnieuw met AI — pas naam, portie of notitie aan en analyseer opnieuw.</string>
+    <string name="whats_new_v30_camera">Camera + Camera bewaart beide foto\'s, zij aan zij samengevoegd.</string>
+    <string name="whats_new_v30_colors">10 nieuwe themakleuren, nu direct te kiezen in Instellingen.</string>
+    <string name="whats_new_v30_bodyfat">Vetpercentagegeschiedenis: bekijk en verwijder losse metingen, net als bij gewicht.</string>
+    <string name="whats_new_v30_units">Lengte- en gewichtseenheden zijn nu apart in te stellen.</string>
+    <string name="whats_new_v30_adaptive">Adaptieve doelen en Energieverbruik zijn niet langer experimenteel en staan standaard aan bij nieuwe installaties.</string>
+    <string name="whats_new_v30_widgets">Widgets vernieuwd: de snelheidsmeterstijl van Home, getekend op de echte grootte van elk widget.</string>
+    <string name="whats_new_v30_ads">Een kleine banneradvertentie houdt Fud AI nu gratis.</string>
 </resources>

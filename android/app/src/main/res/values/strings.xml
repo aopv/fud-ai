@@ -749,4 +749,17 @@
     <string name="onboarding_feature_library">870+ exercise library</string>
     <string name="onboarding_feature_widgets">Home screen widgets</string>
     <string name="onboarding_ads_note">Ads keep it free — a small banner supports development. Your health data is never used for ads.</string>
+    <string name="whats_new_v30_workouts">New Workouts tab — browse 873 exercises with photos, muscle and equipment filters, search, and detail pages.</string>
+    <string name="whats_new_v30_home">Home redesign: speedometer calorie gauge, vertical macro bars, four nutrient cards, and a floating add button.</string>
+    <string name="whats_new_v30_coach_voice">Ask Coach by voice with the new inline recorder.</string>
+    <string name="whats_new_v30_share">Share any meal as a link that opens straight in Fud AI on iPhone or Android.</string>
+    <string name="whats_new_v30_export">Export your food diary as JSON, Markdown, or CSV from Settings.</string>
+    <string name="whats_new_v30_reprocess">Reprocess a logged meal with AI — adjust its name, serving, or note and re-analyze.</string>
+    <string name="whats_new_v30_camera">Camera + Camera keeps both shots, stitched side by side.</string>
+    <string name="whats_new_v30_colors">10 new theme colors, now picked inline in Settings.</string>
+    <string name="whats_new_v30_bodyfat">Body fat history: review and delete individual entries, just like weight.</string>
+    <string name="whats_new_v30_units">Height and weight units can now be set independently.</string>
+    <string name="whats_new_v30_adaptive">Adaptive Goals and Energy Burn left Experimental and are on by default for new installs.</string>
+    <string name="whats_new_v30_widgets">Widgets redesign: the Home speedometer style, drawn at each widget\'s true size.</string>
+    <string name="whats_new_v30_ads">A small banner ad now keeps Fud AI free.</string>
 </resources>

@@ -283,6 +283,101 @@
         }
       }
     },
+    "10 new theme colors, now picked inline in Settings." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "10 ألوان جديدة للسمة، تُختار الآن مباشرة من الإعدادات."
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "10 yeni tema rəngi — indi birbaşa Parametrlərdə seçilir."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "10 neue Themenfarben, jetzt direkt in den Einstellungen wählbar."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "10 nuevos colores de tema, ahora elegidos directamente en Ajustes."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "10 nouvelles couleurs de thème, désormais choisies directement dans les Réglages."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "10 नए थीम रंग, अब सेटिंग्स में ही चुनें।"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "10 nuovi colori tema, ora scelti direttamente nelle Impostazioni."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "テーマカラーを10色追加。設定内でそのまま選べます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "테마 색상 10종 추가 — 이제 설정에서 바로 선택합니다."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "10 nieuwe themakleuren, nu direct te kiezen in Instellingen."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "10 nowych kolorów motywu, wybieranych teraz bezpośrednio w Ustawieniach."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "10 novas cores de tema, agora escolhidas direto nos Ajustes."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "10 culori noi de temă, alese acum direct din Setări."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "10 новых цветов темы — теперь выбираются прямо в настройках."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新增 10 种主题色，现在可在设置中直接选择。"
+          }
+        }
+      }
+    },
     "AI analysis" : {
       "localizations" : {
         "de" : {
@@ -4452,6 +4547,101 @@
         }
       }
     },
+    "A small banner ad and an optional Tip Jar keep Fud AI free." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إعلان بانر صغير ووعاء إكراميات اختياري يُبقيان Fud AI مجانيًا."
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kiçik banner reklamı və istəyə bağlı çay qabı Fud AI-ni pulsuz saxlayır."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eine kleine Banneranzeige und ein optionales Trinkgeldglas halten Fud AI kostenlos."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un pequeño banner y un Bote de propinas opcional mantienen Fud AI gratis."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une petite bannière et un pot à pourboires optionnel gardent Fud AI gratuit."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "एक छोटा बैनर विज्ञापन और वैकल्पिक टिप जार Fud AI को मुफ़्त रखते हैं।"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un piccolo banner e un barattolo delle mance opzionale mantengono Fud AI gratuito."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "小さなバナー広告と任意のチップジャーでFud AIは無料のままです。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "작은 배너 광고와 선택적인 팁 저금통이 Fud AI를 무료로 유지합니다."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Een kleine banneradvertentie en een optionele fooienpot houden Fud AI gratis."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mały baner reklamowy i opcjonalny słoik na napiwki utrzymują Fud AI za darmo."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um pequeno banner e um pote de gorjetas opcional mantêm o Fud AI gratuito."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un mic banner și un borcan de bacșiș opțional mențin Fud AI gratuit."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Небольшой баннер и необязательная банка чаевых позволяют Fud AI оставаться бесплатным."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一条小横幅广告和可选的小费罐让 Fud AI 保持免费。"
+          }
+        }
+      }
+    },
     "A small banner supports development. Your health data is never used for ads." : {
       "localizations" : {
         "de" : {
@@ -5025,6 +5215,101 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Адаптивные цели"
+          }
+        }
+      }
+    },
+    "Adaptive Goals and Energy Burn left Experimental and are on by default for new installs." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تخرّجت ميزتا الأهداف التكيفية وحرق الطاقة من المرحلة التجريبية وأصبحتا مفعّلتين افتراضيًا للتثبيتات الجديدة."
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adaptiv Məqsədlər və Enerji Sərfi eksperimental mərhələdən çıxdı və yeni quraşdırmalarda defolt olaraq aktivdir."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adaptive Ziele und Energieverbrauch sind nicht mehr experimentell und bei Neuinstallationen standardmäßig aktiv."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Objetivos adaptativos y Quema de energía dejan de ser experimentales y vienen activados por defecto en instalaciones nuevas."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Objectifs adaptatifs et Énergie brûlée sortent de l'expérimental et sont activés par défaut pour les nouvelles installations."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adaptive Goals और Energy Burn अब प्रयोगात्मक नहीं हैं और नए इंस्टॉल पर डिफ़ॉल्ट रूप से चालू हैं।"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obiettivi adattivi ed Energia bruciata escono dalla fase sperimentale e sono attivi di default sulle nuove installazioni."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アダプティブ目標とエネルギー消費が実験的機能を卒業し、新規インストールではデフォルトでオンに。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "적응형 목표와 에너지 소모가 실험 단계를 졸업하고 새 설치에서 기본으로 켜집니다."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adaptieve doelen en Energieverbruik zijn niet langer experimenteel en staan standaard aan bij nieuwe installaties."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cele adaptacyjne i Spalanie energii wyszły z fazy eksperymentalnej i są domyślnie włączone przy nowych instalacjach."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Metas adaptativas e Queima de energia saíram da fase experimental e vêm ativadas por padrão em novas instalações."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obiectivele adaptive și Energia consumată au ieșit din faza experimentală și sunt activate implicit la instalările noi."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "«Адаптивные цели» и «Расход энергии» вышли из экспериментального статуса и включены по умолчанию для новых установок."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自适应目标和能量消耗已结束实验阶段，新安装默认开启。"
           }
         }
       }
@@ -7004,6 +7289,101 @@
         }
       }
     },
+    "Ask Coach by voice with the new inline recorder." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اسأل المدرب صوتيًا عبر المسجّل المدمج الجديد."
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yeni daxili yazıcı ilə Koça səslə sual verin."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frag den Coach per Sprache mit dem neuen Inline-Rekorder."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pregunta al Coach por voz con la nueva grabadora integrada."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Interrogez le Coach à la voix avec le nouvel enregistreur intégré."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "नए इनलाइन रिकॉर्डर से कोच से आवाज़ में पूछें।"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chiedi al Coach a voce con il nuovo registratore integrato."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新しいインラインレコーダーで、コーチに音声で質問できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "새 인라인 녹음기로 코치에게 음성으로 질문하세요."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stel de Coach een vraag met je stem via de nieuwe ingebouwde recorder."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zapytaj Trenera głosowo dzięki nowemu wbudowanemu rejestratorowi."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pergunte ao Coach por voz com o novo gravador integrado."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Întreabă Coach-ul cu vocea, cu noul recorder integrat."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Задавайте вопросы Коучу голосом с новым встроенным рекордером."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用新的内置录音条向教练语音提问。"
+          }
+        }
+      }
+    },
     "Ask Coach…" : {
       "localizations" : {
         "ar" : {
@@ -8193,6 +8573,101 @@
         }
       }
     },
+    "Body fat history: review and delete individual entries, just like weight." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سجل دهون الجسم: راجع واحذف الإدخالات الفردية تمامًا كما في الوزن."
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bədən yağı tarixçəsi: çəki kimi ayrı-ayrı qeydlərə baxın və silin."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Körperfett-Verlauf: einzelne Einträge ansehen und löschen, genau wie beim Gewicht."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Historial de grasa corporal: revisa y elimina entradas individuales, igual que con el peso."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Historique de masse grasse : consultez et supprimez chaque entrée, comme pour le poids."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "बॉडी फ़ैट इतिहास: वज़न की तरह हर प्रविष्टि देखें और हटाएँ।"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Storico grasso corporeo: consulta ed elimina le singole voci, proprio come per il peso."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "体脂肪履歴：体重と同じように、個別の記録を確認・削除できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "체지방 기록: 체중과 마찬가지로 개별 항목을 확인하고 삭제할 수 있습니다."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vetpercentagegeschiedenis: bekijk en verwijder losse metingen, net als bij gewicht."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Historia tkanki tłuszczowej: przeglądaj i usuwaj pojedyncze wpisy, tak jak przy wadze."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Histórico de gordura corporal: veja e exclua entradas individuais, como no peso."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Istoric grăsime corporală: vezi și șterge intrări individuale, la fel ca la greutate."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "История жира: просматривайте и удаляйте отдельные записи, как и с весом."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "体脂历史：像体重一样查看并删除单条记录。"
+          }
+        }
+      }
+    },
     "Body Measurements" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -8759,6 +9234,101 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Камера + Камера"
+          }
+        }
+      }
+    },
+    "Camera + Camera keeps both shots, stitched side by side." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "كاميرا + كاميرا تحتفظ باللقطتين معًا جنبًا إلى جنب."
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamera + Kamera hər iki kadrı yan-yana birləşdirilmiş saxlayır."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamera + Kamera behält beide Aufnahmen, Seite an Seite zusammengefügt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cámara + Cámara conserva ambas capturas, unidas lado a lado."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Caméra + Caméra conserve les deux prises, assemblées côte à côte."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कैमरा + कैमरा दोनों फ़ोटो साथ-साथ जोड़कर रखता है।"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fotocamera + Fotocamera conserva entrambi gli scatti, uniti fianco a fianco."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カメラ＋カメラは2枚の写真を並べて保存します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "카메라 + 카메라가 두 장의 사진을 나란히 이어 붙여 보관합니다."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Camera + Camera bewaart beide foto's, zij aan zij samengevoegd."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aparat + Aparat zachowuje oba ujęcia, połączone obok siebie."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Câmera + Câmera mantém as duas fotos, unidas lado a lado."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cameră + Cameră păstrează ambele cadre, lipite una lângă alta."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Камера + Камера сохраняет оба снимка, соединённые рядом."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "相机 + 相机会保留两张照片，并排拼接。"
           }
         }
       }
@@ -13354,6 +13924,101 @@
         }
       }
     },
+    "Export your food diary as JSON, Markdown, or CSV from Settings." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "صدّر يوميات طعامك بصيغة JSON أو Markdown أو CSV من الإعدادات."
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Qida gündəliyinizi Parametrlərdən JSON, Markdown və ya CSV kimi ixrac edin."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportiere dein Ernährungstagebuch als JSON, Markdown oder CSV in den Einstellungen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exporta tu diario de comidas como JSON, Markdown o CSV desde Ajustes."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportez votre journal alimentaire en JSON, Markdown ou CSV depuis les Réglages."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "सेटिंग्स से अपनी फ़ूड डायरी JSON, Markdown या CSV में निर्यात करें।"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esporta il diario alimentare in JSON, Markdown o CSV dalle Impostazioni."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定から食事日記をJSON・Markdown・CSVでエクスポート。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설정에서 음식 일기를 JSON, Markdown, CSV로 내보내세요."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exporteer je eetdagboek als JSON, Markdown of CSV via Instellingen."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eksportuj dziennik żywieniowy jako JSON, Markdown lub CSV w Ustawieniach."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exporte seu diário alimentar em JSON, Markdown ou CSV nos Ajustes."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportă jurnalul alimentar ca JSON, Markdown sau CSV din Setări."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Экспортируйте дневник питания в JSON, Markdown или CSV из настроек."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在设置中将饮食日记导出为 JSON、Markdown 或 CSV。"
+          }
+        }
+      }
+    },
     "Extra Active" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -16592,6 +17257,101 @@
         }
       }
     },
+    "Height and weight units can now be set independently." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يمكن الآن ضبط وحدتي الطول والوزن بشكل مستقل."
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Boy və çəki vahidləri indi ayrıca seçilir."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Größen- und Gewichtseinheiten lassen sich jetzt unabhängig einstellen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las unidades de altura y peso ahora se configuran por separado."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les unités de taille et de poids se règlent désormais indépendamment."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ऊँचाई और वज़न की इकाइयाँ अब अलग-अलग सेट होती हैं।"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le unità di altezza e peso ora si impostano separatamente."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "身長と体重の単位を別々に設定できるようになりました。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "키와 몸무게 단위를 이제 따로 설정할 수 있습니다."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lengte- en gewichtseenheden zijn nu apart in te stellen."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jednostki wzrostu i wagi ustawia się teraz niezależnie."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As unidades de altura e peso agora são definidas separadamente."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unitățile pentru înălțime și greutate se setează acum separat."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Единицы роста и веса теперь настраиваются независимо."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "身高和体重单位现在可以分别设置。"
+          }
+        }
+      }
+    },
     "Hey Siri, %@" : {
       "comment" : "A Siri phrase that can be spoken to trigger a specific feature in Fud AI.",
       "isCommentAutoGenerated" : true,
@@ -16989,6 +17749,101 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Нутриенты на главном экране"
+          }
+        }
+      }
+    },
+    "Home redesign: speedometer calorie gauge, vertical macro bars, four nutrient cards, and a floating add button." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تصميم جديد للرئيسية: عدّاد سرعة للسعرات، وأشرطة ماكرو عمودية، وأربع بطاقات مغذّيات، وزر إضافة عائم."
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yenilənmiş Ana səhifə: spidometr kalori göstəricisi, şaquli makro zolaqları, dörd qida kartı və üzən əlavə düyməsi."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Home-Redesign: Tacho-Kalorienanzeige, vertikale Makro-Balken, vier Nährstoffkarten und ein schwebender Hinzufügen-Button."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rediseño de Inicio: velocímetro de calorías, barras verticales de macros, cuatro tarjetas de nutrientes y un botón flotante para añadir."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Refonte de l'accueil : compteur de calories façon tachymètre, barres de macros verticales, quatre cartes de nutriments et un bouton d'ajout flottant."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "नया होम: स्पीडोमीटर कैलोरी गेज, खड़ी मैक्रो बार, चार पोषक कार्ड और फ़्लोटिंग जोड़ें बटन।"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nuova Home: tachimetro delle calorie, barre verticali dei macro, quattro schede nutrienti e un pulsante di aggiunta flottante."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ホームを刷新：スピードメーター型カロリーゲージ、縦型マクロバー、4枚の栄養素カード、フローティング追加ボタン。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "홈 화면 개편: 속도계형 칼로리 게이지, 세로 매크로 바, 영양소 카드 4개, 플로팅 추가 버튼."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Home vernieuwd: snelheidsmeter voor calorieën, verticale macrobalken, vier voedingskaarten en een zwevende toevoegknop."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nowy ekran główny: prędkościomierz kalorii, pionowe paski makro, cztery karty składników i pływający przycisk dodawania."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nova tela inicial: velocímetro de calorias, barras verticais de macros, quatro cartões de nutrientes e um botão flutuante de adicionar."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ecran principal reproiectat: vitezometru pentru calorii, bare verticale de macronutrienți, patru carduri de nutrienți și un buton plutitor de adăugare."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Новый главный экран: спидометр калорий, вертикальные полосы макросов, четыре карточки нутриентов и плавающая кнопка добавления."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "主页焕新：仪表盘式卡路里表、竖向宏量条、四张营养卡片和悬浮添加按钮。"
           }
         }
       }
@@ -22155,6 +23010,101 @@
         }
       }
     },
+    "New Workouts tab — browse 873 exercises with photos, muscle and equipment filters, search, and detail pages." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "علامة تبويب تمارين جديدة — تصفّح 873 تمرينًا مع الصور وفلاتر العضلات والمعدات والبحث وصفحات التفاصيل."
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yeni Məşqlər tabı — şəkillər, əzələ və avadanlıq filtrləri, axtarış və detal səhifələri ilə 873 məşqə baxın."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neuer Workouts-Tab — durchsuche 873 Übungen mit Fotos, Muskel- und Equipment-Filtern, Suche und Detailseiten."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nueva pestaña Entrenamientos: explora 873 ejercicios con fotos, filtros de músculo y equipamiento, búsqueda y páginas de detalle."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nouvel onglet Entraînements — parcourez 873 exercices avec photos, filtres par muscle et équipement, recherche et pages de détail."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "नया Workouts टैब — फ़ोटो, मांसपेशी और उपकरण फ़िल्टर, खोज और विवरण पेजों के साथ 873 व्यायाम ब्राउज़ करें।"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nuova scheda Allenamenti — sfoglia 873 esercizi con foto, filtri per muscolo e attrezzatura, ricerca e pagine di dettaglio."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新しいワークアウトタブ — 写真、筋肉・器具フィルター、検索、詳細ページ付きの873種目をブラウズ。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "새로운 운동 탭 — 사진, 근육·장비 필터, 검색, 상세 페이지와 함께 873가지 운동을 둘러보세요."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nieuw Workouts-tabblad — blader door 873 oefeningen met foto's, spier- en materiaalfilters, zoeken en detailpagina's."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nowa karta Treningi — przeglądaj 873 ćwiczenia ze zdjęciami, filtrami mięśni i sprzętu, wyszukiwaniem i stronami szczegółów."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nova aba Treinos — navegue por 873 exercícios com fotos, filtros de músculo e equipamento, busca e páginas de detalhes."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filă nouă Antrenamente — răsfoiește 873 de exerciții cu fotografii, filtre după mușchi și echipament, căutare și pagini de detalii."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Новая вкладка «Тренировки» — 873 упражнения с фото, фильтрами по мышцам и оборудованию, поиском и страницами деталей."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全新“锻炼”标签页 — 浏览 873 个动作，配照片、肌群和器械筛选、搜索及详情页。"
+          }
+        }
+      }
+    },
     "No API key needed.\nAI food scans, voice logging, and Coach run through Fud AI." : {
       "comment" : "A description of Fud AI Premium.",
       "isCommentAutoGenerated" : true,
@@ -26494,6 +27444,101 @@
         }
       }
     },
+    "Reprocess a logged meal with AI — adjust its name, serving, or note and re-analyze." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أعد معالجة وجبة مسجلة بالذكاء الاصطناعي — عدّل الاسم أو الكمية أو الملاحظة ثم أعد التحليل."
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Qeyd olunmuş yeməyi Sİ ilə yenidən emal edin — adı, porsiyanı və ya qeydi dəyişib yenidən analiz edin."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verarbeite eine geloggte Mahlzeit neu mit KI — passe Name, Portion oder Notiz an und analysiere erneut."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reprocesa una comida registrada con IA: ajusta el nombre, la porción o la nota y vuelve a analizarla."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retraitez un repas enregistré avec l'IA — ajustez le nom, la portion ou la note, puis relancez l'analyse."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "लॉग किए भोजन को AI से दोबारा प्रोसेस करें — नाम, मात्रा या नोट बदलकर फिर से विश्लेषण करें।"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rielabora un pasto registrato con l'AI — modifica nome, porzione o nota e rianalizza."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "記録済みの食事をAIで再解析 — 名前・分量・メモを調整して再分析できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기록된 식사를 AI로 다시 분석 — 이름, 양, 메모를 조정한 뒤 재분석할 수 있습니다."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verwerk een gelogde maaltijd opnieuw met AI — pas naam, portie of notitie aan en analyseer opnieuw."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Przetwórz ponownie zapisany posiłek z AI — zmień nazwę, porcję lub notatkę i przeanalizuj od nowa."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reprocesse uma refeição registrada com IA — ajuste o nome, a porção ou a nota e analise de novo."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reprocesează o masă înregistrată cu AI — ajustează numele, porția sau nota și analizează din nou."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Переобработайте записанный приём пищи с ИИ — измените название, порцию или заметку и проанализируйте заново."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用 AI 重新处理已记录的餐食 — 调整名称、份量或备注后重新分析。"
+          }
+        }
+      }
+    },
     "Request a Feature" : {
       "localizations" : {
         "ar" : {
@@ -28139,6 +29184,101 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "设置"
+          }
+        }
+      }
+    },
+    "Share any meal as a link that opens straight in Fud AI on iPhone or Android." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شارك أي وجبة كرابط يفتح مباشرة في Fud AI — على iPhone أو Android."
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İstənilən yeməyi birbaşa Fud AI-də açılan link kimi paylaşın — iPhone və ya Android-də."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teile jede Mahlzeit als Link, der direkt in Fud AI öffnet — auf iPhone oder Android."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comparte cualquier comida como un enlace que abre directamente Fud AI, en iPhone o Android."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Partagez un repas sous forme de lien qui s'ouvre directement dans Fud AI, sur iPhone ou Android."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "किसी भी भोजन को लिंक के रूप में साझा करें — iPhone या Android पर सीधे Fud AI में खुलता है।"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Condividi qualsiasi pasto come link che si apre direttamente in Fud AI, su iPhone o Android."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "食事をリンクとして共有 — iPhoneでもAndroidでもFud AIが直接開きます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "식사를 링크로 공유 — iPhone과 Android 모두에서 Fud AI가 바로 열립니다."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deel elke maaltijd als een link die direct in Fud AI opent — op iPhone of Android."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Udostępnij dowolny posiłek jako link otwierający się bezpośrednio w Fud AI — na iPhonie lub Androidzie."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartilhe qualquer refeição como um link que abre direto no Fud AI — no iPhone ou Android."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trimite orice masă ca link care se deschide direct în Fud AI — pe iPhone sau Android."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Делитесь любым приёмом пищи ссылкой, которая открывается сразу в Fud AI — на iPhone или Android."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "把任意一餐分享为链接，在 iPhone 或 Android 上直接打开 Fud AI。"
           }
         }
       }
@@ -33598,6 +34738,101 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vidcetlər və Apple Watch"
+          }
+        }
+      }
+    },
+    "Widgets, Lock Screen, and Apple Watch match the new speedometer design and follow your chosen nutrient cards." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الودجات وشاشة القفل وApple Watch تعتمد تصميم عدّاد السرعة الجديد وتتبع بطاقات المغذّيات التي اخترتها."
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vidcetlər, kilid ekranı və Apple Watch yeni spidometr dizaynını götürür və seçdiyiniz qida kartlarını izləyir."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Widgets, Sperrbildschirm und Apple Watch übernehmen das neue Tacho-Design und folgen deinen gewählten Nährstoffkarten."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los widgets, la pantalla de bloqueo y el Apple Watch adoptan el nuevo diseño de velocímetro y siguen tus tarjetas de nutrientes."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les widgets, l'écran verrouillé et l'Apple Watch adoptent le nouveau design tachymètre et suivent vos cartes de nutriments."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "विजेट, लॉक स्क्रीन और Apple Watch नए स्पीडोमीटर डिज़ाइन में हैं और आपके चुने पोषक कार्ड दिखाते हैं।"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Widget, schermata di blocco e Apple Watch adottano il nuovo design a tachimetro e seguono le tue schede nutrienti."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ウィジェット、ロック画面、Apple Watchも新しいスピードメーターデザインになり、選択した栄養素カードに連動します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "위젯, 잠금 화면, Apple Watch가 새 속도계 디자인을 따르고 선택한 영양소 카드와 연동됩니다."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Widgets, vergrendelscherm en Apple Watch volgen het nieuwe snelheidsmeterontwerp en jouw gekozen voedingskaarten."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Widżety, ekran blokady i Apple Watch przejmują nowy wygląd prędkościomierza i podążają za wybranymi kartami składników."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Widgets, tela de bloqueio e Apple Watch seguem o novo visual de velocímetro e os seus cartões de nutrientes."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Widgeturile, ecranul de blocare și Apple Watch preiau noul design cu vitezometru și urmează cardurile tale de nutrienți."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Виджеты, экран блокировки и Apple Watch получили новый дизайн со спидометром и показывают выбранные вами карточки нутриентов."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "小组件、锁屏和 Apple Watch 采用全新仪表盘设计，并跟随你选择的营养卡片。"
           }
         }
       }

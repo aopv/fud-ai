@@ -255,7 +255,19 @@ private fun WhatsNewRow(
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.72f)
                 )
-                // 2.4 What's New items go here as changes land.
+                WhatsNewBullet(stringResource(R.string.whats_new_v30_workouts))
+                WhatsNewBullet(stringResource(R.string.whats_new_v30_home))
+                WhatsNewBullet(stringResource(R.string.whats_new_v30_widgets))
+                WhatsNewBullet(stringResource(R.string.whats_new_v30_coach_voice))
+                WhatsNewBullet(stringResource(R.string.whats_new_v30_share))
+                WhatsNewBullet(stringResource(R.string.whats_new_v30_export))
+                WhatsNewBullet(stringResource(R.string.whats_new_v30_reprocess))
+                WhatsNewBullet(stringResource(R.string.whats_new_v30_camera))
+                WhatsNewBullet(stringResource(R.string.whats_new_v30_colors))
+                WhatsNewBullet(stringResource(R.string.whats_new_v30_bodyfat))
+                WhatsNewBullet(stringResource(R.string.whats_new_v30_units))
+                WhatsNewBullet(stringResource(R.string.whats_new_v30_adaptive))
+                WhatsNewBullet(stringResource(R.string.whats_new_v30_ads))
             }
         }
     }

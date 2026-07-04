@@ -645,4 +645,17 @@
     <string name="onboarding_feature_library">Libreria di 870+ esercizi</string>
     <string name="onboarding_feature_widgets">Widget nella schermata Home</string>
     <string name="onboarding_ads_note">La pubblicità la mantiene gratuita — un piccolo banner sostiene lo sviluppo. I tuoi dati sulla salute non vengono mai usati per la pubblicità.</string>
+    <string name="whats_new_v30_workouts">Nuova scheda Allenamenti — sfoglia 873 esercizi con foto, filtri per muscolo e attrezzatura, ricerca e pagine di dettaglio.</string>
+    <string name="whats_new_v30_home">Nuova Home: tachimetro delle calorie, barre verticali dei macro, quattro schede nutrienti e un pulsante di aggiunta flottante.</string>
+    <string name="whats_new_v30_coach_voice">Chiedi al Coach a voce con il nuovo registratore integrato.</string>
+    <string name="whats_new_v30_share">Condividi qualsiasi pasto come link che si apre direttamente in Fud AI, su iPhone o Android.</string>
+    <string name="whats_new_v30_export">Esporta il diario alimentare in JSON, Markdown o CSV dalle Impostazioni.</string>
+    <string name="whats_new_v30_reprocess">Rielabora un pasto registrato con l\'AI — modifica nome, porzione o nota e rianalizza.</string>
+    <string name="whats_new_v30_camera">Fotocamera + Fotocamera conserva entrambi gli scatti, uniti fianco a fianco.</string>
+    <string name="whats_new_v30_colors">10 nuovi colori tema, ora scelti direttamente nelle Impostazioni.</string>
+    <string name="whats_new_v30_bodyfat">Storico grasso corporeo: consulta ed elimina le singole voci, proprio come per il peso.</string>
+    <string name="whats_new_v30_units">Le unità di altezza e peso ora si impostano separatamente.</string>
+    <string name="whats_new_v30_adaptive">Obiettivi adattivi ed Energia bruciata escono dalla fase sperimentale e sono attivi di default sulle nuove installazioni.</string>
+    <string name="whats_new_v30_widgets">Widget ridisegnati: lo stile tachimetro della Home, disegnato alla dimensione reale di ogni widget.</string>
+    <string name="whats_new_v30_ads">Un piccolo banner pubblicitario ora mantiene Fud AI gratuito.</string>
 </resources>

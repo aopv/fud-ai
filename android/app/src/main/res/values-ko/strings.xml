@@ -645,4 +645,17 @@
     <string name="onboarding_feature_library">870개 이상의 운동 라이브러리</string>
     <string name="onboarding_feature_widgets">홈 화면 위젯</string>
     <string name="onboarding_ads_note">광고로 무료 유지 — 작은 배너가 개발을 지원합니다. 건강 데이터는 광고에 절대 사용되지 않습니다.</string>
+    <string name="whats_new_v30_workouts">새로운 운동 탭 — 사진, 근육·장비 필터, 검색, 상세 페이지와 함께 873가지 운동을 둘러보세요.</string>
+    <string name="whats_new_v30_home">홈 화면 개편: 속도계형 칼로리 게이지, 세로 매크로 바, 영양소 카드 4개, 플로팅 추가 버튼.</string>
+    <string name="whats_new_v30_coach_voice">새 인라인 녹음기로 코치에게 음성으로 질문하세요.</string>
+    <string name="whats_new_v30_share">식사를 링크로 공유 — iPhone과 Android 모두에서 Fud AI가 바로 열립니다.</string>
+    <string name="whats_new_v30_export">설정에서 음식 일기를 JSON, Markdown, CSV로 내보내세요.</string>
+    <string name="whats_new_v30_reprocess">기록된 식사를 AI로 다시 분석 — 이름, 양, 메모를 조정한 뒤 재분석할 수 있습니다.</string>
+    <string name="whats_new_v30_camera">카메라 + 카메라가 두 장의 사진을 나란히 이어 붙여 보관합니다.</string>
+    <string name="whats_new_v30_colors">테마 색상 10종 추가 — 이제 설정에서 바로 선택합니다.</string>
+    <string name="whats_new_v30_bodyfat">체지방 기록: 체중과 마찬가지로 개별 항목을 확인하고 삭제할 수 있습니다.</string>
+    <string name="whats_new_v30_units">키와 몸무게 단위를 이제 따로 설정할 수 있습니다.</string>
+    <string name="whats_new_v30_adaptive">적응형 목표와 에너지 소모가 실험 단계를 졸업하고 새 설치에서 기본으로 켜집니다.</string>
+    <string name="whats_new_v30_widgets">위젯 개편: 홈의 속도계 스타일을 각 위젯의 실제 크기로 그립니다.</string>
+    <string name="whats_new_v30_ads">작은 배너 광고로 Fud AI는 계속 무료입니다.</string>
 </resources>

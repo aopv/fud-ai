@@ -645,4 +645,17 @@
     <string name="onboarding_feature_library">Bibliotecă cu 870+ exerciții</string>
     <string name="onboarding_feature_widgets">Widgeturi pe ecranul principal</string>
     <string name="onboarding_ads_note">Reclamele o mențin gratuită — un mic banner susține dezvoltarea. Datele tale de sănătate nu sunt folosite niciodată pentru reclame.</string>
+    <string name="whats_new_v30_workouts">Filă nouă Antrenamente — răsfoiește 873 de exerciții cu fotografii, filtre după mușchi și echipament, căutare și pagini de detalii.</string>
+    <string name="whats_new_v30_home">Ecran principal reproiectat: vitezometru pentru calorii, bare verticale de macronutrienți, patru carduri de nutrienți și un buton plutitor de adăugare.</string>
+    <string name="whats_new_v30_coach_voice">Întreabă Coach-ul cu vocea, cu noul recorder integrat.</string>
+    <string name="whats_new_v30_share">Trimite orice masă ca link care se deschide direct în Fud AI — pe iPhone sau Android.</string>
+    <string name="whats_new_v30_export">Exportă jurnalul alimentar ca JSON, Markdown sau CSV din Setări.</string>
+    <string name="whats_new_v30_reprocess">Reprocesează o masă înregistrată cu AI — ajustează numele, porția sau nota și analizează din nou.</string>
+    <string name="whats_new_v30_camera">Cameră + Cameră păstrează ambele cadre, lipite una lângă alta.</string>
+    <string name="whats_new_v30_colors">10 culori noi de temă, alese acum direct din Setări.</string>
+    <string name="whats_new_v30_bodyfat">Istoric grăsime corporală: vezi și șterge intrări individuale, la fel ca la greutate.</string>
+    <string name="whats_new_v30_units">Unitățile pentru înălțime și greutate se setează acum separat.</string>
+    <string name="whats_new_v30_adaptive">Obiectivele adaptive și Energia consumată au ieșit din faza experimentală și sunt activate implicit la instalările noi.</string>
+    <string name="whats_new_v30_widgets">Widgeturi reproiectate: stilul vitezometru din ecranul principal, desenat la dimensiunea reală a fiecărui widget.</string>
+    <string name="whats_new_v30_ads">Un mic banner publicitar menține acum Fud AI gratuit.</string>
 </resources>

@@ -645,4 +645,17 @@
     <string name="onboarding_feature_library">Bibliothek mit 870+ Übungen</string>
     <string name="onboarding_feature_widgets">Startbildschirm-Widgets</string>
     <string name="onboarding_ads_note">Werbung hält die App kostenlos — ein kleines Banner unterstützt die Entwicklung. Deine Gesundheitsdaten werden nie für Werbung verwendet.</string>
+    <string name="whats_new_v30_workouts">Neuer Workouts-Tab — durchsuche 873 Übungen mit Fotos, Muskel- und Equipment-Filtern, Suche und Detailseiten.</string>
+    <string name="whats_new_v30_home">Home-Redesign: Tacho-Kalorienanzeige, vertikale Makro-Balken, vier Nährstoffkarten und ein schwebender Hinzufügen-Button.</string>
+    <string name="whats_new_v30_coach_voice">Frag den Coach per Sprache mit dem neuen Inline-Rekorder.</string>
+    <string name="whats_new_v30_share">Teile jede Mahlzeit als Link, der direkt in Fud AI öffnet — auf iPhone oder Android.</string>
+    <string name="whats_new_v30_export">Exportiere dein Ernährungstagebuch als JSON, Markdown oder CSV in den Einstellungen.</string>
+    <string name="whats_new_v30_reprocess">Verarbeite eine geloggte Mahlzeit neu mit KI — passe Name, Portion oder Notiz an und analysiere erneut.</string>
+    <string name="whats_new_v30_camera">Kamera + Kamera behält beide Aufnahmen, Seite an Seite zusammengefügt.</string>
+    <string name="whats_new_v30_colors">10 neue Themenfarben, jetzt direkt in den Einstellungen wählbar.</string>
+    <string name="whats_new_v30_bodyfat">Körperfett-Verlauf: einzelne Einträge ansehen und löschen, genau wie beim Gewicht.</string>
+    <string name="whats_new_v30_units">Größen- und Gewichtseinheiten lassen sich jetzt unabhängig einstellen.</string>
+    <string name="whats_new_v30_adaptive">Adaptive Ziele und Energieverbrauch sind nicht mehr experimentell und bei Neuinstallationen standardmäßig aktiv.</string>
+    <string name="whats_new_v30_widgets">Widget-Redesign: der Tacho-Stil vom Home-Tab, gezeichnet in der echten Größe jedes Widgets.</string>
+    <string name="whats_new_v30_ads">Eine kleine Banneranzeige hält Fud AI jetzt kostenlos.</string>
 </resources>

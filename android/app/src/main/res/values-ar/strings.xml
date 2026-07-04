@@ -645,4 +645,17 @@
     <string name="onboarding_feature_library">مكتبة تضم أكثر من 870 تمرينًا</string>
     <string name="onboarding_feature_widgets">أدوات الشاشة الرئيسية</string>
     <string name="onboarding_ads_note">الإعلانات تُبقيه مجانيًا — إعلان صغير يدعم التطوير. لا تُستخدم بياناتك الصحية أبدًا للإعلانات.</string>
+    <string name="whats_new_v30_workouts">علامة تبويب تمارين جديدة — تصفّح 873 تمرينًا مع الصور وفلاتر العضلات والمعدات والبحث وصفحات التفاصيل.</string>
+    <string name="whats_new_v30_home">تصميم جديد للرئيسية: عدّاد سرعة للسعرات، وأشرطة ماكرو عمودية، وأربع بطاقات مغذّيات، وزر إضافة عائم.</string>
+    <string name="whats_new_v30_coach_voice">اسأل المدرب صوتيًا عبر المسجّل المدمج الجديد.</string>
+    <string name="whats_new_v30_share">شارك أي وجبة كرابط يفتح مباشرة في Fud AI — على iPhone أو Android.</string>
+    <string name="whats_new_v30_export">صدّر يوميات طعامك بصيغة JSON أو Markdown أو CSV من الإعدادات.</string>
+    <string name="whats_new_v30_reprocess">أعد معالجة وجبة مسجلة بالذكاء الاصطناعي — عدّل الاسم أو الكمية أو الملاحظة ثم أعد التحليل.</string>
+    <string name="whats_new_v30_camera">كاميرا + كاميرا تحتفظ باللقطتين معًا جنبًا إلى جنب.</string>
+    <string name="whats_new_v30_colors">10 ألوان جديدة للسمة، تُختار الآن مباشرة من الإعدادات.</string>
+    <string name="whats_new_v30_bodyfat">سجل دهون الجسم: راجع واحذف الإدخالات الفردية تمامًا كما في الوزن.</string>
+    <string name="whats_new_v30_units">يمكن الآن ضبط وحدتي الطول والوزن بشكل مستقل.</string>
+    <string name="whats_new_v30_adaptive">تخرّجت ميزتا الأهداف التكيفية وحرق الطاقة من المرحلة التجريبية وأصبحتا مفعّلتين افتراضيًا للتثبيتات الجديدة.</string>
+    <string name="whats_new_v30_widgets">تصميم جديد للودجات: نمط عدّاد السرعة من الرئيسية، مرسوم بالحجم الحقيقي لكل ودجة.</string>
+    <string name="whats_new_v30_ads">إعلان بانر صغير يُبقي Fud AI مجانيًا الآن.</string>
 </resources>

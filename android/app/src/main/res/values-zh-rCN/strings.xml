@@ -645,4 +645,17 @@
     <string name="onboarding_feature_library">870+ 动作练习库</string>
     <string name="onboarding_feature_widgets">主屏幕小组件</string>
     <string name="onboarding_ads_note">广告让应用保持免费 — 一条小横幅广告支持开发。你的健康数据绝不会用于广告。</string>
+    <string name="whats_new_v30_workouts">全新“锻炼”标签页 — 浏览 873 个动作，配照片、肌群和器械筛选、搜索及详情页。</string>
+    <string name="whats_new_v30_home">主页焕新：仪表盘式卡路里表、竖向宏量条、四张营养卡片和悬浮添加按钮。</string>
+    <string name="whats_new_v30_coach_voice">用新的内置录音条向教练语音提问。</string>
+    <string name="whats_new_v30_share">把任意一餐分享为链接，在 iPhone 或 Android 上直接打开 Fud AI。</string>
+    <string name="whats_new_v30_export">在设置中将饮食日记导出为 JSON、Markdown 或 CSV。</string>
+    <string name="whats_new_v30_reprocess">用 AI 重新处理已记录的餐食 — 调整名称、份量或备注后重新分析。</string>
+    <string name="whats_new_v30_camera">相机 + 相机会保留两张照片，并排拼接。</string>
+    <string name="whats_new_v30_colors">新增 10 种主题色，现在可在设置中直接选择。</string>
+    <string name="whats_new_v30_bodyfat">体脂历史：像体重一样查看并删除单条记录。</string>
+    <string name="whats_new_v30_units">身高和体重单位现在可以分别设置。</string>
+    <string name="whats_new_v30_adaptive">自适应目标和能量消耗已结束实验阶段，新安装默认开启。</string>
+    <string name="whats_new_v30_widgets">小组件焕新：主页的仪表盘风格，按每个小组件的实际尺寸绘制。</string>
+    <string name="whats_new_v30_ads">一条小横幅广告让 Fud AI 保持免费。</string>
 </resources>

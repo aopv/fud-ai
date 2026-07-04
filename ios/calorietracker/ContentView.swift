@@ -382,16 +382,28 @@ private struct AboutSettingsSections: View {
     }
 
     private static let whatsNewItems = [
+        "New Workouts tab — browse 873 exercises with photos, muscle and equipment filters, search, and detail pages.",
+        "Home redesign: speedometer calorie gauge, vertical macro bars, four nutrient cards, and a floating add button.",
+        "Widgets, Lock Screen, and Apple Watch match the new speedometer design and follow your chosen nutrient cards.",
         "Fud AI is now completely free — the optional Premium subscription has been removed.",
         "AI features run on your own provider key — add a free Gemini, OpenAI, Groq, or other supported key in onboarding or Settings.",
-        "Setting up AI is simpler: onboarding and Settings now focus on connecting your own provider key.",
+        "Ask Coach by voice with the new inline recorder.",
+        "Share any meal as a link that opens straight in Fud AI on iPhone or Android.",
+        "Export your food diary as JSON, Markdown, or CSV from Settings.",
+        "Reprocess a logged meal with AI — adjust its name, serving, or note and re-analyze.",
+        "Camera + Camera keeps both shots, stitched side by side.",
+        "10 new theme colors, now picked inline in Settings.",
+        "Body fat history: review and delete individual entries, just like weight.",
+        "Height and weight units can now be set independently.",
+        "Adaptive Goals and Energy Burn left Experimental and are on by default for new installs.",
+        "A small banner ad and an optional Tip Jar keep Fud AI free.",
         "As always, your food log, weight and body history, and API keys stay on your device."
     ]
 
     private var whatsNewRow: some View {
         DisclosureGroup(isExpanded: $showWhatsNew) {
             VStack(alignment: .leading, spacing: 10) {
-                Text("Fud AI 4.5")
+                Text("Fud AI 5.0")
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(.primary)
 

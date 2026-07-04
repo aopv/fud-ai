@@ -645,4 +645,17 @@
     <string name="onboarding_feature_library">870+ एक्सरसाइज़ लाइब्रेरी</string>
     <string name="onboarding_feature_widgets">होम स्क्रीन विजेट</string>
     <string name="onboarding_ads_note">विज्ञापन इसे मुफ़्त रखते हैं — एक छोटा बैनर डेवलपमेंट में मदद करता है। आपका हेल्थ डेटा कभी विज्ञापनों के लिए इस्तेमाल नहीं होता।</string>
+    <string name="whats_new_v30_workouts">नया Workouts टैब — फ़ोटो, मांसपेशी और उपकरण फ़िल्टर, खोज और विवरण पेजों के साथ 873 व्यायाम ब्राउज़ करें।</string>
+    <string name="whats_new_v30_home">नया होम: स्पीडोमीटर कैलोरी गेज, खड़ी मैक्रो बार, चार पोषक कार्ड और फ़्लोटिंग जोड़ें बटन।</string>
+    <string name="whats_new_v30_coach_voice">नए इनलाइन रिकॉर्डर से कोच से आवाज़ में पूछें।</string>
+    <string name="whats_new_v30_share">किसी भी भोजन को लिंक के रूप में साझा करें — iPhone या Android पर सीधे Fud AI में खुलता है।</string>
+    <string name="whats_new_v30_export">सेटिंग्स से अपनी फ़ूड डायरी JSON, Markdown या CSV में निर्यात करें।</string>
+    <string name="whats_new_v30_reprocess">लॉग किए भोजन को AI से दोबारा प्रोसेस करें — नाम, मात्रा या नोट बदलकर फिर से विश्लेषण करें।</string>
+    <string name="whats_new_v30_camera">कैमरा + कैमरा दोनों फ़ोटो साथ-साथ जोड़कर रखता है।</string>
+    <string name="whats_new_v30_colors">10 नए थीम रंग, अब सेटिंग्स में ही चुनें।</string>
+    <string name="whats_new_v30_bodyfat">बॉडी फ़ैट इतिहास: वज़न की तरह हर प्रविष्टि देखें और हटाएँ।</string>
+    <string name="whats_new_v30_units">ऊँचाई और वज़न की इकाइयाँ अब अलग-अलग सेट होती हैं।</string>
+    <string name="whats_new_v30_adaptive">Adaptive Goals और Energy Burn अब प्रयोगात्मक नहीं हैं और नए इंस्टॉल पर डिफ़ॉल्ट रूप से चालू हैं।</string>
+    <string name="whats_new_v30_widgets">विजेट नए रूप में: होम का स्पीडोमीटर स्टाइल, हर विजेट के असली आकार में।</string>
+    <string name="whats_new_v30_ads">एक छोटा बैनर विज्ञापन अब Fud AI को मुफ़्त रखता है।</string>
 </resources>

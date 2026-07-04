@@ -645,4 +645,17 @@
     <string name="onboarding_feature_library">870以上のエクササイズライブラリ</string>
     <string name="onboarding_feature_widgets">ホーム画面ウィジェット</string>
     <string name="onboarding_ads_note">広告で無料を維持 — 小さなバナー広告が開発を支えます。健康データが広告に使われることはありません。</string>
+    <string name="whats_new_v30_workouts">新しいワークアウトタブ — 写真、筋肉・器具フィルター、検索、詳細ページ付きの873種目をブラウズ。</string>
+    <string name="whats_new_v30_home">ホームを刷新：スピードメーター型カロリーゲージ、縦型マクロバー、4枚の栄養素カード、フローティング追加ボタン。</string>
+    <string name="whats_new_v30_coach_voice">新しいインラインレコーダーで、コーチに音声で質問できます。</string>
+    <string name="whats_new_v30_share">食事をリンクとして共有 — iPhoneでもAndroidでもFud AIが直接開きます。</string>
+    <string name="whats_new_v30_export">設定から食事日記をJSON・Markdown・CSVでエクスポート。</string>
+    <string name="whats_new_v30_reprocess">記録済みの食事をAIで再解析 — 名前・分量・メモを調整して再分析できます。</string>
+    <string name="whats_new_v30_camera">カメラ＋カメラは2枚の写真を並べて保存します。</string>
+    <string name="whats_new_v30_colors">テーマカラーを10色追加。設定内でそのまま選べます。</string>
+    <string name="whats_new_v30_bodyfat">体脂肪履歴：体重と同じように、個別の記録を確認・削除できます。</string>
+    <string name="whats_new_v30_units">身長と体重の単位を別々に設定できるようになりました。</string>
+    <string name="whats_new_v30_adaptive">アダプティブ目標とエネルギー消費が実験的機能を卒業し、新規インストールではデフォルトでオンに。</string>
+    <string name="whats_new_v30_widgets">ウィジェットを刷新：ホームのスピードメーターデザインを各ウィジェットの実サイズで描画。</string>
+    <string name="whats_new_v30_ads">小さなバナー広告でFud AIは今後も無料です。</string>
 </resources>
