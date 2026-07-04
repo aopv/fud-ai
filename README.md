@@ -153,7 +153,7 @@ For the Coach chat, every turn builds a slim system prompt from your live profil
 
 ## Screenshots
 
-An eight-screen walkthrough of the current app flow — from opening the dashboard to detailed nutrition and progress.
+A ten-screen walkthrough of the current app flow — from opening the dashboard to detailed nutrition, progress, workouts, and goals.
 
 <table>
   <tr>
@@ -216,6 +216,22 @@ An eight-screen walkthrough of the current app flow — from opening the dashboa
       <b>08 · View More · Nutrients</b>
       <br>
       <sub>Detailed nutrition shows macro totals plus optional nutrients such as fiber, sugar, sodium, minerals, vitamins, and fats.</sub>
+    </td>
+    <td align="center" width="33%">
+      <img src="web/assets/screenshots/workouts.png" width="230" alt="Workout exercise library">
+      <br><br>
+      <b>09 · Workouts · Library</b>
+      <br>
+      <sub>Browse 873 exercises with photos, filterable by primary/secondary muscle and equipment, with search, sort, and per-exercise detail pages.</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="33%">
+      <img src="web/assets/screenshots/goals.png" width="230" alt="Goals and nutrition settings">
+      <br><br>
+      <b>10 · Goals · Adaptive</b>
+      <br>
+      <sub>Weight goal, activity level, and pace drive your calorie and macro targets. Adaptive Goals retunes them weekly from your real trend; Energy Burn anchors them to measured burn from Health.</sub>
     </td>
   </tr>
 </table>
