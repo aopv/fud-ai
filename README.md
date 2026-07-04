@@ -369,9 +369,8 @@ Fud AI is fully free, open source, and privacy-first. If it helps you, consider 
 
 [![Ko-fi](https://img.shields.io/badge/Ko--fi-Support-ff5e5b?logo=kofi)](https://ko-fi.com/apoorvdarshan)
 [![Product Hunt](https://img.shields.io/badge/Product%20Hunt-Vote-orange?logo=producthunt)](https://www.producthunt.com/products/fud-ai-calorie-tracker)
-[![TrustMRR](https://img.shields.io/badge/TrustMRR-Fud%20AI-5865FF)](https://trustmrr.com/startup/fud-ai-calorie-tracker)
 
-You can also help by [voting on Product Hunt](https://www.producthunt.com/products/fud-ai-calorie-tracker), [checking the TrustMRR listing](https://trustmrr.com/startup/fud-ai-calorie-tracker), [starring the repo](https://github.com/apoorvdarshan/fud-ai), [filing bugs](https://github.com/apoorvdarshan/fud-ai/issues/new?labels=bug&title=Bug:%20), or [requesting features](https://github.com/apoorvdarshan/fud-ai/issues/new?labels=enhancement&title=Feature:%20).
+You can also help by [voting on Product Hunt](https://www.producthunt.com/products/fud-ai-calorie-tracker), [starring the repo](https://github.com/apoorvdarshan/fud-ai), [filing bugs](https://github.com/apoorvdarshan/fud-ai/issues/new?labels=bug&title=Bug:%20), or [requesting features](https://github.com/apoorvdarshan/fud-ai/issues/new?labels=enhancement&title=Feature:%20).
 
 ## Star History
 

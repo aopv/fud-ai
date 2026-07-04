@@ -365,7 +365,6 @@ p { color: var(--ink-soft); }
 .chip-btn.chip-github:hover i   { color: #E6E6E6; }
 .chip-btn.chip-ph:hover i       { color: #DA552F; }
 .chip-btn.chip-linkedin:hover i { color: #0A66C2; }
-.chip-btn.chip-trustmrr:hover i { color: #5865FF; }
 .chip-btn.chip-instagram:hover i { color: #E4405F; }
 .chip-btn.chip-kofi:hover i     { color: #ff5e5b; }
 .chip-btn.chip-x:hover i        { color: #FFFFFF; }
