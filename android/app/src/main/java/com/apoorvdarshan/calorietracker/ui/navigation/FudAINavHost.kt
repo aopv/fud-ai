@@ -1,6 +1,7 @@
 package com.apoorvdarshan.calorietracker.ui.navigation
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -28,6 +29,7 @@ import androidx.navigation.compose.rememberNavController
 import com.apoorvdarshan.calorietracker.AppContainer
 import com.apoorvdarshan.calorietracker.services.update.AndroidUpdateChecker
 import com.apoorvdarshan.calorietracker.services.update.AndroidUpdateState
+import com.apoorvdarshan.calorietracker.ui.components.AdBannerStrip
 import com.apoorvdarshan.calorietracker.ui.coach.CoachScreen
 import com.apoorvdarshan.calorietracker.ui.home.HomeScreen
 import com.apoorvdarshan.calorietracker.ui.onboarding.OnboardingScreen
@@ -137,10 +139,10 @@ fun FudAINavHost(
                         }
                     })
                 }
-                composable(FudAIRoutes.HOME) { HomeScreen(container = container) }
-                composable(FudAIRoutes.PROGRESS) { ProgressScreen(container = container) }
-                composable(FudAIRoutes.COACH) { CoachScreen(container = container) }
-                composable(FudAIRoutes.SETTINGS) { SettingsScreen(container = container, nav = nav) }
+                composable(FudAIRoutes.HOME) { TabWithBanner { HomeScreen(container = container) } }
+                composable(FudAIRoutes.PROGRESS) { TabWithBanner { ProgressScreen(container = container) } }
+                composable(FudAIRoutes.COACH) { TabWithBanner { CoachScreen(container = container) } }
+                composable(FudAIRoutes.SETTINGS) { TabWithBanner { SettingsScreen(container = container, nav = nav) } }
                 composable(FudAIRoutes.OPTIONAL_NUTRIENT_GOALS) {
                     OptionalNutrientGoalsScreen(container = container, onBack = { nav.popBackStack() })
                 }
@@ -150,7 +152,7 @@ fun FudAINavHost(
                 composable(FudAIRoutes.BODY_MEASUREMENTS) {
                     BodyMeasurementsScreen(container = container, onBack = { nav.popBackStack() })
                 }
-                composable(FudAIRoutes.WORKOUTS) { WorkoutsScreen() }
+                composable(FudAIRoutes.WORKOUTS) { TabWithBanner { WorkoutsScreen() } }
             }
         }
     }
@@ -158,3 +160,16 @@ fun FudAINavHost(
 }
 
 internal fun NavHostController.current(): String? = currentBackStackEntry?.destination?.route
+
+/**
+ * Top ad strip above a tab's content — mirror of iOS's safeAreaInset banner.
+ * The tab renders in the space BELOW the strip (a Column sibling, not an
+ * overlay), so scrolled rows are clipped and can never appear above the ad.
+ */
+@Composable
+private fun TabWithBanner(content: @Composable () -> Unit) {
+    Column(Modifier.fillMaxSize()) {
+        AdBannerStrip()
+        Box(Modifier.weight(1f)) { content() }
+    }
+}

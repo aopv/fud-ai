@@ -642,4 +642,5 @@
     <string name="settings_needs_health_connect">Health Connect tələb olunur</string>
     <string name="settings_energy_goals_info">Aktiv olduqda Fud AI Health Connect-dən ölçülmüş yandırılan kalorilərinizi — aktiv + bazal enerjinin 14 günlük ortalamasını — hədəfləri hesablayarkən düstur təxmini əvəzinə saxlanma (TDEE) istinadı kimi istifadə edir. Sərfiyyatınızı oxumaq üçün Sİ istifadə olunmur. Health Connect tələb olunur. Yenidən Hesabla düyməsi və Adaptive Goals ilə işləyir.</string>
     <string name="settings_adaptive_goals_info">Təxminən həftədə bir dəfə, tətbiqi açanda Fud AI profilinizə, son qeyd olunmuş yeməklərə və çəki trendinizə əsasən tam hədəf hesablamasını — Yenidən Hesabla düyməsinin istifadə etdiyi eyni hesablamanı — avtomatik yenidən işə salır. Energy Burn aktivdirsə, ölçülmüş sərfiyyatınız saxlanma kalorisi üçün istinad kimi istifadə olunur. Sİ əlçatan olmadıqda addım səssizcə ötürülür. Bunu söndürdükdə bu funksiyanın ilk dəyişikliyindən əvvəlki hədəflər bərpa olunur. Bu, tibbi məsləhət deyil.</string>
+    <string name="ad_label">Reklam</string>
 </resources>

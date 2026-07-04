@@ -746,4 +746,5 @@
         <item quantity="one">%d exercise</item>
         <item quantity="other">%d exercises</item>
     </plurals>
+    <string name="ad_label">Ad</string>
 </resources>

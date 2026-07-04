@@ -126,14 +126,14 @@ fun WorkoutsScreen(modifier: Modifier = Modifier) {
     }
 
     // Fud AI's tab bar floats over content (no Scaffold inset like Delts), so the
-    // screen paints its own background, starts below the status bar, and the list
-    // keeps its tail clear of the floating bar. Search, filter chips, and the
-    // results header stay pinned; only the exercise list scrolls (matches iOS).
+    // screen paints its own background and the list keeps its tail clear of the
+    // floating bar. The status-bar inset is absorbed by the ad strip above this
+    // screen (TabWithBanner). Search, filter chips, and the results header stay
+    // pinned; only the exercise list scrolls (matches iOS).
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(workoutsColors().background)
-            .statusBarsPadding()
     ) {
         Column(
             Modifier.padding(start = 20.dp, end = 20.dp, top = 14.dp, bottom = 18.dp),

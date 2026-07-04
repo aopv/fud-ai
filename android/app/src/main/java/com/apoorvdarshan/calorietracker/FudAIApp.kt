@@ -20,6 +20,7 @@ import com.apoorvdarshan.calorietracker.services.ai.ChatService
 import com.apoorvdarshan.calorietracker.services.ai.FoodAnalysisService
 import com.apoorvdarshan.calorietracker.services.health.HealthConnectManager
 import com.apoorvdarshan.calorietracker.services.speech.SpeechService
+import com.google.android.gms.ads.MobileAds
 import kotlin.math.roundToInt
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -48,6 +49,9 @@ class FudAIApp : Application() {
         container = AppContainer(this)
         container.notifications.createChannels()
         container.widgetSnapshotWriter.observe().launchIn(appScope)
+        // Google Mobile Ads SDK — initialized off the main thread (documented as
+        // supported) so cold start isn't delayed; banners render via AdBannerStrip.
+        appScope.launch { MobileAds.initialize(this@FudAIApp) }
         // Re-arm the daily weight-log alarm on every cold start. AlarmManager
         // drops scheduled alarms on device reboot and (sometimes) on app
         // updates — without this, a user who enabled Notifications once would

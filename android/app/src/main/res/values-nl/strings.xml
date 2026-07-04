@@ -642,4 +642,5 @@
     <string name="settings_needs_health_connect">Vereist Health Connect</string>
     <string name="settings_energy_goals_info">Indien ingeschakeld gebruikt Fud AI je gemeten verbrande calorieën uit Health Connect — een 14-daags gemiddelde van actieve + basale energie — als onderhoudsanker (TDEE) bij het berekenen van doelen, in plaats van de formuleschatting. Er wordt geen AI gebruikt om je verbruik te lezen. Vereist Health Connect. Werkt met de knop Opnieuw berekenen en met Adaptive Goals.</string>
     <string name="settings_adaptive_goals_info">Ongeveer één keer per week, wanneer je de app opent, voert Fud AI automatisch de volledige doelberekening opnieuw uit — dezelfde als de knop Opnieuw berekenen — op basis van je profiel, recent gelogde voeding en je gewichtstrend. Als Energy Burn aanstaat, wordt je gemeten verbruik gebruikt als onderhoudsanker. Als de AI niet beschikbaar is, wordt de run stilletjes overgeslagen. Bij uitschakelen worden de doelen hersteld van vóór de eerste wijziging door deze functie. Dit is geen medisch advies.</string>
+    <string name="ad_label">Advertentie</string>
 </resources>
