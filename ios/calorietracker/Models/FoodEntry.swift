@@ -105,7 +105,7 @@ enum MealType: String, Codable, CaseIterable {
         }
     }
 
-    static var currentMeal: MealType {
+    nonisolated static var currentMeal: MealType {
         let hour = Calendar.current.component(.hour, from: .now)
         switch hour {
         case 5..<11: return .breakfast
