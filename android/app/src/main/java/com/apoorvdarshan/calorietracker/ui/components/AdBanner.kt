@@ -21,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import com.apoorvdarshan.calorietracker.BuildConfig
 import com.apoorvdarshan.calorietracker.R
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
@@ -31,21 +32,20 @@ import com.google.android.gms.ads.AdView
  * Central AdMob configuration — mirror of iOS `AdsConfig`.
  *
  * The **App ID** lives in AndroidManifest.xml (`com.google.android.gms.ads.APPLICATION_ID`).
- * Right now everything uses Google's official TEST IDs, which always fill and never put the
- * AdMob account at risk during development. To go live: paste the real Android unit ID into
- * [REAL_BANNER_UNIT_ID], set [USE_TEST_ADS] = false, and swap the manifest App ID.
+ * Live ads are served ONLY by release builds (the Play Store APK). Debug/debug2 variants —
+ * everything installed via assembleDebug during development — request Google's official TEST
+ * banner unit instead, so build-test cycles on a real device can never generate invalid
+ * traffic against the AdMob account.
  */
 object AdsConfig {
-    private const val USE_TEST_ADS = true
-
-    // Google official TEST banner ad unit ID (Android).
+    // Google official TEST banner ad unit ID (Android) — always fills, never monetizes.
     private const val TEST_BANNER_UNIT_ID = "ca-app-pub-3940256099942544/6300978111"
 
-    // TODO: real Android banner ad unit ID from AdMob (then set USE_TEST_ADS = false).
-    private const val REAL_BANNER_UNIT_ID = ""
+    // Real Android banner unit ("Banner - all tabs").
+    private const val REAL_BANNER_UNIT_ID = "ca-app-pub-1910432677832151/3208890913"
 
     val bannerUnitId: String
-        get() = if (USE_TEST_ADS || REAL_BANNER_UNIT_ID.isEmpty()) TEST_BANNER_UNIT_ID else REAL_BANNER_UNIT_ID
+        get() = if (BuildConfig.DEBUG) TEST_BANNER_UNIT_ID else REAL_BANNER_UNIT_ID
 }
 
 /**

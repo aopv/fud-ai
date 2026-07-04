@@ -41,11 +41,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FudAI">
-        <!-- AdMob App ID. Google's TEST App ID until the real AdMob app exists —
-             mirror of iOS Info.plist GADApplicationIdentifier. -->
+        <!-- AdMob App ID — mirror of iOS Info.plist GADApplicationIdentifier. The unit IDs
+             are gated in AdsConfig (debug builds always request Google's TEST unit). -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713" />
+            android:value="ca-app-pub-1910432677832151~2503541266" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

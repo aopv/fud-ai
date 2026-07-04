@@ -82,6 +82,8 @@ android {
     }
     buildFeatures {
         compose = true
+        // AdsConfig gates real vs test ad units on BuildConfig.DEBUG.
+        buildConfig = true
     }
 
     // Workouts (exercise library ported from Delts): mirror the iOS app's exercise
