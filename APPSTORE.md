@@ -1,6 +1,6 @@
 # App Store Listing
 
-App Store Connect submission details for Fud AI v4.4 build 25. Each field is in a code block for easy copy-paste.
+App Store Connect submission details for Fud AI v5.0 build 26. Each field is in a code block for easy copy-paste.
 
 ## App Name
 ```
@@ -14,7 +14,7 @@ Food & Macro Tracker
 
 ## Promotional Text (170 chars max)
 ```
-Goals are now AI-powered: Recalculate and onboarding set your calories and macros from your profile, logged intake, and weight trend. Bring your own key or use Premium.
+New: Workouts tab with an 873-exercise library. Fud AI is now fully free — bring your own AI key. Adaptive Goals and Energy Burn are on by default for new users.
 ```
 
 ## Keywords (100 chars max)
@@ -28,36 +28,31 @@ Primary: Health & Fitness
 Secondary: Food & Drink
 ```
 
-## What's New (v4.4)
+## What's New (v5.0)
 ```
-Fud AI 4.4 — Smarter, AI-powered goals.
+Fud AI 5.0 — Workouts, and fully free.
 
 NEW
-• Recalculate Goals now uses AI. It sets your daily calories and macros from your profile — and as you keep logging, refines them from your real intake and weight trend (a true "hit and trial" estimate of your maintenance). Works with Fud AI Premium or your own provider key, and falls back to the standard formula when AI isn't available.
-• Recalculate also refreshes your optional nutrient targets — fiber, sugar, sodium, and more.
-• Onboarding now sets up your AI up front (Premium, or bring your own provider, model, and key) and builds your starting plan with AI.
-• Lock any calculated calorie or macro target so Recalculate and Adaptive keep it fixed — reset to auto-balance anytime.
-• New optional body measurements (waist, hips, neck, and more) in Settings → Personal Info feed Recalculate Goals and the Coach.
+• Workouts tab: browse an 873-exercise library with photos, primary/secondary muscle and equipment filters, search, sort, and per-exercise detail pages.
+• Fud AI is now fully free — the Premium subscription has been removed. Bring your own AI key (a free Gemini key takes a minute). A small banner ad keeps the app free, and there's an optional Tip Jar in Settings → About if you'd like to support development.
+• Adaptive Goals and Energy Burn have graduated from Experimental and are on by default for new installs.
 
 IMPROVED
-• Energy Burn Goals is now part of Adaptive Goals — one simpler toggle. When Apple Health is connected, your weekly auto-correction also factors the calories you actually burned.
-• Swipe left or right on the calorie area of Home to move between days; the week strip follows along.
-• Coach replies now render formatted text — headings, bold, and bullet lists — so guidance is easier to read.
-• Weight goals read clearer: Lose / Cutting, Maintain / Recomp, and Gain / Bulking.
-• Get notified when a new version is available, with an App Updates toggle in Notifications.
-• Food log times now follow your phone's 12- or 24-hour clock.
+• Refreshed onboarding: a quick feature tour, clearer AI and privacy notes, and your plan ready at the end.
+• Exercise browsing keeps search and filters pinned while the list scrolls, and the keyboard dismisses as you scroll.
+• Space is reserved for the banner at the top of each tab, so content never jumps when an ad loads.
 • General refinements and fixes.
 
-No data migration is required. Existing logs, goals, widgets, Premium, and BYOK settings are preserved.
+No data migration is required. Existing logs, goals, widgets, and BYOK settings are preserved. If you had a Premium subscription, cancel it from your Apple ID subscription settings — this version no longer uses it.
 ```
 
 ## Description
 ```
 Effortless calorie tracking with AI-powered food recognition. Snap, scan, speak, or type a meal — get instant calories, macros, and nutrients.
 
-NEW in v4.4: Recalculate Goals is now AI-powered — it sets your daily calories and macros from your profile and refines them from your real logged intake and weight trend (Fud AI Premium or your own provider key; falls back to the standard formula offline), and also refreshes your optional nutrient targets. Onboarding now sets up your AI and builds your plan with it. Energy Burn Goals is now folded into a single Adaptive Goals toggle that factors your Apple Health calories burned.
+NEW in v5.0: a Workouts tab with an 873-exercise library — photos, primary/secondary muscle and equipment filters, search, sort, and detail pages. Fud AI is now fully free: the Premium subscription has been removed and AI is bring-your-own-key. A small banner ad keeps the app free, with an optional Tip Jar. Adaptive Goals and Energy Burn are on by default for new users.
 
-Free, open source, privacy-first. Bring your own API key, or use optional Fud AI Premium for hosted Gemini + Deepgram access. Premium hides BYOK controls until you switch back.
+Free, open source, privacy-first. Bring your own API key — a free Gemini key takes a minute to create.
 
 HOW TO USE
 1) Set your profile and goals
@@ -69,7 +64,7 @@ LOG MEALS
 Photo, Photo + Note, Photo + Photo, Nutrition Label, Barcode, From Photos, Voice, Text, Manual Entry, Saved Meals, and iOS Siri shortcuts for food, weight, and today's calories.
 
 AI ACCESS
-Bring Your Own Key supports Gemini, OpenAI, Claude, Grok, Groq, OpenRouter, Together AI, Hugging Face, Fireworks AI, DeepInfra, Mistral, Ollama, or any OpenAI-compatible endpoint. Keys stay in iOS Keychain. Premium provides no-key Gemini + Deepgram access.
+Bring Your Own Key supports Gemini, OpenAI, Claude, Grok, Groq, OpenRouter, Together AI, Hugging Face, Fireworks AI, DeepInfra, Mistral, Ollama, or any OpenAI-compatible endpoint. Keys stay in iOS Keychain.
 
 6 SPEECH-TO-TEXT OPTIONS
 Native iOS, Gemini Audio, OpenAI Whisper, Groq, Deepgram, and AssemblyAI, with Provider Auto, iPhone Language, or a specific language where supported.
@@ -80,11 +75,14 @@ Unlock Nutrition to correct calories, macros, and detailed nutrients. What if? p
 COACH
 Multi-turn chat with on-demand access to your profile, targets, forecast, and food log. Ask any date range — "what did I eat Tuesday?"
 
+WORKOUTS
+Browse 873 exercises with photos. Filter by primary/secondary muscle and equipment, search, sort, and open per-exercise detail pages.
+
 EXPANDED NUTRIENTS
 Calories, protein, carbs, fat, sugar, fiber, saturated/trans fats, cholesterol, sodium, potassium, calcium, iron, magnesium, zinc, vitamins A/C/D/E/K/B12, folate, omega-3 when available.
 
 PERSONALIZED GOALS
-BMR via Katch-McArdle or Mifflin-St Jeor, TDEE with 6 activity levels, auto-calculated macros, Activity Level protein targets, optional nutrient goals, and Experimental Adaptive Goals.
+BMR via Katch-McArdle or Mifflin-St Jeor, TDEE with 6 activity levels, auto-calculated macros, Activity Level protein targets, optional nutrient goals, and Adaptive Goals (on by default for new users).
 
 PROGRESS
 Weight / Body Fat chart, average and net change summaries, goal lines, calorie trend vs goal, and macro averages.
@@ -96,10 +94,10 @@ iOS widgets cover Home Screen Small, Medium, and Large, a small-only Protein wid
 English, Spanish, French, German, Italian, Portuguese (BR), Dutch, Russian, Polish, Japanese, Korean, Chinese (Simplified), Hindi, Arabic, Romanian, Azerbaijani.
 
 PRIVACY
-No account, sign-in, cloud sync, analytics, ads, or tracking. BYOK keys stay on-device. Premium requests go through Fud AI's proxy only for the request being processed. Supported iPhones can use Apple Intelligence on-device as a final fallback for text, voice-transcribed, and Siri food-description analysis. Review edits are saved only if you log the meal. Barcode sends only the barcode to Open Food Facts. MIT licensed.
+No account, sign-in, cloud sync, analytics, or behavioral tracking. A single small banner ad keeps the app free. BYOK keys stay on-device. Supported iPhones can use Apple Intelligence on-device as a final fallback for text, voice-transcribed, and Siri food-description analysis. Review edits are saved only if you log the meal. Barcode sends only the barcode to Open Food Facts. MIT licensed.
 
 APPLE HEALTH
-Two-way sync for nutrition, weight, height, and body fat. External samples can auto-import. Experimental Energy Burn Goals can use active/total energy while keeping macros editable.
+Two-way sync for nutrition, weight, height, and body fat. External samples can auto-import. Energy Burn Goals can use active/total energy while keeping macros editable (on by default for new users).
 
 Fud AI is not medical advice — consult a healthcare professional before significant diet changes.
 
@@ -133,13 +131,13 @@ https://fud-ai.app
 ```
 1) iPhone only — not optimized for iPad. Please review on iPhone.
 2) No test account is needed. The app works immediately after onboarding.
-3) Fud AI has two AI Access modes:
-   • Bring Your Own Key (free): users enter their own provider API key.
-   • Fud AI Premium (optional subscription): no-key AI access through Fud AI's Gemini + Deepgram proxy.
-4) Premium subscription products:
-   • fudai.premium.weekly — $6.99/week
-   • fudai.premium.yearly — $199.99/year
-5) Premium review path: during onboarding choose Fud AI Premium, or after onboarding go to Settings → AI Access → Fud AI Premium. The paywall uses RevenueCat and falls back to StoreKit products if RevenueCat offerings are unavailable, so App Store sandbox purchase testing should be available.
-6) BYOK review path: go to Settings → AI Access → Bring Your Own Key → enter any valid Gemini API key. A free key can be obtained at https://aistudio.google.com/apikey
-7) Premium mode hides BYOK provider, fallback, and speech API key controls to avoid conflicting settings. Switching back to Bring Your Own Key restores those controls and does not delete saved BYOK settings.
+3) AI access is Bring Your Own Key: users enter their own provider API key during onboarding or in Settings → AI Access. A free Gemini key can be obtained at https://aistudio.google.com/apikey
+4) The Fud AI Premium subscription from v4.4 has been removed in this version. The app is fully free; no paywall exists.
+5) In-app purchases are 4 optional consumable tips (Settings → About → Tip Jar). They unlock nothing — voluntary support only:
+   • com.apoorvdarshan.calorietracker.tip.snack — $0.99
+   • com.apoorvdarshan.calorietracker.tip.proteinshake — $2.99
+   • com.apoorvdarshan.calorietracker.tip.lunch — $4.99
+   • com.apoorvdarshan.calorietracker.tip.feast — $9.99
+   Purchases go through StoreKit via RevenueCat, so App Store sandbox purchase testing is available.
+6) The app shows a single AdMob banner ad at the top of each tab. App Tracking Transparency is requested once after onboarding; declining changes nothing functionally.
 ```

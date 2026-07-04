@@ -1,6 +1,6 @@
 # Play Store Listing
 
-Google Play Console listing copy for Fud AI Android (current: v2.3.0 / versionCode 26). Each field is in a code block for easy copy-paste. Char counts are tracked because Play Console enforces hard caps and silently truncates anything over.
+Google Play Console listing copy for Fud AI Android (current: v3.0 / versionCode 27). Each field is in a code block for easy copy-paste. Char counts are tracked because Play Console enforces hard caps and silently truncates anything over.
 
 **Where to paste each field in Play Console:**
 - App name / Short description / Full description → Grow → Store presence → **Main store listing** (default English) and Grow → Store presence → **Custom store listings** → Manage translations (per-language overrides)
@@ -38,7 +38,7 @@ Snap, speak, or type a meal. AI logs the calories. Open source.
 ```
 Fud AI makes calorie tracking effortless with AI-powered food recognition. Snap a photo, scan a barcode, speak it, or type it — get instant nutrition: calories, protein, carbs, fats, vitamins, minerals, and more.
 
-NEW in v2.3.0: Recalculate Goals is now AI-powered — calories and macros come from your profile plus your logged intake and weight trend (your own provider key; standard formula offline). Onboarding now sets up your AI and builds your starting plan with it.
+NEW in v3.0: a Workouts tab with an 873-exercise library — photos, primary/secondary muscle and equipment filters, search, sort, and detail pages. Refreshed onboarding, and Adaptive Goals + Energy Burn on by default for new installs. A small banner ad now keeps Fud AI free.
 
 Open source, privacy-first. Bring your own API key.
 
@@ -77,6 +77,9 @@ Multi-turn chat sees your profile, weight, body fat, and food log. Ask "what was
 REVIEW BEFORE LOGGING
 Unlock Nutrition to correct calories, macros, and detailed nutrients before saving; serving changes then scale from your edits. What if? previews today's macro impact and can ask AI for a suggestion.
 
+WORKOUTS
+Browse 873 exercises with photos. Filter by primary/secondary muscle and equipment, search, sort, and open per-exercise detail pages.
+
 PERSONALIZED GOALS
 BMR via Katch-McArdle or Mifflin-St Jeor. TDEE with 6 activity levels. Auto-calculated calorie + protein + carbs + fat targets — fully customizable. Activity Level shows protein in g/kg body weight, or the equivalent lean-mass multiplier when body fat is set.
 
@@ -93,7 +96,7 @@ Calorie and nutrient widgets refresh when you log a meal.
 Auto-selected by phone language: English, Spanish, French, German, Italian, Portuguese (BR), Dutch, Russian, Japanese, Korean, Chinese, Hindi, Arabic, Romanian, Azerbaijani.
 
 PRIVACY FIRST
-No account, no sign-in, no cloud sync, no analytics, no ads, no tracking. Local-only. MIT licensed.
+No account, no sign-in, no cloud sync, no analytics, no behavioral tracking. Your data stays on your device; a single small banner ad keeps the app free. MIT licensed.
 
 HEALTH CONNECT
 Sync nutrition, weight, and body fat with permission reconciliation and backfill support. Edits and deletes sync back where supported.
@@ -111,84 +114,114 @@ English-only on Play Console — non-English Play Store browsers (ar, az-AZ, de-
 
 ---
 
-## 4. What's New (v2.3.0 / versionCode 26)
+## 4. What's New (v3.0 / versionCode 27)
 
 **500 char hard cap per language.** Paste the entire block below into Play Console's "Release notes" field — it auto-routes each `<lang-tag>` block to the matching locale.
 
 ```
 <en-US>
-• Recalculate Goals is now AI-powered — it sets your calories and macros from your profile and refines them from your logged intake and weight trend. Falls back to the standard formula offline.
-• Onboarding now sets up your AI provider and key, then builds your starting plan with AI.
+• New Workouts tab: browse 873 exercises with photos, muscle and equipment filters, search, sort, and detail pages.
+• Adaptive Goals and Energy Burn have graduated from Experimental and are on by default for new installs.
+• Refreshed onboarding with a quick feature tour.
+• A small banner ad now keeps Fud AI free.
 </en-US>
 
 <ar>
-• أصبحت ميزة "إعادة حساب الأهداف" مدعومة بالذكاء الاصطناعي الآن — تحدد سعراتك الحرارية وعناصرك الغذائية من ملفك الشخصي وتحسّنها بناءً على ما سجّلته من طعام واتجاه وزنك. وتعود إلى المعادلة القياسية عند عدم الاتصال.
-• يقوم الإعداد الأولي الآن بتهيئة مزوّد الذكاء الاصطناعي والمفتاح، ثم يبني خطتك الأولية بالذكاء الاصطناعي.
+• علامة تبويب جديدة للتمارين: تصفّح 873 تمرينًا مع الصور وفلاتر العضلات والمعدات والبحث والفرز وصفحات التفاصيل.
+• تخرّجت ميزتا الأهداف التكيفية وحرق الطاقة من المرحلة التجريبية وأصبحتا مفعّلتين افتراضيًا للتثبيتات الجديدة.
+• تجربة إعداد أولي محدّثة مع جولة سريعة على الميزات.
+• إعلان بانر صغير يُبقي Fud AI مجانيًا الآن.
 </ar>
 
 <az-AZ>
-• Məqsədləri Yenidən Hesabla artıq süni intellektlə işləyir — profilinizə əsasən kalori və makroları təyin edir, qeyd etdiyiniz qida və çəki tendensiyasına görə dəqiqləşdirir. Oflayn rejimdə standart düstura keçir.
-• Tanışlıq mərhələsi indi süni intellekt provayderini və açarını qurur, sonra başlanğıc planınızı süni intellektlə formalaşdırır.
+• Yeni Məşqlər tabı: şəkillər, əzələ və avadanlıq filtrləri, axtarış, çeşidləmə və detal səhifələri ilə 873 məşqə baxın.
+• Adaptiv Məqsədlər və Enerji Sərfi eksperimental mərhələdən çıxdı və yeni quraşdırmalar üçün defolt olaraq aktivdir.
+• Sürətli funksiya turu ilə yenilənmiş tanışlıq.
+• Kiçik banner reklamı indi Fud AI-ni pulsuz saxlayır.
 </az-AZ>
 
 <de-DE>
-• "Ziele neu berechnen" wird jetzt von KI gesteuert: Es legt Kalorien und Makros aus deinem Profil fest und verfeinert sie anhand deiner erfassten Aufnahme und deines Gewichtstrends. Offline gilt die Standardformel.
-• Das Onboarding richtet jetzt deinen KI-Anbieter und Schlüssel ein und erstellt dann deinen Startplan mit KI.
+• Neuer Workouts-Tab: 873 Übungen mit Fotos, Muskel- und Equipment-Filtern, Suche, Sortierung und Detailseiten.
+• Adaptive Ziele und Energieverbrauch sind nicht mehr experimentell und bei Neuinstallationen standardmäßig aktiv.
+• Überarbeitetes Onboarding mit kurzer Funktionstour.
+• Eine kleine Banneranzeige hält Fud AI jetzt kostenlos.
 </de-DE>
 
 <es-ES>
-• Recalcular objetivos ahora funciona con IA: establece tus calorías y macros a partir de tu perfil y los ajusta según tu consumo registrado y tu tendencia de peso. Si estás sin conexión, usa la fórmula estándar.
-• La configuración inicial ahora prepara tu proveedor de IA y tu clave, y luego crea tu plan inicial con IA.
+• Nueva pestaña Entrenamientos: explora 873 ejercicios con fotos, filtros de músculo y equipamiento, búsqueda, orden y páginas de detalle.
+• Objetivos adaptativos y Quema de energía dejan de ser experimentales y vienen activados por defecto en instalaciones nuevas.
+• Incorporación renovada con un breve recorrido por las funciones.
+• Un pequeño banner publicitario mantiene ahora Fud AI gratis.
 </es-ES>
 
 <fr-FR>
-• Le recalcul des objectifs est désormais propulsé par l'IA : il définit vos calories et macros à partir de votre profil, puis les ajuste selon vos apports enregistrés et l'évolution de votre poids. Bascule sur la formule standard hors ligne.
-• L'intégration configure maintenant votre fournisseur d'IA et votre clé, puis crée votre plan de départ avec l'IA.
+• Nouvel onglet Entraînements : parcourez 873 exercices avec photos, filtres par muscle et équipement, recherche, tri et pages de détail.
+• Objectifs adaptatifs et Énergie brûlée sortent de l'expérimental et sont activés par défaut pour les nouvelles installations.
+• Intégration repensée avec un rapide tour des fonctionnalités.
+• Une petite bannière publicitaire garde désormais Fud AI gratuit.
 </fr-FR>
 
 <hi-IN>
-• Recalculate Goals अब AI-संचालित है — यह आपकी प्रोफ़ाइल से कैलोरी और मैक्रो तय करता है और आपके दर्ज सेवन व वज़न रुझान से उन्हें बेहतर बनाता है। ऑफ़लाइन होने पर मानक फ़ॉर्मूले पर लौट जाता है।
-• ऑनबोर्डिंग अब आपका AI प्रोवाइडर और key सेट करती है, फिर AI से आपकी शुरुआती योजना बनाती है।
+• नया Workouts टैब: फ़ोटो, मांसपेशी और उपकरण फ़िल्टर, खोज, सॉर्ट और विवरण पेजों के साथ 873 व्यायाम ब्राउज़ करें।
+• Adaptive Goals और Energy Burn अब प्रयोगात्मक नहीं हैं और नए इंस्टॉल पर डिफ़ॉल्ट रूप से चालू हैं।
+• तेज़ फ़ीचर टूर के साथ नया ऑनबोर्डिंग।
+• एक छोटा बैनर विज्ञापन अब Fud AI को मुफ़्त रखता है।
 </hi-IN>
 
 <it-IT>
-• Ricalcola obiettivi ora è basato sull'AI: imposta calorie e macro dal tuo profilo e li perfeziona in base al cibo registrato e all'andamento del peso. Offline usa la formula standard.
-• L'onboarding ora configura il provider AI e la chiave, poi crea il tuo piano iniziale con l'AI.
+• Nuova scheda Allenamenti: sfoglia 873 esercizi con foto, filtri per muscolo e attrezzatura, ricerca, ordinamento e pagine di dettaglio.
+• Obiettivi adattivi ed Energia bruciata escono dalla fase sperimentale e sono attivi di default sulle nuove installazioni.
+• Onboarding rinnovato con un rapido tour delle funzioni.
+• Un piccolo banner pubblicitario ora mantiene Fud AI gratuito.
 </it-IT>
 
 <ja-JP>
-• 「目標を再計算」がAI対応になりました。プロフィールからカロリーとマクロを設定し、記録した摂取量と体重の推移をもとに最適化します。オフライン時は標準の計算式に切り替わります。
-• オンボーディングでAIプロバイダーとキーを設定し、AIが最初のプランを作成するようになりました。
+• 新しいワークアウトタブ：写真、筋肉・器具フィルター、検索、並べ替え、詳細ページ付きの873種目をブラウズできます。
+• アダプティブ目標とエネルギー消費が実験的機能を卒業し、新規インストールではデフォルトでオンになりました。
+• クイック機能ツアー付きの新しいオンボーディング。
+• 小さなバナー広告でFud AIは今後も無料です。
 </ja-JP>
 
 <ko-KR>
-• 목표 재계산 기능이 이제 AI로 작동합니다. 프로필을 기반으로 칼로리와 영양소를 설정하고, 기록한 섭취량과 체중 추세를 반영해 더 정확하게 조정합니다. 오프라인에서는 기본 공식으로 전환됩니다.
-• 온보딩에서 이제 AI 제공업체와 키를 설정한 뒤, AI로 시작 플랜을 만들어 줍니다.
+• 새로운 운동 탭: 사진, 근육·장비 필터, 검색, 정렬, 상세 페이지와 함께 873가지 운동을 둘러보세요.
+• 적응형 목표와 에너지 소모가 실험 단계를 졸업하고 새 설치에서 기본으로 켜집니다.
+• 빠른 기능 둘러보기가 포함된 새 온보딩.
+• 작은 배너 광고로 Fud AI는 계속 무료입니다.
 </ko-KR>
 
 <nl-NL>
-• Doelen herberekenen werkt nu met AI: het stelt je calorieën en macro's in op basis van je profiel en verfijnt ze aan de hand van je geregistreerde inname en gewichtstrend. Offline valt het terug op de standaardformule.
-• Bij het instellen worden nu je AI-provider en -sleutel geconfigureerd, waarna AI je startplan opbouwt.
+• Nieuw Workouts-tabblad: blader door 873 oefeningen met foto's, spier- en materiaalfilters, zoeken, sorteren en detailpagina's.
+• Adaptieve doelen en Energieverbruik zijn niet langer experimenteel en staan standaard aan bij nieuwe installaties.
+• Vernieuwde onboarding met een korte functietour.
+• Een kleine banneradvertentie houdt Fud AI nu gratis.
 </nl-NL>
 
 <pt-BR>
-• O Recalcular Metas agora usa IA — define suas calorias e macros a partir do seu perfil e os ajusta com base no consumo registrado e na tendência de peso. Sem internet, volta para a fórmula padrão.
-• A introdução agora configura seu provedor de IA e sua chave e, em seguida, cria seu plano inicial com IA.
+• Nova aba Treinos: navegue por 873 exercícios com fotos, filtros de músculo e equipamento, busca, ordenação e páginas de detalhes.
+• Metas adaptativas e Queima de energia saíram da fase experimental e vêm ativadas por padrão em novas instalações.
+• Integração renovada com um tour rápido pelos recursos.
+• Um pequeno banner de anúncio agora mantém o Fud AI gratuito.
 </pt-BR>
 
 <ro>
-• Recalcularea obiectivelor folosește acum AI — îți stabilește caloriile și macronutrienții din profil și le ajustează în funcție de aportul înregistrat și de evoluția greutății. Offline revine la formula standard.
-• Configurarea inițială îți setează acum furnizorul AI și cheia, apoi creează planul de început cu AI.
+• Filă nouă Antrenamente: răsfoiește 873 de exerciții cu fotografii, filtre după mușchi și echipament, căutare, sortare și pagini de detalii.
+• Obiectivele adaptive și Energia consumată au ieșit din faza experimentală și sunt activate implicit la instalările noi.
+• Onboarding reîmprospătat, cu un tur rapid al funcțiilor.
+• Un mic banner publicitar menține acum Fud AI gratuit.
 </ro>
 
 <ru-RU>
-• Пересчёт целей теперь работает на ИИ — он задаёт калории и макросы по вашему профилю и уточняет их по записанному рациону и динамике веса. Без сети используется стандартная формула.
-• Онбординг теперь настраивает ИИ-провайдера и ключ, а затем строит ваш стартовый план с помощью ИИ.
+• Новая вкладка «Тренировки»: 873 упражнения с фото, фильтрами по мышцам и оборудованию, поиском, сортировкой и страницами деталей.
+• «Адаптивные цели» и «Расход энергии» вышли из экспериментального статуса и включены по умолчанию для новых установок.
+• Обновлённый онбординг с коротким обзором функций.
+• Небольшой рекламный баннер теперь позволяет Fud AI оставаться бесплатным.
 </ru-RU>
 
 <zh-CN>
-• “重新计算目标”现已由 AI 驱动——它会根据你的个人资料设定卡路里和宏量营养素，并依据你记录的摄入量和体重趋势进行优化。离线时回退到标准公式。
-• 引导设置现可配置你的 AI 服务商和密钥，然后用 AI 为你生成初始计划。
+• 全新“锻炼”标签页：浏览 873 个动作，配照片、肌群和器械筛选、搜索、排序和详情页。
+• 自适应目标和能量消耗已结束实验阶段，新安装默认开启。
+• 全新引导流程，附快速功能导览。
+• 一条小横幅广告让 Fud AI 保持免费。
 </zh-CN>
 ```
 
@@ -216,12 +249,12 @@ These are one-time setup in Play Console → Policy → App content. Don't drift
 
 - **Privacy policy URL**: https://fud-ai.app/privacy.html
 - **App access**: All functionality available without restrictions
-- **Ads**: No
+- **Ads**: Yes — flip the "contains ads" declaration before releasing v3.0. The app shows a single AdMob banner at the top of each tab.
 - **Content rating**: Everyone (E)
 - **Target audience**: 13+
 - **News app**: No
 - **COVID-19 contact tracing**: No
-- **Data safety**: All processing on-device. No data collected/shared. API keys stored in EncryptedSharedPreferences. Encryption in transit when calling AI provider APIs (HTTPS). User can request deletion via in-app "Delete All Data" — no server data exists.
+- **Data safety**: App data processing is on-device; the app itself collects nothing. From v3.0 the Google Mobile Ads SDK collects the device advertising ID and ad-interaction data, shared with Google for advertising — declare "Device or other IDs → Collected/Shared, Advertising" (plus AdMob's documented App activity/interactions entries) per Google's AdMob data-safety guidance. API keys stored in EncryptedSharedPreferences. Encryption in transit (HTTPS). User can request deletion via in-app "Delete All Data" — no server data exists.
 - **Government app**: No
 - **Financial features**: No
 - **Health features**: Yes — fitness/nutrition tracking. Local-only.
