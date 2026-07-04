@@ -65,10 +65,11 @@ struct OnboardingView: View {
     }
 
     private let totalSteps = 15 // 0-14
+    // Real App Store reviews (US storefront) — refresh occasionally.
     private let onboardingReviewQuotes: [(title: String, author: String, quote: String)] = [
-        ("Thankful", "Joel819", "This app is great, am recommending this to my friends."),
-        ("One of the best", "2MitiN6", "Yours changes my life in real time for free."),
-        ("Cool App", "Sloosi", "I wrote a suggestion on GitHub and was approved and done instantly.")
+        ("The Best Non-Subscription Calorie Tracker", "phspman", "Don't settle for another monthly subscription. Fud AI allows you to add your own AI API key."),
+        ("V3 fixed all my pain points", "Abcdef10000", "Simple and enough for most people. I like the bring your own key philosophy."),
+        ("One of the best", "2MitiN6", "Yours changes my life in real time for free.")
     ]
 
     /// Combine the whole + tenth wheel selections into a single Double.
@@ -202,6 +203,15 @@ struct OnboardingView: View {
                     .font(.system(.callout, design: .rounded))
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
+
+                // Quick feature tour — everything is free and already unlocked.
+                VStack(alignment: .leading, spacing: 12) {
+                    welcomeFeatureRow(icon: "camera.fill", text: "Snap a photo — AI logs it")
+                    welcomeFeatureRow(icon: "bubble.left.and.bubble.right.fill", text: "Coach that knows your data")
+                    welcomeFeatureRow(icon: "dumbbell.fill", text: "870+ exercise library")
+                    welcomeFeatureRow(icon: "applewatch", text: "Widgets & Apple Watch")
+                }
+                .padding(.top, 8)
             }
             Spacer()
 
@@ -823,6 +833,11 @@ struct OnboardingView: View {
                             title: "Local data",
                             text: "Your food log, weight history, body-fat history, and BYOK API keys stay on this device."
                         )
+                        aiNoticeRow(
+                            icon: "megaphone.fill",
+                            title: "Ads keep it free",
+                            text: "A small banner supports development. Your health data is never used for ads."
+                        )
                     }
                     .padding(16)
                     .background(AppColors.appCard, in: RoundedRectangle(cornerRadius: 16))
@@ -1028,9 +1043,9 @@ struct OnboardingView: View {
                 .frame(width: 24, height: 24)
 
             VStack(alignment: .leading, spacing: 3) {
-                Text(title)
+                Text(LocalizedDisplayText.text(title))
                     .font(.system(.subheadline, design: .rounded, weight: .semibold))
-                Text(text)
+                Text(LocalizedDisplayText.text(text))
                     .font(.system(.caption, design: .rounded))
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -1071,7 +1086,7 @@ struct OnboardingView: View {
                         }
 
                         VStack(spacing: 8) {
-                            Text("Enjoying fud so far?")
+                            Text("Enjoying Fud AI so far?")
                                 .font(.system(size: 28, weight: .bold, design: .rounded))
                                 .multilineTextAlignment(.center)
                             Text("A quick rating helps us grow\nand build more features for you!")
@@ -1099,10 +1114,16 @@ struct OnboardingView: View {
             }
 
             Button {
-                requestNativeReview()
+                // Deep-link to the App Store review sheet (explicit intent) instead of
+                // burning a rate-limited SKStoreReviewController prompt before the user
+                // has logged a single meal — the native prompt now fires after the
+                // first successful food log (see ReviewPrompter).
+                if let url = URL(string: "https://apps.apple.com/app/id6758935726?action=write-review") {
+                    UIApplication.shared.open(url)
+                }
                 hasCompletedOnboarding = true
             } label: {
-                Text("Rate fud")
+                Text("Rate Fud AI")
                     .font(.system(.body, design: .rounded, weight: .semibold))
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity)
@@ -1201,6 +1222,13 @@ struct OnboardingView: View {
 
             ScrollView {
                 VStack(spacing: 20) {
+                    // Adaptive Goals is on by default for new installs — say so up front.
+                    Text("Your plan auto-adjusts weekly as you log — turn off Adaptive Goals in Settings to keep it fixed.")
+                        .font(.system(.footnote, design: .rounded))
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 32)
+
                     // Calorie display - tappable
                     Button {
                         withAnimation(.snappy) {
@@ -1233,6 +1261,7 @@ struct OnboardingView: View {
                             set: { newCal in
                                 editedCalories = newCal
                                 editedCarbs = max(0, (newCal - planProtein * 4 - planFat * 9) / 4)
+                                markPlanEdited()
                             }
                         )) {
                             ForEach(Array(stride(from: 800, through: 5000, by: 10)), id: \.self) { cal in
@@ -1259,6 +1288,7 @@ struct OnboardingView: View {
                             set: { newProtein in
                                 editedProtein = newProtein
                                 editedCarbs = max(0, (planCalories - newProtein * 4 - planFat * 9) / 4)
+                                markPlanEdited()
                             }
                         )) {
                             ForEach(20...300, id: \.self) { g in Text("\(g) g").tag(g) }
@@ -1275,6 +1305,7 @@ struct OnboardingView: View {
                             set: { newCarbs in
                                 editedCarbs = newCarbs
                                 editedCalories = newCarbs * 4 + planProtein * 4 + planFat * 9
+                                markPlanEdited()
                             }
                         )) {
                             ForEach(0...500, id: \.self) { g in Text("\(g) g").tag(g) }
@@ -1291,6 +1322,7 @@ struct OnboardingView: View {
                             set: { newFat in
                                 editedFat = newFat
                                 editedCarbs = max(0, (planCalories - planProtein * 4 - newFat * 9) / 4)
+                                markPlanEdited()
                             }
                         )) {
                             ForEach(10...200, id: \.self) { g in Text("\(g) g").tag(g) }
@@ -1431,10 +1463,20 @@ struct OnboardingView: View {
         }
     }
 
-    private func requestNativeReview() {
-        if let scene = UIApplication.shared.connectedScenes
-            .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
-            AppStore.requestReview(in: scene)
+    /// The user hand-tuned their plan — remembered so Adaptive Goals is NOT enabled
+    /// by default at completion (its weekly run would overwrite these numbers).
+    private func markPlanEdited() {
+        UserDefaults.standard.set(true, forKey: "onboardingPlanEdited")
+    }
+
+    private func welcomeFeatureRow(icon: String, text: String) -> some View {
+        HStack(spacing: 12) {
+            Image(systemName: icon)
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundStyle(AppColors.calorie)
+                .frame(width: 26)
+            Text(LocalizedDisplayText.text(text))
+                .font(.system(.subheadline, design: .rounded, weight: .medium))
         }
     }
 }

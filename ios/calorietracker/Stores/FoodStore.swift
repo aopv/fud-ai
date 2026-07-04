@@ -345,6 +345,7 @@ class FoodStore {
         saveEntries()
         onEntriesChanged?()
         onEntryAdded?(entry)
+        ReviewPrompter.foodWasLogged()
     }
 
     func updateEntry(_ entry: FoodEntry) {

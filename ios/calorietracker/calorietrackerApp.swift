@@ -112,11 +112,15 @@ struct calorietrackerApp: App {
         }
         .onChange(of: hasCompletedOnboarding) { _, completed in
             if completed {
-                // New installs start with Adaptive Goals + Energy Burn on. Existing
-                // users are untouched — these keys are only written here and by the
-                // Settings toggles. Onboarding just calculated goals, so mark the
-                // weekly adaptive check as done; the first auto-run lands next week.
-                UserDefaults.standard.set(true, forKey: AdaptiveGoalSettings.enabledKey)
+                // New installs start with Energy Burn on, and Adaptive Goals on —
+                // UNLESS the user hand-tuned their plan during onboarding, since
+                // adaptive's first weekly run would overwrite those numbers.
+                // Existing users are untouched — these keys are only written here
+                // and by the Settings toggles. Onboarding just calculated goals, so
+                // mark the weekly adaptive check as done; the first run lands next week.
+                if !UserDefaults.standard.bool(forKey: "onboardingPlanEdited") {
+                    UserDefaults.standard.set(true, forKey: AdaptiveGoalSettings.enabledKey)
+                }
                 UserDefaults.standard.set(true, forKey: EnergyBurnSettings.enabledKey)
                 AdaptiveGoalSettings.markCheckedToday()
                 wireUpFoodStoreCallback()

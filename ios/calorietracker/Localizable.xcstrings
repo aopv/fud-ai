@@ -283,6 +283,100 @@
         }
       }
     },
+    "AI analysis" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KI-Analyse"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Análisis de IA"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Analyse IA"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Analisi IA"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Análise de IA"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI-analyse"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Analiză IA"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ИИ-анализ"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Analiza AI"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI分析"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 분석"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 分析"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تحليل الذكاء الاصطناعي"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI विश्लेषण"
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sİ təhlili"
+          }
+        }
+      }
+    },
     "All %lld" : {
       "localizations" : {
         "ar" : {
@@ -4264,6 +4358,100 @@
         }
       }
     },
+    "870+ exercise library" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bibliothek mit 870+ Übungen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Biblioteca de 870+ ejercicios"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bibliothèque de 870+ exercices"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Libreria di 870+ esercizi"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Biblioteca com 870+ exercícios"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bibliotheek met 870+ oefeningen"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bibliotecă cu 870+ exerciții"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Библиотека из 870+ упражнений"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Biblioteka 870+ ćwiczeń"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "870以上のエクササイズライブラリ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "870개 이상의 운동 라이브러리"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "870+ 动作练习库"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مكتبة تضم أكثر من 870 تمرينًا"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "870+ एक्सरसाइज़ लाइब्रेरी"
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "870+ məşq kitabxanası"
+          }
+        }
+      }
+    },
     "A quick rating helps us grow\nand build more features for you!" : {
       "localizations" : {
         "pl" : {
@@ -4276,6 +4464,100 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Быстрая оценка помогает нам развиваться\nи создавать новые функции для вас!"
+          }
+        }
+      }
+    },
+    "A small banner supports development. Your health data is never used for ads." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein kleines Banner unterstützt die Entwicklung. Deine Gesundheitsdaten werden nie für Werbung verwendet."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un pequeño banner apoya el desarrollo. Tus datos de salud nunca se usan para anuncios."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une petite bannière soutient le développement. Vos données de santé ne sont jamais utilisées pour la pub."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un piccolo banner sostiene lo sviluppo. I tuoi dati sulla salute non vengono mai usati per la pubblicità."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um pequeno banner apoia o desenvolvimento. Seus dados de saúde nunca são usados para anúncios."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Een kleine banner ondersteunt de ontwikkeling. Je gezondheidsgegevens worden nooit voor advertenties gebruikt."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un mic banner susține dezvoltarea. Datele tale de sănătate nu sunt folosite niciodată pentru reclame."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Небольшой баннер поддерживает разработку. Ваши данные о здоровье никогда не используются для рекламы."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mały baner wspiera rozwój aplikacji. Twoje dane zdrowotne nigdy nie są używane do reklam."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "小さなバナー広告が開発を支えます。健康データが広告に使われることはありません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "작은 배너가 개발을 지원합니다. 건강 데이터는 광고에 절대 사용되지 않습니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一条小横幅广告支持开发。你的健康数据绝不会用于广告。"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إعلان صغير يدعم التطوير. لا تُستخدم بياناتك الصحية أبدًا للإعلانات."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "एक छोटा बैनर डेवलपमेंट में मदद करता है। आपका हेल्थ डेटा कभी विज्ञापनों के लिए इस्तेमाल नहीं होता।"
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kiçik banner inkişafı dəstəkləyir. Sağlamlıq məlumatlarınız heç vaxt reklam üçün istifadə olunmur."
           }
         }
       }
@@ -5081,6 +5363,100 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "调整"
+          }
+        }
+      }
+    },
+    "Ads keep it free" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Werbung hält die App kostenlos"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los anuncios la mantienen gratis"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La pub garde l'app gratuite"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La pubblicità la mantiene gratuita"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anúncios mantêm o app gratuito"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Advertenties houden de app gratis"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reclamele o mențin gratuită"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Реклама сохраняет приложение бесплатным"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reklamy utrzymują aplikację darmową"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "広告で無料を維持"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "광고로 무료 유지"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "广告让应用保持免费"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الإعلانات تُبقيه مجانيًا"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "विज्ञापन इसे मुफ़्त रखते हैं"
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reklamlar tətbiqi pulsuz saxlayır"
           }
         }
       }
@@ -9462,6 +9838,100 @@
         }
       }
     },
+    "Coach that knows your data" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coach, der deine Daten kennt"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un coach que conoce tus datos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un coach qui connaît vos données"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un coach che conosce i tuoi dati"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coach que conhece seus dados"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coach die je gegevens kent"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Antrenor care îți cunoaște datele"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Коуч, который знает ваши данные"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trener, który zna Twoje dane"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "あなたのデータを知るコーチ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "내 데이터를 아는 코치"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "了解你数据的教练"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مدرّب يعرف بياناتك"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कोच जो आपका डेटा जानता है"
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Məlumatlarınızı bilən məşqçi"
+          }
+        }
+      }
+    },
     "Coming Soon" : {
       "localizations" : {
         "ar" : {
@@ -12482,102 +12952,96 @@
         }
       }
     },
-    "Enjoying fud so far?" : {
+    "Enjoying Fud AI so far?" : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "هل تستمتع بـ fud حتى الآن؟"
+            "value" : "هل تستمتع بـ Fud AI حتى الآن؟"
           }
         },
         "az" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "İndiyə qədər fud-dan məmnunsunuz?"
+            "value" : "İndiyə qədər Fud AI-dan məmnunsunuz?"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gefällt dir fud bisher?"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enjoying fud so far?"
+            "value" : "Gefällt dir Fud AI bisher?"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "¿Disfrutas fud hasta ahora?"
+            "value" : "¿Disfrutas Fud AI hasta ahora?"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vous aimez fud jusqu'à présent ?"
+            "value" : "Vous aimez Fud AI jusqu'à présent ?"
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "क्या आप fud का आनंद ले रहे हैं?"
+            "value" : "क्या आप Fud AI का आनंद ले रहे हैं?"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ti piace fud finora?"
+            "value" : "Ti piace Fud AI finora?"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "fudはお楽しみいただけていますか？"
+            "value" : "Fud AIはお楽しみいただけていますか？"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "fud이 마음에 드시나요?"
+            "value" : "Fud AI가 마음에 드시나요?"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bevalt fud tot nu toe?"
+            "value" : "Bevalt Fud AI tot nu toe?"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Podoba Ci się Fud?"
+            "value" : "Podoba Ci się Fud AI?"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Curtindo o fud até agora?"
+            "value" : "Curtindo o Fud AI até agora?"
           }
         },
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Îți place fud până acum?"
+            "value" : "Îți place Fud AI până acum?"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Вам нравится fud?"
+            "value" : "Вам нравится Fud AI?"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "到目前为止喜欢 fud 吗？"
+            "value" : "到目前为止喜欢 Fud AI 吗？"
           }
         }
       }
@@ -14243,6 +14707,100 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "食物名称"
+          }
+        }
+      }
+    },
+    "Food photos, voice transcripts, and typed meals are sent directly to your selected AI provider." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Essensfotos, Sprachtranskripte und getippte Mahlzeiten werden direkt an deinen gewählten KI-Anbieter gesendet."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las fotos de comida, transcripciones de voz y comidas escritas se envían directamente a tu proveedor de IA seleccionado."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les photos de repas, transcriptions vocales et repas saisis sont envoyés directement à votre fournisseur d'IA."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foto dei pasti, trascrizioni vocali e pasti digitati vengono inviati direttamente al provider IA selezionato."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fotos de comida, transcrições de voz e refeições digitadas são enviadas diretamente ao provedor de IA selecionado."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voedselfoto's, spraaktranscripties en getypte maaltijden gaan rechtstreeks naar je gekozen AI-provider."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pozele cu mâncare, transcrierile vocale și mesele tastate sunt trimise direct furnizorului IA ales."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Фото еды, голосовые расшифровки и введённые блюда отправляются напрямую выбранному ИИ-провайдеру."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zdjęcia jedzenia, transkrypcje głosowe i wpisane posiłki trafiają bezpośrednio do wybranego dostawcy AI."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "食事の写真、音声の書き起こし、入力した食事は選択したAIプロバイダーに直接送信されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "음식 사진, 음성 전사, 입력한 식사는 선택한 AI 제공업체로 직접 전송됩니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "食物照片、语音转写和输入的餐食会直接发送给你选择的 AI 服务商。"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تُرسل صور الطعام والنصوص الصوتية والوجبات المكتوبة مباشرة إلى مزوّد الذكاء الاصطناعي الذي اخترته."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "खाने की फ़ोटो, वॉइस ट्रांसक्रिप्ट और टाइप किए गए मील सीधे आपके चुने हुए AI प्रोवाइडर को भेजे जाते हैं।"
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yemək şəkilləri, səs transkriptləri və yazılmış yeməklər birbaşa seçdiyiniz Sİ provayderinə göndərilir."
           }
         }
       }
@@ -18966,6 +19524,100 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "更好生活"
+          }
+        }
+      }
+    },
+    "Local data" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lokale Daten"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datos locales"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Données locales"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dati locali"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dados locais"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lokale gegevens"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Date locale"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Локальные данные"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dane lokalne"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ローカルデータ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "로컬 데이터"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "本地数据"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بيانات محلية"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "लोकल डेटा"
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lokal məlumatlar"
           }
         }
       }
@@ -24774,102 +25426,96 @@
         }
       }
     },
-    "Rate fud" : {
+    "Rate Fud AI" : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "قيّم fud"
+            "value" : "قيّم Fud AI"
           }
         },
         "az" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "fud-u Qiymətləndir"
+            "value" : "Fud AI-ni qiymətləndirin"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "fud bewerten"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rate fud"
+            "value" : "Fud AI bewerten"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Valorar fud"
+            "value" : "Valorar Fud AI"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Noter fud"
+            "value" : "Noter Fud AI"
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "fud को रेट करें"
+            "value" : "Fud AI को रेट करें"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Valuta fud"
+            "value" : "Valuta Fud AI"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "fudを評価"
+            "value" : "Fud AIを評価"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "fud 평가하기"
+            "value" : "Fud AI 평가하기"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Beoordeel fud"
+            "value" : "Beoordeel Fud AI"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Oceń Fud"
+            "value" : "Oceń Fud AI"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Avaliar o fud"
+            "value" : "Avaliar o Fud AI"
           }
         },
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Evaluează fud"
+            "value" : "Evaluează Fud AI"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Оценить fud"
+            "value" : "Оценить Fud AI"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "评价 fud"
+            "value" : "评价 Fud AI"
           }
         }
       }
@@ -28429,6 +29075,100 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Qəlyanaltı"
+          }
+        }
+      }
+    },
+    "Snap a photo — AI logs it" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foto knipsen — die KI loggt es"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haz una foto — la IA la registra"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prenez une photo — l'IA l'enregistre"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scatta una foto — l'IA la registra"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tire uma foto — a IA registra"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maak een foto — de AI logt het"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fă o poză — IA o înregistrează"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сфотографируйте — ИИ запишет"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zrób zdjęcie — AI je zapisze"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "写真を撮るだけ — AIが記録"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사진만 찍으면 AI가 기록"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拍张照片 — AI 帮你记录"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "التقط صورة — والذكاء الاصطناعي يسجّلها"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "फोटो खींचें — AI लॉग कर देगा"
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Şəkil çəkin — Sİ qeyd edir"
           }
         }
       }
@@ -33090,6 +33830,100 @@
         }
       }
     },
+    "Widgets & Apple Watch" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Widgets & Apple Watch"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Widgets y Apple Watch"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Widgets et Apple Watch"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Widget e Apple Watch"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Widgets e Apple Watch"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Widgets & Apple Watch"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Widgeturi și Apple Watch"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Виджеты и Apple Watch"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Widżety i Apple Watch"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ウィジェットとApple Watch"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "위젯 & Apple Watch"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "小组件和 Apple Watch"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الأدوات وApple Watch"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "विजेट और Apple Watch"
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vidcetlər və Apple Watch"
+          }
+        }
+      }
+    },
     "with care, for everyone" : {
       "localizations" : {
         "ar" : {
@@ -35112,6 +35946,194 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "添加 %lld 份到记录 · %lld kcal"
+          }
+        }
+      }
+    },
+    "Your food log, weight history, body-fat history, and BYOK API keys stay on this device." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Ernährungstagebuch, Gewichtsverlauf, Körperfettverlauf und BYOK-API-Schlüssel bleiben auf diesem Gerät."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu registro de comidas, historial de peso, historial de grasa corporal y claves API BYOK permanecen en este dispositivo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votre journal alimentaire, l'historique de poids, de masse grasse et vos clés API BYOK restent sur cet appareil."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il diario alimentare, lo storico di peso e massa grassa e le chiavi API BYOK restano su questo dispositivo."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seu diário alimentar, histórico de peso, histórico de gordura corporal e chaves de API BYOK ficam neste aparelho."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je voedingslog, gewichts- en vetpercentagegeschiedenis en BYOK-API-sleutels blijven op dit apparaat."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jurnalul alimentar, istoricul greutății, al grăsimii corporale și cheile API BYOK rămân pe acest dispozitiv."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ваш дневник питания, история веса и жира, а также BYOK API-ключи остаются на этом устройстве."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Twój dziennik posiłków, historia wagi i tkanki tłuszczowej oraz klucze API BYOK pozostają na tym urządzeniu."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "食事記録、体重・体脂肪の履歴、BYOKのAPIキーはこの端末内に保存されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "음식 기록, 체중·체지방 기록, BYOK API 키는 이 기기에만 저장됩니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的饮食记录、体重和体脂历史以及 BYOK API 密钥都保存在本设备上。"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يبقى سجل طعامك وتاريخ وزنك ودهون جسمك ومفاتيح BYOK API على هذا الجهاز."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपका फ़ूड लॉग, वज़न हिस्ट्री, बॉडी-फैट हिस्ट्री और BYOK API कीज़ इसी डिवाइस पर रहती हैं।"
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yemək qeydləriniz, çəki və bədən yağı tarixçəniz və BYOK API açarlarınız bu cihazda qalır."
+          }
+        }
+      }
+    },
+    "Your plan auto-adjusts weekly as you log — turn off Adaptive Goals in Settings to keep it fixed." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Plan passt sich wöchentlich an, während du loggst — deaktiviere Adaptive Goals in den Einstellungen, um ihn fest zu lassen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu plan se ajusta automáticamente cada semana según lo que registras — desactiva Adaptive Goals en Ajustes para mantenerlo fijo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votre plan s'ajuste automatiquement chaque semaine selon vos repas — désactivez Adaptive Goals dans Réglages pour le garder fixe."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il tuo piano si adatta automaticamente ogni settimana in base ai log — disattiva Adaptive Goals nelle Impostazioni per mantenerlo fisso."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seu plano se ajusta automaticamente toda semana conforme você registra — desative o Adaptive Goals em Ajustes para mantê-lo fixo."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je plan past zich wekelijks aan op basis van je logs — zet Adaptive Goals uit in Instellingen om het vast te houden."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Planul tău se ajustează automat săptămânal pe măsură ce înregistrezi — dezactivează Adaptive Goals din Setări pentru a-l păstra fix."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ваш план автоматически корректируется каждую неделю по мере записей — отключите Адаптивные цели в настройках, чтобы он оставался неизменным."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Twój plan dostosowuje się co tydzień na podstawie wpisów — wyłącz Cele adaptacyjne w Ustawieniach, aby pozostał stały."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "プランは記録に合わせて週1回自動調整されます。固定したい場合は設定でAdaptive Goalsをオフにしてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "플랜은 기록에 따라 매주 자동 조정됩니다 — 고정하려면 설정에서 Adaptive Goals를 끄세요."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的计划会根据记录每周自动调整 — 想保持不变，可在设置中关闭 Adaptive Goals。"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تتعدّل خطتك تلقائيًا كل أسبوع حسب تسجيلاتك — أوقف Adaptive Goals من الإعدادات لإبقائها ثابتة."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपका प्लान आपकी लॉगिंग के अनुसार हर हफ़्ते अपने आप एडजस्ट होता है — इसे स्थिर रखने के लिए सेटिंग्स में Adaptive Goals बंद करें।"
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Planınız qeydlərinizə əsasən hər həftə avtomatik tənzimlənir — sabit saxlamaq üçün Parametrlərdə Adaptive Goals-u söndürün."
           }
         }
       }
