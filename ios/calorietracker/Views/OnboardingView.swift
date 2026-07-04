@@ -64,13 +64,7 @@ struct OnboardingView: View {
         var id: String { rawValue }
     }
 
-    private let totalSteps = 15 // 0-14
-    // Real App Store reviews (US storefront) — refresh occasionally.
-    private let onboardingReviewQuotes: [(title: String, author: String, quote: String)] = [
-        ("The Best Non-Subscription Calorie Tracker", "phspman", "Don't settle for another monthly subscription. Fud AI allows you to add your own AI API key."),
-        ("V3 fixed all my pain points", "Abcdef10000", "Simple and enough for most people. I like the bring your own key philosophy."),
-        ("One of the best", "2MitiN6", "Yours changes my life in real time for free.")
-    ]
+    private let totalSteps = 14 // 0-13
 
     /// Combine the whole + tenth wheel selections into a single Double.
     private func combine(_ whole: Int, _ tenth: Int) -> Double { Double(whole) + Double(tenth) / 10.0 }
@@ -148,7 +142,6 @@ struct OnboardingView: View {
                     case 11: aiProviderStep
                     case 12: buildingPlanStep
                     case 13: planReadyStep
-                    case 14: reviewStep
                     default: EmptyView()
                     }
                 }
@@ -1067,123 +1060,6 @@ struct OnboardingView: View {
         }
     }
 
-    // MARK: - 14: Review
-
-    private var reviewStep: some View {
-        VStack(spacing: 0) {
-            ScrollView(showsIndicators: false) {
-                VStack(spacing: 22) {
-                    VStack(spacing: 16) {
-                        ZStack {
-                            Circle()
-                                .fill(
-                                    LinearGradient(colors: [Color.pink.opacity(0.1), Color.yellow.opacity(0.1)], startPoint: .topLeading, endPoint: .bottomTrailing)
-                                )
-                                .frame(width: 116, height: 116)
-                            Image(systemName: "star.fill")
-                                .font(.system(size: 46))
-                                .foregroundStyle(AppColors.calorie)
-                        }
-
-                        VStack(spacing: 8) {
-                            Text("Enjoying Fud AI so far?")
-                                .font(.system(size: 28, weight: .bold, design: .rounded))
-                                .multilineTextAlignment(.center)
-                            Text("A quick rating helps us grow\nand build more features for you!")
-                                .font(.system(.callout, design: .rounded))
-                                .foregroundStyle(.secondary)
-                                .multilineTextAlignment(.center)
-                        }
-                    }
-
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("What people are saying")
-                            .font(.system(.headline, design: .rounded, weight: .bold))
-                            .padding(.horizontal, 24)
-
-                        VStack(spacing: 10) {
-                            ForEach(onboardingReviewQuotes.indices, id: \.self) { index in
-                                onboardingReviewCard(onboardingReviewQuotes[index])
-                            }
-                        }
-                        .padding(.horizontal, 24)
-                    }
-                }
-                .padding(.top, 24)
-                .padding(.bottom, 18)
-            }
-
-            Button {
-                // Deep-link to the App Store review sheet (explicit intent) instead of
-                // burning a rate-limited SKStoreReviewController prompt before the user
-                // has logged a single meal — the native prompt now fires after the
-                // first successful food log (see ReviewPrompter).
-                if let url = URL(string: "https://apps.apple.com/app/id6758935726?action=write-review") {
-                    UIApplication.shared.open(url)
-                }
-                hasCompletedOnboarding = true
-            } label: {
-                Text("Rate Fud AI")
-                    .font(.system(.body, design: .rounded, weight: .semibold))
-                    .foregroundStyle(.white)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 54)
-                    .background(
-                        LinearGradient(colors: AppColors.calorieGradient, startPoint: .leading, endPoint: .trailing),
-                        in: RoundedRectangle(cornerRadius: 16)
-                    )
-                    .shadow(color: AppColors.calorie.opacity(0.3), radius: 8, y: 4)
-            }
-            .padding(.horizontal, 24)
-
-            Button {
-                hasCompletedOnboarding = true
-            } label: {
-                Text("Maybe Later")
-                    .font(.system(.subheadline, design: .rounded, weight: .medium))
-                    .foregroundStyle(.secondary)
-            }
-            .padding(.top, 12)
-            .padding(.bottom, 36)
-        }
-    }
-
-    private func onboardingReviewCard(_ review: (title: String, author: String, quote: String)) -> some View {
-        VStack(alignment: .leading, spacing: 7) {
-            HStack(spacing: 2) {
-                ForEach(0..<5, id: \.self) { _ in
-                    Image(systemName: "star.fill")
-                        .font(.system(size: 10, weight: .semibold))
-                        .foregroundStyle(AppColors.calorie)
-                }
-                Spacer(minLength: 8)
-                Text(review.author)
-                    .font(.system(.caption2, design: .rounded, weight: .medium))
-                    .foregroundStyle(.secondary)
-            }
-
-            Text(review.title)
-                .font(.system(.subheadline, design: .rounded, weight: .bold))
-                .foregroundStyle(.primary)
-
-            Text(review.quote)
-                .font(.system(.caption, design: .rounded))
-                .foregroundStyle(.secondary)
-                .lineLimit(2)
-                .fixedSize(horizontal: false, vertical: true)
-        }
-        .padding(12)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .fill(Color(.secondarySystemGroupedBackground).opacity(0.9))
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .strokeBorder(Color.white.opacity(0.08), lineWidth: 1)
-        )
-    }
-
     // MARK: - 12: Building Plan
 
     private var buildingPlanStep: some View {
@@ -1371,7 +1247,10 @@ struct OnboardingView: View {
                 .padding(.bottom, 100)
             }
 
-            continueButton("Let's get started!") {
+            // Final step — save the plan and enter the app directly (the old
+            // post-plan rating screen was removed; onboarding rating pressure
+            // is App Review rejection bait).
+            Button {
                 var editedProfile = profile
                 editedProfile.customCalories = editedCalories
                 editedProfile.customProtein = editedProtein
@@ -1379,7 +1258,17 @@ struct OnboardingView: View {
                 editedProfile.customCarbs = editedCarbs
                 editedProfile.autoBalanceMacro = .carbs
                 editedProfile.save()
+                hasCompletedOnboarding = true
+            } label: {
+                Text("Let's get started!")
+                    .font(.system(.body, design: .rounded, weight: .semibold))
+                    .foregroundStyle(Color(.systemBackground))
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 54)
+                    .background(Color.primary, in: Capsule())
             }
+            .padding(.horizontal, 24)
+            .padding(.bottom, 36)
         }
         .onAppear { initPlanValues() }
         .sheet(isPresented: $showCalculationSources) {
