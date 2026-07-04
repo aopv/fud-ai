@@ -24,7 +24,7 @@ import kotlin.random.Random
  *   adb shell am start -n com.apoorvdarshan.calorietracker/.MainActivity --ez restore_real_data true
  *
  * `seed` snapshots the live state into a single backup blob, disables Health Connect so the
- * synthetic entries can't sync upstream, then writes 365 days of food + 53 weeks of weights.
+ * synthetic entries can't sync upstream, then writes 365 days of food + weights + body fat.
  * `restore` puts everything back exactly as it was.
  */
 class TestDataSeeder(private val container: AppContainer) {
@@ -37,11 +37,21 @@ class TestDataSeeder(private val container: AppContainer) {
 
         val baseProfile = container.profileRepository.profile.first()
             ?: UserProfile(weightKg = 75.0, goalWeightKg = 70.0)
-        container.profileRepository.save(baseProfile.copy(weightKg = 73.5, goalWeightKg = 70.0))
+        container.profileRepository.save(
+            baseProfile.copy(
+                weightKg = 73.5,
+                goalWeightKg = 70.0,
+                bodyFatPercentage = 0.175,
+                goalBodyFatPercentage = 0.15
+            )
+        )
         container.prefs.setOnboardingCompleted(true)
 
         container.foodRepository.replaceAll(generateFood())
         container.weightRepository.replaceAll(generateWeights())
+        container.bodyFatRepository.replaceAll(
+            generateBodyFatSeries(totalDays = 365, startFraction = 0.225, endFraction = 0.175, seed = 0xFA7365)
+        )
     }
 
     /**
