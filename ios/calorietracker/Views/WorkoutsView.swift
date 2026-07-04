@@ -90,28 +90,45 @@ private struct ExerciseLibraryBrowserView: View {
     }
 
     var body: some View {
+        // Search, filter chips, and the results header stay pinned; only the
+        // exercise list scrolls beneath them.
+        VStack(alignment: .leading, spacing: 0) {
+            filters
+                .padding(.horizontal, 20)
+                .padding(.top, 18)
+                .padding(.bottom, 18)
+
+            ResultsHeader(
+                count: items.count,
+                noun: String(localized: "exercise"),
+                subtitle: selectedSort.title,
+                selectedSort: $selectedSort,
+                canReset: hasActiveFilters,
+                onReset: {
+                    withAnimation(.snappy) {
+                        resetFilters()
+                    }
+                }
+            )
+            .padding(.horizontal, 20)
+            .padding(.bottom, 4)
+
+            scrollingList
+        }
+        .workoutScreen()
+        .onAppear {
+            applyFilterState(ExerciseFilterStateStore.load(key: ExerciseFilterStateStore.workoutsKey))
+            normalizePrimaryFilterSelection()
+            normalizeEquipmentFilterSelection()
+        }
+        .onChange(of: filterStateSnapshot) { _, state in
+            ExerciseFilterStateStore.save(state, key: ExerciseFilterStateStore.workoutsKey)
+        }
+    }
+
+    private var scrollingList: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 0) {
-                filters
-                    .padding(.horizontal, 20)
-                    .padding(.top, 18)
-                    .padding(.bottom, 18)
-
-                ResultsHeader(
-                    count: items.count,
-                    noun: String(localized: "exercise"),
-                    subtitle: selectedSort.title,
-                    selectedSort: $selectedSort,
-                    canReset: hasActiveFilters,
-                    onReset: {
-                        withAnimation(.snappy) {
-                            resetFilters()
-                        }
-                    }
-                )
-                .padding(.horizontal, 20)
-                .padding(.bottom, 4)
-
                 if items.isEmpty {
                     ContentUnavailableView {
                         Label("No exercises match", systemImage: "line.3.horizontal.decrease")
@@ -141,16 +158,7 @@ private struct ExerciseLibraryBrowserView: View {
             }
             .padding(.bottom, 112)
         }
-        .workoutScreen()
         .contentMargins(.bottom, 104, for: .scrollContent)
-        .onAppear {
-            applyFilterState(ExerciseFilterStateStore.load(key: ExerciseFilterStateStore.workoutsKey))
-            normalizePrimaryFilterSelection()
-            normalizeEquipmentFilterSelection()
-        }
-        .onChange(of: filterStateSnapshot) { _, state in
-            ExerciseFilterStateStore.save(state, key: ExerciseFilterStateStore.workoutsKey)
-        }
     }
 
     private var filters: some View {
