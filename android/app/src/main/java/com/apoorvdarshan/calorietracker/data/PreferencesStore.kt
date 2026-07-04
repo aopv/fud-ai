@@ -142,6 +142,9 @@ class PreferencesStore(private val context: Context) {
         ds.edit { it[Keys.HEALTH_ENERGY_GOALS_LAST_AUTO_REFRESH_DAY] = v }
     }
 
+    val reviewPromptedAfterFirstLog: Flow<Boolean> = ds.data.map { it[Keys.REVIEW_PROMPTED_AFTER_FIRST_LOG] ?: false }
+    suspend fun setReviewPromptedAfterFirstLog(v: Boolean) { ds.edit { it[Keys.REVIEW_PROMPTED_AFTER_FIRST_LOG] = v } }
+
     val adaptiveGoalsEnabled: Flow<Boolean> = ds.data.map { it[Keys.ADAPTIVE_GOALS_ENABLED] ?: false }
     suspend fun setAdaptiveGoalsEnabled(v: Boolean) { ds.edit { it[Keys.ADAPTIVE_GOALS_ENABLED] = v } }
 
@@ -520,6 +523,7 @@ class PreferencesStore(private val context: Context) {
         val HEALTH_ENERGY_GOALS_PREVIOUS_TARGETS = stringPreferencesKey("healthEnergyGoalsPreviousTargets")
         val HEALTH_ENERGY_GOALS_LAST_AUTO_REFRESH_DAY = stringPreferencesKey("healthEnergyGoalsLastAutoRefreshDay")
         val ADAPTIVE_GOALS_ENABLED = booleanPreferencesKey("adaptiveGoalsEnabled")
+        val REVIEW_PROMPTED_AFTER_FIRST_LOG = booleanPreferencesKey("reviewPromptedAfterFirstLog")
         val ADAPTIVE_GOALS_PREVIOUS_TARGETS = stringPreferencesKey("adaptiveGoalsPreviousTargets")
         val ADAPTIVE_GOALS_LAST_CHECK_DAY = stringPreferencesKey("adaptiveGoalsLastCheckDay")
         val USE_METRIC = booleanPreferencesKey("useMetric")

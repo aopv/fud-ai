@@ -283,10 +283,6 @@
     <string name="onboarding_plan_field_carbs">탄수화물</string>
     <string name="onboarding_plan_field_fat">지방</string>
 
-    <string name="onboarding_review_title">fud이 마음에 드시나요?</string>
-    <string name="onboarding_review_subtitle">간단한 평가는 저희가 더 많은 기능을\n만드는 데 큰 도움이 돼요!</string>
-    <string name="onboarding_review_rate">fud 평가하기</string>
-    <string name="onboarding_review_maybe_later">나중에</string>
 
     <!-- Home -->
     <string name="home_add_food">음식 추가</string>
@@ -643,4 +639,10 @@
     <string name="settings_energy_goals_info">켜면 Fud AI가 Health Connect에서 측정된 소모 칼로리(활동 + 기초 에너지의 14일 평균)를 공식 추정치 대신 유지 칼로리(TDEE) 기준으로 사용해 목표를 계산합니다. 소모 칼로리를 읽는 데 AI는 사용되지 않습니다. Health Connect가 필요합니다. 다시 계산 버튼 및 Adaptive Goals와 함께 작동합니다.</string>
     <string name="settings_adaptive_goals_info">일주일에 한 번 정도 앱을 열 때 Fud AI가 프로필, 최근 기록한 음식, 체중 추세를 바탕으로 전체 목표 계산을 자동으로 다시 실행합니다 — 다시 계산 버튼과 동일한 계산입니다. Energy Burn이 켜져 있으면 측정된 소모 칼로리를 유지 기준으로 사용합니다. AI를 사용할 수 없으면 조용히 건너뜁니다. 끄면 이 기능이 처음 변경하기 전의 목표로 복원됩니다. 이는 의학적 조언이 아닙니다.</string>
     <string name="ad_label">광고</string>
+    <string name="onboarding_plan_adaptive_note">플랜은 기록에 따라 매주 자동 조정됩니다 — 고정하려면 설정에서 Adaptive Goals를 끄세요.</string>
+    <string name="onboarding_feature_snap">사진만 찍으면 AI가 기록</string>
+    <string name="onboarding_feature_coach">내 데이터를 아는 코치</string>
+    <string name="onboarding_feature_library">870개 이상의 운동 라이브러리</string>
+    <string name="onboarding_feature_widgets">홈 화면 위젯</string>
+    <string name="onboarding_ads_note">광고로 무료 유지 — 작은 배너가 개발을 지원합니다. 건강 데이터는 광고에 절대 사용되지 않습니다.</string>
 </resources>

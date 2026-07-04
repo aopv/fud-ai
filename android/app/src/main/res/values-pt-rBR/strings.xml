@@ -283,10 +283,6 @@
     <string name="onboarding_plan_field_carbs">Carboidratos</string>
     <string name="onboarding_plan_field_fat">Gordura</string>
 
-    <string name="onboarding_review_title">Curtindo o fud até agora?</string>
-    <string name="onboarding_review_subtitle">Uma avaliação rápida nos ajuda a crescer\ne criar mais recursos para você!</string>
-    <string name="onboarding_review_rate">Avaliar o fud</string>
-    <string name="onboarding_review_maybe_later">Talvez depois</string>
 
     <!-- Home -->
     <string name="home_add_food">Adicionar alimento</string>
@@ -643,4 +639,10 @@
     <string name="settings_energy_goals_info">Quando ativado, o Fud AI usa suas calorias queimadas medidas pelo Health Connect — uma média de 14 dias de energia ativa + basal — como âncora de manutenção (TDEE) ao calcular metas, em vez da estimativa por fórmula. Nenhuma IA é usada para ler seu gasto. Requer Health Connect. Funciona com o botão Recalcular e com o Adaptive Goals.</string>
     <string name="settings_adaptive_goals_info">Cerca de uma vez por semana, ao abrir o app, o Fud AI reexecuta automaticamente o cálculo completo de metas — o mesmo do botão Recalcular — com base no seu perfil, nas refeições registradas recentemente e na tendência de peso. Se o Energy Burn estiver ativado, usa seu gasto medido como âncora de manutenção. Se a IA estiver indisponível, a execução é ignorada silenciosamente. Ao desativar, são restauradas as metas de antes da primeira alteração feita por este recurso. Isto não é aconselhamento médico.</string>
     <string name="ad_label">Anúncio</string>
+    <string name="onboarding_plan_adaptive_note">Seu plano se ajusta automaticamente toda semana conforme você registra — desative o Adaptive Goals em Ajustes para mantê-lo fixo.</string>
+    <string name="onboarding_feature_snap">Tire uma foto — a IA registra</string>
+    <string name="onboarding_feature_coach">Coach que conhece seus dados</string>
+    <string name="onboarding_feature_library">Biblioteca com 870+ exercícios</string>
+    <string name="onboarding_feature_widgets">Widgets na tela inicial</string>
+    <string name="onboarding_ads_note">Anúncios mantêm o app gratuito — um pequeno banner apoia o desenvolvimento. Seus dados de saúde nunca são usados para anúncios.</string>
 </resources>

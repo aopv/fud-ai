@@ -18,10 +18,15 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
 import com.apoorvdarshan.calorietracker.models.FoodEntry
 import com.apoorvdarshan.calorietracker.services.MealShare
+import com.apoorvdarshan.calorietracker.services.ReviewPrompter
 import com.apoorvdarshan.calorietracker.ui.home.ImportSharedMealSheet
 import com.apoorvdarshan.calorietracker.ui.navigation.FudAINavHost
 import com.apoorvdarshan.calorietracker.ui.theme.AppThemeColor
 import com.apoorvdarshan.calorietracker.ui.theme.FudAITheme
+import com.google.android.play.core.ktx.launchReview
+import com.google.android.play.core.ktx.requestReview
+import com.google.android.play.core.review.ReviewManagerFactory
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -63,6 +68,22 @@ open class MainActivity : ComponentActivity() {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        // Launch the Play in-app review card once, right after the first
+        // successful food log (see ReviewPrompter). Silently no-ops on devices
+        // without Play services or when Play declines to show the card.
+        lifecycleScope.launch {
+            ReviewPrompter.requestReview.collect { wanted ->
+                if (!wanted) return@collect
+                ReviewPrompter.consumed()
+                delay(1_500)
+                runCatching {
+                    val manager = ReviewManagerFactory.create(this@MainActivity)
+                    val info = manager.requestReview()
+                    manager.launchReview(this@MainActivity, info)
+                }
+            }
+        }
 
         // Support --reset-onboarding launch flag (parallel to iOS CLAUDE.md convention).
         if (intent?.getBooleanExtra("reset_onboarding", false) == true) {

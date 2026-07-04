@@ -40,6 +40,9 @@ import androidx.compose.material.icons.outlined.Chair
 import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.ChevronLeft
 import androidx.compose.material.icons.outlined.FitnessCenter
+import androidx.compose.material.icons.outlined.Forum
+import androidx.compose.material.icons.outlined.PhotoCamera
+import androidx.compose.material.icons.outlined.Widgets
 import androidx.compose.material.icons.outlined.LocalFireDepartment
 import androidx.compose.material.icons.outlined.Man
 import androidx.compose.material.icons.outlined.MonitorWeight
@@ -127,7 +130,7 @@ fun OnboardingScreen(container: AppContainer, onComplete: () -> Unit) {
     ) {
         // iOS shows a chevron-left back button + a thin Capsule progress bar at
         // the top, only on steps 1..N-2 (hidden on Welcome and Review).
-        if (ui.step != OnboardingStep.WELCOME && ui.step != OnboardingStep.BUILDING_PLAN && ui.step != OnboardingStep.REVIEW) {
+        if (ui.step != OnboardingStep.WELCOME && ui.step != OnboardingStep.BUILDING_PLAN) {
             Spacer(Modifier.height(12.dp))
             Row(
                 Modifier
@@ -227,7 +230,6 @@ fun OnboardingScreen(container: AppContainer, onComplete: () -> Unit) {
                 )
                 OnboardingStep.BUILDING_PLAN -> BuildingPlanStep(vm = vm, onComplete = vm::next)
                 OnboardingStep.PLAN_READY -> PlanReadyStep(state = ui, vm = vm)
-                OnboardingStep.REVIEW -> ReviewStep()
             }
         }
 
@@ -267,7 +269,9 @@ fun OnboardingScreen(container: AppContainer, onComplete: () -> Unit) {
                 Spacer(Modifier.height(54.dp + 36.dp + 24.dp))
             }
             OnboardingStep.PLAN_READY -> {
-                // Plan Ready advances to the Review/Rate step instead of finishing.
+                // Final step — completes onboarding directly (the old Rate-fud
+                // review step was removed; store-rating pressure in onboarding
+                // is rejection bait on both stores).
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -280,78 +284,15 @@ fun OnboardingScreen(container: AppContainer, onComplete: () -> Unit) {
                                 listOf(AppColors.CalorieStart, AppColors.CalorieEnd)
                             )
                         )
-                        .clickable { vm.next() },
+                        .clickable { vm.complete(onComplete) },
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        stringResource(R.string.action_continue),
+                        stringResource(R.string.action_get_started),
                         color = Color.White,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.SemiBold
                     )
-                }
-            }
-            OnboardingStep.REVIEW -> {
-                // iOS review step: pink-gradient "Rate fud" primary + "Maybe Later"
-                // secondary text button. "Rate fud" opens the Play Store listing
-                // (real release package even from debug) and then completes
-                // onboarding so the user lands on Home regardless of whether they
-                // actually rate.
-                val ctx = LocalContext.current
-                fun openPlayStore() {
-                    val market = Uri.parse(AndroidUpdateChecker.PLAY_STORE_MARKET_URL)
-                    runCatching {
-                        ctx.startActivity(
-                            Intent(Intent.ACTION_VIEW, market)
-                                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        )
-                    }.onFailure {
-                        ctx.startActivity(
-                            Intent(
-                                Intent.ACTION_VIEW,
-                                Uri.parse(AndroidUpdateChecker.PLAY_STORE_WEB_URL)
-                            ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        )
-                    }
-                }
-                Column(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp)
-                        .padding(top = 24.dp, bottom = 36.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(54.dp)
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(
-                                Brush.horizontalGradient(
-                                    listOf(AppColors.CalorieStart, AppColors.CalorieEnd)
-                                )
-                            )
-                            .clickable {
-                                openPlayStore()
-                                vm.complete(onComplete)
-                            },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            stringResource(R.string.onboarding_review_rate),
-                            color = Color.White,
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                    }
-                    Spacer(Modifier.height(12.dp))
-                    TextButton(onClick = { vm.complete(onComplete) }) {
-                        Text(
-                            stringResource(R.string.onboarding_review_maybe_later),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.55f)
-                        )
-                    }
                 }
             }
             else -> {
@@ -422,6 +363,32 @@ private fun WelcomeStep() {
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
             textAlign = androidx.compose.ui.text.style.TextAlign.Center
+        )
+        Spacer(Modifier.height(24.dp))
+        // Quick feature tour — everything is free and already unlocked (iOS parity).
+        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            WelcomeFeatureRow(Icons.Outlined.PhotoCamera, stringResource(R.string.onboarding_feature_snap))
+            WelcomeFeatureRow(Icons.Outlined.Forum, stringResource(R.string.onboarding_feature_coach))
+            WelcomeFeatureRow(Icons.Outlined.FitnessCenter, stringResource(R.string.onboarding_feature_library))
+            WelcomeFeatureRow(Icons.Outlined.Widgets, stringResource(R.string.onboarding_feature_widgets))
+        }
+    }
+}
+
+@Composable
+private fun WelcomeFeatureRow(icon: ImageVector, text: String) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = AppColors.Calorie,
+            modifier = Modifier.size(20.dp)
+        )
+        Spacer(Modifier.width(12.dp))
+        Text(
+            text,
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.Medium
         )
     }
 }
@@ -1344,6 +1311,14 @@ private fun ProviderStep(
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
             textAlign = androidx.compose.ui.text.style.TextAlign.Center
         )
+        Spacer(Modifier.height(8.dp))
+        // The app now shows a small banner ad — disclose it next to the privacy notes.
+        Text(
+            stringResource(R.string.onboarding_ads_note),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+        )
     }
 
     when (selectorSheet) {
@@ -1570,6 +1545,14 @@ private fun PlanReadyStep(state: OnboardingState, vm: OnboardingViewModel) {
             stringResource(R.string.onboarding_plan_title),
             subtitle = stringResource(R.string.onboarding_plan_subtitle)
         )
+        // Adaptive Goals is on by default for new installs — say so up front.
+        Text(
+            stringResource(R.string.onboarding_plan_adaptive_note),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.55f),
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)
+        )
         Spacer(Modifier.height(20.dp))
         Column(
             Modifier
@@ -1736,56 +1719,6 @@ private fun MacroCard(
                 )
             }
         }
-    }
-}
-
-/**
- * iOS reviewStep: pink-tinted star inside a circle, "Enjoying fud so far?" hero
- * title, and a two-line subtitle. The Rate fud / Maybe Later CTA is rendered
- * by the screen's footer — same as iOS where the buttons sit outside the body.
- */
-@Composable
-private fun ReviewStep() {
-    Column(
-        Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Box(
-            Modifier
-                .size(160.dp)
-                .clip(CircleShape)
-                .background(
-                    Brush.linearGradient(
-                        listOf(
-                            AppColors.CalorieStart.copy(alpha = 0.10f),
-                            Color(0xFFFFCC00).copy(alpha = 0.10f)
-                        )
-                    )
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                imageVector = Icons.Filled.Star,
-                contentDescription = null,
-                tint = AppColors.Calorie,
-                modifier = Modifier.size(64.dp)
-            )
-        }
-        Spacer(Modifier.height(24.dp))
-        Text(
-            stringResource(R.string.onboarding_review_title),
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Bold,
-            textAlign = androidx.compose.ui.text.style.TextAlign.Center
-        )
-        Spacer(Modifier.height(8.dp))
-        Text(
-            stringResource(R.string.onboarding_review_subtitle),
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
-            textAlign = androidx.compose.ui.text.style.TextAlign.Center
-        )
     }
 }
 

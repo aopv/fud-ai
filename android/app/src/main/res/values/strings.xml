@@ -297,10 +297,6 @@
     <string name="onboarding_plan_field_carbs">Carbs</string>
     <string name="onboarding_plan_field_fat">Fat</string>
 
-    <string name="onboarding_review_title">Enjoying fud so far?</string>
-    <string name="onboarding_review_subtitle">A quick rating helps us grow\nand build more features for you!</string>
-    <string name="onboarding_review_rate">Rate fud</string>
-    <string name="onboarding_review_maybe_later">Maybe Later</string>
 
     <!-- Home -->
     <string name="home_add_food">Add food</string>
@@ -747,4 +743,10 @@
         <item quantity="other">%d exercises</item>
     </plurals>
     <string name="ad_label">Ad</string>
+    <string name="onboarding_plan_adaptive_note">Your plan auto-adjusts weekly as you log — turn off Adaptive Goals in Settings to keep it fixed.</string>
+    <string name="onboarding_feature_snap">Snap a photo — AI logs it</string>
+    <string name="onboarding_feature_coach">Coach that knows your data</string>
+    <string name="onboarding_feature_library">870+ exercise library</string>
+    <string name="onboarding_feature_widgets">Home screen widgets</string>
+    <string name="onboarding_ads_note">Ads keep it free — a small banner supports development. Your health data is never used for ads.</string>
 </resources>

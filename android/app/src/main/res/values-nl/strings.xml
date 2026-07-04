@@ -283,10 +283,6 @@
     <string name="onboarding_plan_field_carbs">Koolhydraten</string>
     <string name="onboarding_plan_field_fat">Vet</string>
 
-    <string name="onboarding_review_title">Bevalt fud tot nu toe?</string>
-    <string name="onboarding_review_subtitle">Een snelle beoordeling helpt ons groeien\nen meer functies voor je te bouwen!</string>
-    <string name="onboarding_review_rate">Beoordeel fud</string>
-    <string name="onboarding_review_maybe_later">Misschien later</string>
 
     <!-- Home -->
     <string name="home_add_food">Eten toevoegen</string>
@@ -643,4 +639,10 @@
     <string name="settings_energy_goals_info">Indien ingeschakeld gebruikt Fud AI je gemeten verbrande calorieën uit Health Connect — een 14-daags gemiddelde van actieve + basale energie — als onderhoudsanker (TDEE) bij het berekenen van doelen, in plaats van de formuleschatting. Er wordt geen AI gebruikt om je verbruik te lezen. Vereist Health Connect. Werkt met de knop Opnieuw berekenen en met Adaptive Goals.</string>
     <string name="settings_adaptive_goals_info">Ongeveer één keer per week, wanneer je de app opent, voert Fud AI automatisch de volledige doelberekening opnieuw uit — dezelfde als de knop Opnieuw berekenen — op basis van je profiel, recent gelogde voeding en je gewichtstrend. Als Energy Burn aanstaat, wordt je gemeten verbruik gebruikt als onderhoudsanker. Als de AI niet beschikbaar is, wordt de run stilletjes overgeslagen. Bij uitschakelen worden de doelen hersteld van vóór de eerste wijziging door deze functie. Dit is geen medisch advies.</string>
     <string name="ad_label">Advertentie</string>
+    <string name="onboarding_plan_adaptive_note">Je plan past zich wekelijks aan op basis van je logs — zet Adaptive Goals uit in Instellingen om het vast te houden.</string>
+    <string name="onboarding_feature_snap">Maak een foto — de AI logt het</string>
+    <string name="onboarding_feature_coach">Coach die je gegevens kent</string>
+    <string name="onboarding_feature_library">Bibliotheek met 870+ oefeningen</string>
+    <string name="onboarding_feature_widgets">Widgets op het startscherm</string>
+    <string name="onboarding_ads_note">Advertenties houden de app gratis — een kleine banner ondersteunt de ontwikkeling. Je gezondheidsgegevens worden nooit voor advertenties gebruikt.</string>
 </resources>

@@ -283,10 +283,6 @@
     <string name="onboarding_plan_field_carbs">Carbohidrați</string>
     <string name="onboarding_plan_field_fat">Grăsimi</string>
 
-    <string name="onboarding_review_title">Îți place fud până acum?</string>
-    <string name="onboarding_review_subtitle">O evaluare rapidă ne ajută să creștem\nși să construim mai multe funcții pentru tine!</string>
-    <string name="onboarding_review_rate">Evaluează fud</string>
-    <string name="onboarding_review_maybe_later">Poate mai târziu</string>
 
     <!-- Home -->
     <string name="home_add_food">Adaugă aliment</string>
@@ -643,4 +639,10 @@
     <string name="settings_energy_goals_info">Când este activat, Fud AI folosește caloriile arse măsurate din Health Connect — o medie pe 14 zile a energiei active + bazale — ca ancoră de întreținere (TDEE) la calcularea obiectivelor, în locul estimării prin formulă. Nu se folosește IA pentru citirea consumului. Necesită Health Connect. Funcționează cu butonul Recalculează și cu Adaptive Goals.</string>
     <string name="settings_adaptive_goals_info">Aproximativ o dată pe săptămână, la deschiderea aplicației, Fud AI reia automat calculul complet al obiectivelor — același folosit de butonul Recalculează — pe baza profilului tău, a alimentelor înregistrate recent și a tendinței greutății. Dacă Energy Burn este activat, consumul tău măsurat este folosit ca ancoră de întreținere. Dacă IA nu este disponibilă, rularea este omisă silențios. Dezactivarea restaurează obiectivele de dinainte de prima modificare făcută de această funcție. Acesta nu este un sfat medical.</string>
     <string name="ad_label">Reclamă</string>
+    <string name="onboarding_plan_adaptive_note">Planul tău se ajustează automat săptămânal pe măsură ce înregistrezi — dezactivează Adaptive Goals din Setări pentru a-l păstra fix.</string>
+    <string name="onboarding_feature_snap">Fă o poză — IA o înregistrează</string>
+    <string name="onboarding_feature_coach">Antrenor care îți cunoaște datele</string>
+    <string name="onboarding_feature_library">Bibliotecă cu 870+ exerciții</string>
+    <string name="onboarding_feature_widgets">Widgeturi pe ecranul principal</string>
+    <string name="onboarding_ads_note">Reclamele o mențin gratuită — un mic banner susține dezvoltarea. Datele tale de sănătate nu sunt folosite niciodată pentru reclame.</string>
 </resources>

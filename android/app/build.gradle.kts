@@ -106,6 +106,7 @@ kotlin {
 dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.play.services.ads)
+    implementation(libs.play.review.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3)
     implementation(libs.coil.compose)

@@ -1,6 +1,7 @@
 package com.apoorvdarshan.calorietracker.data
 
 import com.apoorvdarshan.calorietracker.models.FoodEntry
+import com.apoorvdarshan.calorietracker.services.ReviewPrompter
 import com.apoorvdarshan.calorietracker.models.MealType
 import com.apoorvdarshan.calorietracker.services.health.HealthConnectManager
 import kotlinx.coroutines.flow.Flow
@@ -67,6 +68,11 @@ class FoodRepository(
         prefs.setFoodEntries(current + entry)
         if (shouldSyncHealth()) {
             health?.writeNutrition(entry)
+        }
+        // One-time organic review moment: the first successful food log (iOS parity).
+        if (!prefs.reviewPromptedAfterFirstLog.first()) {
+            prefs.setReviewPromptedAfterFirstLog(true)
+            ReviewPrompter.requestReview.value = true
         }
     }
 

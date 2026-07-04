@@ -283,10 +283,6 @@
     <string name="onboarding_plan_field_carbs">Carboidrati</string>
     <string name="onboarding_plan_field_fat">Grassi</string>
 
-    <string name="onboarding_review_title">Ti sta piacendo fud finora?</string>
-    <string name="onboarding_review_subtitle">Una valutazione rapida ci aiuta a crescere\ne a creare più funzioni per te!</string>
-    <string name="onboarding_review_rate">Valuta fud</string>
-    <string name="onboarding_review_maybe_later">Forse più tardi</string>
 
     <!-- Home -->
     <string name="home_add_food">Aggiungi cibo</string>
@@ -643,4 +639,10 @@
     <string name="settings_energy_goals_info">Quando è attivo, Fud AI usa le tue calorie bruciate misurate da Health Connect — una media di 14 giorni di energia attiva + basale — come àncora di mantenimento (TDEE) nel calcolo degli obiettivi, invece della stima con formula. Nessuna IA viene usata per leggere il tuo consumo. Richiede Health Connect. Funziona con il pulsante Ricalcola e con Adaptive Goals.</string>
     <string name="settings_adaptive_goals_info">Circa una volta a settimana, all\'apertura dell\'app, Fud AI riesegue automaticamente il calcolo completo degli obiettivi — lo stesso del pulsante Ricalcola — in base al tuo profilo, ai pasti registrati di recente e al trend del peso. Se Energy Burn è attivo, usa il tuo consumo misurato come àncora di mantenimento. Se l\'IA non è disponibile, l\'esecuzione viene saltata in silenzio. Disattivandolo vengono ripristinati gli obiettivi precedenti alla prima modifica fatta da questa funzione. Questo non è un consiglio medico.</string>
     <string name="ad_label">Annuncio</string>
+    <string name="onboarding_plan_adaptive_note">Il tuo piano si adatta automaticamente ogni settimana in base ai log — disattiva Adaptive Goals nelle Impostazioni per mantenerlo fisso.</string>
+    <string name="onboarding_feature_snap">Scatta una foto — l\'IA la registra</string>
+    <string name="onboarding_feature_coach">Un coach che conosce i tuoi dati</string>
+    <string name="onboarding_feature_library">Libreria di 870+ esercizi</string>
+    <string name="onboarding_feature_widgets">Widget nella schermata Home</string>
+    <string name="onboarding_ads_note">La pubblicità la mantiene gratuita — un piccolo banner sostiene lo sviluppo. I tuoi dati sulla salute non vengono mai usati per la pubblicità.</string>
 </resources>

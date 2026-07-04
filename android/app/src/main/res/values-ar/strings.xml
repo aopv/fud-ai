@@ -283,10 +283,6 @@
     <string name="onboarding_plan_field_carbs">الكربوهيدرات</string>
     <string name="onboarding_plan_field_fat">الدهون</string>
 
-    <string name="onboarding_review_title">هل تستمتع بـ fud حتى الآن؟</string>
-    <string name="onboarding_review_subtitle">تقييم سريع يساعدنا على النمو\nوبناء المزيد من الميزات لك!</string>
-    <string name="onboarding_review_rate">قيّم fud</string>
-    <string name="onboarding_review_maybe_later">ربما لاحقًا</string>
 
     <!-- Home -->
     <string name="home_add_food">إضافة طعام</string>
@@ -643,4 +639,10 @@
     <string name="settings_energy_goals_info">عند التفعيل، يستخدم Fud AI السعرات المحروقة المقاسة من Health Connect — متوسط 14 يومًا للطاقة النشطة + الأساسية — كمرجع لسعرات الثبات (TDEE) عند حساب الأهداف، بدلًا من التقدير بالمعادلة. لا يُستخدم الذكاء الاصطناعي لقراءة الحرق. يتطلب Health Connect. يعمل مع زر إعادة الحساب ومع Adaptive Goals.</string>
     <string name="settings_adaptive_goals_info">مرة واحدة تقريبًا في الأسبوع عند فتح التطبيق، يعيد Fud AI تلقائيًا تشغيل حساب الأهداف الكامل — وهو نفس الحساب الذي يستخدمه زر إعادة الحساب — استنادًا إلى ملفك الشخصي والطعام المسجّل مؤخرًا واتجاه وزنك. إذا كان Energy Burn مفعّلًا، يُستخدم حرقك المقاس كمرجع لسعرات الثبات. إذا لم يكن الذكاء الاصطناعي متاحًا، يتم التخطي بصمت. عند إيقاف هذه الميزة تُستعاد الأهداف التي كانت قبل أول تغيير أجرته. هذه ليست نصيحة طبية.</string>
     <string name="ad_label">إعلان</string>
+    <string name="onboarding_plan_adaptive_note">تتعدّل خطتك تلقائيًا كل أسبوع حسب تسجيلاتك — أوقف Adaptive Goals من الإعدادات لإبقائها ثابتة.</string>
+    <string name="onboarding_feature_snap">التقط صورة — والذكاء الاصطناعي يسجّلها</string>
+    <string name="onboarding_feature_coach">مدرّب يعرف بياناتك</string>
+    <string name="onboarding_feature_library">مكتبة تضم أكثر من 870 تمرينًا</string>
+    <string name="onboarding_feature_widgets">أدوات الشاشة الرئيسية</string>
+    <string name="onboarding_ads_note">الإعلانات تُبقيه مجانيًا — إعلان صغير يدعم التطوير. لا تُستخدم بياناتك الصحية أبدًا للإعلانات.</string>
 </resources>

@@ -21,7 +21,7 @@ enum class OnboardingStep {
     WELCOME, GENDER, BIRTHDAY, HEIGHT_WEIGHT, BODY_FAT,
     ACTIVITY, GOAL, GOAL_WEIGHT, GOAL_SPEED,
     NOTIFICATIONS, HEALTH_CONNECT, PROVIDER,
-    BUILDING_PLAN, PLAN_READY, REVIEW
+    BUILDING_PLAN, PLAN_READY
 }
 
 data class OnboardingState(
@@ -57,8 +57,8 @@ data class OnboardingState(
     val customCarbs: Int? = null,
     val customFat: Int? = null
 ) {
-    /** REVIEW (Rate fud) is the actual final step. */
-    val isLastStep: Boolean get() = step == OnboardingStep.REVIEW
+    /** PLAN_READY is the final step (the old Rate-fud review step was removed). */
+    val isLastStep: Boolean get() = step == OnboardingStep.PLAN_READY
 
     /** AI is required for goal calculation, so BYOK users must enter an API key before leaving
      *  the provider step (Ollama needs none). All other steps advance freely. */
@@ -159,10 +159,14 @@ class OnboardingViewModel(private val container: AppContainer) : ViewModel() {
         }
     }
 
-    fun setCustomCalories(v: Int?) { _ui.value = _ui.value.copy(customCalories = v) }
-    fun setCustomProtein(v: Int?) { _ui.value = _ui.value.copy(customProtein = v) }
-    fun setCustomCarbs(v: Int?) { _ui.value = _ui.value.copy(customCarbs = v) }
-    fun setCustomFat(v: Int?) { _ui.value = _ui.value.copy(customFat = v) }
+    fun setCustomCalories(v: Int?) { planEdited = true; _ui.value = _ui.value.copy(customCalories = v) }
+    fun setCustomProtein(v: Int?) { planEdited = true; _ui.value = _ui.value.copy(customProtein = v) }
+    fun setCustomCarbs(v: Int?) { planEdited = true; _ui.value = _ui.value.copy(customCarbs = v) }
+    fun setCustomFat(v: Int?) { planEdited = true; _ui.value = _ui.value.copy(customFat = v) }
+
+    /** The user hand-tuned the plan — Adaptive Goals then stays off at completion
+     *  so its first weekly run can't overwrite their numbers. */
+    private var planEdited = false
 
     /** Building Plan step: compute calorie + macro targets with AI (forecast is null for a new
      *  user). On success seeds the custom targets the Plan Ready screen shows; on failure leaves
@@ -187,7 +191,7 @@ class OnboardingViewModel(private val container: AppContainer) : ViewModel() {
     }
 
     fun next() {
-        if (_ui.value.step == OnboardingStep.REVIEW) return
+        if (_ui.value.step == OnboardingStep.PLAN_READY) return
         val nextStep = OnboardingStep.values().getOrNull(_ui.value.step.ordinal + 1) ?: return
         _ui.value = _ui.value.copy(step = nextStep)
     }
@@ -217,11 +221,12 @@ class OnboardingViewModel(private val container: AppContainer) : ViewModel() {
             if (state.apiKey.isNotBlank()) {
                 container.keyStore.setApiKey(state.aiProvider, state.apiKey.trim())
             }
-            // New installs start with Adaptive Goals + Energy Burn on. Existing users are
+            // New installs start with Energy Burn on, and Adaptive Goals on unless the
+            // user hand-tuned their plan (adaptive would overwrite it). Existing users are
             // untouched — these prefs are only written here and by the Settings toggles.
             // Onboarding just calculated goals, so stamp the weekly adaptive check as done;
             // the first auto-run lands next week.
-            container.prefs.setAdaptiveGoalsEnabled(true)
+            if (!planEdited) container.prefs.setAdaptiveGoalsEnabled(true)
             container.prefs.setHealthEnergyGoalsEnabled(true)
             container.prefs.setAdaptiveGoalsLastCheckDay(LocalDate.now().toString())
             container.prefs.setOnboardingCompleted(true)

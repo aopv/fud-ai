@@ -283,10 +283,6 @@
     <string name="onboarding_plan_field_carbs">कार्ब्स</string>
     <string name="onboarding_plan_field_fat">फैट</string>
 
-    <string name="onboarding_review_title">अब तक fud पसंद आ रहा है?</string>
-    <string name="onboarding_review_subtitle">एक त्वरित रेटिंग हमें बढ़ने और आपके लिए\nऔर फीचर बनाने में मदद करती है!</string>
-    <string name="onboarding_review_rate">fud को रेट करें</string>
-    <string name="onboarding_review_maybe_later">शायद बाद में</string>
 
     <!-- Home -->
     <string name="home_add_food">भोजन जोड़ें</string>
@@ -643,4 +639,10 @@
     <string name="settings_energy_goals_info">चालू होने पर, Fud AI Health Connect से मापी गई आपकी बर्न हुई कैलोरी — सक्रिय + बेसल ऊर्जा का 14-दिन का औसत — को फ़ॉर्मूला अनुमान की जगह लक्ष्य कैलकुलेशन में मेंटेनेंस (TDEE) आधार के रूप में इस्तेमाल करता है। बर्न पढ़ने के लिए कोई AI इस्तेमाल नहीं होता। Health Connect ज़रूरी है। पुनः गणना करें बटन और Adaptive Goals के साथ काम करता है।</string>
     <string name="settings_adaptive_goals_info">हफ़्ते में लगभग एक बार, ऐप खोलने पर Fud AI आपकी प्रोफ़ाइल, हाल में लॉग किए गए खाने और वज़न के ट्रेंड के आधार पर पूरा लक्ष्य कैलकुलेशन अपने आप दोबारा चलाता है — वही जो पुनः गणना करें बटन चलाता है। अगर Energy Burn चालू है, तो आपकी मापी गई बर्न को मेंटेनेंस का आधार बनाया जाता है। AI उपलब्ध न होने पर यह चुपचाप छूट जाता है। इसे बंद करने पर वे लक्ष्य वापस आ जाते हैं जो इस फ़ीचर के पहले बदलाव से पहले थे। यह चिकित्सा सलाह नहीं है।</string>
     <string name="ad_label">विज्ञापन</string>
+    <string name="onboarding_plan_adaptive_note">आपका प्लान आपकी लॉगिंग के अनुसार हर हफ़्ते अपने आप एडजस्ट होता है — इसे स्थिर रखने के लिए सेटिंग्स में Adaptive Goals बंद करें।</string>
+    <string name="onboarding_feature_snap">फोटो खींचें — AI लॉग कर देगा</string>
+    <string name="onboarding_feature_coach">कोच जो आपका डेटा जानता है</string>
+    <string name="onboarding_feature_library">870+ एक्सरसाइज़ लाइब्रेरी</string>
+    <string name="onboarding_feature_widgets">होम स्क्रीन विजेट</string>
+    <string name="onboarding_ads_note">विज्ञापन इसे मुफ़्त रखते हैं — एक छोटा बैनर डेवलपमेंट में मदद करता है। आपका हेल्थ डेटा कभी विज्ञापनों के लिए इस्तेमाल नहीं होता।</string>
 </resources>

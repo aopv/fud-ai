@@ -283,10 +283,6 @@
     <string name="onboarding_plan_field_carbs">Glucides</string>
     <string name="onboarding_plan_field_fat">Lipides</string>
 
-    <string name="onboarding_review_title">Vous aimez fud jusqu\'à présent ?</string>
-    <string name="onboarding_review_subtitle">Une note rapide nous aide à grandir\net à créer plus de fonctionnalités pour vous !</string>
-    <string name="onboarding_review_rate">Noter fud</string>
-    <string name="onboarding_review_maybe_later">Plus tard</string>
 
     <!-- Home -->
     <string name="home_add_food">Ajouter un aliment</string>
@@ -643,4 +639,10 @@
     <string name="settings_energy_goals_info">Lorsqu\'il est activé, Fud AI utilise vos calories brûlées mesurées depuis Health Connect — une moyenne sur 14 jours de l\'énergie active + basale — comme ancre de maintenance (TDEE) lors du calcul des objectifs, au lieu de l\'estimation par formule. Aucune IA n\'est utilisée pour lire votre dépense. Nécessite Health Connect. Fonctionne avec le bouton Recalculer et avec Adaptive Goals.</string>
     <string name="settings_adaptive_goals_info">Environ une fois par semaine, à l\'ouverture de l\'app, Fud AI relance automatiquement le calcul complet des objectifs — le même que le bouton Recalculer — à partir de votre profil, de vos repas récemment enregistrés et de votre tendance de poids. Si Energy Burn est activé, votre dépense mesurée sert d\'ancre de maintenance. Si l\'IA est indisponible, l\'exécution est ignorée silencieusement. La désactivation restaure les objectifs antérieurs au premier changement effectué par cette fonction. Ceci n\'est pas un avis médical.</string>
     <string name="ad_label">Publicité</string>
+    <string name="onboarding_plan_adaptive_note">Votre plan s\'ajuste automatiquement chaque semaine selon vos repas — désactivez Adaptive Goals dans Réglages pour le garder fixe.</string>
+    <string name="onboarding_feature_snap">Prenez une photo — l\'IA l\'enregistre</string>
+    <string name="onboarding_feature_coach">Un coach qui connaît vos données</string>
+    <string name="onboarding_feature_library">Bibliothèque de 870+ exercices</string>
+    <string name="onboarding_feature_widgets">Widgets d\'écran d\'accueil</string>
+    <string name="onboarding_ads_note">La pub garde l\'app gratuite — une petite bannière soutient le développement. Vos données de santé ne sont jamais utilisées pour la pub.</string>
 </resources>

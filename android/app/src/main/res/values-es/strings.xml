@@ -283,10 +283,6 @@
     <string name="onboarding_plan_field_carbs">Carbohidratos</string>
     <string name="onboarding_plan_field_fat">Grasas</string>
 
-    <string name="onboarding_review_title">¿Disfrutas fud hasta ahora?</string>
-    <string name="onboarding_review_subtitle">Una valoración rápida nos ayuda a crecer\n¡y a crear más funciones para ti!</string>
-    <string name="onboarding_review_rate">Valorar fud</string>
-    <string name="onboarding_review_maybe_later">Quizás luego</string>
 
     <!-- Home -->
     <string name="home_add_food">Añadir comida</string>
@@ -643,4 +639,10 @@
     <string name="settings_energy_goals_info">Cuando está activado, Fud AI usa tus calorías quemadas medidas de Health Connect — un promedio de 14 días de energía activa + basal — como ancla de mantenimiento (TDEE) al calcular objetivos, en lugar de la estimación por fórmula. No se usa IA para leer tu gasto. Requiere Health Connect. Funciona con el botón Recalcular y con Adaptive Goals.</string>
     <string name="settings_adaptive_goals_info">Aproximadamente una vez a la semana, al abrir la app, Fud AI vuelve a ejecutar automáticamente el cálculo completo de objetivos — el mismo que usa el botón Recalcular — a partir de tu perfil, tus comidas registradas recientes y tu tendencia de peso. Si Energy Burn está activado, usa tu gasto medido como ancla de mantenimiento. Si la IA no está disponible, se omite silenciosamente. Al desactivarlo se restauran los objetivos previos al primer cambio hecho por esta función. Esto no es un consejo médico.</string>
     <string name="ad_label">Anuncio</string>
+    <string name="onboarding_plan_adaptive_note">Tu plan se ajusta automáticamente cada semana según lo que registras — desactiva Adaptive Goals en Ajustes para mantenerlo fijo.</string>
+    <string name="onboarding_feature_snap">Haz una foto — la IA la registra</string>
+    <string name="onboarding_feature_coach">Un coach que conoce tus datos</string>
+    <string name="onboarding_feature_library">Biblioteca de 870+ ejercicios</string>
+    <string name="onboarding_feature_widgets">Widgets en la pantalla de inicio</string>
+    <string name="onboarding_ads_note">Los anuncios la mantienen gratis — un pequeño banner apoya el desarrollo. Tus datos de salud nunca se usan para anuncios.</string>
 </resources>

@@ -283,10 +283,6 @@
     <string name="onboarding_plan_field_carbs">Karbohidrat</string>
     <string name="onboarding_plan_field_fat">Yağ</string>
 
-    <string name="onboarding_review_title">İndiyə qədər fud-dan məmnunsunuz?</string>
-    <string name="onboarding_review_subtitle">Tez bir qiymətləndirmə bizə inkişaf etməyə\nvə sizin üçün daha çox funksiya yaratmağa kömək edir!</string>
-    <string name="onboarding_review_rate">fud-u Qiymətləndir</string>
-    <string name="onboarding_review_maybe_later">Bəlkə Sonra</string>
 
     <!-- Home -->
     <string name="home_add_food">Yemək əlavə et</string>
@@ -643,4 +639,10 @@
     <string name="settings_energy_goals_info">Aktiv olduqda Fud AI Health Connect-dən ölçülmüş yandırılan kalorilərinizi — aktiv + bazal enerjinin 14 günlük ortalamasını — hədəfləri hesablayarkən düstur təxmini əvəzinə saxlanma (TDEE) istinadı kimi istifadə edir. Sərfiyyatınızı oxumaq üçün Sİ istifadə olunmur. Health Connect tələb olunur. Yenidən Hesabla düyməsi və Adaptive Goals ilə işləyir.</string>
     <string name="settings_adaptive_goals_info">Təxminən həftədə bir dəfə, tətbiqi açanda Fud AI profilinizə, son qeyd olunmuş yeməklərə və çəki trendinizə əsasən tam hədəf hesablamasını — Yenidən Hesabla düyməsinin istifadə etdiyi eyni hesablamanı — avtomatik yenidən işə salır. Energy Burn aktivdirsə, ölçülmüş sərfiyyatınız saxlanma kalorisi üçün istinad kimi istifadə olunur. Sİ əlçatan olmadıqda addım səssizcə ötürülür. Bunu söndürdükdə bu funksiyanın ilk dəyişikliyindən əvvəlki hədəflər bərpa olunur. Bu, tibbi məsləhət deyil.</string>
     <string name="ad_label">Reklam</string>
+    <string name="onboarding_plan_adaptive_note">Planınız qeydlərinizə əsasən hər həftə avtomatik tənzimlənir — sabit saxlamaq üçün Parametrlərdə Adaptive Goals-u söndürün.</string>
+    <string name="onboarding_feature_snap">Şəkil çəkin — Sİ qeyd edir</string>
+    <string name="onboarding_feature_coach">Məlumatlarınızı bilən məşqçi</string>
+    <string name="onboarding_feature_library">870+ məşq kitabxanası</string>
+    <string name="onboarding_feature_widgets">Əsas ekran vidcetləri</string>
+    <string name="onboarding_ads_note">Reklamlar tətbiqi pulsuz saxlayır — kiçik banner inkişafı dəstəkləyir. Sağlamlıq məlumatlarınız heç vaxt reklam üçün istifadə olunmur.</string>
 </resources>

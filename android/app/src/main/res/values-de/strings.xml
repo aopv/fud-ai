@@ -283,10 +283,6 @@
     <string name="onboarding_plan_field_carbs">Kohlenhydrate</string>
     <string name="onboarding_plan_field_fat">Fett</string>
 
-    <string name="onboarding_review_title">Gefällt dir fud bisher?</string>
-    <string name="onboarding_review_subtitle">Eine kurze Bewertung hilft uns zu wachsen\nund mehr Funktionen für dich zu entwickeln!</string>
-    <string name="onboarding_review_rate">fud bewerten</string>
-    <string name="onboarding_review_maybe_later">Vielleicht später</string>
 
     <!-- Home -->
     <string name="home_add_food">Essen hinzufügen</string>
@@ -643,4 +639,10 @@
     <string name="settings_energy_goals_info">Wenn aktiviert, verwendet Fud AI deinen gemessenen Kalorienverbrauch aus Health Connect — einen 14-Tage-Durchschnitt aus aktiver + basaler Energie — als Erhaltungs-Anker (TDEE) bei der Zielberechnung, statt der Formel-Schätzung. Zum Auslesen deines Verbrauchs wird keine KI verwendet. Erfordert Health Connect. Funktioniert mit der Schaltfläche „Neu berechnen“ und mit Adaptive Goals.</string>
     <string name="settings_adaptive_goals_info">Etwa einmal pro Woche führt Fud AI beim Öffnen der App automatisch die vollständige Zielberechnung erneut aus — dieselbe wie die Schaltfläche „Neu berechnen“ — auf Basis deines Profils, deiner zuletzt protokollierten Mahlzeiten und deines Gewichtstrends. Wenn Energy Burn aktiviert ist, dient dein gemessener Verbrauch als Erhaltungs-Anker. Ist die KI nicht verfügbar, wird der Lauf still übersprungen. Beim Ausschalten werden die Ziele von vor der ersten Änderung durch diese Funktion wiederhergestellt. Dies ist keine medizinische Beratung.</string>
     <string name="ad_label">Anzeige</string>
+    <string name="onboarding_plan_adaptive_note">Dein Plan passt sich wöchentlich an, während du loggst — deaktiviere Adaptive Goals in den Einstellungen, um ihn fest zu lassen.</string>
+    <string name="onboarding_feature_snap">Foto knipsen — die KI loggt es</string>
+    <string name="onboarding_feature_coach">Coach, der deine Daten kennt</string>
+    <string name="onboarding_feature_library">Bibliothek mit 870+ Übungen</string>
+    <string name="onboarding_feature_widgets">Startbildschirm-Widgets</string>
+    <string name="onboarding_ads_note">Werbung hält die App kostenlos — ein kleines Banner unterstützt die Entwicklung. Deine Gesundheitsdaten werden nie für Werbung verwendet.</string>
 </resources>
