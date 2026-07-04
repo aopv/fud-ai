@@ -9,7 +9,7 @@
 	<key>NSHealthUpdateUsageDescription</key>
 	<string>Write your nutrition and body measurements so all your health data stays in one place.</string>
 	<key>GADApplicationIdentifier</key>
-	<string>ca-app-pub-3940256099942544~1458002511</string>
+	<string>ca-app-pub-1910432677832151~9023506139</string>
 	<key>NSUserTrackingUsageDescription</key>
 	<string>Allow tracking to see ads that are more relevant to you. Your food, weight, and health data always stays private on your device.</string>
 	<key>SKAdNetworkItems</key>
