@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -126,6 +127,9 @@ fun OnboardingScreen(container: AppContainer, onComplete: () -> Unit) {
         Modifier
             .fillMaxSize()
             .statusBarsPadding()
+            // Shrink for the keyboard so the API-key field (Provider step) and the
+            // footer CTA stay reachable while typing instead of being covered.
+            .imePadding()
             .background(MaterialTheme.colorScheme.background)
     ) {
         // iOS shows a chevron-left back button + a thin Capsule progress bar at

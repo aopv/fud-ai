@@ -39,6 +39,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.interaction.DragInteraction
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -141,6 +142,17 @@ fun CoachScreen(container: AppContainer) {
     val ctx = LocalContext.current
     val focusManager = LocalFocusManager.current
     val keyboard = LocalSoftwareKeyboardController.current
+
+    // Dismiss the keyboard when the USER drags the chat (DragInteraction only —
+    // the auto-scroll after sending a message must not steal focus).
+    LaunchedEffect(listState) {
+        listState.interactionSource.interactions.collect { interaction ->
+            if (interaction is DragInteraction.Start) {
+                keyboard?.hide()
+                focusManager.clearFocus()
+            }
+        }
+    }
 
     fun hideKeyboard() {
         focusManager.clearFocus()

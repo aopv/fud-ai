@@ -189,7 +189,7 @@ struct ChatView: View {
                 }
                 .padding(.vertical, 12)
             }
-            .scrollDismissesKeyboard(.interactively)
+            .scrollDismissesKeyboard(.immediately)
             .onAppear {
                 guard let lastID = messages.last?.id else { return }
                 DispatchQueue.main.async {
