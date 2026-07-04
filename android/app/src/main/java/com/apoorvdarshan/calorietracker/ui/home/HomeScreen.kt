@@ -270,19 +270,10 @@ fun HomeScreen(container: AppContainer) {
         foodLogMealGroups(ui.todayEntries, ui.foodLogSortOrder)
     }
 
+    // No topBar: the empty TopAppBar used to act as the status-bar spacer, but the
+    // ad strip above this screen (TabWithBanner) now owns that inset.
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
-        topBar = {
-            // iOS HomeView has .navigationTitle("") + .navigationBarTitleDisplayMode(.inline),
-            // so the title is intentionally empty — only the + Menu sits in the toolbar.
-            TopAppBar(
-                title = {},
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background
-                ),
-                actions = {}
-            )
-        },
     ) { padding ->
         Box(Modifier.fillMaxSize().padding(padding)) {
         LazyColumn(

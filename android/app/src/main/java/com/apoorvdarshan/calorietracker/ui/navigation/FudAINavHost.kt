@@ -2,7 +2,10 @@ package com.apoorvdarshan.calorietracker.ui.navigation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -170,6 +173,12 @@ internal fun NavHostController.current(): String? = currentBackStackEntry?.desti
 private fun TabWithBanner(content: @Composable () -> Unit) {
     Column(Modifier.fillMaxSize()) {
         AdBannerStrip()
-        Box(Modifier.weight(1f)) { content() }
+        Box(
+            Modifier
+                .weight(1f)
+                // The strip already cleared the status bar — consume that inset so
+                // the tabs' Scaffolds/TopAppBars don't pad for it a second time.
+                .consumeWindowInsets(WindowInsets.statusBars)
+        ) { content() }
     }
 }
