@@ -217,6 +217,13 @@ class OnboardingViewModel(private val container: AppContainer) : ViewModel() {
             if (state.apiKey.isNotBlank()) {
                 container.keyStore.setApiKey(state.aiProvider, state.apiKey.trim())
             }
+            // New installs start with Adaptive Goals + Energy Burn on. Existing users are
+            // untouched — these prefs are only written here and by the Settings toggles.
+            // Onboarding just calculated goals, so stamp the weekly adaptive check as done;
+            // the first auto-run lands next week.
+            container.prefs.setAdaptiveGoalsEnabled(true)
+            container.prefs.setHealthEnergyGoalsEnabled(true)
+            container.prefs.setAdaptiveGoalsLastCheckDay(LocalDate.now().toString())
             container.prefs.setOnboardingCompleted(true)
             onDone()
         }

@@ -3024,12 +3024,7 @@ struct ProfileView: View {
 
                     HStack {
                         Label {
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text("Adaptive Goals")
-                                Text("Experimental")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
+                            Text("Adaptive Goals")
                         } icon: {
                             Image(systemName: "chart.line.uptrend.xyaxis")
                                 .foregroundStyle(AppColors.calorie)
@@ -3060,9 +3055,11 @@ struct ProfileView: View {
                         Label {
                             VStack(alignment: .leading, spacing: 2) {
                                 Text("Energy Burn")
-                                Text(healthKitEnabled ? "Experimental" : "Experimental · needs Apple Health")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
+                                if !healthKitEnabled {
+                                    Text("Needs Apple Health")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
                             }
                         } icon: {
                             Image(systemName: "flame")
@@ -3986,12 +3983,12 @@ struct ProfileView: View {
             .alert("Adaptive Goals", isPresented: $showAdaptiveGoalsInfo) {
                 Button("OK", role: .cancel) { }
             } message: {
-                Text("Experimental. About once a week when you open the app, Fud AI automatically re-runs the full goal calculation — the same one the Recalculate button uses — from your profile, recent logged food, and weight trend. If Energy Burn is on, it uses your measured burn as the maintenance anchor. It skips silently if the AI is unavailable. Turning this off restores the targets from before Adaptive Goals first changed them. This is not medical advice.")
+                Text("About once a week when you open the app, Fud AI automatically re-runs the full goal calculation — the same one the Recalculate button uses — from your profile, recent logged food, and weight trend. If Energy Burn is on, it uses your measured burn as the maintenance anchor. It skips silently if the AI is unavailable. Turning this off restores the targets from before Adaptive Goals first changed them. This is not medical advice.")
             }
             .alert("Energy Burn", isPresented: $showEnergyBurnInfo) {
                 Button("OK", role: .cancel) { }
             } message: {
-                Text("Experimental. When on, Fud AI uses your measured calories burned from Apple Health — a 14-day average of Active + Basal energy — as your maintenance (TDEE) anchor when calculating goals, instead of the formula estimate. No AI is used to read your burn. Requires Apple Health. Works with the Recalculate button and with Adaptive Goals.")
+                Text("When on, Fud AI uses your measured calories burned from Apple Health — a 14-day average of Active + Basal energy — as your maintenance (TDEE) anchor when calculating goals, instead of the formula estimate. No AI is used to read your burn. Requires Apple Health. Works with the Recalculate button and with Adaptive Goals.")
             }
             .alert(adaptiveGoalAlertTitle, isPresented: $showAdaptiveGoalAlert) {
                 Button("OK", role: .cancel) { }

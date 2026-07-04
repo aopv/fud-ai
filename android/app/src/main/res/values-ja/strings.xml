@@ -639,4 +639,7 @@
     <string name="settings_fallback_footer">プライマリプロバイダーが失敗した場合（過負荷、レート制限、ネットワークエラー）、アプリはこのフォールバックで自動的に再試行します。プライマリと同じプロバイダーも使用できます — 別のモデルを選んでください。</string>
     <string name="widget_all_metrics_label">Fud AI 今日</string>
     <string name="widget_all_metrics_description">今日のカロリー・タンパク質・炭水化物・脂質を1つのウィジェットで確認。</string>
+    <string name="settings_needs_health_connect">Health Connectが必要</string>
+    <string name="settings_energy_goals_info">オンにすると、Fud AIはHealth Connectから取得した実測の消費カロリー（アクティブ＋基礎代謝の14日間平均）を、数式による推定の代わりに維持カロリー（TDEE）の基準として目標計算に使います。消費カロリーの読み取りにAIは使いません。Health Connectが必要です。「再計算」ボタンおよびAdaptive Goalsと連動します。</string>
+    <string name="settings_adaptive_goals_info">週に1回ほど、アプリを開いたときに、Fud AIがプロフィール・最近の食事記録・体重トレンドをもとに、「再計算」ボタンと同じ目標計算全体を自動で再実行します。Energy Burnがオンの場合は、実測の消費カロリーを維持カロリーの基準として使います。AIが利用できないときは何もせずスキップします。オフにすると、この機能が最初に変更する前の目標に戻ります。これは医療アドバイスではありません。</string>
 </resources>

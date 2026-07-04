@@ -408,6 +408,7 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController) {
                     EnergyBurnGoalsRow(
                         checked = ui.healthEnergyGoalsEnabled,
                         applying = ui.recalculatingGoals,
+                        needsHealthConnect = !ui.healthConnectEnabled,
                         onInfo = { showHealthEnergyGoalsInfo = true },
                         onChange = ::onHealthEnergyGoalsToggle
                     )
@@ -2547,6 +2548,7 @@ private fun ToggleRowWithInfo(
 private fun EnergyBurnGoalsRow(
     checked: Boolean,
     applying: Boolean,
+    needsHealthConnect: Boolean,
     onInfo: () -> Unit,
     onChange: (Boolean) -> Unit
 ) {
@@ -2565,11 +2567,13 @@ private fun EnergyBurnGoalsRow(
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Medium
             )
-            Text(
-                stringResource(R.string.settings_experimental),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
-            )
+            if (needsHealthConnect) {
+                Text(
+                    stringResource(R.string.settings_needs_health_connect),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
+                )
+            }
         }
         if (applying) {
             CircularProgressIndicator(
@@ -2604,21 +2608,12 @@ private fun AdaptiveGoalsRow(
     ) {
         FudIconBubble(icon = Icons.Outlined.TrackChanges, size = 22.dp, iconSize = 14.dp)
         Spacer(Modifier.width(14.dp))
-        Column(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(2.dp)
-        ) {
-            Text(
-                stringResource(R.string.settings_adaptive_goals),
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Medium
-            )
-            Text(
-                stringResource(R.string.settings_experimental),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
-            )
-        }
+        Text(
+            stringResource(R.string.settings_adaptive_goals),
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.Medium,
+            modifier = Modifier.weight(1f)
+        )
         if (applying) {
             CircularProgressIndicator(
                 modifier = Modifier.size(22.dp),

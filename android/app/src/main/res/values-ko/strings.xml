@@ -639,4 +639,7 @@
     <string name="settings_fallback_footer">기본 제공자가 실패할 경우(과부하, 속도 제한, 네트워크 오류) 앱이 이 폴백으로 자동 재시도합니다. 기본과 동일한 제공자도 허용됩니다 — 다른 모델을 선택하세요.</string>
     <string name="widget_all_metrics_label">Fud AI 오늘</string>
     <string name="widget_all_metrics_description">오늘의 칼로리, 단백질, 탄수화물, 지방을 위젯 하나로 확인하세요.</string>
+    <string name="settings_needs_health_connect">Health Connect 필요</string>
+    <string name="settings_energy_goals_info">켜면 Fud AI가 Health Connect에서 측정된 소모 칼로리(활동 + 기초 에너지의 14일 평균)를 공식 추정치 대신 유지 칼로리(TDEE) 기준으로 사용해 목표를 계산합니다. 소모 칼로리를 읽는 데 AI는 사용되지 않습니다. Health Connect가 필요합니다. 다시 계산 버튼 및 Adaptive Goals와 함께 작동합니다.</string>
+    <string name="settings_adaptive_goals_info">일주일에 한 번 정도 앱을 열 때 Fud AI가 프로필, 최근 기록한 음식, 체중 추세를 바탕으로 전체 목표 계산을 자동으로 다시 실행합니다 — 다시 계산 버튼과 동일한 계산입니다. Energy Burn이 켜져 있으면 측정된 소모 칼로리를 유지 기준으로 사용합니다. AI를 사용할 수 없으면 조용히 건너뜁니다. 끄면 이 기능이 처음 변경하기 전의 목표로 복원됩니다. 이는 의학적 조언이 아닙니다.</string>
 </resources>

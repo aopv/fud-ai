@@ -639,4 +639,7 @@
     <string name="settings_fallback_footer">Se o seu provedor principal falhar (sobrecarga, limite de taxa, erro de rede), o app tenta novamente automaticamente com este fallback. É permitido o mesmo provedor do principal — basta escolher um modelo diferente.</string>
     <string name="widget_all_metrics_label">Fud AI Hoje</string>
     <string name="widget_all_metrics_description">Veja calorias, proteínas, carboidratos e gordura de hoje em um widget.</string>
+    <string name="settings_needs_health_connect">Requer Health Connect</string>
+    <string name="settings_energy_goals_info">Quando ativado, o Fud AI usa suas calorias queimadas medidas pelo Health Connect — uma média de 14 dias de energia ativa + basal — como âncora de manutenção (TDEE) ao calcular metas, em vez da estimativa por fórmula. Nenhuma IA é usada para ler seu gasto. Requer Health Connect. Funciona com o botão Recalcular e com o Adaptive Goals.</string>
+    <string name="settings_adaptive_goals_info">Cerca de uma vez por semana, ao abrir o app, o Fud AI reexecuta automaticamente o cálculo completo de metas — o mesmo do botão Recalcular — com base no seu perfil, nas refeições registradas recentemente e na tendência de peso. Se o Energy Burn estiver ativado, usa seu gasto medido como âncora de manutenção. Se a IA estiver indisponível, a execução é ignorada silenciosamente. Ao desativar, são restauradas as metas de antes da primeira alteração feita por este recurso. Isto não é aconselhamento médico.</string>
 </resources>

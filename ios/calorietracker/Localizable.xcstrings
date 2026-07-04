@@ -4430,6 +4430,100 @@
         }
       }
     },
+    "About once a week when you open the app, Fud AI automatically re-runs the full goal calculation — the same one the Recalculate button uses — from your profile, recent logged food, and weight trend. If Energy Burn is on, it uses your measured burn as the maintenance anchor. It skips silently if the AI is unavailable. Turning this off restores the targets from before Adaptive Goals first changed them. This is not medical advice." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Etwa einmal pro Woche führt Fud AI beim Öffnen der App automatisch die vollständige Zielberechnung erneut aus — dieselbe wie die Schaltfläche „Neu berechnen“ — auf Basis deines Profils, deiner zuletzt protokollierten Mahlzeiten und deines Gewichtstrends. Wenn Energy Burn aktiviert ist, dient dein gemessener Verbrauch als Erhaltungs-Anker. Ist die KI nicht verfügbar, wird der Lauf still übersprungen. Beim Ausschalten werden die Ziele von vor der ersten Änderung durch diese Funktion wiederhergestellt. Dies ist keine medizinische Beratung."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aproximadamente una vez a la semana, al abrir la app, Fud AI vuelve a ejecutar automáticamente el cálculo completo de objetivos — el mismo que usa el botón Recalcular — a partir de tu perfil, tus comidas registradas recientes y tu tendencia de peso. Si Energy Burn está activado, usa tu gasto medido como ancla de mantenimiento. Si la IA no está disponible, se omite silenciosamente. Al desactivarlo se restauran los objetivos previos al primer cambio hecho por esta función. Esto no es un consejo médico."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Environ une fois par semaine, à l'ouverture de l'app, Fud AI relance automatiquement le calcul complet des objectifs — le même que le bouton Recalculer — à partir de votre profil, de vos repas récemment enregistrés et de votre tendance de poids. Si Energy Burn est activé, votre dépense mesurée sert d'ancre de maintenance. Si l'IA est indisponible, l'exécution est ignorée silencieusement. La désactivation restaure les objectifs antérieurs au premier changement effectué par cette fonction. Ceci n'est pas un avis médical."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Circa una volta a settimana, all'apertura dell'app, Fud AI riesegue automaticamente il calcolo completo degli obiettivi — lo stesso del pulsante Ricalcola — in base al tuo profilo, ai pasti registrati di recente e al trend del peso. Se Energy Burn è attivo, usa il tuo consumo misurato come àncora di mantenimento. Se l'IA non è disponibile, l'esecuzione viene saltata in silenzio. Disattivandolo vengono ripristinati gli obiettivi precedenti alla prima modifica fatta da questa funzione. Questo non è un consiglio medico."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerca de uma vez por semana, ao abrir o app, o Fud AI reexecuta automaticamente o cálculo completo de metas — o mesmo do botão Recalcular — com base no seu perfil, nas refeições registradas recentemente e na tendência de peso. Se o Energy Burn estiver ativado, usa seu gasto medido como âncora de manutenção. Se a IA estiver indisponível, a execução é ignorada silenciosamente. Ao desativar, são restauradas as metas de antes da primeira alteração feita por este recurso. Isto não é aconselhamento médico."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ongeveer één keer per week, wanneer je de app opent, voert Fud AI automatisch de volledige doelberekening opnieuw uit — dezelfde als de knop Opnieuw berekenen — op basis van je profiel, recent gelogde voeding en je gewichtstrend. Als Energy Burn aanstaat, wordt je gemeten verbruik gebruikt als onderhoudsanker. Als de AI niet beschikbaar is, wordt de run stilletjes overgeslagen. Bij uitschakelen worden de doelen hersteld van vóór de eerste wijziging door deze functie. Dit is geen medisch advies."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aproximativ o dată pe săptămână, la deschiderea aplicației, Fud AI reia automat calculul complet al obiectivelor — același folosit de butonul Recalculează — pe baza profilului tău, a alimentelor înregistrate recent și a tendinței greutății. Dacă Energy Burn este activat, consumul tău măsurat este folosit ca ancoră de întreținere. Dacă IA nu este disponibilă, rularea este omisă silențios. Dezactivarea restaurează obiectivele de dinainte de prima modificare făcută de această funcție. Acesta nu este un sfat medical."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Примерно раз в неделю при открытии приложения Fud AI автоматически заново выполняет полный расчёт целей — тот же, что и кнопка «Пересчитать», — на основе вашего профиля, недавно записанной еды и тренда веса. Если включён Energy Burn, измеренный расход используется как ориентир поддержания. Если ИИ недоступен, запуск тихо пропускается. При выключении восстанавливаются цели, действовавшие до первого изменения этой функцией. Это не медицинская рекомендация."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mniej więcej raz w tygodniu, po otwarciu aplikacji, Fud AI automatycznie ponawia pełne obliczanie celów — to samo, którego używa przycisk Przelicz — na podstawie Twojego profilu, ostatnio zapisanych posiłków i trendu wagi. Jeśli Energy Burn jest włączone, zmierzone spalanie służy jako punkt odniesienia podtrzymania. Gdy AI jest niedostępne, uruchomienie jest pomijane po cichu. Wyłączenie przywraca cele sprzed pierwszej zmiany dokonanej przez tę funkcję. To nie jest porada medyczna."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "週に1回ほど、アプリを開いたときに、Fud AIがプロフィール・最近の食事記録・体重トレンドをもとに、「再計算」ボタンと同じ目標計算全体を自動で再実行します。Energy Burnがオンの場合は、実測の消費カロリーを維持カロリーの基準として使います。AIが利用できないときは何もせずスキップします。オフにすると、この機能が最初に変更する前の目標に戻ります。これは医療アドバイスではありません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "일주일에 한 번 정도 앱을 열 때 Fud AI가 프로필, 최근 기록한 음식, 체중 추세를 바탕으로 전체 목표 계산을 자동으로 다시 실행합니다 — 다시 계산 버튼과 동일한 계산입니다. Energy Burn이 켜져 있으면 측정된 소모 칼로리를 유지 기준으로 사용합니다. AI를 사용할 수 없으면 조용히 건너뜁니다. 끄면 이 기능이 처음 변경하기 전의 목표로 복원됩니다. 이는 의학적 조언이 아닙니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "大约每周一次，当你打开应用时，Fud AI 会根据你的资料、最近记录的饮食和体重趋势，自动重新运行完整的目标计算（与“重新计算”按钮相同）。如果已开启 Energy Burn，则会以实测消耗作为维持热量的基准。若 AI 不可用则静默跳过。关闭后会恢复到该功能首次更改前的目标。这不是医疗建议。"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مرة واحدة تقريبًا في الأسبوع عند فتح التطبيق، يعيد Fud AI تلقائيًا تشغيل حساب الأهداف الكامل — وهو نفس الحساب الذي يستخدمه زر إعادة الحساب — استنادًا إلى ملفك الشخصي والطعام المسجّل مؤخرًا واتجاه وزنك. إذا كان Energy Burn مفعّلًا، يُستخدم حرقك المقاس كمرجع لسعرات الثبات. إذا لم يكن الذكاء الاصطناعي متاحًا، يتم التخطي بصمت. عند إيقاف هذه الميزة تُستعاد الأهداف التي كانت قبل أول تغيير أجرته. هذه ليست نصيحة طبية."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "हफ़्ते में लगभग एक बार, ऐप खोलने पर Fud AI आपकी प्रोफ़ाइल, हाल में लॉग किए गए खाने और वज़न के ट्रेंड के आधार पर पूरा लक्ष्य कैलकुलेशन अपने आप दोबारा चलाता है — वही जो पुनः गणना करें बटन चलाता है। अगर Energy Burn चालू है, तो आपकी मापी गई बर्न को मेंटेनेंस का आधार बनाया जाता है। AI उपलब्ध न होने पर यह चुपचाप छूट जाता है। इसे बंद करने पर वे लक्ष्य वापस आ जाते हैं जो इस फ़ीचर के पहले बदलाव से पहले थे। यह चिकित्सा सलाह नहीं है।"
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Təxminən həftədə bir dəfə, tətbiqi açanda Fud AI profilinizə, son qeyd olunmuş yeməklərə və çəki trendinizə əsasən tam hədəf hesablamasını — Yenidən Hesabla düyməsinin istifadə etdiyi eyni hesablamanı — avtomatik yenidən işə salır. Energy Burn aktivdirsə, ölçülmüş sərfiyyatınız saxlanma kalorisi üçün istinad kimi istifadə olunur. Sİ əlçatan olmadıqda addım səssizcə ötürülür. Bunu söndürdükdə bu funksiyanın ilk dəyişikliyindən əvvəlki hədəflər bərpa olunur. Bu, tibbi məsləhət deyil."
+          }
+        }
+      }
+    },
     "Accept & Continue" : {
       "comment" : "A button that lets the user accept the app's Terms of Service and Privacy Policy.",
       "isCommentAutoGenerated" : true,
@@ -12718,137 +12812,6 @@
         }
       }
     },
-    "Experimental" : {
-      "localizations" : {
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Eksperymentalne"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Экспериментально"
-          }
-        }
-      }
-    },
-    "Experimental · needs Apple Health" : {},
-    "Experimental. About once a week when you open the app, Fud AI automatically re-runs the full goal calculation — the same one the Recalculate button uses — from your profile, recent logged food, and weight trend. If Energy Burn is on, it uses your measured burn as the maintenance anchor. It skips silently if the AI is unavailable. Turning this off restores the targets from before Adaptive Goals first changed them. This is not medical advice." : {},
-    "Experimental. About once a week, Fud AI checks your recent weight trend against your target pace and makes a small calorie correction. When Apple Health is connected, it also factors your measured energy burned (Active + Basal). Pinned macros stay pinned; unlocked macros auto-balance. Turning this off restores the targets from before Adaptive Goals first changed them. This is not medical advice." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تجريبي. يتحقق تطبيق Fud AI مرة واحدة أسبوعيًا تقريبًا من اتجاه وزنك الأخير مقارنةً بالوتيرة المستهدفة، ويُجري تصحيحًا بسيطًا للسعرات الحرارية. وعند ربط تطبيق صحة Apple، يأخذ أيضًا في الاعتبار الطاقة المقاسة التي حرقتها (النشطة + الأساسية). تبقى العناصر الغذائية المثبّتة مثبّتة؛ أما العناصر غير المقفلة فتتوازن تلقائيًا. يؤدي إيقاف هذه الميزة إلى استعادة الأهداف كما كانت قبل أن تغيّرها ميزة الأهداف التكيّفية لأول مرة. هذه ليست نصيحة طبية."
-          }
-        },
-        "az" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Eksperimental. Təxminən həftədə bir dəfə Fud AI son çəki meyilinizi hədəf tempinizlə müqayisə edir və kalorilərə kiçik düzəliş edir. Apple Health qoşulduqda, ölçülmüş yandırılan enerjini də (Aktiv + Bazal) nəzərə alır. Sabitlənmiş makrolar sabit qalır; kiliddən çıxarılmış makrolar avtomatik tarazlaşır. Bunu söndürmək Adaptiv Məqsədlər ilk dəfə dəyişməzdən əvvəlki hədəfləri bərpa edir. Bu, tibbi məsləhət deyil."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Experimentell. Etwa einmal pro Woche vergleicht Fud AI deinen jüngsten Gewichtstrend mit deinem Zieltempo und nimmt eine kleine Kalorienkorrektur vor. Wenn Apple Health verbunden ist, wird auch dein gemessener Energieverbrauch (Aktiv + Grundumsatz) berücksichtigt. Angeheftete Makros bleiben angeheftet; nicht gesperrte Makros gleichen sich automatisch aus. Wenn du dies deaktivierst, werden die Ziele wiederhergestellt, die vor der ersten Änderung durch die adaptiven Ziele galten. Dies ist keine medizinische Beratung."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Experimental. Aproximadamente una vez por semana, Fud AI compara tu tendencia de peso reciente con tu ritmo objetivo y realiza una pequeña corrección de calorías. Cuando Salud de Apple está conectada, también tiene en cuenta la energía gastada medida (activa + basal). Los macros fijados permanecen fijados; los macros desbloqueados se reequilibran automáticamente. Al desactivar esta opción se restauran los objetivos que tenías antes de que las metas adaptables los modificaran por primera vez. Esto no es asesoramiento médico."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Expérimental. Environ une fois par semaine, Fud AI compare votre tendance de poids récente à votre rythme cible et applique une petite correction calorique. Lorsque Apple Santé est connecté, il prend aussi en compte l'énergie dépensée mesurée (active + de base). Les macros épinglées restent épinglées ; les macros déverrouillées s'équilibrent automatiquement. Désactiver cette option rétablit les objectifs tels qu'ils étaient avant que les objectifs adaptatifs ne les modifient pour la première fois. Ceci ne constitue pas un avis médical."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "प्रायोगिक। लगभग हफ्ते में एक बार, Fud AI आपके हाल के वजन के रुझान की तुलना आपकी लक्ष्य गति से करता है और कैलोरी में एक छोटा सुधार करता है। जब Apple Health कनेक्ट होता है, तो यह आपके द्वारा खर्च की गई मापी गई ऊर्जा (सक्रिय + बेसल) को भी ध्यान में रखता है। पिन किए गए मैक्रोज़ पिन किए हुए रहते हैं; अनलॉक किए गए मैक्रोज़ अपने आप संतुलित हो जाते हैं। इसे बंद करने पर वे लक्ष्य बहाल हो जाते हैं जो Adaptive Goals द्वारा उन्हें पहली बार बदलने से पहले थे। यह चिकित्सकीय सलाह नहीं है।"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sperimentale. Circa una volta a settimana, Fud AI confronta il tuo recente andamento del peso con il ritmo prefissato ed effettua una piccola correzione delle calorie. Quando Apple Salute è collegato, considera anche l'energia consumata misurata (attiva + basale). I macro fissati restano fissati; i macro sbloccati si bilanciano automaticamente. Disattivando questa opzione vengono ripristinati gli obiettivi precedenti alla prima modifica degli Obiettivi adattivi. Questo non è un consiglio medico."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "試験的な機能です。Fud AI はおよそ週に1回、最近の体重の推移を目標ペースと照らし合わせ、カロリーをわずかに補正します。ヘルスケアと連携している場合は、計測された消費エネルギー（アクティブ＋安静時）も考慮します。固定したマクロ栄養素はそのまま固定され、固定を解除したマクロ栄養素は自動で調整されます。これをオフにすると、アダプティブゴールが最初に変更する前の目標値に戻ります。これは医療上のアドバイスではありません。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "실험적 기능입니다. Fud AI는 대략 일주일에 한 번, 최근 체중 추세를 목표 속도와 비교하여 칼로리를 소폭 조정합니다. 건강 앱이 연결되어 있으면 측정된 소모 에너지(활동 + 기초대사량)도 함께 반영합니다. 고정한 영양소는 고정된 상태로 유지되고, 잠금 해제된 영양소는 자동으로 조정됩니다. 이 기능을 끄면 적응형 목표가 처음 변경하기 이전의 목표값으로 복원됩니다. 의학적 조언이 아닙니다."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Experimenteel. Ongeveer eens per week vergelijkt Fud AI je recente gewichtstrend met je beoogde tempo en past de calorieën licht aan. Wanneer Apple Health is verbonden, wordt ook je gemeten verbruikte energie meegerekend (actief + basaal). Vastgezette macro's blijven vastgezet; ontgrendelde macro's balanceren automatisch. Als je dit uitschakelt, worden de doelen hersteld van vóór de eerste wijziging door Adaptieve doelen. Dit is geen medisch advies."
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Eksperymentalne. Mniej więcej raz w tygodniu Fud AI porównuje ostatni trend Twojej wagi z docelowym tempem i wprowadza niewielką korektę kalorii. Gdy aplikacja Zdrowie jest połączona, uwzględnia również zmierzony wydatek energetyczny (aktywny + spoczynkowy). Przypięte makroskładniki pozostają przypięte; odblokowane makroskładniki równoważą się automatycznie. Wyłączenie tej opcji przywraca cele sprzed pierwszej zmiany wprowadzonej przez Cele adaptacyjne. To nie jest porada medyczna."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Experimental. Cerca de uma vez por semana, o Fud AI compara sua tendência de peso recente com o ritmo desejado e faz uma pequena correção de calorias. Quando o Saúde da Apple está conectado, ele também leva em conta sua energia gasta medida (Ativa + Basal). Os macros fixados permanecem fixados; os macros desbloqueados se reequilibram automaticamente. Desativar isso restaura as metas de antes de as Metas Adaptáveis as alterarem pela primeira vez. Isto não é aconselhamento médico."
-          }
-        },
-        "ro" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Experimental. Aproximativ o dată pe săptămână, Fud AI compară tendința recentă a greutății tale cu ritmul vizat și face o mică ajustare a caloriilor. Când aplicația Sănătate este conectată, ține cont și de energia consumată măsurată (activă + de repaus). Macronutrienții fixați rămân fixați; cei deblocați se echilibrează automat. Dezactivarea acestei opțiuni restabilește obiectivele de dinainte ca Obiectivele adaptive să le fi modificat prima dată. Acestea nu constituie sfaturi medicale."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Экспериментально. Примерно раз в неделю Fud AI сверяет вашу недавнюю динамику веса с целевым темпом и вносит небольшую корректировку калорий. Когда подключено приложение «Здоровье», он также учитывает измеренный расход энергии (активный + основной обмен). Закреплённые макросы остаются закреплёнными; незакреплённые балансируются автоматически. Отключение этой функции восстанавливает цели, которые были до того, как «Адаптивные цели» впервые их изменили. Это не является медицинской рекомендацией."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "实验性功能。Fud AI 大约每周一次，将你近期的体重趋势与目标进度对比，并对热量做出小幅调整。连接 Apple 健康后，它还会参考你实测消耗的能量（活动能量 + 静息能量）。已锁定的宏量营养素保持锁定；未锁定的会自动平衡。关闭此功能将恢复到自适应目标首次修改之前的目标值。这不构成医疗建议。"
-          }
-        }
-      }
-    },
-    "Experimental. Uses recent Apple Health Active Energy and Basal Energy with your selected AI provider to estimate your calorie target. Workout calories are estimates, so Fud AI treats them cautiously and keeps energy-burn adjustments separate from normal goal formulas where possible. It refreshes automatically once per day when you open the app, using completed days from the last 14 days, and you can still refresh manually. Protein, carbs, and fat stay unlocked on auto-balance unless you lock them manually. Turning this off restores your previous targets." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Eksperymentalne. Używa ostatniej aktywnej i podstawowej energii z Apple Health oraz wybranego dostawcy AI, aby oszacować cel kalorii. Kalorie treningowe są szacunkowe, więc Fud AI traktuje je ostrożnie i tam, gdzie to możliwe, trzyma korekty spalania energii oddzielnie od zwykłych wzorów celów. Odświeża się automatycznie raz dziennie po otwarciu aplikacji, używając zakończonych dni z ostatnich 14 dni, ale nadal możesz odświeżyć ręcznie. Białko, węglowodany i tłuszcz pozostają odblokowane w automatycznym równoważeniu, chyba że zablokujesz je ręcznie. Wyłączenie przywraca poprzednie cele."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Экспериментально. Использует недавние данные Apple Health об активной и базовой энергии вместе с выбранным ИИ-провайдером, чтобы оценить вашу цель по калориям. Калории тренировок являются оценкой, поэтому Fud AI учитывает их осторожно и по возможности отделяет корректировки расхода энергии от обычных формул целей. Обновляется автоматически раз в день при открытии приложения, используя завершенные дни за последние 14 дней; также можно обновить вручную. Белки, углеводы и жиры остаются незакрепленными в автобалансе, если вы не закрепите их вручную. Отключение восстановит предыдущие цели."
-          }
-        }
-      }
-    },
-    "Experimental. When on, Fud AI uses your measured calories burned from Apple Health — a 14-day average of Active + Basal energy — as your maintenance (TDEE) anchor when calculating goals, instead of the formula estimate. No AI is used to read your burn. Requires Apple Health. Works with the Recalculate button and with Adaptive Goals." : {},
     "Extra Active" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -21087,6 +21050,100 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "名称"
+          }
+        }
+      }
+    },
+    "Needs Apple Health" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Benötigt Apple Health"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Requiere Apple Health"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nécessite Apple Health"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Richiede Apple Health"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Requer Apple Health"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vereist Apple Health"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Necesită Apple Health"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Требуется Apple Health"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wymaga Apple Health"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Healthが必要"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Health 필요"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "需要 Apple Health"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يتطلب Apple Health"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Health ज़रूरी है"
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Health tələb olunur"
           }
         }
       }
@@ -31901,6 +31958,100 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "При включении новые результаты открываются с граммами по умолчанию, даже если ИИ определяет порции. Вы всегда можете переключить единицы для каждого продукта."
+          }
+        }
+      }
+    },
+    "When on, Fud AI uses your measured calories burned from Apple Health — a 14-day average of Active + Basal energy — as your maintenance (TDEE) anchor when calculating goals, instead of the formula estimate. No AI is used to read your burn. Requires Apple Health. Works with the Recalculate button and with Adaptive Goals." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wenn aktiviert, verwendet Fud AI deinen gemessenen Kalorienverbrauch aus Apple Health — einen 14-Tage-Durchschnitt aus aktiver + basaler Energie — als Erhaltungs-Anker (TDEE) bei der Zielberechnung, statt der Formel-Schätzung. Zum Auslesen deines Verbrauchs wird keine KI verwendet. Erfordert Apple Health. Funktioniert mit der Schaltfläche „Neu berechnen“ und mit Adaptive Goals."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuando está activado, Fud AI usa tus calorías quemadas medidas de Apple Health — un promedio de 14 días de energía activa + basal — como ancla de mantenimiento (TDEE) al calcular objetivos, en lugar de la estimación por fórmula. No se usa IA para leer tu gasto. Requiere Apple Health. Funciona con el botón Recalcular y con Adaptive Goals."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lorsqu'il est activé, Fud AI utilise vos calories brûlées mesurées depuis Apple Health — une moyenne sur 14 jours de l'énergie active + basale — comme ancre de maintenance (TDEE) lors du calcul des objectifs, au lieu de l'estimation par formule. Aucune IA n'est utilisée pour lire votre dépense. Nécessite Apple Health. Fonctionne avec le bouton Recalculer et avec Adaptive Goals."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quando è attivo, Fud AI usa le tue calorie bruciate misurate da Apple Health — una media di 14 giorni di energia attiva + basale — come àncora di mantenimento (TDEE) nel calcolo degli obiettivi, invece della stima con formula. Nessuna IA viene usata per leggere il tuo consumo. Richiede Apple Health. Funziona con il pulsante Ricalcola e con Adaptive Goals."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quando ativado, o Fud AI usa suas calorias queimadas medidas pelo Apple Health — uma média de 14 dias de energia ativa + basal — como âncora de manutenção (TDEE) ao calcular metas, em vez da estimativa por fórmula. Nenhuma IA é usada para ler seu gasto. Requer Apple Health. Funciona com o botão Recalcular e com o Adaptive Goals."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indien ingeschakeld gebruikt Fud AI je gemeten verbrande calorieën uit Apple Health — een 14-daags gemiddelde van actieve + basale energie — als onderhoudsanker (TDEE) bij het berekenen van doelen, in plaats van de formuleschatting. Er wordt geen AI gebruikt om je verbruik te lezen. Vereist Apple Health. Werkt met de knop Opnieuw berekenen en met Adaptive Goals."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Când este activat, Fud AI folosește caloriile arse măsurate din Apple Health — o medie pe 14 zile a energiei active + bazale — ca ancoră de întreținere (TDEE) la calcularea obiectivelor, în locul estimării prin formulă. Nu se folosește IA pentru citirea consumului. Necesită Apple Health. Funcționează cu butonul Recalculează și cu Adaptive Goals."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Когда включено, Fud AI использует измеренные сожжённые калории из Apple Health — среднее за 14 дней активной + базовой энергии — как ориентир поддержания (TDEE) при расчёте целей вместо оценки по формуле. ИИ не используется для чтения данных о расходе. Требуется Apple Health. Работает с кнопкой «Пересчитать» и с Adaptive Goals."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gdy włączone, Fud AI używa zmierzonych spalonych kalorii z Apple Health — 14-dniowej średniej energii aktywnej + podstawowej — jako punktu odniesienia podtrzymania (TDEE) przy obliczaniu celów, zamiast szacunku ze wzoru. Do odczytu spalania nie jest używane AI. Wymaga Apple Health. Działa z przyciskiem Przelicz oraz z funkcją Cele adaptacyjne."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オンにすると、Fud AIはApple Healthから取得した実測の消費カロリー（アクティブ＋基礎代謝の14日間平均）を、数式による推定の代わりに維持カロリー（TDEE）の基準として目標計算に使います。消費カロリーの読み取りにAIは使いません。Apple Healthが必要です。「再計算」ボタンおよびAdaptive Goalsと連動します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "켜면 Fud AI가 Apple Health에서 측정된 소모 칼로리(활동 + 기초 에너지의 14일 평균)를 공식 추정치 대신 유지 칼로리(TDEE) 기준으로 사용해 목표를 계산합니다. 소모 칼로리를 읽는 데 AI는 사용되지 않습니다. Apple Health가 필요합니다. 다시 계산 버튼 및 Adaptive Goals와 함께 작동합니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开启后，Fud AI 会使用来自 Apple Health 的实测消耗热量（活动 + 基础能量的 14 天平均值）作为计算目标时的维持热量（TDEE）基准，而不是公式估算。读取消耗数据不使用 AI。需要 Apple Health。与“重新计算”按钮及 Adaptive Goals 配合使用。"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عند التفعيل، يستخدم Fud AI السعرات المحروقة المقاسة من Apple Health — متوسط 14 يومًا للطاقة النشطة + الأساسية — كمرجع لسعرات الثبات (TDEE) عند حساب الأهداف، بدلًا من التقدير بالمعادلة. لا يُستخدم الذكاء الاصطناعي لقراءة الحرق. يتطلب Apple Health. يعمل مع زر إعادة الحساب ومع Adaptive Goals."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "चालू होने पर, Fud AI Apple Health से मापी गई आपकी बर्न हुई कैलोरी — सक्रिय + बेसल ऊर्जा का 14-दिन का औसत — को फ़ॉर्मूला अनुमान की जगह लक्ष्य कैलकुलेशन में मेंटेनेंस (TDEE) आधार के रूप में इस्तेमाल करता है। बर्न पढ़ने के लिए कोई AI इस्तेमाल नहीं होता। Apple Health ज़रूरी है। पुनः गणना करें बटन और Adaptive Goals के साथ काम करता है।"
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktiv olduqda Fud AI Apple Health-dən ölçülmüş yandırılan kalorilərinizi — aktiv + bazal enerjinin 14 günlük ortalamasını — hədəfləri hesablayarkən düstur təxmini əvəzinə saxlanma (TDEE) istinadı kimi istifadə edir. Sərfiyyatınızı oxumaq üçün Sİ istifadə olunmur. Apple Health tələb olunur. Yenidən Hesabla düyməsi və Adaptive Goals ilə işləyir."
           }
         }
       }

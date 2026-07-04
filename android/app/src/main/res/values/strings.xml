@@ -581,10 +581,10 @@
 
     <string name="settings_health_connect">Health Connect</string>
     <string name="settings_energy_goals">Energy Burn Goals</string>
-    <string name="settings_experimental">Experimental</string>
-    <string name="settings_energy_goals_info">Experimental. When on, Fud AI uses your measured calories burned from Health Connect — a 14-day average of active + basal energy — as your maintenance anchor when calculating goals, instead of the formula estimate. No AI is used to read your burn. Requires Health Connect. Works with the Recalculate button and with Adaptive Goals.</string>
+    <string name="settings_needs_health_connect">Needs Health Connect</string>
+    <string name="settings_energy_goals_info">When on, Fud AI uses your measured calories burned from Health Connect — a 14-day average of active + basal energy — as your maintenance anchor when calculating goals, instead of the formula estimate. No AI is used to read your burn. Requires Health Connect. Works with the Recalculate button and with Adaptive Goals.</string>
     <string name="settings_adaptive_goals">Adaptive Goals</string>
-    <string name="settings_adaptive_goals_info">Experimental. About once a week when you open the app, Fud AI automatically re-runs the full goal calculation — the same one the Recalculate button uses — from your profile, recent logged food, and weight trend. If Energy Burn is on, it uses your measured burn as the maintenance anchor. It skips silently if the AI is unavailable. Turning this off restores the targets from before Adaptive Goals first changed them. This is not medical advice.</string>
+    <string name="settings_adaptive_goals_info">About once a week when you open the app, Fud AI automatically re-runs the full goal calculation — the same one the Recalculate button uses — from your profile, recent logged food, and weight trend. If Energy Burn is on, it uses your measured burn as the maintenance anchor. It skips silently if the AI is unavailable. Turning this off restores the targets from before Adaptive Goals first changed them. This is not medical advice.</string>
     <string name="settings_refresh_energy_goals">Refresh Energy Burn Goals</string>
     <string name="settings_clear_food_log">Clear Food Log</string>
     <string name="settings_delete_all_data">Delete All Data</string>
