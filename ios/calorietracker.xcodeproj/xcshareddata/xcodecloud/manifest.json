@@ -1,9 +1,0 @@
-{
-  "id" : "500a1cf3-8ec0-4937-bf55-6eecb6566513",
-  "targets" : [
-    {
-      "id" : "771128ed-5c90-4a62-a54e-d12f03fbb0e8",
-      "name" : "calorietracker"
-    }
-  ]
-}
