@@ -658,4 +658,17 @@
     <string name="whats_new_v30_adaptive">적응형 목표와 에너지 소모가 실험 단계를 졸업하고 새 설치에서 기본으로 켜집니다.</string>
     <string name="whats_new_v30_widgets">위젯 개편: 홈의 속도계 스타일을 각 위젯의 실제 크기로 그립니다.</string>
     <string name="whats_new_v30_ads">작은 배너 광고로 Fud AI는 계속 무료입니다.</string>
+
+    <!-- Backup (Google Drive folder snapshot) -->
+    <string name="settings_section_backup">백업</string>
+    <string name="settings_drive_backup">Google Drive 백업</string>
+    <string name="settings_backup_now">지금 백업</string>
+    <string name="settings_restore_backup">백업에서 복원</string>
+    <string name="settings_backup_never">아직 백업 없음</string>
+    <string name="settings_backup_footer">음식 기록, 체중, 목표, 코치 채팅, 설정을 Google Drive(또는 다른 클라우드 저장소)에서 선택한 폴더에 백업합니다. 사진은 포함되지 않습니다.</string>
+    <string name="backup_complete">백업 완료</string>
+    <string name="backup_failed">백업 실패 — 선택한 폴더를 확인하고 다시 시도하세요.</string>
+    <string name="restore_complete">복원 완료</string>
+    <string name="restore_failed">복원 실패</string>
+    <string name="backup_none_found">백업을 찾을 수 없음</string>
 </resources>

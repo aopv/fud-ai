@@ -658,4 +658,17 @@
     <string name="whats_new_v30_adaptive">Objetivos adaptativos y Quema de energía dejan de ser experimentales y vienen activados por defecto en instalaciones nuevas.</string>
     <string name="whats_new_v30_widgets">Rediseño de widgets: el estilo velocímetro de Inicio, dibujado al tamaño real de cada widget.</string>
     <string name="whats_new_v30_ads">Un pequeño banner publicitario mantiene ahora Fud AI gratis.</string>
+
+    <!-- Backup (Google Drive folder snapshot) -->
+    <string name="settings_section_backup">Copia de seguridad</string>
+    <string name="settings_drive_backup">Copia en Google Drive</string>
+    <string name="settings_backup_now">Copiar ahora</string>
+    <string name="settings_restore_backup">Restaurar desde copia</string>
+    <string name="settings_backup_never">Aún no hay copia</string>
+    <string name="settings_backup_footer">Guarda tu registro de comidas, peso, objetivos, chat del Coach y ajustes en una carpeta que elijas de Google Drive (u otro almacenamiento en la nube). Las fotos no se incluyen.</string>
+    <string name="backup_complete">Copia completada</string>
+    <string name="backup_failed">Error en la copia: revisa la carpeta elegida e inténtalo de nuevo.</string>
+    <string name="restore_complete">Restauración completada</string>
+    <string name="restore_failed">Error al restaurar</string>
+    <string name="backup_none_found">No se encontró ninguna copia</string>
 </resources>

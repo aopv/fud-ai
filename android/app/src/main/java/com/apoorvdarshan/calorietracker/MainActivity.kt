@@ -60,6 +60,15 @@ open class MainActivity : ComponentActivity() {
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+        // Snapshot-overwrite backup on every background: cheap no-op when the
+        // content hash is unchanged, and deletions propagate because the next
+        // snapshot simply no longer contains them. Runs on the service's own
+        // application-lifetime scope so it survives activity destruction.
+        (application as FudAIApp).container.driveBackup.scheduleBackup()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         // Must run before super.onCreate so the system swaps the splash theme
         // back to Theme.FudAI before the first frame, preventing a white flash

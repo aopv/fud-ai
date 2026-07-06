@@ -120,6 +120,10 @@ class AppContainer(app: FudAIApp) {
 
     val widgetSnapshotWriter = WidgetSnapshotWriter(app, prefs, foodRepository, profileRepository)
     val testDataSeeder = TestDataSeeder(this)
+    val driveBackup = com.apoorvdarshan.calorietracker.services.DriveBackupService(
+        appContext, prefs, foodRepository, weightRepository, bodyFatRepository,
+        bodyMeasurementRepository, chatRepository, profileRepository
+    )
 
     /**
      * App-scoped flag set by [HomeViewModel] while a food analysis request is

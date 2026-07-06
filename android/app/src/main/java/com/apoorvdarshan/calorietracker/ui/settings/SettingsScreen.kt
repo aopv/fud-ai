@@ -117,7 +117,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.outlined.CloudDownload
+import androidx.compose.material.icons.outlined.CloudUpload
+import kotlinx.coroutines.launch
+import java.text.DateFormat
+import java.util.Date
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -137,6 +143,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.apoorvdarshan.calorietracker.AppContainer
+import com.apoorvdarshan.calorietracker.services.DriveBackupService
 import com.apoorvdarshan.calorietracker.models.ActivityLevel
 import com.apoorvdarshan.calorietracker.models.AIProvider
 import com.apoorvdarshan.calorietracker.models.AutoBalanceMacro
@@ -755,7 +762,10 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController) {
                 }
             }
 
-            // Section 7 — About (folded in from the former About tab so it's the
+            // Section 7 — Backup (Google Drive folder snapshot; iOS parity: iCloud Backup)
+            DriveBackupSection(container)
+
+            // Section 8 — About (folded in from the former About tab so it's the
             // last section of Settings; tabs are now Home / Progress / Coach / Settings).
             SectionCard(title = stringResource(R.string.nav_about)) {
                 AboutSettingsRows(container)
@@ -2784,5 +2794,117 @@ private fun GradientSaveButton(
         contentAlignment = Alignment.Center
     ) {
         Text(text, color = Color.White, fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
+    }
+}
+
+/**
+ * Backup section: snapshot-to-a-folder backup, Google Drive being the headline
+ * target in the system picker (any DocumentsProvider works — Drive, Dropbox,
+ * local). Enabling asks the user to pick a folder once; from then on the app
+ * overwrites fudai-backup.json there whenever it goes to background and the
+ * content changed. Android sibling of iOS's iCloud Backup section.
+ */
+@Composable
+private fun DriveBackupSection(container: AppContainer) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val enabled by container.prefs.driveBackupEnabled.collectAsState(initial = false)
+    val lastBackupMillis by container.prefs.driveBackupLastDate.collectAsState(initial = 0L)
+    var statusMessage by remember { mutableStateOf<String?>(null) }
+    var working by remember { mutableStateOf(false) }
+
+    val backupCompleteMsg = stringResource(R.string.backup_complete)
+    val backupFailedMsg = stringResource(R.string.backup_failed)
+    val restoreCompleteMsg = stringResource(R.string.restore_complete)
+    val restoreFailedMsg = stringResource(R.string.restore_failed)
+    val noBackupFoundMsg = stringResource(R.string.backup_none_found)
+
+    val folderPicker = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenDocumentTree()
+    ) { uri ->
+        if (uri == null) return@rememberLauncherForActivityResult
+        // Keep the grant across reboots so the background auto-backup keeps working.
+        context.contentResolver.takePersistableUriPermission(
+            uri,
+            Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+        )
+        scope.launch {
+            container.prefs.setDriveBackupFolderUri(uri.toString())
+            container.prefs.setDriveBackupEnabled(true)
+            working = true
+            val ok = container.driveBackup.backUp(force = true)
+            working = false
+            statusMessage = if (ok) backupCompleteMsg else backupFailedMsg
+        }
+    }
+
+    SectionCard(title = stringResource(R.string.settings_section_backup)) {
+        ToggleRow(
+            stringResource(R.string.settings_drive_backup),
+            enabled,
+            icon = Icons.Outlined.CloudUpload
+        ) { on ->
+            if (on) {
+                folderPicker.launch(null)
+            } else {
+                scope.launch { container.prefs.setDriveBackupEnabled(false) }
+            }
+        }
+        if (enabled) {
+            HorizontalDivider()
+            SettingRow(
+                stringResource(R.string.settings_backup_now),
+                if (lastBackupMillis > 0) {
+                    DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT)
+                        .format(Date(lastBackupMillis))
+                } else {
+                    stringResource(R.string.settings_backup_never)
+                },
+                icon = Icons.Outlined.CloudUpload
+            ) {
+                if (working) return@SettingRow
+                scope.launch {
+                    working = true
+                    val ok = container.driveBackup.backUp(force = true)
+                    working = false
+                    statusMessage = if (ok) backupCompleteMsg else backupFailedMsg
+                }
+            }
+            HorizontalDivider()
+            SettingRow(
+                stringResource(R.string.settings_restore_backup),
+                "",
+                icon = Icons.Outlined.CloudDownload
+            ) {
+                if (working) return@SettingRow
+                scope.launch {
+                    working = true
+                    val result = container.driveBackup.restore()
+                    working = false
+                    statusMessage = when (result) {
+                        is DriveBackupService.RestoreResult.Success -> restoreCompleteMsg
+                        is DriveBackupService.RestoreResult.NoBackupFound -> noBackupFoundMsg
+                        is DriveBackupService.RestoreResult.Failed -> restoreFailedMsg
+                    }
+                }
+            }
+        }
+        Text(
+            stringResource(R.string.settings_backup_footer),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
+        )
+    }
+
+    statusMessage?.let { msg ->
+        FudGlassDialog(onDismissRequest = { statusMessage = null }) {
+            Text(stringResource(R.string.settings_section_backup), fontSize = 21.sp, fontWeight = FontWeight.Bold)
+            Text(msg, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.68f))
+            FudGlassDialogActions(
+                primaryText = stringResource(R.string.action_ok),
+                onPrimary = { statusMessage = null }
+            )
+        }
     }
 }

@@ -658,4 +658,17 @@
     <string name="whats_new_v30_adaptive">«Адаптивные цели» и «Расход энергии» вышли из экспериментального статуса и включены по умолчанию для новых установок.</string>
     <string name="whats_new_v30_widgets">Новые виджеты: стиль спидометра с главного экрана, отрисованный в реальном размере каждого виджета.</string>
     <string name="whats_new_v30_ads">Небольшой рекламный баннер теперь позволяет Fud AI оставаться бесплатным.</string>
+
+    <!-- Backup (Google Drive folder snapshot) -->
+    <string name="settings_section_backup">Резервная копия</string>
+    <string name="settings_drive_backup">Резервная копия Google Drive</string>
+    <string name="settings_backup_now">Создать копию сейчас</string>
+    <string name="settings_restore_backup">Восстановить из копии</string>
+    <string name="settings_backup_never">Резервных копий пока нет</string>
+    <string name="settings_backup_footer">Сохраняет дневник питания, вес, цели, чат с коучем и настройки в выбранную вами папку в Google Drive (или другом облаке). Фото не включаются.</string>
+    <string name="backup_complete">Копия создана</string>
+    <string name="backup_failed">Не удалось создать копию — проверьте выбранную папку и повторите попытку.</string>
+    <string name="restore_complete">Восстановление завершено</string>
+    <string name="restore_failed">Не удалось восстановить</string>
+    <string name="backup_none_found">Резервная копия не найдена</string>
 </resources>
