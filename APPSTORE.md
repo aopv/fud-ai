@@ -32,7 +32,7 @@ Secondary: Food & Drink
 ```
 Effortless calorie tracking with AI-powered food recognition. Snap, scan, speak, or type a meal — get instant calories, macros, and nutrients.
 
-NEW in v5.0: a Workouts tab with an 873-exercise library — photos, primary/secondary muscle and equipment filters, search, sort, and detail pages. A Home redesign with a speedometer calorie gauge, vertical macro bars, four nutrient cards, and a floating add button — widgets, Lock Screen, and Apple Watch match. Ask Coach by voice, share meals as links, export your diary, and reprocess logged meals with AI. Fud AI is now fully free: the Premium subscription has been removed and AI is bring-your-own-key. A small banner ad keeps the app free, with an optional Tip Jar. Adaptive Goals and Energy Burn are on by default for new users.
+NEW in v5.0: a Workouts tab with an 873-exercise library — photos, primary/secondary muscle and equipment filters, search, sort, and detail pages. A Home redesign with a speedometer calorie gauge, vertical macro bars, four nutrient cards, and a floating add button — widgets, Lock Screen, and Apple Watch match. Ask Coach by voice, share meals as links, export your diary, and reprocess logged meals with AI. Fud AI is now fully free: the Premium subscription has been removed and AI is bring-your-own-key. A small banner ad keeps the app free, with an optional Tip Jar.
 
 Free, open source, privacy-first. Bring your own API key — a free Gemini key takes a minute to create.
 
