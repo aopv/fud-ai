@@ -38,7 +38,7 @@ Snap, speak, or type a meal. AI logs the calories. Open source.
 ```
 Fud AI makes calorie tracking effortless with AI-powered food recognition. Snap a photo, scan a barcode, speak it, or type it — get instant nutrition: calories, protein, carbs, fats, vitamins, minerals, and more.
 
-NEW in v3.0: a Workouts tab with an 873-exercise library — photos, primary/secondary muscle and equipment filters, search, sort, and detail pages. A Home redesign with a speedometer calorie gauge, vertical macro bars, four nutrient cards, and a floating add button — widgets match the new look at their true size. Ask Coach by voice, share meals as links that open straight in the app, export your diary (JSON/Markdown/CSV), and reprocess logged meals with AI. Plus 10 new theme colors, body-fat history with per-entry delete, independent height/weight units, Camera + Camera stitching, refreshed onboarding, and Adaptive Goals + Energy Burn on by default for new installs. A small banner ad now keeps Fud AI free.
+NEW in v3.0: a Workouts tab with an 873-exercise library, a Home redesign with a speedometer calorie gauge (widgets match), Coach by voice, meal links, diary export, AI meal reprocessing, 10 new theme colors, and automatic restore of your data from Health Connect after a reinstall. A small banner ad now keeps Fud AI free.
 
 Open source, privacy-first. Bring your own API key.
 
@@ -49,30 +49,30 @@ HOW TO USE
 4) Track progress on charts and home screen widgets
 
 11 WAYS TO LOG A MEAL
-• Photo — AI identifies food and returns nutrition
-• Photo + Note — add context before AI analysis
-• Photo + Photo — combine two images in one analysis
+• Photo — AI identifies food
+• Photo + Note — add context
+• Photo + Photo — two images, one analysis
 • Nutrition Label — scan package nutrition facts
-• Barcode — look up packaged foods with Open Food Facts
+• Barcode — Open Food Facts lookup
 • From Photos — analyze an existing image
-• From Photos + Note — add context to a library photo
-• Voice — 6 STT engines with language selection
-• Text — describe in plain language, AI parses it
-• Manual Entry — name + calories + macros + meal type
-• Saved Meals — re-log recents, frequent meals, and favorites
+• From Photos + Note
+• Voice — 6 STT engines
+• Text — describe it, AI parses it
+• Manual Entry
+• Saved Meals — recents, frequent, favorites
 • Copy from Day — copy meals from another date
 
 BODY COMPOSITION TRACKING
 Log body fat %, set a goal %, and see it alongside weight on Progress. Health Connect can auto-import compatible samples.
 
 13 AI PROVIDERS
-Google Gemini, OpenAI, Claude, xAI Grok, Groq, OpenRouter, Together, Hugging Face, Fireworks, DeepInfra, Mistral, Ollama, or any OpenAI-compatible endpoint. Switch anytime. Keys are stored encrypted.
+Gemini, OpenAI, Claude, Grok, Groq, OpenRouter, Together, Hugging Face, Fireworks, DeepInfra, Mistral, Ollama, or any OpenAI-compatible endpoint. Keys are stored encrypted.
 
 6 SPEECH-TO-TEXT ENGINES
 Native Android, Gemini, OpenAI Whisper, Groq, Deepgram, AssemblyAI. Choose Provider Auto, Use Device Language, or a fixed language.
 
 COACH
-Multi-turn chat sees your profile, weight, body fat, and food log. Ask "what was my weight in March?" or "how's my protein this week?" — Coach pulls the date range it needs. You can attach a camera or photo-library image.
+Multi-turn chat sees your profile, weight, body fat, and food log. Ask "what was my weight in March?" — Coach pulls the date range it needs. You can attach an image.
 
 REVIEW BEFORE LOGGING
 Unlock Nutrition to correct calories, macros, and detailed nutrients before saving; serving changes then scale from your edits. What if? previews today's macro impact and can ask AI for a suggestion.
@@ -81,13 +81,13 @@ WORKOUTS
 Browse 873 exercises with photos. Filter by primary/secondary muscle and equipment, search, sort, and open per-exercise detail pages.
 
 PERSONALIZED GOALS
-BMR via Katch-McArdle or Mifflin-St Jeor. TDEE with 6 activity levels. Auto-calculated calorie + protein + carbs + fat targets — fully customizable. Activity Level shows protein in g/kg body weight, or the equivalent lean-mass multiplier when body fat is set.
+BMR via Katch-McArdle or Mifflin-St Jeor. TDEE with 6 activity levels. Auto-calculated calorie + protein + carbs + fat targets — fully customizable. Activity Level shows protein in g/kg.
 
 OPTIONAL NUTRIENT GOALS
-Set expanded nutrient goals separately from the macro calculator: fiber, sugar, fats, cholesterol, sodium, potassium, calcium, iron, magnesium, zinc, vitamins, folate, omega-3, and more when available. Use AI Estimate from your profile, or set goals manually. Home cards can show macros or selected detailed nutrients.
+Set expanded nutrient goals separately from the macro calculator — fiber, sugar, fats, sodium, vitamins, minerals, and more. Use AI Estimate or set them manually. Home cards can show macros or selected nutrients.
 
 PROGRESS
-Unified Weight / Body Fat chart with current, goal, net change, average, trend lines, and goal overlays. Calorie trend vs goal. Macro averages over 1W, 1M, 3M, 6M, 1Y, All Time.
+Unified Weight / Body Fat chart with goal, net change, average, and trend lines. Calorie trend vs goal. Macro averages from 1W to All Time.
 
 WIDGETS
 Calorie and nutrient widgets in the Home speedometer style, drawn at each widget's true size. They refresh the moment you log a meal.
@@ -99,7 +99,7 @@ PRIVACY FIRST
 No account, no sign-in, no cloud sync, no analytics, no behavioral tracking. Your data stays on your device; a single small banner ad keeps the app free. MIT licensed.
 
 HEALTH CONNECT
-Sync nutrition, weight, and body fat with permission reconciliation and backfill support. Edits and deletes sync back where supported. Reinstalled or switched phones? Your food log, weight, and body fat restore automatically from Health Connect.
+Sync nutrition, weight, and body fat, with backfill support. Reinstalled or switched phones? Your food log, weight, and body fat restore automatically from Health Connect.
 
 NOTE: Not medical advice. Estimates are AI-generated; consult a healthcare professional before significant diet changes.
 
