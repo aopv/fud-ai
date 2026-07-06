@@ -1,5 +1,6 @@
 package com.apoorvdarshan.calorietracker.models
 
+import com.apoorvdarshan.calorietracker.R
 import kotlinx.serialization.Serializable
 import java.time.Instant
 import java.util.Locale
@@ -126,14 +127,18 @@ data class BodyMeasurement(
         return summary
     }
 
-    enum class FrameSize(val label: String) {
-        SMALL("Small"), MEDIUM("Medium"), LARGE("Large")
+    enum class FrameSize(val label: String, val labelRes: Int) {
+        SMALL("Small", R.string.frame_small),
+        MEDIUM("Medium", R.string.frame_medium),
+        LARGE("Large", R.string.frame_large)
     }
 
     /** The eight circumference sites, in display order. Used to render the per-site editor rows. */
-    enum class Site(val label: String) {
-        NECK("Neck"), WAIST("Waist"), HIPS("Hips"), CHEST("Chest"),
-        UPPER_ARM("Upper Arm"), THIGH("Thigh"), CALF("Calf"), WRIST("Wrist")
+    enum class Site(val label: String, val labelRes: Int) {
+        NECK("Neck", R.string.measure_neck), WAIST("Waist", R.string.measure_waist),
+        HIPS("Hips", R.string.measure_hips), CHEST("Chest", R.string.measure_chest),
+        UPPER_ARM("Upper Arm", R.string.measure_upper_arm), THIGH("Thigh", R.string.measure_thigh),
+        CALF("Calf", R.string.measure_calf), WRIST("Wrist", R.string.measure_wrist)
     }
 
     fun value(site: Site): Double? = when (site) {

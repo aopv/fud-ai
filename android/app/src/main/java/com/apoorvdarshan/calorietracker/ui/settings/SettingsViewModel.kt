@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.apoorvdarshan.calorietracker.AppContainer
+import com.apoorvdarshan.calorietracker.R
 import com.apoorvdarshan.calorietracker.models.AIProvider
 import com.apoorvdarshan.calorietracker.models.AutoBalanceMacro
 import com.apoorvdarshan.calorietracker.models.OptionalNutrientGoals
@@ -511,8 +512,8 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
                 val granted = container.health.isAvailable() && container.health.hasEnergyRead()
                 if (!granted) {
                     showHealthEnergyGoalAlert(
-                        title = "Health Connect Needed",
-                        message = "Allow Fud AI to read your Active and Total Calories in Health Connect, then turn Energy Burn on again."
+                        title = container.appContext.getString(R.string.vm_health_connect_needed),
+                        message = container.appContext.getString(R.string.vm_health_connect_needed_msg)
                     )
                     return@launch
                 }
@@ -520,8 +521,8 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
                 container.prefs.setHealthPermissionsVersion(HealthConnectManager.CURRENT_TYPES_VERSION)
                 if (container.health.readRecentEnergySummary(days = 14) == null) {
                     showHealthEnergyGoalAlert(
-                        title = "Not Enough Energy Data",
-                        message = "Fud AI needs at least 3 recent days of Health Connect energy data before it can use your measured burn."
+                        title = container.appContext.getString(R.string.vm_not_enough_energy),
+                        message = container.appContext.getString(R.string.vm_not_enough_energy_msg)
                     )
                     return@launch
                 }
@@ -577,9 +578,9 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
                 profile = result?.profile ?: container.profileRepository.current() ?: _ui.value.profile,
                 adaptiveGoalsEnabled = true,
                 applyingAdaptiveGoals = false,
-                adaptiveGoalAlertTitle = "Adaptive Goals",
+                adaptiveGoalAlertTitle = container.appContext.getString(R.string.settings_adaptive_goals),
                 adaptiveGoalAlertMessage = result?.message
-                    ?: "Adaptive Goals is on. Fud AI will check once per week after enough food and weight data exists."
+                    ?: container.appContext.getString(R.string.vm_adaptive_on_message)
             )
         }
     }
@@ -692,7 +693,7 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
             _ui.value = _ui.value.copy(
                 recalculatingGoals = false,
                 profile = adaptiveResult?.profile ?: next,
-                adaptiveGoalAlertTitle = "Goals Recalculated",
+                adaptiveGoalAlertTitle = container.appContext.getString(R.string.vm_goals_recalculated),
                 adaptiveGoalAlertMessage = message + adaptiveNote,
                 goalsNeedRecalc = false
             )

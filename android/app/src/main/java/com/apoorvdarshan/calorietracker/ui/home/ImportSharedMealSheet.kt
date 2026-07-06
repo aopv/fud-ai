@@ -23,6 +23,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
+import com.apoorvdarshan.calorietracker.R
 import com.apoorvdarshan.calorietracker.models.FoodEntry
 import com.apoorvdarshan.calorietracker.ui.theme.AppColors
 import kotlin.math.roundToInt
@@ -54,7 +57,7 @@ fun ImportSharedMealSheet(
             verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
             Text(
-                if (meals.size == 1) "Add shared meal" else "Add ${meals.size} shared meals",
+                pluralStringResource(R.plurals.import_add_meals_title, meals.size, meals.size),
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
             )
@@ -82,7 +85,7 @@ fun ImportSharedMealSheet(
             }
 
             Text(
-                "Adds to your log with the exact nutrients from the sender. No photo is included.",
+                stringResource(R.string.import_note),
                 fontSize = 12.sp,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
             )
@@ -97,7 +100,7 @@ fun ImportSharedMealSheet(
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
-                    if (meals.size == 1) "Add to Log" else "Add ${meals.size} to Log · $totalCalories kcal",
+                    if (meals.size == 1) stringResource(R.string.import_add_to_log) else stringResource(R.string.import_add_to_log_many_format, meals.size, totalCalories),
                     color = Color.White,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,

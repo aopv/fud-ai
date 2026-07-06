@@ -42,39 +42,39 @@ class NotificationService(private val context: Context) {
         val mgr = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val streak = NotificationChannel(
             CHANNEL_STREAK,
-            "Streak Reminder",
+            context.getString(R.string.notif_channel_streak),
             NotificationManager.IMPORTANCE_DEFAULT
-        ).apply { description = "Daily reminder to log a meal and keep your streak." }
+        ).apply { description = context.getString(R.string.notif_channel_streak_desc) }
 
         val daily = NotificationChannel(
             CHANNEL_DAILY,
-            "Daily Summary",
+            context.getString(R.string.notif_channel_daily),
             NotificationManager.IMPORTANCE_LOW
-        ).apply { description = "End-of-day summary of your calories + macros." }
+        ).apply { description = context.getString(R.string.notif_channel_daily_desc) }
 
         val goal = NotificationChannel(
             CHANNEL_WEIGHT_GOAL,
-            "Weight Goal",
+            context.getString(R.string.notif_channel_weight_goal),
             NotificationManager.IMPORTANCE_HIGH
-        ).apply { description = "Celebration when you reach your goal weight." }
+        ).apply { description = context.getString(R.string.notif_channel_weight_goal_desc) }
 
         val weight = NotificationChannel(
             CHANNEL_WEIGHT_LOG,
-            "Weight Log Reminder",
+            context.getString(R.string.notif_channel_weight_log),
             NotificationManager.IMPORTANCE_DEFAULT
-        ).apply { description = "Daily reminder to weigh in and log your weight." }
+        ).apply { description = context.getString(R.string.notif_channel_weight_log_desc) }
 
         val bodyFat = NotificationChannel(
             CHANNEL_BODY_FAT_LOG,
-            "Body Fat Log Reminder",
+            context.getString(R.string.notif_channel_body_fat),
             NotificationManager.IMPORTANCE_DEFAULT
-        ).apply { description = "Daily reminder to log a body-fat reading." }
+        ).apply { description = context.getString(R.string.notif_channel_body_fat_desc) }
 
         val appUpdate = NotificationChannel(
             CHANNEL_APP_UPDATE,
-            "App Updates",
+            context.getString(R.string.notif_channel_updates),
             NotificationManager.IMPORTANCE_DEFAULT
-        ).apply { description = "A new version of Fud AI is available on the Play Store." }
+        ).apply { description = context.getString(R.string.notif_channel_updates_desc) }
 
         mgr.createNotificationChannels(listOf(streak, daily, goal, weight, bodyFat, appUpdate))
     }
@@ -97,8 +97,8 @@ class NotificationService(private val context: Context) {
         )
         val notif = NotificationCompat.Builder(context, CHANNEL_WEIGHT_GOAL)
             .setSmallIcon(R.mipmap.ic_launcher)
-            .setContentTitle("Congratulations! 🎉")
-            .setContentText("You reached your goal weight.")
+            .setContentTitle(context.getString(R.string.notif_goal_weight_title))
+            .setContentText(context.getString(R.string.notif_goal_weight_text))
             .setContentIntent(content)
             .setAutoCancel(true)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -123,8 +123,8 @@ class NotificationService(private val context: Context) {
         )
         val notif = NotificationCompat.Builder(context, CHANNEL_APP_UPDATE)
             .setSmallIcon(R.mipmap.ic_launcher)
-            .setContentTitle("Update available")
-            .setContentText("A new version of Fud AI is ready. Tap to update.")
+            .setContentTitle(context.getString(R.string.notif_update_title))
+            .setContentText(context.getString(R.string.notif_update_text))
             .setContentIntent(pi)
             .setAutoCancel(true)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -136,14 +136,14 @@ class NotificationService(private val context: Context) {
 
     fun scheduleStreakReminder(hour: Int, minute: Int) = schedule(
         REQUEST_STREAK, hour, minute, CHANNEL_STREAK,
-        title = "Don't forget to log your meals",
-        text = "Keep your streak going — log something from today."
+        title = context.getString(R.string.notif_streak_title),
+        text = context.getString(R.string.notif_streak_text)
     )
 
     fun scheduleDailySummary(hour: Int, minute: Int) = schedule(
         REQUEST_DAILY, hour, minute, CHANNEL_DAILY,
-        title = "Today's summary is ready",
-        text = "Tap to see how today's macros lined up."
+        title = context.getString(R.string.notif_summary_title),
+        text = context.getString(R.string.notif_summary_text)
     )
 
     fun scheduleWeightReminder(hour: Int = 8, minute: Int = 0) = schedule(

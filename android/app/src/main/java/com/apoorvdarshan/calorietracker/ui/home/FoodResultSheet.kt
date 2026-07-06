@@ -80,9 +80,7 @@ fun FoodResultSheet(
     profile: UserProfile? = null,
     dayEntries: List<FoodEntry> = emptyList(),
     source: FoodSource = FoodSource.TEXT_INPUT,
-    onWhatIfSuggestion: suspend (FoodEntry) -> String = {
-        "Finish onboarding first to compare this meal against your daily goals."
-    },
+    onWhatIfSuggestion: (suspend (FoodEntry) -> String)? = null,
     onSave: (
         name: String,
         servingGrams: Double,
@@ -415,7 +413,7 @@ fun FoodResultSheet(
                     SheetPillCard {
                         val gUnit = stringResource(R.string.unit_g)
                         val mgUnit = stringResource(R.string.unit_mg)
-                        val mcgUnit = "mcg"
+                        val mcgUnit = stringResource(R.string.unit_mcg)
                         val micros = listOf(
                             ReviewNutrientEditSpec(stringResource(R.string.sheet_micro_sugar), scaledD(editableSugar), gUnit, { editableSugar = baseOptionalFromText(it) }),
                             ReviewNutrientEditSpec(stringResource(R.string.sheet_micro_added_sugar), scaledD(editableAddedSugar), gUnit, { editableAddedSugar = baseOptionalFromText(it) }),
@@ -426,19 +424,19 @@ fun FoodResultSheet(
                             ReviewNutrientEditSpec(stringResource(R.string.sheet_micro_cholesterol), scaledD(editableCholesterol), mgUnit, { editableCholesterol = baseOptionalFromText(it) }),
                             ReviewNutrientEditSpec(stringResource(R.string.sheet_micro_sodium), scaledD(editableSodium), mgUnit, { editableSodium = baseOptionalFromText(it) }),
                             ReviewNutrientEditSpec(stringResource(R.string.sheet_micro_potassium), scaledD(editablePotassium), mgUnit, { editablePotassium = baseOptionalFromText(it) }),
-                            ReviewNutrientEditSpec("Trans Fat", scaledD(editableTransFat), gUnit, { editableTransFat = baseOptionalFromText(it) }),
-                            ReviewNutrientEditSpec("Calcium", scaledD(editableCalcium), mgUnit, { editableCalcium = baseOptionalFromText(it) }),
-                            ReviewNutrientEditSpec("Iron", scaledD(editableIron), mgUnit, { editableIron = baseOptionalFromText(it) }),
-                            ReviewNutrientEditSpec("Magnesium", scaledD(editableMagnesium), mgUnit, { editableMagnesium = baseOptionalFromText(it) }),
-                            ReviewNutrientEditSpec("Zinc", scaledD(editableZinc), mgUnit, { editableZinc = baseOptionalFromText(it) }),
-                            ReviewNutrientEditSpec("Vitamin A", scaledD(editableVitaminA), mcgUnit, { editableVitaminA = baseOptionalFromText(it) }),
-                            ReviewNutrientEditSpec("Vitamin C", scaledD(editableVitaminC), mgUnit, { editableVitaminC = baseOptionalFromText(it) }),
-                            ReviewNutrientEditSpec("Vitamin D", scaledD(editableVitaminD), mcgUnit, { editableVitaminD = baseOptionalFromText(it) }),
-                            ReviewNutrientEditSpec("Vitamin B12", scaledD(editableVitaminB12), mcgUnit, { editableVitaminB12 = baseOptionalFromText(it) }),
-                            ReviewNutrientEditSpec("Vitamin E", scaledD(editableVitaminE), mgUnit, { editableVitaminE = baseOptionalFromText(it) }),
-                            ReviewNutrientEditSpec("Vitamin K", scaledD(editableVitaminK), mcgUnit, { editableVitaminK = baseOptionalFromText(it) }),
-                            ReviewNutrientEditSpec("Folate", scaledD(editableFolate), mcgUnit, { editableFolate = baseOptionalFromText(it) }),
-                            ReviewNutrientEditSpec("Omega-3", scaledD(editableOmega3), gUnit, { editableOmega3 = baseOptionalFromText(it) })
+                            ReviewNutrientEditSpec(stringResource(R.string.nutrition_label_trans_fat), scaledD(editableTransFat), gUnit, { editableTransFat = baseOptionalFromText(it) }),
+                            ReviewNutrientEditSpec(stringResource(R.string.nutrition_label_calcium), scaledD(editableCalcium), mgUnit, { editableCalcium = baseOptionalFromText(it) }),
+                            ReviewNutrientEditSpec(stringResource(R.string.nutrition_label_iron), scaledD(editableIron), mgUnit, { editableIron = baseOptionalFromText(it) }),
+                            ReviewNutrientEditSpec(stringResource(R.string.nutrition_label_magnesium), scaledD(editableMagnesium), mgUnit, { editableMagnesium = baseOptionalFromText(it) }),
+                            ReviewNutrientEditSpec(stringResource(R.string.nutrition_label_zinc), scaledD(editableZinc), mgUnit, { editableZinc = baseOptionalFromText(it) }),
+                            ReviewNutrientEditSpec(stringResource(R.string.nutrition_label_vitamin_a), scaledD(editableVitaminA), mcgUnit, { editableVitaminA = baseOptionalFromText(it) }),
+                            ReviewNutrientEditSpec(stringResource(R.string.nutrition_label_vitamin_c), scaledD(editableVitaminC), mgUnit, { editableVitaminC = baseOptionalFromText(it) }),
+                            ReviewNutrientEditSpec(stringResource(R.string.nutrition_label_vitamin_d), scaledD(editableVitaminD), mcgUnit, { editableVitaminD = baseOptionalFromText(it) }),
+                            ReviewNutrientEditSpec(stringResource(R.string.nutrition_label_vitamin_b12), scaledD(editableVitaminB12), mcgUnit, { editableVitaminB12 = baseOptionalFromText(it) }),
+                            ReviewNutrientEditSpec(stringResource(R.string.nutrition_label_vitamin_e), scaledD(editableVitaminE), mgUnit, { editableVitaminE = baseOptionalFromText(it) }),
+                            ReviewNutrientEditSpec(stringResource(R.string.nutrition_label_vitamin_k), scaledD(editableVitaminK), mcgUnit, { editableVitaminK = baseOptionalFromText(it) }),
+                            ReviewNutrientEditSpec(stringResource(R.string.nutrition_label_folate), scaledD(editableFolate), mcgUnit, { editableFolate = baseOptionalFromText(it) }),
+                            ReviewNutrientEditSpec(stringResource(R.string.nutrition_label_omega3), scaledD(editableOmega3), gUnit, { editableOmega3 = baseOptionalFromText(it) })
                         )
                         micros.forEachIndexed { idx, spec ->
                             if (idx > 0) SheetHairline()
@@ -659,7 +657,7 @@ private fun WhatIfMealImpactDialog(
     dayEntries: List<FoodEntry>,
     profile: UserProfile?,
     onDismiss: () -> Unit,
-    onSuggest: suspend (FoodEntry) -> String
+    onSuggest: (suspend (FoodEntry) -> String)?
 ) {
     val before = remember(dayEntries) { dayEntries.whatIfTotals() }
     val after = remember(before, entry) { before + entry.whatIfTotals() }
@@ -667,13 +665,15 @@ private fun WhatIfMealImpactDialog(
     var suggestion by remember(entry.id) { mutableStateOf<String?>(null) }
     var error by remember(entry.id) { mutableStateOf<String?>(null) }
 
+    val onboardingFallback = stringResource(R.string.finish_onboarding_hint)
+    val suggestionError = stringResource(R.string.error_ai_suggestion)
     LaunchedEffect(entry.id) {
         loading = true
         suggestion = null
         error = null
-        runCatching { onSuggest(entry) }
+        runCatching { onSuggest?.invoke(entry) ?: onboardingFallback }
             .onSuccess { suggestion = it.ifBlank { null } }
-            .onFailure { error = it.localizedMessage ?: "Could not load AI suggestion." }
+            .onFailure { error = it.localizedMessage ?: suggestionError }
         loading = false
     }
 

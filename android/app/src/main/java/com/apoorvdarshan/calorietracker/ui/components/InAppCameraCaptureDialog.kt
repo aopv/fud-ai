@@ -31,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -42,6 +43,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.ContextCompat
+import com.apoorvdarshan.calorietracker.R
 import com.apoorvdarshan.calorietracker.ui.theme.AppColors
 import java.io.File
 
@@ -87,7 +89,7 @@ fun InAppCameraCaptureDialog(
                 imageCapture = capture
                 hasFlashUnit = camera.cameraInfo.hasFlashUnit()
             }.onFailure {
-                error = "Could not open camera"
+                error = context.getString(R.string.camera_error_open)
             }
         }
         cameraProviderFuture.addListener(listener, mainExecutor)
@@ -124,7 +126,7 @@ fun InAppCameraCaptureDialog(
                     .clip(CircleShape)
                     .background(Color.Black.copy(alpha = 0.45f))
             ) {
-                Icon(Icons.Filled.Close, contentDescription = "Close camera", tint = Color.White)
+                Icon(Icons.Filled.Close, contentDescription = stringResource(R.string.cd_close_camera), tint = Color.White)
             }
 
             if (hasFlashUnit) {
@@ -187,14 +189,14 @@ fun InAppCameraCaptureDialog(
                                 if (bytes != null && bytes.isNotEmpty()) {
                                     onCapture(bytes)
                                 } else {
-                                    error = "Could not save photo"
+                                    error = context.getString(R.string.camera_error_save)
                                 }
                             }
 
                             override fun onError(exception: ImageCaptureException) {
                                 runCatching { file.delete() }
                                 isCapturing = false
-                                error = "Could not capture photo"
+                                error = context.getString(R.string.camera_error_capture)
                             }
                         }
                     )

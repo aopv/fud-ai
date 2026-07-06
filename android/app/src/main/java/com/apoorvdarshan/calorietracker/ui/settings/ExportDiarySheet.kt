@@ -40,6 +40,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.apoorvdarshan.calorietracker.R
 import com.apoorvdarshan.calorietracker.AppContainer
 import com.apoorvdarshan.calorietracker.export.DiaryExporter
 import com.apoorvdarshan.calorietracker.export.DiaryFormat
@@ -88,16 +89,16 @@ fun ExportDiarySheet(
             Modifier.fillMaxWidth().padding(horizontal = 24.dp).padding(bottom = 28.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            Text("Export Food Diary", fontSize = 22.sp, fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.export_diary_title), fontSize = 22.sp, fontWeight = FontWeight.Bold)
 
-            Text("Range", fontSize = 13.sp, fontWeight = FontWeight.SemiBold,
+            Text(stringResource(R.string.export_range), fontSize = 13.sp, fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 DiaryRange.values().forEach { r ->
                     FilterChip(
                         selected = range == r,
                         onClick = { range = r },
-                        label = { Text(r.label) },
+                        label = { Text(stringResource(r.labelRes)) },
                         colors = FilterChipDefaults.filterChipColors(
                             selectedContainerColor = AppColors.Calorie.copy(alpha = 0.18f),
                             selectedLabelColor = AppColors.Calorie,
@@ -107,11 +108,11 @@ fun ExportDiarySheet(
             }
 
             if (range == DiaryRange.CUSTOM) {
-                DateRow("From", customStart.format(niceDate)) { picking = "start" }
-                DateRow("To", customEnd.format(niceDate)) { picking = "end" }
+                DateRow(stringResource(R.string.export_from), customStart.format(niceDate)) { picking = "start" }
+                DateRow(stringResource(R.string.export_to), customEnd.format(niceDate)) { picking = "end" }
             }
 
-            Text("Format", fontSize = 13.sp, fontWeight = FontWeight.SemiBold,
+            Text(stringResource(R.string.export_format), fontSize = 13.sp, fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 DiaryFormat.values().forEach { f ->
@@ -146,7 +147,7 @@ fun ExportDiarySheet(
                                 profile = profile, mealDisplay = { mealNames[it] ?: it.name },
                             )
                             if (result == null) {
-                                status = "No logged meals in the selected range."
+                                status = context.getString(R.string.export_no_meals)
                                 return@launch
                             }
                             val (name, content) = result
@@ -160,17 +161,17 @@ fun ExportDiarySheet(
                                     putExtra(Intent.EXTRA_STREAM, uri)
                                     addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                                 }
-                                context.startActivity(Intent.createChooser(send, "Export Food Diary"))
+                                context.startActivity(Intent.createChooser(send, context.getString(R.string.export_diary_title)))
                                 onDismiss()
                             } catch (e: Exception) {
-                                status = e.localizedMessage ?: "Export failed."
+                                status = e.localizedMessage ?: context.getString(R.string.export_failed)
                             }
                         }
                     }
                     .padding(vertical = 14.dp),
                 contentAlignment = Alignment.Center,
             ) {
-                Text("Export", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                Text(stringResource(R.string.export_action), color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)
             }
         }
     }
@@ -189,9 +190,9 @@ fun ExportDiarySheet(
                         if (editingStart) customStart = picked else customEnd = picked
                     }
                     picking = null
-                }) { Text("OK", color = AppColors.Calorie) }
+                }) { Text(stringResource(R.string.action_ok), color = AppColors.Calorie) }
             },
-            dismissButton = { TextButton(onClick = { picking = null }) { Text("Cancel") } },
+            dismissButton = { TextButton(onClick = { picking = null }) { Text(stringResource(R.string.action_cancel)) } },
         ) {
             DatePicker(state = dpState)
         }

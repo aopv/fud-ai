@@ -75,8 +75,8 @@ class WidgetSnapshotWriter(
                 homeNutrients = selection.map { nutrient ->
                     WidgetNutrient(
                         id = nutrient.storageKey,
-                        label = nutrient.displayName,
-                        unit = nutrient.unit,
+                        label = context.getString(nutrient.displayNameRes),
+                        unit = context.getString(nutrient.unitRes),
                         value = nutrient.current(todaysEntries),
                         goal = nutrient.goal(profile, optionalGoals).toDouble()
                     )

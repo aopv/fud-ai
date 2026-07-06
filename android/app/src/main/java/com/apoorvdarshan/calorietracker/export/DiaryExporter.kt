@@ -1,5 +1,7 @@
 package com.apoorvdarshan.calorietracker.export
 
+import com.apoorvdarshan.calorietracker.R
+
 import com.apoorvdarshan.calorietracker.models.FoodEntry
 import com.apoorvdarshan.calorietracker.models.FoodSource
 import com.apoorvdarshan.calorietracker.models.MealType
@@ -19,12 +21,12 @@ enum class DiaryFormat(val label: String, val ext: String, val mime: String) {
     CSV("CSV", "csv", "text/csv"),
 }
 
-enum class DiaryRange(val label: String) {
-    TODAY("Today"),
-    THIS_WEEK("This week"),
-    THIS_MONTH("This month"),
-    ALL_TIME("All time"),
-    CUSTOM("Custom"),
+enum class DiaryRange(val label: String, val labelRes: Int) {
+    TODAY("Today", R.string.export_range_today),
+    THIS_WEEK("This week", R.string.export_range_week),
+    THIS_MONTH("This month", R.string.export_range_month),
+    ALL_TIME("All time", R.string.export_range_all),
+    CUSTOM("Custom", R.string.export_range_custom),
 }
 
 /**

@@ -368,10 +368,10 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController) {
                     // Optional tape-measure circumferences — extra signal for the AI goal calc +
                     // Coach. Never edits BMR / the body-fat field.
                     SettingRow(
-                        "Body Measurements",
+                        stringResource(R.string.body_measurements_title),
                         latestMeasurement?.waistCm?.let { waist ->
-                            if (ui.heightMetric) String.format(Locale.US, "Waist %.0f cm", waist)
-                            else String.format(Locale.US, "Waist %.0f in", waist / 2.54)
+                            if (ui.heightMetric) stringResource(R.string.settings_waist_cm_format, waist)
+                            else stringResource(R.string.settings_waist_in_format, waist / 2.54)
                         } ?: stringResource(R.string.settings_not_set),
                         icon = Icons.Outlined.Straighten
                     ) { nav.navigate(FudAIRoutes.BODY_MEASUREMENTS) }
@@ -464,7 +464,7 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController) {
                     )
                     HorizontalDivider()
                     SettingRow(
-                        "Other Nutrient Goals",
+                        stringResource(R.string.settings_other_nutrient_goals),
                         optionalNutrientSummary(ui.optionalNutrientGoals),
                         icon = Icons.Outlined.DataUsage
                     ) { nav.navigate(FudAIRoutes.OPTIONAL_NUTRIENT_GOALS) }
@@ -495,7 +495,7 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController) {
                             // Soft nudge: a goal input changed since the last recalc. A CTA on the
                             // row's right edge, not a wrapped line below it.
                             Text(
-                                "Tap to update",
+                                stringResource(R.string.settings_tap_to_update),
                                 color = AppColors.Calorie,
                                 style = MaterialTheme.typography.bodySmall
                             )
@@ -503,7 +503,7 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController) {
                     }
                     HorizontalDivider()
                     SettingRow(
-                        "Calculation Methods",
+                        stringResource(R.string.settings_calc_methods),
                         "",
                         icon = Icons.Outlined.Calculate
                     ) { nav.navigate(FudAIRoutes.CALCULATION_METHODS) }
@@ -611,7 +611,7 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController) {
                 if (ui.selectedAI.apiFormat != AIProvider.ApiFormat.GEMINI) {
                     HorizontalDivider()
                     SettingRow(
-                        "Max response tokens",
+                        stringResource(R.string.settings_max_tokens),
                         ui.maxResponseTokens.toString(),
                         icon = Icons.Outlined.Numbers
                     ) { sheet = SettingsSheet.MAX_TOKENS }
@@ -719,7 +719,7 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController) {
                     FudIconBubble(icon = Icons.Outlined.IosShare, size = 22.dp, iconSize = 14.dp, tint = AppColors.Calorie)
                     Spacer(Modifier.width(14.dp))
                     Text(
-                        "Export Food Diary",
+                        stringResource(R.string.export_diary_title),
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Medium
                     )
@@ -979,48 +979,48 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController) {
 @Composable
 private fun NotificationTypeRows(ui: SettingsUiState, vm: SettingsViewModel) {
     Text(
-        "Notification types",
+        stringResource(R.string.settings_notification_types),
         style = MaterialTheme.typography.labelMedium,
         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
     )
     ToggleRow(
-        "Food log reminders",
+        stringResource(R.string.settings_notif_food_reminders),
         ui.streakReminderEnabled,
         icon = Icons.Outlined.LocalDining,
         onChange = vm::setStreakReminderEnabled
     )
     HorizontalDivider()
     ToggleRow(
-        "Daily summary",
+        stringResource(R.string.settings_notif_daily_summary),
         ui.dailySummaryEnabled,
         icon = Icons.Outlined.GraphicEq,
         onChange = vm::setDailySummaryEnabled
     )
     HorizontalDivider()
     ToggleRow(
-        "Weight log reminder",
+        stringResource(R.string.settings_notif_weight_reminder),
         ui.weightReminderEnabled,
         icon = Icons.Outlined.MonitorWeight,
         onChange = vm::setWeightReminderEnabled
     )
     HorizontalDivider()
     ToggleRow(
-        "Body fat reminder",
+        stringResource(R.string.settings_notif_body_fat_reminder),
         ui.bodyFatReminderEnabled,
         icon = Icons.Outlined.Percent,
         onChange = vm::setBodyFatReminderEnabled
     )
     HorizontalDivider()
     ToggleRow(
-        "Goal reached alerts",
+        stringResource(R.string.settings_notif_goal_alerts),
         ui.goalReachedNotificationsEnabled,
         icon = Icons.Outlined.TrackChanges,
         onChange = vm::setGoalReachedNotificationsEnabled
     )
     HorizontalDivider()
     ToggleRow(
-        "App updates",
+        stringResource(R.string.settings_notif_app_updates),
         ui.appUpdateNotificationsEnabled,
         icon = Icons.Outlined.SystemUpdate,
         onChange = vm::setAppUpdateNotificationsEnabled
@@ -1033,7 +1033,7 @@ private fun NotificationTypeRows(ui: SettingsUiState, vm: SettingsViewModel) {
         !ui.appUpdateNotificationsEnabled
     if (noneSelected) {
         Text(
-            "No notification type is selected. You can leave notifications allowed and keep every app reminder off.",
+            stringResource(R.string.settings_notif_none_selected),
             fontSize = 12.sp,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
@@ -1082,7 +1082,7 @@ fun OptionalNutrientGoalsScreen(
                         )
                         Spacer(Modifier.width(6.dp))
                         Text(
-                            "Settings",
+                            stringResource(R.string.nav_settings),
                             color = AppColors.Calorie,
                             fontWeight = FontWeight.SemiBold
                         )
@@ -1092,7 +1092,7 @@ fun OptionalNutrientGoalsScreen(
 
             item {
                 Text(
-                    "Other Nutrient Goals",
+                    stringResource(R.string.settings_other_nutrient_goals),
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground
@@ -1133,8 +1133,8 @@ fun OptionalNutrientGoalsScreen(
     editing?.let { nutrient ->
         FudGlassDialog(onDismissRequest = { editing = null }) {
             NutritionPickerSheet(
-                label = nutrient.displayName,
-                unit = nutrient.unit,
+                label = stringResource(nutrient.displayNameRes),
+                unit = stringResource(nutrient.unitRes),
                 currentValue = ui.optionalNutrientGoals.valueFor(nutrient),
                 range = nutrient.pickerRange(),
                 step = nutrient.pickerStep(),
@@ -1144,7 +1144,7 @@ fun OptionalNutrientGoalsScreen(
                 }
             )
             FudGlassTextButton(
-                text = "Cancel",
+                text = stringResource(R.string.action_cancel),
                 onClick = { editing = null },
                 modifier = Modifier.fillMaxWidth(),
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.62f)
@@ -1191,39 +1191,39 @@ fun CalculationMethodsScreen(
                             modifier = Modifier.size(22.dp)
                         )
                         Spacer(Modifier.width(6.dp))
-                        Text("Settings", color = AppColors.Calorie, fontWeight = FontWeight.SemiBold)
+                        Text(stringResource(R.string.nav_settings), color = AppColors.Calorie, fontWeight = FontWeight.SemiBold)
                     }
                 }
             }
 
             item {
                 Text(
-                    "Calculation Methods",
+                    stringResource(R.string.settings_calc_methods),
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    "Your daily calorie and macro targets are set by AI. When you tap Recalculate Goals — or automatically about once a week if Adaptive Goals is on — Fud AI sends your profile, the reference equations below, your recently logged food, and your weight trend to your AI provider. It starts from these peer-reviewed formulas, then adjusts them to your real data to estimate your true maintenance and targets.",
+                    stringResource(R.string.settings_calc_intro),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.62f)
                 )
             }
 
             item {
-                CalcMethodSection("Resting metabolism (BMR)") {
+                CalcMethodSection(stringResource(R.string.settings_calc_sec_bmr)) {
                     CalcFormulaCard(
-                        name = "Mifflin-St Jeor equation",
-                        usedWhen = "Default formula for resting metabolism. Used when you haven't entered a body fat %.",
-                        formula = "Men: 10×weight(kg) + 6.25×height(cm) − 5×age + 5\nWomen: 10×weight(kg) + 6.25×height(cm) − 5×age − 161",
+                        name = stringResource(R.string.settings_calc_mifflin_name),
+                        usedWhen = stringResource(R.string.settings_calc_mifflin_used),
+                        formula = stringResource(R.string.settings_calc_mifflin_formula),
                         citation = "Mifflin MD, St Jeor ST, et al. (1990). \"A new predictive equation for resting energy expenditure in healthy individuals.\" Am J Clin Nutr 51(2):241–247.",
                         url = "https://pubmed.ncbi.nlm.nih.gov/2305711/"
                     )
                     CalcFormulaCard(
-                        name = "Katch-McArdle equation",
-                        usedWhen = "Used automatically when you've entered a body fat %. More accurate for lean and athletic users since it derives BMR from lean body mass instead of total weight.",
-                        formula = "BMR = 370 + 21.6 × LBM(kg)\nLBM = weight × (1 − bodyFat%)",
+                        name = stringResource(R.string.settings_calc_katch_name),
+                        usedWhen = stringResource(R.string.settings_calc_katch_used),
+                        formula = stringResource(R.string.settings_calc_katch_formula),
                         citation = "McArdle WD, Katch FI, Katch VL. Exercise Physiology: Nutrition, Energy, and Human Performance, 7th ed. Lippincott Williams & Wilkins, 2010.",
                         url = null
                     )
@@ -1231,11 +1231,11 @@ fun CalculationMethodsScreen(
             }
 
             item {
-                CalcMethodSection("Daily energy expenditure (TDEE)") {
+                CalcMethodSection(stringResource(R.string.settings_calc_sec_tdee)) {
                     CalcFormulaCard(
-                        name = "Activity-multiplier method",
-                        usedWhen = "TDEE = BMR × activity multiplier. The multiplier corresponds to your selected activity level. This is the maintenance baseline the AI starts from (unless Energy Burn supplies a measured one).",
-                        formula = "Sedentary: 1.2 · Light: 1.375 · Moderate: 1.465 · Active: 1.55 · Very Active: 1.725 · Extra Active: 1.9",
+                        name = stringResource(R.string.settings_calc_tdee_name),
+                        usedWhen = stringResource(R.string.settings_calc_tdee_used),
+                        formula = stringResource(R.string.settings_calc_tdee_formula),
                         citation = "Standard PAL (Physical Activity Level) coefficients from FAO/WHO/UNU joint expert consultation on human energy requirements (2001). Also widely used by ACSM and USDA Dietary Guidelines.",
                         url = "https://www.fao.org/3/y5686e/y5686e00.htm"
                     )
@@ -1243,11 +1243,11 @@ fun CalculationMethodsScreen(
             }
 
             item {
-                CalcMethodSection("Calorie target for goal") {
+                CalcMethodSection(stringResource(R.string.settings_calc_calorie_target)) {
                     CalcFormulaCard(
-                        name = "Maintenance & goal adjustment",
-                        usedWhen = "Maintenance starts from your TDEE — or, when Energy Burn is on, your measured Health Connect burn (a 14-day Active + Basal average) instead of the formula estimate. The AI refines maintenance against your logged intake and weight trend, then applies your goal: a weekly weight-change rate becomes a daily calorie deficit (Lose) or surplus (Gain).",
-                        formula = "1 lb of body fat ≈ 3,500 kcal · 1 kg ≈ 7,700 kcal\nYour weekly rate ÷ 7 is subtracted from (Lose) or added to (Gain) maintenance to set the daily calorie target.",
+                        name = stringResource(R.string.settings_calc_target_name),
+                        usedWhen = stringResource(R.string.settings_calc_target_used),
+                        formula = stringResource(R.string.settings_calc_target_formula),
                         citation = "Hall KD, et al. (2011). \"Quantification of the effect of energy imbalance on bodyweight.\" Lancet 378(9793):826–837. The classic 3,500-kcal-per-pound rule originates from Wishnofsky M (1958), Am J Clin Nutr 6:542–546.",
                         url = "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(11)60812-X/fulltext"
                     )
@@ -1255,11 +1255,11 @@ fun CalculationMethodsScreen(
             }
 
             item {
-                CalcMethodSection("Macronutrient split") {
+                CalcMethodSection(stringResource(R.string.settings_calc_macro_split)) {
                     CalcFormulaCard(
-                        name = "Protein, carbs, fat targets",
-                        usedWhen = "The AI fits protein, carbs, and fat to your calorie target, using these references as a guide. Protein scales with your activity level (and is based on lean body mass when a body fat % is set); fat is set from bodyweight; carbs fill the rest. You can lock any value or edit it yourself in Settings.",
-                        formula = "Protein: ~0.8–2.2 g per kg by activity level (raised slightly when losing)\nFat: ~0.6 g per kg bodyweight\nCarbs: remaining calories ÷ 4 kcal/g",
+                        name = stringResource(R.string.settings_calc_split_name),
+                        usedWhen = stringResource(R.string.settings_calc_split_used),
+                        formula = stringResource(R.string.settings_calc_split_formula),
                         citation = "Morton RW, et al. (2018). \"A systematic review, meta-analysis and meta-regression of the effect of protein supplementation on resistance training-induced gains in muscle mass and strength.\" Br J Sports Med 52(6):376–384.",
                         url = "https://bjsm.bmj.com/content/52/6/376"
                     )
@@ -1267,10 +1267,10 @@ fun CalculationMethodsScreen(
             }
 
             item {
-                CalcMethodSection("Micronutrient values") {
+                CalcMethodSection(stringResource(R.string.settings_calc_micro_values)) {
                     CalcFormulaCard(
-                        name = "Per-meal estimates",
-                        usedWhen = "Calorie, macro, fiber, sugar, saturated fat, cholesterol, sodium, potassium and other micronutrient values returned per meal are AI-generated estimates from the food image, voice transcript, or text description, using the AI provider you selected.",
+                        name = stringResource(R.string.settings_calc_micro_name),
+                        usedWhen = stringResource(R.string.settings_calc_micro_used),
                         formula = null,
                         citation = "Estimates rely on the underlying AI model's training data (USDA FoodData Central, manufacturer panels, scientific literature). Accuracy varies by food, portion-size visibility, and provider model. Always cross-check labels for foods you log frequently.",
                         url = "https://fdc.nal.usda.gov/"
@@ -1288,13 +1288,13 @@ fun CalculationMethodsScreen(
                     verticalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     Text(
-                        "Not medical advice",
+                        stringResource(R.string.settings_not_medical_title),
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onBackground
                     )
                     Text(
-                        "Fud AI is an estimation tool, not a clinical instrument. Predictive equations carry inherent error (typically ±10% for BMR). Consult a registered dietitian, physician, or sports medicine professional before significant diet changes — especially if you have a medical condition, are pregnant or breastfeeding, are under 18, or are managing an eating disorder.",
+                        stringResource(R.string.settings_not_medical_body),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
                     )
@@ -1444,7 +1444,7 @@ private fun SettingsSheets(
                 }
                 SettingsSheet.MAX_TOKENS -> {
                     TextFieldSheet(
-                        title = "Max response tokens",
+                        title = stringResource(R.string.settings_max_tokens),
                         initial = ui.maxResponseTokens.toString(),
                         placeholder = "1024",
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -1752,12 +1752,12 @@ private fun OptionalNutrientGoalsSheet(
 
     if (nutrient != null) {
         TextButton(onClick = { editing = null }) {
-            Text("Other Nutrients", color = AppColors.Calorie)
+            Text(stringResource(R.string.settings_other_nutrients), color = AppColors.Calorie)
         }
         Spacer(Modifier.height(4.dp))
         NutritionPickerSheet(
-            label = nutrient.displayName,
-            unit = nutrient.unit,
+            label = stringResource(nutrient.displayNameRes),
+            unit = stringResource(nutrient.unitRes),
             currentValue = goals.valueFor(nutrient),
             range = nutrient.pickerRange(),
             step = nutrient.pickerStep(),
@@ -1770,9 +1770,9 @@ private fun OptionalNutrientGoalsSheet(
     }
 
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        Text("Other Nutrient Goals", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+        Text(stringResource(R.string.settings_other_nutrient_goals), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
         Spacer(Modifier.weight(1f))
-        TextButton(onClick = onDismiss) { Text("Done", color = AppColors.Calorie) }
+        TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_done), color = AppColors.Calorie) }
     }
     Text(
         "Separate from calorie, protein, carbs, and fat targets.",
@@ -1796,7 +1796,7 @@ private fun OptionalNutrientGoalsSheet(
         onClick = { onChange(OptionalNutrientGoals.Default) },
         modifier = Modifier.fillMaxWidth()
     ) {
-        Text("Reset to Defaults", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
+        Text(stringResource(R.string.settings_reset_defaults), color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
     }
 }
 
@@ -1821,12 +1821,12 @@ private fun OptionalNutrientGoalRow(
         Spacer(Modifier.width(14.dp))
         Column(Modifier.weight(1f)) {
             Text(
-                nutrient.displayName,
+                stringResource(nutrient.displayNameRes),
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Medium
             )
             Text(
-                nutrient.unit,
+                stringResource(nutrient.unitRes),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.48f)
             )
@@ -2086,13 +2086,14 @@ private fun GoalBodyFatSheet(currentGoal: Double?, currentBodyFat: Double?, onSa
 @Composable
 private fun GoalSpeedSheet(current: Double, goal: WeightGoal, useMetric: Boolean, onSave: (Double) -> Unit) {
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
-    Text("Weekly Change", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+    Text(stringResource(R.string.sheet_weekly_change), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
     Spacer(Modifier.height(12.dp))
-    val unit = if (goal == WeightGoal.LOSE) "loss" else "gain"
+    val wUnit = if (useMetric) stringResource(R.string.unit_kg) else stringResource(R.string.unit_lbs)
+    val paceRes = if (goal == WeightGoal.LOSE) R.string.settings_pace_loss_format else R.string.settings_pace_gain_format
     val options = listOf(
-        Triple(0.25, "Slow", "0.25 ${if (useMetric) "kg" else "lbs"}/week $unit"),
-        Triple(0.5, "Recommended", "0.5 ${if (useMetric) "kg" else "lbs"}/week $unit"),
-        Triple(1.0, "Fast", "1.0 ${if (useMetric) "kg" else "lbs"}/week $unit")
+        Triple(0.25, stringResource(R.string.onboarding_pace_slow), stringResource(paceRes, "0.25 $wUnit")),
+        Triple(0.5, stringResource(R.string.onboarding_pace_recommended), stringResource(paceRes, "0.5 $wUnit")),
+        Triple(1.0, stringResource(R.string.onboarding_pace_fast), stringResource(paceRes, "1.0 $wUnit"))
     )
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         for ((kg, title, subtitle) in options) {
@@ -2122,7 +2123,7 @@ private fun GoalSpeedSheet(current: Double, goal: WeightGoal, useMetric: Boolean
                 if (isSel) {
                     Icon(
                         Icons.Filled.Check,
-                        contentDescription = "Selected",
+                        contentDescription = stringResource(R.string.cd_selected),
                         tint = AppColors.Calorie,
                         modifier = Modifier.size(20.dp)
                     )
@@ -2148,7 +2149,7 @@ fun NutritionPickerSheet(
     step: Int,
     onSave: (Int) -> Unit,
     onResetToAuto: (() -> Unit)? = null,
-    resetLabel: String = "Reset to Auto-balance",
+    resetLabel: String? = null,
     // Live wheel-selection reporter, for hosts that need the current value
     // before Save (e.g. to convert it when a unit switcher flips).
     onValueChange: ((Int) -> Unit)? = null
@@ -2190,7 +2191,7 @@ fun NutritionPickerSheet(
         contentAlignment = Alignment.Center
     ) {
         Text(
-            "Save",
+            stringResource(R.string.action_save),
             color = Color.White,
             fontWeight = FontWeight.SemiBold,
             style = MaterialTheme.typography.titleMedium
@@ -2203,7 +2204,7 @@ fun NutritionPickerSheet(
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
-                resetLabel,
+                resetLabel ?: stringResource(R.string.settings_reset_autobalance),
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
             )
         }
@@ -2223,40 +2224,40 @@ private fun MacrosSheet(
     var proteinText by remember(profile) { mutableStateOf(profile.effectiveProtein.toString()) }
     var carbsText by remember(profile) { mutableStateOf(profile.effectiveCarbs.toString()) }
     var fatText by remember(profile) { mutableStateOf(profile.effectiveFat.toString()) }
-    Text("Macros", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+    Text(stringResource(R.string.sheet_macros), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
     Text(
-        "Pin up to 2 macros to exact grams. Unpinned ones auto-balance from remaining calories.",
+        stringResource(R.string.settings_macro_pin_hint),
         style = MaterialTheme.typography.bodySmall,
         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
     )
     Spacer(Modifier.height(12.dp))
-    MacroField("Calories", caloriesText, { caloriesText = it }, "kcal") {
+    MacroField(stringResource(R.string.macro_calories), caloriesText, { caloriesText = it }, stringResource(R.string.unit_kcal)) {
         caloriesText.toIntOrNull()?.let { onSaveCalories(it) }
     }
     Spacer(Modifier.height(6.dp))
     MacroField(
-        label = "Protein (${if (profile.isPinned(AutoBalanceMacro.PROTEIN)) "pinned" else "auto"})",
+        label = if (profile.isPinned(AutoBalanceMacro.PROTEIN)) stringResource(R.string.settings_macro_pinned_label_format, stringResource(R.string.autobalance_protein)) else stringResource(R.string.settings_macro_auto_label_format, stringResource(R.string.autobalance_protein)),
         value = proteinText,
         onChange = { proteinText = it },
-        unit = "g",
+        unit = stringResource(R.string.unit_g),
         pinned = profile.isPinned(AutoBalanceMacro.PROTEIN),
         onClearPin = { onClearPin(AutoBalanceMacro.PROTEIN) }
     ) { proteinText.toIntOrNull()?.let { onSaveMacro(AutoBalanceMacro.PROTEIN, it) } }
     Spacer(Modifier.height(6.dp))
     MacroField(
-        label = "Carbs (${if (profile.isPinned(AutoBalanceMacro.CARBS)) "pinned" else "auto"})",
+        label = if (profile.isPinned(AutoBalanceMacro.CARBS)) stringResource(R.string.settings_macro_pinned_label_format, stringResource(R.string.autobalance_carbs)) else stringResource(R.string.settings_macro_auto_label_format, stringResource(R.string.autobalance_carbs)),
         value = carbsText,
         onChange = { carbsText = it },
-        unit = "g",
+        unit = stringResource(R.string.unit_g),
         pinned = profile.isPinned(AutoBalanceMacro.CARBS),
         onClearPin = { onClearPin(AutoBalanceMacro.CARBS) }
     ) { carbsText.toIntOrNull()?.let { onSaveMacro(AutoBalanceMacro.CARBS, it) } }
     Spacer(Modifier.height(6.dp))
     MacroField(
-        label = "Fat (${if (profile.isPinned(AutoBalanceMacro.FAT)) "pinned" else "auto"})",
+        label = if (profile.isPinned(AutoBalanceMacro.FAT)) stringResource(R.string.settings_macro_pinned_label_format, stringResource(R.string.autobalance_fat)) else stringResource(R.string.settings_macro_auto_label_format, stringResource(R.string.autobalance_fat)),
         value = fatText,
         onChange = { fatText = it },
-        unit = "g",
+        unit = stringResource(R.string.unit_g),
         pinned = profile.isPinned(AutoBalanceMacro.FAT),
         onClearPin = { onClearPin(AutoBalanceMacro.FAT) }
     ) { fatText.toIntOrNull()?.let { onSaveMacro(AutoBalanceMacro.FAT, it) } }
@@ -2283,7 +2284,7 @@ private fun MacroField(
         )
         Spacer(Modifier.height(6.dp))
         TextButton(onClick = { if (pinned) onClearPin?.invoke() else onPin() }) {
-            Text(if (pinned) "Clear" else "Pin", color = AppColors.Calorie)
+            Text(if (pinned) stringResource(R.string.action_clear) else stringResource(R.string.action_pin), color = AppColors.Calorie)
         }
     }
 }
@@ -2717,7 +2718,7 @@ private fun BirthdaySheet(current: Instant, onSave: (Instant) -> Unit) {
     // user's local date to avoid an off-by-one when the user is east of UTC.
     val localDate = current.atZone(ZoneId.systemDefault()).toLocalDate()
     var pickedDate by remember(current) { mutableStateOf(localDate) }
-    Text("Birthday", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+    Text(stringResource(R.string.sheet_birthday), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
     Spacer(Modifier.height(8.dp))
     DateWheelPicker(
         selected = pickedDate,
@@ -2768,7 +2769,7 @@ private fun appearanceIcon(key: String): ImageVector = when (key) {
  */
 @Composable
 private fun GradientSaveButton(
-    text: String = "Save",
+    text: String? = null,
     enabled: Boolean = true,
     modifier: Modifier = Modifier,
     onClick: () -> Unit
@@ -2793,7 +2794,7 @@ private fun GradientSaveButton(
             .padding(vertical = 14.dp),
         contentAlignment = Alignment.Center
     ) {
-        Text(text, color = Color.White, fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
+        Text(text ?: stringResource(R.string.action_save), color = Color.White, fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
     }
 }
 

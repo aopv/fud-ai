@@ -28,6 +28,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -39,6 +40,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.ContextCompat
+import com.apoorvdarshan.calorietracker.R
 import com.apoorvdarshan.calorietracker.ui.theme.AppColors
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
@@ -150,7 +152,7 @@ fun BarcodeScannerSheet(
                     .clip(RoundedCornerShape(22.dp))
                     .background(Color.Black.copy(alpha = 0.45f))
             ) {
-                Icon(Icons.Filled.Close, contentDescription = "Close", tint = Color.White)
+                Icon(Icons.Filled.Close, contentDescription = stringResource(R.string.cd_close), tint = Color.White)
             }
 
             Column(
@@ -171,13 +173,13 @@ fun BarcodeScannerSheet(
                 )
                 Spacer(Modifier.height(10.dp))
                 Text(
-                    "Point the camera at the barcode",
+                    stringResource(R.string.barcode_hint),
                     color = Color.White,
                     fontSize = 17.sp,
                     fontWeight = FontWeight.SemiBold
                 )
                 Text(
-                    "Packaged foods use Open Food Facts when available.",
+                    stringResource(R.string.barcode_off_note),
                     color = Color.White.copy(alpha = 0.72f),
                     fontSize = 13.sp,
                     lineHeight = 18.sp

@@ -31,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -61,6 +62,7 @@ import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material.icons.filled.UnfoldMore
 import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material.icons.filled.WbTwilight
+import com.apoorvdarshan.calorietracker.R
 import com.apoorvdarshan.calorietracker.models.MealType
 import com.apoorvdarshan.calorietracker.models.ServingUnitOption
 import com.apoorvdarshan.calorietracker.ui.theme.AppColors
@@ -85,7 +87,7 @@ internal fun SheetReviewToolbar(
         Modifier.fillMaxWidth().padding(horizontal = outerPadding, vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        SheetToolbarPill("Cancel", compact = compact, onClick = onCancel)
+        SheetToolbarPill(stringResource(R.string.action_cancel), compact = compact, onClick = onCancel)
         Spacer(Modifier.width(itemGap))
         Text(
             title,
@@ -281,7 +283,7 @@ internal fun ServingQuantityCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                "Quantity",
+                stringResource(R.string.sheet_quantity),
                 fontSize = 17.sp,
                 modifier = Modifier
                     .padding(end = 8.dp)
@@ -316,7 +318,7 @@ internal fun ServingQuantityCard(
                 Spacer(Modifier.width(6.dp))
                 Icon(
                     Icons.Filled.Cancel,
-                    contentDescription = "Clear quantity",
+                    contentDescription = stringResource(R.string.cd_clear_quantity),
                     tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                     modifier = Modifier
                         .size(20.dp)
@@ -395,7 +397,7 @@ internal fun ServingQuantityCard(
                 Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("Total", fontSize = 17.sp, modifier = Modifier.weight(1f))
+                Text(stringResource(R.string.label_total), fontSize = 17.sp, modifier = Modifier.weight(1f))
                 Text(
                     "~${sheetFormatGrams(servingSizeGrams)} $gramUnit",
                     fontSize = 17.sp,

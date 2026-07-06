@@ -1,35 +1,39 @@
 package com.apoorvdarshan.calorietracker.models
 
+import com.apoorvdarshan.calorietracker.R
+
 import kotlinx.serialization.Serializable
 
 enum class HomeTopNutrient(
     val storageKey: String,
     val displayName: String,
-    val unit: String
+    val unit: String,
+    val displayNameRes: Int,
+    val unitRes: Int
 ) {
-    PROTEIN("protein", "Protein", "g"),
-    CARBS("carbs", "Carbs", "g"),
-    FAT("fat", "Fat", "g"),
-    FIBER("fiber", "Fiber", "g"),
-    SUGAR("sugar", "Sugar", "g"),
-    ADDED_SUGAR("addedSugar", "Added Sugar", "g"),
-    SATURATED_FAT("saturatedFat", "Sat Fat", "g"),
-    CHOLESTEROL("cholesterol", "Cholesterol", "mg"),
-    SODIUM("sodium", "Sodium", "mg"),
-    POTASSIUM("potassium", "Potassium", "mg"),
-    TRANS_FAT("transFat", "Trans Fat", "g"),
-    CALCIUM("calcium", "Calcium", "mg"),
-    IRON("iron", "Iron", "mg"),
-    MAGNESIUM("magnesium", "Magnesium", "mg"),
-    ZINC("zinc", "Zinc", "mg"),
-    VITAMIN_A("vitaminA", "Vit A", "mcg"),
-    VITAMIN_C("vitaminC", "Vit C", "mg"),
-    VITAMIN_D("vitaminD", "Vit D", "mcg"),
-    VITAMIN_B12("vitaminB12", "B12", "mcg"),
-    VITAMIN_E("vitaminE", "Vit E", "mg"),
-    VITAMIN_K("vitaminK", "Vit K", "mcg"),
-    FOLATE("folate", "Folate", "mcg"),
-    OMEGA3("omega3", "Omega", "g");
+    PROTEIN("protein", "Protein", "g", R.string.nutrition_label_protein, R.string.unit_g),
+    CARBS("carbs", "Carbs", "g", R.string.nutrition_label_carbs, R.string.unit_g),
+    FAT("fat", "Fat", "g", R.string.nutrition_label_fat, R.string.unit_g),
+    FIBER("fiber", "Fiber", "g", R.string.nutrition_label_fiber, R.string.unit_g),
+    SUGAR("sugar", "Sugar", "g", R.string.nutrition_label_sugar, R.string.unit_g),
+    ADDED_SUGAR("addedSugar", "Added Sugar", "g", R.string.nutrition_label_added_sugar, R.string.unit_g),
+    SATURATED_FAT("saturatedFat", "Sat Fat", "g", R.string.nutrient_short_sat_fat, R.string.unit_g),
+    CHOLESTEROL("cholesterol", "Cholesterol", "mg", R.string.nutrition_label_cholesterol, R.string.unit_mg),
+    SODIUM("sodium", "Sodium", "mg", R.string.nutrition_label_sodium, R.string.unit_mg),
+    POTASSIUM("potassium", "Potassium", "mg", R.string.nutrition_label_potassium, R.string.unit_mg),
+    TRANS_FAT("transFat", "Trans Fat", "g", R.string.nutrition_label_trans_fat, R.string.unit_g),
+    CALCIUM("calcium", "Calcium", "mg", R.string.nutrition_label_calcium, R.string.unit_mg),
+    IRON("iron", "Iron", "mg", R.string.nutrition_label_iron, R.string.unit_mg),
+    MAGNESIUM("magnesium", "Magnesium", "mg", R.string.nutrition_label_magnesium, R.string.unit_mg),
+    ZINC("zinc", "Zinc", "mg", R.string.nutrition_label_zinc, R.string.unit_mg),
+    VITAMIN_A("vitaminA", "Vit A", "mcg", R.string.nutrient_short_vit_a, R.string.unit_mcg),
+    VITAMIN_C("vitaminC", "Vit C", "mg", R.string.nutrient_short_vit_c, R.string.unit_mg),
+    VITAMIN_D("vitaminD", "Vit D", "mcg", R.string.nutrient_short_vit_d, R.string.unit_mcg),
+    VITAMIN_B12("vitaminB12", "B12", "mcg", R.string.nutrient_short_b12, R.string.unit_mcg),
+    VITAMIN_E("vitaminE", "Vit E", "mg", R.string.nutrient_short_vit_e, R.string.unit_mg),
+    VITAMIN_K("vitaminK", "Vit K", "mcg", R.string.nutrient_short_vit_k, R.string.unit_mcg),
+    FOLATE("folate", "Folate", "mcg", R.string.nutrition_label_folate, R.string.unit_mcg),
+    OMEGA3("omega3", "Omega", "g", R.string.nutrient_short_omega, R.string.unit_g);
 
     fun current(entries: List<FoodEntry>): Double = when (this) {
         PROTEIN -> entries.sumOf { it.protein }
@@ -111,28 +115,30 @@ enum class HomeTopNutrient(
 enum class OptionalNutrient(
     val displayName: String,
     val unit: String,
-    val defaultGoal: Int
+    val defaultGoal: Int,
+    val displayNameRes: Int,
+    val unitRes: Int
 ) {
-    SUGAR("Sugar", "g", 50),
-    ADDED_SUGAR("Added Sugar", "g", 25),
-    FIBER("Fiber", "g", 30),
-    SATURATED_FAT("Saturated Fat", "g", 20),
-    CHOLESTEROL("Cholesterol", "mg", 300),
-    SODIUM("Sodium", "mg", 2300),
-    POTASSIUM("Potassium", "mg", 3500),
-    TRANS_FAT("Trans Fat", "g", 0),
-    CALCIUM("Calcium", "mg", 1000),
-    IRON("Iron", "mg", 18),
-    MAGNESIUM("Magnesium", "mg", 400),
-    ZINC("Zinc", "mg", 11),
-    VITAMIN_A("Vitamin A", "mcg", 900),
-    VITAMIN_C("Vitamin C", "mg", 90),
-    VITAMIN_D("Vitamin D", "mcg", 20),
-    VITAMIN_B12("Vitamin B12", "mcg", 3),
-    VITAMIN_E("Vitamin E", "mg", 15),
-    VITAMIN_K("Vitamin K", "mcg", 120),
-    FOLATE("Folate", "mcg", 400),
-    OMEGA3("Omega-3", "g", 2)
+    SUGAR("Sugar", "g", 50, R.string.nutrition_label_sugar, R.string.unit_g),
+    ADDED_SUGAR("Added Sugar", "g", 25, R.string.nutrition_label_added_sugar, R.string.unit_g),
+    FIBER("Fiber", "g", 30, R.string.nutrition_label_fiber, R.string.unit_g),
+    SATURATED_FAT("Saturated Fat", "g", 20, R.string.nutrition_label_saturated_fat, R.string.unit_g),
+    CHOLESTEROL("Cholesterol", "mg", 300, R.string.nutrition_label_cholesterol, R.string.unit_mg),
+    SODIUM("Sodium", "mg", 2300, R.string.nutrition_label_sodium, R.string.unit_mg),
+    POTASSIUM("Potassium", "mg", 3500, R.string.nutrition_label_potassium, R.string.unit_mg),
+    TRANS_FAT("Trans Fat", "g", 0, R.string.nutrition_label_trans_fat, R.string.unit_g),
+    CALCIUM("Calcium", "mg", 1000, R.string.nutrition_label_calcium, R.string.unit_mg),
+    IRON("Iron", "mg", 18, R.string.nutrition_label_iron, R.string.unit_mg),
+    MAGNESIUM("Magnesium", "mg", 400, R.string.nutrition_label_magnesium, R.string.unit_mg),
+    ZINC("Zinc", "mg", 11, R.string.nutrition_label_zinc, R.string.unit_mg),
+    VITAMIN_A("Vitamin A", "mcg", 900, R.string.nutrition_label_vitamin_a, R.string.unit_mcg),
+    VITAMIN_C("Vitamin C", "mg", 90, R.string.nutrition_label_vitamin_c, R.string.unit_mg),
+    VITAMIN_D("Vitamin D", "mcg", 20, R.string.nutrition_label_vitamin_d, R.string.unit_mcg),
+    VITAMIN_B12("Vitamin B12", "mcg", 3, R.string.nutrition_label_vitamin_b12, R.string.unit_mcg),
+    VITAMIN_E("Vitamin E", "mg", 15, R.string.nutrition_label_vitamin_e, R.string.unit_mg),
+    VITAMIN_K("Vitamin K", "mcg", 120, R.string.nutrition_label_vitamin_k, R.string.unit_mcg),
+    FOLATE("Folate", "mcg", 400, R.string.nutrition_label_folate, R.string.unit_mcg),
+    OMEGA3("Omega-3", "g", 2, R.string.nutrition_label_omega3, R.string.unit_g)
 }
 
 @Serializable

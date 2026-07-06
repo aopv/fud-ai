@@ -56,6 +56,7 @@ import androidx.compose.runtime.setValue
 import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
@@ -1483,32 +1484,32 @@ private fun formatPercentChange(deltaPercent: Double): String {
 private val measurementHistoryFmt: DateTimeFormatter =
     DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.US).withZone(ZoneId.systemDefault())
 
-private fun displayLengthCm(cm: Double, useMetric: Boolean): String =
-    if (useMetric) String.format(Locale.US, "%.1f cm", cm)
-    else String.format(Locale.US, "%.1f in", cm / 2.54)
+private fun displayLengthCm(context: android.content.Context, cm: Double, useMetric: Boolean): String =
+    if (useMetric) String.format(Locale.US, "%.1f %s", cm, context.getString(R.string.unit_cm))
+    else String.format(Locale.US, "%.1f %s", cm / 2.54, context.getString(R.string.unit_in))
 
 /** Logged sites in display order, skipping any that weren't entered. */
-private fun measurementSiteList(m: BodyMeasurement): List<Pair<String, Double>> = buildList {
-    m.neckCm?.let { add("Neck" to it) }
-    m.waistCm?.let { add("Waist" to it) }
-    m.hipsCm?.let { add("Hips" to it) }
-    m.chestCm?.let { add("Chest" to it) }
-    m.upperArmCm?.let { add("Upper arm" to it) }
-    m.thighCm?.let { add("Thigh" to it) }
-    m.calfCm?.let { add("Calf" to it) }
-    m.wristCm?.let { add("Wrist" to it) }
+private fun measurementSiteList(context: android.content.Context, m: BodyMeasurement): List<Pair<String, Double>> = buildList {
+    m.neckCm?.let { add(context.getString(R.string.measure_neck) to it) }
+    m.waistCm?.let { add(context.getString(R.string.measure_waist) to it) }
+    m.hipsCm?.let { add(context.getString(R.string.measure_hips) to it) }
+    m.chestCm?.let { add(context.getString(R.string.measure_chest) to it) }
+    m.upperArmCm?.let { add(context.getString(R.string.measure_upper_arm) to it) }
+    m.thighCm?.let { add(context.getString(R.string.measure_thigh) to it) }
+    m.calfCm?.let { add(context.getString(R.string.measure_calf) to it) }
+    m.wristCm?.let { add(context.getString(R.string.measure_wrist) to it) }
 }
 
 /** Derived metrics computable from this entry + profile, skipping any missing their inputs. */
-private fun derivedMetricList(m: BodyMeasurement, gender: Gender, heightCm: Double): List<Pair<String, String>> = buildList {
-    m.waistToHipRatio?.let { add("Waist-to-hip" to String.format(Locale.US, "%.2f", it)) }
-    m.waistToHeightRatio(heightCm)?.let { add("Waist-to-height" to String.format(Locale.US, "%.2f", it)) }
-    m.usNavyBodyFatPercent(gender, heightCm)?.let { add("Body fat" to String.format(Locale.US, "%.0f%%", it)) }
-    m.wristFrame(gender, heightCm)?.let { add("Frame" to it.label) }
+private fun derivedMetricList(context: android.content.Context, m: BodyMeasurement, gender: Gender, heightCm: Double): List<Pair<String, String>> = buildList {
+    m.waistToHipRatio?.let { add(context.getString(R.string.derived_waist_to_hip) to String.format(Locale.US, "%.2f", it)) }
+    m.waistToHeightRatio(heightCm)?.let { add(context.getString(R.string.derived_waist_to_height) to String.format(Locale.US, "%.2f", it)) }
+    m.usNavyBodyFatPercent(gender, heightCm)?.let { add(context.getString(R.string.derived_body_fat) to String.format(Locale.US, "%.0f%%", it)) }
+    m.wristFrame(gender, heightCm)?.let { add(context.getString(R.string.derived_frame) to context.getString(it.labelRes)) }
 }
 
-private fun measurementHistorySummary(m: BodyMeasurement, gender: Gender, heightCm: Double, useMetric: Boolean): String {
-    val sites = measurementSiteList(m).map { "${it.first} ${displayLengthCm(it.second, useMetric)}" }
+private fun measurementHistorySummary(context: android.content.Context, m: BodyMeasurement, gender: Gender, heightCm: Double, useMetric: Boolean): String {
+    val sites = measurementSiteList(context, m).map { "${it.first} ${displayLengthCm(context, it.second, useMetric)}" }
     val bf = m.usNavyBodyFatPercent(gender, heightCm)?.let { "BF ${String.format(Locale.US, "%.0f%%", it)}" }
     return (sites + listOfNotNull(bf)).joinToString(" · ")
 }
@@ -1534,7 +1535,7 @@ private fun BodyMeasurementsHistorySheet(
     ) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 10.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Measurement History", fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
+                Text(stringResource(R.string.measurement_history), fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
                 Spacer(Modifier.weight(1f))
                 TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_done), color = AppColors.Calorie) }
             }
@@ -1549,7 +1550,7 @@ private fun BodyMeasurementsHistorySheet(
                             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                                 Text(measurementHistoryFmt.format(entry.date), fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
                                 Text(
-                                    measurementHistorySummary(entry, gender, heightCm, useMetric),
+                                    measurementHistorySummary(LocalContext.current, entry, gender, heightCm, useMetric),
                                     fontSize = 13.sp,
                                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
                                 )
@@ -1593,9 +1594,12 @@ fun BodyMeasurementsScreen(container: AppContainer, onBack: () -> Unit) {
     var editing by remember { mutableStateOf<BodyMeasurement.Site?>(null) }
     var showHistory by remember { mutableStateOf(false) }
 
+    val notSet = stringResource(R.string.settings_not_set)
+    val cmUnit = stringResource(R.string.unit_cm)
+    val inUnit = stringResource(R.string.unit_in)
     fun displayValue(site: BodyMeasurement.Site): String {
-        val cm = latest?.value(site) ?: return "Not set"
-        return if (heightMetric) String.format(Locale.US, "%.0f cm", cm) else String.format(Locale.US, "%.0f in", cm / 2.54)
+        val cm = latest?.value(site) ?: return notSet
+        return if (heightMetric) String.format(Locale.US, "%.0f %s", cm, cmUnit) else String.format(Locale.US, "%.0f %s", cm / 2.54, inUnit)
     }
 
     Scaffold(containerColor = MaterialTheme.colorScheme.background) { padding ->
@@ -1615,12 +1619,12 @@ fun BodyMeasurementsScreen(container: AppContainer, onBack: () -> Unit) {
                     ) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = AppColors.Calorie, modifier = Modifier.size(22.dp))
                         Spacer(Modifier.width(6.dp))
-                        Text("Settings", color = AppColors.Calorie, fontWeight = FontWeight.SemiBold)
+                        Text(stringResource(R.string.nav_settings), color = AppColors.Calorie, fontWeight = FontWeight.SemiBold)
                     }
                 }
             }
             item {
-                Text("Body Measurements", fontSize = 28.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
+                Text(stringResource(R.string.body_measurements_title), fontSize = 28.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
                 Spacer(Modifier.height(6.dp))
                 Text(
                     "Optional. Fud AI turns these into waist-to-hip, waist-to-height, body-fat %, and frame size, and reads them when it recalculates your goals and in Coach.",
@@ -1639,7 +1643,7 @@ fun BodyMeasurementsScreen(container: AppContainer, onBack: () -> Unit) {
                                     .padding(horizontal = 16.dp, vertical = 14.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Text(site.label, modifier = Modifier.weight(1f), fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                                Text(stringResource(site.labelRes), modifier = Modifier.weight(1f), fontSize = 16.sp, fontWeight = FontWeight.Medium)
                                 Text(displayValue(site), fontSize = 15.sp, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
                                 Spacer(Modifier.width(6.dp))
                                 Icon(Icons.Filled.ChevronRight, null, tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f), modifier = Modifier.size(18.dp))
@@ -1652,12 +1656,12 @@ fun BodyMeasurementsScreen(container: AppContainer, onBack: () -> Unit) {
                 }
             }
             if (latest != null) {
-                val derived = derivedMetricList(latest, gender, heightCm)
+                val derived = derivedMetricList(LocalContext.current, latest, gender, heightCm)
                 if (derived.isNotEmpty()) {
                     item {
                         FudGlassSurface(modifier = Modifier.fillMaxWidth(), cornerRadius = 22.dp, padding = 16.dp) {
                             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                                Text("Derived", fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f))
+                                Text(stringResource(R.string.label_derived), fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f))
                                 derived.forEach { (label, value) ->
                                     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                                         Text(label, modifier = Modifier.weight(1f), fontSize = 15.sp)
@@ -1676,7 +1680,7 @@ fun BodyMeasurementsScreen(container: AppContainer, onBack: () -> Unit) {
                             padding = 14.dp
                         ) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text("Measurement History", modifier = Modifier.weight(1f), fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                                Text(stringResource(R.string.measurement_history), modifier = Modifier.weight(1f), fontSize = 16.sp, fontWeight = FontWeight.Medium)
                                 Text("${entries.size}", fontSize = 15.sp, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
                                 Spacer(Modifier.width(6.dp))
                                 Icon(Icons.Filled.ChevronRight, null, tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f), modifier = Modifier.size(18.dp))
@@ -1723,7 +1727,7 @@ fun BodyMeasurementsScreen(container: AppContainer, onBack: () -> Unit) {
             // value: its internal scroll state otherwise survives the range swap.
             key(heightMetric) {
                 NutritionPickerSheet(
-                    label = site.label,
+                    label = stringResource(site.labelRes),
                     unit = unit,
                     currentValue = editorValue,
                     range = if (heightMetric) 10..250 else 4..100,
@@ -1736,7 +1740,7 @@ fun BodyMeasurementsScreen(container: AppContainer, onBack: () -> Unit) {
                     onResetToAuto = if (current != null) {
                         { scope.launch { container.bodyMeasurementRepository.setValue(site, null) }; editing = null }
                     } else null,
-                    resetLabel = "Clear",
+                    resetLabel = stringResource(R.string.action_clear),
                     onValueChange = { editorValue = it }
                 )
             }

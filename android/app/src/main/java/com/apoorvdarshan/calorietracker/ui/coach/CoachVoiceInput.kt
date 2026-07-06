@@ -34,6 +34,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
@@ -42,6 +43,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.apoorvdarshan.calorietracker.R
 import com.apoorvdarshan.calorietracker.AppContainer
 import com.apoorvdarshan.calorietracker.models.SpeechProvider
 import com.apoorvdarshan.calorietracker.services.speech.AudioRecorder
@@ -293,7 +295,7 @@ fun CoachMicButton(controller: CoachVoiceController) {
     ) {
         Icon(
             Icons.Filled.Mic,
-            contentDescription = "Hold to record, tap to lock",
+            contentDescription = stringResource(R.string.cd_hold_to_record),
             tint = if (holding) Color.White else AppColors.Calorie,
             modifier = Modifier.size(18.dp)
         )
@@ -347,10 +349,10 @@ fun CoachRecordingIndicator(controller: CoachVoiceController, modifier: Modifier
         val live = controller.liveText
         Text(
             when {
-                controller.phase == VoicePhase.Holding && armed -> "Release to cancel"
-                controller.phase == VoicePhase.Holding -> "‹ slide to cancel"
+                controller.phase == VoicePhase.Holding && armed -> stringResource(R.string.voice_release_to_cancel)
+                controller.phase == VoicePhase.Holding -> stringResource(R.string.voice_slide_to_cancel)
                 live.isNotBlank() -> live
-                else -> "Listening…"
+                else -> stringResource(R.string.voice_listening)
             },
             fontSize = 15.sp,
             color = if (armed) Color(0xFFFF3B30)
@@ -374,7 +376,7 @@ fun CoachVoiceCancelButton(onClick: () -> Unit) {
     ) {
         Icon(
             Icons.Filled.Delete,
-            contentDescription = "Cancel recording",
+            contentDescription = stringResource(R.string.cd_cancel_recording),
             tint = Color(0xFFFF3B30),
             modifier = Modifier.size(18.dp)
         )

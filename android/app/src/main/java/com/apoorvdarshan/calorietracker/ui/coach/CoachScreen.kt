@@ -752,7 +752,7 @@ private fun InputBar(
                             .clip(CircleShape)
                             .background(Color.Black.copy(alpha = 0.55f))
                     ) {
-                        Icon(Icons.Filled.Close, contentDescription = "Remove image", tint = Color.White, modifier = Modifier.size(14.dp))
+                        Icon(Icons.Filled.Close, contentDescription = stringResource(R.string.cd_remove_image), tint = Color.White, modifier = Modifier.size(14.dp))
                     }
                 }
             }
@@ -840,13 +840,13 @@ private fun CoachMediaActions(
     ) {
         CoachMediaActionButton(
             icon = Icons.Filled.PhotoLibrary,
-            contentDescription = "Add image",
+            contentDescription = stringResource(R.string.cd_add_image),
             enabled = enabled,
             onClick = onPickImage
         )
         CoachMediaActionButton(
             icon = Icons.Filled.CameraAlt,
-            contentDescription = "Open camera",
+            contentDescription = stringResource(R.string.cd_open_camera),
             enabled = enabled,
             onClick = onCaptureImage
         )

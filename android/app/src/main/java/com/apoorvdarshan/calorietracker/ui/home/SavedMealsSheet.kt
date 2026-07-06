@@ -180,7 +180,7 @@ fun SavedMealsSheet(
                 .padding(bottom = 16.dp)
         ) {
             Text(
-                "Saved Meals",
+                stringResource(R.string.saved_meals_title),
                 fontSize = 17.sp,
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier
@@ -226,7 +226,7 @@ fun SavedMealsSheet(
                 SavedTab.RECENTS -> {
                     if (filteredRecents.isEmpty()) {
                         val msg = if (isSearching) stringResource(R.string.saved_meals_no_match)
-                                  else "No foods logged yet"
+                                  else stringResource(R.string.saved_meals_no_logs)
                         EmptyState(icon = if (isSearching) Icons.Outlined.Search else Icons.Outlined.Schedule, text = msg)
                     } else {
                         SavedList(items = filteredRecents) { entry ->
@@ -243,14 +243,14 @@ fun SavedMealsSheet(
                 SavedTab.FREQUENT -> {
                     if (filteredFrequent.isEmpty()) {
                         val msg = if (isSearching) stringResource(R.string.saved_meals_no_match)
-                                  else "No foods logged yet"
+                                  else stringResource(R.string.saved_meals_no_logs)
                         EmptyState(icon = if (isSearching) Icons.Outlined.Search else Icons.Outlined.Refresh, text = msg)
                     } else {
                         SavedList(items = filteredFrequent) { group ->
                             SavedMealRow(
                                 entry = group.template,
                                 isFavorite = group.template.favoriteKey in favKeys,
-                                subtitle = "${group.count}× logged",
+                                subtitle = stringResource(R.string.saved_meals_count_format, group.count),
                                 imageStore = container.imageStore,
                                 onClick = { onRelogEntry(group.template); onDismiss() }
                             )
@@ -261,7 +261,7 @@ fun SavedMealsSheet(
                     if (favorites.isEmpty()) {
                         EmptyState(
                             icon = Icons.Outlined.Favorite,
-                            text = "No favorites yet\nSwipe left on any food to add it"
+                            text = stringResource(R.string.saved_meals_no_favorites)
                         )
                     } else if (filteredFavorites.isEmpty()) {
                         EmptyState(icon = Icons.Outlined.Search, text = stringResource(R.string.saved_meals_no_match))
@@ -329,9 +329,9 @@ private fun SegmentedTabs(selected: SavedTab, onSelect: (SavedTab) -> Unit) {
             ) {
                 Text(
                     when (t) {
-                        SavedTab.RECENTS -> "Recents"
-                        SavedTab.FREQUENT -> "Frequent"
-                        SavedTab.FAVORITES -> "Favorites"
+                        SavedTab.RECENTS -> stringResource(R.string.saved_meals_tab_recents)
+                        SavedTab.FREQUENT -> stringResource(R.string.saved_meals_tab_frequent)
+                        SavedTab.FAVORITES -> stringResource(R.string.saved_meals_tab_favorites)
                     },
                     color = if (isSel) Color.White else MaterialTheme.colorScheme.onSurface,
                     fontSize = 13.sp,
@@ -524,7 +524,7 @@ private fun MoveButtons(
         ) {
             Icon(
                 Icons.Filled.KeyboardArrowUp,
-                contentDescription = "Move up",
+                contentDescription = stringResource(R.string.cd_move_up),
                 tint = MaterialTheme.colorScheme.onSurface.copy(alpha = if (canMoveUp) 0.75f else 0.18f),
                 modifier = Modifier.size(20.dp)
             )
@@ -542,7 +542,7 @@ private fun MoveButtons(
         ) {
             Icon(
                 Icons.Filled.KeyboardArrowDown,
-                contentDescription = "Move down",
+                contentDescription = stringResource(R.string.cd_move_down),
                 tint = MaterialTheme.colorScheme.onSurface.copy(alpha = if (canMoveDown) 0.75f else 0.18f),
                 modifier = Modifier.size(20.dp)
             )
@@ -575,7 +575,7 @@ private fun BoxScope.FavoriteUnfavoriteBackground(offsetPx: Float) {
             contentAlignment = Alignment.Center
         ) {
             if (revealWidthPx > 24f) {
-                Icon(Icons.Outlined.Favorite, contentDescription = "Unfavorite", tint = Color.White)
+                Icon(Icons.Outlined.Favorite, contentDescription = stringResource(R.string.cd_unfavorite), tint = Color.White)
             }
         }
     }
@@ -681,7 +681,7 @@ private fun SavedMealRow(
         } else {
             Icon(
                 Icons.Filled.AddCircle,
-                contentDescription = "Log",
+                contentDescription = stringResource(R.string.cd_log),
                 tint = AppColors.Calorie,
                 modifier = Modifier.size(22.dp)
             )

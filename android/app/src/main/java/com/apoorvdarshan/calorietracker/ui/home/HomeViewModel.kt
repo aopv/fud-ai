@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.apoorvdarshan.calorietracker.AppContainer
+import com.apoorvdarshan.calorietracker.R
 import com.apoorvdarshan.calorietracker.models.FoodEntry
 import com.apoorvdarshan.calorietracker.models.FoodSource
 import com.apoorvdarshan.calorietracker.models.HomeTopNutrient
@@ -31,9 +32,9 @@ import java.time.ZoneId
 import java.util.UUID
 import kotlin.math.roundToInt
 
-enum class FoodLogSortOrder(val storageValue: String, val displayName: String) {
-    STANDARD("standard", "Breakfast → Lunch → Dinner"),
-    LATEST_MEALS_FIRST("latestMealsFirst", "Latest Meals First");
+enum class FoodLogSortOrder(val storageValue: String, val displayName: String, val displayNameRes: Int) {
+    STANDARD("standard", "Breakfast → Lunch → Dinner", R.string.sort_standard),
+    LATEST_MEALS_FIRST("latestMealsFirst", "Latest Meals First", R.string.sort_latest_first);
 
     companion object {
         fun fromStorage(value: String?): FoodLogSortOrder =
@@ -165,7 +166,7 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
             } catch (e: AiError) {
                 _ui.value = _ui.value.copy(analyzing = false, error = e.message)
             } catch (e: Throwable) {
-                _ui.value = _ui.value.copy(analyzing = false, error = e.localizedMessage ?: "Analysis failed")
+                _ui.value = _ui.value.copy(analyzing = false, error = e.localizedMessage ?: container.appContext.getString(R.string.error_analysis_failed))
             } finally {
                 container.analyzingFood.value = false
             }
@@ -192,7 +193,7 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
             } catch (e: AiError) {
                 _ui.value = _ui.value.copy(analyzing = false, error = e.message)
             } catch (e: Throwable) {
-                _ui.value = _ui.value.copy(analyzing = false, error = e.localizedMessage ?: "Analysis failed")
+                _ui.value = _ui.value.copy(analyzing = false, error = e.localizedMessage ?: container.appContext.getString(R.string.error_analysis_failed))
             } finally {
                 container.analyzingFood.value = false
             }
@@ -224,7 +225,7 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
             } catch (e: AiError) {
                 _ui.value = _ui.value.copy(analyzing = false, error = e.message)
             } catch (e: Throwable) {
-                _ui.value = _ui.value.copy(analyzing = false, error = e.localizedMessage ?: "Analysis failed")
+                _ui.value = _ui.value.copy(analyzing = false, error = e.localizedMessage ?: container.appContext.getString(R.string.error_analysis_failed))
             } finally {
                 container.analyzingFood.value = false
             }
@@ -257,7 +258,7 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
             } catch (e: AiError) {
                 _ui.value = _ui.value.copy(analyzing = false, error = e.message)
             } catch (e: Throwable) {
-                _ui.value = _ui.value.copy(analyzing = false, error = e.localizedMessage ?: "Analysis failed")
+                _ui.value = _ui.value.copy(analyzing = false, error = e.localizedMessage ?: container.appContext.getString(R.string.error_analysis_failed))
             } finally {
                 container.analyzingFood.value = false
             }
@@ -282,7 +283,7 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
                 val analysis = OpenFoodFactsService.lookup(barcode)
                 savePendingDraft(analysis, imageBytes = null, source = FoodSource.BARCODE)
             } catch (e: Throwable) {
-                _ui.value = _ui.value.copy(analyzing = false, error = e.localizedMessage ?: "Barcode lookup failed")
+                _ui.value = _ui.value.copy(analyzing = false, error = e.localizedMessage ?: container.appContext.getString(R.string.error_barcode_lookup_failed))
             } finally {
                 container.analyzingFood.value = false
             }
@@ -372,7 +373,7 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
     suspend fun suggestMealWhatIf(entry: FoodEntry): String {
         val snapshot = _ui.value
         val profile = snapshot.profile
-            ?: return "Finish onboarding first to compare this meal against your daily goals."
+            ?: return container.appContext.getString(R.string.finish_onboarding_hint)
         return container.foodAnalysis.suggestMealWhatIf(
             entry = entry,
             dayEntries = snapshot.todayEntries,

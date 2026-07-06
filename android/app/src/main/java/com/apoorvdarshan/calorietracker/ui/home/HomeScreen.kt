@@ -124,6 +124,7 @@ import com.apoorvdarshan.calorietracker.ui.util.clockTimePattern
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -328,7 +329,7 @@ fun HomeScreen(container: AppContainer) {
                     ) {
                         ui.homeTopNutrients.forEach { nutrient ->
                             MacroCard(
-                                label = nutrient.displayName,
+                                label = stringResource(nutrient.displayNameRes),
                                 current = nutrient.current(ui.todayEntries),
                                 goal = nutrient.goal(ui.profile, ui.optionalNutrientGoals),
                                 unit = nutrient.unit,
@@ -352,12 +353,12 @@ fun HomeScreen(container: AppContainer) {
             // Food log
             item { Spacer(Modifier.height(8.dp)) }
             if (mealGroups.isEmpty()) {
-                item { SectionHeader(if (isToday) "Today's Food" else "Food Log") }
+                item { SectionHeader(if (isToday) stringResource(R.string.home_todays_food) else stringResource(R.string.home_food_log)) }
                 item {
                     SectionCardWrapper(isFirst = true, isLast = true) {
                         Box(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 16.dp)) {
                             Text(
-                                "No foods logged",
+                                stringResource(R.string.home_no_foods_logged),
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
                             )
@@ -431,7 +432,7 @@ fun HomeScreen(container: AppContainer) {
             ) {
                 Icon(
                     Icons.Filled.Add,
-                    contentDescription = "Add food",
+                    contentDescription = stringResource(R.string.cd_add_food),
                     tint = Color.White,
                     modifier = Modifier.size(30.dp)
                 )
@@ -445,12 +446,12 @@ fun HomeScreen(container: AppContainer) {
                 onDismissRequest = { showAddMenu = false },
                 menuWidth = 224.dp
             ) {
-                SheetGlassDropdownMenuItem(label = "Copy from Day", leadingIcon = Icons.Filled.CalendarMonth) { showAddMenu = false; showCopyFromDay = true }
-                SheetGlassDropdownMenuItem(label = "Saved Meals", leadingIcon = Icons.Filled.Bookmark) { showAddMenu = false; showSaved = true }
-                SheetGlassDropdownMenuItem(label = "Manual Entry", leadingIcon = Icons.Filled.DriveFileRenameOutline) { showAddMenu = false; showManual = true }
-                SheetGlassDropdownMenuItem(label = "Voice", leadingIcon = Icons.Filled.Mic) { showAddMenu = false; showVoice = true }
-                SheetGlassDropdownMenuItem(label = "Text Input", leadingIcon = Icons.Filled.Edit) { showAddMenu = false; showText = true }
-                SheetGlassDropdownMenuItem(label = "From Photos + Note", leadingIcon = Icons.AutoMirrored.Filled.Note) {
+                SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_copy_from_day), leadingIcon = Icons.Filled.CalendarMonth) { showAddMenu = false; showCopyFromDay = true }
+                SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_saved_meals), leadingIcon = Icons.Filled.Bookmark) { showAddMenu = false; showSaved = true }
+                SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_manual_entry), leadingIcon = Icons.Filled.DriveFileRenameOutline) { showAddMenu = false; showManual = true }
+                SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_voice), leadingIcon = Icons.Filled.Mic) { showAddMenu = false; showVoice = true }
+                SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_text_input), leadingIcon = Icons.Filled.Edit) { showAddMenu = false; showText = true }
+                SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_from_photos_note), leadingIcon = Icons.AutoMirrored.Filled.Note) {
                     showAddMenu = false
                     pendingPickedPhotoWantsNote = true
                     photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
@@ -627,10 +628,10 @@ fun HomeScreen(container: AppContainer) {
 
     ui.error?.let { err ->
         FudGlassDialog(onDismissRequest = { vm.dismissPending() }) {
-            Text("Something went wrong", fontSize = 21.sp, fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.error_title), fontSize = 21.sp, fontWeight = FontWeight.Bold)
             Text(err, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.68f))
             FudGlassDialogActions(
-                primaryText = "OK",
+                primaryText = stringResource(R.string.action_ok),
                 onPrimary = { vm.dismissPending() }
             )
         }
@@ -869,7 +870,7 @@ private fun ViewMoreButton() {
             .padding(horizontal = 10.dp, vertical = 8.dp)
     ) {
         Text(
-            "View More",
+            stringResource(R.string.home_view_more),
             fontSize = 15.sp,
             fontWeight = FontWeight.Medium,
             color = AppColors.Calorie.copy(alpha = 0.6f)
@@ -949,7 +950,7 @@ private fun MealSectionHeader(
                         modifier = Modifier.size(16.dp)
                     )
                     Text(
-                        "Sort",
+                        stringResource(R.string.sort),
                         fontSize = 17.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = AppColors.Calorie
@@ -962,7 +963,7 @@ private fun MealSectionHeader(
                 ) {
                     for (order in FoodLogSortOrder.values()) {
                         SheetGlassDropdownMenuItem(
-                            label = order.displayName,
+                            label = stringResource(order.displayNameRes),
                             selected = order == sortOrder,
                             reserveSelectionSlot = true,
                             onClick = { onSortOrderSelected(order) }
@@ -978,7 +979,7 @@ private fun MealSectionHeader(
             if (onShare != null) {
                 Icon(
                     Icons.Filled.IosShare,
-                    contentDescription = "Share meal",
+                    contentDescription = stringResource(R.string.cd_share_meal),
                     tint = AppColors.Calorie,
                     modifier = Modifier
                         .clickable { onShare() }
@@ -1185,13 +1186,13 @@ private fun BoxScope.SwipeBackground(offsetPx: Float, isFavorite: Boolean) {
         Triple(
             Color(0xFFD32F2F),
             Icons.Filled.Delete,
-            "Delete"
+            stringResource(R.string.home_swipe_delete)
         )
     } else {
         Triple(
             AppColors.Calorie,
             if (isFavorite) Icons.Filled.FavoriteBorder else Icons.Filled.Favorite,
-            if (isFavorite) "Unfavorite" else "Favorite"
+            if (isFavorite) stringResource(R.string.home_swipe_unfavorite) else stringResource(R.string.home_swipe_favorite)
         )
     }
     // iOS Mail-style trailing reveal: paint only the area the foreground has
@@ -1301,7 +1302,7 @@ private fun FoodRow(
                     if (isFavorite) {
                         Icon(
                             Icons.Filled.Favorite,
-                            contentDescription = "Favorited",
+                            contentDescription = stringResource(R.string.cd_favorited),
                             tint = AppColors.Calorie,
                             modifier = Modifier.size(12.dp)
                         )
@@ -1397,8 +1398,8 @@ private fun CopyFromDaySheet(
         containerColor = MaterialTheme.colorScheme.background
     ) {
         SheetReviewToolbar(
-            title = "Copy from Day",
-            primaryLabel = if (sourceEntries.isEmpty()) "Done" else "Copy All",
+            title = stringResource(R.string.home_menu_copy_from_day),
+            primaryLabel = if (sourceEntries.isEmpty()) stringResource(R.string.action_done) else stringResource(R.string.copy_all),
             onCancel = onDismiss,
             onPrimary = { if (sourceEntries.isEmpty()) onDismiss() else onCopy(sourceEntries) }
         )
@@ -1409,9 +1410,9 @@ private fun CopyFromDaySheet(
         ) {
             item {
                 Column(Modifier.padding(horizontal = 20.dp)) {
-                    SheetSectionHeader("Source")
+                    SheetSectionHeader(stringResource(R.string.section_source))
                     SheetPillRow(onClick = { showDatePicker = true }) {
-                        Text("Copy From", fontSize = 17.sp, modifier = Modifier.weight(1f))
+                        Text(stringResource(R.string.copy_from), fontSize = 17.sp, modifier = Modifier.weight(1f))
                         Text(
                             sourceDate.format(dateFmt),
                             fontSize = 17.sp,
@@ -1444,7 +1445,7 @@ private fun CopyFromDaySheet(
                                 modifier = Modifier.size(34.dp)
                             )
                             Text(
-                                "No foods logged on this day",
+                                stringResource(R.string.copy_no_foods_on_day),
                                 fontSize = 15.sp,
                                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                             )
@@ -1454,7 +1455,7 @@ private fun CopyFromDaySheet(
             } else {
                 item {
                     FudGlassPrimaryButton(
-                        text = "Copy ${sourceEntries.size} food${if (sourceEntries.size == 1) "" else "s"} to $targetText",
+                        text = pluralStringResource(R.plurals.copy_foods_to, sourceEntries.size, sourceEntries.size, targetText),
                         onClick = { onCopy(sourceEntries) },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -1483,7 +1484,7 @@ private fun CopyFromDaySheet(
                                 horizontalArrangement = Arrangement.Center
                             ) {
                                 Text(
-                                    "Copy ${stringResource(group.meal.displayNameRes)}",
+                                    stringResource(R.string.copy_meal_format, stringResource(group.meal.displayNameRes)),
                                     color = AppColors.Calorie,
                                     fontSize = 15.sp,
                                     fontWeight = FontWeight.SemiBold
@@ -1511,7 +1512,7 @@ private fun CopyFromDaySheet(
     if (showDatePicker) {
         var pickedDate by remember(sourceDate) { mutableStateOf(sourceDate) }
         FudGlassDialog(onDismissRequest = { showDatePicker = false }) {
-            Text("Copy From", fontSize = 21.sp, fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.copy_from), fontSize = 21.sp, fontWeight = FontWeight.Bold)
             DateWheelPicker(
                 selected = pickedDate,
                 onSelect = { pickedDate = it },
@@ -1520,12 +1521,12 @@ private fun CopyFromDaySheet(
                 modifier = Modifier.fillMaxWidth()
             )
             FudGlassDialogActions(
-                primaryText = "Done",
+                primaryText = stringResource(R.string.action_done),
                 onPrimary = {
                     sourceDate = pickedDate
                     showDatePicker = false
                 },
-                dismissText = "Cancel",
+                dismissText = stringResource(R.string.action_cancel),
                 onDismiss = { showDatePicker = false }
             )
         }
@@ -1580,7 +1581,7 @@ private fun AnalyzingOverlay(imageBytes: ByteArray? = null) {
             // "Looking up nutrition..." (see ContentView.swift cases .analyzing /
             // .analyzingText). pendingImageBytes is the discriminator.
             Text(
-                if (bitmap != null) "Analyzing your food..." else "Looking up nutrition...",
+                if (bitmap != null) stringResource(R.string.home_analyzing_food) else stringResource(R.string.home_looking_up_nutrition),
                 fontSize = 17.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = AppColors.Calorie
@@ -1638,13 +1639,13 @@ private fun CameraPairTransitionOverlay() {
                     )
                 }
                 Text(
-                    "First photo saved",
+                    stringResource(R.string.home_first_photo_saved),
                     fontSize = 19.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
-                    "Take the second shot",
+                    stringResource(R.string.home_take_second_shot),
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.62f)
@@ -1665,29 +1666,29 @@ private fun AnalysisResultDialog(
         FudGlassSurface(modifier = Modifier.fillMaxWidth(), cornerRadius = 20.dp, padding = 16.dp) {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text("${analysis.calories} kcal", fontSize = 30.sp, fontWeight = FontWeight.Bold, color = AppColors.Calorie)
-                Text("Protein: ${MacroValueFormatter.withUnit(analysis.protein)}")
-                Text("Carbs: ${MacroValueFormatter.withUnit(analysis.carbs)}")
-                Text("Fat: ${MacroValueFormatter.withUnit(analysis.fat)}")
+                Text(stringResource(R.string.macro_protein_format, MacroValueFormatter.withUnit(analysis.protein)))
+                Text(stringResource(R.string.macro_carbs_format, MacroValueFormatter.withUnit(analysis.carbs)))
+                Text(stringResource(R.string.macro_fat_format, MacroValueFormatter.withUnit(analysis.fat)))
                 if (analysis.fiber != null || analysis.sugar != null || analysis.sodium != null) {
                     Spacer(Modifier.height(2.dp))
-                    analysis.fiber?.let { Text("Fiber: ${it}g", fontSize = 12.sp) }
-                    analysis.sugar?.let { Text("Sugar: ${it}g", fontSize = 12.sp) }
-                    analysis.saturatedFat?.let { Text("Sat fat: ${it}g", fontSize = 12.sp) }
-                    analysis.sodium?.let { Text("Sodium: ${it}mg", fontSize = 12.sp) }
-                    analysis.potassium?.let { Text("Potassium: ${it}mg", fontSize = 12.sp) }
-                    analysis.cholesterol?.let { Text("Cholesterol: ${it}mg", fontSize = 12.sp) }
+                    analysis.fiber?.let { Text(stringResource(R.string.nutrient_fiber_format, it.toString()), fontSize = 12.sp) }
+                    analysis.sugar?.let { Text(stringResource(R.string.nutrient_sugar_format, it.toString()), fontSize = 12.sp) }
+                    analysis.saturatedFat?.let { Text(stringResource(R.string.nutrient_sat_fat_format, it.toString()), fontSize = 12.sp) }
+                    analysis.sodium?.let { Text(stringResource(R.string.nutrient_sodium_format, it.toString()), fontSize = 12.sp) }
+                    analysis.potassium?.let { Text(stringResource(R.string.nutrient_potassium_format, it.toString()), fontSize = 12.sp) }
+                    analysis.cholesterol?.let { Text(stringResource(R.string.nutrient_cholesterol_format, it.toString()), fontSize = 12.sp) }
                 }
                 Text(
-                    "Serving: ~${analysis.servingSizeGrams.toInt()}g",
+                    stringResource(R.string.home_serving_format, analysis.servingSizeGrams.toInt()),
                     fontSize = 12.sp,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
                 )
             }
         }
         FudGlassDialogActions(
-            primaryText = "Save",
+            primaryText = stringResource(R.string.action_save),
             onPrimary = onSave,
-            dismissText = "Discard",
+            dismissText = stringResource(R.string.action_discard),
             onDismiss = onDismiss
         )
     }
@@ -1697,10 +1698,10 @@ private fun AnalysisResultDialog(
 private fun TextInputDialog(onDismiss: () -> Unit, onSubmit: (String) -> Unit) {
     // Keep the input composable stable so rotating placeholder examples do not drop IME focus.
     val placeholders = listOf(
-        "2 eggs, toast with butter and a coffee",
-        "Chipotle burrito bowl with chicken and rice",
-        "Domino's pepperoni pizza, 2 slices",
-        "Greek yogurt with granola and blueberries"
+        stringResource(R.string.text_input_placeholder_1),
+        stringResource(R.string.text_input_placeholder_2),
+        stringResource(R.string.text_input_placeholder_3),
+        stringResource(R.string.text_input_placeholder_4)
     )
     var input by remember { mutableStateOf("") }
     var placeholderIdx by remember { mutableIntStateOf(0) }
@@ -1721,12 +1722,12 @@ private fun TextInputDialog(onDismiss: () -> Unit, onSubmit: (String) -> Unit) {
             modifier = Modifier.fillMaxWidth()
         )
         FudGlassPrimaryButton(
-            text = "Analyze",
+            text = stringResource(R.string.action_analyze),
             onClick = { if (input.isNotBlank()) onSubmit(input.trim()) },
             enabled = input.isNotBlank()
         )
         TextButton(onClick = onDismiss, modifier = Modifier.fillMaxWidth()) {
-            Text("Cancel", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
+            Text(stringResource(R.string.action_cancel), color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
         }
     }
 }
@@ -1747,23 +1748,23 @@ private fun ManualEntryDialog(
     val canSave = name.isNotBlank() && calories.toIntOrNull() != null
 
     FudGlassDialog(onDismissRequest = onDismiss) {
-                Text("Manual Entry", fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
+                Text(stringResource(R.string.manual_title), fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
 
                 FudGlassTextField(
                     value = name,
                     onValueChange = { name = it },
-                    placeholder = "e.g. Homemade salad",
+                    placeholder = stringResource(R.string.manual_name_placeholder),
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
 
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    NumberField("Calories", calories, { calories = it.filter(Char::isDigit) }, Modifier.weight(1f))
-                    NumberField("Protein (g)", protein, { protein = filterDecimalInput(it) }, Modifier.weight(1f), decimal = true)
+                    NumberField(stringResource(R.string.manual_calories), calories, { calories = it.filter(Char::isDigit) }, Modifier.weight(1f))
+                    NumberField(stringResource(R.string.manual_protein), protein, { protein = filterDecimalInput(it) }, Modifier.weight(1f), decimal = true)
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    NumberField("Carbs (g)", carbs, { carbs = filterDecimalInput(it) }, Modifier.weight(1f), decimal = true)
-                    NumberField("Fat (g)", fat, { fat = filterDecimalInput(it) }, Modifier.weight(1f), decimal = true)
+                    NumberField(stringResource(R.string.manual_carbs), carbs, { carbs = filterDecimalInput(it) }, Modifier.weight(1f), decimal = true)
+                    NumberField(stringResource(R.string.manual_fat), fat, { fat = filterDecimalInput(it) }, Modifier.weight(1f), decimal = true)
                 }
 
                 // Meal Type — DropdownMenu styled to match the FoodResultSheet /
@@ -1778,7 +1779,7 @@ private fun ManualEntryDialog(
                         .padding(horizontal = 14.dp, vertical = 14.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("Meal Type", fontSize = 16.sp, modifier = Modifier.weight(1f))
+                    Text(stringResource(R.string.sheet_meal_type), fontSize = 16.sp, modifier = Modifier.weight(1f))
                     Box {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(
@@ -1816,7 +1817,7 @@ private fun ManualEntryDialog(
                 }
 
                 FudGlassPrimaryButton(
-                    text = "Save",
+                    text = stringResource(R.string.action_save),
                     onClick = {
                         onSave(
                             name.trim(),
@@ -1831,7 +1832,7 @@ private fun ManualEntryDialog(
                     modifier = Modifier.fillMaxWidth()
                 )
                 TextButton(onClick = onDismiss, modifier = Modifier.fillMaxWidth()) {
-                    Text("Cancel", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
+                    Text(stringResource(R.string.action_cancel), color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
                 }
     }
 }

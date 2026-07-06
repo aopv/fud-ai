@@ -152,9 +152,13 @@ fun DateWheelPicker(
     }
     val days = remember(daysInMonth) { (1..daysInMonth).toList() }
 
-    // iOS DatePicker shows full English month names (April, not Apr).
-    val monthNames = listOf("January", "February", "March", "April", "May", "June",
-                            "July", "August", "September", "October", "November", "December")
+    // iOS DatePicker shows full month names (April, not Apr) — localized.
+    val monthNames = remember {
+        java.time.Month.values().map { m ->
+            m.getDisplayName(java.time.format.TextStyle.FULL_STANDALONE, java.util.Locale.getDefault())
+                .replaceFirstChar { it.uppercase() }
+        }
+    }
 
     // iOS column order is Day | Month | Year (matches iOS UIDatePicker default).
     // The capsule highlight spans all three wheels — paint it on the parent Box

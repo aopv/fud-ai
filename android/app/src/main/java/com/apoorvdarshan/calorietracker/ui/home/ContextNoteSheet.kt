@@ -28,7 +28,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.apoorvdarshan.calorietracker.R
 
 /**
  * "Camera + Note" intermediate sheet. Shows the just-captured photo and a
@@ -56,8 +58,8 @@ fun ContextNoteSheet(
         containerColor = MaterialTheme.colorScheme.surface
     ) {
         SheetReviewToolbar(
-            title = "Add Note",
-            primaryLabel = "Analyze",
+            title = stringResource(R.string.context_note_title),
+            primaryLabel = stringResource(R.string.action_analyze),
             onCancel = onDismiss,
             onPrimary = { onAnalyze(note) }
         )

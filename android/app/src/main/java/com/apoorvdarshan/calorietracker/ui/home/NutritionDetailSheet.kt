@@ -39,6 +39,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -47,6 +48,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.apoorvdarshan.calorietracker.R
 import com.apoorvdarshan.calorietracker.models.FoodEntry
 import com.apoorvdarshan.calorietracker.models.HomeTopNutrient
 import com.apoorvdarshan.calorietracker.models.MacroValueFormatter
@@ -125,13 +127,13 @@ fun NutritionDetailSheet(
         ) {
             item {
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                    Text("Nutrition Details", fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
+                    Text(stringResource(R.string.nutrition_details_title), fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
                     Spacer(Modifier.weight(1f))
-                    TextButton(onClick = onDismiss) { Text("Done", color = AppColors.Calorie) }
+                    TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_done), color = AppColors.Calorie) }
                 }
             }
 
-            item { SectionHeader("Home Cards") }
+            item { SectionHeader(stringResource(R.string.nutrition_section_home_cards)) }
             item {
                 Card {
                     HomeCardsRow(
@@ -141,65 +143,65 @@ fun NutritionDetailSheet(
                 }
             }
 
-            item { SectionHeader("Macros") }
+            item { SectionHeader(stringResource(R.string.nutrition_section_macros)) }
             item {
                 Card {
-                    DetailRow(Icons.Filled.LocalFireDepartment, "Calories", "$calories", "kcal", goal = "${profile?.effectiveCalories ?: 2000}")
+                    DetailRow(Icons.Filled.LocalFireDepartment, stringResource(R.string.nutrition_label_calories), "$calories", stringResource(R.string.unit_kcal), goal = "${profile?.effectiveCalories ?: 2000}")
                     Hairline()
-                    DetailRow(null, "Protein", MacroValueFormatter.string(protein), "g", goal = "${profile?.effectiveProtein ?: 150}", labelGlyph = "P")
+                    DetailRow(null, stringResource(R.string.nutrition_label_protein), MacroValueFormatter.string(protein), stringResource(R.string.unit_g), goal = "${profile?.effectiveProtein ?: 150}", labelGlyph = "P")
                     Hairline()
-                    DetailRow(null, "Carbs", MacroValueFormatter.string(carbs), "g", goal = "${profile?.effectiveCarbs ?: 220}", labelGlyph = "C")
+                    DetailRow(null, stringResource(R.string.nutrition_label_carbs), MacroValueFormatter.string(carbs), stringResource(R.string.unit_g), goal = "${profile?.effectiveCarbs ?: 220}", labelGlyph = "C")
                     Hairline()
-                    DetailRow(null, "Fat", MacroValueFormatter.string(fat), "g", goal = "${profile?.effectiveFat ?: 70}", labelGlyph = "F")
+                    DetailRow(null, stringResource(R.string.nutrition_label_fat), MacroValueFormatter.string(fat), stringResource(R.string.unit_g), goal = "${profile?.effectiveFat ?: 70}", labelGlyph = "F")
                 }
             }
 
-            item { SectionHeader("Detailed Nutrition") }
+            item { SectionHeader(stringResource(R.string.nutrition_section_detailed)) }
             item {
                 Card {
-                    DetailRow(null, "Sugar", fmt(sugar), "g", goal = "${optionalGoals.sugar}", labelGlyph = "S")
+                    DetailRow(null, stringResource(R.string.nutrition_label_sugar), fmt(sugar), stringResource(R.string.unit_g), goal = "${optionalGoals.sugar}", labelGlyph = "S")
                     Hairline()
-                    DetailRow(null, "Added Sugar", fmt(addedSugar), "g", goal = "${optionalGoals.addedSugar}", labelGlyph = "+")
+                    DetailRow(null, stringResource(R.string.nutrition_label_added_sugar), fmt(addedSugar), stringResource(R.string.unit_g), goal = "${optionalGoals.addedSugar}", labelGlyph = "+")
                     Hairline()
-                    DetailRow(Icons.Filled.Spa, "Fiber", fmt(fiber), "g", goal = "${optionalGoals.fiber}")
+                    DetailRow(Icons.Filled.Spa, stringResource(R.string.nutrition_label_fiber), fmt(fiber), stringResource(R.string.unit_g), goal = "${optionalGoals.fiber}")
                     Hairline()
-                    DetailRow(Icons.Filled.WaterDrop, "Saturated Fat", fmt(satFat), "g", goal = "${optionalGoals.saturatedFat}")
+                    DetailRow(Icons.Filled.WaterDrop, stringResource(R.string.nutrition_label_saturated_fat), fmt(satFat), stringResource(R.string.unit_g), goal = "${optionalGoals.saturatedFat}")
                     Hairline()
-                    DetailRow(Icons.Filled.WaterDrop, "Mono Unsat. Fat", fmt(monoFat), "g")
+                    DetailRow(Icons.Filled.WaterDrop, stringResource(R.string.nutrition_label_mono_fat), fmt(monoFat), stringResource(R.string.unit_g))
                     Hairline()
-                    DetailRow(Icons.Filled.WaterDrop, "Poly Unsat. Fat", fmt(polyFat), "g")
+                    DetailRow(Icons.Filled.WaterDrop, stringResource(R.string.nutrition_label_poly_fat), fmt(polyFat), stringResource(R.string.unit_g))
                     Hairline()
-                    DetailRow(Icons.Filled.Favorite, "Cholesterol", fmt(cholesterol), "mg", goal = "${optionalGoals.cholesterol}")
+                    DetailRow(Icons.Filled.Favorite, stringResource(R.string.nutrition_label_cholesterol), fmt(cholesterol), stringResource(R.string.unit_mg), goal = "${optionalGoals.cholesterol}")
                     Hairline()
-                    DetailRow(Icons.Filled.Bolt, "Sodium", fmt(sodium), "mg", goal = "${optionalGoals.sodium}")
+                    DetailRow(Icons.Filled.Bolt, stringResource(R.string.nutrition_label_sodium), fmt(sodium), stringResource(R.string.unit_mg), goal = "${optionalGoals.sodium}")
                     Hairline()
-                    DetailRow(Icons.Filled.Bolt, "Potassium", fmt(potassium), "mg", goal = "${optionalGoals.potassium}")
+                    DetailRow(Icons.Filled.Bolt, stringResource(R.string.nutrition_label_potassium), fmt(potassium), stringResource(R.string.unit_mg), goal = "${optionalGoals.potassium}")
                     Hairline()
-                    DetailRow(Icons.Filled.WaterDrop, "Trans Fat", fmt(transFat), "g", goal = "${optionalGoals.transFat}")
+                    DetailRow(Icons.Filled.WaterDrop, stringResource(R.string.nutrition_label_trans_fat), fmt(transFat), stringResource(R.string.unit_g), goal = "${optionalGoals.transFat}")
                     Hairline()
-                    DetailRow(Icons.Filled.Bolt, "Calcium", fmt(calcium), "mg", goal = "${optionalGoals.calcium}")
+                    DetailRow(Icons.Filled.Bolt, stringResource(R.string.nutrition_label_calcium), fmt(calcium), stringResource(R.string.unit_mg), goal = "${optionalGoals.calcium}")
                     Hairline()
-                    DetailRow(Icons.Filled.Bolt, "Iron", fmt(iron), "mg", goal = "${optionalGoals.iron}")
+                    DetailRow(Icons.Filled.Bolt, stringResource(R.string.nutrition_label_iron), fmt(iron), stringResource(R.string.unit_mg), goal = "${optionalGoals.iron}")
                     Hairline()
-                    DetailRow(Icons.Filled.Bolt, "Magnesium", fmt(magnesium), "mg", goal = "${optionalGoals.magnesium}")
+                    DetailRow(Icons.Filled.Bolt, stringResource(R.string.nutrition_label_magnesium), fmt(magnesium), stringResource(R.string.unit_mg), goal = "${optionalGoals.magnesium}")
                     Hairline()
-                    DetailRow(Icons.Filled.Bolt, "Zinc", fmt(zinc), "mg", goal = "${optionalGoals.zinc}")
+                    DetailRow(Icons.Filled.Bolt, stringResource(R.string.nutrition_label_zinc), fmt(zinc), stringResource(R.string.unit_mg), goal = "${optionalGoals.zinc}")
                     Hairline()
-                    DetailRow(null, "Vitamin A", fmt(vitaminA), "mcg", goal = "${optionalGoals.vitaminA}", labelGlyph = "A")
+                    DetailRow(null, stringResource(R.string.nutrition_label_vitamin_a), fmt(vitaminA), stringResource(R.string.unit_mcg), goal = "${optionalGoals.vitaminA}", labelGlyph = "A")
                     Hairline()
-                    DetailRow(null, "Vitamin C", fmt(vitaminC), "mg", goal = "${optionalGoals.vitaminC}", labelGlyph = "C")
+                    DetailRow(null, stringResource(R.string.nutrition_label_vitamin_c), fmt(vitaminC), stringResource(R.string.unit_mg), goal = "${optionalGoals.vitaminC}", labelGlyph = "C")
                     Hairline()
-                    DetailRow(null, "Vitamin D", fmt(vitaminD), "mcg", goal = "${optionalGoals.vitaminD}", labelGlyph = "D")
+                    DetailRow(null, stringResource(R.string.nutrition_label_vitamin_d), fmt(vitaminD), stringResource(R.string.unit_mcg), goal = "${optionalGoals.vitaminD}", labelGlyph = "D")
                     Hairline()
-                    DetailRow(null, "Vitamin B12", fmt(vitaminB12), "mcg", goal = "${optionalGoals.vitaminB12}", labelGlyph = "B")
+                    DetailRow(null, stringResource(R.string.nutrition_label_vitamin_b12), fmt(vitaminB12), stringResource(R.string.unit_mcg), goal = "${optionalGoals.vitaminB12}", labelGlyph = "B")
                     Hairline()
-                    DetailRow(null, "Vitamin E", fmt(vitaminE), "mg", goal = "${optionalGoals.vitaminE}", labelGlyph = "E")
+                    DetailRow(null, stringResource(R.string.nutrition_label_vitamin_e), fmt(vitaminE), stringResource(R.string.unit_mg), goal = "${optionalGoals.vitaminE}", labelGlyph = "E")
                     Hairline()
-                    DetailRow(null, "Vitamin K", fmt(vitaminK), "mcg", goal = "${optionalGoals.vitaminK}", labelGlyph = "K")
+                    DetailRow(null, stringResource(R.string.nutrition_label_vitamin_k), fmt(vitaminK), stringResource(R.string.unit_mcg), goal = "${optionalGoals.vitaminK}", labelGlyph = "K")
                     Hairline()
-                    DetailRow(Icons.Filled.Spa, "Folate", fmt(folate), "mcg", goal = "${optionalGoals.folate}")
+                    DetailRow(Icons.Filled.Spa, stringResource(R.string.nutrition_label_folate), fmt(folate), stringResource(R.string.unit_mcg), goal = "${optionalGoals.folate}")
                     Hairline()
-                    DetailRow(Icons.Filled.WaterDrop, "Omega-3", fmt(omega3), "g", goal = "${optionalGoals.omega3}")
+                    DetailRow(Icons.Filled.WaterDrop, stringResource(R.string.nutrition_label_omega3), fmt(omega3), stringResource(R.string.unit_g), goal = "${optionalGoals.omega3}")
                 }
             }
         }
@@ -252,9 +254,9 @@ private fun HomeCardsRow(
     ) {
         Icon(Icons.Filled.Spa, null, tint = AppColors.Calorie, modifier = Modifier.size(20.dp))
         Column(Modifier.weight(1f)) {
-            Text("Home Nutrient Cards", fontSize = 17.sp)
+            Text(stringResource(R.string.home_nutrient_cards), fontSize = 17.sp)
             Text(
-                selected.joinToString(", ") { it.displayName },
+                selected.map { stringResource(it.displayNameRes) }.joinToString(", "),
                 fontSize = 13.sp,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
             )
@@ -286,9 +288,9 @@ private fun HomeTopNutrientPickerDialog(
     }
 
     FudGlassDialog(onDismissRequest = onDismiss) {
-        Text("Home Nutrients", fontSize = 22.sp, fontWeight = FontWeight.Bold)
+        Text(stringResource(R.string.home_nutrients), fontSize = 22.sp, fontWeight = FontWeight.Bold)
         Text(
-            "Pick exactly four nutrients for the Home summary row.",
+            stringResource(R.string.home_nutrients_pick_four),
             fontSize = 14.sp,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.62f)
         )
@@ -366,9 +368,9 @@ private fun HomeTopNutrientPickerDialog(
                     }
                     Spacer(Modifier.width(14.dp))
                     Column(Modifier.weight(1f)) {
-                        Text(nutrient.displayName, fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
+                        Text(stringResource(nutrient.displayNameRes), fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
                         Text(
-                            nutrient.unit,
+                            stringResource(nutrient.unitRes),
                             fontSize = 12.sp,
                             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
                         )
@@ -377,12 +379,12 @@ private fun HomeTopNutrientPickerDialog(
             }
         }
         FudGlassDialogActions(
-            primaryText = "Done",
+            primaryText = stringResource(R.string.action_done),
             onPrimary = {
                 onSave(HomeTopNutrient.normalized(draft))
                 onDismiss()
             },
-            dismissText = "Cancel",
+            dismissText = stringResource(R.string.action_cancel),
             onDismiss = onDismiss
         )
     }

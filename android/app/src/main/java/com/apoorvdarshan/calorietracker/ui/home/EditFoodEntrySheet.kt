@@ -237,7 +237,7 @@ fun EditFoodEntrySheet(
                     emoji = newAnalysis.emoji
                 )
             } catch (e: Exception) {
-                errorText = e.localizedMessage ?: "Reprocessing failed"
+                errorText = e.localizedMessage ?: context.getString(R.string.edit_reprocessing_failed)
             } finally {
                 isReprocessing = false
             }
@@ -256,8 +256,8 @@ fun EditFoodEntrySheet(
         SheetReviewToolbar(
             title = stringResource(R.string.sheet_edit_food),
             primaryLabel = when {
-                isReprocessing -> "Reprocessing…"
-                noteChanged -> "Reprocess"
+                isReprocessing -> stringResource(R.string.edit_reprocessing)
+                noteChanged -> stringResource(R.string.edit_reprocess)
                 else -> stringResource(R.string.action_save)
             },
             onCancel = onDismiss,
@@ -273,7 +273,7 @@ fun EditFoodEntrySheet(
         // from inside.
         val gUnit = stringResource(R.string.unit_g)
         val mgUnit = stringResource(R.string.unit_mg)
-        val mcgUnit = "mcg"
+        val mcgUnit = stringResource(R.string.unit_mcg)
         val micros = listOf(
             Triple(stringResource(R.string.sheet_micro_sugar), scaledD(currentBaseEntry.sugar), gUnit),
             Triple(stringResource(R.string.sheet_micro_added_sugar), scaledD(currentBaseEntry.addedSugar), gUnit),
@@ -284,19 +284,19 @@ fun EditFoodEntrySheet(
             Triple(stringResource(R.string.sheet_micro_cholesterol), scaledD(currentBaseEntry.cholesterol), mgUnit),
             Triple(stringResource(R.string.sheet_micro_sodium), scaledD(currentBaseEntry.sodium), mgUnit),
             Triple(stringResource(R.string.sheet_micro_potassium), scaledD(currentBaseEntry.potassium), mgUnit),
-            Triple("Trans Fat", scaledD(currentBaseEntry.transFat), gUnit),
-            Triple("Calcium", scaledD(currentBaseEntry.calcium), mgUnit),
-            Triple("Iron", scaledD(currentBaseEntry.iron), mgUnit),
-            Triple("Magnesium", scaledD(currentBaseEntry.magnesium), mgUnit),
-            Triple("Zinc", scaledD(currentBaseEntry.zinc), mgUnit),
-            Triple("Vitamin A", scaledD(currentBaseEntry.vitaminA), mcgUnit),
-            Triple("Vitamin C", scaledD(currentBaseEntry.vitaminC), mgUnit),
-            Triple("Vitamin D", scaledD(currentBaseEntry.vitaminD), mcgUnit),
-            Triple("Vitamin B12", scaledD(currentBaseEntry.vitaminB12), mcgUnit),
-            Triple("Vitamin E", scaledD(currentBaseEntry.vitaminE), mgUnit),
-            Triple("Vitamin K", scaledD(currentBaseEntry.vitaminK), mcgUnit),
-            Triple("Folate", scaledD(currentBaseEntry.folate), mcgUnit),
-            Triple("Omega-3", scaledD(currentBaseEntry.omega3), gUnit)
+            Triple(stringResource(R.string.nutrition_label_trans_fat), scaledD(currentBaseEntry.transFat), gUnit),
+            Triple(stringResource(R.string.nutrition_label_calcium), scaledD(currentBaseEntry.calcium), mgUnit),
+            Triple(stringResource(R.string.nutrition_label_iron), scaledD(currentBaseEntry.iron), mgUnit),
+            Triple(stringResource(R.string.nutrition_label_magnesium), scaledD(currentBaseEntry.magnesium), mgUnit),
+            Triple(stringResource(R.string.nutrition_label_zinc), scaledD(currentBaseEntry.zinc), mgUnit),
+            Triple(stringResource(R.string.nutrition_label_vitamin_a), scaledD(currentBaseEntry.vitaminA), mcgUnit),
+            Triple(stringResource(R.string.nutrition_label_vitamin_c), scaledD(currentBaseEntry.vitaminC), mgUnit),
+            Triple(stringResource(R.string.nutrition_label_vitamin_d), scaledD(currentBaseEntry.vitaminD), mcgUnit),
+            Triple(stringResource(R.string.nutrition_label_vitamin_b12), scaledD(currentBaseEntry.vitaminB12), mcgUnit),
+            Triple(stringResource(R.string.nutrition_label_vitamin_e), scaledD(currentBaseEntry.vitaminE), mgUnit),
+            Triple(stringResource(R.string.nutrition_label_vitamin_k), scaledD(currentBaseEntry.vitaminK), mcgUnit),
+            Triple(stringResource(R.string.nutrition_label_folate), scaledD(currentBaseEntry.folate), mcgUnit),
+            Triple(stringResource(R.string.nutrition_label_omega3), scaledD(currentBaseEntry.omega3), gUnit)
         )
 
         Box(modifier = Modifier.fillMaxWidth()) {
@@ -475,7 +475,7 @@ fun EditFoodEntrySheet(
                 }
             }
 
-            item { SheetSectionHeader("Reprocess with AI") }
+            item { SheetSectionHeader(stringResource(R.string.edit_reprocess_section)) }
             item {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedTextField(
@@ -484,7 +484,7 @@ fun EditFoodEntrySheet(
                         enabled = !isReprocessing,
                         placeholder = {
                             Text(
-                                "Add a note to refine this entry — e.g. large bowl, extra olive oil — then tap Reprocess",
+                                stringResource(R.string.edit_reprocess_hint),
                                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
                             )
                         },
@@ -497,7 +497,7 @@ fun EditFoodEntrySheet(
                 }
             }
 
-            item { SheetSectionHeader("Date & Time") }
+            item { SheetSectionHeader(stringResource(R.string.section_date_time)) }
             item {
                 SheetPillCard {
                     Row(
@@ -510,7 +510,7 @@ fun EditFoodEntrySheet(
                             .padding(horizontal = 18.dp, vertical = 12.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("Date", fontSize = 17.sp, modifier = Modifier.weight(1f))
+                        Text(stringResource(R.string.label_date), fontSize = 17.sp, modifier = Modifier.weight(1f))
                         Text(
                             loggedDate.format(dateFormatter),
                             fontSize = 17.sp,
@@ -529,7 +529,7 @@ fun EditFoodEntrySheet(
                             .padding(horizontal = 18.dp, vertical = 12.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("Time", fontSize = 17.sp, modifier = Modifier.weight(1f))
+                        Text(stringResource(R.string.label_time), fontSize = 17.sp, modifier = Modifier.weight(1f))
                         Text(
                             loggedTime.format(timeFormatter),
                             fontSize = 17.sp,
@@ -541,7 +541,7 @@ fun EditFoodEntrySheet(
             }
 
             // Share this meal as a fudai://add-meal link (issue #107)
-            item { SheetSectionHeader("Share") }
+            item { SheetSectionHeader(stringResource(R.string.section_share)) }
             item {
                 SheetPillCard {
                     Row(
@@ -558,7 +558,7 @@ fun EditFoodEntrySheet(
                             modifier = Modifier.size(20.dp)
                         )
                         Spacer(Modifier.width(12.dp))
-                        Text("Share Meal", fontSize = 17.sp, fontWeight = FontWeight.Medium)
+                        Text(stringResource(R.string.share_meal), fontSize = 17.sp, fontWeight = FontWeight.Medium)
                     }
                 }
             }
@@ -578,7 +578,7 @@ fun EditFoodEntrySheet(
     if (showDatePicker) {
         var pickedDate by remember(loggedDate) { mutableStateOf(loggedDate) }
         FudGlassDialog(onDismissRequest = { showDatePicker = false }) {
-            Text("Date", fontSize = 21.sp, fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.label_date), fontSize = 21.sp, fontWeight = FontWeight.Bold)
             DateWheelPicker(
                 selected = pickedDate,
                 onSelect = { pickedDate = it },
@@ -587,12 +587,12 @@ fun EditFoodEntrySheet(
                 modifier = Modifier.fillMaxWidth()
             )
             FudGlassDialogActions(
-                primaryText = "Done",
+                primaryText = stringResource(R.string.action_done),
                 onPrimary = {
                     loggedDate = pickedDate
                     showDatePicker = false
                 },
-                dismissText = "Cancel",
+                dismissText = stringResource(R.string.action_cancel),
                 onDismiss = { showDatePicker = false }
             )
         }
@@ -620,31 +620,31 @@ private fun EditFoodTimeDialog(
     var minuteText by remember(initialTime) { mutableStateOf(initialTime.minute.toString().padStart(2, '0')) }
 
     FudGlassDialog(onDismissRequest = onDismiss) {
-        Text("Time", fontSize = 21.sp, fontWeight = FontWeight.Bold)
+        Text(stringResource(R.string.label_time), fontSize = 21.sp, fontWeight = FontWeight.Bold)
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             FudGlassTextField(
                 value = hourText,
                 onValueChange = { hourText = it.filter(Char::isDigit).take(2) },
-                placeholder = "Hour",
+                placeholder = stringResource(R.string.placeholder_hour),
                 singleLine = true,
                 modifier = Modifier.weight(1f)
             )
             FudGlassTextField(
                 value = minuteText,
                 onValueChange = { minuteText = it.filter(Char::isDigit).take(2) },
-                placeholder = "Minute",
+                placeholder = stringResource(R.string.placeholder_minute),
                 singleLine = true,
                 modifier = Modifier.weight(1f)
             )
         }
         FudGlassDialogActions(
-            primaryText = "Done",
+            primaryText = stringResource(R.string.action_done),
             onPrimary = {
                 val hour = hourText.toIntOrNull()?.coerceIn(0, 23) ?: initialTime.hour
                 val minute = minuteText.toIntOrNull()?.coerceIn(0, 59) ?: initialTime.minute
                 onConfirm(LocalTime.of(hour, minute))
             },
-            dismissText = "Cancel",
+            dismissText = stringResource(R.string.action_cancel),
             onDismiss = onDismiss
         )
     }
