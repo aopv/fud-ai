@@ -68,9 +68,10 @@ class WeightRepository(
         val current = prefs.weightEntries.first()
         prefs.setWeightEntries(current.filter { it.id != id })
         syncProfileWeightToLatest()
-        if (shouldSyncHealth()) {
-            health?.deleteWeight(id)
-        }
+        // Delete the HC record even when sync is off (iOS parity, best-effort) —
+        // a surviving fudai-tagged record would resurrect through the own-record
+        // restore path on the next full backfill.
+        health?.deleteWeight(id)
     }
 
     suspend fun replaceAll(entries: List<WeightEntry>) {

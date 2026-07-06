@@ -332,28 +332,43 @@ class HealthKitManager {
         isBackfillingWeight = true
         Task {
             defer { isBackfillingWeight = false }
-            let samples = await fetchAllSamples(.bodyMass, unit: .gramUnit(with: .kilo), fudaiMetadataKey: "fudai_weight_id")
+            // A failed query (auth not determined, transient HK error) returns nil —
+            // bail WITHOUT stamping the version so the backfill retries next scene-active
+            // instead of being permanently burned by one bad run.
+            guard let samples = await fetchAllSamples(.bodyMass, unit: .gramUnit(with: .kilo), fudaiMetadataKey: "fudai_weight_id") else { return }
             // Build the dedup index from the *current* store snapshot — the
             // observer might have added rows while we were querying HK.
             let calendar = Calendar.current
             let snapshot = existing()
-            // Same-day + close-value match catches both our own pre-metadata
-            // writes and externals already imported via the change-token loop.
+            // Restore mode = empty local store (reinstall / new phone). Only then do we
+            // import our own fudai-tagged samples: when entries exist locally, own samples
+            // are either already represented or synthetic profile-pushes
+            // (writeWeight(kg:date:)) that never had an entry — importing those would
+            // fabricate history the user never logged.
+            let restoringOwnHistory = snapshot.isEmpty
+            var newEntries: [WeightEntry] = []
+            // Same-day + close-value match catches our own pre-metadata writes,
+            // externals already imported via the change-token loop, and same-day
+            // duplicates within this batch (an entry write + a profile push on the
+            // same day carry the same value).
             let isAlreadyLogged: (Date, Double) -> Bool = { date, kg in
                 snapshot.contains {
                     calendar.isDate($0.date, inSameDayAs: date) && abs($0.weightKg - kg) < 0.01
+                } || newEntries.contains {
+                    calendar.isDate($0.date, inSameDayAs: date) && abs($0.weightKg - kg) < 0.01
                 }
             }
-            var newEntries: [WeightEntry] = []
             for s in samples {
-                // Own fudai-tagged samples are imported too, not skipped: after a
-                // reinstall or new phone the local store is empty, so "our own
-                // write" may no longer be represented locally. Same-day+value
-                // dedup keeps this a no-op when the entries are still present,
-                // and in-app deletes remove the HK sample as well, so a deleted
-                // entry can't resurrect.
                 if isAlreadyLogged(s.date, s.value) { continue }
-                newEntries.append(WeightEntry(date: s.date, weightKg: s.value))
+                if let fudaiID = s.fudaiID {
+                    guard restoringOwnHistory else { continue }
+                    // Keep the ORIGINAL entry id so a later in-app delete of the
+                    // restored entry still finds and removes its HK sample via the
+                    // fudai_weight_id metadata predicate.
+                    newEntries.append(WeightEntry(id: fudaiID, date: s.date, weightKg: s.value))
+                } else {
+                    newEntries.append(WeightEntry(date: s.date, weightKg: s.value))
+                }
             }
             if !newEntries.isEmpty {
                 await MainActor.run { importBatch(newEntries) }
@@ -377,19 +392,28 @@ class HealthKitManager {
         isBackfillingBodyFat = true
         Task {
             defer { isBackfillingBodyFat = false }
-            let samples = await fetchAllSamples(.bodyFatPercentage, unit: .percent(), fudaiMetadataKey: "fudai_bodyfat_id")
+            guard let samples = await fetchAllSamples(.bodyFatPercentage, unit: .percent(), fudaiMetadataKey: "fudai_bodyfat_id") else { return }
             let calendar = Calendar.current
             let snapshot = existing()
+            // Same restore-mode / original-id / batch-dedup discipline as the
+            // weight backfill — see backfillWeightFromHealthKitIfNeeded.
+            let restoringOwnHistory = snapshot.isEmpty
+            var newEntries: [BodyFatEntry] = []
             let isAlreadyLogged: (Date, Double) -> Bool = { date, fraction in
                 snapshot.contains {
                     calendar.isDate($0.date, inSameDayAs: date) && abs($0.bodyFatFraction - fraction) < 0.001
+                } || newEntries.contains {
+                    calendar.isDate($0.date, inSameDayAs: date) && abs($0.bodyFatFraction - fraction) < 0.001
                 }
             }
-            var newEntries: [BodyFatEntry] = []
             for s in samples {
-                // Own samples import too — restore-after-reinstall, see weight backfill.
                 if isAlreadyLogged(s.date, s.value) { continue }
-                newEntries.append(BodyFatEntry(date: s.date, bodyFatFraction: s.value))
+                if let fudaiID = s.fudaiID {
+                    guard restoringOwnHistory else { continue }
+                    newEntries.append(BodyFatEntry(id: fudaiID, date: s.date, bodyFatFraction: s.value))
+                } else {
+                    newEntries.append(BodyFatEntry(date: s.date, bodyFatFraction: s.value))
+                }
             }
             if !newEntries.isEmpty {
                 await MainActor.run { importBatch(newEntries) }
@@ -549,15 +573,17 @@ class HealthKitManager {
     /// weight + body-fat backfill that runs the first time the user enables
     /// HealthKit sync and brings years of historical readings into the Progress
     /// chart. Sorted oldest-first so callers can append in chronological order.
-    func fetchAllSamples(_ identifier: HKQuantityTypeIdentifier, unit: HKUnit, fudaiMetadataKey: String?) async -> [(value: Double, date: Date, fudaiID: UUID?)] {
+    /// Returns nil on query failure (vs [] for genuinely no data) so callers can
+    /// leave their one-shot stamps unset and retry later.
+    func fetchAllSamples(_ identifier: HKQuantityTypeIdentifier, unit: HKUnit, fudaiMetadataKey: String?) async -> [(value: Double, date: Date, fudaiID: UUID?)]? {
         let type = HKQuantityType(identifier)
         let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)
         let predicate = HKQuery.predicateForSamples(withStart: nil, end: nil, options: .strictEndDate)
 
         return await withCheckedContinuation { continuation in
-            let query = HKSampleQuery(sampleType: type, predicate: predicate, limit: 10_000, sortDescriptors: [sortDescriptor]) { _, results, _ in
-                guard let samples = results as? [HKQuantitySample] else {
-                    continuation.resume(returning: [])
+            let query = HKSampleQuery(sampleType: type, predicate: predicate, limit: 10_000, sortDescriptors: [sortDescriptor]) { _, results, error in
+                guard error == nil, let samples = results as? [HKQuantitySample] else {
+                    continuation.resume(returning: nil)
                     return
                 }
                 let mapped = samples.map { sample -> (value: Double, date: Date, fudaiID: UUID?) in
@@ -652,7 +678,11 @@ class HealthKitManager {
             defer { isRecoveringFood = false }
             var accumulated: [UUID: RecoveredEntry] = [:]
             for identifier in nutritionTypeIdentifiers {
-                for s in await fetchTaggedNutritionSamples(identifier) {
+                // A failed query returns nil — abort WITHOUT stamping the done-flag
+                // so the restore retries on a later scene-active instead of being
+                // permanently burned by one transient error.
+                guard let samples = await fetchTaggedNutritionSamples(identifier) else { return }
+                for s in samples {
                     var entry = accumulated[s.entryID] ?? RecoveredEntry(date: s.date, name: s.name)
                     if s.date < entry.date { entry.date = s.date }
                     if entry.name.isEmpty { entry.name = s.name }
@@ -723,16 +753,17 @@ class HealthKitManager {
 
     /// All samples of `identifier` carrying our fudai_entry_id tag, decoded with
     /// the tagged UUID, food name, and value in the same unit
-    /// nutritionQuantities(for:) uses for writes.
-    private func fetchTaggedNutritionSamples(_ identifier: HKQuantityTypeIdentifier) async -> [(entryID: UUID, name: String, value: Double, date: Date)] {
+    /// nutritionQuantities(for:) uses for writes. Nil on query failure (vs []
+    /// for genuinely no data) so the caller can retry instead of stamping done.
+    private func fetchTaggedNutritionSamples(_ identifier: HKQuantityTypeIdentifier) async -> [(entryID: UUID, name: String, value: Double, date: Date)]? {
         let type = HKQuantityType(identifier)
         let unit = recoveryUnit(for: identifier)
         let predicate = HKQuery.predicateForObjects(withMetadataKey: "fudai_entry_id")
         let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)
         return await withCheckedContinuation { continuation in
-            let query = HKSampleQuery(sampleType: type, predicate: predicate, limit: HKObjectQueryNoLimit, sortDescriptors: [sortDescriptor]) { _, results, _ in
-                guard let samples = results as? [HKQuantitySample] else {
-                    continuation.resume(returning: [])
+            let query = HKSampleQuery(sampleType: type, predicate: predicate, limit: HKObjectQueryNoLimit, sortDescriptors: [sortDescriptor]) { _, results, error in
+                guard error == nil, let samples = results as? [HKQuantitySample] else {
+                    continuation.resume(returning: nil)
                     return
                 }
                 let mapped = samples.compactMap { sample -> (entryID: UUID, name: String, value: Double, date: Date)? in

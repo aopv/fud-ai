@@ -154,12 +154,16 @@ class AppContainer(app: FudAIApp) {
             // One-shot food-log restore: after a reinstall or new phone the local
             // store is empty but our own NutritionRecords survive in Health Connect.
             // Ids already in the log are skipped, so this is a no-op for intact users.
+            // A null read means a page failed mid-pagination — leave the flag unset
+            // so the restore retries on a later foreground instead of permanently
+            // accepting a partial history.
             if (caps.nutritionRead && !prefs.healthFoodRestoreDone.first()) {
                 val now = Instant.now()
-                foodRepository.restoreFromHealthConnect(
-                    health.readNutrition(now.minus(Duration.ofDays(730)), now)
-                )
-                prefs.setHealthFoodRestoreDone(true)
+                val records = health.readNutrition(now.minus(Duration.ofDays(730)), now)
+                if (records != null) {
+                    foodRepository.restoreFromHealthConnect(records)
+                    prefs.setHealthFoodRestoreDone(true)
+                }
             }
             if (!caps.weightRead && !caps.bodyFatRead) return
 

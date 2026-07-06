@@ -286,9 +286,12 @@ class HealthConnectManager(private val context: Context) {
 
     /** All NutritionRecords in the range, mapped back to Fud AI's units (the exact
      *  inverse of [writeNutrition]). Powers the food-log restore after a reinstall
-     *  or new phone, where Health Connect data survives but app storage doesn't. */
-    suspend fun readNutrition(from: Instant, to: Instant): List<ExternalNutrition> {
-        val c = client ?: return emptyList()
+     *  or new phone, where Health Connect data survives but app storage doesn't.
+     *  Returns null when any page read fails (rate limit, binder error) so the
+     *  caller can leave its one-shot flag unset and retry, instead of treating a
+     *  partial read as the complete history. */
+    suspend fun readNutrition(from: Instant, to: Instant): List<ExternalNutrition>? {
+        val c = client ?: return null
         val out = mutableListOf<ExternalNutrition>()
         var pageToken: String? = null
         do {
@@ -300,7 +303,7 @@ class HealthConnectManager(private val context: Context) {
                         pageToken = pageToken
                     )
                 )
-            }.getOrNull() ?: break
+            }.getOrNull() ?: return null
             response.records.forEach {
                 out.add(
                     ExternalNutrition(
