@@ -303,6 +303,14 @@ struct calorietrackerApp: App {
             existing: { [bodyFatStore] in bodyFatStore.entries },
             importBatch: { [bodyFatStore] entries in bodyFatStore.importExternalEntries(entries) }
         )
+        // Restore the food log from the app's own HK nutrition samples after a
+        // reinstall / phone reset wiped the local store. The merge path fires
+        // onEntriesChanged (widgets/notifications) but not onEntryAdded, so
+        // restored entries are NOT re-written to HealthKit.
+        healthKitManager.restoreFoodEntriesFromHealthKitIfNeeded(
+            existingIDs: { [foodStore] in Set(foodStore.entries.map(\.id)) },
+            importBatch: { [foodStore] entries in foodStore.mergeWithCloudEntries(entries) }
+        )
     }
 
     private func wireUpFoodStoreCallback() {

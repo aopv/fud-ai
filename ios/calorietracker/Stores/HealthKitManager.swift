@@ -27,7 +27,10 @@ class HealthKitManager {
     /// Bump this when adding new HealthKit types so we can re-request authorization
     /// for users who already authorized the old set. Just an integer schema marker,
     /// not credentials — named to avoid CodeQL's "auth"-keyword heuristic false positive.
-    private let typesVersion = 4
+    /// v5: dietary types joined the read set so the food log can be restored from
+    /// our own Health samples after a reinstall or new phone; the bump also re-runs
+    /// the weight/body-fat backfills, which now restore own samples too.
+    private let typesVersion = 5
     private let typesVersionKey = "healthKitTypesVersion"
 
     private let nutritionTypeIdentifiers: [HKQuantityTypeIdentifier] = [
@@ -107,7 +110,7 @@ class HealthKitManager {
     }
 
     private var readTypes: Set<HKObjectType> {
-        [
+        var types: Set<HKObjectType> = [
             HKQuantityType(.bodyMass),
             HKQuantityType(.height),
             HKQuantityType(.bodyFatPercentage),
@@ -116,6 +119,10 @@ class HealthKitManager {
             HKCharacteristicType(.dateOfBirth),
             HKCharacteristicType(.biologicalSex),
         ]
+        // Dietary read access powers restoreFoodEntriesFromHealthKitIfNeeded —
+        // rebuilding the food log from our own tagged samples after a reinstall.
+        types.formUnion(nutritionTypeIdentifiers.map { HKQuantityType($0) })
+        return types
     }
 
     /// True if user previously authorized but new types were added since.
@@ -339,7 +346,12 @@ class HealthKitManager {
             }
             var newEntries: [WeightEntry] = []
             for s in samples {
-                if s.fudaiID != nil { continue } // our own write — already represented
+                // Own fudai-tagged samples are imported too, not skipped: after a
+                // reinstall or new phone the local store is empty, so "our own
+                // write" may no longer be represented locally. Same-day+value
+                // dedup keeps this a no-op when the entries are still present,
+                // and in-app deletes remove the HK sample as well, so a deleted
+                // entry can't resurrect.
                 if isAlreadyLogged(s.date, s.value) { continue }
                 newEntries.append(WeightEntry(date: s.date, weightKg: s.value))
             }
@@ -375,7 +387,7 @@ class HealthKitManager {
             }
             var newEntries: [BodyFatEntry] = []
             for s in samples {
-                if s.fudaiID != nil { continue }
+                // Own samples import too — restore-after-reinstall, see weight backfill.
                 if isAlreadyLogged(s.date, s.value) { continue }
                 newEntries.append(BodyFatEntry(date: s.date, bodyFatFraction: s.value))
             }
@@ -610,6 +622,143 @@ class HealthKitManager {
                 continuation.resume(returning: values)
             }
             healthStore.execute(query)
+        }
+    }
+
+    // MARK: - Food log restore from HealthKit
+
+    private let foodRecoveryDoneKey = "healthKitFoodRecoveryDone"
+    private var isRecoveringFood = false
+
+    /// Rebuilds the local food log from the nutrition samples this app previously
+    /// wrote to HealthKit — the restore path after a reinstall, phone reset, or
+    /// new phone, where Health data survives (via iCloud) but the app container
+    /// doesn't. Every sample carries fudai_entry_id (the original FoodEntry UUID)
+    /// and HKMetadataKeyFoodType (the food name), so grouping by UUID reassembles
+    /// each meal with its name, timestamp, calories, macros and micronutrients.
+    /// Entries keep their original ids, so future in-app edits and deletes still
+    /// target the matching HK samples. One-shot per install; dedupes against ids
+    /// already in the store, so it's a no-op for users whose log is intact.
+    /// Photos, emojis, notes and serving units aren't in Health and don't return.
+    func restoreFoodEntriesFromHealthKitIfNeeded(
+        existingIDs: @escaping () -> Set<UUID>,
+        importBatch: @escaping ([FoodEntry]) -> Void
+    ) {
+        guard UserDefaults.standard.bool(forKey: "healthKitEnabled") else { return }
+        guard !UserDefaults.standard.bool(forKey: foodRecoveryDoneKey) else { return }
+        guard !isRecoveringFood else { return }
+        isRecoveringFood = true
+        Task {
+            defer { isRecoveringFood = false }
+            var accumulated: [UUID: RecoveredEntry] = [:]
+            for identifier in nutritionTypeIdentifiers {
+                for s in await fetchTaggedNutritionSamples(identifier) {
+                    var entry = accumulated[s.entryID] ?? RecoveredEntry(date: s.date, name: s.name)
+                    if s.date < entry.date { entry.date = s.date }
+                    if entry.name.isEmpty { entry.name = s.name }
+                    entry.values[identifier] = s.value
+                    accumulated[s.entryID] = entry
+                }
+            }
+            let existing = existingIDs()
+            let entries = accumulated
+                // A nameless group means the sample didn't come from a real
+                // logged meal (writeNutrition always stamps the name) — skip
+                // rather than fabricate an unnamed entry.
+                .filter { !existing.contains($0.key) && !$0.value.name.trimmingCharacters(in: .whitespaces).isEmpty }
+                .map { id, recovered in recovered.foodEntry(id: id) }
+                .sorted { $0.timestamp < $1.timestamp }
+            if !entries.isEmpty {
+                await MainActor.run { importBatch(entries) }
+            }
+            UserDefaults.standard.set(true, forKey: foodRecoveryDoneKey)
+        }
+    }
+
+    private struct RecoveredEntry {
+        var date: Date
+        var name: String
+        var values: [HKQuantityTypeIdentifier: Double] = [:]
+
+        func foodEntry(id: UUID) -> FoodEntry {
+            let hour = Calendar.current.component(.hour, from: date)
+            let meal: MealType = switch hour {
+            case 5..<11: .breakfast
+            case 11..<15: .lunch
+            case 15..<21: .dinner
+            default: .snack
+            }
+            return FoodEntry(
+                id: id,
+                name: name,
+                calories: Int((values[.dietaryEnergyConsumed] ?? 0).rounded()),
+                protein: values[.dietaryProtein] ?? 0,
+                carbs: values[.dietaryCarbohydrates] ?? 0,
+                fat: values[.dietaryFatTotal] ?? 0,
+                timestamp: date,
+                source: .manual,
+                mealType: meal,
+                sugar: values[.dietarySugar],
+                fiber: values[.dietaryFiber],
+                saturatedFat: values[.dietaryFatSaturated],
+                monounsaturatedFat: values[.dietaryFatMonounsaturated],
+                polyunsaturatedFat: values[.dietaryFatPolyunsaturated],
+                cholesterol: values[.dietaryCholesterol],
+                sodium: values[.dietarySodium],
+                potassium: values[.dietaryPotassium],
+                calcium: values[.dietaryCalcium],
+                iron: values[.dietaryIron],
+                magnesium: values[.dietaryMagnesium],
+                zinc: values[.dietaryZinc],
+                vitaminA: values[.dietaryVitaminA],
+                vitaminC: values[.dietaryVitaminC],
+                vitaminD: values[.dietaryVitaminD],
+                vitaminB12: values[.dietaryVitaminB12],
+                vitaminE: values[.dietaryVitaminE],
+                vitaminK: values[.dietaryVitaminK],
+                folate: values[.dietaryFolate]
+            )
+        }
+    }
+
+    /// All samples of `identifier` carrying our fudai_entry_id tag, decoded with
+    /// the tagged UUID, food name, and value in the same unit
+    /// nutritionQuantities(for:) uses for writes.
+    private func fetchTaggedNutritionSamples(_ identifier: HKQuantityTypeIdentifier) async -> [(entryID: UUID, name: String, value: Double, date: Date)] {
+        let type = HKQuantityType(identifier)
+        let unit = recoveryUnit(for: identifier)
+        let predicate = HKQuery.predicateForObjects(withMetadataKey: "fudai_entry_id")
+        let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)
+        return await withCheckedContinuation { continuation in
+            let query = HKSampleQuery(sampleType: type, predicate: predicate, limit: HKObjectQueryNoLimit, sortDescriptors: [sortDescriptor]) { _, results, _ in
+                guard let samples = results as? [HKQuantitySample] else {
+                    continuation.resume(returning: [])
+                    return
+                }
+                let mapped = samples.compactMap { sample -> (entryID: UUID, name: String, value: Double, date: Date)? in
+                    guard let idString = sample.metadata?["fudai_entry_id"] as? String,
+                          let entryID = UUID(uuidString: idString) else { return nil }
+                    let name = sample.metadata?[HKMetadataKeyFoodType] as? String ?? ""
+                    return (entryID, name, sample.quantity.doubleValue(for: unit), sample.startDate)
+                }
+                continuation.resume(returning: mapped)
+            }
+            healthStore.execute(query)
+        }
+    }
+
+    /// Inverse of the units in nutritionQuantities(for:) — must stay in sync.
+    private func recoveryUnit(for identifier: HKQuantityTypeIdentifier) -> HKUnit {
+        switch identifier {
+        case .dietaryEnergyConsumed:
+            .kilocalorie()
+        case .dietaryCholesterol, .dietarySodium, .dietaryPotassium, .dietaryCalcium,
+             .dietaryIron, .dietaryMagnesium, .dietaryZinc, .dietaryVitaminC, .dietaryVitaminE:
+            .gramUnit(with: .milli)
+        case .dietaryVitaminA, .dietaryVitaminD, .dietaryVitaminB12, .dietaryVitaminK, .dietaryFolate:
+            .gramUnit(with: .micro)
+        default:
+            .gram()
         }
     }
 
