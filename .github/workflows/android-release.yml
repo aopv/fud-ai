@@ -26,6 +26,8 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # create the GitHub Release
     steps:
       - uses: actions/checkout@v4
 
@@ -54,9 +56,9 @@ jobs:
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
 
-      - name: Build signed AAB
+      - name: Build signed AAB + APK
         working-directory: android
-        run: ./gradlew :app:bundleRelease
+        run: ./gradlew :app:bundleRelease :app:assembleRelease
 
       - name: Upload to Play Console (production, draft)
         uses: r0adkll/upload-google-play@v1
@@ -67,8 +69,15 @@ jobs:
           track: production
           status: draft
 
-      - name: Attach AAB to the workflow run
-        uses: actions/upload-artifact@v4
-        with:
-          name: fudai-release-aab
-          path: android/app/build/outputs/bundle/release/app-release.aab
+      - name: Create GitHub Release (pre-release until the store rollout goes live)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="${GITHUB_REF_NAME#android-v}"
+          VCODE=$(grep -m1 'versionCode = ' android/app/build.gradle.kts | tr -dc '0-9')
+          cp android/app/build/outputs/bundle/release/app-release.aab "fudai-v${VERSION}.aab"
+          cp android/app/build/outputs/apk/release/app-release.apk "fudai-v${VERSION}.apk"
+          gh release create "$GITHUB_REF_NAME" \
+            --title "Android ${VERSION} (versionCode ${VCODE})" \
+            --generate-notes --prerelease \
+            "fudai-v${VERSION}.aab" "fudai-v${VERSION}.apk"
