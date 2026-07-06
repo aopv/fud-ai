@@ -1581,6 +1581,7 @@ private fun BodyMeasurementsHistorySheet(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BodyMeasurementsScreen(container: AppContainer, onBack: () -> Unit) {
+    val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val entries by container.bodyMeasurementRepository.entries.collectAsState(initial = emptyList())
     val profile by container.profileRepository.profile.collectAsState(initial = null)
@@ -1656,7 +1657,7 @@ fun BodyMeasurementsScreen(container: AppContainer, onBack: () -> Unit) {
                 }
             }
             if (latest != null) {
-                val derived = derivedMetricList(LocalContext.current, latest, gender, heightCm)
+                val derived = derivedMetricList(context, latest, gender, heightCm)
                 if (derived.isNotEmpty()) {
                     item {
                         FudGlassSurface(modifier = Modifier.fillMaxWidth(), cornerRadius = 22.dp, padding = 16.dp) {
