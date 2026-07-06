@@ -74,15 +74,19 @@ class BodyFatRepository(
      * Merge externally-sourced body-fat readings (e.g. a smart scale via Health
      * Connect) into local history. Idempotent: each external record maps to a
      * deterministic id so repeated imports upsert in place instead of duplicating,
-     * the user's own manual entries are preserved, and Fud AI's own writes are skipped.
+     * and the user's own manual entries are preserved. Fud AI's own records restore
+     * under their original UUID (reinstall recovery); the same-id upsert is a no-op
+     * when the entry still exists locally. The change-token path filters own records
+     * at the manager level, so live echo-imports stay suppressed — see
+     * WeightRepository.importExternalWeights for the full rationale.
      */
     suspend fun importExternalBodyFats(external: List<ExternalBodyFat>) {
         val manager = health ?: return
         val incoming = external
-            .filterNot { manager.isOwnRecord(it.clientRecordId) }
             .map {
                 BodyFatEntry(
-                    id = externalId(it.clientRecordId, it.recordId, it.time),
+                    id = manager.ownRecordId(it.clientRecordId)
+                        ?: externalId(it.clientRecordId, it.recordId, it.time),
                     date = it.time,
                     bodyFatFraction = it.bodyFatFraction
                 )

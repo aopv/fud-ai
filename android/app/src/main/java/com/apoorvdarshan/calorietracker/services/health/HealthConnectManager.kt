@@ -55,12 +55,13 @@ class HealthConnectManager(private val context: Context) {
     private val weightWrite = HealthPermission.getWritePermission(WeightRecord::class)
     private val bodyFatRead = HealthPermission.getReadPermission(BodyFatRecord::class)
     private val bodyFatWrite = HealthPermission.getWritePermission(BodyFatRecord::class)
+    private val nutritionRead = HealthPermission.getReadPermission(NutritionRecord::class)
     private val nutritionWrite = HealthPermission.getWritePermission(NutritionRecord::class)
     private val activeEnergyRead = HealthPermission.getReadPermission(ActiveCaloriesBurnedRecord::class)
     private val totalEnergyRead = HealthPermission.getReadPermission(TotalCaloriesBurnedRecord::class)
 
     val permissions: Set<String> = setOf(
-        weightRead, weightWrite, nutritionWrite,
+        weightRead, weightWrite, nutritionRead, nutritionWrite,
         bodyFatRead, bodyFatWrite, activeEnergyRead, totalEnergyRead
     )
 
@@ -75,6 +76,7 @@ class HealthConnectManager(private val context: Context) {
     suspend fun hasWeightWrite(): Boolean = weightWrite in granted()
     suspend fun hasBodyFatRead(): Boolean = bodyFatRead in granted()
     suspend fun hasBodyFatWrite(): Boolean = bodyFatWrite in granted()
+    suspend fun hasNutritionRead(): Boolean = nutritionRead in granted()
     suspend fun hasNutritionWrite(): Boolean = nutritionWrite in granted()
     suspend fun hasEnergyRead(): Boolean = granted().let { activeEnergyRead in it && totalEnergyRead in it }
 
@@ -86,14 +88,24 @@ class HealthConnectManager(private val context: Context) {
             weightWrite = weightWrite in g,
             bodyFatRead = bodyFatRead in g,
             bodyFatWrite = bodyFatWrite in g,
+            nutritionRead = nutritionRead in g,
             nutritionWrite = nutritionWrite in g,
             energyRead = activeEnergyRead in g && totalEnergyRead in g
         )
     }
 
-    /** True for records Fud AI itself wrote, so read-sync never re-imports our own data. */
+    /** True for records Fud AI itself wrote, so read-sync can tell them apart from
+     *  external sources (change-token consumers skip them; the restore path keeps them). */
     fun isOwnRecord(clientRecordId: String?): Boolean =
         clientRecordId?.startsWith(CLIENT_PREFIX) == true
+
+    /** The original in-app entry UUID embedded in one of our own clientRecordIds
+     *  ("fudai_<uuid>"), or null for external/malformed tags. Restoring with the
+     *  original id keeps future edits/deletes targeting the matching HC record. */
+    fun ownRecordId(clientRecordId: String?): UUID? {
+        if (clientRecordId == null || !clientRecordId.startsWith(CLIENT_PREFIX)) return null
+        return runCatching { UUID.fromString(clientRecordId.removePrefix(CLIENT_PREFIX)) }.getOrNull()
+    }
 
     /** Used to build the permission-request ActivityResultContract on the UI side. */
     fun permissionRequestContract() = PermissionController.createRequestPermissionResultContract()
@@ -272,6 +284,62 @@ class HealthConnectManager(private val context: Context) {
         }.isSuccess
     }
 
+    /** All NutritionRecords in the range, mapped back to Fud AI's units (the exact
+     *  inverse of [writeNutrition]). Powers the food-log restore after a reinstall
+     *  or new phone, where Health Connect data survives but app storage doesn't. */
+    suspend fun readNutrition(from: Instant, to: Instant): List<ExternalNutrition> {
+        val c = client ?: return emptyList()
+        val out = mutableListOf<ExternalNutrition>()
+        var pageToken: String? = null
+        do {
+            val response = runCatching {
+                c.readRecords(
+                    ReadRecordsRequest(
+                        recordType = NutritionRecord::class,
+                        timeRangeFilter = TimeRangeFilter.between(from, to),
+                        pageToken = pageToken
+                    )
+                )
+            }.getOrNull() ?: break
+            response.records.forEach {
+                out.add(
+                    ExternalNutrition(
+                        time = it.startTime,
+                        name = it.name,
+                        mealType = mealTypeFrom(it.mealType),
+                        calories = it.energy?.inKilocalories,
+                        protein = it.protein?.inGrams,
+                        carbs = it.totalCarbohydrate?.inGrams,
+                        fat = it.totalFat?.inGrams,
+                        fiber = it.dietaryFiber?.inGrams,
+                        sugar = it.sugar?.inGrams,
+                        saturatedFat = it.saturatedFat?.inGrams,
+                        monounsaturatedFat = it.monounsaturatedFat?.inGrams,
+                        polyunsaturatedFat = it.polyunsaturatedFat?.inGrams,
+                        transFat = it.transFat?.inGrams,
+                        cholesterol = it.cholesterol?.inMilligrams,
+                        sodium = it.sodium?.inMilligrams,
+                        potassium = it.potassium?.inMilligrams,
+                        calcium = it.calcium?.inMilligrams,
+                        iron = it.iron?.inMilligrams,
+                        magnesium = it.magnesium?.inMilligrams,
+                        zinc = it.zinc?.inMilligrams,
+                        vitaminA = it.vitaminA?.inMicrograms,
+                        vitaminC = it.vitaminC?.inMilligrams,
+                        vitaminD = it.vitaminD?.inMicrograms,
+                        vitaminB12 = it.vitaminB12?.inMicrograms,
+                        vitaminE = it.vitaminE?.inMilligrams,
+                        vitaminK = it.vitaminK?.inMicrograms,
+                        folate = it.folate?.inMicrograms,
+                        clientRecordId = it.metadata.clientRecordId
+                    )
+                )
+            }
+            pageToken = response.pageToken
+        } while (pageToken != null)
+        return out
+    }
+
     // -- Energy burn summary --------------------------------------------
 
     suspend fun readRecentEnergySummary(days: Int = 14): HealthEnergySummary? {
@@ -406,13 +474,22 @@ class HealthConnectManager(private val context: Context) {
         com.apoorvdarshan.calorietracker.models.MealType.OTHER -> HCMealType.MEAL_TYPE_UNKNOWN
     }
 
+    private fun mealTypeFrom(hcMealType: Int): com.apoorvdarshan.calorietracker.models.MealType = when (hcMealType) {
+        HCMealType.MEAL_TYPE_BREAKFAST -> com.apoorvdarshan.calorietracker.models.MealType.BREAKFAST
+        HCMealType.MEAL_TYPE_LUNCH -> com.apoorvdarshan.calorietracker.models.MealType.LUNCH
+        HCMealType.MEAL_TYPE_DINNER -> com.apoorvdarshan.calorietracker.models.MealType.DINNER
+        HCMealType.MEAL_TYPE_SNACK -> com.apoorvdarshan.calorietracker.models.MealType.SNACK
+        else -> com.apoorvdarshan.calorietracker.models.MealType.OTHER
+    }
+
     companion object {
         private const val CLIENT_PREFIX = "fudai_"
 
         /** Bump this when we add a new record type so users re-auth.
          *  v2 = added BodyFatRecord read+write permissions.
-         *  v3 = added energy burn read permissions. */
-        const val CURRENT_TYPES_VERSION = 3
+         *  v3 = added energy burn read permissions.
+         *  v4 = added NutritionRecord read permission (food-log restore). */
+        const val CURRENT_TYPES_VERSION = 4
     }
 }
 
@@ -426,8 +503,43 @@ data class HealthCapabilities(
     val weightWrite: Boolean,
     val bodyFatRead: Boolean,
     val bodyFatWrite: Boolean,
+    val nutritionRead: Boolean,
     val nutritionWrite: Boolean,
     val energyRead: Boolean
+)
+
+/** A NutritionRecord read back from Health Connect in Fud AI's own units —
+ *  kcal for energy, grams/milligrams/micrograms per nutrient, matching
+ *  [HealthConnectManager.writeNutrition]. */
+data class ExternalNutrition(
+    val time: Instant,
+    val name: String?,
+    val mealType: com.apoorvdarshan.calorietracker.models.MealType,
+    val calories: Double?,
+    val protein: Double?,
+    val carbs: Double?,
+    val fat: Double?,
+    val fiber: Double?,
+    val sugar: Double?,
+    val saturatedFat: Double?,
+    val monounsaturatedFat: Double?,
+    val polyunsaturatedFat: Double?,
+    val transFat: Double?,
+    val cholesterol: Double?,
+    val sodium: Double?,
+    val potassium: Double?,
+    val calcium: Double?,
+    val iron: Double?,
+    val magnesium: Double?,
+    val zinc: Double?,
+    val vitaminA: Double?,
+    val vitaminC: Double?,
+    val vitaminD: Double?,
+    val vitaminB12: Double?,
+    val vitaminE: Double?,
+    val vitaminK: Double?,
+    val folate: Double?,
+    val clientRecordId: String?
 )
 
 data class ExternalWeight(

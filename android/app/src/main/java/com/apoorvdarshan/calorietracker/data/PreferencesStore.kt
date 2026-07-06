@@ -132,6 +132,12 @@ class PreferencesStore(private val context: Context) {
         ds.edit { it[Keys.HEALTH_CHANGES_TOKEN_TYPES] = types.joinToString(",") }
     }
 
+    /// One-shot flag for the food-log restore from Health Connect. Cleared with the
+    /// rest of the store on Delete All Data / fresh install, which is exactly when
+    /// the restore should be allowed to run again.
+    val healthFoodRestoreDone: Flow<Boolean> = ds.data.map { it[Keys.HEALTH_FOOD_RESTORE_DONE] ?: false }
+    suspend fun setHealthFoodRestoreDone(v: Boolean) { ds.edit { it[Keys.HEALTH_FOOD_RESTORE_DONE] = v } }
+
     val healthEnergyGoalsEnabled: Flow<Boolean> = ds.data.map { it[Keys.HEALTH_ENERGY_GOALS_ENABLED] ?: false }
     suspend fun setHealthEnergyGoalsEnabled(v: Boolean) { ds.edit { it[Keys.HEALTH_ENERGY_GOALS_ENABLED] = v } }
 
@@ -519,6 +525,7 @@ class PreferencesStore(private val context: Context) {
         val HEALTH_TYPES_VERSION = intPreferencesKey("healthTypesVersion")
         val HEALTH_CHANGES_TOKEN = stringPreferencesKey("healthChangesToken")
         val HEALTH_CHANGES_TOKEN_TYPES = stringPreferencesKey("healthChangesTokenTypes")
+        val HEALTH_FOOD_RESTORE_DONE = booleanPreferencesKey("healthFoodRestoreDone")
         val HEALTH_ENERGY_GOALS_ENABLED = booleanPreferencesKey("healthEnergyGoalsEnabled")
         val HEALTH_ENERGY_GOALS_PREVIOUS_TARGETS = stringPreferencesKey("healthEnergyGoalsPreviousTargets")
         val HEALTH_ENERGY_GOALS_LAST_AUTO_REFRESH_DAY = stringPreferencesKey("healthEnergyGoalsLastAutoRefreshDay")

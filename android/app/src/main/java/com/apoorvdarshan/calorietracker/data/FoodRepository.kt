@@ -1,6 +1,7 @@
 package com.apoorvdarshan.calorietracker.data
 
 import com.apoorvdarshan.calorietracker.models.FoodEntry
+import com.apoorvdarshan.calorietracker.models.FoodSource
 import com.apoorvdarshan.calorietracker.services.ReviewPrompter
 import com.apoorvdarshan.calorietracker.models.MealType
 import com.apoorvdarshan.calorietracker.services.health.HealthConnectManager
@@ -11,6 +12,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.UUID
+import kotlin.math.roundToInt
 
 /**
  * CRUD + reactive reads for food entries. Port of iOS FoodStore.
@@ -166,6 +168,63 @@ class FoodRepository(
     private suspend fun shouldSyncHealth(): Boolean {
         val manager = health ?: return false
         return prefs.healthConnectEnabled.first() && manager.hasNutritionWrite()
+    }
+
+    // -- Restore from Health Connect --------------------------------------
+
+    /**
+     * Rebuilds the food log from the NutritionRecords Fud AI itself wrote to
+     * Health Connect — the restore path after a reinstall or new phone, where
+     * Health Connect data survives but app storage doesn't. Only records
+     * carrying our fudai_(uuid) clientRecordId are considered; the original
+     * entry UUID is recovered from the tag so future edits and deletes still
+     * target the matching HC record. Ids already in the log and nameless
+     * records are skipped, and nothing is written back to Health Connect.
+     * Photos, emojis, notes and serving units aren't in HC and don't return.
+     */
+    suspend fun restoreFromHealthConnect(external: List<com.apoorvdarshan.calorietracker.services.health.ExternalNutrition>) {
+        val manager = health ?: return
+        val current = prefs.foodEntries.first()
+        val existingIds = current.map { it.id }.toSet()
+        val restored = external.mapNotNull { record ->
+            val id = manager.ownRecordId(record.clientRecordId) ?: return@mapNotNull null
+            if (id in existingIds) return@mapNotNull null
+            val name = record.name?.trim().orEmpty()
+            if (name.isEmpty()) return@mapNotNull null
+            FoodEntry(
+                id = id,
+                name = name,
+                calories = (record.calories ?: 0.0).roundToInt(),
+                protein = record.protein ?: 0.0,
+                carbs = record.carbs ?: 0.0,
+                fat = record.fat ?: 0.0,
+                timestamp = record.time,
+                source = FoodSource.MANUAL,
+                mealType = record.mealType,
+                sugar = record.sugar,
+                fiber = record.fiber,
+                saturatedFat = record.saturatedFat,
+                monounsaturatedFat = record.monounsaturatedFat,
+                polyunsaturatedFat = record.polyunsaturatedFat,
+                cholesterol = record.cholesterol,
+                sodium = record.sodium,
+                potassium = record.potassium,
+                transFat = record.transFat,
+                calcium = record.calcium,
+                iron = record.iron,
+                magnesium = record.magnesium,
+                zinc = record.zinc,
+                vitaminA = record.vitaminA,
+                vitaminC = record.vitaminC,
+                vitaminD = record.vitaminD,
+                vitaminB12 = record.vitaminB12,
+                vitaminE = record.vitaminE,
+                vitaminK = record.vitaminK,
+                folate = record.folate
+            )
+        }
+        if (restored.isEmpty()) return
+        prefs.setFoodEntries((current + restored).sortedBy { it.timestamp })
     }
 
     // -- Recents / Frequent ---------------------------------------------

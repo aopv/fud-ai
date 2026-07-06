@@ -98,16 +98,20 @@ class WeightRepository(
     /**
      * Merge externally-sourced weigh-ins (e.g. a Withings scale via Health Connect)
      * into local history. Idempotent: each external record maps to a deterministic id
-     * so repeated imports upsert in place instead of duplicating, the user's own manual
-     * entries (random ids) are preserved, and records Fud AI itself wrote are skipped.
+     * so repeated imports upsert in place instead of duplicating, and the user's own
+     * manual entries (random ids) are preserved. Records Fud AI itself wrote restore
+     * under their original UUID — after a reinstall the local store is empty and this
+     * is what brings the history back; when the entry still exists locally the
+     * same-id upsert is a no-op. The change-token path filters own records at the
+     * manager level, so live echo-imports are still suppressed.
      */
     suspend fun importExternalWeights(external: List<ExternalWeight>) {
         val manager = health ?: return
         val incoming = external
-            .filterNot { manager.isOwnRecord(it.clientRecordId) }
             .map {
                 WeightEntry(
-                    id = externalId(it.clientRecordId, it.recordId, it.time),
+                    id = manager.ownRecordId(it.clientRecordId)
+                        ?: externalId(it.clientRecordId, it.recordId, it.time),
                     date = it.time,
                     weightKg = it.weightKg
                 )

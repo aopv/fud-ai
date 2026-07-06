@@ -147,10 +147,22 @@ class AppContainer(app: FudAIApp) {
         if (!prefs.healthConnectEnabled.first()) return
         if (!health.isAvailable()) return
         val caps = health.capabilities()
-        if (!caps.weightRead && !caps.bodyFatRead) return
+        if (!caps.weightRead && !caps.bodyFatRead && !caps.nutritionRead) return
 
         healthReadSyncInFlight = true
         try {
+            // One-shot food-log restore: after a reinstall or new phone the local
+            // store is empty but our own NutritionRecords survive in Health Connect.
+            // Ids already in the log are skipped, so this is a no-op for intact users.
+            if (caps.nutritionRead && !prefs.healthFoodRestoreDone.first()) {
+                val now = Instant.now()
+                foodRepository.restoreFromHealthConnect(
+                    health.readNutrition(now.minus(Duration.ofDays(730)), now)
+                )
+                prefs.setHealthFoodRestoreDone(true)
+            }
+            if (!caps.weightRead && !caps.bodyFatRead) return
+
             val desiredTypes = buildSet {
                 if (caps.weightRead) add(HEALTH_READ_TYPE_WEIGHT)
                 if (caps.bodyFatRead) add(HEALTH_READ_TYPE_BODY_FAT)
