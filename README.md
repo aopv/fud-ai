@@ -29,7 +29,7 @@ Open-source, privacy-first calorie tracker for iOS and Android. Bring your own A
 
 iOS 5.0 build 27 adds a Workouts tab (873-exercise library with photos and filters), a Home redesign — speedometer calorie gauge, vertical macro bars, nutrient cards, floating add button — that widgets, Lock Screen, and Apple Watch match, Coach voice input, meal-share links, diary export (JSON/Markdown/CSV), AI meal reprocessing, Camera + Camera stitching, 10 new theme colors, and automatic restore of your food log, weight, and body fat from Apple Health after a reinstall. Fud AI is now fully free: the Premium subscription is gone, AI is bring-your-own-key, and a small banner ad plus an optional Tip Jar keep it that way.
 
-Android 3.0 (versionCode 27) ships the same release: Workouts tab, Home + widget redesign, Coach voice input, meal-share links, diary export, AI reprocessing, Camera + Camera, new theme colors, body-fat history with per-entry delete, independent height/weight units, restore from Health Connect after a reinstall, and Adaptive Goals + Energy Burn on by default for new installs.
+Android 3.0.1 (versionCode 28) ships the same release: Workouts tab, Home + widget redesign, Coach voice input, meal-share links, diary export, AI reprocessing, Camera + Camera, new theme colors, body-fat history with per-entry delete, independent height/weight units, restore from Health Connect after a reinstall, and Adaptive Goals + Energy Burn on by default for new installs.
 
 [App Store](https://apps.apple.com/us/app/fud-ai-calorie-tracker/id6758935726) · [Google Play](https://play.google.com/store/apps/details?id=com.apoorvdarshan.calorietracker) · [Website](https://fud-ai.app) · [Report an Issue](https://github.com/apoorvdarshan/fud-ai/issues/new?labels=bug&title=Bug:%20) · [Request a Feature](https://github.com/apoorvdarshan/fud-ai/issues/new?labels=enhancement&title=Feature:%20)
 
@@ -274,7 +274,7 @@ All values can be manually overridden in Settings, with a **Recalculate Goals** 
 ```
 fud-ai/
 ├── ios/          # SwiftUI iOS app (shipping on App Store, v5.0)
-├── android/      # Kotlin + Jetpack Compose app (min SDK 26 / Android 8.0, v3.0)
+├── android/      # Kotlin + Jetpack Compose app (min SDK 26 / Android 8.0, v3.0.1)
 ├── web/          # Marketing site — https://fud-ai.app (static HTML/CSS, Vercel)
 ├── APPSTORE.md   # App Store Connect listing copy (iOS)
 ├── PLAYSTORE.md  # Google Play Console listing copy (Android)
