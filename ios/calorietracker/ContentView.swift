@@ -3746,10 +3746,7 @@ struct ProfileView: View {
                         .listRowBackground(AppColors.appCard)
                 }
 
-                // Section 5: Backup (iCloud snapshot — photos excluded)
-                CloudBackupSettingsSection()
-
-                // Section 6: Health & Data
+                // Section 5: Health & Data
                 Section("Health & Data") {
                     // Apple Health
                     HStack {
