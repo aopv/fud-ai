@@ -42,6 +42,7 @@ NEW
 • Reprocess a logged meal with AI: adjust its name, serving, or note and re-analyze.
 • Camera + Camera now keeps both shots, stitched side by side.
 • 10 new theme colors (18 total), picked inline in Settings.
+• Reinstalled or got a new iPhone? Your food log, weight, and body fat now restore automatically from Apple Health.
 
 IMPROVED
 • Adaptive Goals and Energy Burn have graduated from Experimental and are on by default for new installs.
@@ -106,7 +107,7 @@ PRIVACY
 No account, sign-in, cloud sync, analytics, or behavioral tracking. A single small banner ad keeps the app free. BYOK keys stay on-device. Supported iPhones can use Apple Intelligence on-device as a final fallback for text, voice-transcribed, and Siri food-description analysis. Review edits are saved only if you log the meal. Barcode sends only the barcode to Open Food Facts. MIT licensed.
 
 APPLE HEALTH
-Two-way sync for nutrition, weight, height, and body fat. External samples can auto-import. Energy Burn Goals can use active/total energy while keeping macros editable (on by default for new users).
+Two-way sync for nutrition, weight, height, and body fat. External samples can auto-import. After a reinstall or on a new iPhone, your food log, weight, and body fat restore automatically from Apple Health. Energy Burn Goals can use active/total energy while keeping macros editable (on by default for new users).
 
 Fud AI is not medical advice — consult a healthcare professional before significant diet changes.
 

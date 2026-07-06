@@ -658,4 +658,5 @@
     <string name="whats_new_v30_adaptive">Adaptieve doelen en Energieverbruik zijn niet langer experimenteel en staan standaard aan bij nieuwe installaties.</string>
     <string name="whats_new_v30_widgets">Widgets vernieuwd: de snelheidsmeterstijl van Home, getekend op de echte grootte van elk widget.</string>
     <string name="whats_new_v30_ads">Een kleine banneradvertentie houdt Fud AI nu gratis.</string>
+    <string name="whats_new_v30_restore">Opnieuw geïnstalleerd of een nieuwe telefoon? Je voedingslogboek, gewicht en vetpercentage worden nu automatisch hersteld uit Health Connect.</string>
 </resources>

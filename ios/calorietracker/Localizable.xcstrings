@@ -37144,6 +37144,100 @@
           }
         }
       }
+    },
+    "Reinstalled or switched phones? Your food log, weight, and body fat now restore automatically from Apple Health." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أعدت التثبيت أو غيّرت هاتفك؟ يُستعاد الآن سجل طعامك ووزنك ودهون جسمك تلقائيًا من Apple Health."
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yenidən quraşdırmısınız və ya telefonu dəyişmisiniz? Yemək jurnalınız, çəkiniz və bədən yağınız indi Apple Health-dən avtomatik bərpa olunur."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neu installiert oder neues iPhone? Ernährungstagebuch, Gewicht und Körperfett werden jetzt automatisch aus Apple Health wiederhergestellt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Reinstalaste o cambiaste de teléfono? Tu registro de comidas, peso y grasa corporal ahora se restauran automáticamente desde Apple Health."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réinstallation ou nouveau téléphone ? Ton journal alimentaire, ton poids et ta masse grasse se restaurent désormais automatiquement depuis Apple Health."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "दोबारा इंस्टॉल किया या फ़ोन बदला? आपका फ़ूड लॉग, वज़न और बॉडी फ़ैट अब Apple Health से अपने आप बहाल हो जाते हैं।"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hai reinstallato o cambiato telefono? Diario alimentare, peso e grasso corporeo ora si ripristinano automaticamente da Apple Health."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "再インストールや機種変更をしても、食事記録・体重・体脂肪がApple Healthから自動的に復元されるようになりました。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "재설치했거나 휴대폰을 바꿨나요? 이제 음식 기록, 체중, 체지방이 Apple Health에서 자동으로 복원됩니다."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opnieuw geïnstalleerd of een nieuwe telefoon? Je voedingslogboek, gewicht en vetpercentage worden nu automatisch hersteld uit Apple Health."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ponowna instalacja lub nowy telefon? Dziennik posiłków, waga i tkanka tłuszczowa są teraz automatycznie przywracane z Apple Health."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reinstalou ou trocou de celular? Seu diário alimentar, peso e gordura corporal agora são restaurados automaticamente do Apple Health."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ai reinstalat sau ai schimbat telefonul? Jurnalul alimentar, greutatea și grăsimea corporală se restaurează acum automat din Apple Health."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Переустановили приложение или сменили телефон? Дневник питания, вес и процент жира теперь автоматически восстанавливаются из Apple Health."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新安装或更换手机后，你的饮食记录、体重和体脂现在会从 Apple Health 自动恢复。"
+          }
+        }
+      }
     }
   },
   "version" : "1.1"

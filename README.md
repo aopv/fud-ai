@@ -83,6 +83,7 @@ Android 2.3.0 build 26 brings the same AI-driven goals, goal locks, body measure
 ### Health & platform
 - **Apple Health** — bidirectional sync for body measurements + nutrition types written per meal; Siri food/weight logs write through the same HealthKit paths, and Energy Burn Goals can estimate calorie targets from active/total energy while macros stay editable
 - **Health Connect** — Android sync for nutrition, weight, and body fat, with permission reconciliation and backfill support; Energy Burn Goals can use recent energy data for calorie targets
+- **Restore after a reinstall** — on a fresh install or new phone, the food log, weight, and body-fat history restore automatically from Apple Health / Health Connect (the app finds its own previously-synced records)
 - **Apple Watch** — watchOS app and complications show calories and macros at a glance
 - **Widgets** — iOS Home Screen has Fud AI in Small, Medium, and Large plus a small-only Fud AI Protein widget; Lock Screen widgets stay separate, and Android Glance widgets (including a new "Fud AI Today" all-in-one calories + macros widget) update when you log
 - **Android 2.3.0 update** — AI-driven goals, goal locks, optional body measurements, and onboarding AI setup; an in-camera flash toggle; Health Connect now reads weight + body fat (read-only is enough to sync); a new "Fud AI Today" widget; fixes for widgets stuck loading; and a feet/inches height fix

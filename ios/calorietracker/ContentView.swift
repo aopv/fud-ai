@@ -395,6 +395,7 @@ private struct AboutSettingsSections: View {
         "10 new theme colors, now picked inline in Settings.",
         "Body fat history: review and delete individual entries, just like weight.",
         "Height and weight units can now be set independently.",
+        "Reinstalled or switched phones? Your food log, weight, and body fat now restore automatically from Apple Health.",
         "Adaptive Goals and Energy Burn left Experimental and are on by default for new installs.",
         "A small banner ad and an optional Tip Jar keep Fud AI free.",
         "As always, your food log, weight and body history, and API keys stay on your device."

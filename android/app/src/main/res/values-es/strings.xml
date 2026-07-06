@@ -658,4 +658,5 @@
     <string name="whats_new_v30_adaptive">Objetivos adaptativos y Quema de energía dejan de ser experimentales y vienen activados por defecto en instalaciones nuevas.</string>
     <string name="whats_new_v30_widgets">Rediseño de widgets: el estilo velocímetro de Inicio, dibujado al tamaño real de cada widget.</string>
     <string name="whats_new_v30_ads">Un pequeño banner publicitario mantiene ahora Fud AI gratis.</string>
+    <string name="whats_new_v30_restore">¿Reinstalaste o cambiaste de teléfono? Tu registro de comidas, peso y grasa corporal ahora se restauran automáticamente desde Health Connect.</string>
 </resources>
