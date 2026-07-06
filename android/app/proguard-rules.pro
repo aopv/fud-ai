@@ -72,3 +72,8 @@
 # the original source file name so we don't leak internal file structure.
 -keepattributes SourceFile,LineNumberTable
 -renamesourcefileattribute SourceFile
+
+# play-core-ktx (in-app review) references this compile-only annotation that no
+# runtime dependency ships; R8 in full mode fails the release build without the
+# suppression. Surfaced when play-services-ads 24.4 shifted basement versions.
+-dontwarn com.google.android.gms.common.annotation.NoNullnessRewrite
