@@ -69,7 +69,7 @@ jobs:
           track: production
           status: draft
 
-      - name: Create GitHub Release (pre-release until the store rollout goes live)
+      - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -79,5 +79,5 @@ jobs:
           cp android/app/build/outputs/apk/release/app-release.apk "fudai-v${VERSION}.apk"
           gh release create "$GITHUB_REF_NAME" \
             --title "Android ${VERSION} (versionCode ${VCODE})" \
-            --generate-notes --prerelease \
+            --generate-notes --latest \
             "fudai-v${VERSION}.aab" "fudai-v${VERSION}.apk"

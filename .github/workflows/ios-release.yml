@@ -4,8 +4,8 @@
 # tag so the repo's Releases sidebar stays in sync. Notes-only: the IPA lives
 # in ASC, there is nothing meaningful to attach.
 #
-# Created as a PRE-RELEASE; flip it to a full release when the App Store
-# rollout goes live:  gh release edit <tag> --prerelease=false --latest
+# Published as a normal release immediately (Apoorv's preference — store
+# review lag doesn't gate the GitHub entry).
 
 name: iOS Release (GitHub entry)
 
@@ -30,4 +30,4 @@ jobs:
           BUILD=$(grep -m1 'CURRENT_PROJECT_VERSION' ios/calorietracker.xcodeproj/project.pbxproj | tr -dc '0-9')
           gh release create "$GITHUB_REF_NAME" \
             --title "iOS ${VERSION} (build ${BUILD})" \
-            --generate-notes --prerelease
+            --generate-notes --latest
