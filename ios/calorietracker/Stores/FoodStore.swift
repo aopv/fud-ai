@@ -402,6 +402,17 @@ class FoodStore {
         onEntriesChanged?()
     }
 
+    /// Backup-restore path for favorites: keeps the local list and order, and
+    /// appends backup favorites that aren't present yet (matched by
+    /// favoriteKey, same as toggleFavorite's dedup).
+    func mergeWithCloudFavorites(_ cloudFavorites: [FoodEntry]) {
+        let existingKeys = Set(favorites.map(\.favoriteKey))
+        let missing = cloudFavorites.filter { !existingKeys.contains($0.favoriteKey) }
+        guard !missing.isEmpty else { return }
+        favorites.append(contentsOf: missing)
+        saveFavorites()
+    }
+
     func reprocessEntry(_ entry: FoodEntry, withNote note: String) async throws -> GeminiService.FoodAnalysis {
         let image = entry.imageFilename
             .flatMap { FoodImageStore.shared.load(filename: $0) }

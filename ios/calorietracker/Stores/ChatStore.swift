@@ -34,6 +34,17 @@ class ChatStore {
         save()
     }
 
+    /// Backup-restore path: merge backed-up messages by id and re-sort by
+    /// timestamp so a restored history interleaves correctly with anything
+    /// sent since the backup was taken.
+    func mergeWithCloudMessages(_ cloudMessages: [ChatMessage]) {
+        let existingIDs = Set(messages.map(\.id))
+        let missing = cloudMessages.filter { !existingIDs.contains($0.id) }
+        guard !missing.isEmpty else { return }
+        messages = (messages + missing).sorted { $0.timestamp < $1.timestamp }
+        save()
+    }
+
     /// Trailing slice of messages to send as conversation history to the LLM. The system prompt
     /// is built separately each turn so the context stays fresh as the user logs more food/weights.
     func contextMessages() -> [ChatMessage] {
