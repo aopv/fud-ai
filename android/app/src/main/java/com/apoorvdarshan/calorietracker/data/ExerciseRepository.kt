@@ -101,11 +101,16 @@ class ExerciseRepository private constructor(val exercises: List<ExerciseItem>) 
                     InputStreamReader(stream, Charsets.UTF_8).use { reader ->
                         val type = object : TypeToken<List<ExerciseRecord>>() {}.type
                         val records: List<ExerciseRecord> = Gson().fromJson(reader, type) ?: emptyList()
-                        records.mapNotNull { ExerciseItem.from(it) }
+                        val mapped = records.mapNotNull { ExerciseItem.from(it) }
                             .sortedWith { a, b -> a.name.compareTo(b.name, ignoreCase = true) }
+                        android.util.Log.d("ExerciseRepository", "parsed=${records.size} mapped=${mapped.size}")
+                        mapped
                     }
                 }
             } catch (t: Throwable) {
+                // Never swallow this silently again — an empty Workouts library
+                // shipped to production because this catch left no trace.
+                android.util.Log.e("ExerciseRepository", "failed to load exercises.json", t)
                 emptyList()
             }
             return ExerciseRepository(items)
