@@ -658,17 +658,4 @@
     <string name="whats_new_v30_adaptive">Adaptieve doelen en Energieverbruik zijn niet langer experimenteel en staan standaard aan bij nieuwe installaties.</string>
     <string name="whats_new_v30_widgets">Widgets vernieuwd: de snelheidsmeterstijl van Home, getekend op de echte grootte van elk widget.</string>
     <string name="whats_new_v30_ads">Een kleine banneradvertentie houdt Fud AI nu gratis.</string>
-
-    <!-- Backup (Google Drive folder snapshot) -->
-    <string name="settings_section_backup">Back-up</string>
-    <string name="settings_drive_backup">Google Drive-back-up</string>
-    <string name="settings_backup_now">Nu back-uppen</string>
-    <string name="settings_restore_backup">Herstellen vanaf back-up</string>
-    <string name="settings_backup_never">Nog geen back-up</string>
-    <string name="settings_backup_footer">Maakt een back-up van je voedingslogboek, gewicht, doelen, Coach-chat en instellingen in een door jou gekozen map in Google Drive (of andere cloudopslag). Foto\'s zijn niet inbegrepen.</string>
-    <string name="backup_complete">Back-up voltooid</string>
-    <string name="backup_failed">Back-up mislukt — controleer de gekozen map en probeer opnieuw.</string>
-    <string name="restore_complete">Herstel voltooid</string>
-    <string name="restore_failed">Herstel mislukt</string>
-    <string name="backup_none_found">Geen back-up gevonden</string>
 </resources>

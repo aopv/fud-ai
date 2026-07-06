@@ -658,17 +658,4 @@
     <string name="whats_new_v30_adaptive">Adaptiv Məqsədlər və Enerji Sərfi eksperimental mərhələdən çıxdı və yeni quraşdırmalarda defolt olaraq aktivdir.</string>
     <string name="whats_new_v30_widgets">Vidcetlər yeniləndi: Ana səhifənin spidometr üslubu, hər vidcetin real ölçüsündə çəkilir.</string>
     <string name="whats_new_v30_ads">Kiçik banner reklamı indi Fud AI-ni pulsuz saxlayır.</string>
-
-    <!-- Backup (Google Drive folder snapshot) -->
-    <string name="settings_section_backup">Ehtiyat nüsxə</string>
-    <string name="settings_drive_backup">Google Drive ehtiyat nüsxəsi</string>
-    <string name="settings_backup_now">İndi ehtiyat nüsxə yarat</string>
-    <string name="settings_restore_backup">Ehtiyat nüsxədən bərpa et</string>
-    <string name="settings_backup_never">Hələ ehtiyat nüsxə yoxdur</string>
-    <string name="settings_backup_footer">Yemək jurnalınızı, çəkinizi, məqsədlərinizi, Koç söhbətini və tənzimləmələri Google Drive-da (və ya istənilən bulud yaddaşında) seçdiyiniz qovluğa ehtiyatlayır. Şəkillər daxil deyil.</string>
-    <string name="backup_complete">Ehtiyat nüsxə hazırdır</string>
-    <string name="backup_failed">Ehtiyat nüsxə alınmadı — seçdiyiniz qovluğu yoxlayıb yenidən cəhd edin.</string>
-    <string name="restore_complete">Bərpa tamamlandı</string>
-    <string name="restore_failed">Bərpa alınmadı</string>
-    <string name="backup_none_found">Ehtiyat nüsxə tapılmadı</string>
 </resources>

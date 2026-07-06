@@ -5,7 +5,6 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.apoorvdarshan.calorietracker.models.AIProvider
@@ -138,20 +137,6 @@ class PreferencesStore(private val context: Context) {
     /// the restore should be allowed to run again.
     val healthFoodRestoreDone: Flow<Boolean> = ds.data.map { it[Keys.HEALTH_FOOD_RESTORE_DONE] ?: false }
     suspend fun setHealthFoodRestoreDone(v: Boolean) { ds.edit { it[Keys.HEALTH_FOOD_RESTORE_DONE] = v } }
-
-    // -- Drive backup (SAF folder snapshot) --------------------------------
-    val driveBackupEnabled: Flow<Boolean> = ds.data.map { it[Keys.DRIVE_BACKUP_ENABLED] ?: false }
-    suspend fun setDriveBackupEnabled(v: Boolean) { ds.edit { it[Keys.DRIVE_BACKUP_ENABLED] = v } }
-
-    /// Persisted SAF tree URI of the folder the user picked (Google Drive or any provider).
-    val driveBackupFolderUri: Flow<String?> = ds.data.map { it[Keys.DRIVE_BACKUP_FOLDER_URI] }
-    suspend fun setDriveBackupFolderUri(v: String) { ds.edit { it[Keys.DRIVE_BACKUP_FOLDER_URI] = v } }
-
-    val driveBackupLastDate: Flow<Long> = ds.data.map { it[Keys.DRIVE_BACKUP_LAST_DATE] ?: 0L }
-    suspend fun setDriveBackupLastDate(v: Long) { ds.edit { it[Keys.DRIVE_BACKUP_LAST_DATE] = v } }
-
-    val driveBackupLastHash: Flow<String?> = ds.data.map { it[Keys.DRIVE_BACKUP_LAST_HASH] }
-    suspend fun setDriveBackupLastHash(v: String) { ds.edit { it[Keys.DRIVE_BACKUP_LAST_HASH] = v } }
 
     val healthEnergyGoalsEnabled: Flow<Boolean> = ds.data.map { it[Keys.HEALTH_ENERGY_GOALS_ENABLED] ?: false }
     suspend fun setHealthEnergyGoalsEnabled(v: Boolean) { ds.edit { it[Keys.HEALTH_ENERGY_GOALS_ENABLED] = v } }
@@ -541,10 +526,6 @@ class PreferencesStore(private val context: Context) {
         val HEALTH_CHANGES_TOKEN = stringPreferencesKey("healthChangesToken")
         val HEALTH_CHANGES_TOKEN_TYPES = stringPreferencesKey("healthChangesTokenTypes")
         val HEALTH_FOOD_RESTORE_DONE = booleanPreferencesKey("healthFoodRestoreDone")
-        val DRIVE_BACKUP_ENABLED = booleanPreferencesKey("driveBackupEnabled")
-        val DRIVE_BACKUP_FOLDER_URI = stringPreferencesKey("driveBackupFolderUri")
-        val DRIVE_BACKUP_LAST_DATE = longPreferencesKey("driveBackupLastDate")
-        val DRIVE_BACKUP_LAST_HASH = stringPreferencesKey("driveBackupLastHash")
         val HEALTH_ENERGY_GOALS_ENABLED = booleanPreferencesKey("healthEnergyGoalsEnabled")
         val HEALTH_ENERGY_GOALS_PREVIOUS_TARGETS = stringPreferencesKey("healthEnergyGoalsPreviousTargets")
         val HEALTH_ENERGY_GOALS_LAST_AUTO_REFRESH_DAY = stringPreferencesKey("healthEnergyGoalsLastAutoRefreshDay")

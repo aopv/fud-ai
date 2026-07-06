@@ -658,17 +658,4 @@
     <string name="whats_new_v30_adaptive">Adaptive Ziele und Energieverbrauch sind nicht mehr experimentell und bei Neuinstallationen standardmäßig aktiv.</string>
     <string name="whats_new_v30_widgets">Widget-Redesign: der Tacho-Stil vom Home-Tab, gezeichnet in der echten Größe jedes Widgets.</string>
     <string name="whats_new_v30_ads">Eine kleine Banneranzeige hält Fud AI jetzt kostenlos.</string>
-
-    <!-- Backup (Google Drive folder snapshot) -->
-    <string name="settings_section_backup">Backup</string>
-    <string name="settings_drive_backup">Google Drive-Backup</string>
-    <string name="settings_backup_now">Jetzt sichern</string>
-    <string name="settings_restore_backup">Aus Backup wiederherstellen</string>
-    <string name="settings_backup_never">Noch kein Backup</string>
-    <string name="settings_backup_footer">Sichert dein Ernährungstagebuch, Gewicht, Ziele, den Coach-Chat und Einstellungen in einem von dir gewählten Ordner in Google Drive (oder einem anderen Cloud-Speicher). Fotos sind nicht enthalten.</string>
-    <string name="backup_complete">Backup abgeschlossen</string>
-    <string name="backup_failed">Backup fehlgeschlagen — prüfe den gewählten Ordner und versuche es erneut.</string>
-    <string name="restore_complete">Wiederherstellung abgeschlossen</string>
-    <string name="restore_failed">Wiederherstellung fehlgeschlagen</string>
-    <string name="backup_none_found">Kein Backup gefunden</string>
 </resources>

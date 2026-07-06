@@ -658,17 +658,4 @@
     <string name="whats_new_v30_adaptive">Adaptive Goals और Energy Burn अब प्रयोगात्मक नहीं हैं और नए इंस्टॉल पर डिफ़ॉल्ट रूप से चालू हैं।</string>
     <string name="whats_new_v30_widgets">विजेट नए रूप में: होम का स्पीडोमीटर स्टाइल, हर विजेट के असली आकार में।</string>
     <string name="whats_new_v30_ads">एक छोटा बैनर विज्ञापन अब Fud AI को मुफ़्त रखता है।</string>
-
-    <!-- Backup (Google Drive folder snapshot) -->
-    <string name="settings_section_backup">बैकअप</string>
-    <string name="settings_drive_backup">Google Drive बैकअप</string>
-    <string name="settings_backup_now">अभी बैकअप लें</string>
-    <string name="settings_restore_backup">बैकअप से पुनर्स्थापित करें</string>
-    <string name="settings_backup_never">अभी तक कोई बैकअप नहीं</string>
-    <string name="settings_backup_footer">आपका फ़ूड लॉग, वज़न, लक्ष्य, कोच चैट और सेटिंग्स Google Drive (या किसी भी क्लाउड स्टोरेज) में आपके चुने फ़ोल्डर में बैकअप होते हैं। फ़ोटो शामिल नहीं हैं।</string>
-    <string name="backup_complete">बैकअप पूरा हुआ</string>
-    <string name="backup_failed">बैकअप विफल रहा — चुना गया फ़ोल्डर जाँचें और फिर कोशिश करें।</string>
-    <string name="restore_complete">पुनर्स्थापना पूरी हुई</string>
-    <string name="restore_failed">पुनर्स्थापना विफल रही</string>
-    <string name="backup_none_found">कोई बैकअप नहीं मिला</string>
 </resources>

@@ -658,17 +658,4 @@
     <string name="whats_new_v30_adaptive">Obiectivele adaptive și Energia consumată au ieșit din faza experimentală și sunt activate implicit la instalările noi.</string>
     <string name="whats_new_v30_widgets">Widgeturi reproiectate: stilul vitezometru din ecranul principal, desenat la dimensiunea reală a fiecărui widget.</string>
     <string name="whats_new_v30_ads">Un mic banner publicitar menține acum Fud AI gratuit.</string>
-
-    <!-- Backup (Google Drive folder snapshot) -->
-    <string name="settings_section_backup">Copie de rezervă</string>
-    <string name="settings_drive_backup">Backup Google Drive</string>
-    <string name="settings_backup_now">Fă backup acum</string>
-    <string name="settings_restore_backup">Restaurează din backup</string>
-    <string name="settings_backup_never">Niciun backup încă</string>
-    <string name="settings_backup_footer">Salvează jurnalul alimentar, greutatea, obiectivele, conversația cu Coach și setările într-un dosar ales de tine în Google Drive (sau alt spațiu cloud). Pozele nu sunt incluse.</string>
-    <string name="backup_complete">Backup finalizat</string>
-    <string name="backup_failed">Backup eșuat — verifică dosarul ales și încearcă din nou.</string>
-    <string name="restore_complete">Restaurare finalizată</string>
-    <string name="restore_failed">Restaurare eșuată</string>
-    <string name="backup_none_found">Nu s-a găsit niciun backup</string>
 </resources>

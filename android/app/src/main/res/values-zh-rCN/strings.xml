@@ -658,17 +658,4 @@
     <string name="whats_new_v30_adaptive">自适应目标和能量消耗已结束实验阶段，新安装默认开启。</string>
     <string name="whats_new_v30_widgets">小组件焕新：主页的仪表盘风格，按每个小组件的实际尺寸绘制。</string>
     <string name="whats_new_v30_ads">一条小横幅广告让 Fud AI 保持免费。</string>
-
-    <!-- Backup (Google Drive folder snapshot) -->
-    <string name="settings_section_backup">备份</string>
-    <string name="settings_drive_backup">Google Drive 备份</string>
-    <string name="settings_backup_now">立即备份</string>
-    <string name="settings_restore_backup">从备份恢复</string>
-    <string name="settings_backup_never">尚无备份</string>
-    <string name="settings_backup_footer">将你的饮食记录、体重、目标、教练聊天和设置备份到你在 Google Drive（或其他云存储）中选择的文件夹。不包含照片。</string>
-    <string name="backup_complete">备份完成</string>
-    <string name="backup_failed">备份失败——请检查所选文件夹后重试。</string>
-    <string name="restore_complete">恢复完成</string>
-    <string name="restore_failed">恢复失败</string>
-    <string name="backup_none_found">未找到备份</string>
 </resources>

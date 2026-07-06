@@ -658,17 +658,4 @@
     <string name="whats_new_v30_adaptive">تخرّجت ميزتا الأهداف التكيفية وحرق الطاقة من المرحلة التجريبية وأصبحتا مفعّلتين افتراضيًا للتثبيتات الجديدة.</string>
     <string name="whats_new_v30_widgets">تصميم جديد للودجات: نمط عدّاد السرعة من الرئيسية، مرسوم بالحجم الحقيقي لكل ودجة.</string>
     <string name="whats_new_v30_ads">إعلان بانر صغير يُبقي Fud AI مجانيًا الآن.</string>
-
-    <!-- Backup (Google Drive folder snapshot) -->
-    <string name="settings_section_backup">النسخ الاحتياطي</string>
-    <string name="settings_drive_backup">نسخ Google Drive الاحتياطي</string>
-    <string name="settings_backup_now">انسخ احتياطيًا الآن</string>
-    <string name="settings_restore_backup">استعادة من النسخة الاحتياطية</string>
-    <string name="settings_backup_never">لا توجد نسخة احتياطية بعد</string>
-    <string name="settings_backup_footer">ينسخ سجل طعامك ووزنك وأهدافك ومحادثة المدرب والإعدادات احتياطيًا إلى مجلد تختاره في Google Drive (أو أي تخزين سحابي). الصور غير مشمولة.</string>
-    <string name="backup_complete">اكتمل النسخ الاحتياطي</string>
-    <string name="backup_failed">فشل النسخ الاحتياطي — تحقق من المجلد الذي اخترته وحاول مجددًا.</string>
-    <string name="restore_complete">اكتملت الاستعادة</string>
-    <string name="restore_failed">فشلت الاستعادة</string>
-    <string name="backup_none_found">لم يتم العثور على نسخة احتياطية</string>
 </resources>

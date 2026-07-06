@@ -658,17 +658,4 @@
     <string name="whats_new_v30_adaptive">Metas adaptativas e Queima de energia saíram da fase experimental e vêm ativadas por padrão em novas instalações.</string>
     <string name="whats_new_v30_widgets">Widgets redesenhados: o estilo velocímetro da tela inicial, desenhado no tamanho real de cada widget.</string>
     <string name="whats_new_v30_ads">Um pequeno banner de anúncio agora mantém o Fud AI gratuito.</string>
-
-    <!-- Backup (Google Drive folder snapshot) -->
-    <string name="settings_section_backup">Backup</string>
-    <string name="settings_drive_backup">Backup no Google Drive</string>
-    <string name="settings_backup_now">Fazer backup agora</string>
-    <string name="settings_restore_backup">Restaurar do backup</string>
-    <string name="settings_backup_never">Nenhum backup ainda</string>
-    <string name="settings_backup_footer">Faz backup do seu diário alimentar, peso, metas, chat do Coach e ajustes em uma pasta que você escolher no Google Drive (ou outro armazenamento em nuvem). As fotos não são incluídas.</string>
-    <string name="backup_complete">Backup concluído</string>
-    <string name="backup_failed">Falha no backup — verifique a pasta escolhida e tente novamente.</string>
-    <string name="restore_complete">Restauração concluída</string>
-    <string name="restore_failed">Falha na restauração</string>
-    <string name="backup_none_found">Nenhum backup encontrado</string>
 </resources>
