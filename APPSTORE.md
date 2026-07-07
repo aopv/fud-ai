@@ -98,7 +98,7 @@ NEW
 • Home redesign: speedometer calorie gauge, vertical macro bars, four nutrient cards, and a floating add button. Widgets, Lock Screen, and Apple Watch match the new design and follow your chosen nutrient cards.
 • Fud AI is now fully free — the Premium subscription has been removed. Bring your own AI key (a free Gemini key takes a minute). A small banner ad keeps the app free, and there's an optional Tip Jar in Settings → About if you'd like to support development.
 • Ask Coach by voice with the new inline recorder.
-• Share any meal as a link that opens straight in Fud AI — on iPhone or Android.
+• Share any meal as a link that opens straight in Fud AI.
 • Export your food diary as JSON, Markdown, or CSV from Settings.
 • Reprocess a logged meal with AI: adjust its name, serving, or note and re-analyze.
 • Camera + Camera now keeps both shots, stitched side by side.
