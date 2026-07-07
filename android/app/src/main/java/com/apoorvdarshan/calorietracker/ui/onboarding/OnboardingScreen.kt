@@ -1315,14 +1315,6 @@ private fun ProviderStep(
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
             textAlign = androidx.compose.ui.text.style.TextAlign.Center
         )
-        Spacer(Modifier.height(8.dp))
-        // The app now shows a small banner ad — disclose it next to the privacy notes.
-        Text(
-            stringResource(R.string.onboarding_ads_note),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
-            textAlign = androidx.compose.ui.text.style.TextAlign.Center
-        )
     }
 
     when (selectorSheet) {

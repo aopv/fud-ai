@@ -826,11 +826,6 @@ struct OnboardingView: View {
                             title: "Local data",
                             text: "Your food log, weight history, body-fat history, and BYOK API keys stay on this device."
                         )
-                        aiNoticeRow(
-                            icon: "megaphone.fill",
-                            title: "Ads keep it free",
-                            text: "A small banner supports development. Your health data is never used for ads."
-                        )
                     }
                     .padding(16)
                     .background(AppColors.appCard, in: RoundedRectangle(cornerRadius: 16))
