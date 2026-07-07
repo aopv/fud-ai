@@ -1,6 +1,6 @@
 # App Store Listing
 
-App Store Connect submission details for Fud AI v5.0 build 26. Each field is in a code block for easy copy-paste.
+App Store Connect submission details for Fud AI v5.0 build 27. Each field is in a code block for easy copy-paste.
 
 ## App Name
 ```
@@ -28,38 +28,11 @@ Primary: Health & Fitness
 Secondary: Food & Drink
 ```
 
-## What's New (v5.0)
-```
-Fud AI 5.0 — Workouts, a Home redesign, and fully free.
-
-NEW
-• Workouts tab: browse an 873-exercise library with photos, primary/secondary muscle and equipment filters, search, sort, and per-exercise detail pages.
-• Home redesign: speedometer calorie gauge, vertical macro bars, four nutrient cards, and a floating add button. Widgets, Lock Screen, and Apple Watch match the new design and follow your chosen nutrient cards.
-• Fud AI is now fully free — the Premium subscription has been removed. Bring your own AI key (a free Gemini key takes a minute). A small banner ad keeps the app free, and there's an optional Tip Jar in Settings → About if you'd like to support development.
-• Ask Coach by voice with the new inline recorder.
-• Share any meal as a link that opens straight in Fud AI — on iPhone or Android.
-• Export your food diary as JSON, Markdown, or CSV from Settings.
-• Reprocess a logged meal with AI: adjust its name, serving, or note and re-analyze.
-• Camera + Camera now keeps both shots, stitched side by side.
-• 10 new theme colors (18 total), picked inline in Settings.
-
-IMPROVED
-• Adaptive Goals and Energy Burn have graduated from Experimental and are on by default for new installs.
-• Body fat history: review and delete individual entries, just like weight.
-• Height and weight units can be set independently.
-• Progress charts stay readable across dense, multi-year ranges.
-• Refreshed onboarding: a quick feature tour, clearer AI and privacy notes, and your plan ready at the end.
-• Meal sections show combined nutrition totals; exercise search keeps filters pinned; the keyboard dismisses as you scroll.
-• General refinements and fixes.
-
-No data migration is required. Existing logs, goals, widgets, and BYOK settings are preserved. If you had a Premium subscription, cancel it from your Apple ID subscription settings — this version no longer uses it.
-```
-
 ## Description
 ```
 Effortless calorie tracking with AI-powered food recognition. Snap, scan, speak, or type a meal — get instant calories, macros, and nutrients.
 
-NEW in v5.0: a Workouts tab with an 873-exercise library — photos, primary/secondary muscle and equipment filters, search, sort, and detail pages. A Home redesign with a speedometer calorie gauge, vertical macro bars, four nutrient cards, and a floating add button — widgets, Lock Screen, and Apple Watch match. Ask Coach by voice, share meals as links, export your diary, and reprocess logged meals with AI. Fud AI is now fully free: the Premium subscription has been removed and AI is bring-your-own-key. A small banner ad keeps the app free, with an optional Tip Jar. Adaptive Goals and Energy Burn are on by default for new users.
+NEW in v5.0: a Workouts tab with an 873-exercise library — photos, primary/secondary muscle and equipment filters, search, sort, and detail pages. A Home redesign with a speedometer calorie gauge, vertical macro bars, four nutrient cards, and a floating add button — widgets, Lock Screen, and Apple Watch match. Ask Coach by voice, share meals as links, export your diary, and reprocess logged meals with AI. Fud AI is now fully free: the Premium subscription has been removed and AI is bring-your-own-key. A small banner ad keeps the app free, with an optional Tip Jar.
 
 Free, open source, privacy-first. Bring your own API key — a free Gemini key takes a minute to create.
 
@@ -106,7 +79,7 @@ PRIVACY
 No account, sign-in, cloud sync, analytics, or behavioral tracking. A single small banner ad keeps the app free. BYOK keys stay on-device. Supported iPhones can use Apple Intelligence on-device as a final fallback for text, voice-transcribed, and Siri food-description analysis. Review edits are saved only if you log the meal. Barcode sends only the barcode to Open Food Facts. MIT licensed.
 
 APPLE HEALTH
-Two-way sync for nutrition, weight, height, and body fat. External samples can auto-import. Energy Burn Goals can use active/total energy while keeping macros editable (on by default for new users).
+Two-way sync for nutrition, weight, height, and body fat. External samples can auto-import. After a reinstall or on a new iPhone, your food log, weight, and body fat restore automatically from Apple Health. Energy Burn Goals can use active/total energy while keeping macros editable (on by default for new users).
 
 Fud AI is not medical advice — consult a healthcare professional before significant diet changes.
 
@@ -114,6 +87,34 @@ Terms: https://fud-ai.app/terms.html
 Privacy: https://fud-ai.app/privacy.html
 Source: https://github.com/apoorvdarshan/fud-ai
 
+```
+
+## What's New (v5.0)
+```
+Fud AI 5.0 — Workouts, a Home redesign, and fully free.
+
+NEW
+• Workouts tab: browse an 873-exercise library with photos, primary/secondary muscle and equipment filters, search, sort, and per-exercise detail pages.
+• Home redesign: speedometer calorie gauge, vertical macro bars, four nutrient cards, and a floating add button. Widgets, Lock Screen, and Apple Watch match the new design and follow your chosen nutrient cards.
+• Fud AI is now fully free — the Premium subscription has been removed. Bring your own AI key (a free Gemini key takes a minute). A small banner ad keeps the app free, and there's an optional Tip Jar in Settings → About if you'd like to support development.
+• Ask Coach by voice with the new inline recorder.
+• Share any meal as a link that opens straight in Fud AI.
+• Export your food diary as JSON, Markdown, or CSV from Settings.
+• Reprocess a logged meal with AI: adjust its name, serving, or note and re-analyze.
+• Camera + Camera now keeps both shots, stitched side by side.
+• 10 new theme colors (18 total), picked inline in Settings.
+• Reinstalled or got a new iPhone? Your food log, weight, and body fat now restore automatically from Apple Health.
+
+IMPROVED
+• Adaptive Goals and Energy Burn have graduated from Experimental and are on by default for new installs.
+• Body fat history: review and delete individual entries, just like weight.
+• Height and weight units can be set independently.
+• Progress charts stay readable across dense, multi-year ranges.
+• Refreshed onboarding: a quick feature tour, clearer AI and privacy notes, and your plan ready at the end.
+• Meal sections show combined nutrition totals; exercise search keeps filters pinned; the keyboard dismisses as you scroll.
+• General refinements and fixes.
+
+No data migration is required. Existing logs, goals, widgets, and BYOK settings are preserved. If you had a Premium subscription, cancel it from your Apple ID subscription settings — this version no longer uses it.
 ```
 
 ## Privacy URL

@@ -1,0 +1,83 @@
+# Android release CI — the Play-side sibling of the Xcode Cloud "Release" workflow.
+#
+# Trigger:  push a tag starting with "android-v" (e.g. android-v3.0). iOS uses
+#           plain v* tags for Xcode Cloud, so the two pipelines never collide.
+# Output:   a signed AAB uploaded to the Play Console PRODUCTION track as a
+#           DRAFT release — nothing goes live until you press "Roll out" in the
+#           Console (where you also paste the release notes from PLAYSTORE.md).
+#
+# Required repository secrets (Settings → Secrets and variables → Actions):
+#   ANDROID_KEYSTORE_BASE64     base64 of fudai-release.jks (the upload key)
+#   ANDROID_KEYSTORE_PASSWORD   store password
+#   ANDROID_KEY_ALIAS           key alias (fudai)
+#   ANDROID_KEY_PASSWORD        key password
+#   PLAY_SERVICE_ACCOUNT_JSON   the play-publisher service-account JSON key
+#
+# versionCode discipline stays in the repo: bump it in app/build.gradle.kts
+# BEFORE tagging — Play rejects a versionCode it has already seen.
+
+name: Android Release
+
+on:
+  push:
+    tags:
+      - "android-v*"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # create the GitHub Release
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Materialize upload keystore
+        working-directory: android
+        run: |
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/fudai-release.jks"
+          # Absolute path: the app module's file() resolves relative paths
+          # against android/app/, so a bare filename here would miss.
+          cat > keystore.properties <<EOF
+          storeFile=$RUNNER_TEMP/fudai-release.jks
+          storePassword=$ANDROID_KEYSTORE_PASSWORD
+          keyAlias=$ANDROID_KEY_ALIAS
+          keyPassword=$ANDROID_KEY_PASSWORD
+          EOF
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+
+      - name: Build signed AAB + APK
+        working-directory: android
+        run: ./gradlew :app:bundleRelease :app:assembleRelease
+
+      - name: Upload to Play Console (production, draft)
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: com.apoorvdarshan.calorietracker
+          releaseFiles: android/app/build/outputs/bundle/release/app-release.aab
+          track: production
+          status: draft
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="${GITHUB_REF_NAME#android-v}"
+          VCODE=$(grep -m1 'versionCode = ' android/app/build.gradle.kts | tr -dc '0-9')
+          cp android/app/build/outputs/bundle/release/app-release.aab "fudai-v${VERSION}.aab"
+          cp android/app/build/outputs/apk/release/app-release.apk "fudai-v${VERSION}.apk"
+          gh release create "$GITHUB_REF_NAME" \
+            --title "Android ${VERSION} (versionCode ${VCODE})" \
+            --generate-notes --latest \
+            "fudai-v${VERSION}.aab" "fudai-v${VERSION}.apk"

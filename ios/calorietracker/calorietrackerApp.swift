@@ -109,17 +109,6 @@ struct calorietrackerApp: App {
                 // without an explicit food change.
                 refreshWidgetSnapshot()
             }
-            if newPhase == .background, CloudBackupService.isEnabled {
-                // Snapshot-overwrite backup on every background: cheap no-op when
-                // the content hash is unchanged, and deletions propagate because
-                // the next snapshot simply no longer contains them.
-                Task { [foodStore, weightStore, bodyFatStore, bodyMeasurementStore, chatStore] in
-                    try? await CloudBackupService.shared.backUp(
-                        foodStore: foodStore, weightStore: weightStore, bodyFatStore: bodyFatStore,
-                        bodyMeasurementStore: bodyMeasurementStore, chatStore: chatStore
-                    )
-                }
-            }
         }
         .onChange(of: hasCompletedOnboarding) { _, completed in
             if completed {

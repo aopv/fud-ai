@@ -658,17 +658,5 @@
     <string name="whats_new_v30_adaptive">Obiettivi adattivi ed Energia bruciata escono dalla fase sperimentale e sono attivi di default sulle nuove installazioni.</string>
     <string name="whats_new_v30_widgets">Widget ridisegnati: lo stile tachimetro della Home, disegnato alla dimensione reale di ogni widget.</string>
     <string name="whats_new_v30_ads">Un piccolo banner pubblicitario ora mantiene Fud AI gratuito.</string>
-
-    <!-- Backup (Google Drive folder snapshot) -->
-    <string name="settings_section_backup">Backup</string>
-    <string name="settings_drive_backup">Backup su Google Drive</string>
-    <string name="settings_backup_now">Esegui backup ora</string>
-    <string name="settings_restore_backup">Ripristina da backup</string>
-    <string name="settings_backup_never">Nessun backup ancora</string>
-    <string name="settings_backup_footer">Esegue il backup di diario alimentare, peso, obiettivi, chat del Coach e impostazioni in una cartella a tua scelta su Google Drive (o altro cloud). Le foto non sono incluse.</string>
-    <string name="backup_complete">Backup completato</string>
-    <string name="backup_failed">Backup non riuscito: controlla la cartella scelta e riprova.</string>
-    <string name="restore_complete">Ripristino completato</string>
-    <string name="restore_failed">Ripristino non riuscito</string>
-    <string name="backup_none_found">Nessun backup trovato</string>
+    <string name="whats_new_v30_restore">Hai reinstallato o cambiato telefono? Diario alimentare, peso e grasso corporeo ora si ripristinano automaticamente da Health Connect.</string>
 </resources>

@@ -760,19 +760,7 @@
     <string name="whats_new_v30_adaptive">Adaptive Goals and Energy Burn left Experimental and are on by default for new installs.</string>
     <string name="whats_new_v30_widgets">Widgets redesign: the Home speedometer style, drawn at each widget\'s true size.</string>
     <string name="whats_new_v30_ads">A small banner ad now keeps Fud AI free.</string>
-
-    <!-- Backup (Google Drive folder snapshot) -->
-    <string name="settings_section_backup">Backup</string>
-    <string name="settings_drive_backup">Google Drive Backup</string>
-    <string name="settings_backup_now">Back Up Now</string>
-    <string name="settings_restore_backup">Restore from Backup</string>
-    <string name="settings_backup_never">No backup yet</string>
-    <string name="settings_backup_footer">Backs up your food log, weight, goals, Coach chat, and settings to a folder you pick in Google Drive (or any cloud storage). Photos are not included.</string>
-    <string name="backup_complete">Backup complete</string>
-    <string name="backup_failed">Backup failed — check the folder you picked and try again.</string>
-    <string name="restore_complete">Restore complete</string>
-    <string name="restore_failed">Restore failed</string>
-    <string name="backup_none_found">No backup found</string>
+    <string name="whats_new_v30_restore">Reinstalled or switched phones? Your food log, weight, and body fat now restore automatically from Health Connect.</string>
     <string name="export_diary_title">Export Food Diary</string>
     <string name="export_range">Range</string>
     <string name="export_format">Format</string>

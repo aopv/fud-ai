@@ -658,17 +658,5 @@
     <string name="whats_new_v30_adaptive">アダプティブ目標とエネルギー消費が実験的機能を卒業し、新規インストールではデフォルトでオンに。</string>
     <string name="whats_new_v30_widgets">ウィジェットを刷新：ホームのスピードメーターデザインを各ウィジェットの実サイズで描画。</string>
     <string name="whats_new_v30_ads">小さなバナー広告でFud AIは今後も無料です。</string>
-
-    <!-- Backup (Google Drive folder snapshot) -->
-    <string name="settings_section_backup">バックアップ</string>
-    <string name="settings_drive_backup">Google Driveバックアップ</string>
-    <string name="settings_backup_now">今すぐバックアップ</string>
-    <string name="settings_restore_backup">バックアップから復元</string>
-    <string name="settings_backup_never">バックアップはまだありません</string>
-    <string name="settings_backup_footer">食事記録、体重、目標、コーチのチャット、設定を、Google Drive（または任意のクラウドストレージ）で選んだフォルダにバックアップします。写真は含まれません。</string>
-    <string name="backup_complete">バックアップが完了しました</string>
-    <string name="backup_failed">バックアップに失敗しました。選択したフォルダを確認して、もう一度お試しください。</string>
-    <string name="restore_complete">復元が完了しました</string>
-    <string name="restore_failed">復元に失敗しました</string>
-    <string name="backup_none_found">バックアップが見つかりません</string>
+    <string name="whats_new_v30_restore">再インストールや機種変更をしても、食事記録・体重・体脂肪がHealth Connectから自動的に復元されるようになりました。</string>
 </resources>

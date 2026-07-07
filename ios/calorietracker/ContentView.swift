@@ -388,13 +388,14 @@ private struct AboutSettingsSections: View {
         "Fud AI is now completely free — the optional Premium subscription has been removed.",
         "AI features run on your own provider key — add a free Gemini, OpenAI, Groq, or other supported key in onboarding or Settings.",
         "Ask Coach by voice with the new inline recorder.",
-        "Share any meal as a link that opens straight in Fud AI on iPhone or Android.",
+        "Share any meal as a link that opens straight in Fud AI.",
         "Export your food diary as JSON, Markdown, or CSV from Settings.",
         "Reprocess a logged meal with AI — adjust its name, serving, or note and re-analyze.",
         "Camera + Camera keeps both shots, stitched side by side.",
         "10 new theme colors, now picked inline in Settings.",
         "Body fat history: review and delete individual entries, just like weight.",
         "Height and weight units can now be set independently.",
+        "Reinstalled or switched phones? Your food log, weight, and body fat now restore automatically from Apple Health.",
         "Adaptive Goals and Energy Burn left Experimental and are on by default for new installs.",
         "A small banner ad and an optional Tip Jar keep Fud AI free.",
         "As always, your food log, weight and body history, and API keys stay on your device."
@@ -3746,10 +3747,7 @@ struct ProfileView: View {
                         .listRowBackground(AppColors.appCard)
                 }
 
-                // Section 5: Backup (iCloud snapshot — photos excluded)
-                CloudBackupSettingsSection()
-
-                // Section 6: Health & Data
+                // Section 5: Health & Data
                 Section("Health & Data") {
                     // Apple Health
                     HStack {

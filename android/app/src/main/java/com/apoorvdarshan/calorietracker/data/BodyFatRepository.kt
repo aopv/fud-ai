@@ -51,9 +51,10 @@ class BodyFatRepository(
         val current = prefs.bodyFatEntries.first()
         prefs.setBodyFatEntries(current.filter { it.id != id })
         syncProfileBodyFatToLatest()
-        if (shouldSyncHealth()) {
-            health?.deleteBodyFat(id)
-        }
+        // Delete the HC record even when sync is off (iOS parity, best-effort) —
+        // a surviving fudai-tagged record would resurrect through the own-record
+        // restore path on the next full backfill.
+        health?.deleteBodyFat(id)
     }
 
     suspend fun replaceAll(entries: List<BodyFatEntry>) {

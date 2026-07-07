@@ -86,15 +86,20 @@ class FoodRepository(
         prefs.setFoodEntries(updated)
         if (shouldSyncHealth()) {
             health?.updateNutrition(entry)
+        } else {
+            // Sync off: still clean up the stale HC record for this entry (iOS
+            // parity, best-effort) so the restore path can't resurrect the
+            // pre-edit version later.
+            health?.deleteNutrition(entry.id)
         }
     }
 
     suspend fun deleteEntry(entryId: UUID) {
         val current = prefs.foodEntries.first()
         prefs.setFoodEntries(current.filter { it.id != entryId })
-        if (shouldSyncHealth()) {
-            health?.deleteNutrition(entryId)
-        }
+        // Delete even when sync is off (iOS parity, best-effort) — a surviving
+        // fudai-tagged record would resurrect through restoreFromHealthConnect.
+        health?.deleteNutrition(entryId)
     }
 
     suspend fun replaceAll(entries: List<FoodEntry>) {

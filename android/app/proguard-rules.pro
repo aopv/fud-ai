@@ -72,3 +72,26 @@
 # the original source file name so we don't leak internal file structure.
 -keepattributes SourceFile,LineNumberTable
 -renamesourcefileattribute SourceFile
+
+# play-core-ktx (in-app review) references this compile-only annotation that no
+# runtime dependency ships; R8 in full mode fails the release build without the
+# suppression. Surfaced when play-services-ads 24.4 shifted basement versions.
+-dontwarn com.google.android.gms.common.annotation.NoNullnessRewrite
+
+# ─── Workouts exercise library (Gson) ─────────────────────────────────────────
+# Gson parses assets/exercises.json into ExerciseRecord by FIELD NAME via
+# reflection (no @SerializedName annotations). R8 renaming those fields made
+# release builds parse every record to nulls — the live-3.0 empty-Workouts bug.
+# Signature is required so TypeToken<List<ExerciseRecord>> survives shrinking.
+-keepattributes Signature
+-keepclassmembers class com.apoorvdarshan.calorietracker.data.ExerciseRecord {
+  <init>();
+  <fields>;
+}
+
+# R8 full mode strips the generic signature from the anonymous
+# TypeToken<List<ExerciseRecord>> subclass unless TypeToken subtypes are kept;
+# Gson then has no element type and the parse dies into runCatching -> zero
+# exercises. These are the canonical rules Gson 2.11+ ships as consumer rules.
+-keep,allowobfuscation,allowshrinking class com.google.gson.reflect.TypeToken
+-keep,allowobfuscation,allowshrinking class * extends com.google.gson.reflect.TypeToken

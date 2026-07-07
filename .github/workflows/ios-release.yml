@@ -1,0 +1,33 @@
+# iOS release bookkeeping — the GitHub-Releases sibling of the Xcode Cloud
+# "Release" workflow. Xcode Cloud does the real work (archive + upload to App
+# Store Connect); this only creates the GitHub Release entry from the same v*
+# tag so the repo's Releases sidebar stays in sync. Notes-only: the IPA lives
+# in ASC, there is nothing meaningful to attach.
+#
+# Published as a normal release immediately (Apoorv's preference — store
+# review lag doesn't gate the GitHub entry).
+
+name: iOS Release (GitHub entry)
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  github-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION=$(grep -m1 'MARKETING_VERSION' ios/calorietracker.xcodeproj/project.pbxproj | tr -dc '0-9.')
+          BUILD=$(grep -m1 'CURRENT_PROJECT_VERSION' ios/calorietracker.xcodeproj/project.pbxproj | tr -dc '0-9')
+          gh release create "$GITHUB_REF_NAME" \
+            --title "iOS ${VERSION} (build ${BUILD})" \
+            --generate-notes --latest

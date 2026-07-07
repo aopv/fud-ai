@@ -658,17 +658,5 @@
     <string name="whats_new_v30_adaptive">Objectifs adaptatifs et Énergie brûlée sortent de l\'expérimental et sont activés par défaut pour les nouvelles installations.</string>
     <string name="whats_new_v30_widgets">Refonte des widgets : le style tachymètre de l\'accueil, dessiné à la taille réelle de chaque widget.</string>
     <string name="whats_new_v30_ads">Une petite bannière publicitaire garde désormais Fud AI gratuit.</string>
-
-    <!-- Backup (Google Drive folder snapshot) -->
-    <string name="settings_section_backup">Sauvegarde</string>
-    <string name="settings_drive_backup">Sauvegarde Google Drive</string>
-    <string name="settings_backup_now">Sauvegarder maintenant</string>
-    <string name="settings_restore_backup">Restaurer la sauvegarde</string>
-    <string name="settings_backup_never">Aucune sauvegarde pour l\'instant</string>
-    <string name="settings_backup_footer">Sauvegarde ton journal alimentaire, ton poids, tes objectifs, le chat du Coach et les réglages dans un dossier de ton choix sur Google Drive (ou tout autre stockage cloud). Les photos ne sont pas incluses.</string>
-    <string name="backup_complete">Sauvegarde terminée</string>
-    <string name="backup_failed">Échec de la sauvegarde — vérifie le dossier choisi et réessaie.</string>
-    <string name="restore_complete">Restauration terminée</string>
-    <string name="restore_failed">Échec de la restauration</string>
-    <string name="backup_none_found">Aucune sauvegarde trouvée</string>
+    <string name="whats_new_v30_restore">Réinstallation ou nouveau téléphone ? Ton journal alimentaire, ton poids et ta masse grasse se restaurent désormais automatiquement depuis Health Connect.</string>
 </resources>

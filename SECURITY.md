@@ -31,7 +31,7 @@ Only the latest released version on each store (App Store for iOS, Play Store fo
 
 - The iOS app source in `ios/` (SwiftUI codebase, widget extension, tests targets)
 - API-key handling and iOS Keychain storage (`KeychainHelper`, `AIProviderSettings`, `SpeechSettings`)
-- Network requests to AI and speech-to-text providers or the optional Premium proxy (`GeminiService`, `ChatService`, `SpeechService`, `FudAIProxyClient`), including multi-image food analysis and expanded nutrient payloads
+- Network requests to AI and speech-to-text providers (`GeminiService`, `ChatService`, `SpeechService`), including multi-image food analysis and expanded nutrient payloads
 - Siri/App Intent logging (`AppIntents`, `SiriLoggingService`), including automatic food/weight logging and HealthKit writes triggered from Siri
 - Barcode lookup behavior against Open Food Facts, including the "missing product / missing nutrition" fallback path
 - HealthKit read/write paths (`HealthKitManager`) and UUID-tagged sample conventions
