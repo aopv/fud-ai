@@ -601,8 +601,6 @@
     <string name="notif_channel_daily_desc">一天结束时的卡路里和宏量营养素摘要。</string>
     <string name="notif_channel_weight_goal">体重目标</string>
     <string name="notif_channel_weight_goal_desc">达成目标体重时的庆祝。</string>
-    <string name="notif_goal_title">恭喜！🎉</string>
-    <string name="notif_goal_text">你已达到目标体重。</string>
     <string name="notif_streak_title">别忘了记录你的餐食</string>
     <string name="notif_streak_text">保持连续记录——记录今天吃的内容。</string>
     <string name="notif_summary_title">今日摘要已就绪</string>

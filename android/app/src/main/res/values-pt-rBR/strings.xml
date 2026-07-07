@@ -601,8 +601,6 @@
     <string name="notif_channel_daily_desc">Resumo de fim de dia das suas calorias e macros.</string>
     <string name="notif_channel_weight_goal">Meta de peso</string>
     <string name="notif_channel_weight_goal_desc">Comemoração quando você atinge seu peso-meta.</string>
-    <string name="notif_goal_title">Parabéns! 🎉</string>
-    <string name="notif_goal_text">Você atingiu seu peso-meta.</string>
     <string name="notif_streak_title">Não esqueça de registrar suas refeições</string>
     <string name="notif_streak_text">Mantenha sua sequência — registre algo de hoje.</string>
     <string name="notif_summary_title">O resumo de hoje está pronto</string>

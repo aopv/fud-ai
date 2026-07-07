@@ -601,8 +601,6 @@
     <string name="notif_channel_daily_desc">Riepilogo di fine giornata di calorie e macro.</string>
     <string name="notif_channel_weight_goal">Obiettivo di peso</string>
     <string name="notif_channel_weight_goal_desc">Celebrazione quando raggiungi il tuo peso obiettivo.</string>
-    <string name="notif_goal_title">Congratulazioni! 🎉</string>
-    <string name="notif_goal_text">Hai raggiunto il tuo peso obiettivo.</string>
     <string name="notif_streak_title">Non dimenticare di registrare i tuoi pasti</string>
     <string name="notif_streak_text">Mantieni la tua serie — registra qualcosa di oggi.</string>
     <string name="notif_summary_title">Il riepilogo di oggi è pronto</string>

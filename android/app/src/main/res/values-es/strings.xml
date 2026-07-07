@@ -601,8 +601,6 @@
     <string name="notif_channel_daily_desc">Resumen al final del día de tus calorías y macros.</string>
     <string name="notif_channel_weight_goal">Objetivo de peso</string>
     <string name="notif_channel_weight_goal_desc">Celebración cuando alcances tu peso objetivo.</string>
-    <string name="notif_goal_title">¡Felicidades! 🎉</string>
-    <string name="notif_goal_text">Has alcanzado tu peso objetivo.</string>
     <string name="notif_streak_title">No olvides registrar tus comidas</string>
     <string name="notif_streak_text">Mantén tu racha — registra algo de hoy.</string>
     <string name="notif_summary_title">El resumen de hoy está listo</string>

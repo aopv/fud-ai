@@ -601,8 +601,6 @@
     <string name="notif_channel_daily_desc">하루 칼로리 + 매크로 일일 요약.</string>
     <string name="notif_channel_weight_goal">체중 목표</string>
     <string name="notif_channel_weight_goal_desc">목표 체중 달성 축하 알림.</string>
-    <string name="notif_goal_title">축하합니다! 🎉</string>
-    <string name="notif_goal_text">목표 체중에 도달했습니다.</string>
     <string name="notif_streak_title">식사 기록을 잊지 마세요</string>
     <string name="notif_streak_text">연속 기록을 유지하세요 — 오늘 먹은 음식을 기록해 보세요.</string>
     <string name="notif_summary_title">오늘의 요약이 준비되었어요</string>

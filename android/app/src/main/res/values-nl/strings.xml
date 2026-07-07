@@ -601,8 +601,6 @@
     <string name="notif_channel_daily_desc">Eindedag-samenvatting van je calorieën + macro\'s.</string>
     <string name="notif_channel_weight_goal">Gewichtsdoel</string>
     <string name="notif_channel_weight_goal_desc">Felicitatie wanneer je je streefgewicht bereikt.</string>
-    <string name="notif_goal_title">Gefeliciteerd! 🎉</string>
-    <string name="notif_goal_text">Je hebt je streefgewicht bereikt.</string>
     <string name="notif_streak_title">Vergeet niet je maaltijden te loggen</string>
     <string name="notif_streak_text">Houd je streak gaande — log iets van vandaag.</string>
     <string name="notif_summary_title">De samenvatting van vandaag is klaar</string>

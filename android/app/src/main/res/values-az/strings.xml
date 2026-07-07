@@ -601,8 +601,6 @@
     <string name="notif_channel_daily_desc">Kalorilər və makrolarınızın gün sonu xülasəsi.</string>
     <string name="notif_channel_weight_goal">Çəki Hədəfi</string>
     <string name="notif_channel_weight_goal_desc">Hədəf çəkinizə çatdığınız zaman təbrik.</string>
-    <string name="notif_goal_title">Təbriklər! 🎉</string>
-    <string name="notif_goal_text">Hədəf çəkinizə çatdınız.</string>
     <string name="notif_streak_title">Yeməklərinizi qeyd etməyi unutmayın</string>
     <string name="notif_streak_text">Silsilənizi davam etdirin — bu gündən nəsə qeyd edin.</string>
     <string name="notif_summary_title">Bu günün xülasəsi hazırdır</string>

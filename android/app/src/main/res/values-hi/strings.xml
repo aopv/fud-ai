@@ -601,8 +601,6 @@
     <string name="notif_channel_daily_desc">आपकी कैलोरी और मैक्रो का दिन के अंत का सारांश।</string>
     <string name="notif_channel_weight_goal">वज़न लक्ष्य</string>
     <string name="notif_channel_weight_goal_desc">जब आप अपने लक्ष्य वज़न तक पहुँचते हैं तो जश्न।</string>
-    <string name="notif_goal_title">बधाई हो! 🎉</string>
-    <string name="notif_goal_text">आप अपने लक्ष्य वज़न तक पहुँच गए।</string>
     <string name="notif_streak_title">अपने भोजन लॉग करना न भूलें</string>
     <string name="notif_streak_text">अपनी स्ट्रीक जारी रखें — आज का कुछ लॉग करें।</string>
     <string name="notif_summary_title">आज का सारांश तैयार है</string>

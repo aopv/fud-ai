@@ -601,8 +601,6 @@
     <string name="notif_channel_daily_desc">ملخص نهاية اليوم لسعراتك الحرارية وعناصرك الكبرى.</string>
     <string name="notif_channel_weight_goal">هدف الوزن</string>
     <string name="notif_channel_weight_goal_desc">احتفال عند الوصول إلى وزن هدفك.</string>
-    <string name="notif_goal_title">تهانينا! 🎉</string>
-    <string name="notif_goal_text">لقد وصلت إلى وزن هدفك.</string>
     <string name="notif_streak_title">لا تنسَ تسجيل وجباتك</string>
     <string name="notif_streak_text">حافظ على سلسلتك — سجّل شيئًا من اليوم.</string>
     <string name="notif_summary_title">ملخص اليوم جاهز</string>

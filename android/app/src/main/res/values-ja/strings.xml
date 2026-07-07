@@ -601,8 +601,6 @@
     <string name="notif_channel_daily_desc">1日の終わりにカロリーとマクロのサマリーをお届け。</string>
     <string name="notif_channel_weight_goal">体重目標</string>
     <string name="notif_channel_weight_goal_desc">目標体重に到達したときのお祝い。</string>
-    <string name="notif_goal_title">おめでとうございます！ 🎉</string>
-    <string name="notif_goal_text">目標体重に到達しました。</string>
     <string name="notif_streak_title">食事の記録を忘れずに</string>
     <string name="notif_streak_text">連続記録を続けましょう — 今日のものを記録してください。</string>
     <string name="notif_summary_title">今日のサマリーが準備できました</string>

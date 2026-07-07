@@ -601,8 +601,6 @@
     <string name="notif_channel_daily_desc">Rezumat de final de zi al caloriilor + macronutrienților tăi.</string>
     <string name="notif_channel_weight_goal">Obiectiv de greutate</string>
     <string name="notif_channel_weight_goal_desc">Sărbătoare când îți atingi greutatea obiectiv.</string>
-    <string name="notif_goal_title">Felicitări! 🎉</string>
-    <string name="notif_goal_text">Ți-ai atins greutatea obiectiv.</string>
     <string name="notif_streak_title">Nu uita să îți înregistrezi mesele</string>
     <string name="notif_streak_text">Menține-ți seria — înregistrează ceva din ziua de azi.</string>
     <string name="notif_summary_title">Rezumatul de azi e gata</string>

@@ -601,8 +601,6 @@
     <string name="notif_channel_daily_desc">Tagesabschluss-Zusammenfassung deiner Kalorien + Makros.</string>
     <string name="notif_channel_weight_goal">Gewichtsziel</string>
     <string name="notif_channel_weight_goal_desc">Glückwunsch, wenn du dein Zielgewicht erreichst.</string>
-    <string name="notif_goal_title">Herzlichen Glückwunsch! 🎉</string>
-    <string name="notif_goal_text">Du hast dein Zielgewicht erreicht.</string>
     <string name="notif_streak_title">Vergiss nicht, deine Mahlzeiten zu erfassen</string>
     <string name="notif_streak_text">Halte deine Serie aufrecht — erfasse etwas von heute.</string>
     <string name="notif_summary_title">Die heutige Zusammenfassung ist bereit</string>
