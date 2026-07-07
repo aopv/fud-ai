@@ -1,6 +1,6 @@
 # App Store Listing
 
-App Store Connect submission details for Fud AI v5.0 build 29. Each field is in a code block for easy copy-paste.
+App Store Connect submission details for Fud AI v5.0 build 30. Each field is in a code block for easy copy-paste.
 
 ## App Name
 ```
@@ -140,8 +140,8 @@ https://fud-ai.app
 ## Reviewer Notes
 ```
 1) iPhone only — not optimized for iPad. Please review on iPhone.
-2) No test account is needed. The app works immediately after onboarding.
-3) AI access is Bring Your Own Key: users enter their own provider API key during onboarding or in Settings → AI Access. A free Gemini key can be obtained at https://aistudio.google.com/apikey
+2) There is no user account or sign-in — the app is privacy-first and fully local. AI features use a "bring your own key" (BYOK) provider key. For review, a working Google Gemini API key is provided in App Review Information (entered in the Sign-In password field). To enable all AI features: on the "Set Up Your AI" onboarding step (or Settings → AI Access), Provider = Google Gemini, Model = gemini-2.5-flash (widely available), paste the provided key into API Key, then Accept & Continue.
+3) With the key set, all AI features work and populate content immediately — Snap Food (camera), Nutrition Label scan, Text/Voice logging, "What if?" preview, and the AI Coach chat. Logging any meal fills the food log, Home dashboard, and Progress charts; no account or server data is needed. (A free Gemini key can also be created at https://aistudio.google.com/apikey.)
 4) The Fud AI Premium subscription from v4.4 has been removed in this version. The app is fully free; no paywall exists.
 5) In-app purchases are 4 optional consumable tips (Settings → About → Tip Jar). They unlock nothing — voluntary support only:
    • com.apoorvdarshan.calorietracker.tip.snack — $0.99
