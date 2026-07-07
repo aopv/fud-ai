@@ -30850,101 +30850,6 @@
         }
       }
     },
-    "Share any meal as a link that opens straight in Fud AI on iPhone or Android." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "شارك أي وجبة كرابط يفتح مباشرة في Fud AI — على iPhone أو Android."
-          }
-        },
-        "az" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "İstənilən yeməyi birbaşa Fud AI-də açılan link kimi paylaşın — iPhone və ya Android-də."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Teile jede Mahlzeit als Link, der direkt in Fud AI öffnet — auf iPhone oder Android."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Comparte cualquier comida como un enlace que abre directamente Fud AI, en iPhone o Android."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Partagez un repas sous forme de lien qui s'ouvre directement dans Fud AI, sur iPhone ou Android."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "किसी भी भोजन को लिंक के रूप में साझा करें — iPhone या Android पर सीधे Fud AI में खुलता है।"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Condividi qualsiasi pasto come link che si apre direttamente in Fud AI, su iPhone o Android."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "食事をリンクとして共有 — iPhoneでもAndroidでもFud AIが直接開きます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "식사를 링크로 공유 — iPhone과 Android 모두에서 Fud AI가 바로 열립니다."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Deel elke maaltijd als een link die direct in Fud AI opent — op iPhone of Android."
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Udostępnij dowolny posiłek jako link otwierający się bezpośrednio w Fud AI — na iPhonie lub Androidzie."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Compartilhe qualquer refeição como um link que abre direto no Fud AI — no iPhone ou Android."
-          }
-        },
-        "ro" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Trimite orice masă ca link care se deschide direct în Fud AI — pe iPhone sau Android."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Делитесь любым приёмом пищи ссылкой, которая открывается сразу в Fud AI — на iPhone или Android."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "把任意一餐分享为链接，在 iPhone 或 Android 上直接打开 Fud AI。"
-          }
-        }
-      }
-    },
     "Share the App" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -39174,6 +39079,100 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "重新安装或更换手机后，你的饮食记录、体重和体脂现在会从 Apple Health 自动恢复。"
+          }
+        }
+      }
+    },
+    "Share any meal as a link that opens straight in Fud AI." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شارك أي وجبة كرابط يفتح مباشرة في Fud AI."
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İstənilən yeməyi birbaşa Fud AI-da açılan link kimi paylaşın."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teile jede Mahlzeit als Link, der direkt in Fud AI öffnet."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comparte cualquier comida como un enlace que se abre directamente en Fud AI."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Partage n'importe quel repas via un lien qui s'ouvre directement dans Fud AI."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "किसी भी भोजन को लिंक के रूप में साझा करें जो सीधे Fud AI में खुलता है।"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Condividi qualsiasi pasto come link che si apre direttamente in Fud AI."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "どの食事もリンクとして共有でき、Fud AIで直接開きます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "어떤 식사든 링크로 공유하면 Fud AI에서 바로 열립니다."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deel elke maaltijd als een link die direct in Fud AI opent."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Udostępnij dowolny posiłek jako link otwierający się bezpośrednio w Fud AI."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartilhe qualquer refeição como um link que abre direto no Fud AI."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trimite orice masă ca link care se deschide direct în Fud AI."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Делитесь любым приёмом пищи ссылкой, которая открывается прямо в Fud AI."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将任意餐食分享为链接，直接在 Fud AI 中打开。"
           }
         }
       }

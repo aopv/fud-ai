@@ -388,7 +388,7 @@ private struct AboutSettingsSections: View {
         "Fud AI is now completely free — the optional Premium subscription has been removed.",
         "AI features run on your own provider key — add a free Gemini, OpenAI, Groq, or other supported key in onboarding or Settings.",
         "Ask Coach by voice with the new inline recorder.",
-        "Share any meal as a link that opens straight in Fud AI on iPhone or Android.",
+        "Share any meal as a link that opens straight in Fud AI.",
         "Export your food diary as JSON, Markdown, or CSV from Settings.",
         "Reprocess a logged meal with AI — adjust its name, serving, or note and re-analyze.",
         "Camera + Camera keeps both shots, stitched side by side.",
