@@ -1,6 +1,6 @@
 # App Store Listing
 
-App Store Connect submission details for Fud AI v5.0 build 27. Each field is in a code block for easy copy-paste.
+App Store Connect submission details for Fud AI v5.0 build 28. Each field is in a code block for easy copy-paste.
 
 ## App Name
 ```
