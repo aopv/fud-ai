@@ -4701,101 +4701,6 @@
         }
       }
     },
-    "A small banner ad and an optional Tip Jar keep Fud AI free." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "إعلان بانر صغير ووعاء إكراميات اختياري يُبقيان Fud AI مجانيًا."
-          }
-        },
-        "az" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kiçik banner reklamı və istəyə bağlı çay qabı Fud AI-ni pulsuz saxlayır."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Eine kleine Banneranzeige und ein optionales Trinkgeldglas halten Fud AI kostenlos."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Un pequeño banner y un Bote de propinas opcional mantienen Fud AI gratis."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Une petite bannière et un pot à pourboires optionnel gardent Fud AI gratuit."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "एक छोटा बैनर विज्ञापन और वैकल्पिक टिप जार Fud AI को मुफ़्त रखते हैं।"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Un piccolo banner e un barattolo delle mance opzionale mantengono Fud AI gratuito."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "小さなバナー広告と任意のチップジャーでFud AIは無料のままです。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "작은 배너 광고와 선택적인 팁 저금통이 Fud AI를 무료로 유지합니다."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Een kleine banneradvertentie en een optionele fooienpot houden Fud AI gratis."
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mały baner reklamowy i opcjonalny słoik na napiwki utrzymują Fud AI za darmo."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Um pequeno banner e um pote de gorjetas opcional mantêm o Fud AI gratuito."
-          }
-        },
-        "ro" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Un mic banner și un borcan de bacșiș opțional mențin Fud AI gratuit."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Небольшой баннер и необязательная банка чаевых позволяют Fud AI оставаться бесплатным."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "一条小横幅广告和可选的小费罐让 Fud AI 保持免费。"
-          }
-        }
-      }
-    },
     "A small banner supports development. Your health data is never used for ads." : {
       "localizations" : {
         "de" : {
@@ -39780,6 +39685,100 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "将任意餐食分享为链接，直接在 Fud AI 中打开。"
+          }
+        }
+      }
+    },
+    "An optional Tip Jar in Settings → About lets you support development." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يتيح لك صندوق البقشيش الاختياري في الإعدادات ← حول دعم التطوير."
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tənzimləmələr ← Haqqında bölməsindəki isteğe bağlı Bəxşiş Qutusu inkişafı dəstəkləməyə imkan verir."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Über eine optionale Tip-Jar unter Einstellungen ← Info kannst du die Entwicklung unterstützen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un Tip Jar opcional en Ajustes ← Acerca de te permite apoyar el desarrollo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un Tip Jar facultatif dans Réglages ← À propos te permet de soutenir le développement."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "सेटिंग्स ← अबाउट में वैकल्पिक टिप जार से आप डेवलपमेंट का समर्थन कर सकते हैं।"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un Tip Jar facoltativo in Impostazioni ← Info ti permette di supportare lo sviluppo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定 ← 情報にある任意のチップジャーで開発を応援できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설정 ← 정보의 선택형 팁 자에서 개발을 후원할 수 있습니다."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Met een optionele Tip Jar in Instellingen ← Over kun je de ontwikkeling steunen."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opcjonalny Tip Jar w Ustawienia ← Informacje pozwala wesprzeć rozwój."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma Tip Jar opcional em Ajustes ← Sobre permite apoiar o desenvolvimento."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un Tip Jar opțional în Setări ← Despre îți permite să susții dezvoltarea."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Необязательная «Копилка» в Настройках ← О приложении позволяет поддержать разработку."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "设置 ← 关于中的可选打赏罐让你支持开发。"
           }
         }
       }

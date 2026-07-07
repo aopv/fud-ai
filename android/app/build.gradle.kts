@@ -29,8 +29,8 @@ android {
         applicationId = "com.apoorvdarshan.calorietracker"
         minSdk = 26
         targetSdk = 36
-        versionCode = 29
-        versionName = "3.0.2"
+        versionCode = 30
+        versionName = "3.0.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -107,7 +107,6 @@ kotlin {
 
 dependencies {
     implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.play.services.ads)
     implementation(libs.play.review.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3)

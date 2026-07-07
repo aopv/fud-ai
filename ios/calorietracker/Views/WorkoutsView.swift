@@ -6,9 +6,6 @@ struct WorkoutsView: View {
         NavigationStack {
             ExerciseLibraryBrowserView()
                 .background(WorkoutsScreenBackground())
-                .safeAreaInset(edge: .top) {
-                    AdBannerStrip()
-                }
                 .navigationTitle("Workouts")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar(.hidden, for: .navigationBar)

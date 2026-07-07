@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -32,7 +33,6 @@ import androidx.navigation.compose.rememberNavController
 import com.apoorvdarshan.calorietracker.AppContainer
 import com.apoorvdarshan.calorietracker.services.update.AndroidUpdateChecker
 import com.apoorvdarshan.calorietracker.services.update.AndroidUpdateState
-import com.apoorvdarshan.calorietracker.ui.components.AdBannerStrip
 import com.apoorvdarshan.calorietracker.ui.coach.CoachScreen
 import com.apoorvdarshan.calorietracker.ui.home.HomeScreen
 import com.apoorvdarshan.calorietracker.ui.onboarding.OnboardingScreen
@@ -142,10 +142,10 @@ fun FudAINavHost(
                         }
                     })
                 }
-                composable(FudAIRoutes.HOME) { TabWithBanner { HomeScreen(container = container) } }
-                composable(FudAIRoutes.PROGRESS) { TabWithBanner { ProgressScreen(container = container) } }
-                composable(FudAIRoutes.COACH) { TabWithBanner { CoachScreen(container = container) } }
-                composable(FudAIRoutes.SETTINGS) { TabWithBanner { SettingsScreen(container = container, nav = nav) } }
+                composable(FudAIRoutes.HOME) { TabInset { HomeScreen(container = container) } }
+                composable(FudAIRoutes.PROGRESS) { TabInset { ProgressScreen(container = container) } }
+                composable(FudAIRoutes.COACH) { TabInset { CoachScreen(container = container) } }
+                composable(FudAIRoutes.SETTINGS) { TabInset { SettingsScreen(container = container, nav = nav) } }
                 composable(FudAIRoutes.OPTIONAL_NUTRIENT_GOALS) {
                     OptionalNutrientGoalsScreen(container = container, onBack = { nav.popBackStack() })
                 }
@@ -155,30 +155,27 @@ fun FudAINavHost(
                 composable(FudAIRoutes.BODY_MEASUREMENTS) {
                     BodyMeasurementsScreen(container = container, onBack = { nav.popBackStack() })
                 }
-                composable(FudAIRoutes.WORKOUTS) { TabWithBanner { WorkoutsScreen() } }
+                composable(FudAIRoutes.WORKOUTS) { TabInset { WorkoutsScreen() } }
             }
         }
     }
     }
 }
 
-internal fun NavHostController.current(): String? = currentBackStackEntry?.destination?.route
-
 /**
- * Top ad strip above a tab's content — mirror of iOS's safeAreaInset banner.
- * The tab renders in the space BELOW the strip (a Column sibling, not an
- * overlay), so scrolled rows are clipped and can never appear above the ad.
+ * Reserves the status-bar space above a tab's content. The top-level Scaffold
+ * renders the NavHost full-screen (it discards its inset padding), so each tab
+ * would otherwise draw under the status bar. This used to be handled by the ad
+ * banner strip that sat above the content; with ads removed, this keeps the
+ * exact same clearance. The content Box consumes the status-bar inset so a tab's
+ * own Scaffold/TopAppBar doesn't pad for it a second time.
  */
 @Composable
-private fun TabWithBanner(content: @Composable () -> Unit) {
-    Column(Modifier.fillMaxSize()) {
-        AdBannerStrip()
-        Box(
-            Modifier
-                .weight(1f)
-                // The strip already cleared the status bar — consume that inset so
-                // the tabs' Scaffolds/TopAppBars don't pad for it a second time.
-                .consumeWindowInsets(WindowInsets.statusBars)
-        ) { content() }
+private fun TabInset(content: @Composable () -> Unit) {
+    Column(Modifier.fillMaxSize().statusBarsPadding()) {
+        Box(Modifier.weight(1f).consumeWindowInsets(WindowInsets.statusBars)) { content() }
     }
 }
+
+internal fun NavHostController.current(): String? = currentBackStackEntry?.destination?.route
+

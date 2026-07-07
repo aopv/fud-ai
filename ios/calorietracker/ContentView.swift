@@ -157,7 +157,6 @@ struct ContentView: View {
         }
         .tint(AppThemeColor.color(for: appThemeColorRaw).color)
         .task {
-            AdsManager.shared.start()
             await refreshAppUpdateState()
         }
     }
@@ -386,6 +385,7 @@ private struct AboutSettingsSections: View {
         "Home redesign: speedometer calorie gauge, vertical macro bars, four nutrient cards, and a floating add button.",
         "Widgets, Lock Screen, and Apple Watch match the new speedometer design and follow your chosen nutrient cards.",
         "Fud AI is now completely free — the optional Premium subscription has been removed.",
+        "An optional Tip Jar in Settings → About lets you support development.",
         "AI features run on your own provider key — add a free Gemini, OpenAI, Groq, or other supported key in onboarding or Settings.",
         "Ask Coach by voice with the new inline recorder.",
         "Share any meal as a link that opens straight in Fud AI.",
@@ -397,7 +397,6 @@ private struct AboutSettingsSections: View {
         "Height and weight units can now be set independently.",
         "Reinstalled or switched phones? Your food log, weight, and body fat now restore automatically from Apple Health.",
         "Adaptive Goals and Energy Burn left Experimental and are on by default for new installs.",
-        "A small banner ad and an optional Tip Jar keep Fud AI free.",
         "As always, your food log, weight and body history, and API keys stay on your device."
     ]
 
@@ -820,9 +819,6 @@ struct HomeView: View {
             .background(AppColors.appBackground)
             .animation(.snappy, value: selectedDate)
             .contentMargins(.bottom, 96, for: .scrollContent)
-            .safeAreaInset(edge: .top) {
-                AdBannerStrip()
-            }
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
             .overlay(alignment: .bottomTrailing) {
@@ -2685,9 +2681,6 @@ struct ProgressTabView: View {
                 .padding(.vertical)
             }
             .background(AppColors.appBackground)
-            .safeAreaInset(edge: .top) {
-                AdBannerStrip()
-            }
             .navigationBarHidden(true)
             .sheet(isPresented: $showLogWeight) {
                 LogWeightSheet(
@@ -3815,9 +3808,6 @@ struct ProfileView: View {
             }
             .scrollContentBackground(.hidden)
             .background(AppColors.appBackground)
-            .safeAreaInset(edge: .top) {
-                AdBannerStrip()
-            }
             .navigationBarHidden(true)
             .sheet(isPresented: $showExportDiary) {
                 ExportDiaryView()

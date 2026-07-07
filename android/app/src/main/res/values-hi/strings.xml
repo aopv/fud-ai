@@ -655,6 +655,5 @@
     <string name="whats_new_v30_units">ऊँचाई और वज़न की इकाइयाँ अब अलग-अलग सेट होती हैं।</string>
     <string name="whats_new_v30_adaptive">Adaptive Goals और Energy Burn अब प्रयोगात्मक नहीं हैं और नए इंस्टॉल पर डिफ़ॉल्ट रूप से चालू हैं।</string>
     <string name="whats_new_v30_widgets">विजेट नए रूप में: होम का स्पीडोमीटर स्टाइल, हर विजेट के असली आकार में।</string>
-    <string name="whats_new_v30_ads">एक छोटा बैनर विज्ञापन अब Fud AI को मुफ़्त रखता है।</string>
     <string name="whats_new_v30_restore">दोबारा इंस्टॉल किया या फ़ोन बदला? आपका फ़ूड लॉग, वज़न और बॉडी फ़ैट अब Health Connect से अपने आप बहाल हो जाते हैं।</string>
 </resources>

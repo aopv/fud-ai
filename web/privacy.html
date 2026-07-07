@@ -83,9 +83,9 @@
   <div class="container">
     <div class="legal-content">
       <h1>Privacy Policy</h1>
-      <span class="legal-date">Last updated: July 6, 2026</span>
+      <span class="legal-date">Last updated: July 7, 2026</span>
 
-      <p>Fud AI ("we", "our", "the app") is an open-source iOS and Android app developed by Apoorv Darshan. This privacy policy explains how your information is handled across both platforms. In short: we don't have Fud AI accounts, in-app analytics, behavioral tracking, or cloud sync. The app shows a single small banner ad served by Google AdMob (see Advertising below), and iOS offers an optional Tip Jar. Your app data stays on your device except for the specific AI/STT requests you initiate, barcode lookups you trigger, optional update metadata checks, ad requests made by the Google Mobile Ads SDK, and platform health sync you explicitly enable. (Earlier iOS versions offered an optional Fud AI Premium proxy subscription; Premium has been discontinued and current versions are bring-your-own-key only.) On supported iPhones, text, voice-transcribed, and Siri food descriptions can be processed locally by Apple Intelligence only as the final fallback after BYOK provider/fallback attempts fail. The public website may use Vercel Web Analytics for aggregate pageview metrics; those website metrics are not connected to your app food log, health data, or API keys.</p>
+      <p>Fud AI ("we", "our", "the app") is an open-source iOS and Android app developed by Apoorv Darshan. This privacy policy explains how your information is handled across both platforms. In short: we don't have Fud AI accounts, in-app analytics, behavioral tracking, cloud sync, or ads. iOS offers an optional Tip Jar. Your app data stays on your device except for the specific AI/STT requests you initiate, barcode lookups you trigger, optional update metadata checks, and platform health sync you explicitly enable. (Earlier iOS versions offered an optional Fud AI Premium proxy subscription; Premium has been discontinued and current versions are bring-your-own-key only.) On supported iPhones, text, voice-transcribed, and Siri food descriptions can be processed locally by Apple Intelligence only as the final fallback after BYOK provider/fallback attempts fail. The public website may use Vercel Web Analytics for aggregate pageview metrics; those website metrics are not connected to your app food log, health data, or API keys.</p>
 
       <h3>Information You Provide</h3>
       <ul>
@@ -126,7 +126,7 @@
 
       <h3>Information We Do NOT Collect</h3>
       <ul>
-        <li>We do <strong>not</strong> use any in-app third-party analytics or crash-reporting SDKs; the only ad component is the Google Mobile Ads SDK, used solely to display a single banner ad (see Advertising below)</li>
+        <li>We do <strong>not</strong> use any in-app third-party analytics, advertising, or crash-reporting SDKs</li>
         <li>We do <strong>not</strong> track your behavior, location, or browsing activity</li>
         <li>We do <strong>not</strong> sell your personal data</li>
         <li>We do <strong>not</strong> operate Fud AI accounts, in-app analytics, or tracking servers</li>
@@ -134,12 +134,6 @@
         <li>We do <strong>not</strong> see your API keys; AI/STT requests go directly from your device to the provider you configure. Apple Intelligence fallback, when used for supported iOS text, voice-transcribed, or Siri food-description analysis, is processed on-device.</li>
       </ul>
 
-      <h3>Advertising (Google AdMob)</h3>
-      <p>The app shows a single small banner ad at the top of each tab, served by Google AdMob via the Google Mobile Ads SDK. To serve and measure ads, Google may collect device information such as the advertising identifier (IDFA on iOS, advertising ID on Android), IP address, and coarse ad-interaction data, handled under <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google's Privacy Policy</a> and <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener">How Google uses data from partner apps</a>. We never send your food log, health data, profile, or API keys to the ad SDK, and we only see aggregate reporting (impressions, revenue) — never who saw an ad.</p>
-      <ul>
-        <li><strong>iOS:</strong> the app asks the standard App Tracking Transparency permission once. If you decline, the advertising identifier is unavailable and ads are served without it — every app feature works the same either way.</li>
-        <li><strong>Android:</strong> you can reset or delete your advertising ID anytime in system Settings → Google → Ads.</li>
-      </ul>
 
       <h3>Tips (iOS In-App Purchases)</h3>
       <p>The iOS app offers optional, consumable Tip Jar purchases that support development and unlock nothing. Payment is processed entirely by Apple under your Apple&nbsp;ID; we never see your payment details. The app uses <a href="https://www.revenuecat.com/privacy/" target="_blank" rel="noopener">RevenueCat</a> to fetch tip products and validate purchases — RevenueCat receives an anonymous app-generated identifier and the App Store receipt, never your food, health, or profile data. The Android app has no in-app purchases; its optional Ko-fi link simply opens in your browser.</p>
@@ -163,7 +157,6 @@
           <tr><td>Food photos, meal notes, and Siri food descriptions (for AI analysis)</td><td colspan="2">Sent to your BYOK provider directly. Supported iPhones can process text, voice-transcribed, and Siri food descriptions with Apple Intelligence on-device as the final fallback after BYOK provider/fallback attempts fail.</td><td>Processed in transit, or on-device for Apple Intelligence fallback</td></tr>
           <tr><td>Voice audio (remote STT)</td><td colspan="2">Sent directly to your chosen BYOK STT provider.</td><td>Processed in transit</td></tr>
           <tr><td>Coach chat messages and attached images</td><td colspan="2">Sent to your BYOK provider directly.</td><td>Processed in transit</td></tr>
-          <tr><td>Banner ad requests</td><td colspan="2">Handled by the Google Mobile Ads SDK — may include the device advertising identifier and IP address, per Google's privacy policy.</td><td>Google (AdMob)</td></tr>
           <tr><td>Tip purchases (iOS only)</td><td colspan="2">Processed by Apple; validated through RevenueCat using an anonymous identifier and the App Store receipt.</td><td>Apple + RevenueCat</td></tr>
           <tr><td>Health data</td><td>Apple HealthKit</td><td>Health Connect</td><td>You + apps you authorize</td></tr>
         </tbody>
@@ -201,8 +194,7 @@
         <li><strong>Photo Library / Storage</strong> — to pick existing food photos. iOS uses <code>PHPicker</code>; Android uses the system <code>PickVisualMedia</code> photo picker — neither requires broad photo-library access.</li>
         <li><strong>Notifications</strong> — only if you enable streak or daily-summary reminders. On Android 13+, this triggers the runtime <code>POST_NOTIFICATIONS</code> permission prompt.</li>
         <li><strong>Health</strong> — only if you flip on Apple Health (iOS) or Health Connect (Android) integration. The system permission sheet lists exactly which read/write types are requested, including active/total energy burned when you enable Energy Burn Goals.</li>
-        <li><strong>App Tracking Transparency (iOS)</strong> — requested once so AdMob can use the device advertising identifier for the banner ad. Declining changes nothing about app functionality; ads simply serve without the identifier.</li>
-        <li><strong>Internet</strong> — required for AI/STT requests to your chosen providers, the banner ad, and optional app-update checks. Implicit on iOS; declared in <code>AndroidManifest.xml</code> on Android.</li>
+        <li><strong>Internet</strong> — required for AI/STT requests to your chosen providers and optional app-update checks. Implicit on iOS; declared in <code>AndroidManifest.xml</code> on Android.</li>
         <li><strong>Battery Optimization (Android, optional)</strong> — Settings exposes a deep-link to whitelist Fud AI in Android's battery-optimization list. This is needed on aggressive OEM skins (OriginOS, MIUI/HyperOS, One UI) where exact alarms are killed otherwise. Whitelisting only affects local reminder reliability — it does not change anything about data handling.</li>
       </ul>
 

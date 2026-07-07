@@ -655,6 +655,5 @@
     <string name="whats_new_v30_units">Le unità di altezza e peso ora si impostano separatamente.</string>
     <string name="whats_new_v30_adaptive">Obiettivi adattivi ed Energia bruciata escono dalla fase sperimentale e sono attivi di default sulle nuove installazioni.</string>
     <string name="whats_new_v30_widgets">Widget ridisegnati: lo stile tachimetro della Home, disegnato alla dimensione reale di ogni widget.</string>
-    <string name="whats_new_v30_ads">Un piccolo banner pubblicitario ora mantiene Fud AI gratuito.</string>
     <string name="whats_new_v30_restore">Hai reinstallato o cambiato telefono? Diario alimentare, peso e grasso corporeo ora si ripristinano automaticamente da Health Connect.</string>
 </resources>

@@ -759,7 +759,6 @@
     <string name="whats_new_v30_units">Height and weight units can now be set independently.</string>
     <string name="whats_new_v30_adaptive">Adaptive Goals and Energy Burn left Experimental and are on by default for new installs.</string>
     <string name="whats_new_v30_widgets">Widgets redesign: the Home speedometer style, drawn at each widget\'s true size.</string>
-    <string name="whats_new_v30_ads">A small banner ad now keeps Fud AI free.</string>
     <string name="whats_new_v30_restore">Reinstalled or switched phones? Your food log, weight, and body fat now restore automatically from Health Connect.</string>
     <string name="export_diary_title">Export Food Diary</string>
     <string name="export_range">Range</string>

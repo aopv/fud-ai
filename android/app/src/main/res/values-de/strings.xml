@@ -655,6 +655,5 @@
     <string name="whats_new_v30_units">Größen- und Gewichtseinheiten lassen sich jetzt unabhängig einstellen.</string>
     <string name="whats_new_v30_adaptive">Adaptive Ziele und Energieverbrauch sind nicht mehr experimentell und bei Neuinstallationen standardmäßig aktiv.</string>
     <string name="whats_new_v30_widgets">Widget-Redesign: der Tacho-Stil vom Home-Tab, gezeichnet in der echten Größe jedes Widgets.</string>
-    <string name="whats_new_v30_ads">Eine kleine Banneranzeige hält Fud AI jetzt kostenlos.</string>
     <string name="whats_new_v30_restore">Neu installiert oder neues Handy? Ernährungstagebuch, Gewicht und Körperfett werden jetzt automatisch aus Health Connect wiederhergestellt.</string>
 </resources>

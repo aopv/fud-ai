@@ -25,11 +25,11 @@
 
 ---
 
-Open-source, privacy-first calorie tracker for iOS and Android. Bring your own AI provider — 13 supported including Gemini, OpenAI, Claude, Grok, Groq, Hugging Face, Fireworks AI, DeepInfra, Mistral, and any custom OpenAI-compatible endpoint. Snap a meal, share a food photo into Fud AI, scan a barcode, combine two camera shots, add a note to a camera or library photo, ask your AI coach how to hit your goal, speak your lunch, or use Siri Shortcuts on iOS to log food and weight. On supported iPhones, food-description analysis for text, voice-transcribed, and Siri food logs can use Apple Intelligence on-device as the final fallback after BYOK provider/fallback attempts fail. No accounts, no cloud sync, no tracking — a single small banner ad keeps it free.
+Open-source, privacy-first calorie tracker for iOS and Android. Bring your own AI provider — 13 supported including Gemini, OpenAI, Claude, Grok, Groq, Hugging Face, Fireworks AI, DeepInfra, Mistral, and any custom OpenAI-compatible endpoint. Snap a meal, share a food photo into Fud AI, scan a barcode, combine two camera shots, add a note to a camera or library photo, ask your AI coach how to hit your goal, speak your lunch, or use Siri Shortcuts on iOS to log food and weight. On supported iPhones, food-description analysis for text, voice-transcribed, and Siri food logs can use Apple Intelligence on-device as the final fallback after BYOK provider/fallback attempts fail. No accounts, no cloud sync, no tracking, no ads — completely free.
 
-iOS 5.0 build 28 adds a Workouts tab (873-exercise library with photos and filters), a Home redesign — speedometer calorie gauge, vertical macro bars, nutrient cards, floating add button — that widgets, Lock Screen, and Apple Watch match, Coach voice input, meal-share links, diary export (JSON/Markdown/CSV), AI meal reprocessing, Camera + Camera stitching, 10 new theme colors, and automatic restore of your food log, weight, and body fat from Apple Health after a reinstall. Fud AI is now fully free: the Premium subscription is gone, AI is bring-your-own-key, and a small banner ad plus an optional Tip Jar keep it that way.
+iOS 5.0 build 29 adds a Workouts tab (873-exercise library with photos and filters), a Home redesign — speedometer calorie gauge, vertical macro bars, nutrient cards, floating add button — that widgets, Lock Screen, and Apple Watch match, Coach voice input, meal-share links, diary export (JSON/Markdown/CSV), AI meal reprocessing, Camera + Camera stitching, 10 new theme colors, and automatic restore of your food log, weight, and body fat from Apple Health after a reinstall. Fud AI is now fully free: the Premium subscription is gone, AI is bring-your-own-key, and there are no ads — an optional Tip Jar is the only way to chip in.
 
-Android 3.0.2 (versionCode 29) ships the same release: Workouts tab, Home + widget redesign, Coach voice input, meal-share links, diary export, AI reprocessing, Camera + Camera, new theme colors, body-fat history with per-entry delete, independent height/weight units, restore from Health Connect after a reinstall, and Adaptive Goals + Energy Burn on by default for new installs.
+Android 3.0.3 (versionCode 30) ships the same release: Workouts tab, Home + widget redesign, Coach voice input, meal-share links, diary export, AI reprocessing, Camera + Camera, new theme colors, body-fat history with per-entry delete, independent height/weight units, restore from Health Connect after a reinstall, and Adaptive Goals + Energy Burn on by default for new installs.
 
 [App Store](https://apps.apple.com/us/app/fud-ai-calorie-tracker/id6758935726) · [Google Play](https://play.google.com/store/apps/details?id=com.apoorvdarshan.calorietracker) · [Website](https://fud-ai.app) · [Report an Issue](https://github.com/apoorvdarshan/fud-ai/issues/new?labels=bug&title=Bug:%20) · [Request a Feature](https://github.com/apoorvdarshan/fud-ai/issues/new?labels=enhancement&title=Feature:%20)
 
@@ -274,7 +274,7 @@ All values can be manually overridden in Settings, with a **Recalculate Goals** 
 ```
 fud-ai/
 ├── ios/          # SwiftUI iOS app (shipping on App Store, v5.0)
-├── android/      # Kotlin + Jetpack Compose app (min SDK 26 / Android 8.0, v3.0.2)
+├── android/      # Kotlin + Jetpack Compose app (min SDK 26 / Android 8.0, v3.0.3)
 ├── web/          # Marketing site — https://fud-ai.app (static HTML/CSS, Vercel)
 ├── APPSTORE.md   # App Store Connect listing copy (iOS)
 ├── PLAYSTORE.md  # Google Play Console listing copy (Android)
@@ -385,7 +385,7 @@ MIT License. See [LICENSE](LICENSE).
 
 ## Support the Project
 
-Fud AI is fully free, open source, and privacy-first — a single small banner ad keeps it that way. If it helps you, consider supporting development (on iOS there's also an in-app Tip Jar under Settings → About) — every bit keeps this project alive.
+Fud AI is fully free, open source, and privacy-first — no ads, no subscription. If it helps you, consider supporting development (on iOS there's an in-app Tip Jar under Settings → About) — every bit keeps this project alive.
 
 [![Ko-fi](https://img.shields.io/badge/Ko--fi-Support-ff5e5b?logo=kofi)](https://ko-fi.com/apoorvdarshan)
 [![Product Hunt](https://img.shields.io/badge/Product%20Hunt-Vote-orange?logo=producthunt)](https://www.producthunt.com/products/fud-ai-calorie-tracker)

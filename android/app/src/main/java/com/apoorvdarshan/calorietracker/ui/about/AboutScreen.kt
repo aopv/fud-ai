@@ -268,7 +268,6 @@ private fun WhatsNewRow(
                 WhatsNewBullet(stringResource(R.string.whats_new_v30_units))
                 WhatsNewBullet(stringResource(R.string.whats_new_v30_restore))
                 WhatsNewBullet(stringResource(R.string.whats_new_v30_adaptive))
-                WhatsNewBullet(stringResource(R.string.whats_new_v30_ads))
             }
         }
     }

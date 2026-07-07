@@ -655,6 +655,5 @@
     <string name="whats_new_v30_units">身長と体重の単位を別々に設定できるようになりました。</string>
     <string name="whats_new_v30_adaptive">アダプティブ目標とエネルギー消費が実験的機能を卒業し、新規インストールではデフォルトでオンに。</string>
     <string name="whats_new_v30_widgets">ウィジェットを刷新：ホームのスピードメーターデザインを各ウィジェットの実サイズで描画。</string>
-    <string name="whats_new_v30_ads">小さなバナー広告でFud AIは今後も無料です。</string>
     <string name="whats_new_v30_restore">再インストールや機種変更をしても、食事記録・体重・体脂肪がHealth Connectから自動的に復元されるようになりました。</string>
 </resources>

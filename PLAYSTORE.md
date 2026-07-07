@@ -1,6 +1,6 @@
 # Play Store Listing
 
-Google Play Console listing copy for Fud AI Android (current: v3.0.2 / versionCode 29). Each field is in a code block for easy copy-paste. Char counts are tracked because Play Console enforces hard caps and silently truncates anything over.
+Google Play Console listing copy for Fud AI Android (current: v3.0.3 / versionCode 30). Each field is in a code block for easy copy-paste. Char counts are tracked because Play Console enforces hard caps and silently truncates anything over.
 
 **Where to paste each field in Play Console:**
 - App name / Short description / Full description → Grow → Store presence → **Main store listing** (default English) and Grow → Store presence → **Custom store listings** → Manage translations (per-language overrides)
@@ -38,7 +38,7 @@ Snap, speak, or type a meal. AI logs the calories. Open source.
 ```
 Fud AI makes calorie tracking effortless with AI-powered food recognition. Snap a photo, scan a barcode, speak it, or type it — get instant nutrition: calories, protein, carbs, fats, vitamins, minerals, and more.
 
-NEW in v3.0: a Workouts tab with an 873-exercise library, a Home redesign with a speedometer calorie gauge (widgets match), Coach by voice, meal links, diary export, AI meal reprocessing, 10 new theme colors, and automatic restore of your data from Health Connect after a reinstall. A small banner ad now keeps Fud AI free.
+NEW in v3.0: a Workouts tab with an 873-exercise library, a Home redesign with a speedometer calorie gauge (widgets match), Coach by voice, meal links, diary export, AI meal reprocessing, 10 new theme colors, and automatic restore of your data from Health Connect after a reinstall.
 
 Open source, privacy-first. Bring your own API key.
 
@@ -96,7 +96,7 @@ Calorie and nutrient widgets in the Home speedometer style, drawn at each widget
 Auto-selected by phone language: English, Spanish, French, German, Italian, Portuguese (BR), Dutch, Russian, Japanese, Korean, Chinese, Hindi, Arabic, Romanian, Azerbaijani.
 
 PRIVACY FIRST
-No account, no sign-in, no cloud sync, no analytics, no behavioral tracking. Your data stays on your device; a single small banner ad keeps the app free. MIT licensed.
+No account, no sign-in, no cloud sync, no analytics, no behavioral tracking. Your data stays on your device. MIT licensed.
 
 HEALTH CONNECT
 Sync nutrition, weight, and body fat, with backfill support. Reinstalled or switched phones? Your food log, weight, and body fat restore automatically from Health Connect.
@@ -114,7 +114,7 @@ English-only on Play Console — non-English Play Store browsers (ar, az-AZ, de-
 
 ---
 
-## 4. What's New (v3.0.2 / versionCode 29)
+## 4. What's New (v3.0.3 / versionCode 30)
 
 **500 char hard cap per language.** Paste the entire block below into Play Console's "Release notes" field — it auto-routes each `<lang-tag>` block to the matching locale.
 
@@ -125,7 +125,7 @@ English-only on Play Console — non-English Play Store browsers (ar, az-AZ, de-
 • Ask Coach by voice, share meals as links, export your diary, reprocess meals with AI.
 • 10 new theme colors, body-fat history, independent units.
 • Reinstalled? Your food log, weight, and body fat restore from Health Connect.
-• Adaptive Goals and Energy Burn on by default. A small banner ad keeps Fud AI free.
+• Adaptive Goals and Energy Burn on by default.
 </en-US>
 
 <ar>
@@ -134,7 +134,7 @@ English-only on Play Console — non-English Play Store browsers (ar, az-AZ, de-
 • اسأل المدرب صوتيًا، وشارك الوجبات كروابط، وصدّر يومياتك، وأعد معالجة الوجبات بالذكاء الاصطناعي.
 • 10 ألوان سمة جديدة، وسجل دهون الجسم، ووحدات مستقلة.
 • أعدت التثبيت؟ يُستعاد سجلك ووزنك ودهون جسمك من Health Connect.
-• الأهداف التكيفية وحرق الطاقة مفعّلان افتراضيًا. إعلان بانر صغير يُبقي Fud AI مجانيًا.
+• الأهداف التكيفية وحرق الطاقة مفعّلان افتراضيًا.
 </ar>
 
 <az-AZ>
@@ -143,7 +143,7 @@ English-only on Play Console — non-English Play Store browsers (ar, az-AZ, de-
 • Koça səslə sual verin, yemək linkləri paylaşın, gündəliyi ixrac edin, Sİ ilə yenidən analiz edin.
 • 10 yeni tema rəngi, bədən yağı tarixçəsi, ayrı vahidlər.
 • Jurnal, çəki və bədən yağı Health Connect-dən bərpa olunur.
-• Adaptiv Məqsədlər və Enerji Sərfi defolt aktivdir. Kiçik banner Fud AI-ni pulsuz saxlayır.
+• Adaptiv Məqsədlər və Enerji Sərfi defolt aktivdir.
 </az-AZ>
 
 <de-DE>
@@ -152,7 +152,7 @@ English-only on Play Console — non-English Play Store browsers (ar, az-AZ, de-
 • Coach per Sprache fragen, Mahlzeiten als Link teilen, Tagebuch exportieren, Mahlzeiten neu mit KI.
 • 10 neue Themenfarben, Körperfett-Verlauf, unabhängige Einheiten.
 • Neu installiert? Tagebuch, Gewicht und Körperfett kommen aus Health Connect zurück.
-• Adaptive Ziele und Energieverbrauch standardmäßig an. Ein kleines Banner hält Fud AI kostenlos.
+• Adaptive Ziele und Energieverbrauch standardmäßig an.
 </de-DE>
 
 <es-ES>
@@ -161,7 +161,7 @@ English-only on Play Console — non-English Play Store browsers (ar, az-AZ, de-
 • Coach por voz, comidas como enlaces, exporta el diario, reprocesa con IA.
 • 10 colores nuevos, historial de grasa corporal, unidades independientes.
 • ¿Reinstalaste? Registro, peso y grasa se restauran desde Health Connect.
-• Objetivos adaptativos y Quema de energía activos por defecto. Un banner mantiene Fud AI gratis.
+• Objetivos adaptativos y Quema de energía activos por defecto.
 </es-ES>
 
 <fr-FR>
@@ -170,7 +170,7 @@ English-only on Play Console — non-English Play Store browsers (ar, az-AZ, de-
 • Coach à la voix, repas partagés en liens, journal exportable, retraités par IA.
 • 10 nouvelles couleurs, historique de masse grasse, unités indépendantes.
 • Réinstallé ? Journal, poids et masse grasse se restaurent depuis Health Connect.
-• Objectifs adaptatifs et Énergie brûlée par défaut. Une bannière garde Fud AI gratuit.
+• Objectifs adaptatifs et Énergie brûlée par défaut.
 </fr-FR>
 
 <hi-IN>
@@ -179,7 +179,7 @@ English-only on Play Console — non-English Play Store browsers (ar, az-AZ, de-
 • कोच से आवाज़ में पूछें, भोजन लिंक के रूप में साझा करें, डायरी निर्यात करें, भोजन AI से दोबारा प्रोसेस करें।
 • 10 नए थीम रंग, बॉडी फ़ैट इतिहास, अलग इकाइयाँ।
 • दोबारा इंस्टॉल किया? लॉग, वज़न और बॉडी फ़ैट Health Connect से बहाल होते हैं।
-• Adaptive Goals और Energy Burn डिफ़ॉल्ट रूप से चालू। एक छोटा बैनर Fud AI को मुफ़्त रखता है।
+• Adaptive Goals और Energy Burn डिफ़ॉल्ट रूप से चालू।
 </hi-IN>
 
 <it-IT>
@@ -188,7 +188,7 @@ English-only on Play Console — non-English Play Store browsers (ar, az-AZ, de-
 • Chiedi al Coach a voce, condividi i pasti come link, esporta il diario, rielabora con l'AI.
 • 10 nuovi colori tema, storico grasso corporeo, unità indipendenti.
 • Reinstallato? Diario, peso e grasso si ripristinano da Health Connect.
-• Obiettivi adattivi ed Energia bruciata attivi di default. Un piccolo banner mantiene Fud AI gratuito.
+• Obiettivi adattivi ed Energia bruciata attivi di default.
 </it-IT>
 
 <ja-JP>
@@ -197,7 +197,7 @@ English-only on Play Console — non-English Play Store browsers (ar, az-AZ, de-
 • コーチに音声で質問、食事をリンクで共有、日記をエクスポート、食事をAIで再解析。
 • テーマカラー10色追加、体脂肪履歴、単位の個別設定、カメラ＋カメラ。
 • 再インストールしても記録・体重・体脂肪はHealth Connectから復元されます。
-• アダプティブ目標とエネルギー消費がデフォルトでオンに。小さなバナー広告でFud AIは無料のままです。
+• アダプティブ目標とエネルギー消費がデフォルトでオンに。
 </ja-JP>
 
 <ko-KR>
@@ -206,7 +206,7 @@ English-only on Play Console — non-English Play Store browsers (ar, az-AZ, de-
 • 코치에게 음성으로 질문, 식사를 링크로 공유, 일기 내보내기, 식사를 AI로 재분석.
 • 테마 색상 10종 추가, 체지방 기록, 단위 개별 설정, 카메라 + 카메라.
 • 재설치해도 기록, 체중, 체지방이 Health Connect에서 복원됩니다.
-• 적응형 목표와 에너지 소모 기본 켜짐. 작은 배너 광고로 Fud AI는 계속 무료입니다.
+• 적응형 목표와 에너지 소모 기본 켜짐.
 </ko-KR>
 
 <nl-NL>
@@ -215,7 +215,7 @@ English-only on Play Console — non-English Play Store browsers (ar, az-AZ, de-
 • Vraag de Coach met je stem, deel maaltijden als links, exporteer je dagboek, herverwerk met AI.
 • 10 nieuwe themakleuren, vetpercentagegeschiedenis, aparte eenheden.
 • Opnieuw geïnstalleerd? Logboek, gewicht en vet komen terug uit Health Connect.
-• Adaptieve doelen en Energieverbruik standaard aan. Een kleine banner houdt Fud AI gratis.
+• Adaptieve doelen en Energieverbruik standaard aan.
 </nl-NL>
 
 <pt-BR>
@@ -224,7 +224,7 @@ English-only on Play Console — non-English Play Store browsers (ar, az-AZ, de-
 • Coach por voz, refeições como links, exporte o diário, reprocesse com IA.
 • 10 novas cores de tema, histórico de gordura corporal, unidades separadas.
 • Reinstalou? Diário, peso e gordura são restaurados do Health Connect.
-• Metas adaptativas e Queima de energia por padrão. Um banner mantém o Fud AI gratuito.
+• Metas adaptativas e Queima de energia por padrão.
 </pt-BR>
 
 <ro>
@@ -233,7 +233,7 @@ English-only on Play Console — non-English Play Store browsers (ar, az-AZ, de-
 • Coach cu vocea, mese ca linkuri, exportă jurnalul, reprocesează cu AI.
 • 10 culori noi de temă, istoric de grăsime, unități separate.
 • Ai reinstalat? Jurnalul, greutatea și grăsimea se restaurează din Health Connect.
-• Obiective adaptive și Energie consumată implicit active. Un banner menține Fud AI gratuit.
+• Obiective adaptive și Energie consumată implicit active.
 </ro>
 
 <ru-RU>
@@ -242,7 +242,7 @@ English-only on Play Console — non-English Play Store browsers (ar, az-AZ, de-
 • Спрашивайте Коуча голосом, делитесь едой ссылками, экспортируйте дневник, переобработка с ИИ.
 • 10 новых цветов темы, история жира, независимые единицы.
 • Переустановили? Дневник, вес и жир восстановятся из Health Connect.
-• «Адаптивные цели» и «Расход энергии» по умолчанию. Небольшой баннер сохраняет Fud AI бесплатным.
+• «Адаптивные цели» и «Расход энергии» по умолчанию.
 </ru-RU>
 
 <zh-CN>
@@ -251,7 +251,7 @@ English-only on Play Console — non-English Play Store browsers (ar, az-AZ, de-
 • 语音向教练提问、把餐食分享为链接、导出饮食日记、用 AI 重新处理餐食。
 • 新增 10 种主题色、体脂历史、独立单位设置、相机 + 相机拼接。
 • 重新安装后，记录、体重和体脂会从 Health Connect 恢复。
-• 自适应目标和能量消耗默认开启。一条小横幅广告让 Fud AI 保持免费。
+• 自适应目标和能量消耗默认开启。
 </zh-CN>
 ```
 
@@ -279,12 +279,12 @@ These are one-time setup in Play Console → Policy → App content. Don't drift
 
 - **Privacy policy URL**: https://fud-ai.app/privacy.html
 - **App access**: All functionality available without restrictions
-- **Ads**: Yes — flip the "contains ads" declaration before releasing v3.0. The app shows a single AdMob banner at the top of each tab.
+- **Ads**: No — v3.0.3 removed the AdMob banner and the ads SDK entirely. Set "contains ads" to No, and set the Advertising ID declaration to No (the `AD_ID` permission is gone from the manifest).
 - **Content rating**: Everyone (E)
 - **Target audience**: 13+
 - **News app**: No
 - **COVID-19 contact tracing**: No
-- **Data safety**: App data processing is on-device; the app itself collects nothing. From v3.0 the Google Mobile Ads SDK collects the device advertising ID and ad-interaction data, shared with Google for advertising — declare "Device or other IDs → Collected/Shared, Advertising" (plus AdMob's documented App activity/interactions entries) per Google's AdMob data-safety guidance. API keys stored in EncryptedSharedPreferences. Encryption in transit (HTTPS). User can request deletion via in-app "Delete All Data" — no server data exists.
+- **Data safety**: App data processing is on-device; the app itself collects nothing. From v3.0.3 there are no ads and no advertising-ID collection — remove the "Device or other IDs → Advertising" entries the previous ad build declared. API keys stored in EncryptedSharedPreferences. Encryption in transit (HTTPS). User can request deletion via in-app "Delete All Data" — no server data exists.
 - **Government app**: No
 - **Financial features**: No
 - **Health features**: Yes — fitness/nutrition tracking. Local-only. v3.0 adds the Health Connect nutrition READ permission (used only to restore the user's own previously-written records after a reinstall) — include it in the Health Connect permissions declaration alongside the existing weight/body-fat/energy reads and writes.

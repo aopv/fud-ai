@@ -655,6 +655,5 @@
     <string name="whats_new_v30_units">Les unités de taille et de poids se règlent désormais indépendamment.</string>
     <string name="whats_new_v30_adaptive">Objectifs adaptatifs et Énergie brûlée sortent de l\'expérimental et sont activés par défaut pour les nouvelles installations.</string>
     <string name="whats_new_v30_widgets">Refonte des widgets : le style tachymètre de l\'accueil, dessiné à la taille réelle de chaque widget.</string>
-    <string name="whats_new_v30_ads">Une petite bannière publicitaire garde désormais Fud AI gratuit.</string>
     <string name="whats_new_v30_restore">Réinstallation ou nouveau téléphone ? Ton journal alimentaire, ton poids et ta masse grasse se restaurent désormais automatiquement depuis Health Connect.</string>
 </resources>

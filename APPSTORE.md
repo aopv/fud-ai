@@ -1,6 +1,6 @@
 # App Store Listing
 
-App Store Connect submission details for Fud AI v5.0 build 28. Each field is in a code block for easy copy-paste.
+App Store Connect submission details for Fud AI v5.0 build 29. Each field is in a code block for easy copy-paste.
 
 ## App Name
 ```
@@ -32,7 +32,7 @@ Secondary: Food & Drink
 ```
 Effortless calorie tracking with AI-powered food recognition. Snap, scan, speak, or type a meal — get instant calories, macros, and nutrients.
 
-NEW in v5.0: a Workouts tab with an 873-exercise library — photos, primary/secondary muscle and equipment filters, search, sort, and detail pages. A Home redesign with a speedometer calorie gauge, vertical macro bars, four nutrient cards, and a floating add button — widgets, Lock Screen, and Apple Watch match. Ask Coach by voice, share meals as links, export your diary, and reprocess logged meals with AI. Fud AI is now fully free: the Premium subscription has been removed and AI is bring-your-own-key. A small banner ad keeps the app free, with an optional Tip Jar.
+NEW in v5.0: a Workouts tab with an 873-exercise library — photos, primary/secondary muscle and equipment filters, search, sort, and detail pages. A Home redesign with a speedometer calorie gauge, vertical macro bars, four nutrient cards, and a floating add button — widgets, Lock Screen, and Apple Watch match. Ask Coach by voice, share meals as links, export your diary, and reprocess logged meals with AI. Fud AI is now fully free: the Premium subscription has been removed and AI is bring-your-own-key. No ads — an optional Tip Jar is the only way to support development.
 
 Free, open source, privacy-first. Bring your own API key — a free Gemini key takes a minute to create.
 
@@ -76,7 +76,7 @@ iOS widgets cover Home Screen Small, Medium, and Large, a small-only Protein wid
 English, Spanish, French, German, Italian, Portuguese (BR), Dutch, Russian, Polish, Japanese, Korean, Chinese (Simplified), Hindi, Arabic, Romanian, Azerbaijani.
 
 PRIVACY
-No account, sign-in, cloud sync, analytics, or behavioral tracking. A single small banner ad keeps the app free. BYOK keys stay on-device. Supported iPhones can use Apple Intelligence on-device as a final fallback for text, voice-transcribed, and Siri food-description analysis. Review edits are saved only if you log the meal. Barcode sends only the barcode to Open Food Facts. MIT licensed.
+No account, sign-in, cloud sync, analytics, behavioral tracking, or ads. BYOK keys stay on-device. Supported iPhones can use Apple Intelligence on-device as a final fallback for text, voice-transcribed, and Siri food-description analysis. Review edits are saved only if you log the meal. Barcode sends only the barcode to Open Food Facts. MIT licensed.
 
 APPLE HEALTH
 Two-way sync for nutrition, weight, height, and body fat. External samples can auto-import. After a reinstall or on a new iPhone, your food log, weight, and body fat restore automatically from Apple Health. Energy Burn Goals can use active/total energy while keeping macros editable (on by default for new users).
@@ -96,7 +96,7 @@ Fud AI 5.0 — Workouts, a Home redesign, and fully free.
 NEW
 • Workouts tab: browse an 873-exercise library with photos, primary/secondary muscle and equipment filters, search, sort, and per-exercise detail pages.
 • Home redesign: speedometer calorie gauge, vertical macro bars, four nutrient cards, and a floating add button. Widgets, Lock Screen, and Apple Watch match the new design and follow your chosen nutrient cards.
-• Fud AI is now fully free — the Premium subscription has been removed. Bring your own AI key (a free Gemini key takes a minute). A small banner ad keeps the app free, and there's an optional Tip Jar in Settings → About if you'd like to support development.
+• Fud AI is now fully free — the Premium subscription has been removed. Bring your own AI key (a free Gemini key takes a minute). No ads; there's an optional Tip Jar in Settings → About if you'd like to support development.
 • Ask Coach by voice with the new inline recorder.
 • Share any meal as a link that opens straight in Fud AI.
 • Export your food diary as JSON, Markdown, or CSV from Settings.
@@ -149,5 +149,5 @@ https://fud-ai.app
    • com.apoorvdarshan.calorietracker.tip.lunch — $4.99
    • com.apoorvdarshan.calorietracker.tip.feast — $9.99
    Purchases go through StoreKit via RevenueCat, so App Store sandbox purchase testing is available.
-6) The app shows a single AdMob banner ad at the top of each tab. App Tracking Transparency is requested once after onboarding; declining changes nothing functionally.
+6) The app shows no ads and does not request tracking. In-app purchases are the 4 optional consumable tips above; nothing else is monetized.
 ```

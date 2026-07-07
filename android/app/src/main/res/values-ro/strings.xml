@@ -655,6 +655,5 @@
     <string name="whats_new_v30_units">Unitățile pentru înălțime și greutate se setează acum separat.</string>
     <string name="whats_new_v30_adaptive">Obiectivele adaptive și Energia consumată au ieșit din faza experimentală și sunt activate implicit la instalările noi.</string>
     <string name="whats_new_v30_widgets">Widgeturi reproiectate: stilul vitezometru din ecranul principal, desenat la dimensiunea reală a fiecărui widget.</string>
-    <string name="whats_new_v30_ads">Un mic banner publicitar menține acum Fud AI gratuit.</string>
     <string name="whats_new_v30_restore">Ai reinstalat sau ai schimbat telefonul? Jurnalul alimentar, greutatea și grăsimea corporală se restaurează acum automat din Health Connect.</string>
 </resources>

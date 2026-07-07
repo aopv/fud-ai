@@ -655,6 +655,5 @@
     <string name="whats_new_v30_units">身高和体重单位现在可以分别设置。</string>
     <string name="whats_new_v30_adaptive">自适应目标和能量消耗已结束实验阶段，新安装默认开启。</string>
     <string name="whats_new_v30_widgets">小组件焕新：主页的仪表盘风格，按每个小组件的实际尺寸绘制。</string>
-    <string name="whats_new_v30_ads">一条小横幅广告让 Fud AI 保持免费。</string>
     <string name="whats_new_v30_restore">重新安装或更换手机后，你的饮食记录、体重和体脂现在会从 Health Connect 自动恢复。</string>
 </resources>
