@@ -21,3 +21,6 @@ ios/Local.xcconfig
 .claude/
 ios/build-sim/
 .vercel
+
+# Xcode per-user state (scheme order, workspace UI) — meaningless off this machine
+ios/**/xcuserdata/
