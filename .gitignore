@@ -20,7 +20,7 @@ ios/Local.xcconfig
 # Claude Code runtime
 .claude/
 ios/build-sim/
-.vercel
+.wrangler/
 
 # Xcode per-user state (scheme order, workspace UI) — meaningless off this machine
 ios/**/xcuserdata/
