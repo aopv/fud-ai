@@ -4,7 +4,7 @@ Thanks for your interest in contributing! Fud AI is an open-source, "bring-your-
 
 - `ios/` — SwiftUI iOS app (shipping on the App Store, v5.0)
 - `android/` — Kotlin + Jetpack Compose app (feature-parity port, v3.0.2)
-- `web/` — marketing site at [fud-ai.app](https://fud-ai.app) (plain HTML/CSS, Cloudflare Pages)
+- `web/` — marketing site at [fud-ai.app](https://fud-ai.app) (plain HTML/CSS, Cloudflare Workers Static Assets)
 
 PRs, bug reports, and feature ideas for any of these are welcome.
 
@@ -43,7 +43,7 @@ Android Studio is needed for the SDK + bundled JDK, but you can do all your day-
 3. `cd web && python3 -m http.server 8000` (any static server works)
 4. Open http://localhost:8000
 
-The site is plain HTML/CSS — no build step, no framework, no dependencies. It is deployed to Cloudflare Pages from `web/` with the root `wrangler.toml` configuration.
+The site is plain HTML/CSS — no build step, no framework, no dependencies. It is deployed with Cloudflare Workers Static Assets from `web/` using the root `wrangler.toml` configuration.
 
 Marketing screenshots live in `web/assets/screenshots/` and are also used by the README. When replacing screenshots, update the whole set together so the website and README stay in sync.
 

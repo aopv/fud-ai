@@ -1,0 +1,5 @@
+.assetsignore
+.gitignore
+.github/
+.DS_Store
+**/.DS_Store
