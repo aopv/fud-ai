@@ -43,7 +43,7 @@ Android Studio is needed for the SDK + bundled JDK, but you can do all your day-
 3. `cd web && python3 -m http.server 8000` (any static server works)
 4. Open http://localhost:8000
 
-The site is plain HTML/CSS — no build step, no framework, no dependencies. It is deployed with Cloudflare Workers Static Assets from `web/` using the root `wrangler.toml` configuration.
+The site is plain HTML/CSS with a validation-only npm build step and no framework. It is deployed with Cloudflare Workers Static Assets from `web/` using `web/wrangler.toml`.
 
 Marketing screenshots live in `web/assets/screenshots/` and are also used by the README. When replacing screenshots, update the whole set together so the website and README stay in sync.
 

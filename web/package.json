@@ -1,0 +1,10 @@
+{
+  "name": "fud-ai-web",
+  "private": true,
+  "scripts": {
+    "build": "node scripts/validate-static.mjs"
+  },
+  "devDependencies": {
+    "wrangler": "4.110.0"
+  }
+}
