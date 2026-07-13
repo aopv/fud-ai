@@ -2210,20 +2210,15 @@ struct CameraView: UIViewControllerRepresentable {
         picker.edgesForExtendedLayout = .all
         picker.showsCameraControls = false
 
-        // The camera preview is a 4:3 frame pinned to the top of the screen,
-        // which leaves a dead black band above the shutter bar on tall phones.
-        // Center it, then scale it up to fill the full screen height. The
-        // capture is unchanged (full 4:3 sensor frame) — the photo just
-        // includes a little more scene on the left/right than the preview.
+        // Keep the complete 4:3 camera frame visible so the preview matches the
+        // original image delivered after capture. Tall screens intentionally
+        // letterbox instead of enlarging and cropping the preview.
         let screenSize = UIScreen.main.bounds.size
         let previewHeight = screenSize.width * 4.0 / 3.0
-        if screenSize.height > previewHeight {
-            let scale = screenSize.height / previewHeight
-            picker.cameraViewTransform = CGAffineTransform(
-                translationX: 0,
-                y: (screenSize.height - previewHeight) / 2
-            ).scaledBy(x: scale, y: scale)
-        }
+        let bottomBarHeight: CGFloat = 140
+        let availablePreviewHeight = max(0, screenSize.height - bottomBarHeight)
+        let previewOffset = max(0, (availablePreviewHeight - previewHeight) / 2)
+        picker.cameraViewTransform = CGAffineTransform(translationX: 0, y: previewOffset)
 
         // Custom overlay with shutter + cancel buttons
         let overlay = UIView(frame: UIScreen.main.bounds)
@@ -2277,7 +2272,7 @@ struct CameraView: UIViewControllerRepresentable {
             bottomBar.leadingAnchor.constraint(equalTo: overlay.leadingAnchor),
             bottomBar.trailingAnchor.constraint(equalTo: overlay.trailingAnchor),
             bottomBar.bottomAnchor.constraint(equalTo: overlay.bottomAnchor),
-            bottomBar.heightAnchor.constraint(equalToConstant: 140),
+            bottomBar.heightAnchor.constraint(equalToConstant: bottomBarHeight),
 
             shutterOuter.centerXAnchor.constraint(equalTo: bottomBar.centerXAnchor),
             shutterOuter.centerYAnchor.constraint(equalTo: bottomBar.topAnchor, constant: 50),
