@@ -68,6 +68,7 @@ import androidx.compose.material.icons.filled.Bedtime
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material.icons.filled.WbTwilight
+import androidx.compose.material.icons.filled.WaterDrop
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Nightlight
 import androidx.compose.material.icons.filled.PhotoLibrary
@@ -184,6 +185,7 @@ fun HomeScreen(container: AppContainer) {
     var showSortMenu by remember { mutableStateOf(false) }
     var editingEntry by remember { mutableStateOf<FoodEntry?>(null) }
     var showNutritionDetail by remember { mutableStateOf(false) }
+    var showWaterLog by remember { mutableStateOf(false) }
 
     var showCameraCapture by remember { mutableStateOf(false) }
     var showMultiPhotoCapture by remember { mutableStateOf(false) }
@@ -326,6 +328,16 @@ fun HomeScreen(container: AppContainer) {
                 }
             }
 
+            if (ui.waterTrackingEnabled) {
+                item {
+                    WaterProgressCard(
+                        current = ui.waterTodayMl,
+                        goal = ui.waterDailyGoalMl,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
+                    )
+                }
+            }
+
             // Food log
             item { Spacer(Modifier.height(8.dp)) }
             if (mealGroups.isEmpty()) {
@@ -431,6 +443,13 @@ fun HomeScreen(container: AppContainer) {
                         SheetGlassDropdownMenuItem(label = "Photo & Scan", leadingIcon = Icons.Filled.CameraAlt, trailingIcon = Icons.Filled.ChevronRight) { addMenuGroup = AddMenuGroup.PhotoAndScan }
                         SheetGlassDropdownMenuItem(label = "Describe Meal", leadingIcon = Icons.Filled.Edit, trailingIcon = Icons.Filled.ChevronRight) { addMenuGroup = AddMenuGroup.DescribeMeal }
                         SheetGlassDropdownMenuItem(label = "Reuse Meal", leadingIcon = Icons.Filled.Bookmark, trailingIcon = Icons.Filled.ChevronRight) { addMenuGroup = AddMenuGroup.ReuseMeal }
+                        if (ui.waterTrackingEnabled) {
+                            SheetGlassDropdownMenuItem(label = stringResource(R.string.water), leadingIcon = Icons.Filled.WaterDrop) {
+                                showAddMenu = false
+                                addMenuGroup = null
+                                showWaterLog = true
+                            }
+                        }
                     }
 
                     AddMenuGroup.PhotoAndScan -> {
@@ -468,6 +487,13 @@ fun HomeScreen(container: AppContainer) {
         TextInputDialog(
             onDismiss = { showText = false },
             onSubmit = { showText = false; vm.analyzeText(it) }
+        )
+    }
+
+    if (showWaterLog) {
+        WaterLogSheet(
+            onDismiss = { showWaterLog = false },
+            onAdd = vm::addWater
         )
     }
 

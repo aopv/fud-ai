@@ -21,6 +21,7 @@ import com.apoorvdarshan.calorietracker.models.SpeechProvider
 import com.apoorvdarshan.calorietracker.models.UserProfile
 import com.apoorvdarshan.calorietracker.models.WeightEntry
 import com.apoorvdarshan.calorietracker.models.WidgetSnapshot
+import com.apoorvdarshan.calorietracker.models.WaterEntry
 import com.apoorvdarshan.calorietracker.ui.theme.AppThemeColor
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -101,6 +102,29 @@ class PreferencesStore(private val context: Context) {
 
     val appUpdateNotificationsEnabled: Flow<Boolean> = ds.data.map { it[Keys.APP_UPDATE_NOTIFICATIONS_ENABLED] ?: true }
     suspend fun setAppUpdateNotificationsEnabled(v: Boolean) { ds.edit { it[Keys.APP_UPDATE_NOTIFICATIONS_ENABLED] = v } }
+
+    // -- Water tracking --------------------------------------------------
+    val waterTrackingEnabled: Flow<Boolean> = ds.data.map { it[Keys.WATER_TRACKING_ENABLED] ?: false }
+    suspend fun setWaterTrackingEnabled(v: Boolean) { ds.edit { it[Keys.WATER_TRACKING_ENABLED] = v } }
+
+    val waterDailyGoalMl: Flow<Int> = ds.data.map { it[Keys.WATER_DAILY_GOAL_ML] ?: 2_000 }
+    suspend fun setWaterDailyGoalMl(v: Int) { ds.edit { it[Keys.WATER_DAILY_GOAL_ML] = v.coerceAtLeast(1) } }
+
+    val waterReminderEnabled: Flow<Boolean> = ds.data.map { it[Keys.WATER_REMINDER_ENABLED] ?: false }
+    suspend fun setWaterReminderEnabled(v: Boolean) { ds.edit { it[Keys.WATER_REMINDER_ENABLED] = v } }
+
+    val waterReminderHour: Flow<Int> = ds.data.map { it[Keys.WATER_REMINDER_HOUR] ?: 14 }
+    val waterReminderMinute: Flow<Int> = ds.data.map { it[Keys.WATER_REMINDER_MINUTE] ?: 0 }
+
+    val waterEntries: Flow<List<WaterEntry>> = ds.data.map { prefs ->
+        prefs[Keys.WATER_ENTRIES]?.let {
+            runCatching { json.decodeFromString(ListSerializer(WaterEntry.serializer()), it) }.getOrNull()
+        } ?: emptyList()
+    }
+
+    suspend fun setWaterEntries(entries: List<WaterEntry>) {
+        ds.edit { it[Keys.WATER_ENTRIES] = json.encodeToString(ListSerializer(WaterEntry.serializer()), entries) }
+    }
 
     /// Last app version a "new update" notification was posted for — so it fires at most once per
     /// version even though the update check runs on every launch.
@@ -520,6 +544,12 @@ class PreferencesStore(private val context: Context) {
         val BODY_FAT_REMINDER_ENABLED = booleanPreferencesKey("bodyFatReminderEnabled")
         val GOAL_REACHED_NOTIFICATIONS_ENABLED = booleanPreferencesKey("goalReachedNotificationsEnabled")
         val APP_UPDATE_NOTIFICATIONS_ENABLED = booleanPreferencesKey("appUpdateNotificationsEnabled")
+        val WATER_TRACKING_ENABLED = booleanPreferencesKey("waterTrackingEnabled")
+        val WATER_DAILY_GOAL_ML = intPreferencesKey("waterDailyGoalMl")
+        val WATER_REMINDER_ENABLED = booleanPreferencesKey("waterReminderEnabled")
+        val WATER_REMINDER_HOUR = intPreferencesKey("waterReminderHour")
+        val WATER_REMINDER_MINUTE = intPreferencesKey("waterReminderMinute")
+        val WATER_ENTRIES = stringPreferencesKey("waterEntries")
         val LAST_NOTIFIED_UPDATE_VERSION = stringPreferencesKey("lastNotifiedUpdateVersion")
         val HEALTH_CONNECT_ENABLED = booleanPreferencesKey("healthConnectEnabled")
         val HEALTH_TYPES_VERSION = intPreferencesKey("healthTypesVersion")

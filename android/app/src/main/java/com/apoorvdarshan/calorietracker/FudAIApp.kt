@@ -9,6 +9,7 @@ import com.apoorvdarshan.calorietracker.data.KeyStore
 import com.apoorvdarshan.calorietracker.data.PreferencesStore
 import com.apoorvdarshan.calorietracker.data.ProfileRepository
 import com.apoorvdarshan.calorietracker.data.WeightRepository
+import com.apoorvdarshan.calorietracker.data.WaterRepository
 import com.apoorvdarshan.calorietracker.services.FoodImageStore
 import com.apoorvdarshan.calorietracker.services.NotificationService
 import com.apoorvdarshan.calorietracker.services.TestDataSeeder
@@ -85,6 +86,14 @@ class FudAIApp : Application() {
                 } else {
                     container.notifications.cancelBodyFatReminder()
                 }
+                if (container.prefs.waterTrackingEnabled.first() && container.prefs.waterReminderEnabled.first()) {
+                    container.notifications.scheduleWaterReminder(
+                        container.prefs.waterReminderHour.first(),
+                        container.prefs.waterReminderMinute.first()
+                    )
+                } else {
+                    container.notifications.cancelWaterReminder()
+                }
             }
         }
     }
@@ -109,6 +118,7 @@ class AppContainer(app: FudAIApp) {
     val bodyFatRepository = BodyFatRepository(prefs, profileRepository, health)
     val bodyMeasurementRepository = BodyMeasurementRepository(prefs)
     val chatRepository = ChatRepository(prefs)
+    val waterRepository = WaterRepository(prefs)
 
     val foodAnalysis = FoodAnalysisService(prefs, keyStore)
     val chatService = ChatService(prefs, keyStore)

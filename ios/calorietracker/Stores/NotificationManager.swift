@@ -81,6 +81,25 @@ class NotificationManager {
         UNUserNotificationCenter.current().add(request)
     }
 
+    // MARK: - Water Reminder (repeating daily)
+
+    func scheduleWaterReminder(enabled: Bool, hour: Int, minute: Int) {
+        let center = UNUserNotificationCenter.current()
+        center.removePendingNotificationRequests(withIdentifiers: ["water.reminder"])
+        guard enabled else { return }
+
+        let content = UNMutableNotificationContent()
+        content.title = "Time to Hydrate"
+        content.body = "Have some water and log it in Fud AI."
+        content.sound = .default
+
+        var dateComponents = DateComponents()
+        dateComponents.hour = hour
+        dateComponents.minute = minute
+        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
+        center.add(UNNotificationRequest(identifier: "water.reminder", content: content, trigger: trigger))
+    }
+
     // MARK: - Streak Reminder (one-shot, rescheduled on foreground/log)
 
     func scheduleStreakReminder(enabled: Bool, hour: Int, minute: Int, hasLoggedToday: Bool, currentStreak: Int) {

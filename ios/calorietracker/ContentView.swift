@@ -501,6 +501,7 @@ struct ActivityShareSheet: UIViewControllerRepresentable {
 // MARK: - Home View (Main Dashboard)
 struct HomeView: View {
     @Environment(FoodStore.self) private var foodStore
+    @Environment(WaterStore.self) private var waterStore
     @Environment(\.scenePhase) private var scenePhase
     @State private var showCamera = false
     @State private var showBarcodeScanner = false
@@ -544,6 +545,7 @@ struct HomeView: View {
     @State private var currentEmoji: String?
     @State private var currentFoodSource: FoodSource = .snapFood
     @State private var showNutritionDetail = false
+    @State private var showWaterLog = false
     // Bumped each time the app is opened (cold launch = 1, then +1 on every
     // return from background). Drives the gauge + macro "fill from zero" reveal.
     // Not bumped on tab switches or data edits, so it only plays on app open.
@@ -553,6 +555,8 @@ struct HomeView: View {
     @AppStorage(FoodLogSortOrder.storageKey) private var foodLogSortOrderRaw = FoodLogSortOrder.defaultOrder.rawValue
     @AppStorage(HomeTopNutrient.storageKey) private var homeTopNutrientsRaw = HomeTopNutrient.storageValue(for: HomeTopNutrient.defaultSelection)
     @AppStorage(OptionalNutrientGoals.storageKey) private var optionalNutrientGoalsData = Data()
+    @AppStorage(WaterSettings.enabledKey) private var waterTrackingEnabled = false
+    @AppStorage(WaterSettings.dailyGoalKey) private var waterDailyGoal = WaterSettings.defaultDailyGoalMl
     @Environment(ProfileStore.self) private var profileStore
 
     /// Force a body re-evaluation whenever profileStore.profile changes by reading it
@@ -684,6 +688,16 @@ struct HomeView: View {
                     .listRowSeparator(.hidden)
                 }
 
+                if waterTrackingEnabled {
+                    Section {
+                        WaterProgressRow(
+                            current: waterStore.total(on: selectedDate),
+                            goal: waterDailyGoal
+                        )
+                        .listRowBackground(AppColors.appCard)
+                    }
+                }
+
                 // Food list
                 let mealGroups = foodStore.entriesByMeal(for: selectedDate, order: foodLogSortOrder)
                 if mealGroups.isEmpty {
@@ -774,6 +788,13 @@ struct HomeView: View {
             .navigationBarTitleDisplayMode(.inline)
             .overlay(alignment: .bottomTrailing) {
                 Menu {
+                    if waterTrackingEnabled {
+                        Button {
+                            showWaterLog = true
+                        } label: {
+                            Label("Water", systemImage: "drop.fill")
+                        }
+                    }
                     Menu {
                         Button {
                             showCopyFromDaySheet = true
@@ -1157,6 +1178,12 @@ struct HomeView: View {
             }
             .sheet(isPresented: $showNutritionDetail) {
                 NutritionDetailView(date: selectedDate, homeTopNutrientsRaw: $homeTopNutrientsRaw)
+            }
+            .sheet(isPresented: $showWaterLog) {
+                WaterLogSheet { milliliters in
+                    _ = waterStore.add(milliliters: milliliters, on: logDateForSelectedDay)
+                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                }
             }
             .onOpenURL { url in
                 if url.scheme == "fudai", url.host == "import-share-image" {
@@ -2819,6 +2846,7 @@ struct ProfileView: View {
     @Environment(ChatStore.self) private var chatStore
     @Environment(WeightStore.self) private var weightStore
     @Environment(FoodStore.self) private var foodStore
+    @Environment(WaterStore.self) private var waterStore
     @Environment(BodyMeasurementStore.self) private var bodyMeasurementStore
     @Environment(NotificationManager.self) private var notificationManager
     @Environment(HealthKitManager.self) private var healthKitManager
@@ -3311,6 +3339,17 @@ struct ProfileView: View {
                         } icon: {
                             Image(systemName: "bell")
                                 .foregroundStyle(AppColors.calorie)
+                        }
+                    }
+
+                    NavigationLink {
+                        WaterSettingsView()
+                    } label: {
+                        Label {
+                            Text("Water Tracking")
+                        } icon: {
+                            Image(systemName: "drop.fill")
+                                .foregroundStyle(.cyan)
                         }
                     }
 
@@ -4099,6 +4138,7 @@ struct ProfileView: View {
                     // the Health app's Sources → Fud AI screen.
                     foodStore.replaceAllEntries([])
                     weightStore.replaceAllEntries([])
+                    waterStore.clear()
                     // Wipe the food-image folder defensively — replaceAllEntries
                     // already cleans per-entry files, but a belt-and-braces
                     // deleteAll catches any orphans from earlier crash recovery.

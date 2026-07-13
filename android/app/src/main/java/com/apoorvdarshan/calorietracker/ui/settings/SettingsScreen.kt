@@ -39,6 +39,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.UnfoldMore
+import androidx.compose.material.icons.filled.WaterDrop
 import androidx.compose.material.icons.outlined.LockOpen
 import androidx.compose.material.icons.automirrored.outlined.DirectionsWalk
 import androidx.compose.material.icons.outlined.FitnessCenter
@@ -178,7 +179,7 @@ private enum class SettingsSheet {
     FALLBACK_PROVIDER, FALLBACK_MODEL, FALLBACK_KEY, FALLBACK_BASE_URL,
     GENDER, BIRTHDAY, HEIGHT, WEIGHT, BODY_FAT, GOAL_BODY_FAT, ACTIVITY, GOAL, GOAL_WEIGHT, GOAL_SPEED,
     CALORIES, PROTEIN, CARBS, FAT, OPTIONAL_NUTRIENTS,
-    APPEARANCE, WEEK_START
+    APPEARANCE, WEEK_START, WATER_GOAL
 }
 
 private enum class HealthConnectPermissionAction {
@@ -562,6 +563,21 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController) {
                     onInfo = { showDefaultGramsInfo = true },
                     onChange = vm::setPreferGramsByDefault
                 )
+                HorizontalDivider()
+                ToggleRow(
+                    stringResource(R.string.settings_water_tracking),
+                    ui.waterTrackingEnabled,
+                    icon = Icons.Filled.WaterDrop,
+                    onChange = vm::setWaterTrackingEnabled
+                )
+                if (ui.waterTrackingEnabled) {
+                    HorizontalDivider()
+                    SettingRow(
+                        stringResource(R.string.settings_water_goal),
+                        stringResource(R.string.settings_water_goal_summary, ui.waterDailyGoalMl),
+                        icon = Icons.Filled.WaterDrop
+                    ) { sheet = SettingsSheet.WATER_GOAL }
+                }
                 HorizontalDivider()
                 SettingRow(
                     stringResource(R.string.settings_week_starts),
@@ -1001,6 +1017,15 @@ private fun NotificationTypeRows(ui: SettingsUiState, vm: SettingsViewModel) {
         icon = Icons.Outlined.Percent,
         onChange = vm::setBodyFatReminderEnabled
     )
+    if (ui.waterTrackingEnabled) {
+        HorizontalDivider()
+        ToggleRow(
+            stringResource(R.string.settings_notif_water_reminder),
+            ui.waterReminderEnabled,
+            icon = Icons.Filled.WaterDrop,
+            onChange = vm::setWaterReminderEnabled
+        )
+    }
     HorizontalDivider()
     ToggleRow(
         stringResource(R.string.settings_notif_goal_alerts),
@@ -1019,6 +1044,7 @@ private fun NotificationTypeRows(ui: SettingsUiState, vm: SettingsViewModel) {
         !ui.dailySummaryEnabled &&
         !ui.weightReminderEnabled &&
         !ui.bodyFatReminderEnabled &&
+        (!ui.waterTrackingEnabled || !ui.waterReminderEnabled) &&
         !ui.goalReachedNotificationsEnabled &&
         !ui.appUpdateNotificationsEnabled
     if (noneSelected) {
@@ -1671,6 +1697,13 @@ private fun SettingsSheets(
                     label = { it.second },
                     selected = { it.first == ui.weekStartsOnMonday },
                     onSelect = { vm.setWeekStartsOnMonday(it.first); onDismiss() }
+                )
+                SettingsSheet.WATER_GOAL -> ListSheet(
+                    title = stringResource(R.string.settings_water_goal),
+                    items = listOf(1_500, 2_000, 2_500, 3_000, 3_500, 4_000),
+                    label = { "${it} ml" },
+                    selected = { it == ui.waterDailyGoalMl },
+                    onSelect = { vm.setWaterDailyGoalMl(it); onDismiss() }
                 )
                 SettingsSheet.CALORIES -> NutritionPickerSheet(
                     label = stringResource(R.string.macro_calories), unit = stringResource(R.string.unit_kcal),

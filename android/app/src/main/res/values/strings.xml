@@ -550,6 +550,10 @@
     <string name="settings_week_monday">Monday</string>
     <string name="settings_week_sunday">Sunday</string>
     <string name="settings_notifications">Notifications</string>
+    <string name="settings_water_tracking">Water Tracking</string>
+    <string name="settings_water_goal">Daily Water Goal</string>
+    <string name="settings_water_goal_summary">%1$d ml</string>
+    <string name="settings_notif_water_reminder">Water Reminder</string>
     <string name="settings_battery_opt">Battery Optimization</string>
     <string name="settings_battery_opt_value">Whitelist Fud AI</string>
 
@@ -912,6 +916,16 @@
     <string name="notif_channel_body_fat_desc">Daily reminder to log a body-fat reading.</string>
     <string name="notif_channel_updates">App Updates</string>
     <string name="notif_channel_updates_desc">A new version of Fud AI is available on the Play Store.</string>
+    <string name="notif_channel_water">Water Reminder</string>
+    <string name="notif_channel_water_desc">Daily reminder to drink and log water.</string>
+    <string name="notif_water_title">Time to Hydrate</string>
+    <string name="notif_water_text">Have some water and log it in Fud AI.</string>
+    <string name="water">Water</string>
+    <string name="water_log_title">Log Water</string>
+    <string name="water_how_much">How much water?</string>
+    <string name="water_custom_amount">Custom amount</string>
+    <string name="water_add">Add Water</string>
+    <string name="water_progress">%1$d / %2$d ml</string>
     <string name="notif_update_title">Update available</string>
     <string name="notif_update_text">A new version of Fud AI is ready. Tap to update.</string>
     <string name="settings_calc_intro">Your daily calorie and macro targets are set by AI. When you tap Recalculate Goals — or automatically about once a week if Adaptive Goals is on — Fud AI sends your profile, the reference equations below, your recently logged food, and your weight trend to your AI provider. It starts from these peer-reviewed formulas, then adjusts them to your real data to estimate your true maintenance and targets.</string>

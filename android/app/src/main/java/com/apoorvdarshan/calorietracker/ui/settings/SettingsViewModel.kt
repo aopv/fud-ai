@@ -45,6 +45,9 @@ data class SettingsUiState(
     val bodyFatReminderEnabled: Boolean = true,
     val goalReachedNotificationsEnabled: Boolean = true,
     val appUpdateNotificationsEnabled: Boolean = true,
+    val waterTrackingEnabled: Boolean = false,
+    val waterDailyGoalMl: Int = 2_000,
+    val waterReminderEnabled: Boolean = false,
     val healthConnectEnabled: Boolean = false,
     val healthEnergyGoalsEnabled: Boolean = false,
     val adaptiveGoalsEnabled: Boolean = false,
@@ -107,6 +110,9 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
             val bodyFatReminder = container.prefs.bodyFatReminderEnabled.first()
             val goalReachedNotifications = container.prefs.goalReachedNotificationsEnabled.first()
             val appUpdateNotifications = container.prefs.appUpdateNotificationsEnabled.first()
+            val waterTracking = container.prefs.waterTrackingEnabled.first()
+            val waterGoal = container.prefs.waterDailyGoalMl.first()
+            val waterReminder = container.prefs.waterReminderEnabled.first()
             val hc = reconcileHealthConnectState()
             val profile = container.profileRepository.current()
             val energyGoals = container.prefs.healthEnergyGoalsEnabled.first() && hc
@@ -147,6 +153,9 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
                 bodyFatReminderEnabled = bodyFatReminder,
                 goalReachedNotificationsEnabled = goalReachedNotifications,
                 appUpdateNotificationsEnabled = appUpdateNotifications,
+                waterTrackingEnabled = waterTracking,
+                waterDailyGoalMl = waterGoal,
+                waterReminderEnabled = waterReminder,
                 healthConnectEnabled = hc,
                 healthEnergyGoalsEnabled = energyGoals,
                 adaptiveGoalsEnabled = adaptiveGoals,
@@ -376,6 +385,35 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
         }
     }
 
+    fun setWaterTrackingEnabled(v: Boolean) {
+        viewModelScope.launch {
+            container.prefs.setWaterTrackingEnabled(v)
+            if (!v) {
+                container.prefs.setWaterReminderEnabled(false)
+                container.notifications.cancelWaterReminder()
+            }
+            _ui.value = _ui.value.copy(
+                waterTrackingEnabled = v,
+                waterReminderEnabled = if (v) _ui.value.waterReminderEnabled else false
+            )
+        }
+    }
+
+    fun setWaterDailyGoalMl(v: Int) {
+        viewModelScope.launch {
+            container.prefs.setWaterDailyGoalMl(v)
+            _ui.value = _ui.value.copy(waterDailyGoalMl = v)
+        }
+    }
+
+    fun setWaterReminderEnabled(v: Boolean) {
+        viewModelScope.launch {
+            container.prefs.setWaterReminderEnabled(v)
+            _ui.value = _ui.value.copy(waterReminderEnabled = v)
+            syncNotificationSchedules()
+        }
+    }
+
     private suspend fun syncNotificationSchedules() {
         val enabled = container.prefs.notificationsEnabled.first()
         if (!enabled || !container.notifications.canPostNotifications()) {
@@ -383,6 +421,7 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
             container.notifications.cancelDailySummary()
             container.notifications.cancelWeightReminder()
             container.notifications.cancelBodyFatReminder()
+            container.notifications.cancelWaterReminder()
             return
         }
 
@@ -415,6 +454,15 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
             container.notifications.scheduleBodyFatReminder()
         } else {
             container.notifications.cancelBodyFatReminder()
+        }
+
+        if (container.prefs.waterTrackingEnabled.first() && container.prefs.waterReminderEnabled.first()) {
+            container.notifications.scheduleWaterReminder(
+                container.prefs.waterReminderHour.first(),
+                container.prefs.waterReminderMinute.first()
+            )
+        } else {
+            container.notifications.cancelWaterReminder()
         }
     }
 

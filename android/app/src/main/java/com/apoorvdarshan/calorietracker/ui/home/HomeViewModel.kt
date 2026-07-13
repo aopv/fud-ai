@@ -12,6 +12,7 @@ import com.apoorvdarshan.calorietracker.models.MealType
 import com.apoorvdarshan.calorietracker.models.OptionalNutrientGoals
 import com.apoorvdarshan.calorietracker.models.PendingFoodAnalysisDraft
 import com.apoorvdarshan.calorietracker.models.UserProfile
+import com.apoorvdarshan.calorietracker.models.WaterEntry
 import com.apoorvdarshan.calorietracker.services.OpenFoodFactsService
 import com.apoorvdarshan.calorietracker.services.ai.AiError
 import com.apoorvdarshan.calorietracker.services.ai.FoodAnalysis
@@ -49,6 +50,9 @@ data class HomeUiState(
     val preferGramsByDefault: Boolean = false,
     val weightMetric: Boolean = true,
     val favoriteKeys: Set<String> = emptySet(),
+    val waterTrackingEnabled: Boolean = false,
+    val waterDailyGoalMl: Int = 2_000,
+    val waterTodayMl: Int = 0,
     val pendingAnalysis: FoodAnalysis? = null,
     val pendingImageBytes: ByteArray? = null,
     val pendingAdditionalImageBytes: List<ByteArray> = emptyList(),
@@ -129,6 +133,23 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
             }
             .launchIn(viewModelScope)
 
+        container.prefs.waterTrackingEnabled
+            .onEach { enabled -> _ui.value = _ui.value.copy(waterTrackingEnabled = enabled) }
+            .launchIn(viewModelScope)
+
+        container.prefs.waterDailyGoalMl
+            .onEach { goal -> _ui.value = _ui.value.copy(waterDailyGoalMl = goal) }
+            .launchIn(viewModelScope)
+
+        combine(container.waterRepository.entries, _selectedDate) { entries, day ->
+            val zone = ZoneId.systemDefault()
+            entries
+                .filter { it.date.atZone(zone).toLocalDate() == day }
+                .sumOf { it.milliliters }
+        }
+            .onEach { total -> _ui.value = _ui.value.copy(waterTodayMl = total) }
+            .launchIn(viewModelScope)
+
         viewModelScope.launch {
             container.prefs.pendingFoodAnalysisDraft.first()?.let { restorePendingDraft(it) }
         }
@@ -136,6 +157,15 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
 
     fun setSelectedDate(date: LocalDate) {
         _selectedDate.value = date
+    }
+
+    fun addWater(milliliters: Int) {
+        if (milliliters <= 0) return
+        viewModelScope.launch {
+            container.waterRepository.add(
+                WaterEntry(date = timestampForSelectedDay(), milliliters = milliliters)
+            )
+        }
     }
 
     fun setFoodLogSortOrder(order: FoodLogSortOrder) {

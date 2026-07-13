@@ -904,6 +904,10 @@ struct NotificationSettingsView: View {
     @AppStorage("bodyFatLogReminderMinute") private var bodyFatLogMinute = 0
 
     @AppStorage("appUpdateNotificationsEnabled") private var appUpdatesEnabled = true
+    @AppStorage(WaterSettings.enabledKey) private var waterTrackingEnabled = false
+    @AppStorage(WaterSettings.reminderEnabledKey) private var waterReminderEnabled = false
+    @AppStorage(WaterSettings.reminderHourKey) private var waterReminderHour = 14
+    @AppStorage(WaterSettings.reminderMinuteKey) private var waterReminderMinute = 0
 
     var body: some View {
         List {
@@ -926,6 +930,7 @@ struct NotificationSettingsView: View {
                                 notificationsEnabled = false
                             } else {
                                 applyMealReminders()
+                                applyWaterReminder()
                             }
                         }
                     } else {
@@ -984,6 +989,22 @@ struct NotificationSettingsView: View {
                     .onChange(of: dinnerMinute) { _, _ in applyMealReminders() }
                 }
                 .listRowBackground(AppColors.appCard)
+
+                if waterTrackingEnabled {
+                    Section("Water") {
+                        NotificationTimeRow(
+                            label: "Water Reminder",
+                            icon: "drop.fill",
+                            isEnabled: $waterReminderEnabled,
+                            hour: $waterReminderHour,
+                            minute: $waterReminderMinute
+                        )
+                        .onChange(of: waterReminderEnabled) { _, _ in applyWaterReminder() }
+                        .onChange(of: waterReminderHour) { _, _ in applyWaterReminder() }
+                        .onChange(of: waterReminderMinute) { _, _ in applyWaterReminder() }
+                    }
+                    .listRowBackground(AppColors.appCard)
+                }
 
                 // Smart Notifications
                 Section {
@@ -1060,6 +1081,14 @@ struct NotificationSettingsView: View {
             breakfastEnabled: breakfastEnabled, breakfastHour: breakfastHour, breakfastMinute: breakfastMinute,
             lunchEnabled: lunchEnabled, lunchHour: lunchHour, lunchMinute: lunchMinute,
             dinnerEnabled: dinnerEnabled, dinnerHour: dinnerHour, dinnerMinute: dinnerMinute
+        )
+    }
+
+    private func applyWaterReminder() {
+        notificationManager.scheduleWaterReminder(
+            enabled: notificationsEnabled && waterTrackingEnabled && waterReminderEnabled,
+            hour: waterReminderHour,
+            minute: waterReminderMinute
         )
     }
 }

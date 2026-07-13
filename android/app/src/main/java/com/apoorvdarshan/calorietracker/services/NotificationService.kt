@@ -76,7 +76,13 @@ class NotificationService(private val context: Context) {
             NotificationManager.IMPORTANCE_DEFAULT
         ).apply { description = context.getString(R.string.notif_channel_updates_desc) }
 
-        mgr.createNotificationChannels(listOf(streak, daily, goal, weight, bodyFat, appUpdate))
+        val water = NotificationChannel(
+            CHANNEL_WATER,
+            context.getString(R.string.notif_channel_water),
+            NotificationManager.IMPORTANCE_DEFAULT
+        ).apply { description = context.getString(R.string.notif_channel_water_desc) }
+
+        mgr.createNotificationChannels(listOf(streak, daily, goal, weight, bodyFat, appUpdate, water))
     }
 
     fun canPostNotifications(): Boolean {
@@ -158,10 +164,17 @@ class NotificationService(private val context: Context) {
         text = context.getString(R.string.notif_body_fat_log_text)
     )
 
+    fun scheduleWaterReminder(hour: Int = 14, minute: Int = 0) = schedule(
+        REQUEST_WATER, hour, minute, CHANNEL_WATER,
+        title = context.getString(R.string.notif_water_title),
+        text = context.getString(R.string.notif_water_text)
+    )
+
     fun cancelStreakReminder() = cancel(REQUEST_STREAK)
     fun cancelDailySummary() = cancel(REQUEST_DAILY)
     fun cancelWeightReminder() = cancel(REQUEST_WEIGHT)
     fun cancelBodyFatReminder() = cancel(REQUEST_BODY_FAT)
+    fun cancelWaterReminder() = cancel(REQUEST_WATER)
 
     private fun schedule(requestCode: Int, hour: Int, minute: Int, channel: String, title: String, text: String) {
         val am = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -208,6 +221,7 @@ class NotificationService(private val context: Context) {
         const val CHANNEL_WEIGHT_LOG = "weight_log_reminder"
         const val CHANNEL_BODY_FAT_LOG = "body_fat_log_reminder"
         const val CHANNEL_APP_UPDATE = "app_update"
+        const val CHANNEL_WATER = "water_reminder"
         const val EXTRA_CHANNEL = "channel"
         const val EXTRA_TITLE = "title"
         const val EXTRA_TEXT = "text"
@@ -219,6 +233,7 @@ class NotificationService(private val context: Context) {
         private const val REQUEST_WEIGHT = 1003
         private const val REQUEST_BODY_FAT = 1004
         private const val REQUEST_APP_UPDATE = 1005
+        private const val REQUEST_WATER = 1006
     }
 }
 
