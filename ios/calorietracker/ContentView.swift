@@ -3349,7 +3349,7 @@ struct ProfileView: View {
                             Text("Water Tracking")
                         } icon: {
                             Image(systemName: "drop.fill")
-                                .foregroundStyle(.cyan)
+                                .foregroundStyle(AppColors.calorie)
                         }
                     }
 

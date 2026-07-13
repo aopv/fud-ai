@@ -34,7 +34,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -42,8 +41,6 @@ import androidx.compose.ui.unit.sp
 import com.apoorvdarshan.calorietracker.R
 import com.apoorvdarshan.calorietracker.ui.theme.AppColors
 import androidx.compose.ui.res.stringResource
-
-private val WaterBlue = Color(0xFF22A9E0)
 
 @Composable
 fun WaterProgressCard(current: Int, goal: Int, modifier: Modifier = Modifier) {
@@ -55,7 +52,7 @@ fun WaterProgressCard(current: Int, goal: Int, modifier: Modifier = Modifier) {
     ) {
         Column(Modifier.padding(horizontal = 18.dp, vertical = 14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Filled.WaterDrop, contentDescription = null, tint = WaterBlue)
+                Icon(Icons.Filled.WaterDrop, contentDescription = null, tint = AppColors.Calorie)
                 Text(
                     stringResource(R.string.water),
                     modifier = Modifier.padding(start = 8.dp),
@@ -71,8 +68,8 @@ fun WaterProgressCard(current: Int, goal: Int, modifier: Modifier = Modifier) {
             LinearProgressIndicator(
                 progress = { progress },
                 modifier = Modifier.fillMaxWidth().height(7.dp),
-                color = WaterBlue,
-                trackColor = WaterBlue.copy(alpha = 0.16f)
+                color = AppColors.Calorie,
+                trackColor = AppColors.Calorie.copy(alpha = 0.16f)
             )
         }
     }
@@ -113,7 +110,7 @@ fun WaterLogSheet(onDismiss: () -> Unit, onAdd: (Int) -> Unit) {
                         modifier = Modifier
                             .weight(1f)
                             .background(
-                                if (selectedPreset == preset && customAmount.isBlank()) WaterBlue.copy(alpha = 0.22f)
+                                if (selectedPreset == preset && customAmount.isBlank()) AppColors.Calorie.copy(alpha = 0.22f)
                                 else MaterialTheme.colorScheme.surfaceVariant,
                                 RoundedCornerShape(14.dp)
                             )

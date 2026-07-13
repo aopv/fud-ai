@@ -14,14 +14,14 @@ struct WaterProgressRow: View {
             HStack {
                 Label("Water", systemImage: "drop.fill")
                     .font(.system(.headline, design: .rounded, weight: .semibold))
-                    .foregroundStyle(.cyan)
+                    .foregroundStyle(AppColors.calorie)
                 Spacer()
                 Text("\(current.formatted()) / \(goal.formatted()) ml")
                     .font(.system(.subheadline, design: .rounded, weight: .medium))
                     .foregroundStyle(.secondary)
             }
             ProgressView(value: progress)
-                .tint(.cyan)
+                .tint(AppColors.calorie)
         }
         .padding(.vertical, 4)
         .accessibilityElement(children: .combine)
@@ -63,7 +63,7 @@ struct WaterLogSheet: View {
                                 .font(.system(.subheadline, design: .rounded, weight: .semibold))
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 12)
-                                .background(amount == preset && customAmount.isEmpty ? Color.cyan.opacity(0.22) : AppColors.appCard)
+                                .background(amount == preset && customAmount.isEmpty ? AppColors.calorie.opacity(0.22) : AppColors.appCard)
                                 .clipShape(RoundedRectangle(cornerRadius: 14))
                         }
                         .buttonStyle(.plain)
