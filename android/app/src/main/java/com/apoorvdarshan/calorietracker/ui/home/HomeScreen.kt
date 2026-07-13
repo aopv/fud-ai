@@ -809,7 +809,7 @@ private fun CalorieHero(current: Int, goal: Int) {
     }
     val statusText = when {
         goal <= 0 -> "No goal"
-        current < goal -> "${goal - current} left of $goal"
+        current < goal -> "${goal - current} left"
         current > goal -> "${current - goal} over"
         else -> "Goal reached"
     }

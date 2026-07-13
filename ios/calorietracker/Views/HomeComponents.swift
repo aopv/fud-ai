@@ -504,7 +504,7 @@ struct CalorieGauge: View {
 
     private var statusText: String {
         guard goal > 0 else { return "No goal" }
-        if eaten < goal { return "\(goal - eaten) left of \(goal)" }
+        if eaten < goal { return "\(goal - eaten) left" }
         if eaten > goal { return "\(eaten - goal) over" }
         return "Goal reached"
     }
