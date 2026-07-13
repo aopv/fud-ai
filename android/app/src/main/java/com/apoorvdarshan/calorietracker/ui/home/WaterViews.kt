@@ -1,7 +1,5 @@
 package com.apoorvdarshan.calorietracker.ui.home
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,7 +26,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -77,16 +74,10 @@ fun WaterProgressCard(current: Int, goal: Int, modifier: Modifier = Modifier) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WaterLogSheet(onDismiss: () -> Unit, onAdd: (Int) -> Unit) {
+fun WaterCustomAmountSheet(onDismiss: () -> Unit, onAdd: (Int) -> Unit) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    val presets = listOf(
-        R.string.water_preset_glass to 250,
-        R.string.water_preset_bottle to 500,
-        R.string.water_preset_large_bottle to 750
-    )
-    var selectedPreset by remember { mutableIntStateOf(250) }
     var customAmount by remember { mutableStateOf("") }
-    val amount = customAmount.toIntOrNull()?.takeIf { it > 0 } ?: selectedPreset.takeIf { customAmount.isBlank() }
+    val amount = customAmount.toIntOrNull()?.takeIf { it > 0 }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -106,39 +97,6 @@ fun WaterLogSheet(onDismiss: () -> Unit, onAdd: (Int) -> Unit) {
             }
 
             Text(stringResource(R.string.water_how_much), fontWeight = FontWeight.SemiBold, fontSize = 18.sp)
-
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                presets.forEach { (labelRes, milliliters) ->
-                    Column(
-                        modifier = Modifier
-                            .weight(1f)
-                            .background(
-                                if (selectedPreset == milliliters && customAmount.isBlank()) AppColors.Calorie.copy(alpha = 0.22f)
-                                else MaterialTheme.colorScheme.surfaceVariant,
-                                RoundedCornerShape(14.dp)
-                            )
-                            .clickable {
-                                selectedPreset = milliliters
-                                customAmount = ""
-                            }
-                            .padding(vertical = 10.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(3.dp)
-                    ) {
-                        Text(
-                            stringResource(labelRes),
-                            maxLines = 1,
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 14.sp
-                        )
-                        Text(
-                            "$milliliters ml",
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.62f),
-                            fontSize = 12.sp
-                        )
-                    }
-                }
-            }
 
             OutlinedTextField(
                 value = customAmount,

@@ -29,32 +29,15 @@ struct WaterProgressRow: View {
     }
 }
 
-struct WaterLogSheet: View {
-    private struct Preset: Identifiable {
-        let label: String
-        let milliliters: Int
-
-        var id: Int { milliliters }
-    }
-
+struct WaterCustomAmountSheet: View {
     let onAdd: (Int) -> Void
 
     @Environment(\.dismiss) private var dismiss
-    @State private var amount = 250
     @State private var customAmount = ""
     @FocusState private var customFocused: Bool
 
-    private let presets = [
-        Preset(label: "1 glass", milliliters: 250),
-        Preset(label: "1 bottle", milliliters: 500),
-        Preset(label: "Large bottle", milliliters: 750)
-    ]
-
     private var selectedAmount: Int? {
-        if customFocused || !customAmount.isEmpty {
-            return Int(customAmount).flatMap { $0 > 0 ? $0 : nil }
-        }
-        return amount
+        Int(customAmount).flatMap { $0 > 0 ? $0 : nil }
     }
 
     var body: some View {
@@ -62,31 +45,6 @@ struct WaterLogSheet: View {
             VStack(alignment: .leading, spacing: 20) {
                 Text("How much water?")
                     .font(.system(.title3, design: .rounded, weight: .semibold))
-
-                HStack(spacing: 10) {
-                    ForEach(presets) { preset in
-                        Button {
-                            amount = preset.milliliters
-                            customAmount = ""
-                            customFocused = false
-                        } label: {
-                            VStack(spacing: 3) {
-                                Text(preset.label)
-                                    .font(.system(.subheadline, design: .rounded, weight: .semibold))
-                                    .lineLimit(1)
-                                    .minimumScaleFactor(0.75)
-                                Text("\(preset.milliliters) ml")
-                                    .font(.system(.caption, design: .rounded, weight: .medium))
-                                    .foregroundStyle(.secondary)
-                            }
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 10)
-                                .background(amount == preset.milliliters && customAmount.isEmpty ? AppColors.calorie.opacity(0.22) : AppColors.appCard)
-                                .clipShape(RoundedRectangle(cornerRadius: 14))
-                        }
-                        .buttonStyle(.plain)
-                    }
-                }
 
                 HStack {
                     TextField("Custom amount", text: $customAmount)
@@ -120,8 +78,9 @@ struct WaterLogSheet: View {
             }
             .padding(20)
             .background(AppColors.appBackground)
-            .navigationTitle("Log Water")
+            .navigationTitle("Custom Water Amount")
             .navigationBarTitleDisplayMode(.inline)
+            .onAppear { customFocused = true }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }

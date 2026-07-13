@@ -162,7 +162,8 @@ import kotlin.math.roundToInt
 private enum class AddMenuGroup {
     PhotoAndScan,
     DescribeMeal,
-    ReuseMeal
+    ReuseMeal,
+    Water
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -185,7 +186,7 @@ fun HomeScreen(container: AppContainer) {
     var showSortMenu by remember { mutableStateOf(false) }
     var editingEntry by remember { mutableStateOf<FoodEntry?>(null) }
     var showNutritionDetail by remember { mutableStateOf(false) }
-    var showWaterLog by remember { mutableStateOf(false) }
+    var showCustomWaterLog by remember { mutableStateOf(false) }
 
     var showCameraCapture by remember { mutableStateOf(false) }
     var showMultiPhotoCapture by remember { mutableStateOf(false) }
@@ -444,11 +445,7 @@ fun HomeScreen(container: AppContainer) {
                         SheetGlassDropdownMenuItem(label = "Describe Meal", leadingIcon = Icons.Filled.Edit, trailingIcon = Icons.Filled.ChevronRight) { addMenuGroup = AddMenuGroup.DescribeMeal }
                         SheetGlassDropdownMenuItem(label = "Reuse Meal", leadingIcon = Icons.Filled.Bookmark, trailingIcon = Icons.Filled.ChevronRight) { addMenuGroup = AddMenuGroup.ReuseMeal }
                         if (ui.waterTrackingEnabled) {
-                            SheetGlassDropdownMenuItem(label = stringResource(R.string.water), leadingIcon = Icons.Filled.WaterDrop) {
-                                showAddMenu = false
-                                addMenuGroup = null
-                                showWaterLog = true
-                            }
+                            SheetGlassDropdownMenuItem(label = stringResource(R.string.water), leadingIcon = Icons.Filled.WaterDrop, trailingIcon = Icons.Filled.ChevronRight) { addMenuGroup = AddMenuGroup.Water }
                         }
                     }
 
@@ -477,6 +474,14 @@ fun HomeScreen(container: AppContainer) {
                         SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_copy_from_day), leadingIcon = Icons.Filled.CalendarMonth) { showAddMenu = false; addMenuGroup = null; showCopyFromDay = true }
                         SheetGlassDropdownMenuItem(label = "Back", leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
                     }
+
+                    AddMenuGroup.Water -> {
+                        SheetGlassDropdownMenuItem(label = stringResource(R.string.water_one_glass_amount), leadingIcon = Icons.Filled.WaterDrop) { showAddMenu = false; addMenuGroup = null; vm.addWater(250) }
+                        SheetGlassDropdownMenuItem(label = stringResource(R.string.water_two_glasses_amount), leadingIcon = Icons.Filled.WaterDrop) { showAddMenu = false; addMenuGroup = null; vm.addWater(500) }
+                        SheetGlassDropdownMenuItem(label = stringResource(R.string.water_three_glasses_amount), leadingIcon = Icons.Filled.WaterDrop) { showAddMenu = false; addMenuGroup = null; vm.addWater(750) }
+                        SheetGlassDropdownMenuItem(label = stringResource(R.string.water_custom_amount), leadingIcon = Icons.Filled.DriveFileRenameOutline) { showAddMenu = false; addMenuGroup = null; showCustomWaterLog = true }
+                        SheetGlassDropdownMenuItem(label = "Back", leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
+                    }
                 }
             }
         }
@@ -490,9 +495,9 @@ fun HomeScreen(container: AppContainer) {
         )
     }
 
-    if (showWaterLog) {
-        WaterLogSheet(
-            onDismiss = { showWaterLog = false },
+    if (showCustomWaterLog) {
+        WaterCustomAmountSheet(
+            onDismiss = { showCustomWaterLog = false },
             onAdd = vm::addWater
         )
     }

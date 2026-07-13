@@ -545,7 +545,7 @@ struct HomeView: View {
     @State private var currentEmoji: String?
     @State private var currentFoodSource: FoodSource = .snapFood
     @State private var showNutritionDetail = false
-    @State private var showWaterLog = false
+    @State private var showCustomWaterLog = false
     // Bumped each time the app is opened (cold launch = 1, then +1 on every
     // return from background). Drives the gauge + macro "fill from zero" reveal.
     // Not bumped on tab switches or data edits, so it only plays on app open.
@@ -619,6 +619,11 @@ struct HomeView: View {
         components.second = timeComponents.second
         components.nanosecond = timeComponents.nanosecond
         return calendar.date(from: components) ?? day
+    }
+
+    private func logWater(_ milliliters: Int) {
+        _ = waterStore.add(milliliters: milliliters, on: logDateForSelectedDay)
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
     }
 
     var body: some View {
@@ -789,8 +794,27 @@ struct HomeView: View {
             .overlay(alignment: .bottomTrailing) {
                 Menu {
                     if waterTrackingEnabled {
-                        Button {
-                            showWaterLog = true
+                        Menu {
+                            Button {
+                                showCustomWaterLog = true
+                            } label: {
+                                Label("Custom", systemImage: "slider.horizontal.3")
+                            }
+                            Button {
+                                logWater(750)
+                            } label: {
+                                Label("3 Glasses (~750 ml)", systemImage: "drop.fill")
+                            }
+                            Button {
+                                logWater(500)
+                            } label: {
+                                Label("2 Glasses (~500 ml)", systemImage: "drop.fill")
+                            }
+                            Button {
+                                logWater(250)
+                            } label: {
+                                Label("1 Glass (~250 ml)", systemImage: "drop.fill")
+                            }
                         } label: {
                             Label("Water", systemImage: "drop.fill")
                         }
@@ -1179,11 +1203,8 @@ struct HomeView: View {
             .sheet(isPresented: $showNutritionDetail) {
                 NutritionDetailView(date: selectedDate, homeTopNutrientsRaw: $homeTopNutrientsRaw)
             }
-            .sheet(isPresented: $showWaterLog) {
-                WaterLogSheet { milliliters in
-                    _ = waterStore.add(milliliters: milliliters, on: logDateForSelectedDay)
-                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                }
+            .sheet(isPresented: $showCustomWaterLog) {
+                WaterCustomAmountSheet(onAdd: logWater)
             }
             .onOpenURL { url in
                 if url.scheme == "fudai", url.host == "import-share-image" {
