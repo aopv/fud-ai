@@ -6,6 +6,7 @@
   <title>Add a meal · Fud AI</title>
   <meta name="theme-color" content="#0C0B09" />
   <meta name="robots" content="noindex" />
+  <meta name="referrer" content="no-referrer" />
 
   <!-- Social preview (WhatsApp/iMessage show this card for the link) -->
   <meta property="og:title" content="Someone shared a meal with you" />
@@ -90,6 +91,7 @@
     }
     .cta:active { transform: translateY(1px); }
     .note { text-align: center; color: var(--ink-mute); font-size: 12.5px; margin-top: 14px; line-height: 1.5; }
+    .note a { color: var(--ink-soft); }
     .stores { display: flex; gap: 10px; justify-content: center; margin-top: 16px; }
     .stores a {
       color: var(--ink-soft); text-decoration: none; font-size: 13px; font-weight: 600;
@@ -134,8 +136,8 @@
     function r(n) { return Math.round(Number(n) || 0); }
 
     function storesHtml() {
-      return '<div class="stores"><a href="' + APP_STORE + '">App Store</a>' +
-             '<a href="' + PLAY_STORE + '">Google Play</a></div>';
+      return '<div class="stores"><a rel="noreferrer" href="' + APP_STORE + '">App Store</a>' +
+             '<a rel="noreferrer" href="' + PLAY_STORE + '">Google Play</a></div>';
     }
 
     function render() {
@@ -174,7 +176,8 @@
         (meals.length > 1 ? '<div class="total">' + r(total) + ' kcal total</div>' : "") +
         '<a class="cta" id="open" href="' + fudaiLink + '">Add to Fud AI</a>' +
         '<p class="note">Opens the app to confirm. Don\'t have Fud AI yet?</p>' +
-        storesHtml();
+        storesHtml() +
+        '<p class="note">The meal details shown above are contained in this shared URL. <a href="/privacy.html">Privacy</a></p>';
 
       // Best-effort auto-open for users who already have the app.
       setTimeout(function () { try { window.location.href = fudaiLink; } catch (e) {} }, 350);

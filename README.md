@@ -25,11 +25,11 @@
 
 ---
 
-Open-source, privacy-first calorie tracker for iOS and Android. Bring your own AI provider — 13 supported including Gemini, OpenAI, Claude, Grok, Groq, Hugging Face, Fireworks AI, DeepInfra, Mistral, and any custom OpenAI-compatible endpoint. Snap a meal, share a food photo into Fud AI, scan a barcode, combine two camera shots, add a note to a camera or library photo, ask your AI coach how to hit your goal, speak your lunch, or use Siri Shortcuts on iOS to log food and weight. On supported iPhones, food-description analysis for text, voice-transcribed, and Siri food logs can use Apple Intelligence on-device as the final fallback after BYOK provider/fallback attempts fail. No accounts, no cloud sync, no tracking, no ads — completely free.
+Open-source, privacy-first calorie tracker for iOS and Android. Bring your own AI provider — 13 supported including Gemini, OpenAI, Claude, Grok, Groq, Hugging Face, Fireworks AI, DeepInfra, Mistral, and any custom OpenAI-compatible endpoint. Capture or import up to 10 food photos with an optional note, scan a barcode, ask your AI coach how to hit your goal, speak your lunch, or use Siri Shortcuts on iOS to log food and weight. On supported iPhones, food-description analysis for text, voice-transcribed, and Siri food logs can use Apple Intelligence on-device as the final fallback after BYOK provider/fallback attempts fail. No accounts, Fud AI cloud sync, tracking, or ads — completely free.
 
-iOS 5.0 build 29 adds a Workouts tab (873-exercise library with photos and filters), a Home redesign — speedometer calorie gauge, vertical macro bars, nutrient cards, floating add button — that widgets, Lock Screen, and Apple Watch match, Coach voice input, meal-share links, diary export (JSON/Markdown/CSV), AI meal reprocessing, Camera + Camera stitching, 10 new theme colors, and automatic restore of your food log, weight, and body fat from Apple Health after a reinstall. Fud AI is now fully free: the Premium subscription is gone, AI is bring-your-own-key, and there are no ads — an optional Tip Jar is the only way to chip in.
+iOS 5.1 build 31 prepares the next update with a grouped add menu, multi-photo Camera and Photos flows with optional notes, retryable analysis errors, optional local water tracking and a separate Water widget, six clearer activity levels, customizable Breakfast/Lunch/Dinner/Snack boundaries, complete image previews, consistent weekly-change units, and health-permission management. It keeps the Workouts tab, redesigned Home, Coach voice input, meal-share links, diary export, AI meal reprocessing, theme colors, and Apple Health restore introduced in 5.0.
 
-Android 3.0.3 (versionCode 30) ships the same release: Workouts tab, Home + widget redesign, Coach voice input, meal-share links, diary export, AI reprocessing, Camera + Camera, new theme colors, body-fat history with per-entry delete, independent height/weight units, restore from Health Connect after a reinstall, and Adaptive Goals + Energy Burn on by default for new installs.
+Android 3.1 (versionCode 32) prepares the matching update: grouped logging actions, up to 10 camera or imported photos in one analysis with optional notes, optional local water tracking plus a dedicated Water widget, six activity levels, customizable Breakfast/Lunch/Dinner/Snack boundaries, complete image previews, corrected unit-aware weekly-change controls, and a Health Connect Manage Access path. Existing local data and Health Connect data are preserved during a normal update.
 
 [App Store](https://apps.apple.com/us/app/fud-ai-calorie-tracker/id6758935726) · [Google Play](https://play.google.com/store/apps/details?id=com.apoorvdarshan.calorietracker) · [Website](https://fud-ai.app) · [Report an Issue](https://github.com/apoorvdarshan/fud-ai/issues/new?labels=bug&title=Bug:%20) · [Request a Feature](https://github.com/apoorvdarshan/fud-ai/issues/new?labels=enhancement&title=Feature:%20)
 
@@ -38,22 +38,20 @@ Android 3.0.3 (versionCode 30) ships the same release: Workouts tab, Home + widg
 ## Features
 
 ### Logging
-- **Snap food** — camera identifies meals and estimates nutrition
-- **Camera + Note** — add a description with the photo for better accuracy
-- **Camera + Camera** — capture two images for one analysis, useful for front/back packaging or food + label combos
+- **Photo & Scan menu** — a focused submenu for Camera, Photos, and Barcode
+- **Multi-photo Camera** — keep taking photos, review them horizontally, add an optional note, then analyze up to 10 separate images together
 - **iOS Share Extension** — send a food photo from Photos or another app directly into Fud AI for review and logging
-- **Nutrition label scan** — reads packaging for precise per-serving data
 - **Barcode lookup** — scan packaged foods on iOS and Android and fill nutrition from Open Food Facts when product data is available
-- **Photo library** — analyze existing photos
-- **Photo library + Note** — pick an existing photo and add context before AI analysis
+- **Multi-photo library import** — select up to 10 existing images, add an optional note, and analyze them together
 - **Text input** — type food descriptions
 - **Voice input** — speak your meals hands-free (6 STT options with per-provider language selection, see below)
-- **iOS Siri Shortcuts** — say phrases like "Log food in Fud AI", "Calories today in Fud AI", or "Log my weight in Fud AI"; the phrase guide lives in Settings → Siri Phrases
+- **iOS Siri Shortcuts** — say phrases like "Log food in Fud AI", "Calories today in Fud AI", or "Log my weight in Fud AI"; the phrase guide lives under + → Describe Meal → Siri Phrases
 - **Manual Entry** — log known calories and macros without AI
 - **Smart serving units** — AI can show slices, pieces, cups, ml, or other visible serving units while grams stay the source of truth
 - **Review nutrition unlock** — correct calories, macros, and detailed nutrients before logging, then lock again so serving changes scale from your edits
 - **Meal What if?** — preview how a reviewed meal changes today's calories and macros, then ask AI for a practical suggestion before logging
 - **Saved Meals** — Recents, Frequent, and Favorites with safer swipe actions, search, and drag-to-reorder
+- **Retryable analysis** — failed image analysis offers Retry and Cancel without limiting the number of retries
 
 ### Intelligence
 - **AI Coach tab** — multi-turn chat with memory. Coach sees your profile, weight history, food log, today's date/timezone, and richer meal details, then answers questions like "what's my expected weight in 30 days?" or "how do I lose 2 kg?". Coach also supports camera/photo attachments on Android. Memory persists across launches; Reset button starts a fresh conversation. Long-press any reply to copy.
@@ -76,6 +74,9 @@ Android 3.0.3 (versionCode 30) ships the same release: Workouts tab, Home + widg
 - **Weight History** — tap-to-delete past entries, syncs deletion to Apple Health
 - **Goal tracking** — set target weight, BMR/TDEE auto-calculation; goal-reached alert fires from both manual logs and Apple Health reads
 - **Adaptive Goals** — weekly calorie correction from observed weight trend; pinned macros stay pinned and unlocked macros auto-balance. On by default for new installs (stays off if you hand-edit your plan during onboarding)
+- **Six activity levels** — Sedentary, Light, Moderate, Active, Very Active, and Extra Active use work and training descriptions instead of step-count requirements
+- **Custom meal times** — choose when Breakfast, Lunch, Dinner, and Snack begin; the app uses those boundaries for automatic meal grouping
+- **Optional water tracking** — off by default; set any practical daily goal, quick-log one to three glasses or a custom amount, see progress below calories, and optionally schedule a local reminder
 
 ### Workouts
 - **Exercise library** — 873 exercises with photos, primary/secondary muscle and equipment filters, search, sort, and per-exercise detail pages; the filter bar stays pinned while the list scrolls
@@ -85,8 +86,7 @@ Android 3.0.3 (versionCode 30) ships the same release: Workouts tab, Home + widg
 - **Health Connect** — Android sync for nutrition, weight, and body fat, with permission reconciliation and backfill support; Energy Burn Goals can use recent energy data for calorie targets
 - **Restore after a reinstall** — on a fresh install or new phone, the food log, weight, and body-fat history restore automatically from Apple Health / Health Connect (the app finds its own previously-synced records)
 - **Apple Watch** — watchOS app and complications show calories and macros at a glance
-- **Widgets** — iOS Home Screen has Fud AI in Small, Medium, and Large plus a small-only Fud AI Protein widget; Lock Screen widgets stay separate, and Android Glance widgets (including a new "Fud AI Today" all-in-one calories + macros widget) update when you log
-- **Android 3.0 update** — Workouts tab, Home + widget redesign in the speedometer style, Coach voice input, meal-share links, diary export, and restore from Health Connect after a reinstall
+- **Widgets** — iOS offers Fud AI in Small, Medium, and Large, small Protein, and a separate small/Lock Screen Water widget; Android offers Calorie, Protein, Today, and Water Glance widgets that update from local snapshots
 - **Share the App** — native iOS share sheet from About → forwards App Store URL plus a personalized message and `fud-ai.app` link; message body localized into all 16 iOS languages
 - **Update check** — About shows the installed app version, opens the App Store / Play Store when a newer version is available, and shows a tab dot for pending updates
 - **Theme color** — iOS and Android Settings let users change the app accent, with matching home screen / launcher icons
@@ -135,7 +135,7 @@ API keys are stored encrypted on-device: **iOS Keychain** on iOS and **Encrypted
 ## How It Works
 
 ```
-Photo / Text / Voice
+Photo(s) / Text / Voice
         │
         ▼
   BYOK provider API
@@ -173,7 +173,7 @@ A ten-screen walkthrough of the current app flow — from opening the dashboard 
       <br><br>
       <b>02 · Log · Options</b>
       <br>
-      <sub>Tap + to open Camera, Camera + Note, Camera + Camera, Nutrition Label, Barcode, Photos, Text, Voice, Manual Entry, Saved Meals, or Copy from Day.</sub>
+      <sub>Tap + for Photo &amp; Scan, Describe Meal, Reuse Meal, and optional Water groups. Camera and Photos accept up to 10 images plus an optional note.</sub>
     </td>
     <td align="center" width="33%">
       <img src="web/assets/screenshots/snap.png" width="230" alt="Snap food capture">
@@ -248,7 +248,7 @@ The app calculates personalized daily targets using established nutrition scienc
 |------|---------|---------|
 | **BMR** | Katch-McArdle | `370 + 21.6 × lean mass (kg)` — used when body fat % is known |
 | **BMR** | Mifflin-St Jeor | `10w + 6.25h − 5a ± 5` — fallback when body fat is unknown |
-| **TDEE** | BMR × activity | Multiplier ranges from 1.2 (sedentary) to 2.0 (extra active) |
+| **TDEE** | BMR × activity | Multiplier ranges from 1.2 (sedentary) to 1.9 (extra active) |
 | **Daily Calories** | TDEE + adjustment | Adjustment = `weeklyChangeKg × 7700 / 7` (deficit or surplus) |
 | **Protein** | Activity + goal | `0.8 – 2.2 g/kg` body weight by activity, plus +0.2 g/kg during cutting phase (Helms et al 2014); when body fat % is known, Activity Level also shows the equivalent g/kg lean-mass multiplier |
 | **Fat** | Fixed ratio | `0.6 g/kg` body weight |
@@ -273,12 +273,12 @@ All values can be manually overridden in Settings, with a **Recalculate Goals** 
 
 ```
 fud-ai/
-├── ios/          # SwiftUI iOS app (shipping on App Store, v5.0)
-├── android/      # Kotlin + Jetpack Compose app (min SDK 26 / Android 8.0, v3.0.3)
+├── ios/          # SwiftUI iOS app (next release: v5.1 build 31)
+├── android/      # Kotlin + Jetpack Compose app (min SDK 26 / Android 8.0, v3.1 / versionCode 32)
 ├── web/          # Marketing site — https://fud-ai.app (static HTML/CSS, Cloudflare Workers)
 ├── APPSTORE.md   # App Store Connect listing copy (iOS)
 ├── PLAYSTORE.md  # Google Play Console listing copy (Android)
-└── README, LICENSE, CONTRIBUTING, SECURITY, CLAUDE.md, .github/
+└── README, LICENSE, CONTRIBUTING, SECURITY, .github/
 ```
 
 ### Source Layout (iOS)
@@ -292,7 +292,7 @@ ios/
 ├── screenshots/                      # App Store screenshot sources
 └── calorietracker/
     ├── calorietrackerApp.swift       # Entry point, environment setup
-    ├── ContentView.swift             # 5-tab layout (Home, Progress, Coach, Settings, About)
+    ├── ContentView.swift             # 5-tab layout (Home, Progress, Coach, Settings, Workouts)
     ├── Localizable.xcstrings         # String Catalog, 16 languages
     ├── Models/
     │   ├── AIProvider.swift          # 13 LLM providers, model lists, settings
@@ -320,7 +320,8 @@ ios/
         ├── WeightStore.swift          # Weight CRUD (auto-syncs profile weight)
         ├── ProfileStore.swift         # @Observable wrapper over UserProfile
         ├── ChatStore.swift            # Coach chat history (persisted locally)
-        ├── NotificationManager.swift  # Notification scheduler
+        ├── NotificationManager.swift  # Local notification scheduler, including optional water reminders
+        ├── WaterStore.swift           # Local water entries and daily goal
         └── HealthKitManager.swift     # Apple Health bridge (body + nutrition)
 ```
 
@@ -354,7 +355,7 @@ adb install -r app/build/outputs/apk/debug/app-debug.apk
 adb shell am start -n com.apoorvdarshan.calorietracker/.MainActivity
 ```
 
-First launch walks you through onboarding (gender, birthday, height/weight with metric/imperial toggle, body fat %, activity with protein target preview, goal, goal speed, notifications, Apple Health / Health Connect, AI access setup, review). A free Gemini key is available at [aistudio.google.com/apikey](https://aistudio.google.com/apikey). You can change provider anytime in **Settings → AI Access**.
+First launch walks you through onboarding (gender, birthday, height/weight with metric/imperial toggle, body fat %, one of six activity levels with a protein-target preview, goal, goal speed, notifications, Apple Health / Health Connect, AI access setup, and review). A free Gemini key is available at [aistudio.google.com/apikey](https://aistudio.google.com/apikey). You can change provider anytime in **Settings → AI Access**.
 
 ## Contributing
 
@@ -368,7 +369,7 @@ See [SECURITY.md](SECURITY.md). Use [private vulnerability reporting](https://gi
 
 ## Privacy
 
-No accounts, no cloud sync, no analytics. BYOK API keys are encrypted on-device and requests go directly to the provider you choose. On supported iPhones, text, voice-transcribed, and Siri food descriptions can be processed by Apple Intelligence on-device as the final fallback after BYOK provider/fallback attempts fail. Barcode lookup sends the scanned barcode to Open Food Facts and stores the returned nutrition locally. Optional nutrient goals, Adaptive Goals preferences, Home nutrient-card choices, saved review nutrition edits, food photos from the app or iOS Share Extension, iOS Siri/App Intent food or weight phrases, cached thumbnails, widget snapshots, and Apple Watch nutrition snapshots are local preferences/data except for the specific provider or final on-device Apple Intelligence request needed to analyze a food description. AI estimation sends only the context needed for that request, such as reviewed meal + daily-total context for a meal what-if suggestion or Siri food text for Siri food logging. Apple Health / Health Connect energy-burn goals read active/total energy only after the user enables that setting. **Delete All Data** is local-only — it wipes the app's storage (food log, weight log, body-fat log, profile, Coach chat, saved meals, API keys, widget / Watch snapshot) but never touches Apple Health or Health Connect. Samples you've synced are yours; if you want them cleaned up, do it from Health / Health Connect settings. See [Privacy Policy](https://fud-ai.app/privacy.html).
+No accounts, Fud AI-operated cloud sync, or analytics. BYOK API keys are protected by iOS Keychain or Android EncryptedSharedPreferences, and requests go directly to the provider you choose. Food, weight, body-fat and water logs, custom meal times, goals, preferences, cached images, and widget/Watch snapshots are local except for OS backup/device transfer and the specific AI/STT, barcode, health-sync, update-check, export, or sharing action you initiate. Shared meal links carry the selected meal details in the URL, so anyone with the link can read them. Apple Health / Health Connect access is optional and can be reviewed or revoked through Manage Access. **Delete All Data** wipes the current local installation, including saved keys and water history, but never removes Apple Health, Health Connect, or older OS backups. See the complete [Privacy Policy](https://fud-ai.app/privacy.html).
 
 ## License
 

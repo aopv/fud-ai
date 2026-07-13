@@ -12,3 +12,9 @@
 /.well-known/assetlinks.json
   Content-Type: application/json; charset=utf-8
   Cache-Control: public, max-age=3600
+
+/add-meal
+  Referrer-Policy: no-referrer
+
+/add-meal.html
+  Referrer-Policy: no-referrer

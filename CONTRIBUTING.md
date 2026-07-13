@@ -2,8 +2,8 @@
 
 Thanks for your interest in contributing! Fud AI is an open-source, "bring-your-own-key" calorie tracker. The repo is a monorepo:
 
-- `ios/` — SwiftUI iOS app (shipping on the App Store, v5.0)
-- `android/` — Kotlin + Jetpack Compose app (feature-parity port, v3.0.2)
+- `ios/` — SwiftUI iOS app (next release: v5.1 build 31)
+- `android/` — Kotlin + Jetpack Compose app (next release: v3.1 / versionCode 32)
 - `web/` — marketing site at [fud-ai.app](https://fud-ai.app) (plain HTML/CSS, Cloudflare Workers Static Assets)
 
 PRs, bug reports, and feature ideas for any of these are welcome.
@@ -51,9 +51,9 @@ Marketing screenshots live in `web/assets/screenshots/` and are also used by the
 
 Go to **Settings → AI Access** in the running app. In BYOK mode, paste an API key for any of the 13 supported providers (Gemini, OpenAI, Claude, Grok, Groq, OpenRouter, Together AI, Hugging Face, Fireworks AI, DeepInfra, Mistral, Ollama for local, or any custom OpenAI-compatible endpoint). A free Gemini key from [aistudio.google.com/apikey](https://aistudio.google.com/apikey) is the fastest way to get started. Keys are stored in iOS Keychain (iOS) or EncryptedSharedPreferences/AES-256 (Android). Food-description analysis for text, voice-transcribed, and Siri food logs can use Apple Intelligence on-device only as the final fallback after BYOK provider/fallback attempts fail on supported iPhones. (The optional Fud AI Premium proxy from earlier versions has been discontinued — the app is BYOK-only.)
 
-Barcode logging on iOS and Android uses Open Food Facts directly from the device and does not require an API key. If a packaged food is missing or incomplete there, the app should guide the user back to Nutrition Label scan instead of inventing values. Camera + Camera logging should preserve the same review/edit path as other AI food inputs.
+Barcode logging on iOS and Android uses Open Food Facts directly from the device and does not require an API key. If a packaged food is missing or incomplete there, the app should report that clearly and let the user photograph the packaging through Camera or Photos instead of inventing values. Camera and Photos both support up to 10 separate images with an optional note; keep that shared capture-review-analysis path and the same retry/edit flow on both platforms.
 
-> For a full architecture deep-dive (stores/repositories, services, widgets, HealthKit/Health Connect conventions, localization rules, R8 keep rules, gotchas), read [`CLAUDE.md`](CLAUDE.md) in the repo root. It's the source of truth for how the codebase is organized.
+For a codebase overview, start with the Architecture and Source Layout sections in [`README.md`](README.md), then follow the platform-specific patterns already used beside the code you are changing.
 
 ## Code Style (iOS)
 
@@ -64,7 +64,7 @@ Barcode logging on iOS and Android uses Open Food Facts directly from the device
 - Xcode auto-discovers files via `PBXFileSystemSynchronizedRootGroup` — **do not** edit `project.pbxproj` to register source files
 - Every user-facing string must be localized in `ios/calorietracker/Localizable.xcstrings` across all 16 supported iOS languages before commit
 - All data persistence is local (`UserDefaults` + iOS Keychain). No Core Data, no iCloud, no CloudKit
-- Siri/App Intents live under `ios/calorietracker/AppIntents/`; phrase-help UI lives in Settings and should stay a normal in-stack settings page, not an add-food menu item or modal
+- Siri/App Intents live under `ios/calorietracker/AppIntents/`; phrase-help UI is opened from + → Describe Meal → Siri Phrases on iOS
 
 ## Code Style (Android)
 
@@ -92,7 +92,7 @@ Open a bug at [github.com/apoorvdarshan/fud-ai/issues/new?labels=bug](https://gi
 - Expected vs actual behavior
 - Device model + OS version (iPhone model + iOS version, or Android model + OS / OEM skin like OriginOS / One UI / HyperOS)
 - Which AI provider you were using (if the bug is analysis-related)
-- For Siri/App Intent bugs, the exact phrase used and whether the issue happened from Siri, Shortcuts, or the Settings phrase guide
+- For Siri/App Intent bugs, the exact phrase used and whether the issue happened from Siri, Shortcuts, or the in-app phrase guide
 - Screenshots or a short screen recording if relevant
 
 For feature ideas, use [the enhancement label](https://github.com/apoorvdarshan/fud-ai/issues/new?labels=enhancement&title=Feature:%20).
@@ -123,7 +123,7 @@ iOS ships in 16 languages; Android ships in 15. Any new user-facing string must 
 
 **Android:** Add the key to `app/src/main/res/values/strings.xml`, then add the translated value to all 14 non-English `values-*/strings.xml` files. For batches of 10+ strings, spawn a translation agent per locale (the existing translations were sourced from the iOS catalog where keys matched, plus fresh translations for Android-specific strings — same workflow applies). Enums use `displayNameRes: Int` instead of `displayName: String` — see the existing `MealType` / `WeightGoal` for the pattern.
 
-See the full localization workflow in [`CLAUDE.md`](CLAUDE.md).
+Before committing, verify that every locale still contains the same user-facing key set and build both platform resources so missing or malformed translations fail locally.
 
 ## Contact
 
