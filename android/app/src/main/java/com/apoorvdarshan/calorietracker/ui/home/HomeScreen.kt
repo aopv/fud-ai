@@ -668,8 +668,10 @@ fun HomeScreen(container: AppContainer) {
             Text(stringResource(R.string.error_title), fontSize = 21.sp, fontWeight = FontWeight.Bold)
             Text(err, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.68f))
             FudGlassDialogActions(
-                primaryText = stringResource(R.string.action_ok),
-                onPrimary = { vm.dismissPending() }
+                primaryText = stringResource(R.string.action_retry),
+                onPrimary = { vm.retryPendingAnalysis() },
+                dismissText = stringResource(R.string.action_cancel),
+                onDismiss = { vm.dismissPending() }
             )
         }
     }

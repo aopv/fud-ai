@@ -80,6 +80,7 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
     private val _ui = MutableStateFlow(HomeUiState())
     val ui: StateFlow<HomeUiState> = _ui.asStateFlow()
     private val _selectedDate = MutableStateFlow(LocalDate.now())
+    private var retryAction: (() -> Unit)? = null
 
     init {
         combine(
@@ -150,6 +151,7 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
     }
 
     fun analyzeText(description: String) {
+        retryAction = { analyzeText(description) }
         viewModelScope.launch {
             val previousDraftImages = _ui.value.pendingDraftImageFilenames
             container.analyzingFood.value = true
@@ -179,6 +181,7 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
     }
 
     fun analyzePhoto(bytes: ByteArray) {
+        retryAction = { analyzePhoto(bytes) }
         viewModelScope.launch {
             val previousDraftImages = _ui.value.pendingDraftImageFilenames
             container.analyzingFood.value = true
@@ -208,6 +211,8 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
     }
 
     fun analyzePhotos(imageBytesList: List<ByteArray>, note: String? = null) {
+        val retryImages = imageBytesList.toList()
+        retryAction = { analyzePhotos(retryImages, note) }
         viewModelScope.launch {
             val images = imageBytesList.filter { it.isNotEmpty() }.take(10)
             if (images.isEmpty()) return@launch
@@ -249,6 +254,7 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
     }
 
     fun lookupBarcode(barcode: String) {
+        retryAction = { lookupBarcode(barcode) }
         viewModelScope.launch {
             val previousDraftImages = _ui.value.pendingDraftImageFilenames
             container.analyzingFood.value = true
@@ -375,6 +381,7 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
     }
 
     fun dismissPending() {
+        retryAction = null
         val previousDraftImages = _ui.value.pendingDraftImageFilenames
         _ui.value = _ui.value.copy(
             pendingAnalysis = null,
@@ -389,6 +396,12 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
         viewModelScope.launch {
             discardPendingDraft(previousDraftImages)
         }
+    }
+
+    fun retryPendingAnalysis() {
+        val action = retryAction ?: return
+        _ui.value = _ui.value.copy(error = null)
+        action()
     }
 
     /**
@@ -504,6 +517,7 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
         imageBytesList: List<ByteArray> = imageBytes?.let(::listOf).orEmpty(),
         source: FoodSource
     ) {
+        retryAction = null
         val imageFilenames = imageBytesList.mapNotNull { container.imageStore.storeBytes(it, UUID.randomUUID()) }
         val imageFilename = imageFilenames.firstOrNull()
         val additionalImageFilenames = imageFilenames.drop(1)

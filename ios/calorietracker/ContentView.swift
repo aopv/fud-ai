@@ -512,6 +512,13 @@ struct HomeView: View {
     @State private var showPhotoPicker = false
     @State private var showError = false
     @State private var errorMessage = ""
+    private enum RetryRequest {
+        case analysis(images: [UIImage], mode: CameraMode, description: String?)
+        case automaticImage(UIImage)
+        case text(String)
+        case barcode(String)
+    }
+    @State private var retryRequest: RetryRequest?
     @State private var selectedDate: Date = .now
     @State private var showVoicePopover = false
     @State private var showTextPopover = false
@@ -870,21 +877,7 @@ struct HomeView: View {
                                     currentImages = []
                                     currentEmoji = nil
                                     currentFoodSource = .textInput
-                                    Task {
-                                        try? await Task.sleep(for: .milliseconds(300))
-                                        activeSheet = .analyzingText
-                                        do {
-                                            let result = try await GeminiService.analyzeTextInput(description: description)
-
-                                            currentFoodResult = result
-                                            currentEmoji = result.emoji
-                                            activeSheet = .foodResult
-                                        } catch {
-                                            activeSheet = nil
-                                            errorMessage = error.localizedDescription
-                                            showError = true
-                                        }
-                                    }
+                                    startTextAnalysis(description)
                                 }
                             )
                             .presentationCompactAdaptation(.popover)
@@ -900,21 +893,7 @@ struct HomeView: View {
                                     currentImages = []
                                     currentEmoji = nil
                                     currentFoodSource = .textInput
-                                    Task {
-                                        try? await Task.sleep(for: .milliseconds(300))
-                                        activeSheet = .analyzingText
-                                        do {
-                                            let result = try await GeminiService.analyzeTextInput(description: description)
-
-                                            currentFoodResult = result
-                                            currentEmoji = result.emoji
-                                            activeSheet = .foodResult
-                                        } catch {
-                                            activeSheet = nil
-                                            errorMessage = error.localizedDescription
-                                            showError = true
-                                        }
-                                    }
+                                    startTextAnalysis(description)
                                 }
                             )
                             .presentationCompactAdaptation(.popover)
@@ -1185,22 +1164,13 @@ struct HomeView: View {
                             return
                         }
 
-                        activeSheet = .analyzing
-                        do {
-                            let result = try await GeminiService.autoAnalyze(image: image)
-
-                            currentFoodResult = result
-                            activeSheet = .foodResult
-                        } catch {
-                            activeSheet = nil
-                            errorMessage = error.localizedDescription
-                            showError = true
-                        }
+                        startAutomaticImageAnalysis(image)
                     }
                 }
             }
             .alert("Error", isPresented: $showError) {
-                Button("OK") { }
+                Button("Retry") { retryLastRequest() }
+                Button("Cancel", role: .cancel) { retryRequest = nil }
             } message: {
                 Text(errorMessage)
             }
@@ -1265,6 +1235,7 @@ struct HomeView: View {
     }
 
     private func startAnalysis(images: [UIImage], mode: CameraMode, description: String? = nil) {
+        retryRequest = .analysis(images: images, mode: mode, description: description)
         activeSheet = .analyzing
 
         Task {
@@ -1274,12 +1245,14 @@ struct HomeView: View {
                     let result = try await GeminiService.analyzeFood(images: images)
                     currentFoodResult = result
                     currentFoodSource = .snapFood
+                    retryRequest = nil
                     activeSheet = .foodResult
 
                 case .snapFoodWithContext:
                     let result = try await GeminiService.analyzeFood(images: images, description: description)
                     currentFoodResult = result
                     currentFoodSource = .snapFood
+                    retryRequest = nil
                     activeSheet = .foodResult
 
                 case .nutritionLabel:
@@ -1288,6 +1261,7 @@ struct HomeView: View {
                     let servingGrams = label.servingSizeGrams ?? 100
                     currentFoodResult = label.scaled(to: servingGrams)
                     currentFoodSource = .nutritionLabel
+                    retryRequest = nil
                     activeSheet = .foodResult
                 }
             } catch {
@@ -1301,6 +1275,7 @@ struct HomeView: View {
     private func startBarcodeLookup(_ barcode: String) {
         let trimmedBarcode = barcode.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedBarcode.isEmpty else { return }
+        retryRequest = .barcode(trimmedBarcode)
 
         currentImage = nil
         currentImages = []
@@ -1313,12 +1288,62 @@ struct HomeView: View {
                 let result = try await OpenFoodFactsService.lookup(barcode: trimmedBarcode)
                 currentFoodResult = result
                 currentEmoji = result.emoji
+                retryRequest = nil
                 activeSheet = .foodResult
             } catch {
                 activeSheet = nil
                 errorMessage = error.localizedDescription
                 showError = true
             }
+        }
+    }
+
+    private func startTextAnalysis(_ description: String) {
+        retryRequest = .text(description)
+        activeSheet = .analyzingText
+        Task {
+            do {
+                let result = try await GeminiService.analyzeTextInput(description: description)
+                currentFoodResult = result
+                currentEmoji = result.emoji
+                retryRequest = nil
+                activeSheet = .foodResult
+            } catch {
+                activeSheet = nil
+                errorMessage = error.localizedDescription
+                showError = true
+            }
+        }
+    }
+
+    private func startAutomaticImageAnalysis(_ image: UIImage) {
+        retryRequest = .automaticImage(image)
+        activeSheet = .analyzing
+        Task {
+            do {
+                let result = try await GeminiService.autoAnalyze(image: image)
+                currentFoodResult = result
+                retryRequest = nil
+                activeSheet = .foodResult
+            } catch {
+                activeSheet = nil
+                errorMessage = error.localizedDescription
+                showError = true
+            }
+        }
+    }
+
+    private func retryLastRequest() {
+        guard let retryRequest else { return }
+        switch retryRequest {
+        case let .analysis(images, mode, description):
+            startAnalysis(images: images, mode: mode, description: description)
+        case let .automaticImage(image):
+            startAutomaticImageAnalysis(image)
+        case let .text(description):
+            startTextAnalysis(description)
+        case let .barcode(barcode):
+            startBarcodeLookup(barcode)
         }
     }
 
