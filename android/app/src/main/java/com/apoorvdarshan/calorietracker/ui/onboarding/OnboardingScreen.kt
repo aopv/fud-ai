@@ -1042,8 +1042,11 @@ private fun HealthConnectStep(container: AppContainer, enabled: Boolean, onToggl
     val hcLauncher = rememberLauncherForActivityResult(
         container.health.permissionRequestContract()
     ) { granted ->
-        onToggle(granted.containsAll(container.health.permissions))
+        // Every downstream read/write path checks its own permission. A partial grant is a
+        // valid connection and must not trap the user in a repeated permission loop.
+        onToggle(granted.any { it in container.health.permissions })
     }
+    val context = LocalContext.current
     val available = remember { container.health.isAvailable() }
     Column(
         Modifier.fillMaxSize(),
@@ -1117,6 +1120,14 @@ private fun HealthConnectStep(container: AppContainer, enabled: Boolean, onToggl
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold
             )
+        }
+        if (available) {
+            TextButton(onClick = { context.startActivity(container.health.manageAccessIntent()) }) {
+                Text(
+                    stringResource(R.string.settings_manage_health_access),
+                    color = AppColors.Calorie
+                )
+            }
         }
     }
 }

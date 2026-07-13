@@ -210,6 +210,7 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController) {
     var showRebalanceBlockedAlert by remember { mutableStateOf(false) }
     var showAdaptiveLockHint by remember { mutableStateOf(false) }
     var permissionDeniedMessage by remember { mutableStateOf<String?>(null) }
+    var showHealthPermissionHelp by remember { mutableStateOf(false) }
     var showDefaultGramsInfo by remember { mutableStateOf(false) }
     var showHealthEnergyGoalsInfo by remember { mutableStateOf(false) }
     var showAdaptiveGoalsInfo by remember { mutableStateOf(false) }
@@ -244,8 +245,13 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController) {
                 HealthConnectPermissionAction.ENERGY_GOALS -> vm.setHealthEnergyGoalsEnabled(true)
             }
         } else {
-            permissionDeniedMessage = healthDeniedMsg
+            showHealthPermissionHelp = true
         }
+    }
+
+    fun openHealthConnectAccess() {
+        runCatching { activityContext.startActivity(container.health.manageAccessIntent()) }
+            .onFailure { permissionDeniedMessage = healthUnavailableMsg }
     }
 
     fun onNotificationsToggle(enabled: Boolean) {
@@ -731,6 +737,13 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController) {
             SectionCard(title = stringResource(R.string.settings_section_health)) {
                 ToggleRow(stringResource(R.string.settings_health_connect), ui.healthConnectEnabled, icon = Icons.Outlined.Favorite, onChange = ::onHealthConnectToggle)
                 HorizontalDivider()
+                SettingRow(
+                    stringResource(R.string.settings_manage_health_access),
+                    stringResource(R.string.settings_permissions),
+                    icon = Icons.Outlined.Link,
+                    onClick = ::openHealthConnectAccess
+                )
+                HorizontalDivider()
                 Row(
                     Modifier
                         .fillMaxWidth()
@@ -990,6 +1003,22 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController) {
             FudGlassDialogActions(
                 primaryText = stringResource(R.string.action_ok),
                 onPrimary = { permissionDeniedMessage = null }
+            )
+        }
+    }
+
+    if (showHealthPermissionHelp) {
+        FudGlassDialog(onDismissRequest = { showHealthPermissionHelp = false }) {
+            Text(stringResource(R.string.settings_permission_title), fontSize = 21.sp, fontWeight = FontWeight.Bold)
+            Text(healthDeniedMsg, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.68f))
+            FudGlassDialogActions(
+                primaryText = stringResource(R.string.settings_manage_health_access),
+                onPrimary = {
+                    showHealthPermissionHelp = false
+                    openHealthConnectAccess()
+                },
+                dismissText = stringResource(R.string.action_cancel),
+                onDismiss = { showHealthPermissionHelp = false }
             )
         }
     }

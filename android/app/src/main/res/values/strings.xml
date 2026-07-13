@@ -596,6 +596,8 @@
     <string name="settings_fallback_footer">If your primary provider fails (overload, rate limit, network error), the app retries automatically with this fallback. Same provider as primary is allowed — just pick a different model.</string>
 
     <string name="settings_health_connect">Health Connect</string>
+    <string name="settings_manage_health_access">Manage Health Connect Access</string>
+    <string name="settings_permissions">Permissions</string>
     <string name="settings_energy_goals">Energy Burn Goals</string>
     <string name="settings_needs_health_connect">Needs Health Connect</string>
     <string name="settings_energy_goals_info">When on, Fud AI uses your measured calories burned from Health Connect — a 14-day average of active + basal energy — as your maintenance anchor when calculating goals, instead of the formula estimate. No AI is used to read your burn. Requires Health Connect. Works with the Recalculate button and with Adaptive Goals.</string>
@@ -633,7 +635,7 @@
     <string name="notif_weight_log_text">Log today\'s weight to keep your progress chart accurate.</string>
     <string name="notif_body_fat_log_title">Body fat check-in</string>
     <string name="notif_body_fat_log_text">Log today\'s body fat % to track your composition trend.</string>
-    <string name="settings_health_denied">Health Connect needs Weight, Body Fat, Active Calories, Total Calories, and permission to write Nutrition. Re-tap the toggle and grant all requested permissions to sync and estimate energy goals.</string>
+    <string name="settings_health_denied">Health Connect did not grant access. Open Health Connect and allow the data types you want Fud AI to sync. Energy-based goals require both Active and Total Calories.</string>
     <string name="settings_health_unavailable">Health Connect isn\'t available on this device. Install it from the Play Store, then re-tap the toggle.</string>
 
     <!-- Settings sheets / pickers -->

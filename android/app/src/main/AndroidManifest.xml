@@ -66,6 +66,19 @@
             </intent-filter>
         </activity>
 
+        <!-- Health Connect opens this privacy-policy entry point on Android 13 and below.
+             Without it, the standalone Health Connect app cannot reliably discover Fud AI
+             as a permission-capable app. -->
+        <activity
+            android:name=".HealthPermissionsRationaleActivity"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:noHistory="true">
+            <intent-filter>
+                <action android:name="androidx.health.ACTION_SHOW_PERMISSIONS_RATIONALE" />
+            </intent-filter>
+        </activity>
+
         <activity-alias
             android:name=".FudPinkLauncherActivity"
             android:enabled="true"
@@ -322,7 +335,7 @@
             android:name="ViewPermissionUsageActivity"
             android:exported="true"
             android:permission="android.permission.START_VIEW_PERMISSION_USAGE"
-            android:targetActivity=".MainActivity">
+            android:targetActivity=".HealthPermissionsRationaleActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW_PERMISSION_USAGE" />
                 <category android:name="android.intent.category.HEALTH_PERMISSIONS" />
