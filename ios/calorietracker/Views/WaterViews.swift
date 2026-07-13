@@ -121,7 +121,9 @@ struct WaterGoalPickerSheet: View {
 
     init(currentGoal: Int, onSave: @escaping (Int) -> Void) {
         self.onSave = onSave
-        _selectedGoal = State(initialValue: min(10_000, max(1, currentGoal)))
+        let clamped = min(10_000, max(50, currentGoal))
+        let snapped = min(10_000, max(50, ((clamped + 25) / 50) * 50))
+        _selectedGoal = State(initialValue: snapped)
     }
 
     var body: some View {
@@ -132,7 +134,7 @@ struct WaterGoalPickerSheet: View {
 
                 HStack(spacing: 4) {
                     Picker("Milliliters", selection: $selectedGoal) {
-                        ForEach(1...10_000, id: \.self) { amount in
+                        ForEach(Array(stride(from: 50, through: 10_000, by: 50)), id: \.self) { amount in
                             Text(amount.formatted())
                                 .tag(amount)
                                 .font(.system(.title2, design: .rounded, weight: .medium))

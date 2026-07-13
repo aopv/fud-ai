@@ -2071,15 +2071,17 @@ private fun WeightSheet(titleText: String, current: Double, useMetric: Boolean, 
 
 @Composable
 private fun WaterGoalSheet(current: Int, onSave: (Int) -> Unit) {
-    var goal by remember(current) { mutableIntStateOf(current.coerceIn(1, 10_000)) }
+    val initialGoal = (((current.coerceIn(50, 10_000) + 25) / 50) * 50).coerceIn(50, 10_000)
+    var goal by remember(current) { mutableIntStateOf(initialGoal) }
     Text(stringResource(R.string.settings_water_goal), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
     Spacer(Modifier.height(20.dp))
     NumericWheelPicker(
         value = goal,
         onValueChange = { goal = it },
-        min = 1,
+        min = 50,
         max = 10_000,
-        unit = stringResource(R.string.unit_ml)
+        unit = stringResource(R.string.unit_ml),
+        step = 50
     )
     Spacer(Modifier.height(8.dp))
     Text(

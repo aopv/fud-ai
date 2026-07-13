@@ -3384,6 +3384,7 @@ struct ProfileView: View {
                                     .foregroundStyle(.tertiary)
                             }
                         }
+                        .buttonStyle(.plain)
                     }
 
                 }
