@@ -847,13 +847,6 @@ struct HomeView: View {
                             contextDescription = ""
                             showCamera = true
                         }) {
-                            Label("Camera + Note", systemImage: "camera.badge.ellipsis")
-                        }
-                        Button(action: {
-                            cameraMode = .snapFood
-                            captureImages = []
-                            showCamera = true
-                        }) {
                             Label("Camera", systemImage: "camera.fill")
                         }
                     } label: {
@@ -984,7 +977,6 @@ struct HomeView: View {
             .sheet(isPresented: $showMultiPhotoCaptureSheet) {
                 MultiPhotoCaptureSheet(
                     images: captureImages,
-                    includesNote: cameraMode == .snapFoodWithContext,
                     description: $contextDescription,
                     onAddPhoto: {
                         guard captureImages.count < 10 else { return }
@@ -1970,7 +1962,6 @@ struct NutritionDetailRow: View {
 // MARK: - Multi-photo Capture Review
 struct MultiPhotoCaptureSheet: View {
     let images: [UIImage]
-    let includesNote: Bool
     @Binding var description: String
     let onAddPhoto: () -> Void
     let onRemove: (Int) -> Void
@@ -2030,30 +2021,24 @@ struct MultiPhotoCaptureSheet: View {
                     }
                     .scrollTargetBehavior(.viewAligned)
 
-                    if includesNote {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("Add a note (optional)")
-                                .font(.system(.subheadline, design: .rounded, weight: .semibold))
-                                .foregroundStyle(.secondary)
-                            TextField(
-                                "e.g. chicken is 180g, rice is 220g, use half the sauce",
-                                text: $description,
-                                axis: .vertical
-                            )
-                            .lineLimit(3...6)
-                            .padding(14)
-                            .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 14))
-                        }
-                    } else {
-                        Text("Add different angles, ingredients, scale readings, or labels. All photos will be analyzed together as one meal.")
-                            .font(.system(.footnote, design: .rounded))
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Add a note (optional)")
+                            .font(.system(.subheadline, design: .rounded, weight: .semibold))
                             .foregroundStyle(.secondary)
+                        TextField(
+                            "e.g. chicken is 180g, rice is 220g, use half the sauce",
+                            text: $description,
+                            axis: .vertical
+                        )
+                        .lineLimit(3...6)
+                        .padding(14)
+                        .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 14))
                     }
                 }
                 .padding()
             }
             .background(Color(.systemGroupedBackground))
-            .navigationTitle(includesNote ? "Photos + Note" : "Meal Photos")
+            .navigationTitle("Meal Photos")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

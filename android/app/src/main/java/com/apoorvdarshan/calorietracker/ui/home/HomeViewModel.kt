@@ -240,7 +240,7 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
     }
 
     /**
-     * "Camera + Note" flow — analyze a photo with extra textual context the
+     * Optional-note flow — analyze a photo with extra textual context the
      * user typed in (e.g. "extra cheese", "no oil"). Mirrors iOS
      * `cameraMode == .snapFoodWithContext` → `GeminiService.analyzeFood(image, description:)`.
      */

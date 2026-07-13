@@ -170,7 +170,6 @@ private enum class AddMenuGroup {
 
 private enum class CameraCaptureMode {
     Food,
-    FoodWithNote,
     NutritionLabel
 }
 
@@ -199,7 +198,7 @@ fun HomeScreen(container: AppContainer) {
     var showMultiPhotoCapture by remember { mutableStateOf(false) }
     var cameraCaptureMode by remember { mutableStateOf(CameraCaptureMode.Food) }
     var pendingCaptureImageBytes by remember { mutableStateOf<List<ByteArray>>(emptyList()) }
-    // Holds the just-captured bytes while the Camera + Note sheet is shown.
+    // Holds a picked photo while the optional-note sheet is shown.
     var pendingNoteImageBytes by remember { mutableStateOf<ByteArray?>(null) }
     var pendingPickedPhotoWantsNote by remember { mutableStateOf(false) }
 
@@ -457,7 +456,6 @@ fun HomeScreen(container: AppContainer) {
 
                     AddMenuGroup.CaptureAndScan -> {
                         SheetGlassDropdownMenuItem(label = "Camera", leadingIcon = Icons.Filled.CameraAlt) { showAddMenu = false; addMenuGroup = null; openCamera() }
-                        SheetGlassDropdownMenuItem(label = "Camera + Note", leadingIcon = Icons.AutoMirrored.Filled.Note) { showAddMenu = false; addMenuGroup = null; openCamera(CameraCaptureMode.FoodWithNote) }
                         SheetGlassDropdownMenuItem(label = "Nutrition Label", leadingIcon = Icons.Filled.DocumentScanner) { showAddMenu = false; addMenuGroup = null; openCamera(CameraCaptureMode.NutritionLabel) }
                         SheetGlassDropdownMenuItem(label = "Barcode", leadingIcon = Icons.Filled.QrCodeScanner) { showAddMenu = false; addMenuGroup = null; openBarcodeScanner() }
                         SheetGlassDropdownMenuItem(label = "Back", leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
@@ -577,7 +575,6 @@ fun HomeScreen(container: AppContainer) {
     if (showMultiPhotoCapture && pendingCaptureImageBytes.isNotEmpty()) {
         MultiPhotoCaptureSheet(
             imageBytesList = pendingCaptureImageBytes,
-            includesNote = cameraCaptureMode == CameraCaptureMode.FoodWithNote,
             onAddPhoto = {
                 if (pendingCaptureImageBytes.size < 10) {
                     showMultiPhotoCapture = false
@@ -627,7 +624,7 @@ fun HomeScreen(container: AppContainer) {
         )
     }
 
-    // Camera + Note: photo captured → user adds context → analyze.
+    // From Photos + Note: picked photo → user adds context → analyze.
     pendingNoteImageBytes?.let { bytes ->
         ContextNoteSheet(
             imageBytes = bytes,

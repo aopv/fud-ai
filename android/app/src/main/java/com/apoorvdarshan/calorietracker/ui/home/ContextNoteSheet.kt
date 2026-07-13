@@ -43,13 +43,12 @@ import androidx.compose.ui.unit.dp
 import com.apoorvdarshan.calorietracker.R
 import com.apoorvdarshan.calorietracker.ui.theme.AppColors
 
-/** Review step shared by Camera and Camera + Note. Photos stay as ordered,
- * independent byte arrays; Analyze sends the complete set as one meal request. */
+/** Camera review step. Photos stay as ordered independent byte arrays; the
+ * optional note and complete photo set are sent as one meal request. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MultiPhotoCaptureSheet(
     imageBytesList: List<ByteArray>,
-    includesNote: Boolean,
     onAddPhoto: () -> Unit,
     onRemove: (Int) -> Unit,
     onAnalyze: (String?) -> Unit,
@@ -65,10 +64,10 @@ fun MultiPhotoCaptureSheet(
         containerColor = MaterialTheme.colorScheme.surface
     ) {
         SheetReviewToolbar(
-            title = if (includesNote) "Photos + Note" else "Meal Photos",
+            title = "Meal Photos",
             primaryLabel = stringResource(R.string.action_analyze),
             onCancel = onDismiss,
-            onPrimary = { onAnalyze(note.takeIf { includesNote && it.isNotBlank() }) }
+            onPrimary = { onAnalyze(note.takeIf { it.isNotBlank() }) }
         )
 
         Column(
@@ -137,25 +136,17 @@ fun MultiPhotoCaptureSheet(
                 }
             }
 
-            if (includesNote) {
-                Column(
-                    Modifier.fillMaxWidth().padding(horizontal = 20.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    SheetSectionHeader("Add a note (optional)")
-                    OutlinedTextField(
-                        value = note,
-                        onValueChange = { note = it },
-                        placeholder = { Text("e.g. chicken is 180g, rice is 220g, use half the sauce") },
-                        shape = RoundedCornerShape(20.dp),
-                        modifier = Modifier.fillMaxWidth().heightIn(min = 110.dp)
-                    )
-                }
-            } else {
-                Text(
-                    "Add different angles, ingredients, scale readings, or labels. All photos will be analyzed together as one meal.",
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                    modifier = Modifier.padding(horizontal = 20.dp)
+            Column(
+                Modifier.fillMaxWidth().padding(horizontal = 20.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                SheetSectionHeader("Add a note (optional)")
+                OutlinedTextField(
+                    value = note,
+                    onValueChange = { note = it },
+                    placeholder = { Text("e.g. chicken is 180g, rice is 220g, use half the sauce") },
+                    shape = RoundedCornerShape(20.dp),
+                    modifier = Modifier.fillMaxWidth().heightIn(min = 110.dp)
                 )
             }
         }
@@ -176,7 +167,7 @@ private fun decodePreview(bytes: ByteArray): android.graphics.Bitmap? {
 }
 
 /**
- * "Camera + Note" intermediate sheet. Shows the just-captured photo and a
+ * "From Photos + Note" intermediate sheet. Shows the selected photo and a
  * multiline text field for the user to add context (e.g. "no oil", "extra
  * cheese") before sending the image off to the AI. Mirrors iOS
  * ContextDescriptionSheet which gates `cameraMode == .snapFoodWithContext`.
