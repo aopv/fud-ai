@@ -59,6 +59,7 @@ import androidx.compose.material.icons.filled.DocumentScanner
 import androidx.compose.material.icons.filled.DriveFileRenameOutline
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Coffee
 import androidx.compose.material.icons.filled.Delete
@@ -160,6 +161,13 @@ import java.time.temporal.WeekFields
 import java.util.Locale
 import kotlin.math.roundToInt
 
+private enum class AddMenuGroup {
+    CaptureAndScan,
+    ImportPhotos,
+    DescribeMeal,
+    ReuseMeal
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(container: AppContainer) {
@@ -176,6 +184,7 @@ fun HomeScreen(container: AppContainer) {
     var showBarcodeScanner by remember { mutableStateOf(false) }
     var showCopyFromDay by remember { mutableStateOf(false) }
     var showAddMenu by remember { mutableStateOf(false) }
+    var addMenuGroup by remember { mutableStateOf<AddMenuGroup?>(null) }
     var showSortMenu by remember { mutableStateOf(false) }
     var editingEntry by remember { mutableStateOf<FoodEntry?>(null) }
     var showNutritionDetail by remember { mutableStateOf(false) }
@@ -427,7 +436,10 @@ fun HomeScreen(container: AppContainer) {
                     .size(60.dp)
                     .clip(CircleShape)
                     .background(AppColors.Calorie)
-                    .clickable { showAddMenu = true },
+                    .clickable {
+                        addMenuGroup = null
+                        showAddMenu = true
+                    },
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
@@ -437,35 +449,62 @@ fun HomeScreen(container: AppContainer) {
                     modifier = Modifier.size(30.dp)
                 )
             }
-            // Glass-styled popup (matches the app's other sheet menus). Items are
-            // REVERSED vs the source order because the FAB sits at the bottom and the
-            // menu opens upward — iOS puts the first action (Camera) nearest the button,
-            // so Camera renders at the BOTTOM of the list and Copy from Day at the top.
+            // Glass-styled, progressive add menu. Rows are reversed in source order
+            // because the popup opens upward, keeping Capture & Scan nearest the FAB.
             SheetGlassDropdownMenu(
                 expanded = showAddMenu,
-                onDismissRequest = { showAddMenu = false },
-                menuWidth = 224.dp
+                onDismissRequest = {
+                    showAddMenu = false
+                    addMenuGroup = null
+                },
+                menuWidth = 238.dp
             ) {
-                SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_copy_from_day), leadingIcon = Icons.Filled.CalendarMonth) { showAddMenu = false; showCopyFromDay = true }
-                SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_saved_meals), leadingIcon = Icons.Filled.Bookmark) { showAddMenu = false; showSaved = true }
-                SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_manual_entry), leadingIcon = Icons.Filled.DriveFileRenameOutline) { showAddMenu = false; showManual = true }
-                SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_voice), leadingIcon = Icons.Filled.Mic) { showAddMenu = false; showVoice = true }
-                SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_text_input), leadingIcon = Icons.Filled.Edit) { showAddMenu = false; showText = true }
-                SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_from_photos_note), leadingIcon = Icons.AutoMirrored.Filled.Note) {
-                    showAddMenu = false
-                    pendingPickedPhotoWantsNote = true
-                    photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                when (addMenuGroup) {
+                    null -> {
+                        SheetGlassDropdownMenuItem(label = "Reuse Meal", leadingIcon = Icons.Filled.Bookmark, trailingIcon = Icons.Filled.ChevronRight) { addMenuGroup = AddMenuGroup.ReuseMeal }
+                        SheetGlassDropdownMenuItem(label = "Describe Meal", leadingIcon = Icons.Filled.Edit, trailingIcon = Icons.Filled.ChevronRight) { addMenuGroup = AddMenuGroup.DescribeMeal }
+                        SheetGlassDropdownMenuItem(label = "Import Photos", leadingIcon = Icons.Filled.PhotoLibrary, trailingIcon = Icons.Filled.ChevronRight) { addMenuGroup = AddMenuGroup.ImportPhotos }
+                        SheetGlassDropdownMenuItem(label = "Capture & Scan", leadingIcon = Icons.Filled.CameraAlt, trailingIcon = Icons.Filled.ChevronRight) { addMenuGroup = AddMenuGroup.CaptureAndScan }
+                    }
+
+                    AddMenuGroup.CaptureAndScan -> {
+                        SheetGlassDropdownMenuItem(label = "Back", leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
+                        SheetGlassDropdownMenuItem(label = "Barcode", leadingIcon = Icons.Filled.QrCodeScanner) { showAddMenu = false; addMenuGroup = null; openBarcodeScanner() }
+                        SheetGlassDropdownMenuItem(label = "Nutrition Label", leadingIcon = Icons.Filled.DocumentScanner) { showAddMenu = false; addMenuGroup = null; openCamera() }
+                        SheetGlassDropdownMenuItem(label = "Camera + Camera", leadingIcon = Icons.Filled.AddAPhoto) { showAddMenu = false; addMenuGroup = null; openCamera(withSecondPhoto = true) }
+                        SheetGlassDropdownMenuItem(label = "Camera + Note", leadingIcon = Icons.AutoMirrored.Filled.Note) { showAddMenu = false; addMenuGroup = null; openCamera(withNote = true) }
+                        SheetGlassDropdownMenuItem(label = "Camera", leadingIcon = Icons.Filled.CameraAlt) { showAddMenu = false; addMenuGroup = null; openCamera() }
+                    }
+
+                    AddMenuGroup.ImportPhotos -> {
+                        SheetGlassDropdownMenuItem(label = "Back", leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
+                        SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_from_photos_note), leadingIcon = Icons.AutoMirrored.Filled.Note) {
+                            showAddMenu = false
+                            addMenuGroup = null
+                            pendingPickedPhotoWantsNote = true
+                            photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                        }
+                        SheetGlassDropdownMenuItem(label = "From Photos", leadingIcon = Icons.Filled.PhotoLibrary) {
+                            showAddMenu = false
+                            addMenuGroup = null
+                            pendingPickedPhotoWantsNote = false
+                            photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                        }
+                    }
+
+                    AddMenuGroup.DescribeMeal -> {
+                        SheetGlassDropdownMenuItem(label = "Back", leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
+                        SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_manual_entry), leadingIcon = Icons.Filled.DriveFileRenameOutline) { showAddMenu = false; addMenuGroup = null; showManual = true }
+                        SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_voice), leadingIcon = Icons.Filled.Mic) { showAddMenu = false; addMenuGroup = null; showVoice = true }
+                        SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_text_input), leadingIcon = Icons.Filled.Edit) { showAddMenu = false; addMenuGroup = null; showText = true }
+                    }
+
+                    AddMenuGroup.ReuseMeal -> {
+                        SheetGlassDropdownMenuItem(label = "Back", leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
+                        SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_copy_from_day), leadingIcon = Icons.Filled.CalendarMonth) { showAddMenu = false; addMenuGroup = null; showCopyFromDay = true }
+                        SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_saved_meals), leadingIcon = Icons.Filled.Bookmark) { showAddMenu = false; addMenuGroup = null; showSaved = true }
+                    }
                 }
-                SheetGlassDropdownMenuItem(label = "From Photos", leadingIcon = Icons.Filled.PhotoLibrary) {
-                    showAddMenu = false
-                    pendingPickedPhotoWantsNote = false
-                    photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                }
-                SheetGlassDropdownMenuItem(label = "Barcode", leadingIcon = Icons.Filled.QrCodeScanner) { showAddMenu = false; openBarcodeScanner() }
-                SheetGlassDropdownMenuItem(label = "Nutrition Label", leadingIcon = Icons.Filled.DocumentScanner) { showAddMenu = false; openCamera() }
-                SheetGlassDropdownMenuItem(label = "Camera + Camera", leadingIcon = Icons.Filled.AddAPhoto) { showAddMenu = false; openCamera(withSecondPhoto = true) }
-                SheetGlassDropdownMenuItem(label = "Camera + Note", leadingIcon = Icons.AutoMirrored.Filled.Note) { showAddMenu = false; openCamera(withNote = true) }
-                SheetGlassDropdownMenuItem(label = "Camera", leadingIcon = Icons.Filled.CameraAlt) { showAddMenu = false; openCamera() }
             }
         }
         }

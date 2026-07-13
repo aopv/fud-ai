@@ -511,6 +511,7 @@ internal fun SheetGlassDropdownMenuItem(
     label: String,
     selected: Boolean = false,
     leadingIcon: ImageVector? = null,
+    trailingIcon: ImageVector? = null,
     reserveSelectionSlot: Boolean = false,
     onClick: () -> Unit
 ) {
@@ -570,6 +571,14 @@ internal fun SheetGlassDropdownMenuItem(
                 contentDescription = null,
                 tint = checkTint,
                 modifier = Modifier.size(17.dp)
+            )
+        } else if (trailingIcon != null) {
+            Spacer(Modifier.width(8.dp))
+            Icon(
+                trailingIcon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.45f),
+                modifier = Modifier.size(18.dp)
             )
         }
     }

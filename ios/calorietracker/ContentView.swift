@@ -768,85 +768,100 @@ struct HomeView: View {
             .navigationBarTitleDisplayMode(.inline)
             .overlay(alignment: .bottomTrailing) {
                 Menu {
-                            Button(action: {
-                                cameraMode = .snapFood
-                                pendingSecondCameraImage = nil
-                                showCamera = true
-                            }) {
-                                Label("Camera", systemImage: "camera.fill")
-                            }
-                            Button(action: {
-                                cameraMode = .snapFoodWithContext
-                                pendingSecondCameraImage = nil
-                                showCamera = true
-                            }) {
-                                Label("Camera + Note", systemImage: "camera.badge.ellipsis")
-                            }
-                            Button(action: {
-                                cameraMode = .snapFoodWithSecondPhoto
-                                pendingSecondCameraImage = nil
-                                showCamera = true
-                            }) {
-                                Label("Camera + Camera", systemImage: "camera.badge.clock")
-                            }
-                            Button(action: {
-                                cameraMode = .nutritionLabel
-                                pendingSecondCameraImage = nil
-                                showCamera = true
-                            }) {
-                                Label("Nutrition Label", systemImage: "text.viewfinder")
-                            }
-                            Button(action: {
-
-                                showBarcodeScanner = true
-                            }) {
-                                Label("Barcode", systemImage: "barcode.viewfinder")
-                            }
-                            Button(action: {
-                                cameraMode = .snapFood
-                                photoPickerMode = .snapFood
-                                pendingSecondCameraImage = nil
-                                showPhotoPicker = true
-                            }) {
-                                Label("From Photos", systemImage: "photo.on.rectangle")
-                            }
-                            Button(action: {
-                                cameraMode = .snapFoodWithContext
-                                photoPickerMode = .snapFoodWithContext
-                                pendingSecondCameraImage = nil
-                                showPhotoPicker = true
-                            }) {
-                                Label("From Photos + Note", systemImage: "photo.badge.plus")
-                            }
-                            Button(action: {
-                                showTextPopover = true
-                            }) {
-                                Label("Text Input", systemImage: "character.cursor.ibeam")
-                            }
-                            Button(action: {
-                                showVoicePopover = true
-                            }) {
-                                Label("Voice", systemImage: "mic.fill")
-                            }
-                            Button(action: {
-
-                                showManualPopover = true
-                            }) {
-                                Label("Manual Entry", systemImage: "square.and.pencil")
-                            }
-                            Button(action: {
-
-                                showRecentSheet = true
-                            }) {
-                                Label("Saved Meals", systemImage: "bookmark.fill")
-                            }
-                            Button(action: {
-
-                                showCopyFromDaySheet = true
-                            }) {
-                                Label("Copy from Day", systemImage: "calendar")
-                            }
+                    Menu {
+                        Button(action: {
+                            cameraMode = .snapFood
+                            pendingSecondCameraImage = nil
+                            showCamera = true
+                        }) {
+                            Label("Camera", systemImage: "camera.fill")
+                        }
+                        Button(action: {
+                            cameraMode = .snapFoodWithContext
+                            pendingSecondCameraImage = nil
+                            showCamera = true
+                        }) {
+                            Label("Camera + Note", systemImage: "camera.badge.ellipsis")
+                        }
+                        Button(action: {
+                            cameraMode = .snapFoodWithSecondPhoto
+                            pendingSecondCameraImage = nil
+                            showCamera = true
+                        }) {
+                            Label("Camera + Camera", systemImage: "camera.badge.clock")
+                        }
+                        Button(action: {
+                            cameraMode = .nutritionLabel
+                            pendingSecondCameraImage = nil
+                            showCamera = true
+                        }) {
+                            Label("Nutrition Label", systemImage: "text.viewfinder")
+                        }
+                        Button {
+                            showBarcodeScanner = true
                         } label: {
+                            Label("Barcode", systemImage: "barcode.viewfinder")
+                        }
+                    } label: {
+                        Label("Capture & Scan", systemImage: "camera.viewfinder")
+                    }
+
+                    Menu {
+                        Button(action: {
+                            cameraMode = .snapFood
+                            photoPickerMode = .snapFood
+                            pendingSecondCameraImage = nil
+                            showPhotoPicker = true
+                        }) {
+                            Label("From Photos", systemImage: "photo.on.rectangle")
+                        }
+                        Button(action: {
+                            cameraMode = .snapFoodWithContext
+                            photoPickerMode = .snapFoodWithContext
+                            pendingSecondCameraImage = nil
+                            showPhotoPicker = true
+                        }) {
+                            Label("From Photos + Note", systemImage: "photo.badge.plus")
+                        }
+                    } label: {
+                        Label("Import Photos", systemImage: "photo.on.rectangle.angled")
+                    }
+
+                    Menu {
+                        Button {
+                            showTextPopover = true
+                        } label: {
+                            Label("Text Input", systemImage: "character.cursor.ibeam")
+                        }
+                        Button {
+                            showVoicePopover = true
+                        } label: {
+                            Label("Voice", systemImage: "mic.fill")
+                        }
+                        Button {
+                            showManualPopover = true
+                        } label: {
+                            Label("Manual Entry", systemImage: "square.and.pencil")
+                        }
+                    } label: {
+                        Label("Describe Meal", systemImage: "text.bubble.fill")
+                    }
+
+                    Menu {
+                        Button {
+                            showRecentSheet = true
+                        } label: {
+                            Label("Saved Meals", systemImage: "bookmark.fill")
+                        }
+                        Button {
+                            showCopyFromDaySheet = true
+                        } label: {
+                            Label("Copy from Day", systemImage: "calendar")
+                        }
+                    } label: {
+                        Label("Reuse Meal", systemImage: "arrow.clockwise")
+                    }
+                } label: {
                             Image(systemName: "plus")
                                 .font(.system(size: 26, weight: .semibold))
                                 .foregroundStyle(.white)
