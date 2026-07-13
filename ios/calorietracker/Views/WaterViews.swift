@@ -19,10 +19,6 @@ struct WaterProgressRow: View {
                 Text("\(current.formatted()) / \(goal.formatted()) ml")
                     .font(.system(.caption, design: .rounded, weight: .medium))
                     .foregroundStyle(.secondary)
-                Image(systemName: "plus.circle.fill")
-                    .font(.caption)
-                    .foregroundStyle(AppColors.calorie)
-                    .accessibilityHidden(true)
             }
             GeometryReader { proxy in
                 ZStack(alignment: .leading) {
@@ -36,7 +32,6 @@ struct WaterProgressRow: View {
             .frame(height: 5)
         }
         .padding(.vertical, 2)
-        .contentShape(Rectangle())
         .accessibilityElement(children: .combine)
         .accessibilityLabel("Water, \(current) of \(goal) milliliters")
     }

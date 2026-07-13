@@ -321,10 +321,6 @@ fun HomeScreen(container: AppContainer) {
                         WaterProgressRow(
                             current = ui.waterTodayMl,
                             goal = ui.waterDailyGoalMl,
-                            onClick = {
-                                addMenuGroup = AddMenuGroup.Water
-                                showAddMenu = true
-                            },
                             modifier = Modifier.padding(horizontal = 20.dp)
                         )
                     }

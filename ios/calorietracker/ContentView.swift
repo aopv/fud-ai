@@ -701,16 +701,10 @@ struct HomeView: View {
                     .listRowSeparator(.hidden)
 
                     if waterTrackingEnabled {
-                        Menu {
-                            waterQuickMenuItems
-                        } label: {
-                            WaterProgressRow(
-                                current: waterStore.total(on: selectedDate),
-                                goal: waterDailyGoal
-                            )
-                        }
-                        .buttonStyle(.plain)
-                        .accessibilityHint("Tap to log water")
+                        WaterProgressRow(
+                            current: waterStore.total(on: selectedDate),
+                            goal: waterDailyGoal
+                        )
                         .listRowBackground(Color.clear)
                         .listRowSeparator(.hidden)
                         .listRowInsets(EdgeInsets(top: 2, leading: 20, bottom: 2, trailing: 20))

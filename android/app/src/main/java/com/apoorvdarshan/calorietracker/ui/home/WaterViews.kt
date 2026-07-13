@@ -1,6 +1,5 @@
 package com.apoorvdarshan.calorietracker.ui.home
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,7 +11,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.WaterDrop
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -42,13 +40,11 @@ import com.apoorvdarshan.calorietracker.ui.theme.AppColors
 import androidx.compose.ui.res.stringResource
 
 @Composable
-fun WaterProgressRow(current: Int, goal: Int, onClick: () -> Unit, modifier: Modifier = Modifier) {
+fun WaterProgressRow(current: Int, goal: Int, modifier: Modifier = Modifier) {
     val progress = if (goal > 0) (current.toFloat() / goal).coerceIn(0f, 1f) else 0f
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(10.dp))
-            .clickable(onClick = onClick)
             .padding(vertical = 4.dp),
         verticalArrangement = Arrangement.spacedBy(7.dp)
     ) {
@@ -70,12 +66,6 @@ fun WaterProgressRow(current: Int, goal: Int, onClick: () -> Unit, modifier: Mod
                 stringResource(R.string.water_progress, current, goal),
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.62f),
                 fontSize = 12.sp
-            )
-            Icon(
-                Icons.Filled.AddCircle,
-                contentDescription = stringResource(R.string.water_add),
-                tint = AppColors.Calorie,
-                modifier = Modifier.padding(start = 6.dp).size(17.dp)
             )
         }
         LinearProgressIndicator(
