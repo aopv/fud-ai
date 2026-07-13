@@ -30,6 +30,13 @@ struct WaterProgressRow: View {
 }
 
 struct WaterLogSheet: View {
+    private struct Preset: Identifiable {
+        let label: String
+        let milliliters: Int
+
+        var id: Int { milliliters }
+    }
+
     let onAdd: (Int) -> Void
 
     @Environment(\.dismiss) private var dismiss
@@ -37,7 +44,11 @@ struct WaterLogSheet: View {
     @State private var customAmount = ""
     @FocusState private var customFocused: Bool
 
-    private let presets = [250, 500, 750]
+    private let presets = [
+        Preset(label: "1 glass", milliliters: 250),
+        Preset(label: "1 bottle", milliliters: 500),
+        Preset(label: "Large bottle", milliliters: 750)
+    ]
 
     private var selectedAmount: Int? {
         if customFocused || !customAmount.isEmpty {
@@ -53,17 +64,24 @@ struct WaterLogSheet: View {
                     .font(.system(.title3, design: .rounded, weight: .semibold))
 
                 HStack(spacing: 10) {
-                    ForEach(presets, id: \.self) { preset in
+                    ForEach(presets) { preset in
                         Button {
-                            amount = preset
+                            amount = preset.milliliters
                             customAmount = ""
                             customFocused = false
                         } label: {
-                            Text("\(preset) ml")
-                                .font(.system(.subheadline, design: .rounded, weight: .semibold))
+                            VStack(spacing: 3) {
+                                Text(preset.label)
+                                    .font(.system(.subheadline, design: .rounded, weight: .semibold))
+                                    .lineLimit(1)
+                                    .minimumScaleFactor(0.75)
+                                Text("\(preset.milliliters) ml")
+                                    .font(.system(.caption, design: .rounded, weight: .medium))
+                                    .foregroundStyle(.secondary)
+                            }
                                 .frame(maxWidth: .infinity)
-                                .padding(.vertical, 12)
-                                .background(amount == preset && customAmount.isEmpty ? AppColors.calorie.opacity(0.22) : AppColors.appCard)
+                                .padding(.vertical, 10)
+                                .background(amount == preset.milliliters && customAmount.isEmpty ? AppColors.calorie.opacity(0.22) : AppColors.appCard)
                                 .clipShape(RoundedRectangle(cornerRadius: 14))
                         }
                         .buttonStyle(.plain)

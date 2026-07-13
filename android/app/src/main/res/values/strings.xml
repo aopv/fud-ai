@@ -924,6 +924,9 @@
     <string name="water">Water</string>
     <string name="water_log_title">Log Water</string>
     <string name="water_how_much">How much water?</string>
+    <string name="water_preset_glass">1 glass</string>
+    <string name="water_preset_bottle">1 bottle</string>
+    <string name="water_preset_large_bottle">Large bottle</string>
     <string name="water_custom_amount">Custom amount</string>
     <string name="water_add">Add Water</string>
     <string name="water_progress">%1$d / %2$d ml</string>
