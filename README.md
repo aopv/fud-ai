@@ -169,7 +169,7 @@ A ten-screen walkthrough of the current app flow — from opening the dashboard 
       <sub>Daily calorie ring, selected Home nutrient cards, and today's logged meals grouped by meal type. Week strip at the top for date navigation.</sub>
     </td>
     <td align="center" width="33%">
-      <img src="web/assets/screenshots/logging.png" width="230" alt="Food logging options menu">
+      <img src="web/assets/screenshots/logging.png" width="230" alt="Grouped food logging options menu">
       <br><br>
       <b>02 · Log · Options</b>
       <br>
