@@ -10,6 +10,7 @@ import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
 import androidx.glance.Image
 import androidx.glance.ImageProvider
+import androidx.glance.LocalSize
 import androidx.glance.action.actionStartActivity
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
@@ -82,6 +83,11 @@ private fun WaterWidgetContent(snapshot: WidgetSnapshot) {
 
 @Composable
 private fun WaterProgressContent(snapshot: WidgetSnapshot) {
+    val size = LocalSize.current
+    val contentW = size.width.value - 28f
+    val contentH = size.height.value - 28f
+    val gaugeW = minOf(contentW, (contentH - 44f) / 0.58f).toInt().coerceAtLeast(80)
+
     Column(modifier = GlanceModifier.fillMaxSize()) {
         WidgetHeader(iconRes = R.drawable.ic_widget_water, label = "Water")
         Box(
@@ -90,7 +96,7 @@ private fun WaterProgressContent(snapshot: WidgetSnapshot) {
         ) {
             SpeedometerWithCenter(
                 progress = snapshot.waterProgress.toFloat(),
-                gaugeWidthDp = 112,
+                gaugeWidthDp = gaugeW,
                 startHex = snapshot.themeStartHex,
                 endHex = snapshot.themeEndHex,
                 centerLarge = "${snapshot.waterCurrentMl} ml",
