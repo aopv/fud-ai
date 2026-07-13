@@ -196,6 +196,10 @@ struct FoodEntry: Identifiable, Codable {
     /// the JPEG lives. Tiny string; JSON-safe. The actual bytes live on disk
     /// to keep the foodEntries UserDefaults blob under iOS's 4 MiB cap.
     var imageFilename: String?
+    /// Additional photos captured for the same meal. The first photo remains in
+    /// `imageData` / `imageFilename` for backward compatibility with older builds.
+    var additionalImageData: [Data]
+    var additionalImageFilenames: [String]
     var emoji: String?
     var source: FoodSource
     var mealType: MealType
@@ -239,6 +243,8 @@ struct FoodEntry: Identifiable, Codable {
         timestamp: Date = Date(),
         imageData: Data? = nil,
         imageFilename: String? = nil,
+        additionalImageData: [Data] = [],
+        additionalImageFilenames: [String] = [],
         emoji: String? = nil,
         source: FoodSource,
         mealType: MealType = .other,
@@ -279,6 +285,8 @@ struct FoodEntry: Identifiable, Codable {
         self.timestamp = timestamp
         self.imageData = imageData
         self.imageFilename = imageFilename
+        self.additionalImageData = additionalImageData
+        self.additionalImageFilenames = additionalImageFilenames
         self.emoji = emoji
         self.source = source
         self.mealType = mealType
@@ -315,6 +323,7 @@ struct FoodEntry: Identifiable, Codable {
         case id, name, calories, protein, carbs, fat, timestamp
         case imageData     // legacy — old rows stored bytes inline; kept only for decode
         case imageFilename // current — filename on disk
+        case additionalImageFilenames
         case emoji, source, mealType
         case sugar, addedSugar, fiber, saturatedFat
         case monounsaturatedFat, polyunsaturatedFat
@@ -360,6 +369,8 @@ struct FoodEntry: Identifiable, Codable {
         } else {
             imageData = try container.decodeIfPresent(Data.self, forKey: .imageData)
         }
+        additionalImageFilenames = try container.decodeIfPresent([String].self, forKey: .additionalImageFilenames) ?? []
+        additionalImageData = additionalImageFilenames.compactMap { FoodImageStore.shared.load(filename: $0) }
 
         emoji = try container.decodeIfPresent(String.self, forKey: .emoji)
         source = try container.decode(FoodSource.self, forKey: .source)
@@ -405,6 +416,9 @@ struct FoodEntry: Identifiable, Codable {
         // Persist ONLY the filename — never the raw bytes. This is the fix for
         // the silent 4 MiB UserDefaults cap that was dropping adds/deletes.
         try container.encodeIfPresent(imageFilename, forKey: .imageFilename)
+        if !additionalImageFilenames.isEmpty {
+            try container.encode(additionalImageFilenames, forKey: .additionalImageFilenames)
+        }
         try container.encodeIfPresent(emoji, forKey: .emoji)
         try container.encode(source, forKey: .source)
         try container.encode(mealType, forKey: .mealType)
@@ -448,6 +462,14 @@ struct FoodEntry: Identifiable, Codable {
         "\(name.lowercased())|\(calories)"
     }
 
+    var allImageData: [Data] {
+        (imageData.map { [$0] } ?? []) + additionalImageData
+    }
+
+    var allImageFilenames: [String] {
+        (imageFilename.map { [$0] } ?? []) + additionalImageFilenames
+    }
+
     /// New entry for the given log date (new id), copying nutrition and media from this entry.
     /// Uses current time's meal type by default.
     func duplicatedForLogging(at logDate: Date, mealType: MealType = .currentMeal) -> FoodEntry {
@@ -461,6 +483,8 @@ struct FoodEntry: Identifiable, Codable {
             timestamp: logDate,
             imageData: imageData,
             imageFilename: nil,  // new id → new filename will be assigned on save
+            additionalImageData: additionalImageData,
+            additionalImageFilenames: [],
             emoji: emoji,
             source: source,
             mealType: resolvedMealType,

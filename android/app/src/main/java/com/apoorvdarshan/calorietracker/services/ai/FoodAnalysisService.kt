@@ -344,10 +344,10 @@ class FoodAnalysisService(
         return addingFallbackServingUnits(analysis, imageBytes = imageBytes, description = description)
     }
 
-    suspend fun analyzeFood(imageBytesList: List<ByteArray>): FoodAnalysis {
-        val prompt = """
-            Analyze these food images together. They are different angles or supporting photos of the same meal.
-            Use all images to identify the food and estimate the total nutritional content for the serving shown.
+    suspend fun analyzeFood(imageBytesList: List<ByteArray>, description: String? = null): FoodAnalysis {
+        var prompt = """
+            Analyze these food images together as one meal logging request. They may show different angles of the same food, separate ingredients, kitchen-scale readings, packaging, or nutrition labels.
+            Use every image once. Do not double-count the same food shown from multiple angles. When separate ingredients are shown, combine their nutrition into one meal total. Read visible scale weights and nutrition labels when available; prefer those measurements over visual portion estimates.
             Respond ONLY with JSON:
             {"name":"...","calories":0,"protein":0.0,"carbs":0.0,"fat":0.0,"serving_size_grams":0.0,"sugar":0.0,"added_sugar":0.0,"fiber":0.0,"saturated_fat":0.0,"monounsaturated_fat":0.0,"polyunsaturated_fat":0.0,"cholesterol":0.0,"sodium":0.0,"potassium":0.0,"trans_fat":0.0,"calcium":0.0,"iron":0.0,"magnesium":0.0,"zinc":0.0,"vitamin_a":0.0,"vitamin_c":0.0,"vitamin_d":0.0,"vitamin_b12":0.0,"vitamin_e":0.0,"vitamin_k":0.0,"folate":0.0,"omega_3":0.0,"unit_options":[]}
             Calories are integers. Protein/carbs/fat are decimal gram values when needed. serving_size_grams is the estimated weight in grams of the serving shown. Nutrients are numbers: sugar/fiber/sat fat/mono fat/poly fat/trans fat/omega-3 in grams; cholesterol/sodium/potassium/calcium/iron/magnesium/zinc/vitamin C/vitamin E in milligrams; vitamin A/vitamin D/vitamin B12/vitamin K/folate in micrograms.
@@ -356,10 +356,13 @@ class FoodAnalysisService(
             Do not double-count the meal across images. Treat the photos as multiple views of the same item unless there are clearly separate foods.
             Use null for any nutrient you cannot estimate.
         """.trimIndent()
+        if (!description.isNullOrBlank()) {
+            prompt += "\n\nAdditional context from the user about this complete meal: $description\nApply this note to the full image set."
+        }
         val images = imageBytesList.filter { it.isNotEmpty() }
         if (images.isEmpty()) throw AiError.InvalidResponse
         val analysis = FoodJsonParser.parseFood(callAi(prompt, images))
-        return addingFallbackServingUnits(analysis, imageBytes = images.first(), description = null)
+        return addingFallbackServingUnits(analysis, imageBytes = images.first(), description = description)
     }
 
     suspend fun analyzeNutritionLabel(imageBytes: ByteArray, servingGrams: Double): FoodAnalysis {

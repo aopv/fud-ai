@@ -5,7 +5,7 @@ struct FoodResultView: View {
         case quantity
     }
 
-    let image: UIImage?
+    let images: [UIImage]
     let emoji: String?
     let source: FoodSource
 
@@ -96,7 +96,7 @@ struct FoodResultView: View {
     }
 
     init(
-        image: UIImage?,
+        images: [UIImage] = [],
         emoji: String? = nil,
         source: FoodSource,
         name: String,
@@ -143,7 +143,7 @@ struct FoodResultView: View {
             options: normalizedServingUnitOptions,
             defaultToGrams: FoodMeasurementSettings.preferGramsByDefault
         )
-        self.image = image
+        self.images = images
         self.emoji = emoji
         self.source = source
         self.baseServingSizeGrams = servingSizeGrams
@@ -242,17 +242,31 @@ struct FoodResultView: View {
         NavigationStack {
             ScrollViewReader { scrollProxy in
                 List {
-                    if let image {
+                    if !images.isEmpty {
                         Section {
-                            HStack {
-                                Spacer()
-                                Image(uiImage: image)
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(maxHeight: 200)
-                                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                                Spacer()
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                LazyHStack(spacing: 12) {
+                                    ForEach(Array(images.enumerated()), id: \.offset) { index, image in
+                                        Image(uiImage: image)
+                                            .resizable()
+                                            .scaledToFill()
+                                            .frame(width: 220, height: 200)
+                                            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                                            .overlay(alignment: .bottomTrailing) {
+                                                if images.count > 1 {
+                                                    Text("\(index + 1)/\(images.count)")
+                                                        .font(.caption2.weight(.semibold))
+                                                        .padding(.horizontal, 8)
+                                                        .padding(.vertical, 5)
+                                                        .background(.ultraThinMaterial, in: Capsule())
+                                                        .padding(8)
+                                                }
+                                            }
+                                    }
+                                }
+                                .scrollTargetLayout()
                             }
+                            .scrollTargetBehavior(.viewAligned)
                             .listRowBackground(Color.clear)
                         }
                     } else if let emoji {
@@ -455,7 +469,8 @@ struct FoodResultView: View {
             carbs: scaledCarbs,
             fat: scaledFat,
             timestamp: logDate,
-            imageData: includeImage ? image?.jpegData(compressionQuality: 0.5) : nil,
+            imageData: includeImage ? images.first?.jpegData(compressionQuality: 0.5) : nil,
+            additionalImageData: includeImage ? images.dropFirst().compactMap { $0.jpegData(compressionQuality: 0.5) } : [],
             emoji: emoji,
             source: source,
             mealType: mealType,

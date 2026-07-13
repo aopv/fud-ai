@@ -17,6 +17,9 @@ data class FoodEntry(
     val timestamp: Instant = Instant.now(),
     /** Filename (not path) under filesDir/fudai-food-images/ where the JPEG lives. */
     val imageFilename: String? = null,
+    /** Ordered photos after the primary image. Kept separate so galleries and AI
+     * reprocessing can use the original files instead of a stitched composite. */
+    val additionalImageFilenames: List<String> = emptyList(),
     val emoji: String? = null,
     val source: FoodSource,
     val mealType: MealType = MealType.OTHER,
@@ -63,7 +66,8 @@ data class FoodEntry(
         carbs = carbs,
         fat = fat,
         timestamp = logDate,
-        imageFilename = null, // new id -> new filename will be assigned on save
+        imageFilename = imageFilename,
+        additionalImageFilenames = additionalImageFilenames,
         emoji = emoji,
         source = source,
         mealType = mealType,
@@ -95,4 +99,7 @@ data class FoodEntry(
         selectedServingQuantity = selectedServingQuantity,
         customNote = customNote
     )
+
+    val allImageFilenames: List<String>
+        get() = listOfNotNull(imageFilename) + additionalImageFilenames
 }

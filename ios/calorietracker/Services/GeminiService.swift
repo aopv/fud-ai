@@ -304,13 +304,13 @@ struct GeminiService {
         return await addingFallbackServingUnits(to: analysis, image: image, description: description)
     }
 
-    static func analyzeFood(images: [UIImage]) async throws -> FoodAnalysis {
+    static func analyzeFood(images: [UIImage], description: String? = nil) async throws -> FoodAnalysis {
         guard !images.isEmpty else { throw AnalysisError.imageConversionFailed }
 
-        let prompt = """
-        Analyze these food-related images together. They may show the food/package from one angle and the nutrition facts label or another useful angle from another photo.
+        var prompt = """
+        Analyze these food-related images together as one meal logging request. They may show different angles of the same food, separate ingredients, kitchen-scale readings, packaging, or nutrition labels.
 
-        Use all images as one logging request. If a nutrition label is visible, prefer the label values for packaged foods and combine that with the visible serving/package context from the other image. If no label is visible, estimate the visible food amount from the photos.
+        Use every image once. Do not double-count the same food shown from multiple angles. When separate ingredients are shown, combine their nutrition into one meal total. Read visible scale weights and nutrition labels when available; prefer those measurements over visual portion estimates.
 
         Respond ONLY with a JSON object in this exact format, no other text:
         \(Self.foodAnalysisJSONShapeWithoutEmoji)
@@ -321,9 +321,13 @@ struct GeminiService {
         Give your best estimate for the actual amount shown or implied across the images. Use null for any nutrient you cannot estimate.
         """
 
+        if let description, !description.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            prompt += "\n\nAdditional context from the user about this complete meal: \(description)\nApply this note to the full image set."
+        }
+
         let text = try await callAI(prompt: prompt, images: images)
         let analysis = try parseFoodAnalysis(from: text)
-        return await addingFallbackServingUnits(to: analysis, image: images[0], description: nil)
+        return await addingFallbackServingUnits(to: analysis, image: images[0], description: description)
     }
 
     static func analyzeNutritionLabel(image: UIImage) async throws -> NutritionLabelAnalysis {

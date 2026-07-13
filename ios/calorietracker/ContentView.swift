@@ -10,7 +10,6 @@ import AVFoundation
 enum CameraMode {
     case snapFood
     case snapFoodWithContext
-    case snapFoodWithSecondPhoto
     case nutritionLabel
 }
 
@@ -521,7 +520,8 @@ struct HomeView: View {
     @State private var showRecentSheet = false
     @State private var showCopyFromDaySheet = false
     @State private var pendingContextImage: UIImage?
-    @State private var pendingSecondCameraImage: UIImage?
+    @State private var captureImages: [UIImage] = []
+    @State private var showMultiPhotoCaptureSheet = false
     @State private var contextDescription: String = ""
     @State private var showContextSheet = false
 
@@ -535,6 +535,7 @@ struct HomeView: View {
 
     @State private var currentFoodResult: GeminiService.FoodAnalysis?
     @State private var currentImage: UIImage?
+    @State private var currentImages: [UIImage] = []
     @State private var currentEmoji: String?
     @State private var currentFoodSource: FoodSource = .snapFood
     @State private var showNutritionDetail = false
@@ -812,7 +813,6 @@ struct HomeView: View {
                         Button(action: {
                             cameraMode = .snapFoodWithContext
                             photoPickerMode = .snapFoodWithContext
-                            pendingSecondCameraImage = nil
                             showPhotoPicker = true
                         }) {
                             Label("From Photos + Note", systemImage: "photo.badge.plus")
@@ -820,7 +820,6 @@ struct HomeView: View {
                         Button(action: {
                             cameraMode = .snapFood
                             photoPickerMode = .snapFood
-                            pendingSecondCameraImage = nil
                             showPhotoPicker = true
                         }) {
                             Label("From Photos", systemImage: "photo.on.rectangle")
@@ -837,28 +836,22 @@ struct HomeView: View {
                         }
                         Button(action: {
                             cameraMode = .nutritionLabel
-                            pendingSecondCameraImage = nil
+                            captureImages = []
                             showCamera = true
                         }) {
                             Label("Nutrition Label", systemImage: "text.viewfinder")
                         }
                         Button(action: {
-                            cameraMode = .snapFoodWithSecondPhoto
-                            pendingSecondCameraImage = nil
-                            showCamera = true
-                        }) {
-                            Label("Camera + Camera", systemImage: "camera.badge.clock")
-                        }
-                        Button(action: {
                             cameraMode = .snapFoodWithContext
-                            pendingSecondCameraImage = nil
+                            captureImages = []
+                            contextDescription = ""
                             showCamera = true
                         }) {
                             Label("Camera + Note", systemImage: "camera.badge.ellipsis")
                         }
                         Button(action: {
                             cameraMode = .snapFood
-                            pendingSecondCameraImage = nil
+                            captureImages = []
                             showCamera = true
                         }) {
                             Label("Camera", systemImage: "camera.fill")
@@ -881,6 +874,7 @@ struct HomeView: View {
                                 onSubmit: { description in
                                     showTextPopover = false
                                     currentImage = nil
+                                    currentImages = []
                                     currentEmoji = nil
                                     currentFoodSource = .textInput
                                     Task {
@@ -910,6 +904,7 @@ struct HomeView: View {
                                 onSubmit: { description in
                                     showVoicePopover = false
                                     currentImage = nil
+                                    currentImages = []
                                     currentEmoji = nil
                                     currentFoodSource = .textInput
                                     Task {
@@ -947,10 +942,12 @@ struct HomeView: View {
             .fullScreenCover(isPresented: $showCamera) {
                 CameraView(
                     image: $capturedImage,
-                    title: cameraMode == .snapFoodWithSecondPhoto && pendingSecondCameraImage != nil ? "Second photo" : nil,
+                    title: captureImages.isEmpty ? nil : "Photo \(captureImages.count + 1)",
                     onCancel: {
-                        if cameraMode == .snapFoodWithSecondPhoto {
-                            pendingSecondCameraImage = nil
+                        if !captureImages.isEmpty {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                                showMultiPhotoCaptureSheet = true
+                            }
                         }
                     }
                 )
@@ -973,29 +970,53 @@ struct HomeView: View {
                 capturedImage = nil
                 currentEmoji = nil
 
-                if cameraMode == .snapFoodWithSecondPhoto {
-                    if let firstImage = pendingSecondCameraImage {
-                        pendingSecondCameraImage = nil
-                        // Both shots side by side — this composite becomes the entry's
-                        // stored image, so the log row and edit page show both photos.
-                        currentImage = FoodImageComposer.sideBySide(firstImage, image)
-                        startAnalysis(images: [firstImage, image], mode: .snapFoodWithSecondPhoto)
-                    } else {
-                        pendingSecondCameraImage = image
-                        currentImage = image
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                if cameraMode == .nutritionLabel {
+                    currentImage = image
+                    currentImages = [image]
+                    startAnalysis(image: image, mode: cameraMode)
+                } else {
+                    captureImages.append(image)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                        showMultiPhotoCaptureSheet = true
+                    }
+                }
+            }
+            .sheet(isPresented: $showMultiPhotoCaptureSheet) {
+                MultiPhotoCaptureSheet(
+                    images: captureImages,
+                    includesNote: cameraMode == .snapFoodWithContext,
+                    description: $contextDescription,
+                    onAddPhoto: {
+                        guard captureImages.count < 10 else { return }
+                        showMultiPhotoCaptureSheet = false
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
                             showCamera = true
                         }
+                    },
+                    onRemove: { index in
+                        guard captureImages.indices.contains(index) else { return }
+                        captureImages.remove(at: index)
+                        if captureImages.isEmpty {
+                            showMultiPhotoCaptureSheet = false
+                        }
+                    },
+                    onAnalyze: {
+                        let images = captureImages
+                        let description = cameraMode == .snapFoodWithContext ? contextDescription : nil
+                        showMultiPhotoCaptureSheet = false
+                        captureImages = []
+                        currentImages = images
+                        currentImage = images.first
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                            startAnalysis(images: images, mode: cameraMode, description: description)
+                        }
+                    },
+                    onCancel: {
+                        showMultiPhotoCaptureSheet = false
+                        captureImages = []
+                        contextDescription = ""
                     }
-                } else if cameraMode == .snapFoodWithContext {
-                    currentImage = image
-                    pendingContextImage = image
-                    contextDescription = ""
-                    showContextSheet = true
-                } else {
-                    currentImage = image
-                    startAnalysis(image: image, mode: cameraMode)
-                }
+                )
             }
             .sheet(isPresented: $showContextSheet) {
                 ContextDescriptionSheet(
@@ -1012,6 +1033,7 @@ struct HomeView: View {
                             // This prevents SwiftUI from silently ignoring the new activeSheet presentation.
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                 currentImage = image // Ensure currentImage is set so AnalyzingView/FoodResultView shows the image
+                                currentImages = [image]
                                 startAnalysis(image: image, mode: .snapFoodWithContext, description: desc)
                             }
                         }
@@ -1020,6 +1042,7 @@ struct HomeView: View {
                         showContextSheet = false
                         pendingContextImage = nil
                         currentImage = nil
+                        currentImages = []
                     }
                 )
             }
@@ -1034,7 +1057,7 @@ struct HomeView: View {
                 case .foodResult:
                     if let result = currentFoodResult {
                         FoodResultView(
-                            image: currentImage,
+                            images: currentImages,
                             emoji: currentEmoji,
                             source: currentFoodSource,
                             name: result.name,
@@ -1095,11 +1118,8 @@ struct HomeView: View {
             }
             .sheet(isPresented: $showRecentSheet, content: {
                 RecentsView(logDate: logDateForSelectedDay, onReview: { entry in
-                    if let imageData = entry.imageData, let image = UIImage(data: imageData) {
-                        currentImage = image
-                    } else {
-                        currentImage = nil
-                    }
+                    currentImages = entry.allImageData.compactMap(UIImage.init(data:))
+                    currentImage = currentImages.first
                     currentEmoji = entry.emoji
                     currentFoodSource = entry.source
                     currentFoodResult = GeminiService.FoodAnalysis(
@@ -1163,6 +1183,7 @@ struct HomeView: View {
                     if let data = try? await item.loadTransferable(type: Data.self),
                        let image = UIImage(data: data) {
                         currentImage = image
+                        currentImages = [image]
                         currentEmoji = nil
                         currentFoodSource = .snapFood
                         if photoPickerMode == .snapFoodWithContext {
@@ -1235,6 +1256,7 @@ struct HomeView: View {
         activeSheet = nil
         
         currentImage = image
+        currentImages = [image]
         currentEmoji = nil
         currentFoodSource = .snapFood
 
@@ -1257,21 +1279,13 @@ struct HomeView: View {
             do {
                 switch mode {
                 case .snapFood:
-                    guard let image = images.first else { throw GeminiService.AnalysisError.imageConversionFailed }
-                    let result = try await GeminiService.analyzeFood(image: image)
+                    let result = try await GeminiService.analyzeFood(images: images)
                     currentFoodResult = result
                     currentFoodSource = .snapFood
                     activeSheet = .foodResult
 
                 case .snapFoodWithContext:
-                    guard let image = images.first else { throw GeminiService.AnalysisError.imageConversionFailed }
-                    let result = try await GeminiService.analyzeFood(image: image, description: description)
-                    currentFoodResult = result
-                    currentFoodSource = .snapFood
-                    activeSheet = .foodResult
-
-                case .snapFoodWithSecondPhoto:
-                    let result = try await GeminiService.analyzeFood(images: images)
+                    let result = try await GeminiService.analyzeFood(images: images, description: description)
                     currentFoodResult = result
                     currentFoodSource = .snapFood
                     activeSheet = .foodResult
@@ -1297,6 +1311,7 @@ struct HomeView: View {
         guard !trimmedBarcode.isEmpty else { return }
 
         currentImage = nil
+        currentImages = []
         currentEmoji = nil
         currentFoodSource = .barcode
         activeSheet = .lookingUpBarcode
@@ -1952,6 +1967,109 @@ struct NutritionDetailRow: View {
     }
 }
 
+// MARK: - Multi-photo Capture Review
+struct MultiPhotoCaptureSheet: View {
+    let images: [UIImage]
+    let includesNote: Bool
+    @Binding var description: String
+    let onAddPhoto: () -> Void
+    let onRemove: (Int) -> Void
+    let onAnalyze: () -> Void
+    let onCancel: () -> Void
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    HStack {
+                        Text("\(images.count) of 10 photos")
+                            .font(.system(.subheadline, design: .rounded, weight: .semibold))
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                        if images.count < 10 {
+                            Button(action: onAddPhoto) {
+                                Label("Add Photo", systemImage: "camera.fill")
+                            }
+                            .buttonStyle(.bordered)
+                            .tint(AppColors.calorie)
+                        }
+                    }
+
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        LazyHStack(spacing: 12) {
+                            ForEach(Array(images.enumerated()), id: \.offset) { index, image in
+                                Image(uiImage: image)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 240, height: 260)
+                                    .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+                                    .overlay(alignment: .topTrailing) {
+                                        Button {
+                                            onRemove(index)
+                                        } label: {
+                                            Image(systemName: "xmark")
+                                                .font(.caption.weight(.bold))
+                                                .foregroundStyle(.white)
+                                                .frame(width: 30, height: 30)
+                                                .background(.black.opacity(0.6), in: Circle())
+                                        }
+                                        .padding(10)
+                                    }
+                                    .overlay(alignment: .bottomLeading) {
+                                        Text("Photo \(index + 1)")
+                                            .font(.caption.weight(.semibold))
+                                            .foregroundStyle(.white)
+                                            .padding(.horizontal, 10)
+                                            .padding(.vertical, 6)
+                                            .background(.black.opacity(0.55), in: Capsule())
+                                            .padding(10)
+                                    }
+                            }
+                        }
+                        .scrollTargetLayout()
+                    }
+                    .scrollTargetBehavior(.viewAligned)
+
+                    if includesNote {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Add a note (optional)")
+                                .font(.system(.subheadline, design: .rounded, weight: .semibold))
+                                .foregroundStyle(.secondary)
+                            TextField(
+                                "e.g. chicken is 180g, rice is 220g, use half the sauce",
+                                text: $description,
+                                axis: .vertical
+                            )
+                            .lineLimit(3...6)
+                            .padding(14)
+                            .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 14))
+                        }
+                    } else {
+                        Text("Add different angles, ingredients, scale readings, or labels. All photos will be analyzed together as one meal.")
+                            .font(.system(.footnote, design: .rounded))
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .padding()
+            }
+            .background(Color(.systemGroupedBackground))
+            .navigationTitle(includesNote ? "Photos + Note" : "Meal Photos")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel", action: onCancel)
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Analyze", action: onAnalyze)
+                        .fontWeight(.semibold)
+                        .tint(AppColors.calorie)
+                        .disabled(images.isEmpty)
+                }
+            }
+        }
+    }
+}
+
 // MARK: - Context Description Sheet
 struct ContextDescriptionSheet: View {
     let image: UIImage?
@@ -2447,6 +2565,17 @@ struct FoodRow: View {
                         RoundedRectangle(cornerRadius: 12, style: .continuous)
                             .strokeBorder(AppColors.calorie.opacity(0.15), lineWidth: 1)
                     )
+                    .overlay(alignment: .bottomTrailing) {
+                        if !entry.additionalImageData.isEmpty {
+                            Text("+\(entry.additionalImageData.count)")
+                                .font(.caption2.weight(.bold))
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 3)
+                                .background(.black.opacity(0.65), in: Capsule())
+                                .padding(4)
+                        }
+                    }
             } else if let emoji = entry.emoji {
                 Text(emoji)
                     .font(.system(size: 28))

@@ -8,6 +8,7 @@ import java.time.Instant
 data class PendingFoodAnalysisDraft(
     val analysis: FoodAnalysis,
     val imageFilename: String? = null,
+    val additionalImageFilenames: List<String> = emptyList(),
     val source: FoodSource? = null,
     @Serializable(with = InstantSerializer::class)
     val createdAt: Instant = Instant.now()

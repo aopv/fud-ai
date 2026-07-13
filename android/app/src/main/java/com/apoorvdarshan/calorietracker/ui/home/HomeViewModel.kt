@@ -12,11 +12,9 @@ import com.apoorvdarshan.calorietracker.models.MealType
 import com.apoorvdarshan.calorietracker.models.OptionalNutrientGoals
 import com.apoorvdarshan.calorietracker.models.PendingFoodAnalysisDraft
 import com.apoorvdarshan.calorietracker.models.UserProfile
-import com.apoorvdarshan.calorietracker.services.FoodImageComposer
 import com.apoorvdarshan.calorietracker.services.OpenFoodFactsService
 import com.apoorvdarshan.calorietracker.services.ai.AiError
 import com.apoorvdarshan.calorietracker.services.ai.FoodAnalysis
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,7 +23,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -54,8 +51,10 @@ data class HomeUiState(
     val favoriteKeys: Set<String> = emptySet(),
     val pendingAnalysis: FoodAnalysis? = null,
     val pendingImageBytes: ByteArray? = null,
+    val pendingAdditionalImageBytes: List<ByteArray> = emptyList(),
     val pendingFoodSource: FoodSource? = null,
     val pendingDraftImageFilename: String? = null,
+    val pendingDraftAdditionalImageFilenames: List<String> = emptyList(),
     /**
      * Set when the pendingAnalysis came from a Saved Meals tap (Recents /
      * Frequent / Favorites) instead of a fresh AI analysis. We keep the
@@ -70,6 +69,10 @@ data class HomeUiState(
     val proteinToday: Double get() = todayEntries.sumOf { it.protein }
     val carbsToday: Double get() = todayEntries.sumOf { it.carbs }
     val fatToday: Double get() = todayEntries.sumOf { it.fat }
+    val pendingImageBytesList: List<ByteArray>
+        get() = listOfNotNull(pendingImageBytes) + pendingAdditionalImageBytes
+    val pendingDraftImageFilenames: List<String>
+        get() = listOfNotNull(pendingDraftImageFilename) + pendingDraftAdditionalImageFilenames
     fun isFavorite(entry: FoodEntry): Boolean = entry.favoriteKey in favoriteKeys
 }
 
@@ -148,18 +151,20 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
 
     fun analyzeText(description: String) {
         viewModelScope.launch {
-            val previousDraftImage = _ui.value.pendingDraftImageFilename
+            val previousDraftImages = _ui.value.pendingDraftImageFilenames
             container.analyzingFood.value = true
             _ui.value = _ui.value.copy(
                 analyzing = true,
                 error = null,
                 pendingAnalysis = null,
                 pendingImageBytes = null,
+                pendingAdditionalImageBytes = emptyList(),
                 pendingFoodSource = FoodSource.TEXT_INPUT,
                 pendingDraftImageFilename = null,
+                pendingDraftAdditionalImageFilenames = emptyList(),
                 pendingReviewSource = null
             )
-            discardPendingDraft(previousDraftImage)
+            discardPendingDraft(previousDraftImages)
             try {
                 val analysis = container.foodAnalysis.analyzeText(description)
                 savePendingDraft(analysis, imageBytes = null, source = FoodSource.TEXT_INPUT)
@@ -175,18 +180,20 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
 
     fun analyzePhoto(bytes: ByteArray) {
         viewModelScope.launch {
-            val previousDraftImage = _ui.value.pendingDraftImageFilename
+            val previousDraftImages = _ui.value.pendingDraftImageFilenames
             container.analyzingFood.value = true
             _ui.value = _ui.value.copy(
                 analyzing = true,
                 error = null,
                 pendingAnalysis = null,
                 pendingImageBytes = bytes,
+                pendingAdditionalImageBytes = emptyList(),
                 pendingFoodSource = FoodSource.SNAP_FOOD,
                 pendingDraftImageFilename = null,
+                pendingDraftAdditionalImageFilenames = emptyList(),
                 pendingReviewSource = null
             )
-            discardPendingDraft(previousDraftImage)
+            discardPendingDraft(previousDraftImages)
             try {
                 val analysis = container.foodAnalysis.analyzeAuto(bytes)
                 savePendingDraft(analysis, imageBytes = bytes, source = FoodSource.SNAP_FOOD)
@@ -200,28 +207,28 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
         }
     }
 
-    fun analyzePhotos(firstBytes: ByteArray, secondBytes: ByteArray) {
+    fun analyzePhotos(imageBytesList: List<ByteArray>, note: String? = null) {
         viewModelScope.launch {
-            val previousDraftImage = _ui.value.pendingDraftImageFilename
+            val images = imageBytesList.filter { it.isNotEmpty() }.take(10)
+            if (images.isEmpty()) return@launch
+            val previousDraftImages = _ui.value.pendingDraftImageFilenames
             container.analyzingFood.value = true
-            // Both shots side by side — this composite becomes the entry's stored
-            // image, so the log row and edit sheet show both photos (mirrors iOS).
-            val combinedBytes = withContext(Dispatchers.Default) {
-                FoodImageComposer.sideBySide(firstBytes, secondBytes)
-            }
             _ui.value = _ui.value.copy(
                 analyzing = true,
                 error = null,
                 pendingAnalysis = null,
-                pendingImageBytes = combinedBytes,
+                pendingImageBytes = images.first(),
+                pendingAdditionalImageBytes = images.drop(1),
                 pendingFoodSource = FoodSource.SNAP_FOOD,
                 pendingDraftImageFilename = null,
+                pendingDraftAdditionalImageFilenames = emptyList(),
                 pendingReviewSource = null
             )
-            discardPendingDraft(previousDraftImage)
+            discardPendingDraft(previousDraftImages)
             try {
-                val analysis = container.foodAnalysis.analyzeFood(listOf(firstBytes, secondBytes))
-                savePendingDraft(analysis, imageBytes = combinedBytes, source = FoodSource.SNAP_FOOD)
+                val analysis = container.foodAnalysis.analyzeFood(images, note?.takeIf { it.isNotBlank() })
+                    .copy(customNote = note?.takeIf { it.isNotBlank() })
+                savePendingDraft(analysis, imageBytesList = images, source = FoodSource.SNAP_FOOD)
             } catch (e: AiError) {
                 _ui.value = _ui.value.copy(analyzing = false, error = e.message)
             } catch (e: Throwable) {
@@ -238,47 +245,25 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
      * `cameraMode == .snapFoodWithContext` → `GeminiService.analyzeFood(image, description:)`.
      */
     fun analyzePhotoWithNote(bytes: ByteArray, note: String) {
-        viewModelScope.launch {
-            val previousDraftImage = _ui.value.pendingDraftImageFilename
-            container.analyzingFood.value = true
-            _ui.value = _ui.value.copy(
-                analyzing = true,
-                error = null,
-                pendingAnalysis = null,
-                pendingImageBytes = bytes,
-                pendingFoodSource = FoodSource.SNAP_FOOD,
-                pendingDraftImageFilename = null,
-                pendingReviewSource = null
-            )
-            discardPendingDraft(previousDraftImage)
-            try {
-                val analysis = container.foodAnalysis.analyzeFood(bytes, note.takeIf { it.isNotBlank() })
-                    .copy(customNote = note.takeIf { it.isNotBlank() })
-                savePendingDraft(analysis, imageBytes = bytes, source = FoodSource.SNAP_FOOD)
-            } catch (e: AiError) {
-                _ui.value = _ui.value.copy(analyzing = false, error = e.message)
-            } catch (e: Throwable) {
-                _ui.value = _ui.value.copy(analyzing = false, error = e.localizedMessage ?: container.appContext.getString(R.string.error_analysis_failed))
-            } finally {
-                container.analyzingFood.value = false
-            }
-        }
+        analyzePhotos(listOf(bytes), note)
     }
 
     fun lookupBarcode(barcode: String) {
         viewModelScope.launch {
-            val previousDraftImage = _ui.value.pendingDraftImageFilename
+            val previousDraftImages = _ui.value.pendingDraftImageFilenames
             container.analyzingFood.value = true
             _ui.value = _ui.value.copy(
                 analyzing = true,
                 error = null,
                 pendingAnalysis = null,
                 pendingImageBytes = null,
+                pendingAdditionalImageBytes = emptyList(),
                 pendingFoodSource = FoodSource.BARCODE,
                 pendingDraftImageFilename = null,
+                pendingDraftAdditionalImageFilenames = emptyList(),
                 pendingReviewSource = null
             )
-            discardPendingDraft(previousDraftImage)
+            discardPendingDraft(previousDraftImages)
             try {
                 val analysis = OpenFoodFactsService.lookup(barcode)
                 savePendingDraft(analysis, imageBytes = null, source = FoodSource.BARCODE)
@@ -302,17 +287,21 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
         val analysis = editedAnalysis ?: _ui.value.pendingAnalysis ?: return
         val reviewSource = _ui.value.pendingReviewSource
         val pendingFoodSource = _ui.value.pendingFoodSource
-        val pendingDraftImageFilename = _ui.value.pendingDraftImageFilename
+        val pendingDraftImageFilenames = _ui.value.pendingDraftImageFilenames
         viewModelScope.launch {
-            val imageBytes = _ui.value.pendingImageBytes
+            val imageBytesList = _ui.value.pendingImageBytesList
             val id = UUID.randomUUID()
             // If this analysis came from a Saved Meals review, reuse the
             // template's existing on-disk image so we don't duplicate the
             // JPEG. Otherwise (fresh AI analysis), persist the in-memory
             // bytes as a new file under the new entry id.
-            val filename = reviewSource?.imageFilename
-                ?: pendingDraftImageFilename
-                ?: imageBytes?.let { container.imageStore.storeBytes(it, id) }
+            val filenames = when {
+                reviewSource != null -> reviewSource.allImageFilenames
+                pendingDraftImageFilenames.isNotEmpty() -> pendingDraftImageFilenames
+                else -> imageBytesList.mapIndexedNotNull { index, bytes ->
+                    container.imageStore.storeBytes(bytes, if (index == 0) id else UUID.randomUUID())
+                }
+            }
             fun s(v: Int) = (v * scale).roundToInt()
             fun macro(v: Double) = v * scale
             fun s(v: Double?) = v?.let { it * scale }
@@ -324,11 +313,12 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
                 carbs = macro(analysis.carbs),
                 fat = macro(analysis.fat),
                 timestamp = timestampForSelectedDay(),
-                imageFilename = filename,
+                imageFilename = filenames.firstOrNull(),
+                additionalImageFilenames = filenames.drop(1),
                 emoji = analysis.emoji,
                 source = reviewSource?.source
                     ?: pendingFoodSource
-                    ?: if (imageBytes != null) FoodSource.SNAP_FOOD else FoodSource.TEXT_INPUT,
+                    ?: if (imageBytesList.isNotEmpty()) FoodSource.SNAP_FOOD else FoodSource.TEXT_INPUT,
                 mealType = mealType,
                 sugar = s(analysis.sugar),
                 addedSugar = s(analysis.addedSugar),
@@ -363,8 +353,10 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
             _ui.value = _ui.value.copy(
                 pendingAnalysis = null,
                 pendingImageBytes = null,
+                pendingAdditionalImageBytes = emptyList(),
                 pendingFoodSource = null,
                 pendingDraftImageFilename = null,
+                pendingDraftAdditionalImageFilenames = emptyList(),
                 pendingReviewSource = null
             )
         }
@@ -383,17 +375,19 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
     }
 
     fun dismissPending() {
-        val previousDraftImage = _ui.value.pendingDraftImageFilename
+        val previousDraftImages = _ui.value.pendingDraftImageFilenames
         _ui.value = _ui.value.copy(
             pendingAnalysis = null,
             pendingImageBytes = null,
+            pendingAdditionalImageBytes = emptyList(),
             pendingFoodSource = null,
             pendingDraftImageFilename = null,
+            pendingDraftAdditionalImageFilenames = emptyList(),
             pendingReviewSource = null,
             error = null
         )
         viewModelScope.launch {
-            discardPendingDraft(previousDraftImage)
+            discardPendingDraft(previousDraftImages)
         }
     }
 
@@ -405,14 +399,16 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
      */
     fun reviewSavedMeal(template: FoodEntry) {
         val analysis = template.toAnalysis()
-        val bytes = template.imageFilename?.let {
+        val bytesList = template.allImageFilenames.mapNotNull {
             runCatching { container.imageStore.file(it).readBytes() }.getOrNull()
         }
         _ui.value = _ui.value.copy(
             pendingAnalysis = analysis,
-            pendingImageBytes = bytes,
+            pendingImageBytes = bytesList.firstOrNull(),
+            pendingAdditionalImageBytes = bytesList.drop(1),
             pendingFoodSource = template.source,
             pendingDraftImageFilename = null,
+            pendingDraftAdditionalImageFilenames = emptyList(),
             pendingReviewSource = template,
             error = null
         )
@@ -504,46 +500,58 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
 
     private suspend fun savePendingDraft(
         analysis: FoodAnalysis,
-        imageBytes: ByteArray?,
+        imageBytes: ByteArray? = null,
+        imageBytesList: List<ByteArray> = imageBytes?.let(::listOf).orEmpty(),
         source: FoodSource
     ) {
-        val imageFilename = imageBytes?.let { container.imageStore.storeBytes(it, UUID.randomUUID()) }
+        val imageFilenames = imageBytesList.mapNotNull { container.imageStore.storeBytes(it, UUID.randomUUID()) }
+        val imageFilename = imageFilenames.firstOrNull()
+        val additionalImageFilenames = imageFilenames.drop(1)
         container.prefs.setPendingFoodAnalysisDraft(
             PendingFoodAnalysisDraft(
                 analysis = analysis,
                 imageFilename = imageFilename,
+                additionalImageFilenames = additionalImageFilenames,
                 source = source
             )
         )
         _ui.value = _ui.value.copy(
             analyzing = false,
             pendingAnalysis = analysis,
-            pendingImageBytes = imageBytes,
+            pendingImageBytes = imageBytesList.firstOrNull(),
+            pendingAdditionalImageBytes = imageBytesList.drop(1),
             pendingFoodSource = source,
             pendingDraftImageFilename = imageFilename,
+            pendingDraftAdditionalImageFilenames = additionalImageFilenames,
             pendingReviewSource = null
         )
     }
 
     private fun restorePendingDraft(draft: PendingFoodAnalysisDraft) {
-        val bytes = draft.imageFilename?.let {
+        val bytesList = (listOfNotNull(draft.imageFilename) + draft.additionalImageFilenames).mapNotNull {
             runCatching { container.imageStore.file(it).readBytes() }.getOrNull()
         }
         _ui.value = _ui.value.copy(
             analyzing = false,
             pendingAnalysis = draft.analysis,
-            pendingImageBytes = bytes,
+            pendingImageBytes = bytesList.firstOrNull(),
+            pendingAdditionalImageBytes = bytesList.drop(1),
             pendingFoodSource = draft.source,
             pendingDraftImageFilename = draft.imageFilename,
+            pendingDraftAdditionalImageFilenames = draft.additionalImageFilenames,
             pendingReviewSource = null,
             error = null
         )
     }
 
-    private suspend fun discardPendingDraft(imageFilename: String? = _ui.value.pendingDraftImageFilename) {
-        val filename = imageFilename ?: container.prefs.pendingFoodAnalysisDraft.first()?.imageFilename
+    private suspend fun discardPendingDraft(imageFilenames: List<String> = _ui.value.pendingDraftImageFilenames) {
+        val filenames = imageFilenames.ifEmpty {
+            container.prefs.pendingFoodAnalysisDraft.first()?.let {
+                listOfNotNull(it.imageFilename) + it.additionalImageFilenames
+            }.orEmpty()
+        }
         container.prefs.setPendingFoodAnalysisDraft(null)
-        filename?.let { container.imageStore.delete(it) }
+        filenames.forEach { container.imageStore.delete(it) }
     }
 
     class Factory(private val container: AppContainer) : ViewModelProvider.Factory {
@@ -553,15 +561,15 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
     }
 
     suspend fun reprocessFoodEntry(entry: FoodEntry, updatedNote: String): FoodAnalysis {
-        val imageBytes = entry.imageFilename?.let {
+        val imageBytesList = entry.allImageFilenames.mapNotNull {
             runCatching { container.imageStore.file(it).readBytes() }.getOrNull()
         }
         // Compose name + serving + note so a photo-less (text / voice / emoji) entry
         // keeps its food context instead of re-analyzing the bare note; a photo entry
         // gets the name/note as extra grounding on top of the image.
         val description = reprocessDescription(entry, updatedNote)
-        val result = if (imageBytes != null) {
-            container.foodAnalysis.analyzeFood(imageBytes, description.takeIf { it.isNotBlank() })
+        val result = if (imageBytesList.isNotEmpty()) {
+            container.foodAnalysis.analyzeFood(imageBytesList, description.takeIf { it.isNotBlank() })
         } else {
             container.foodAnalysis.analyzeText(description)
         }

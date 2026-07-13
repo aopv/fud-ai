@@ -1,6 +1,7 @@
 package com.apoorvdarshan.calorietracker.ui.home
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,6 +10,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -75,7 +78,7 @@ import java.time.Instant
 @Composable
 fun FoodResultSheet(
     analysis: FoodAnalysis,
-    imageBytes: ByteArray? = null,
+    imageBytesList: List<ByteArray> = emptyList(),
     preferGramsByDefault: Boolean = false,
     profile: UserProfile? = null,
     dayEntries: List<FoodEntry> = emptyList(),
@@ -92,8 +95,8 @@ fun FoodResultSheet(
     ) -> Unit,
     onDismiss: () -> Unit
 ) {
-    val bitmap = remember(imageBytes) {
-        imageBytes?.let { android.graphics.BitmapFactory.decodeByteArray(it, 0, it.size) }
+    val bitmaps = remember(imageBytesList) {
+        imageBytesList.mapNotNull(::decodeFoodResultPreview)
     }
     val state = rememberModalBottomSheetState(
         skipPartiallyExpanded = true,
@@ -279,21 +282,43 @@ fun FoodResultSheet(
                 .padding(bottom = 28.dp),
             verticalArrangement = Arrangement.spacedBy(18.dp)
         ) {
-            // Square hero (captured photo) OR 80sp emoji fallback — centered.
+            // Swipeable original-photo gallery OR 80sp emoji fallback.
             item {
                 Box(
                     Modifier.fillMaxWidth().padding(vertical = 8.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    if (bitmap != null) {
-                        androidx.compose.foundation.Image(
-                            bitmap = bitmap.asImageBitmap(),
-                            contentDescription = null,
-                            contentScale = androidx.compose.ui.layout.ContentScale.Crop,
-                            modifier = Modifier
-                                .size(240.dp)
-                                .clip(RoundedCornerShape(20.dp))
-                        )
+                    if (bitmaps.isNotEmpty()) {
+                        LazyRow(
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp)
+                        ) {
+                            itemsIndexed(bitmaps) { index, bitmap ->
+                                Box {
+                                    androidx.compose.foundation.Image(
+                                        bitmap = bitmap.asImageBitmap(),
+                                        contentDescription = "Photo ${index + 1}",
+                                        contentScale = androidx.compose.ui.layout.ContentScale.Crop,
+                                        modifier = Modifier
+                                            .size(240.dp)
+                                            .clip(RoundedCornerShape(20.dp))
+                                    )
+                                    if (bitmaps.size > 1) {
+                                        Text(
+                                            "${index + 1}/${bitmaps.size}",
+                                            color = Color.White,
+                                            fontSize = 11.sp,
+                                            fontWeight = FontWeight.SemiBold,
+                                            modifier = Modifier
+                                                .align(Alignment.BottomEnd)
+                                                .padding(10.dp)
+                                                .background(Color.Black.copy(alpha = 0.58f), RoundedCornerShape(50))
+                                                .padding(horizontal = 9.dp, vertical = 5.dp)
+                                        )
+                                    }
+                                }
+                            }
+                        }
                     } else {
                         Text(analysis.emoji ?: "🍽", fontSize = 80.sp)
                     }
@@ -516,6 +541,20 @@ fun FoodResultSheet(
             onSuggest = onWhatIfSuggestion
         )
     }
+}
+
+private fun decodeFoodResultPreview(bytes: ByteArray): android.graphics.Bitmap? {
+    if (bytes.isEmpty()) return null
+    val bounds = android.graphics.BitmapFactory.Options().apply { inJustDecodeBounds = true }
+    android.graphics.BitmapFactory.decodeByteArray(bytes, 0, bytes.size, bounds)
+    var sample = 1
+    while (maxOf(bounds.outWidth, bounds.outHeight) / sample > 720) sample *= 2
+    return android.graphics.BitmapFactory.decodeByteArray(
+        bytes,
+        0,
+        bytes.size,
+        android.graphics.BitmapFactory.Options().apply { inSampleSize = sample }
+    )
 }
 
 private data class ReviewNutrientEditSpec(

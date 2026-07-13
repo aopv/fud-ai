@@ -1,5 +1,6 @@
 package com.apoorvdarshan.calorietracker.ui.home
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -13,6 +14,8 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.rememberCoroutineScope
@@ -310,26 +313,45 @@ fun EditFoodEntrySheet(
                     .padding(bottom = 28.dp),
                 verticalArrangement = Arrangement.spacedBy(18.dp)
             ) {
-            // Square hero (saved photo) OR 80sp emoji fallback — centered.
+            // Swipeable originals gallery OR 80sp emoji fallback — centered.
             item {
                 val ctx = LocalContext.current
                 val container = (ctx.applicationContext as com.apoorvdarshan.calorietracker.FudAIApp).container
-                val bitmap = remember(currentBaseEntry.imageFilename) {
-                    currentBaseEntry.imageFilename?.let { container.imageStore.load(it) }
+                val bitmaps = remember(currentBaseEntry.allImageFilenames) {
+                    currentBaseEntry.allImageFilenames.mapNotNull { container.imageStore.load(it) }
                 }
                 Box(
                     Modifier.fillMaxWidth().padding(vertical = 8.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    if (bitmap != null) {
-                        androidx.compose.foundation.Image(
-                            bitmap = bitmap.asImageBitmap(),
-                            contentDescription = null,
-                            contentScale = androidx.compose.ui.layout.ContentScale.Crop,
-                            modifier = Modifier
-                                .size(240.dp)
-                                .clip(RoundedCornerShape(20.dp))
-                        )
+                    if (bitmaps.isNotEmpty()) {
+                        LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                            itemsIndexed(bitmaps) { index, bitmap ->
+                                Box {
+                                    androidx.compose.foundation.Image(
+                                        bitmap = bitmap.asImageBitmap(),
+                                        contentDescription = "Photo ${index + 1}",
+                                        contentScale = androidx.compose.ui.layout.ContentScale.Crop,
+                                        modifier = Modifier
+                                            .size(240.dp)
+                                            .clip(RoundedCornerShape(20.dp))
+                                    )
+                                    if (bitmaps.size > 1) {
+                                        Text(
+                                            "${index + 1}/${bitmaps.size}",
+                                            color = Color.White,
+                                            fontSize = 11.sp,
+                                            fontWeight = FontWeight.SemiBold,
+                                            modifier = Modifier
+                                                .align(Alignment.BottomEnd)
+                                                .padding(10.dp)
+                                                .background(Color.Black.copy(alpha = 0.58f), RoundedCornerShape(50))
+                                                .padding(horizontal = 9.dp, vertical = 5.dp)
+                                        )
+                                    }
+                                }
+                            }
+                        }
                     } else {
                         Text(currentBaseEntry.emoji ?: "🍽", fontSize = 80.sp)
                     }

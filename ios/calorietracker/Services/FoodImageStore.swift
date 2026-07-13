@@ -35,8 +35,18 @@ struct FoodImageStore {
     /// Returns the filename (not full path) on success.
     @discardableResult
     func store(data: Data, for id: UUID) -> String? {
+        store(data: data, filename: "\(id.uuidString).jpg")
+    }
+
+    /// Writes an additional image for the same entry without overwriting the
+    /// primary `<uuid>.jpg` file.
+    @discardableResult
+    func store(data: Data, for id: UUID, index: Int) -> String? {
+        store(data: data, filename: "\(id.uuidString)-\(index).jpg")
+    }
+
+    private func store(data: Data, filename: String) -> String? {
         guard let folderURL else { return nil }
-        let filename = "\(id.uuidString).jpg"
         let url = folderURL.appendingPathComponent(filename)
         do {
             try data.write(to: url, options: .atomic)

@@ -168,6 +168,12 @@ private enum class AddMenuGroup {
     ReuseMeal
 }
 
+private enum class CameraCaptureMode {
+    Food,
+    FoodWithNote,
+    NutritionLabel
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(container: AppContainer) {
@@ -190,10 +196,9 @@ fun HomeScreen(container: AppContainer) {
     var showNutritionDetail by remember { mutableStateOf(false) }
 
     var showCameraCapture by remember { mutableStateOf(false) }
-    var cameraCaptureWantsNote by remember { mutableStateOf(false) }
-    var cameraCaptureWantsSecondPhoto by remember { mutableStateOf(false) }
-    var pendingCameraPairFirstImageBytes by remember { mutableStateOf<ByteArray?>(null) }
-    var showCameraPairTransition by remember { mutableStateOf(false) }
+    var showMultiPhotoCapture by remember { mutableStateOf(false) }
+    var cameraCaptureMode by remember { mutableStateOf(CameraCaptureMode.Food) }
+    var pendingCaptureImageBytes by remember { mutableStateOf<List<ByteArray>>(emptyList()) }
     // Holds the just-captured bytes while the Camera + Note sheet is shown.
     var pendingNoteImageBytes by remember { mutableStateOf<ByteArray?>(null) }
     var pendingPickedPhotoWantsNote by remember { mutableStateOf(false) }
@@ -215,45 +220,28 @@ fun HomeScreen(container: AppContainer) {
         }
     }
 
-    // Tracks whether the next permission grant should also show the note sheet.
-    var permissionWantsNote by remember { mutableStateOf(false) }
-    var permissionWantsSecondPhoto by remember { mutableStateOf(false) }
+    var permissionCaptureMode by remember { mutableStateOf(CameraCaptureMode.Food) }
     val cameraPermission = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
         if (granted) {
-            cameraCaptureWantsNote = permissionWantsNote
-            cameraCaptureWantsSecondPhoto = permissionWantsSecondPhoto
+            cameraCaptureMode = permissionCaptureMode
+            pendingCaptureImageBytes = emptyList()
             showCameraCapture = true
         }
-        permissionWantsNote = false
-        permissionWantsSecondPhoto = false
+        permissionCaptureMode = CameraCaptureMode.Food
     }
 
-    fun openCamera(withNote: Boolean = false, withSecondPhoto: Boolean = false) {
+    fun openCamera(mode: CameraCaptureMode = CameraCaptureMode.Food) {
         if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.CAMERA) ==
             PackageManager.PERMISSION_GRANTED
         ) {
-            cameraCaptureWantsNote = withNote
-            cameraCaptureWantsSecondPhoto = withSecondPhoto
-            pendingCameraPairFirstImageBytes = null
-            showCameraPairTransition = false
+            cameraCaptureMode = mode
+            pendingCaptureImageBytes = emptyList()
             showCameraCapture = true
         } else {
-            permissionWantsNote = withNote
-            permissionWantsSecondPhoto = withSecondPhoto
+            permissionCaptureMode = mode
             cameraPermission.launch(Manifest.permission.CAMERA)
-        }
-    }
-
-    LaunchedEffect(showCameraPairTransition) {
-        if (showCameraPairTransition) {
-            kotlinx.coroutines.delay(650)
-            showCameraPairTransition = false
-            if (pendingCameraPairFirstImageBytes != null) {
-                cameraCaptureWantsSecondPhoto = true
-                showCameraCapture = true
-            }
         }
     }
 
@@ -469,9 +457,8 @@ fun HomeScreen(container: AppContainer) {
 
                     AddMenuGroup.CaptureAndScan -> {
                         SheetGlassDropdownMenuItem(label = "Camera", leadingIcon = Icons.Filled.CameraAlt) { showAddMenu = false; addMenuGroup = null; openCamera() }
-                        SheetGlassDropdownMenuItem(label = "Camera + Note", leadingIcon = Icons.AutoMirrored.Filled.Note) { showAddMenu = false; addMenuGroup = null; openCamera(withNote = true) }
-                        SheetGlassDropdownMenuItem(label = "Camera + Camera", leadingIcon = Icons.Filled.AddAPhoto) { showAddMenu = false; addMenuGroup = null; openCamera(withSecondPhoto = true) }
-                        SheetGlassDropdownMenuItem(label = "Nutrition Label", leadingIcon = Icons.Filled.DocumentScanner) { showAddMenu = false; addMenuGroup = null; openCamera() }
+                        SheetGlassDropdownMenuItem(label = "Camera + Note", leadingIcon = Icons.AutoMirrored.Filled.Note) { showAddMenu = false; addMenuGroup = null; openCamera(CameraCaptureMode.FoodWithNote) }
+                        SheetGlassDropdownMenuItem(label = "Nutrition Label", leadingIcon = Icons.Filled.DocumentScanner) { showAddMenu = false; addMenuGroup = null; openCamera(CameraCaptureMode.NutritionLabel) }
                         SheetGlassDropdownMenuItem(label = "Barcode", leadingIcon = Icons.Filled.QrCodeScanner) { showAddMenu = false; addMenuGroup = null; openBarcodeScanner() }
                         SheetGlassDropdownMenuItem(label = "Back", leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
                     }
@@ -570,30 +557,46 @@ fun HomeScreen(container: AppContainer) {
     if (showCameraCapture) {
         InAppCameraCaptureDialog(
             onCapture = { bytes ->
-                val wantsNote = cameraCaptureWantsNote
-                val wantsSecondPhoto = cameraCaptureWantsSecondPhoto
-                val firstPairImage = pendingCameraPairFirstImageBytes
                 showCameraCapture = false
-                cameraCaptureWantsNote = false
-                cameraCaptureWantsSecondPhoto = false
-                if (wantsSecondPhoto && firstPairImage == null) {
-                    pendingCameraPairFirstImageBytes = bytes
-                    showCameraPairTransition = true
-                } else if (wantsSecondPhoto && firstPairImage != null) {
-                    pendingCameraPairFirstImageBytes = null
-                    vm.analyzePhotos(firstPairImage, bytes)
-                } else if (wantsNote) {
-                    pendingNoteImageBytes = bytes
-                } else {
+                if (cameraCaptureMode == CameraCaptureMode.NutritionLabel) {
                     vm.analyzePhoto(bytes)
+                } else {
+                    pendingCaptureImageBytes = (pendingCaptureImageBytes + bytes).take(10)
+                    showMultiPhotoCapture = true
                 }
             },
             onDismiss = {
                 showCameraCapture = false
-                cameraCaptureWantsNote = false
-                cameraCaptureWantsSecondPhoto = false
-                pendingCameraPairFirstImageBytes = null
-                showCameraPairTransition = false
+                if (pendingCaptureImageBytes.isNotEmpty()) {
+                    showMultiPhotoCapture = true
+                }
+            }
+        )
+    }
+
+    if (showMultiPhotoCapture && pendingCaptureImageBytes.isNotEmpty()) {
+        MultiPhotoCaptureSheet(
+            imageBytesList = pendingCaptureImageBytes,
+            includesNote = cameraCaptureMode == CameraCaptureMode.FoodWithNote,
+            onAddPhoto = {
+                if (pendingCaptureImageBytes.size < 10) {
+                    showMultiPhotoCapture = false
+                    showCameraCapture = true
+                }
+            },
+            onRemove = { index ->
+                pendingCaptureImageBytes = pendingCaptureImageBytes.filterIndexed { itemIndex, _ -> itemIndex != index }
+                if (pendingCaptureImageBytes.isEmpty()) showMultiPhotoCapture = false
+            },
+            onAnalyze = { note ->
+                val images = pendingCaptureImageBytes
+                pendingCaptureImageBytes = emptyList()
+                showMultiPhotoCapture = false
+                vm.analyzePhotos(images, note)
+            },
+            onDismiss = {
+                showMultiPhotoCapture = false
+                pendingCaptureImageBytes = emptyList()
             }
         )
     }
@@ -637,12 +640,10 @@ fun HomeScreen(container: AppContainer) {
     }
 
     if (ui.analyzing) AnalyzingOverlay(imageBytes = ui.pendingImageBytes)
-    if (showCameraPairTransition) CameraPairTransitionOverlay()
-
     ui.pendingAnalysis?.let { analysis ->
         FoodResultSheet(
             analysis = analysis,
-            imageBytes = ui.pendingImageBytes,
+            imageBytesList = ui.pendingImageBytesList,
             preferGramsByDefault = ui.preferGramsByDefault,
             profile = ui.profile,
             dayEntries = ui.todayEntries,
@@ -1318,6 +1319,19 @@ private fun FoodRow(
                     contentDescription = null,
                     tint = AppColors.Calorie,
                     modifier = Modifier.size(28.dp)
+                )
+            }
+            if (entry.additionalImageFilenames.isNotEmpty()) {
+                Text(
+                    "+${entry.additionalImageFilenames.size}",
+                    color = Color.White,
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(5.dp)
+                        .background(Color.Black.copy(alpha = 0.62f), RoundedCornerShape(50))
+                        .padding(horizontal = 6.dp, vertical = 3.dp)
                 )
             }
         }

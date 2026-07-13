@@ -365,7 +365,7 @@ class FoodStore {
         // references this filename. Without this guard, favoriting a meal,
         // deleting the log entry, and relaunching wipes the favorite's image
         // because both rows share the same fudai-image-<uuid>.jpg.
-        if let filename = entry.imageFilename, !isImageStillReferenced(filename: filename, excludingEntryID: id) {
+        for filename in entry.allImageFilenames where !isImageStillReferenced(filename: filename, excludingEntryID: id) {
             FoodImageStore.shared.delete(filename: filename)
         }
         entries.removeAll { $0.id == id }
@@ -380,12 +380,13 @@ class FoodStore {
         // Application Support forever. Skip files that a favorite or a
         // surviving entry still references (same filename, different id).
         let surviving = Set(newEntries.map(\.id))
-        let survivingFilenames = Set(newEntries.compactMap(\.imageFilename))
-        let favoriteFilenames = Set(favorites.compactMap(\.imageFilename))
+        let survivingFilenames = Set(newEntries.flatMap(\.allImageFilenames))
+        let favoriteFilenames = Set(favorites.flatMap(\.allImageFilenames))
         for old in entries where !surviving.contains(old.id) {
-            guard let filename = old.imageFilename else { continue }
-            if survivingFilenames.contains(filename) || favoriteFilenames.contains(filename) { continue }
-            FoodImageStore.shared.delete(filename: filename)
+            for filename in old.allImageFilenames {
+                if survivingFilenames.contains(filename) || favoriteFilenames.contains(filename) { continue }
+                FoodImageStore.shared.delete(filename: filename)
+            }
         }
         entries = newEntries.map { var e = $0; offloadImageToDiskIfNeeded(&e); return e }
         saveEntries()
@@ -403,16 +404,16 @@ class FoodStore {
     }
 
     func reprocessEntry(_ entry: FoodEntry, withNote note: String) async throws -> GeminiService.FoodAnalysis {
-        let image = entry.imageFilename
-            .flatMap { FoodImageStore.shared.load(filename: $0) }
-            .flatMap { UIImage(data: $0) }
+        let images = entry.allImageFilenames.compactMap {
+            FoodImageStore.shared.load(filename: $0).flatMap(UIImage.init(data:))
+        }
         // Compose name + serving + note so a photo-less (text / voice / emoji) entry
         // keeps its food context instead of re-analyzing the bare note; a photo entry
         // gets the name/note as extra grounding on top of the image.
         let description = Self.reprocessDescription(for: entry, note: note)
         let result: GeminiService.FoodAnalysis
-        if let image {
-            result = try await GeminiService.analyzeFood(image: image, description: description)
+        if !images.isEmpty {
+            result = try await GeminiService.analyzeFood(images: images, description: description)
         } else {
             result = try await GeminiService.analyzeTextInput(description: description)
         }
@@ -442,9 +443,22 @@ class FoodStore {
     /// there are no bytes, or when a filename is already set (idempotent).
     /// The 4 MiB UserDefaults cap demands we never persist raw bytes.
     private func offloadImageToDiskIfNeeded(_ entry: inout FoodEntry) {
-        guard entry.imageFilename == nil, let data = entry.imageData else { return }
-        if let filename = FoodImageStore.shared.store(data: data, for: entry.id) {
+        if entry.imageFilename == nil, let data = entry.imageData,
+           let filename = FoodImageStore.shared.store(data: data, for: entry.id) {
             entry.imageFilename = filename
+        }
+        if entry.additionalImageFilenames.count < entry.additionalImageData.count {
+            var filenames = entry.additionalImageFilenames
+            for index in filenames.count..<entry.additionalImageData.count {
+                if let filename = FoodImageStore.shared.store(
+                    data: entry.additionalImageData[index],
+                    for: entry.id,
+                    index: index + 1
+                ) {
+                    filenames.append(filename)
+                }
+            }
+            entry.additionalImageFilenames = filenames
         }
     }
 
@@ -453,10 +467,10 @@ class FoodStore {
     /// + a favorite (same `id`, same generated `fudai-image-<uuid>.jpg`), or
     /// by two logged entries that came from the same favorite re-log.
     private func isImageStillReferenced(filename: String, excludingEntryID: UUID) -> Bool {
-        if entries.contains(where: { $0.id != excludingEntryID && $0.imageFilename == filename }) {
+        if entries.contains(where: { $0.id != excludingEntryID && $0.allImageFilenames.contains(filename) }) {
             return true
         }
-        return favorites.contains { $0.imageFilename == filename }
+        return favorites.contains { $0.allImageFilenames.contains(filename) }
     }
 
     private func startObservingExternalChanges() {

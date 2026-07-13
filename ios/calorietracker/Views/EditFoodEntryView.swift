@@ -156,17 +156,32 @@ struct EditFoodEntryView: View {
         NavigationStack {
             ScrollViewReader { scrollProxy in
                 List {
-                    if let imageData = entry.imageData, let uiImage = UIImage(data: imageData) {
+                    let entryImages = entry.allImageData.compactMap(UIImage.init(data:))
+                    if !entryImages.isEmpty {
                         Section {
-                            HStack {
-                                Spacer()
-                                Image(uiImage: uiImage)
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(maxHeight: 200)
-                                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                                Spacer()
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                LazyHStack(spacing: 12) {
+                                    ForEach(Array(entryImages.enumerated()), id: \.offset) { index, image in
+                                        Image(uiImage: image)
+                                            .resizable()
+                                            .scaledToFill()
+                                            .frame(width: 220, height: 200)
+                                            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                                            .overlay(alignment: .bottomTrailing) {
+                                                if entryImages.count > 1 {
+                                                    Text("\(index + 1)/\(entryImages.count)")
+                                                        .font(.caption2.weight(.semibold))
+                                                        .padding(.horizontal, 8)
+                                                        .padding(.vertical, 5)
+                                                        .background(.ultraThinMaterial, in: Capsule())
+                                                        .padding(8)
+                                                }
+                                            }
+                                    }
+                                }
+                                .scrollTargetLayout()
                             }
+                            .scrollTargetBehavior(.viewAligned)
                             .listRowBackground(Color.clear)
                         }
                     } else if let emoji = emoji {
@@ -429,6 +444,8 @@ struct EditFoodEntryView: View {
             timestamp: loggedAt,
             imageData: entry.imageData,
             imageFilename: entry.imageFilename,
+            additionalImageData: entry.additionalImageData,
+            additionalImageFilenames: entry.additionalImageFilenames,
             emoji: emoji,
             source: entry.source,
             mealType: mealType,
