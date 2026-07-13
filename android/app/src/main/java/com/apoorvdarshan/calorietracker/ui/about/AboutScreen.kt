@@ -26,11 +26,8 @@ import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Lightbulb
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.NewReleases
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Star
@@ -65,9 +62,6 @@ import com.apoorvdarshan.calorietracker.services.update.AndroidUpdateState
 import com.apoorvdarshan.calorietracker.ui.theme.AppColors
 import kotlinx.coroutines.launch
 
-private const val ABOUT_PREFS = "about_preferences"
-private const val WHATS_NEW_SEEN_VERSION_KEY = "whats_new_seen_version"
-
 /**
  * Verbatim port of struct AboutSettingsSections in
  * ios/calorietracker/ContentView.swift.
@@ -75,7 +69,7 @@ private const val WHATS_NEW_SEEN_VERSION_KEY = "whats_new_seen_version"
  * The former About tab was folded into Settings as its last section, so this
  * renders just the About *rows* (no Scaffold / LazyColumn); the caller wraps
  * it in a Settings SectionCard titled "About":
- *   Update / What's New / Rate / Share / Open Source / Star / Vote on PH /
+ *   Update / Rate / Share / Open Source / Star / Vote on PH /
  *   Support / Report Issue / Request Feature / Contact / Follow on X /
  *   Follow on Instagram / Follow on LinkedIn / Privacy Policy / Terms, then
  *   the 'Made by Apoorv Darshan' / 'with care, for everyone' footer.
@@ -89,14 +83,8 @@ fun AboutSettingsRows(container: AppContainer) {
     val shareText = stringResource(R.string.about_share_message)
     val shareChooser = stringResource(R.string.about_share_chooser)
     val currentVersion = remember(ctx) { AndroidUpdateChecker.currentVersion(ctx) }
-    val aboutPrefs = remember(ctx) { ctx.getSharedPreferences(ABOUT_PREFS, Context.MODE_PRIVATE) }
     var updateState by remember { mutableStateOf<AndroidUpdateState>(AndroidUpdateState.Idle) }
-    var whatsNewExpanded by remember { mutableStateOf(false) }
-    var seenWhatsNewVersion by remember(currentVersion) {
-        mutableStateOf(aboutPrefs.getString(WHATS_NEW_SEEN_VERSION_KEY, null))
-    }
     val scope = rememberCoroutineScope()
-    val hasUnseenWhatsNew = seenWhatsNewVersion != currentVersion
 
     fun open(url: String) =
         ctx.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
@@ -131,28 +119,12 @@ fun AboutSettingsRows(container: AppContainer) {
 
     fun email() = ctx.startActivity(Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:apoorv@fud-ai.app")))
 
-    fun toggleWhatsNew() {
-        val expanding = !whatsNewExpanded
-        whatsNewExpanded = expanding
-        if (expanding && hasUnseenWhatsNew) {
-            aboutPrefs.edit().putString(WHATS_NEW_SEEN_VERSION_KEY, currentVersion).apply()
-            seenWhatsNewVersion = currentVersion
-        }
-    }
-
     Column(Modifier.fillMaxWidth()) {
         UpdateRow(
             state = updateState,
             currentVersion = currentVersion,
             onRefresh = ::refreshUpdateState,
             onOpenStore = ::openPlayStore
-        )
-        Hairline()
-        WhatsNewRow(
-            version = currentVersion,
-            expanded = whatsNewExpanded,
-            showDot = hasUnseenWhatsNew,
-            onToggle = ::toggleWhatsNew
         )
         Hairline()
         AboutRow(Icons.Filled.Star, stringResource(R.string.about_rate), onClick = ::rate)
@@ -214,84 +186,6 @@ private fun openPlayStore(context: Context) {
     runCatching { context.startActivity(marketIntent) }.onFailure {
         context.startActivity(
             Intent(Intent.ACTION_VIEW, Uri.parse(AndroidUpdateChecker.PLAY_STORE_WEB_URL))
-        )
-    }
-}
-
-@Composable
-private fun WhatsNewRow(
-    version: String,
-    expanded: Boolean,
-    showDot: Boolean,
-    onToggle: () -> Unit
-) {
-    Column(Modifier.fillMaxWidth()) {
-        AboutRow(
-            icon = Icons.Filled.NewReleases,
-            label = stringResource(R.string.about_whats_new),
-            subtitle = stringResource(R.string.about_whats_new_version_format, version),
-            showDot = showDot,
-            trailing = {
-                Icon(
-                    if (expanded) Icons.Filled.KeyboardArrowDown else Icons.Filled.KeyboardArrowRight,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.45f),
-                    modifier = Modifier.size(22.dp)
-                )
-            },
-            onClick = onToggle
-        )
-
-        if (expanded) {
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(start = 54.dp, end = 16.dp, bottom = 14.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Text(
-                    stringResource(R.string.about_whats_new_android_summary),
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.72f)
-                )
-                WhatsNewBullet(stringResource(R.string.whats_new_v30_workouts))
-                WhatsNewBullet(stringResource(R.string.whats_new_v30_home))
-                WhatsNewBullet(stringResource(R.string.whats_new_v30_widgets))
-                WhatsNewBullet(stringResource(R.string.whats_new_v30_coach_voice))
-                WhatsNewBullet(stringResource(R.string.whats_new_v30_share))
-                WhatsNewBullet(stringResource(R.string.whats_new_v30_export))
-                WhatsNewBullet(stringResource(R.string.whats_new_v30_reprocess))
-                WhatsNewBullet(stringResource(R.string.whats_new_v30_camera))
-                WhatsNewBullet(stringResource(R.string.whats_new_v30_colors))
-                WhatsNewBullet(stringResource(R.string.whats_new_v30_bodyfat))
-                WhatsNewBullet(stringResource(R.string.whats_new_v30_units))
-                WhatsNewBullet(stringResource(R.string.whats_new_v30_restore))
-                WhatsNewBullet(stringResource(R.string.whats_new_v30_adaptive))
-            }
-        }
-    }
-}
-
-@Composable
-private fun WhatsNewBullet(text: String) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.Top
-    ) {
-        Box(
-            Modifier
-                .padding(top = 7.dp)
-                .size(4.dp)
-                .clip(CircleShape)
-                .background(AppColors.Calorie)
-        )
-        Spacer(Modifier.width(10.dp))
-        Text(
-            text,
-            fontSize = 13.sp,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-            lineHeight = 17.sp
         )
     }
 }

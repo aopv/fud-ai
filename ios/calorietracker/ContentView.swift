@@ -184,7 +184,6 @@ private struct AboutSettingsSections: View {
     private let refreshUpdateState: () async -> Void
 
     @State private var showShareSheet = false
-    @State private var showWhatsNew = false
 
     init(updateState: Binding<AppUpdateState>, refreshUpdateState: @escaping () async -> Void) {
         self._updateState = updateState
@@ -199,7 +198,6 @@ private struct AboutSettingsSections: View {
         Group {
             Section("About") {
                 updateRow
-                whatsNewRow
 
                 // Rate the App
                 Button {
@@ -230,7 +228,7 @@ private struct AboutSettingsSections: View {
                 }
                 .tint(.primary)
 
-                // Support — native tip jar, expanded inline like What's New. App Review
+                // Support — native tip jar, expanded inline. App Review
                 // treats "donate to the developer" links as digital payments (guideline
                 // 3.1.1), so no Ko-fi link on iOS; Android keeps Ko-fi.
                 TipJarDisclosureRow()
@@ -378,59 +376,6 @@ private struct AboutSettingsSections: View {
         .sheet(isPresented: $showShareSheet) {
             ActivityShareSheet(activityItems: [shareMessage, fudAIAppStoreURL])
         }
-    }
-
-    private static let whatsNewItems = [
-        "New Workouts tab — browse 873 exercises with photos, muscle and equipment filters, search, and detail pages.",
-        "Home redesign: speedometer calorie gauge, vertical macro bars, four nutrient cards, and a floating add button.",
-        "Widgets, Lock Screen, and Apple Watch match the new speedometer design and follow your chosen nutrient cards.",
-        "Fud AI is now completely free — the optional Premium subscription has been removed.",
-        "An optional Tip Jar in Settings → About lets you support development.",
-        "AI features run on your own provider key — add a free Gemini, OpenAI, Groq, or other supported key in onboarding or Settings.",
-        "Ask Coach by voice with the new inline recorder.",
-        "Share any meal as a link that opens straight in Fud AI.",
-        "Export your food diary as JSON, Markdown, or CSV from Settings.",
-        "Reprocess a logged meal with AI — adjust its name, serving, or note and re-analyze.",
-        "Camera + Camera keeps both shots, stitched side by side.",
-        "10 new theme colors, now picked inline in Settings.",
-        "Body fat history: review and delete individual entries, just like weight.",
-        "Height and weight units can now be set independently.",
-        "Reinstalled or switched phones? Your food log, weight, and body fat now restore automatically from Apple Health.",
-        "Adaptive Goals and Energy Burn left Experimental and are on by default for new installs.",
-        "As always, your food log, weight and body history, and API keys stay on your device."
-    ]
-
-    private var whatsNewRow: some View {
-        DisclosureGroup(isExpanded: $showWhatsNew) {
-            VStack(alignment: .leading, spacing: 10) {
-                Text("Fud AI 5.0")
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.primary)
-
-                ForEach(Self.whatsNewItems, id: \.self) { item in
-                    HStack(alignment: .top, spacing: 8) {
-                        Image(systemName: "checkmark.circle.fill")
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(AppColors.protein)
-                            .padding(.top, 2)
-
-                        Text(LocalizedDisplayText.text(item))
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                }
-            }
-            .padding(.top, 8)
-        } label: {
-            Label {
-                Text("What's New")
-            } icon: {
-                Image(systemName: "sparkles")
-                    .foregroundStyle(AppColors.calorie)
-            }
-        }
-        .tint(AppColors.calorie)
     }
 
     @ViewBuilder
