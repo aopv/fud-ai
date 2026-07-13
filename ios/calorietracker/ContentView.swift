@@ -937,7 +937,7 @@ struct HomeView: View {
             }
             .sheet(isPresented: $showMultiPhotoCaptureSheet) {
                 MultiPhotoCaptureSheet(
-                    images: captureImages,
+                    images: $captureImages,
                     isImportingPhotos: isImportingPhotos,
                     selectedPhotoItems: $selectedPhotoItems,
                     description: $contextDescription,
@@ -1945,7 +1945,7 @@ struct NutritionDetailRow: View {
 
 // MARK: - Multi-photo Capture Review
 struct MultiPhotoCaptureSheet: View {
-    let images: [UIImage]
+    @Binding var images: [UIImage]
     let isImportingPhotos: Bool
     @Binding var selectedPhotoItems: [PhotosPickerItem]
     @Binding var description: String
