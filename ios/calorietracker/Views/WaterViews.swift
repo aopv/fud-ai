@@ -118,6 +118,8 @@ struct WaterSettingsView: View {
     @Environment(NotificationManager.self) private var notificationManager
     @AppStorage(WaterSettings.enabledKey) private var enabled = false
     @AppStorage(WaterSettings.dailyGoalKey) private var dailyGoal = WaterSettings.defaultDailyGoalMl
+    @State private var goalText = ""
+    @FocusState private var goalFocused: Bool
 
     var body: some View {
         List {
@@ -137,17 +139,27 @@ struct WaterSettingsView: View {
 
             if enabled {
                 Section {
-                    Picker("Goal", selection: $dailyGoal) {
-                        ForEach(WaterSettings.dailyGoalOptions, id: \.self) { goal in
-                            Text("\(goal.formatted()) ml").tag(goal)
-                        }
+                    HStack {
+                        Text("Goal")
+                        Spacer()
+                        TextField("2,000", text: $goalText)
+                            .keyboardType(.numberPad)
+                            .multilineTextAlignment(.trailing)
+                            .focused($goalFocused)
+                            .onChange(of: goalText) { _, value in
+                                let digits = value.filter(\.isNumber)
+                                if digits != value { goalText = digits }
+                                if let goal = Int(digits), goal > 0 {
+                                    dailyGoal = goal
+                                }
+                            }
+                        Text("ml")
+                            .foregroundStyle(.secondary)
                     }
-                    .pickerStyle(.menu)
-                    .tint(.secondary)
                 } header: {
                     Text("Daily Goal")
                 } footer: {
-                    Text("Water reminders are optional and can be enabled under Notifications.")
+                    Text("Enter any positive amount. Water reminders are optional and can be enabled under Notifications.")
                 }
                 .listRowBackground(AppColors.appCard)
             }
@@ -156,5 +168,17 @@ struct WaterSettingsView: View {
         .background(AppColors.appBackground)
         .navigationTitle("Water Tracking")
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear { goalText = String(dailyGoal) }
+        .onDisappear {
+            if Int(goalText) == nil || Int(goalText) == 0 {
+                goalText = String(dailyGoal)
+            }
+        }
+        .toolbar {
+            ToolbarItemGroup(placement: .keyboard) {
+                Spacer()
+                Button("Done") { goalFocused = false }
+            }
+        }
     }
 }

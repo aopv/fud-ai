@@ -1700,10 +1700,20 @@ private fun SettingsSheets(
                 )
                 SettingsSheet.WATER_GOAL -> ListSheet(
                     title = stringResource(R.string.settings_water_goal),
-                    items = listOf(1_500, 2_000, 2_500, 3_000, 3_500, 4_000),
-                    label = { "${it} ml" },
-                    selected = { it == ui.waterDailyGoalMl },
-                    onSelect = { vm.setWaterDailyGoalMl(it); onDismiss() }
+                    items = emptyList<Int>(),
+                    label = { "" },
+                    selected = { false },
+                    onSelect = {},
+                    footer = stringResource(R.string.settings_water_goal_custom_help),
+                    customField = { raw ->
+                        raw.toIntOrNull()?.takeIf { it > 0 }?.let {
+                            vm.setWaterDailyGoalMl(it)
+                            onDismiss()
+                        }
+                    },
+                    customInitialValue = ui.waterDailyGoalMl.toString(),
+                    customPlaceholder = stringResource(R.string.settings_water_goal_custom_placeholder),
+                    customKeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
                 SettingsSheet.CALORIES -> NutritionPickerSheet(
                     label = stringResource(R.string.macro_calories), unit = stringResource(R.string.unit_kcal),
@@ -1889,7 +1899,10 @@ private fun <T> ListSheet(
     icon: ((T) -> ImageVector?)? = null,
     subtitle: (@Composable (T) -> String?)? = null,
     footer: String? = null,
-    customField: ((String) -> Unit)? = null
+    customField: ((String) -> Unit)? = null,
+    customInitialValue: String = "",
+    customPlaceholder: String = "",
+    customKeyboardOptions: KeyboardOptions = KeyboardOptions.Default
 ) {
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
     Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
@@ -1967,12 +1980,13 @@ private fun <T> ListSheet(
             Spacer(Modifier.height(8.dp))
             Text(it, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
         }
-        var custom by remember { mutableStateOf("") }
+        var custom by remember(customInitialValue) { mutableStateOf(customInitialValue) }
         Spacer(Modifier.height(8.dp))
         FudGlassTextField(
             value = custom,
             onValueChange = { custom = it },
-            placeholder = stringResource(R.string.sheet_any_model_id),
+            placeholder = customPlaceholder.ifBlank { stringResource(R.string.sheet_any_model_id) },
+            keyboardOptions = customKeyboardOptions,
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(Modifier.height(8.dp))

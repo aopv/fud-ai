@@ -553,6 +553,8 @@
     <string name="settings_water_tracking">Water Tracking</string>
     <string name="settings_water_goal">Daily Water Goal</string>
     <string name="settings_water_goal_summary">%1$d ml</string>
+    <string name="settings_water_goal_custom_placeholder">Enter milliliters</string>
+    <string name="settings_water_goal_custom_help">Enter any positive amount for your daily goal.</string>
     <string name="settings_notif_water_reminder">Water Reminder</string>
     <string name="settings_battery_opt">Battery Optimization</string>
     <string name="settings_battery_opt_value">Whitelist Fud AI</string>
