@@ -116,6 +116,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -1698,22 +1699,12 @@ private fun SettingsSheets(
                     selected = { it.first == ui.weekStartsOnMonday },
                     onSelect = { vm.setWeekStartsOnMonday(it.first); onDismiss() }
                 )
-                SettingsSheet.WATER_GOAL -> ListSheet(
-                    title = stringResource(R.string.settings_water_goal),
-                    items = emptyList<Int>(),
-                    label = { "" },
-                    selected = { false },
-                    onSelect = {},
-                    footer = stringResource(R.string.settings_water_goal_custom_help),
-                    customField = { raw ->
-                        raw.toIntOrNull()?.takeIf { it > 0 }?.let {
-                            vm.setWaterDailyGoalMl(it)
-                            onDismiss()
-                        }
-                    },
-                    customInitialValue = ui.waterDailyGoalMl.toString(),
-                    customPlaceholder = stringResource(R.string.settings_water_goal_custom_placeholder),
-                    customKeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                SettingsSheet.WATER_GOAL -> WaterGoalSheet(
+                    current = ui.waterDailyGoalMl,
+                    onSave = {
+                        vm.setWaterDailyGoalMl(it)
+                        onDismiss()
+                    }
                 )
                 SettingsSheet.CALORIES -> NutritionPickerSheet(
                     label = stringResource(R.string.macro_calories), unit = stringResource(R.string.unit_kcal),
@@ -1899,10 +1890,7 @@ private fun <T> ListSheet(
     icon: ((T) -> ImageVector?)? = null,
     subtitle: (@Composable (T) -> String?)? = null,
     footer: String? = null,
-    customField: ((String) -> Unit)? = null,
-    customInitialValue: String = "",
-    customPlaceholder: String = "",
-    customKeyboardOptions: KeyboardOptions = KeyboardOptions.Default
+    customField: ((String) -> Unit)? = null
 ) {
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
     Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
@@ -1980,13 +1968,12 @@ private fun <T> ListSheet(
             Spacer(Modifier.height(8.dp))
             Text(it, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
         }
-        var custom by remember(customInitialValue) { mutableStateOf(customInitialValue) }
+        var custom by remember { mutableStateOf("") }
         Spacer(Modifier.height(8.dp))
         FudGlassTextField(
             value = custom,
             onValueChange = { custom = it },
-            placeholder = customPlaceholder.ifBlank { stringResource(R.string.sheet_any_model_id) },
-            keyboardOptions = customKeyboardOptions,
+            placeholder = stringResource(R.string.sheet_any_model_id),
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(Modifier.height(8.dp))
@@ -2079,6 +2066,29 @@ private fun WeightSheet(titleText: String, current: Double, useMetric: Boolean, 
     }
     Spacer(Modifier.height(16.dp))
     GradientSaveButton { onSave(kg) }
+    Spacer(Modifier.height(8.dp))
+}
+
+@Composable
+private fun WaterGoalSheet(current: Int, onSave: (Int) -> Unit) {
+    var goal by remember(current) { mutableIntStateOf(current.coerceIn(1, 10_000)) }
+    Text(stringResource(R.string.settings_water_goal), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+    Spacer(Modifier.height(20.dp))
+    NumericWheelPicker(
+        value = goal,
+        onValueChange = { goal = it },
+        min = 1,
+        max = 10_000,
+        unit = stringResource(R.string.unit_ml)
+    )
+    Spacer(Modifier.height(8.dp))
+    Text(
+        stringResource(R.string.settings_water_goal_wheel_help),
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+    )
+    Spacer(Modifier.height(16.dp))
+    GradientSaveButton { onSave(goal) }
     Spacer(Modifier.height(8.dp))
 }
 

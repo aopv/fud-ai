@@ -553,8 +553,7 @@
     <string name="settings_water_tracking">Water Tracking</string>
     <string name="settings_water_goal">Daily Water Goal</string>
     <string name="settings_water_goal_summary">%1$d ml</string>
-    <string name="settings_water_goal_custom_placeholder">Enter milliliters</string>
-    <string name="settings_water_goal_custom_help">Enter any positive amount for your daily goal.</string>
+    <string name="settings_water_goal_wheel_help">Scroll to select any daily goal from 1 to 10,000 ml.</string>
     <string name="settings_notif_water_reminder">Water Reminder</string>
     <string name="settings_battery_opt">Battery Optimization</string>
     <string name="settings_battery_opt_value">Whitelist Fud AI</string>
@@ -928,6 +927,7 @@
     <string name="water_custom_amount">Custom amount</string>
     <string name="water_add">Add Water</string>
     <string name="water_progress">%1$d / %2$d ml</string>
+    <string name="unit_ml">ml</string>
     <string name="notif_update_title">Update available</string>
     <string name="notif_update_text">A new version of Fud AI is ready. Tap to update.</string>
     <string name="settings_calc_intro">Your daily calorie and macro targets are set by AI. When you tap Recalculate Goals — or automatically about once a week if Adaptive Goals is on — Fud AI sends your profile, the reference equations below, your recently logged food, and your weight trend to your AI provider. It starts from these peer-reviewed formulas, then adjusts them to your real data to estimate your true maintenance and targets.</string>

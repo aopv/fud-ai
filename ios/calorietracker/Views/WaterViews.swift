@@ -118,8 +118,7 @@ struct WaterSettingsView: View {
     @Environment(NotificationManager.self) private var notificationManager
     @AppStorage(WaterSettings.enabledKey) private var enabled = false
     @AppStorage(WaterSettings.dailyGoalKey) private var dailyGoal = WaterSettings.defaultDailyGoalMl
-    @State private var goalText = ""
-    @FocusState private var goalFocused: Bool
+    @State private var showGoalPicker = false
 
     var body: some View {
         List {
@@ -139,27 +138,24 @@ struct WaterSettingsView: View {
 
             if enabled {
                 Section {
-                    HStack {
-                        Text("Goal")
-                        Spacer()
-                        TextField("2,000", text: $goalText)
-                            .keyboardType(.numberPad)
-                            .multilineTextAlignment(.trailing)
-                            .focused($goalFocused)
-                            .onChange(of: goalText) { _, value in
-                                let digits = value.filter(\.isNumber)
-                                if digits != value { goalText = digits }
-                                if let goal = Int(digits), goal > 0 {
-                                    dailyGoal = goal
-                                }
-                            }
-                        Text("ml")
-                            .foregroundStyle(.secondary)
+                    Button {
+                        showGoalPicker = true
+                    } label: {
+                        HStack {
+                            Text("Goal")
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Text("\(dailyGoal.formatted()) ml")
+                                .foregroundStyle(.secondary)
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                        }
                     }
                 } header: {
                     Text("Daily Goal")
                 } footer: {
-                    Text("Enter any positive amount. Water reminders are optional and can be enabled under Notifications.")
+                    Text("Tap Goal to select an amount with the scroll wheel. Water reminders are optional and can be enabled under Notifications.")
                 }
                 .listRowBackground(AppColors.appCard)
             }
@@ -168,17 +164,70 @@ struct WaterSettingsView: View {
         .background(AppColors.appBackground)
         .navigationTitle("Water Tracking")
         .navigationBarTitleDisplayMode(.inline)
-        .onAppear { goalText = String(dailyGoal) }
-        .onDisappear {
-            if Int(goalText) == nil || Int(goalText) == 0 {
-                goalText = String(dailyGoal)
-            }
+        .sheet(isPresented: $showGoalPicker) {
+            WaterGoalPickerSheet(currentGoal: dailyGoal) { dailyGoal = $0 }
         }
-        .toolbar {
-            ToolbarItemGroup(placement: .keyboard) {
+    }
+}
+
+private struct WaterGoalPickerSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    let onSave: (Int) -> Void
+    @State private var selectedGoal: Int
+
+    init(currentGoal: Int, onSave: @escaping (Int) -> Void) {
+        self.onSave = onSave
+        _selectedGoal = State(initialValue: min(10_000, max(1, currentGoal)))
+    }
+
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 20) {
+                Text("Daily Water Goal")
+                    .font(.system(.title2, design: .rounded, weight: .bold))
+
+                HStack(spacing: 4) {
+                    Picker("Milliliters", selection: $selectedGoal) {
+                        ForEach(1...10_000, id: \.self) { amount in
+                            Text(amount.formatted())
+                                .tag(amount)
+                                .font(.system(.title2, design: .rounded, weight: .medium))
+                        }
+                    }
+                    .pickerStyle(.wheel)
+                    .frame(width: 180, height: 190)
+                    .clipped()
+
+                    Text("ml")
+                        .font(.system(.title3, design: .rounded))
+                        .foregroundStyle(.secondary)
+                }
+
+                Button {
+                    onSave(selectedGoal)
+                    dismiss()
+                } label: {
+                    Text("Save")
+                        .font(.system(.headline, design: .rounded, weight: .semibold))
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 14)
+                        .background(
+                            LinearGradient(colors: AppColors.calorieGradient, startPoint: .leading, endPoint: .trailing)
+                        )
+                        .foregroundStyle(.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 14))
+                }
+                .padding(.horizontal, 24)
+
                 Spacer()
-                Button("Done") { goalFocused = false }
+            }
+            .padding(.top, 24)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
             }
         }
+        .presentationDetents([.medium])
     }
 }
