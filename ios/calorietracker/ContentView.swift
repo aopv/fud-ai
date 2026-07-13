@@ -626,6 +626,30 @@ struct HomeView: View {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
     }
 
+    @ViewBuilder
+    private var waterQuickMenuItems: some View {
+        Button {
+            showCustomWaterLog = true
+        } label: {
+            Label("Custom", systemImage: "slider.horizontal.3")
+        }
+        Button {
+            logWater(750)
+        } label: {
+            Label("3 Glasses (~750 ml)", systemImage: "drop.fill")
+        }
+        Button {
+            logWater(500)
+        } label: {
+            Label("2 Glasses (~500 ml)", systemImage: "drop.fill")
+        }
+        Button {
+            logWater(250)
+        } label: {
+            Label("1 Glass (~250 ml)", systemImage: "drop.fill")
+        }
+    }
+
     var body: some View {
         // Explicit observation tracking — reads profileStore.profile at body root
         // so SwiftUI invalidates this view on every profile mutation.
@@ -676,6 +700,22 @@ struct HomeView: View {
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
 
+                    if waterTrackingEnabled {
+                        Menu {
+                            waterQuickMenuItems
+                        } label: {
+                            WaterProgressRow(
+                                current: waterStore.total(on: selectedDate),
+                                goal: waterDailyGoal
+                            )
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityHint("Tap to log water")
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
+                        .listRowInsets(EdgeInsets(top: 2, leading: 20, bottom: 2, trailing: 20))
+                    }
+
                     Button {
                         showNutritionDetail = true
                     } label: {
@@ -691,16 +731,6 @@ struct HomeView: View {
                     }
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
-                }
-
-                if waterTrackingEnabled {
-                    Section {
-                        WaterProgressRow(
-                            current: waterStore.total(on: selectedDate),
-                            goal: waterDailyGoal
-                        )
-                        .listRowBackground(AppColors.appCard)
-                    }
                 }
 
                 // Food list
@@ -795,26 +825,7 @@ struct HomeView: View {
                 Menu {
                     if waterTrackingEnabled {
                         Menu {
-                            Button {
-                                showCustomWaterLog = true
-                            } label: {
-                                Label("Custom", systemImage: "slider.horizontal.3")
-                            }
-                            Button {
-                                logWater(750)
-                            } label: {
-                                Label("3 Glasses (~750 ml)", systemImage: "drop.fill")
-                            }
-                            Button {
-                                logWater(500)
-                            } label: {
-                                Label("2 Glasses (~500 ml)", systemImage: "drop.fill")
-                            }
-                            Button {
-                                logWater(250)
-                            } label: {
-                                Label("1 Glass (~250 ml)", systemImage: "drop.fill")
-                            }
+                            waterQuickMenuItems
                         } label: {
                             Label("Water", systemImage: "drop.fill")
                         }

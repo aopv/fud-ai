@@ -6,24 +6,37 @@ struct WaterProgressRow: View {
 
     private var progress: Double {
         guard goal > 0 else { return 0 }
-        return min(Double(current) / Double(goal), 1)
+        return min(max(Double(current) / Double(goal), 0), 1)
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 7) {
             HStack {
                 Label("Water", systemImage: "drop.fill")
-                    .font(.system(.headline, design: .rounded, weight: .semibold))
+                    .font(.system(.subheadline, design: .rounded, weight: .semibold))
                     .foregroundStyle(AppColors.calorie)
                 Spacer()
                 Text("\(current.formatted()) / \(goal.formatted()) ml")
-                    .font(.system(.subheadline, design: .rounded, weight: .medium))
+                    .font(.system(.caption, design: .rounded, weight: .medium))
                     .foregroundStyle(.secondary)
+                Image(systemName: "plus.circle.fill")
+                    .font(.caption)
+                    .foregroundStyle(AppColors.calorie)
+                    .accessibilityHidden(true)
             }
-            ProgressView(value: progress)
-                .tint(AppColors.calorie)
+            GeometryReader { proxy in
+                ZStack(alignment: .leading) {
+                    Capsule()
+                        .fill(AppColors.calorie.opacity(0.16))
+                    Capsule()
+                        .fill(AppColors.calorie)
+                        .frame(width: proxy.size.width * progress)
+                }
+            }
+            .frame(height: 5)
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, 2)
+        .contentShape(Rectangle())
         .accessibilityElement(children: .combine)
         .accessibilityLabel("Water, \(current) of \(goal) milliliters")
     }

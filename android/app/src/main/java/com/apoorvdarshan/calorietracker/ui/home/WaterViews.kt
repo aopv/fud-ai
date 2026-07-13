@@ -1,5 +1,6 @@
 package com.apoorvdarshan.calorietracker.ui.home
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -7,14 +8,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.WaterDrop
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
@@ -31,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -40,35 +42,48 @@ import com.apoorvdarshan.calorietracker.ui.theme.AppColors
 import androidx.compose.ui.res.stringResource
 
 @Composable
-fun WaterProgressCard(current: Int, goal: Int, modifier: Modifier = Modifier) {
+fun WaterProgressRow(current: Int, goal: Int, onClick: () -> Unit, modifier: Modifier = Modifier) {
     val progress = if (goal > 0) (current.toFloat() / goal).coerceIn(0f, 1f) else 0f
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(18.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(10.dp))
+            .clickable(onClick = onClick)
+            .padding(vertical = 4.dp),
+        verticalArrangement = Arrangement.spacedBy(7.dp)
     ) {
-        Column(Modifier.padding(horizontal = 18.dp, vertical = 14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Filled.WaterDrop, contentDescription = null, tint = AppColors.Calorie)
-                Text(
-                    stringResource(R.string.water),
-                    modifier = Modifier.padding(start = 8.dp),
-                    fontWeight = FontWeight.SemiBold
-                )
-                Spacer(Modifier.weight(1f))
-                Text(
-                    stringResource(R.string.water_progress, current, goal),
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.62f),
-                    fontSize = 14.sp
-                )
-            }
-            LinearProgressIndicator(
-                progress = { progress },
-                modifier = Modifier.fillMaxWidth().height(7.dp),
-                color = AppColors.Calorie,
-                trackColor = AppColors.Calorie.copy(alpha = 0.16f)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                Icons.Filled.WaterDrop,
+                contentDescription = null,
+                tint = AppColors.Calorie,
+                modifier = Modifier.size(17.dp)
+            )
+            Text(
+                stringResource(R.string.water),
+                modifier = Modifier.padding(start = 6.dp),
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 14.sp
+            )
+            Spacer(Modifier.weight(1f))
+            Text(
+                stringResource(R.string.water_progress, current, goal),
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.62f),
+                fontSize = 12.sp
+            )
+            Icon(
+                Icons.Filled.AddCircle,
+                contentDescription = stringResource(R.string.water_add),
+                tint = AppColors.Calorie,
+                modifier = Modifier.padding(start = 6.dp).size(17.dp)
             )
         }
+        LinearProgressIndicator(
+            progress = { progress },
+            modifier = Modifier.fillMaxWidth().height(5.dp).clip(RoundedCornerShape(3.dp)),
+            color = AppColors.Calorie,
+            trackColor = AppColors.Calorie.copy(alpha = 0.16f)
+        )
     }
 }
 

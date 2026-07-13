@@ -316,6 +316,18 @@ fun HomeScreen(container: AppContainer) {
                             )
                         }
                     }
+                    if (ui.waterTrackingEnabled) {
+                        Spacer(Modifier.height(10.dp))
+                        WaterProgressRow(
+                            current = ui.waterTodayMl,
+                            goal = ui.waterDailyGoalMl,
+                            onClick = {
+                                addMenuGroup = AddMenuGroup.Water
+                                showAddMenu = true
+                            },
+                            modifier = Modifier.padding(horizontal = 20.dp)
+                        )
+                    }
                     Box(
                         Modifier
                             .fillMaxWidth()
@@ -326,16 +338,6 @@ fun HomeScreen(container: AppContainer) {
                             ViewMoreButton()
                         }
                     }
-                }
-            }
-
-            if (ui.waterTrackingEnabled) {
-                item {
-                    WaterProgressCard(
-                        current = ui.waterTodayMl,
-                        goal = ui.waterDailyGoalMl,
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
-                    )
                 }
             }
 
