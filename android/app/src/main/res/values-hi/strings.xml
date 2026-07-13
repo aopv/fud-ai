@@ -80,12 +80,12 @@
     <string name="activity_active">सक्रिय</string>
     <string name="activity_very_active">बहुत सक्रिय</string>
     <string name="activity_extra_active">अत्यधिक सक्रिय</string>
-    <string name="activity_sedentary_subtitle">कम या कोई व्यायाम नहीं</string>
-    <string name="activity_light_subtitle">सप्ताह में 1–3 बार व्यायाम</string>
-    <string name="activity_moderate_subtitle">सप्ताह में 4–5 बार व्यायाम</string>
-    <string name="activity_active_subtitle">रोज़ाना व्यायाम या सप्ताह में 3–4 बार तीव्र</string>
-    <string name="activity_very_active_subtitle">सप्ताह में 6–7 बार तीव्र व्यायाम</string>
-    <string name="activity_extra_active_subtitle">रोज़ाना बहुत तीव्र, या शारीरिक काम</string>
+    <string name="activity_sedentary_subtitle">काम और घर पर अधिकतर बैठे रहते हैं; बहुत कम या कोई नियोजित व्यायाम नहीं।</string>
+    <string name="activity_light_subtitle">अधिकतर बैठे रहते हैं; सप्ताह में 1–3 दिन हल्का व्यायाम या सामान्य गतिविधि।</string>
+    <string name="activity_moderate_subtitle">सप्ताह में 3–5 दिन नियमित जिम, कार्डियो, चढ़ाई, साइकिलिंग या खेल।</string>
+    <string name="activity_active_subtitle">अधिकतर दिनों में प्रशिक्षण, या ऐसा काम जिसमें काफी खड़ा रहना, चलना या उठाना हो।</string>
+    <string name="activity_very_active_subtitle">सप्ताह में 6–7 दिन कठिन या सहनशक्ति प्रशिक्षण, या मेहनत वाला शारीरिक काम।</string>
+    <string name="activity_extra_active_subtitle">प्रतिस्पर्धी या उच्च-मात्रा एथलीट, दिन में दो प्रशिक्षण, या भारी शारीरिक काम के साथ नियमित प्रशिक्षण।</string>
 
     <!-- Weight Goal -->
     <string name="goal_lose">वज़न घटाएँ / Cutting</string>
@@ -206,7 +206,7 @@
     <string name="onboarding_inches">इंच</string>
 
     <string name="onboarding_activity_title">आप कितने सक्रिय हैं?</string>
-    <string name="onboarding_activity_subtitle">आपका सामान्य सप्ताह</string>
+    <string name="onboarding_activity_subtitle">काम और व्यायाम सहित अपने औसत सप्ताह के आधार पर चुनें।</string>
 
     <string name="onboarding_goal_title">आपका लक्ष्य क्या है?</string>
     <string name="onboarding_goal_subtitle">आप इसे कभी भी बदल सकते हैं</string>

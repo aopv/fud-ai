@@ -80,12 +80,12 @@
     <string name="activity_active">Aktiv</string>
     <string name="activity_very_active">Çox Aktiv</string>
     <string name="activity_extra_active">Həddən Artıq Aktiv</string>
-    <string name="activity_sedentary_subtitle">Az və ya heç bir məşq</string>
-    <string name="activity_light_subtitle">Həftədə 1–3 dəfə məşq</string>
-    <string name="activity_moderate_subtitle">Həftədə 4–5 dəfə məşq</string>
-    <string name="activity_active_subtitle">Gündəlik məşq və ya həftədə 3–4 dəfə intensiv</string>
-    <string name="activity_very_active_subtitle">Həftədə 6–7 dəfə intensiv məşq</string>
-    <string name="activity_extra_active_subtitle">Çox intensiv gündəlik və ya fiziki iş</string>
+    <string name="activity_sedentary_subtitle">İşdə və evdə əsasən oturaq; az və ya heç planlı məşq yoxdur.</string>
+    <string name="activity_light_subtitle">Əsasən oturaq; həftədə 1–3 gün yüngül məşq və ya istirahət fəaliyyəti.</string>
+    <string name="activity_moderate_subtitle">Həftədə 3–5 gün müntəzəm zal, kardio, dırmanma, velosiped və ya idman.</string>
+    <string name="activity_active_subtitle">Əksər günlər məşq və ya çox ayaqüstə qalma, hərəkət və qaldırma tələb edən iş.</string>
+    <string name="activity_very_active_subtitle">Həftədə 6–7 gün ağır məşq, dözümlülük məşqi və ya tələbkar fiziki iş.</string>
+    <string name="activity_extra_active_subtitle">Yarışan və ya yüksək həcmli idmançı, gündə iki məşq və ya tez-tez məşqlə ağır fiziki iş.</string>
 
     <!-- Weight Goal -->
     <string name="goal_lose">Çəki Azalt / Cutting</string>
@@ -206,7 +206,7 @@
     <string name="onboarding_inches">Düym</string>
 
     <string name="onboarding_activity_title">Nə qədər aktivsiniz?</string>
-    <string name="onboarding_activity_subtitle">Tipik həftəniz</string>
+    <string name="onboarding_activity_subtitle">İş və məşq daxil olmaqla orta həftənizə əsasən seçin.</string>
 
     <string name="onboarding_goal_title">Hədəfiniz nədir?</string>
     <string name="onboarding_goal_subtitle">Bunu istənilən vaxt dəyişə bilərsiniz</string>

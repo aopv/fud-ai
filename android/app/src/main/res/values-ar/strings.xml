@@ -80,12 +80,12 @@
     <string name="activity_active">نشط</string>
     <string name="activity_very_active">نشط جدًا</string>
     <string name="activity_extra_active">نشط للغاية</string>
-    <string name="activity_sedentary_subtitle">قليل من التمارين أو لا توجد</string>
-    <string name="activity_light_subtitle">تمارين 1–3 مرات / أسبوع</string>
-    <string name="activity_moderate_subtitle">تمارين 4–5 مرات / أسبوع</string>
-    <string name="activity_active_subtitle">تمارين يومية أو مكثفة 3–4 مرات / أسبوع</string>
-    <string name="activity_very_active_subtitle">تمارين مكثفة 6–7 مرات / أسبوع</string>
-    <string name="activity_extra_active_subtitle">تمارين مكثفة جدًا يوميًا أو وظيفة بدنية</string>
+    <string name="activity_sedentary_subtitle">الجلوس معظم الوقت في العمل والمنزل؛ قليل من التمارين المخططة أو لا شيء.</string>
+    <string name="activity_light_subtitle">الجلوس معظم الوقت؛ تمارين خفيفة أو نشاط ترفيهي 1–3 أيام/أسبوع.</string>
+    <string name="activity_moderate_subtitle">نادي رياضي أو كارديو أو تسلق أو دراجات أو رياضة 3–5 أيام/أسبوع.</string>
+    <string name="activity_active_subtitle">تدريب معظم الأيام، أو عمل يتطلب الكثير من الوقوف والحركة أو الرفع.</string>
+    <string name="activity_very_active_subtitle">تدريب شاق 6–7 أيام/أسبوع، أو تدريب تحمل، أو عمل بدني مجهد.</string>
+    <string name="activity_extra_active_subtitle">رياضي تنافسي أو عالي الحجم، أو تدريب مرتين يوميًا، أو عمل يدوي شاق مع تدريب متكرر.</string>
 
     <!-- Weight Goal -->
     <string name="goal_lose">إنقاص الوزن / Cutting</string>
@@ -206,7 +206,7 @@
     <string name="onboarding_inches">إنش</string>
 
     <string name="onboarding_activity_title">ما مدى نشاطك؟</string>
-    <string name="onboarding_activity_subtitle">أسبوعك المعتاد</string>
+    <string name="onboarding_activity_subtitle">اختر بناءً على متوسط أسبوعك، بما في ذلك العمل والتمارين.</string>
 
     <string name="onboarding_goal_title">ما هو هدفك؟</string>
     <string name="onboarding_goal_subtitle">يمكنك تغيير هذا في أي وقت</string>

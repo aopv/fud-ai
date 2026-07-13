@@ -80,12 +80,12 @@
     <string name="activity_active">活跃</string>
     <string name="activity_very_active">非常活跃</string>
     <string name="activity_extra_active">超级活跃</string>
-    <string name="activity_sedentary_subtitle">很少或不运动</string>
-    <string name="activity_light_subtitle">每周运动 1–3 次</string>
-    <string name="activity_moderate_subtitle">每周运动 4–5 次</string>
-    <string name="activity_active_subtitle">每天运动或每周高强度 3–4 次</string>
-    <string name="activity_very_active_subtitle">每周高强度运动 6–7 次</string>
-    <string name="activity_extra_active_subtitle">每天高强度运动，或体力劳动</string>
+    <string name="activity_sedentary_subtitle">工作和居家时大多坐着；很少或没有计划性锻炼。</string>
+    <string name="activity_light_subtitle">大多坐着；每周 1–3 天轻度锻炼或休闲活动。</string>
+    <string name="activity_moderate_subtitle">每周 3–5 天规律进行健身、有氧、攀岩、骑行或运动。</string>
+    <string name="activity_active_subtitle">大多数天训练，或工作中需要大量站立、走动或搬抬。</string>
+    <string name="activity_very_active_subtitle">每周 6–7 天高强度或耐力训练，或从事高强度体力工作。</string>
+    <string name="activity_extra_active_subtitle">竞技或高训练量运动员、每天两练，或重体力工作并频繁训练。</string>
 
     <!-- Weight Goal -->
     <string name="goal_lose">减重 / Cutting</string>
@@ -206,7 +206,7 @@
     <string name="onboarding_inches">英寸</string>
 
     <string name="onboarding_activity_title">你的活跃程度如何？</string>
-    <string name="onboarding_activity_subtitle">你的典型一周</string>
+    <string name="onboarding_activity_subtitle">请根据包含工作和锻炼在内的平均一周来选择。</string>
 
     <string name="onboarding_goal_title">你的目标是什么？</string>
     <string name="onboarding_goal_subtitle">你可以随时更改</string>

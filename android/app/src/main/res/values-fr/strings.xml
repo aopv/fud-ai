@@ -80,12 +80,12 @@
     <string name="activity_active">Active</string>
     <string name="activity_very_active">Très active</string>
     <string name="activity_extra_active">Extrêmement active</string>
-    <string name="activity_sedentary_subtitle">Peu ou pas d\'exercice</string>
-    <string name="activity_light_subtitle">Exercice 1 à 3 fois / semaine</string>
-    <string name="activity_moderate_subtitle">Exercice 4 à 5 fois / semaine</string>
-    <string name="activity_active_subtitle">Exercice quotidien ou intense 3 à 4x / semaine</string>
-    <string name="activity_very_active_subtitle">Exercice intense 6 à 7 fois / semaine</string>
-    <string name="activity_extra_active_subtitle">Très intense au quotidien, ou métier physique</string>
+    <string name="activity_sedentary_subtitle">Principalement assis au travail et à la maison ; peu ou pas d\'exercice planifié.</string>
+    <string name="activity_light_subtitle">Principalement assis ; exercice léger ou activité de loisir 1 à 3 jours/semaine.</string>
+    <string name="activity_moderate_subtitle">Salle, cardio, escalade, vélo ou sport régulier 3 à 5 jours/semaine.</string>
+    <string name="activity_active_subtitle">Entraînement presque tous les jours, ou métier avec beaucoup de station debout, mouvement ou port de charges.</string>
+    <string name="activity_very_active_subtitle">Entraînement intense 6 à 7 jours/semaine, endurance ou travail physique exigeant.</string>
+    <string name="activity_extra_active_subtitle">Athlète de compétition ou à gros volume, deux entraînements quotidiens, ou travail manuel lourd plus entraînement fréquent.</string>
 
     <!-- Weight Goal -->
     <string name="goal_lose">Perdre du poids / Cutting</string>
@@ -206,7 +206,7 @@
     <string name="onboarding_inches">Pouces</string>
 
     <string name="onboarding_activity_title">Quel est votre niveau d\'activité ?</string>
-    <string name="onboarding_activity_subtitle">Votre semaine type</string>
+    <string name="onboarding_activity_subtitle">Choisissez selon votre semaine moyenne, travail et exercice compris.</string>
 
     <string name="onboarding_goal_title">Quel est votre objectif ?</string>
     <string name="onboarding_goal_subtitle">Vous pouvez le changer à tout moment</string>

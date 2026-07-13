@@ -80,12 +80,12 @@
     <string name="activity_active">Activ</string>
     <string name="activity_very_active">Foarte activ</string>
     <string name="activity_extra_active">Extra activ</string>
-    <string name="activity_sedentary_subtitle">Puțin sau deloc exercițiu</string>
-    <string name="activity_light_subtitle">Exercițiu de 1–3 ori / săptămână</string>
-    <string name="activity_moderate_subtitle">Exercițiu de 4–5 ori / săptămână</string>
-    <string name="activity_active_subtitle">Exercițiu zilnic sau intens de 3–4x / săptămână</string>
-    <string name="activity_very_active_subtitle">Exercițiu intens de 6–7 ori / săptămână</string>
-    <string name="activity_extra_active_subtitle">Foarte intens zilnic sau muncă fizică</string>
+    <string name="activity_sedentary_subtitle">Mai mult așezat la serviciu și acasă; puțin sau deloc exercițiu planificat.</string>
+    <string name="activity_light_subtitle">Mai mult așezat; exercițiu ușor sau activitate recreativă 1–3 zile/săptămână.</string>
+    <string name="activity_moderate_subtitle">Sală, cardio, escaladă, ciclism sau sport regulat 3–5 zile/săptămână.</string>
+    <string name="activity_active_subtitle">Antrenament în majoritatea zilelor, sau serviciu cu mult stat în picioare, mișcare ori ridicare.</string>
+    <string name="activity_very_active_subtitle">Antrenament intens 6–7 zile/săptămână, rezistență sau muncă fizică solicitantă.</string>
+    <string name="activity_extra_active_subtitle">Sportiv de performanță sau volum mare, două antrenamente zilnic, ori muncă grea plus antrenament frecvent.</string>
 
     <!-- Weight Goal -->
     <string name="goal_lose">Slăbește / Cutting</string>
@@ -206,7 +206,7 @@
     <string name="onboarding_inches">Țoli</string>
 
     <string name="onboarding_activity_title">Cât de activ ești?</string>
-    <string name="onboarding_activity_subtitle">Săptămâna ta tipică</string>
+    <string name="onboarding_activity_subtitle">Alege după săptămâna medie, incluzând munca și exercițiul.</string>
 
     <string name="onboarding_goal_title">Care e obiectivul tău?</string>
     <string name="onboarding_goal_subtitle">Poți schimba asta oricând</string>

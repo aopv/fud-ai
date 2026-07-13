@@ -87,12 +87,12 @@
     <string name="activity_active">Active</string>
     <string name="activity_very_active">Very Active</string>
     <string name="activity_extra_active">Extra Active</string>
-    <string name="activity_sedentary_subtitle">Little or no exercise</string>
-    <string name="activity_light_subtitle">Exercise 1–3 times / week</string>
-    <string name="activity_moderate_subtitle">Exercise 4–5 times / week</string>
-    <string name="activity_active_subtitle">Daily exercise or intense 3–4x / week</string>
-    <string name="activity_very_active_subtitle">Intense exercise 6–7 times / week</string>
-    <string name="activity_extra_active_subtitle">Very intense daily, or physical job</string>
+    <string name="activity_sedentary_subtitle">Mostly seated at work and home; little or no planned exercise.</string>
+    <string name="activity_light_subtitle">Mostly seated; light exercise or casual activity 1–3 days/week.</string>
+    <string name="activity_moderate_subtitle">Regular gym, cardio, climbing, cycling, or sport 3–5 days/week.</string>
+    <string name="activity_active_subtitle">Training most days, or a job with substantial standing, movement, or lifting.</string>
+    <string name="activity_very_active_subtitle">Hard training 6–7 days/week, endurance training, or demanding physical work.</string>
+    <string name="activity_extra_active_subtitle">Competitive/high-volume athlete, twice-daily training, or heavy manual work plus frequent training.</string>
 
     <!-- Weight Goal -->
     <string name="goal_lose">Lose Weight / Cutting</string>
@@ -216,7 +216,7 @@
     <string name="onboarding_inches">Inches</string>
 
     <string name="onboarding_activity_title">How active are you?</string>
-    <string name="onboarding_activity_subtitle">Your typical week</string>
+    <string name="onboarding_activity_subtitle">Choose based on your average week, including work and exercise.</string>
 
     <string name="onboarding_goal_title">What\'s your goal?</string>
     <string name="onboarding_goal_subtitle">You can change this anytime</string>

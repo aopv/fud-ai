@@ -80,12 +80,12 @@
     <string name="activity_active">Aktiv</string>
     <string name="activity_very_active">Sehr aktiv</string>
     <string name="activity_extra_active">Extrem aktiv</string>
-    <string name="activity_sedentary_subtitle">Wenig oder kein Sport</string>
-    <string name="activity_light_subtitle">Sport 1–3 Mal / Woche</string>
-    <string name="activity_moderate_subtitle">Sport 4–5 Mal / Woche</string>
-    <string name="activity_active_subtitle">Täglich Sport oder intensiv 3–4x / Woche</string>
-    <string name="activity_very_active_subtitle">Intensiv 6–7 Mal / Woche</string>
-    <string name="activity_extra_active_subtitle">Sehr intensiv täglich oder körperliche Arbeit</string>
+    <string name="activity_sedentary_subtitle">Bei Arbeit und zu Hause meist sitzend; wenig oder kein geplantes Training.</string>
+    <string name="activity_light_subtitle">Meist sitzend; leichtes Training oder lockere Aktivität an 1–3 Tagen/Woche.</string>
+    <string name="activity_moderate_subtitle">Regelmäßig Fitnessstudio, Cardio, Klettern, Radfahren oder Sport an 3–5 Tagen/Woche.</string>
+    <string name="activity_active_subtitle">Training an den meisten Tagen oder ein Beruf mit viel Stehen, Bewegung oder Heben.</string>
+    <string name="activity_very_active_subtitle">Hartes Training an 6–7 Tagen/Woche, Ausdauertraining oder körperlich anspruchsvolle Arbeit.</string>
+    <string name="activity_extra_active_subtitle">Wettkampf- oder Hochvolumen-Athlet, zweimal tägliches Training oder schwere körperliche Arbeit plus häufiges Training.</string>
 
     <!-- Weight Goal -->
     <string name="goal_lose">Abnehmen / Cutting</string>
@@ -206,7 +206,7 @@
     <string name="onboarding_inches">Zoll</string>
 
     <string name="onboarding_activity_title">Wie aktiv bist du?</string>
-    <string name="onboarding_activity_subtitle">Deine typische Woche</string>
+    <string name="onboarding_activity_subtitle">Wähle nach deiner durchschnittlichen Woche, einschließlich Arbeit und Training.</string>
 
     <string name="onboarding_goal_title">Was ist dein Ziel?</string>
     <string name="onboarding_goal_subtitle">Du kannst das jederzeit ändern</string>

@@ -80,12 +80,12 @@
     <string name="activity_active">Активный</string>
     <string name="activity_very_active">Очень активный</string>
     <string name="activity_extra_active">Сверхактивный</string>
-    <string name="activity_sedentary_subtitle">Мало или совсем нет упражнений</string>
-    <string name="activity_light_subtitle">Упражнения 1–3 раза в неделю</string>
-    <string name="activity_moderate_subtitle">Упражнения 4–5 раз в неделю</string>
-    <string name="activity_active_subtitle">Ежедневные упражнения или интенсивные 3–4 раза в неделю</string>
-    <string name="activity_very_active_subtitle">Интенсивные упражнения 6–7 раз в неделю</string>
-    <string name="activity_extra_active_subtitle">Очень интенсивные ежедневно или физическая работа</string>
+    <string name="activity_sedentary_subtitle">В основном сидячая работа и отдых; мало или совсем нет плановых тренировок.</string>
+    <string name="activity_light_subtitle">В основном сидячий образ жизни; лёгкие тренировки или активный отдых 1–3 дня в неделю.</string>
+    <string name="activity_moderate_subtitle">Регулярный зал, кардио, скалолазание, велосипед или спорт 3–5 дней в неделю.</string>
+    <string name="activity_active_subtitle">Тренировки почти каждый день или работа с частым стоянием, движением либо подъёмом тяжестей.</string>
+    <string name="activity_very_active_subtitle">Тяжёлые тренировки 6–7 дней в неделю, тренировки на выносливость или тяжёлая физическая работа.</string>
+    <string name="activity_extra_active_subtitle">Соревнующийся спортсмен с большим объёмом, две тренировки в день или тяжёлый труд плюс частые тренировки.</string>
 
     <!-- Weight Goal -->
     <string name="goal_lose">Сбросить вес / Cutting</string>
@@ -206,7 +206,7 @@
     <string name="onboarding_inches">Дюймы</string>
 
     <string name="onboarding_activity_title">Насколько вы активны?</string>
-    <string name="onboarding_activity_subtitle">Ваша обычная неделя</string>
+    <string name="onboarding_activity_subtitle">Выбирайте по средней неделе, учитывая работу и тренировки.</string>
 
     <string name="onboarding_goal_title">Какова ваша цель?</string>
     <string name="onboarding_goal_subtitle">Вы можете изменить это в любое время</string>

@@ -430,7 +430,13 @@ struct OnboardingView: View {
 
     private var activityStep: some View {
         VStack(alignment: .leading, spacing: 0) {
-            stepHeader(title: "How active are you?", subtitle: "Your typical week")
+            stepHeader(
+                title: "How active are you?",
+                subtitle: LocalizedDisplayText.text(
+                    "Choose based on your average week, including work and exercise.",
+                    polish: "Wybierz na podstawie typowego tygodnia, uwzględniając pracę i ćwiczenia."
+                )
+            )
             ScrollView {
                 VStack(spacing: 12) {
                     ForEach(ActivityLevel.allCases, id: \.self) { level in

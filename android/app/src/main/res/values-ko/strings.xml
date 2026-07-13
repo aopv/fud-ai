@@ -80,12 +80,12 @@
     <string name="activity_active">활동적</string>
     <string name="activity_very_active">매우 활동적</string>
     <string name="activity_extra_active">극도로 활동적</string>
-    <string name="activity_sedentary_subtitle">운동을 거의 안 함</string>
-    <string name="activity_light_subtitle">주 1–3회 운동</string>
-    <string name="activity_moderate_subtitle">주 4–5회 운동</string>
-    <string name="activity_active_subtitle">매일 운동 또는 주 3–4회 강도 높은 운동</string>
-    <string name="activity_very_active_subtitle">주 6–7회 강도 높은 운동</string>
-    <string name="activity_extra_active_subtitle">매일 매우 강한 운동 또는 육체 노동</string>
+    <string name="activity_sedentary_subtitle">직장과 집에서 대부분 앉아 있으며 계획적인 운동이 거의 없거나 전혀 없음.</string>
+    <string name="activity_light_subtitle">대부분 앉아서 생활하며 주 1–3일 가벼운 운동이나 여가 활동을 함.</string>
+    <string name="activity_moderate_subtitle">주 3–5일 정기적으로 헬스, 유산소, 클라이밍, 사이클 또는 스포츠를 함.</string>
+    <string name="activity_active_subtitle">대부분의 날에 훈련하거나 서기, 이동, 들기가 많은 직업.</string>
+    <string name="activity_very_active_subtitle">주 6–7일 고강도 또는 지구력 훈련, 혹은 힘든 육체 노동.</string>
+    <string name="activity_extra_active_subtitle">경쟁 또는 고훈련량 선수, 하루 두 번 훈련, 혹은 힘든 육체 노동과 잦은 훈련 병행.</string>
 
     <!-- Weight Goal -->
     <string name="goal_lose">체중 감량 / Cutting</string>
@@ -206,7 +206,7 @@
     <string name="onboarding_inches">인치</string>
 
     <string name="onboarding_activity_title">얼마나 활동적이신가요?</string>
-    <string name="onboarding_activity_subtitle">평소 일주일 기준</string>
+    <string name="onboarding_activity_subtitle">일과 운동을 포함한 평균적인 일주일을 기준으로 선택하세요.</string>
 
     <string name="onboarding_goal_title">목표가 무엇인가요?</string>
     <string name="onboarding_goal_subtitle">언제든지 변경할 수 있어요</string>

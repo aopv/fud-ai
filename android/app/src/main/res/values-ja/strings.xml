@@ -80,12 +80,12 @@
     <string name="activity_active">活発</string>
     <string name="activity_very_active">とても活発</string>
     <string name="activity_extra_active">非常に活発</string>
-    <string name="activity_sedentary_subtitle">運動はほとんど、またはまったくしない</string>
-    <string name="activity_light_subtitle">週1〜3回の運動</string>
-    <string name="activity_moderate_subtitle">週4〜5回の運動</string>
-    <string name="activity_active_subtitle">毎日の運動、または週3〜4回の激しい運動</string>
-    <string name="activity_very_active_subtitle">週6〜7回の激しい運動</string>
-    <string name="activity_extra_active_subtitle">毎日の非常に激しい運動、または肉体労働</string>
+    <string name="activity_sedentary_subtitle">仕事でも家でもほぼ座りっぱなしで、計画的な運動はほとんど、またはまったくしない。</string>
+    <string name="activity_light_subtitle">主に座り仕事で、週1〜3日は軽い運動や気軽な活動をする。</string>
+    <string name="activity_moderate_subtitle">週3〜5日はジム、有酸素運動、クライミング、サイクリング、スポーツなどを定期的に行う。</string>
+    <string name="activity_active_subtitle">ほぼ毎日トレーニングする、または立つ・動く・持ち上げることが多い仕事。</string>
+    <string name="activity_very_active_subtitle">週6〜7日のハードまたは持久系トレーニング、あるいは負荷の高い肉体労働。</string>
+    <string name="activity_extra_active_subtitle">競技・高ボリュームのアスリート、1日2回の練習、または重労働に加えて頻繁にトレーニング。</string>
 
     <!-- Weight Goal -->
     <string name="goal_lose">減量 / Cutting</string>
@@ -206,7 +206,7 @@
     <string name="onboarding_inches">インチ</string>
 
     <string name="onboarding_activity_title">どのくらい活動的ですか？</string>
-    <string name="onboarding_activity_subtitle">あなたの普段の1週間</string>
+    <string name="onboarding_activity_subtitle">仕事と運動を含む平均的な1週間を基準に選んでください。</string>
 
     <string name="onboarding_goal_title">あなたの目標は？</string>
     <string name="onboarding_goal_subtitle">いつでも変更できます</string>

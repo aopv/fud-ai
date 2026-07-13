@@ -615,7 +615,7 @@ private fun WheeledColumn(
 
 @Composable
 private fun ActivityStep(selected: ActivityLevel, onSelect: (ActivityLevel) -> Unit) {
-    Column(Modifier.fillMaxSize()) {
+    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
         StepHeader(
             stringResource(R.string.onboarding_activity_title),
             subtitle = stringResource(R.string.onboarding_activity_subtitle)

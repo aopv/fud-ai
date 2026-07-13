@@ -2908,7 +2908,7 @@ struct ProfileView: View {
     }
 
     enum ActiveSheet: String, Identifiable {
-        case editBirthday, editHeight, editWeight, editBodyFat, editGoalBodyFat, editGoalWeight, editCalories, editProtein, editCarbs, editFat
+        case editBirthday, editHeight, editWeight, editBodyFat, editGoalBodyFat, editGoalWeight, editActivity, editCalories, editProtein, editCarbs, editFat
         var id: String { rawValue }
     }
     @State private var activeSheet: ActiveSheet?
@@ -3119,21 +3119,13 @@ struct ProfileView: View {
                         saveProfile()
                     }
 
-                    Picker(selection: profileBinding.activityLevel) {
-                        ForEach(ActivityLevel.allCases, id: \.self) { level in
-                            Text(level.displayName).tag(level)
-                        }
-                    } label: {
-                        Label {
-                            Text("Activity Level")
-                        } icon: {
-                            Image(systemName: profile.activityLevel.icon)
-                                .foregroundStyle(AppColors.calorie)
-                        }
+                    ProfileInfoRow(
+                        icon: profile.activityLevel.icon,
+                        label: "Activity Level",
+                        value: profile.activityLevel.displayName
+                    ) {
+                        activeSheet = .editActivity
                     }
-                    .pickerStyle(.menu)
-                    .tint(.secondary)
-                    .onChange(of: profile.activityLevel) { _, _ in saveProfile() }
 
                     if profile.goal != .maintain {
                         Picker(selection: Binding(
@@ -4096,6 +4088,19 @@ struct ProfileView: View {
                         }
                         profile.goalWeightKg = newGoalWeight
                         saveProfile()
+                    }
+
+                case .editActivity:
+                    NavigationStack {
+                        ActivityLevelSelectionView(selected: profileBinding.activityLevel) {
+                            saveProfile()
+                            activeSheet = nil
+                        }
+                        .toolbar {
+                            ToolbarItem(placement: .cancellationAction) {
+                                Button("Cancel") { activeSheet = nil }
+                            }
+                        }
                     }
 
                 case .editCalories:

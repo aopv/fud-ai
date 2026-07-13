@@ -52,12 +52,30 @@ enum ActivityLevel: String, Codable, CaseIterable {
 
     var subtitle: String {
         switch self {
-        case .sedentary: LocalizedDisplayText.text("Little or no exercise", polish: "Mało lub brak ćwiczeń")
-        case .light: LocalizedDisplayText.text("Exercise 1–3 times / week", polish: "Ćwiczenia 1–3 razy w tygodniu")
-        case .moderate: LocalizedDisplayText.text("Exercise 4–5 times / week", polish: "Ćwiczenia 4–5 razy w tygodniu")
-        case .active: LocalizedDisplayText.text("Daily exercise or intense 3–4x / week", polish: "Codzienne ćwiczenia lub intensywne 3–4 razy w tygodniu")
-        case .veryActive: LocalizedDisplayText.text("Intense exercise 6–7 times / week", polish: "Intensywne ćwiczenia 6–7 razy w tygodniu")
-        case .extraActive: LocalizedDisplayText.text("Very intense daily, or physical job", polish: "Bardzo intensywnie codziennie lub praca fizyczna")
+        case .sedentary: LocalizedDisplayText.text(
+            "Mostly seated at work and home; little or no planned exercise.",
+            polish: "Głównie siedząco w pracy i domu; mało lub brak planowanych ćwiczeń."
+        )
+        case .light: LocalizedDisplayText.text(
+            "Mostly seated; light exercise or casual activity 1–3 days/week.",
+            polish: "Głównie siedząco; lekki trening lub rekreacja 1–3 dni w tygodniu."
+        )
+        case .moderate: LocalizedDisplayText.text(
+            "Regular gym, cardio, climbing, cycling, or sport 3–5 days/week.",
+            polish: "Regularna siłownia, cardio, wspinaczka, rower lub sport 3–5 dni w tygodniu."
+        )
+        case .active: LocalizedDisplayText.text(
+            "Training most days, or a job with substantial standing, movement, or lifting.",
+            polish: "Trening przez większość dni lub praca z częstym staniem, ruchem albo dźwiganiem."
+        )
+        case .veryActive: LocalizedDisplayText.text(
+            "Hard training 6–7 days/week, endurance training, or demanding physical work.",
+            polish: "Ciężki trening 6–7 dni w tygodniu, trening wytrzymałościowy lub wymagająca praca fizyczna."
+        )
+        case .extraActive: LocalizedDisplayText.text(
+            "Competitive/high-volume athlete, twice-daily training, or heavy manual work plus frequent training.",
+            polish: "Sportowiec wyczynowy, dwa treningi dziennie lub ciężka praca fizyczna plus częste treningi."
+        )
         }
     }
 
