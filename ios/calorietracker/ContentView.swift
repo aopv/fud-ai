@@ -506,14 +506,12 @@ struct HomeView: View {
     @State private var showBarcodeScanner = false
     @State private var capturedImage: UIImage?
     @State private var cameraMode: CameraMode = .snapFood
-    @State private var selectedPhotoItem: PhotosPickerItem?
-    @State private var photoPickerMode: CameraMode = .snapFood
+    @State private var selectedPhotoItems: [PhotosPickerItem] = []
     @State private var showPhotoPicker = false
     @State private var showError = false
     @State private var errorMessage = ""
     private enum RetryRequest {
         case analysis(images: [UIImage], mode: CameraMode, description: String?)
-        case automaticImage(UIImage)
         case text(String)
         case barcode(String)
     }
@@ -527,6 +525,7 @@ struct HomeView: View {
     @State private var showCopyFromDaySheet = false
     @State private var pendingContextImage: UIImage?
     @State private var captureImages: [UIImage] = []
+    @State private var isImportingPhotos = false
     @State private var showMultiPhotoCaptureSheet = false
     @State private var contextDescription: String = ""
     @State private var showContextSheet = false
@@ -818,17 +817,13 @@ struct HomeView: View {
                     Menu {
                         Button(action: {
                             cameraMode = .snapFoodWithContext
-                            photoPickerMode = .snapFoodWithContext
+                            isImportingPhotos = true
+                            captureImages = []
+                            contextDescription = ""
+                            selectedPhotoItems = []
                             showPhotoPicker = true
                         }) {
-                            Label("From Photos + Note", systemImage: "photo.badge.plus")
-                        }
-                        Button(action: {
-                            cameraMode = .snapFood
-                            photoPickerMode = .snapFood
-                            showPhotoPicker = true
-                        }) {
-                            Label("From Photos", systemImage: "photo.on.rectangle")
+                            Label("Photos", systemImage: "photo.on.rectangle")
                         }
                     } label: {
                         Label("Import Photos", systemImage: "photo.on.rectangle.angled")
@@ -842,6 +837,7 @@ struct HomeView: View {
                         }
                         Button(action: {
                             cameraMode = .snapFoodWithContext
+                            isImportingPhotos = false
                             captureImages = []
                             contextDescription = ""
                             showCamera = true
@@ -942,6 +938,8 @@ struct HomeView: View {
             .sheet(isPresented: $showMultiPhotoCaptureSheet) {
                 MultiPhotoCaptureSheet(
                     images: captureImages,
+                    isImportingPhotos: isImportingPhotos,
+                    selectedPhotoItems: $selectedPhotoItems,
                     description: $contextDescription,
                     onAddPhoto: {
                         guard captureImages.count < 10 else { return }
@@ -1132,25 +1130,27 @@ struct HomeView: View {
                 }
             }
             .interactiveDismissDisabled(activeSheet == .analyzing || activeSheet == .analyzingText || activeSheet == .lookingUpBarcode)
-            .photosPicker(isPresented: $showPhotoPicker, selection: $selectedPhotoItem, matching: .images)
-            .onChange(of: selectedPhotoItem) { oldValue, newValue in
-                guard let item = newValue else { return }
-                selectedPhotoItem = nil
+            .photosPicker(isPresented: $showPhotoPicker, selection: $selectedPhotoItems, maxSelectionCount: 10, matching: .images)
+            .onChange(of: selectedPhotoItems) { oldValue, newValue in
+                guard !newValue.isEmpty else { return }
+                selectedPhotoItems = []
                 Task {
-                    if let data = try? await item.loadTransferable(type: Data.self),
-                       let image = UIImage(data: data) {
-                        currentImage = image
-                        currentImages = [image]
+                    var imported: [UIImage] = []
+                    for item in newValue.prefix(10 - captureImages.count) {
+                        if let data = try? await item.loadTransferable(type: Data.self),
+                           let image = UIImage(data: data) {
+                            imported.append(image)
+                        }
+                    }
+                    if !imported.isEmpty {
+                        captureImages = Array((captureImages + imported).prefix(10))
+                        currentImage = captureImages.first
+                        currentImages = captureImages
                         currentEmoji = nil
                         currentFoodSource = .snapFood
-                        if photoPickerMode == .snapFoodWithContext {
-                            pendingContextImage = image
-                            contextDescription = ""
-                            showContextSheet = true
-                            return
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                            showMultiPhotoCaptureSheet = true
                         }
-
-                        startAutomaticImageAnalysis(image)
                     }
                 }
             }
@@ -1294,30 +1294,11 @@ struct HomeView: View {
         }
     }
 
-    private func startAutomaticImageAnalysis(_ image: UIImage) {
-        retryRequest = .automaticImage(image)
-        activeSheet = .analyzing
-        Task {
-            do {
-                let result = try await GeminiService.autoAnalyze(image: image)
-                currentFoodResult = result
-                retryRequest = nil
-                activeSheet = .foodResult
-            } catch {
-                activeSheet = nil
-                errorMessage = error.localizedDescription
-                showError = true
-            }
-        }
-    }
-
     private func retryLastRequest() {
         guard let retryRequest else { return }
         switch retryRequest {
         case let .analysis(images, mode, description):
             startAnalysis(images: images, mode: mode, description: description)
-        case let .automaticImage(image):
-            startAutomaticImageAnalysis(image)
         case let .text(description):
             startTextAnalysis(description)
         case let .barcode(barcode):
@@ -1965,11 +1946,14 @@ struct NutritionDetailRow: View {
 // MARK: - Multi-photo Capture Review
 struct MultiPhotoCaptureSheet: View {
     let images: [UIImage]
+    let isImportingPhotos: Bool
+    @Binding var selectedPhotoItems: [PhotosPickerItem]
     @Binding var description: String
     let onAddPhoto: () -> Void
     let onRemove: (Int) -> Void
     let onAnalyze: () -> Void
     let onCancel: () -> Void
+    @State private var showAdditionalPhotoPicker = false
 
     var body: some View {
         NavigationStack {
@@ -1981,8 +1965,17 @@ struct MultiPhotoCaptureSheet: View {
                             .foregroundStyle(.secondary)
                         Spacer()
                         if images.count < 10 {
-                            Button(action: onAddPhoto) {
-                                Label("Add Photo", systemImage: "camera.fill")
+                            Button {
+                                if isImportingPhotos {
+                                    showAdditionalPhotoPicker = true
+                                } else {
+                                    onAddPhoto()
+                                }
+                            } label: {
+                                Label(
+                                    isImportingPhotos ? "Add Photos" : "Add Photo",
+                                    systemImage: isImportingPhotos ? "photo.on.rectangle" : "camera.fill"
+                                )
                             }
                             .buttonStyle(.bordered)
                             .tint(AppColors.calorie)
@@ -2043,6 +2036,12 @@ struct MultiPhotoCaptureSheet: View {
             .background(Color(.systemGroupedBackground))
             .navigationTitle("Meal Photos")
             .navigationBarTitleDisplayMode(.inline)
+            .photosPicker(
+                isPresented: $showAdditionalPhotoPicker,
+                selection: $selectedPhotoItems,
+                maxSelectionCount: max(1, 10 - images.count),
+                matching: .images
+            )
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel", action: onCancel)

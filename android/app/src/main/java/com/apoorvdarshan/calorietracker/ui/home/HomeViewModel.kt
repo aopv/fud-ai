@@ -244,15 +244,6 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
         }
     }
 
-    /**
-     * Optional-note flow — analyze a photo with extra textual context the
-     * user typed in (e.g. "extra cheese", "no oil"). Mirrors iOS
-     * `cameraMode == .snapFoodWithContext` → `GeminiService.analyzeFood(image, description:)`.
-     */
-    fun analyzePhotoWithNote(bytes: ByteArray, note: String) {
-        analyzePhotos(listOf(bytes), note)
-    }
-
     fun lookupBarcode(barcode: String) {
         retryAction = { lookupBarcode(barcode) }
         viewModelScope.launch {

@@ -2,7 +2,6 @@ package com.apoorvdarshan.calorietracker.ui.home
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -49,7 +48,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Note
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddAPhoto
 import androidx.compose.material.icons.filled.Bookmark
@@ -191,25 +189,19 @@ fun HomeScreen(container: AppContainer) {
     var showCameraCapture by remember { mutableStateOf(false) }
     var showMultiPhotoCapture by remember { mutableStateOf(false) }
     var pendingCaptureImageBytes by remember { mutableStateOf<List<ByteArray>>(emptyList()) }
-    // Holds a picked photo while the optional-note sheet is shown.
-    var pendingNoteImageBytes by remember { mutableStateOf<ByteArray?>(null) }
-    var pendingPickedPhotoWantsNote by remember { mutableStateOf(false) }
+    var isImportingPhotos by remember { mutableStateOf(false) }
 
     val photoPicker = rememberLauncherForActivityResult(
-        ActivityResultContracts.PickVisualMedia()
-    ) { uri: Uri? ->
-        val wantsNote = pendingPickedPhotoWantsNote
-        pendingPickedPhotoWantsNote = false
-        if (uri != null) {
-            val bytes = ctx.contentResolver.openInputStream(uri)?.use { it.readBytes() }
-            if (bytes != null) {
-                if (wantsNote) {
-                    pendingNoteImageBytes = bytes
-                } else {
-                    vm.analyzePhoto(bytes)
-                }
-            }
+        ActivityResultContracts.PickMultipleVisualMedia(maxItems = 10)
+    ) { uris ->
+        val remaining = 10 - pendingCaptureImageBytes.size
+        val imported = uris.take(remaining).mapNotNull { uri ->
+            ctx.contentResolver.openInputStream(uri)?.use { it.readBytes() }
         }
+        if (imported.isNotEmpty()) {
+            pendingCaptureImageBytes = (pendingCaptureImageBytes + imported).take(10)
+        }
+        if (pendingCaptureImageBytes.isNotEmpty()) showMultiPhotoCapture = true
     }
 
     val cameraPermission = rememberLauncherForActivityResult(
@@ -222,6 +214,7 @@ fun HomeScreen(container: AppContainer) {
     }
 
     fun openCamera() {
+        isImportingPhotos = false
         if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.CAMERA) ==
             PackageManager.PERMISSION_GRANTED
         ) {
@@ -449,16 +442,11 @@ fun HomeScreen(container: AppContainer) {
                     }
 
                     AddMenuGroup.ImportPhotos -> {
-                        SheetGlassDropdownMenuItem(label = "From Photos", leadingIcon = Icons.Filled.PhotoLibrary) {
+                        SheetGlassDropdownMenuItem(label = "Photos", leadingIcon = Icons.Filled.PhotoLibrary) {
                             showAddMenu = false
                             addMenuGroup = null
-                            pendingPickedPhotoWantsNote = false
-                            photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                        }
-                        SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_from_photos_note), leadingIcon = Icons.AutoMirrored.Filled.Note) {
-                            showAddMenu = false
-                            addMenuGroup = null
-                            pendingPickedPhotoWantsNote = true
+                            isImportingPhotos = true
+                            pendingCaptureImageBytes = emptyList()
                             photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
                         }
                         SheetGlassDropdownMenuItem(label = "Back", leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
@@ -558,10 +546,15 @@ fun HomeScreen(container: AppContainer) {
     if (showMultiPhotoCapture && pendingCaptureImageBytes.isNotEmpty()) {
         MultiPhotoCaptureSheet(
             imageBytesList = pendingCaptureImageBytes,
+            addsFromLibrary = isImportingPhotos,
             onAddPhoto = {
                 if (pendingCaptureImageBytes.size < 10) {
-                    showMultiPhotoCapture = false
-                    showCameraCapture = true
+                    if (isImportingPhotos) {
+                        photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                    } else {
+                        showMultiPhotoCapture = false
+                        showCameraCapture = true
+                    }
                 }
             },
             onRemove = { index ->
@@ -604,18 +597,6 @@ fun HomeScreen(container: AppContainer) {
             optionalGoals = ui.optionalNutrientGoals,
             onHomeTopNutrientsChange = vm::setHomeTopNutrients,
             onDismiss = { showNutritionDetail = false }
-        )
-    }
-
-    // From Photos + Note: picked photo → user adds context → analyze.
-    pendingNoteImageBytes?.let { bytes ->
-        ContextNoteSheet(
-            imageBytes = bytes,
-            onAnalyze = { note ->
-                pendingNoteImageBytes = null
-                vm.analyzePhotoWithNote(bytes, note)
-            },
-            onDismiss = { pendingNoteImageBytes = null }
         )
     }
 

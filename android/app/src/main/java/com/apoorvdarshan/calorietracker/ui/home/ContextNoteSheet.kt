@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -41,7 +42,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.apoorvdarshan.calorietracker.R
-import com.apoorvdarshan.calorietracker.ui.theme.AppColors
 
 /** Camera review step. Photos stay as ordered independent byte arrays; the
  * optional note and complete photo set are sent as one meal request. */
@@ -49,6 +49,7 @@ import com.apoorvdarshan.calorietracker.ui.theme.AppColors
 @Composable
 fun MultiPhotoCaptureSheet(
     imageBytesList: List<ByteArray>,
+    addsFromLibrary: Boolean,
     onAddPhoto: () -> Unit,
     onRemove: (Int) -> Unit,
     onAnalyze: (String?) -> Unit,
@@ -89,8 +90,15 @@ fun MultiPhotoCaptureSheet(
                 )
                 if (imageBytesList.size < 10) {
                     Button(onClick = onAddPhoto) {
-                        Icon(Icons.Filled.CameraAlt, contentDescription = null, modifier = Modifier.size(18.dp))
-                        Text("Add Photo", modifier = Modifier.padding(start = 8.dp))
+                        Icon(
+                            if (addsFromLibrary) Icons.Filled.PhotoLibrary else Icons.Filled.CameraAlt,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Text(
+                            if (addsFromLibrary) "Add Photos" else "Add Photo",
+                            modifier = Modifier.padding(start = 8.dp)
+                        )
                     }
                 }
             }
@@ -164,84 +172,4 @@ private fun decodePreview(bytes: ByteArray): android.graphics.Bitmap? {
         bytes.size,
         android.graphics.BitmapFactory.Options().apply { inSampleSize = sample }
     )
-}
-
-/**
- * "From Photos + Note" intermediate sheet. Shows the selected photo and a
- * multiline text field for the user to add context (e.g. "no oil", "extra
- * cheese") before sending the image off to the AI. Mirrors iOS
- * ContextDescriptionSheet which gates `cameraMode == .snapFoodWithContext`.
- */
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ContextNoteSheet(
-    imageBytes: ByteArray,
-    onAnalyze: (note: String) -> Unit,
-    onDismiss: () -> Unit
-) {
-    val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    var note by remember { mutableStateOf("") }
-    val bitmap = remember(imageBytes) {
-        android.graphics.BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
-    }
-
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        sheetState = state,
-        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
-        containerColor = MaterialTheme.colorScheme.surface
-    ) {
-        SheetReviewToolbar(
-            title = stringResource(R.string.context_note_title),
-            primaryLabel = stringResource(R.string.action_analyze),
-            onCancel = onDismiss,
-            onPrimary = { onAnalyze(note) }
-        )
-
-        Column(
-            // Scroll + imePadding so the note field is always reachable above the
-            // keyboard. Without this, the field sits below the 240dp photo and gets
-            // hidden behind the keyboard on taller/OEM keyboards (e.g. Galaxy S25).
-            Modifier
-                .fillMaxWidth()
-                .verticalScroll(rememberScrollState())
-                .imePadding()
-                .padding(horizontal = 20.dp)
-                .padding(bottom = 28.dp),
-            verticalArrangement = Arrangement.spacedBy(18.dp)
-        ) {
-            Box(
-                Modifier.fillMaxWidth().padding(top = 8.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                if (bitmap != null) {
-                    androidx.compose.foundation.Image(
-                        bitmap = bitmap.asImageBitmap(),
-                        contentDescription = null,
-                        contentScale = androidx.compose.ui.layout.ContentScale.Crop,
-                        modifier = Modifier
-                            .size(240.dp)
-                            .clip(RoundedCornerShape(20.dp))
-                    )
-                }
-            }
-
-            SheetSectionHeader("Add a note (optional)")
-
-            OutlinedTextField(
-                value = note,
-                onValueChange = { note = it },
-                placeholder = {
-                    Text(
-                        "e.g. no oil, extra cheese, large portion",
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
-                    )
-                },
-                shape = RoundedCornerShape(20.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 110.dp)
-            )
-        }
-    }
 }
