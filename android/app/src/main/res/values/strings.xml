@@ -551,6 +551,16 @@
     <string name="settings_default_to_grams">Default to Grams</string>
     <string name="settings_default_to_grams_info">New food review sheets open with grams selected first. You can still switch to serving, slice, cup, or any other detected unit before logging.</string>
     <string name="settings_week_starts">Week Starts On</string>
+    <string name="settings_meal_times">Meal Times</string>
+    <string name="settings_meal_times_customize">Customize</string>
+    <string name="settings_meal_times_description">Set when automatic meal selection switches to the next meal.</string>
+    <string name="settings_breakfast_starts">Breakfast starts</string>
+    <string name="settings_lunch_starts">Lunch starts</string>
+    <string name="settings_dinner_starts">Dinner starts</string>
+    <string name="settings_late_snack_starts">Late Snack starts</string>
+    <string name="settings_meal_times_help">Each meal continues until the next one starts. Late Snack continues overnight until Breakfast starts. You can still change the meal manually before logging.</string>
+    <string name="settings_restore_default_times">Restore Default Times</string>
+    <string name="settings_meal_time_edit_format">Set %1$s</string>
     <string name="settings_week_monday">Monday</string>
     <string name="settings_week_sunday">Sunday</string>
     <string name="settings_notifications">Notifications</string>

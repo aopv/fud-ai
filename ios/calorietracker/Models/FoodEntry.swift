@@ -106,13 +106,71 @@ enum MealType: String, Codable, CaseIterable {
     }
 
     nonisolated static var currentMeal: MealType {
-        let hour = Calendar.current.component(.hour, from: .now)
-        switch hour {
-        case 5..<11: return .breakfast
-        case 11..<15: return .lunch
-        case 15..<21: return .dinner
-        default: return .snack
+        MealScheduleSettings.mealType(for: .now)
+    }
+}
+
+struct MealSchedule: Equatable, Sendable {
+    var breakfastStartMinutes: Int
+    var lunchStartMinutes: Int
+    var dinnerStartMinutes: Int
+    var snackStartMinutes: Int
+
+    nonisolated static let defaults = MealSchedule(
+        breakfastStartMinutes: 5 * 60,
+        lunchStartMinutes: 12 * 60,
+        dinnerStartMinutes: 18 * 60,
+        snackStartMinutes: 23 * 60
+    )
+
+    nonisolated var isValid: Bool {
+        (0..<1440).contains(breakfastStartMinutes)
+            && breakfastStartMinutes < lunchStartMinutes
+            && lunchStartMinutes < dinnerStartMinutes
+            && dinnerStartMinutes < snackStartMinutes
+            && snackStartMinutes < 1440
+    }
+
+    nonisolated func mealType(for date: Date, calendar: Calendar = .current) -> MealType {
+        let components = calendar.dateComponents([.hour, .minute], from: date)
+        let minutes = (components.hour ?? 0) * 60 + (components.minute ?? 0)
+        switch minutes {
+        case snackStartMinutes..<1440, 0..<breakfastStartMinutes:
+            return MealType.snack
+        case dinnerStartMinutes..<snackStartMinutes:
+            return MealType.dinner
+        case lunchStartMinutes..<dinnerStartMinutes:
+            return MealType.lunch
+        default:
+            return MealType.breakfast
         }
+    }
+}
+
+enum MealScheduleSettings {
+    nonisolated static let breakfastStartKey = "mealBreakfastStartMinutes"
+    nonisolated static let lunchStartKey = "mealLunchStartMinutes"
+    nonisolated static let dinnerStartKey = "mealDinnerStartMinutes"
+    nonisolated static let snackStartKey = "mealSnackStartMinutes"
+
+    nonisolated static var current: MealSchedule {
+        let defaults = MealSchedule.defaults
+        let stored = MealSchedule(
+            breakfastStartMinutes: storedMinutes(forKey: breakfastStartKey, default: defaults.breakfastStartMinutes),
+            lunchStartMinutes: storedMinutes(forKey: lunchStartKey, default: defaults.lunchStartMinutes),
+            dinnerStartMinutes: storedMinutes(forKey: dinnerStartKey, default: defaults.dinnerStartMinutes),
+            snackStartMinutes: storedMinutes(forKey: snackStartKey, default: defaults.snackStartMinutes)
+        )
+        return stored.isValid ? stored : defaults
+    }
+
+    nonisolated static func mealType(for date: Date) -> MealType {
+        current.mealType(for: date)
+    }
+
+    private nonisolated static func storedMinutes(forKey key: String, default defaultValue: Int) -> Int {
+        guard UserDefaults.standard.object(forKey: key) != nil else { return defaultValue }
+        return UserDefaults.standard.integer(forKey: key)
     }
 }
 

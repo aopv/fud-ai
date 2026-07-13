@@ -3360,6 +3360,22 @@ struct ProfileView: View {
                     .tint(.secondary)
 
                     NavigationLink {
+                        MealTimeSettingsView()
+                    } label: {
+                        Label {
+                            HStack {
+                                Text("Meal Times")
+                                Spacer()
+                                Text("Customize")
+                                    .foregroundStyle(.secondary)
+                            }
+                        } icon: {
+                            Image(systemName: "clock")
+                                .foregroundStyle(AppColors.calorie)
+                        }
+                    }
+
+                    NavigationLink {
                         NotificationSettingsView()
                     } label: {
                         Label {

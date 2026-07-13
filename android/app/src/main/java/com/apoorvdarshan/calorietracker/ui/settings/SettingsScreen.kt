@@ -85,6 +85,7 @@ import androidx.compose.material.icons.outlined.BatteryAlert
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.SmartToy
+import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material.icons.outlined.Speed
 import androidx.compose.material.icons.outlined.Straighten
 import androidx.compose.material.icons.automirrored.outlined.TrendingUp
@@ -143,6 +144,7 @@ import com.apoorvdarshan.calorietracker.models.ActivityLevel
 import com.apoorvdarshan.calorietracker.models.AIProvider
 import com.apoorvdarshan.calorietracker.models.AutoBalanceMacro
 import com.apoorvdarshan.calorietracker.models.Gender
+import com.apoorvdarshan.calorietracker.models.MealSchedule
 import com.apoorvdarshan.calorietracker.models.OptionalNutrient
 import com.apoorvdarshan.calorietracker.models.OptionalNutrientGoals
 import com.apoorvdarshan.calorietracker.models.SpeechLanguage
@@ -165,6 +167,7 @@ import com.apoorvdarshan.calorietracker.ui.components.FudGlassTextField
 import com.apoorvdarshan.calorietracker.ui.components.FudIconBubble
 import com.apoorvdarshan.calorietracker.ui.components.FeetInchesWheelPicker
 import com.apoorvdarshan.calorietracker.ui.components.NumericWheelPicker
+import com.apoorvdarshan.calorietracker.ui.components.WheelPicker
 import com.apoorvdarshan.calorietracker.ui.about.AboutSettingsRows
 import com.apoorvdarshan.calorietracker.ui.components.SplitDecimalWheelPicker
 import com.apoorvdarshan.calorietracker.ui.components.UnitToggle
@@ -172,16 +175,18 @@ import com.apoorvdarshan.calorietracker.ui.navigation.BottomNavScrollPadding
 import com.apoorvdarshan.calorietracker.ui.theme.AppColors
 import com.apoorvdarshan.calorietracker.ui.theme.AppThemeColor
 import com.apoorvdarshan.calorietracker.ui.navigation.FudAIRoutes
+import com.apoorvdarshan.calorietracker.ui.util.clockTimePattern
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import java.util.Locale
+import java.time.LocalTime
 
 private enum class SettingsSheet {
     AI_PROVIDER, AI_MODEL, MAX_TOKENS, API_KEY, CUSTOM_BASE_URL, SPEECH_PROVIDER, SPEECH_LANGUAGE, SPEECH_KEY,
     FALLBACK_PROVIDER, FALLBACK_MODEL, FALLBACK_KEY, FALLBACK_BASE_URL,
     GENDER, BIRTHDAY, HEIGHT, WEIGHT, BODY_FAT, GOAL_BODY_FAT, ACTIVITY, GOAL, GOAL_WEIGHT, GOAL_SPEED,
     CALORIES, PROTEIN, CARBS, FAT, OPTIONAL_NUTRIENTS,
-    APPEARANCE, WEEK_START, WATER_GOAL
+    APPEARANCE, WEEK_START, MEAL_TIMES, WATER_GOAL
 }
 
 private enum class HealthConnectPermissionAction {
@@ -565,6 +570,12 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController) {
                     onInfo = { showDefaultGramsInfo = true },
                     onChange = vm::setPreferGramsByDefault
                 )
+                HorizontalDivider()
+                SettingRow(
+                    stringResource(R.string.settings_meal_times),
+                    stringResource(R.string.settings_meal_times_customize),
+                    icon = Icons.Outlined.Schedule
+                ) { sheet = SettingsSheet.MEAL_TIMES }
                 HorizontalDivider()
                 ToggleRow(
                     stringResource(R.string.settings_water_tracking),
@@ -1700,6 +1711,13 @@ private fun SettingsSheets(
                     selected = { it.first == ui.weekStartsOnMonday },
                     onSelect = { vm.setWeekStartsOnMonday(it.first); onDismiss() }
                 )
+                SettingsSheet.MEAL_TIMES -> MealTimesSheet(
+                    current = ui.mealSchedule,
+                    onSave = {
+                        vm.setMealSchedule(it)
+                        onDismiss()
+                    }
+                )
                 SettingsSheet.WATER_GOAL -> WaterGoalSheet(
                     current = ui.waterDailyGoalMl,
                     onSave = {
@@ -2068,6 +2086,130 @@ private fun WeightSheet(titleText: String, current: Double, useMetric: Boolean, 
     Spacer(Modifier.height(16.dp))
     GradientSaveButton { onSave(kg) }
     Spacer(Modifier.height(8.dp))
+}
+
+private enum class MealBoundary {
+    BREAKFAST, LUNCH, DINNER, SNACK
+}
+
+@Composable
+private fun MealTimesSheet(current: MealSchedule, onSave: (MealSchedule) -> Unit) {
+    var schedule by remember(current) { mutableStateOf(current.validatedOrDefault()) }
+    var editing by remember { mutableStateOf<MealBoundary?>(null) }
+    val context = LocalContext.current
+    val formatter = remember(context) { DateTimeFormatter.ofPattern(clockTimePattern(context)) }
+    fun formattedTime(minutes: Int): String =
+        LocalTime.of(minutes / 60, minutes % 60).format(formatter)
+
+    val selectedBoundary = editing
+    if (selectedBoundary == null) {
+        Text(
+            stringResource(R.string.settings_meal_times),
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold
+        )
+        Spacer(Modifier.height(6.dp))
+        Text(
+            stringResource(R.string.settings_meal_times_description),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.62f)
+        )
+        Spacer(Modifier.height(16.dp))
+        FudGlassSurface(
+            modifier = Modifier.fillMaxWidth(),
+            cornerRadius = 18.dp,
+            padding = 0.dp
+        ) {
+            Column {
+                MealBoundary.values().forEachIndexed { index, boundary ->
+                    SettingRow(
+                        label = stringResource(boundary.labelRes()),
+                        value = formattedTime(boundary.valueIn(schedule))
+                    ) { editing = boundary }
+                    if (index != MealBoundary.values().lastIndex) HorizontalDivider()
+                }
+            }
+        }
+        Spacer(Modifier.height(10.dp))
+        Text(
+            stringResource(R.string.settings_meal_times_help),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.58f)
+        )
+        Spacer(Modifier.height(16.dp))
+        GradientSaveButton { onSave(schedule) }
+        FudGlassTextButton(
+            text = stringResource(R.string.settings_restore_default_times),
+            onClick = { schedule = MealSchedule.Default },
+            modifier = Modifier.fillMaxWidth(),
+            color = AppColors.Calorie
+        )
+        Spacer(Modifier.height(8.dp))
+    } else {
+        val allowed = selectedBoundary.allowedRange(schedule)
+        var selectedMinutes by remember(selectedBoundary, schedule) {
+            mutableIntStateOf(selectedBoundary.valueIn(schedule))
+        }
+        val options = remember(allowed, selectedMinutes) {
+            ((allowed.first..allowed.last step 15).toList() + selectedMinutes)
+                .filter { it in allowed }
+                .distinct()
+                .sorted()
+        }
+        val label = stringResource(selectedBoundary.labelRes())
+        Text(
+            stringResource(R.string.settings_meal_time_edit_format, label),
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold
+        )
+        Spacer(Modifier.height(16.dp))
+        WheelPicker(
+            items = options,
+            selected = selectedMinutes,
+            onSelect = { selectedMinutes = it },
+            label = { formattedTime(it) }
+        )
+        Spacer(Modifier.height(16.dp))
+        GradientSaveButton {
+            schedule = selectedBoundary.updatedSchedule(schedule, selectedMinutes)
+            editing = null
+        }
+        FudGlassTextButton(
+            text = stringResource(R.string.action_cancel),
+            onClick = { editing = null },
+            modifier = Modifier.fillMaxWidth(),
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.62f)
+        )
+        Spacer(Modifier.height(8.dp))
+    }
+}
+
+private fun MealBoundary.labelRes(): Int = when (this) {
+    MealBoundary.BREAKFAST -> R.string.settings_breakfast_starts
+    MealBoundary.LUNCH -> R.string.settings_lunch_starts
+    MealBoundary.DINNER -> R.string.settings_dinner_starts
+    MealBoundary.SNACK -> R.string.settings_late_snack_starts
+}
+
+private fun MealBoundary.valueIn(schedule: MealSchedule): Int = when (this) {
+    MealBoundary.BREAKFAST -> schedule.breakfastStartMinutes
+    MealBoundary.LUNCH -> schedule.lunchStartMinutes
+    MealBoundary.DINNER -> schedule.dinnerStartMinutes
+    MealBoundary.SNACK -> schedule.snackStartMinutes
+}
+
+private fun MealBoundary.allowedRange(schedule: MealSchedule): IntRange = when (this) {
+    MealBoundary.BREAKFAST -> 0..(schedule.lunchStartMinutes - 15)
+    MealBoundary.LUNCH -> (schedule.breakfastStartMinutes + 15)..(schedule.dinnerStartMinutes - 15)
+    MealBoundary.DINNER -> (schedule.lunchStartMinutes + 15)..(schedule.snackStartMinutes - 15)
+    MealBoundary.SNACK -> (schedule.dinnerStartMinutes + 15)..1439
+}
+
+private fun MealBoundary.updatedSchedule(schedule: MealSchedule, minutes: Int): MealSchedule = when (this) {
+    MealBoundary.BREAKFAST -> schedule.copy(breakfastStartMinutes = minutes)
+    MealBoundary.LUNCH -> schedule.copy(lunchStartMinutes = minutes)
+    MealBoundary.DINNER -> schedule.copy(dinnerStartMinutes = minutes)
+    MealBoundary.SNACK -> schedule.copy(snackStartMinutes = minutes)
 }
 
 @Composable

@@ -14,6 +14,7 @@ import com.apoorvdarshan.calorietracker.models.BodyMeasurement
 import com.apoorvdarshan.calorietracker.models.ChatMessage
 import com.apoorvdarshan.calorietracker.models.FoodEntry
 import com.apoorvdarshan.calorietracker.models.HomeTopNutrient
+import com.apoorvdarshan.calorietracker.models.MealSchedule
 import com.apoorvdarshan.calorietracker.models.OptionalNutrientGoals
 import com.apoorvdarshan.calorietracker.models.PendingFoodAnalysisDraft
 import com.apoorvdarshan.calorietracker.models.SpeechLanguage
@@ -288,6 +289,25 @@ class PreferencesStore(private val context: Context) {
     /** false = Sunday, true = Monday (default). Mirrors iOS @AppStorage("weekStartsOnMonday"). */
     val weekStartsOnMonday: Flow<Boolean> = ds.data.map { it[Keys.WEEK_STARTS_MONDAY] ?: true }
     suspend fun setWeekStartsOnMonday(v: Boolean) { ds.edit { it[Keys.WEEK_STARTS_MONDAY] = v } }
+
+    val mealSchedule: Flow<MealSchedule> = ds.data.map { prefs ->
+        MealSchedule(
+            breakfastStartMinutes = prefs[Keys.MEAL_BREAKFAST_START] ?: MealSchedule.DEFAULT_BREAKFAST_START,
+            lunchStartMinutes = prefs[Keys.MEAL_LUNCH_START] ?: MealSchedule.DEFAULT_LUNCH_START,
+            dinnerStartMinutes = prefs[Keys.MEAL_DINNER_START] ?: MealSchedule.DEFAULT_DINNER_START,
+            snackStartMinutes = prefs[Keys.MEAL_SNACK_START] ?: MealSchedule.DEFAULT_SNACK_START
+        ).validatedOrDefault()
+    }
+
+    suspend fun setMealSchedule(schedule: MealSchedule) {
+        val validated = schedule.validatedOrDefault()
+        ds.edit {
+            it[Keys.MEAL_BREAKFAST_START] = validated.breakfastStartMinutes
+            it[Keys.MEAL_LUNCH_START] = validated.lunchStartMinutes
+            it[Keys.MEAL_DINNER_START] = validated.dinnerStartMinutes
+            it[Keys.MEAL_SNACK_START] = validated.snackStartMinutes
+        }
+    }
 
     /** "RECENTS" | "FREQUENT" | "FAVORITES". Mirrors iOS @AppStorage("lastRecentsSegment"). */
     val lastSavedMealsSegment: Flow<String> = ds.data.map { it[Keys.LAST_SAVED_MEALS_SEGMENT] ?: "RECENTS" }
@@ -570,6 +590,10 @@ class PreferencesStore(private val context: Context) {
         val APPEARANCE_MODE = stringPreferencesKey("appearanceMode")
         val APP_THEME_COLOR = stringPreferencesKey("appThemeColor")
         val WEEK_STARTS_MONDAY = booleanPreferencesKey("weekStartsOnMonday")
+        val MEAL_BREAKFAST_START = intPreferencesKey("mealBreakfastStartMinutes")
+        val MEAL_LUNCH_START = intPreferencesKey("mealLunchStartMinutes")
+        val MEAL_DINNER_START = intPreferencesKey("mealDinnerStartMinutes")
+        val MEAL_SNACK_START = intPreferencesKey("mealSnackStartMinutes")
         val LAST_SAVED_MEALS_SEGMENT = stringPreferencesKey("lastRecentsSegment")
         val FOOD_LOG_SORT_ORDER = stringPreferencesKey("foodLogSortOrder")
         val HOME_TOP_NUTRIENTS = stringPreferencesKey("homeTopNutrients")

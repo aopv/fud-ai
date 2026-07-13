@@ -17,6 +17,7 @@ import com.apoorvdarshan.calorietracker.services.WidgetSnapshotWriter
 import com.apoorvdarshan.calorietracker.services.AdaptiveGoalResult
 import com.apoorvdarshan.calorietracker.services.WeightAnalysisService
 import com.apoorvdarshan.calorietracker.models.UserProfile
+import com.apoorvdarshan.calorietracker.models.CurrentMealSchedule
 import com.apoorvdarshan.calorietracker.services.ai.ChatService
 import com.apoorvdarshan.calorietracker.services.ai.FoodAnalysisService
 import com.apoorvdarshan.calorietracker.services.health.HealthConnectManager
@@ -28,6 +29,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.time.Duration
 import java.time.Instant
@@ -49,6 +51,9 @@ class FudAIApp : Application() {
         container = AppContainer(this)
         container.notifications.createChannels()
         container.widgetSnapshotWriter.observe().launchIn(appScope)
+        container.prefs.mealSchedule
+            .onEach { CurrentMealSchedule.value = it }
+            .launchIn(appScope)
         // Re-arm the daily weight-log alarm on every cold start. AlarmManager
         // drops scheduled alarms on device reboot and (sometimes) on app
         // updates — without this, a user who enabled Notifications once would

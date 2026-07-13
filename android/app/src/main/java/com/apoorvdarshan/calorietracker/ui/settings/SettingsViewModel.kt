@@ -7,6 +7,8 @@ import com.apoorvdarshan.calorietracker.AppContainer
 import com.apoorvdarshan.calorietracker.R
 import com.apoorvdarshan.calorietracker.models.AIProvider
 import com.apoorvdarshan.calorietracker.models.AutoBalanceMacro
+import com.apoorvdarshan.calorietracker.models.CurrentMealSchedule
+import com.apoorvdarshan.calorietracker.models.MealSchedule
 import com.apoorvdarshan.calorietracker.models.OptionalNutrientGoals
 import com.apoorvdarshan.calorietracker.models.SpeechLanguage
 import com.apoorvdarshan.calorietracker.models.SpeechProvider
@@ -63,6 +65,7 @@ data class SettingsUiState(
     val appearanceMode: String = "system",
     val appThemeColor: AppThemeColor = AppThemeColor.FUD_PINK,
     val weekStartsOnMonday: Boolean = true,
+    val mealSchedule: MealSchedule = MealSchedule.Default,
     val userContext: String = "",
     val fallbackEnabled: Boolean = false,
     val fallbackProvider: AIProvider = AIProvider.GEMINI,
@@ -122,6 +125,7 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
             val appearance = container.prefs.appearanceMode.first()
             val appThemeColor = AppThemeColor.fromKey(container.prefs.appThemeColor.first())
             val weekMon = container.prefs.weekStartsOnMonday.first()
+            val mealSchedule = container.prefs.mealSchedule.first()
             val userContext = container.prefs.userContext.first()
             val maxTokens = container.prefs.maxResponseTokens.first()
             val fbEnabled = container.prefs.fallbackEnabled.first()
@@ -164,6 +168,7 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
                 appearanceMode = appearance,
                 appThemeColor = appThemeColor,
                 weekStartsOnMonday = weekMon,
+                mealSchedule = mealSchedule,
                 userContext = userContext,
                 fallbackEnabled = fbEnabled,
                 fallbackProvider = fbProvider,
@@ -251,6 +256,15 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
         viewModelScope.launch {
             container.prefs.setWeekStartsOnMonday(monday)
             _ui.value = _ui.value.copy(weekStartsOnMonday = monday)
+        }
+    }
+
+    fun setMealSchedule(schedule: MealSchedule) {
+        val validated = schedule.validatedOrDefault()
+        viewModelScope.launch {
+            container.prefs.setMealSchedule(validated)
+            CurrentMealSchedule.value = validated
+            _ui.value = _ui.value.copy(mealSchedule = validated)
         }
     }
 

@@ -667,6 +667,137 @@ struct GoalSpeedSelectionView: View {
     }
 }
 
+// MARK: - Meal Time Settings
+
+struct MealTimeSettingsView: View {
+    @AppStorage(MealScheduleSettings.breakfastStartKey)
+    private var breakfastStartMinutes = MealSchedule.defaults.breakfastStartMinutes
+    @AppStorage(MealScheduleSettings.lunchStartKey)
+    private var lunchStartMinutes = MealSchedule.defaults.lunchStartMinutes
+    @AppStorage(MealScheduleSettings.dinnerStartKey)
+    private var dinnerStartMinutes = MealSchedule.defaults.dinnerStartMinutes
+    @AppStorage(MealScheduleSettings.snackStartKey)
+    private var snackStartMinutes = MealSchedule.defaults.snackStartMinutes
+
+    var body: some View {
+        List {
+            Section {
+                mealTimePicker(
+                    title: "Breakfast starts",
+                    icon: "sunrise.fill",
+                    minutes: $breakfastStartMinutes,
+                    allowedMinutes: validRange(0, lunchStartMinutes - 15)
+                )
+                mealTimePicker(
+                    title: "Lunch starts",
+                    icon: "sun.max.fill",
+                    minutes: $lunchStartMinutes,
+                    allowedMinutes: validRange(breakfastStartMinutes + 15, dinnerStartMinutes - 15)
+                )
+                mealTimePicker(
+                    title: "Dinner starts",
+                    icon: "moon.fill",
+                    minutes: $dinnerStartMinutes,
+                    allowedMinutes: validRange(lunchStartMinutes + 15, snackStartMinutes - 15)
+                )
+                mealTimePicker(
+                    title: "Late snack starts",
+                    icon: "cup.and.saucer.fill",
+                    minutes: $snackStartMinutes,
+                    allowedMinutes: validRange(dinnerStartMinutes + 15, 1439)
+                )
+            } header: {
+                Text("Automatic Meal Selection")
+            } footer: {
+                Text("Each meal continues until the next one starts. Late Snack continues overnight until Breakfast starts. You can still change the meal manually before logging.")
+            }
+            .listRowBackground(AppColors.appCard)
+
+            Section {
+                Button("Restore Default Times") {
+                    let defaults = MealSchedule.defaults
+                    breakfastStartMinutes = defaults.breakfastStartMinutes
+                    lunchStartMinutes = defaults.lunchStartMinutes
+                    dinnerStartMinutes = defaults.dinnerStartMinutes
+                    snackStartMinutes = defaults.snackStartMinutes
+                }
+                .foregroundStyle(AppColors.calorie)
+            }
+            .listRowBackground(AppColors.appCard)
+        }
+        .scrollContentBackground(.hidden)
+        .background(AppColors.appBackground)
+        .navigationTitle("Meal Times")
+        .navigationBarTitleDisplayMode(.inline)
+        .onAppear(perform: repairInvalidScheduleIfNeeded)
+    }
+
+    @ViewBuilder
+    private func mealTimePicker(
+        title: String,
+        icon: String,
+        minutes: Binding<Int>,
+        allowedMinutes: ClosedRange<Int>
+    ) -> some View {
+        DatePicker(
+            selection: dateBinding(minutes),
+            in: dateRange(allowedMinutes),
+            displayedComponents: .hourAndMinute
+        ) {
+            Label {
+                Text(title)
+            } icon: {
+                Image(systemName: icon)
+                    .foregroundStyle(AppColors.calorie)
+            }
+        }
+        .tint(AppColors.calorie)
+    }
+
+    private func dateBinding(_ minutes: Binding<Int>) -> Binding<Date> {
+        Binding(
+            get: { date(for: minutes.wrappedValue) },
+            set: { newDate in
+                let components = Calendar.current.dateComponents([.hour, .minute], from: newDate)
+                minutes.wrappedValue = (components.hour ?? 0) * 60 + (components.minute ?? 0)
+            }
+        )
+    }
+
+    private func dateRange(_ minutes: ClosedRange<Int>) -> ClosedRange<Date> {
+        date(for: minutes.lowerBound)...date(for: minutes.upperBound)
+    }
+
+    private func date(for minutes: Int) -> Date {
+        Calendar.current.date(
+            byAdding: .minute,
+            value: Swift.min(Swift.max(minutes, 0), 1439),
+            to: Calendar.current.startOfDay(for: .now)
+        ) ?? .now
+    }
+
+    private func validRange(_ proposedLowerBound: Int, _ proposedUpperBound: Int) -> ClosedRange<Int> {
+        let lowerBound = Swift.min(Swift.max(proposedLowerBound, 0), 1439)
+        let upperBound = Swift.max(lowerBound, Swift.min(Swift.max(proposedUpperBound, 0), 1439))
+        return lowerBound...upperBound
+    }
+
+    private func repairInvalidScheduleIfNeeded() {
+        let stored = MealSchedule(
+            breakfastStartMinutes: breakfastStartMinutes,
+            lunchStartMinutes: lunchStartMinutes,
+            dinnerStartMinutes: dinnerStartMinutes,
+            snackStartMinutes: snackStartMinutes
+        )
+        guard !stored.isValid else { return }
+        let defaults = MealSchedule.defaults
+        breakfastStartMinutes = defaults.breakfastStartMinutes
+        lunchStartMinutes = defaults.lunchStartMinutes
+        dinnerStartMinutes = defaults.dinnerStartMinutes
+        snackStartMinutes = defaults.snackStartMinutes
+    }
+}
+
 // MARK: - Nutrition Override Row
 
 struct NutritionOverrideRow: View {

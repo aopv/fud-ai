@@ -711,13 +711,6 @@ class HealthKitManager {
         var values: [HKQuantityTypeIdentifier: Double] = [:]
 
         func foodEntry(id: UUID) -> FoodEntry {
-            let hour = Calendar.current.component(.hour, from: date)
-            let meal: MealType = switch hour {
-            case 5..<11: .breakfast
-            case 11..<15: .lunch
-            case 15..<21: .dinner
-            default: .snack
-            }
             return FoodEntry(
                 id: id,
                 name: name,
@@ -727,7 +720,7 @@ class HealthKitManager {
                 fat: values[.dietaryFatTotal] ?? 0,
                 timestamp: date,
                 source: .manual,
-                mealType: meal,
+                mealType: MealScheduleSettings.mealType(for: date),
                 sugar: values[.dietarySugar],
                 fiber: values[.dietaryFiber],
                 saturatedFat: values[.dietaryFatSaturated],
