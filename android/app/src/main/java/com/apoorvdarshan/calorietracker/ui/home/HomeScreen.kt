@@ -449,8 +449,8 @@ fun HomeScreen(container: AppContainer) {
                     modifier = Modifier.size(30.dp)
                 )
             }
-            // Glass-styled, progressive add menu. Rows are reversed in source order
-            // because the popup opens upward, keeping Capture & Scan nearest the FAB.
+            // Glass-styled, progressive add menu. Actions read in task order from
+            // top to bottom, with the most common choice first.
             SheetGlassDropdownMenu(
                 expanded = showAddMenu,
                 onDismissRequest = {
@@ -461,48 +461,48 @@ fun HomeScreen(container: AppContainer) {
             ) {
                 when (addMenuGroup) {
                     null -> {
-                        SheetGlassDropdownMenuItem(label = "Reuse Meal", leadingIcon = Icons.Filled.Bookmark, trailingIcon = Icons.Filled.ChevronRight) { addMenuGroup = AddMenuGroup.ReuseMeal }
-                        SheetGlassDropdownMenuItem(label = "Describe Meal", leadingIcon = Icons.Filled.Edit, trailingIcon = Icons.Filled.ChevronRight) { addMenuGroup = AddMenuGroup.DescribeMeal }
-                        SheetGlassDropdownMenuItem(label = "Import Photos", leadingIcon = Icons.Filled.PhotoLibrary, trailingIcon = Icons.Filled.ChevronRight) { addMenuGroup = AddMenuGroup.ImportPhotos }
                         SheetGlassDropdownMenuItem(label = "Capture & Scan", leadingIcon = Icons.Filled.CameraAlt, trailingIcon = Icons.Filled.ChevronRight) { addMenuGroup = AddMenuGroup.CaptureAndScan }
+                        SheetGlassDropdownMenuItem(label = "Import Photos", leadingIcon = Icons.Filled.PhotoLibrary, trailingIcon = Icons.Filled.ChevronRight) { addMenuGroup = AddMenuGroup.ImportPhotos }
+                        SheetGlassDropdownMenuItem(label = "Describe Meal", leadingIcon = Icons.Filled.Edit, trailingIcon = Icons.Filled.ChevronRight) { addMenuGroup = AddMenuGroup.DescribeMeal }
+                        SheetGlassDropdownMenuItem(label = "Reuse Meal", leadingIcon = Icons.Filled.Bookmark, trailingIcon = Icons.Filled.ChevronRight) { addMenuGroup = AddMenuGroup.ReuseMeal }
                     }
 
                     AddMenuGroup.CaptureAndScan -> {
-                        SheetGlassDropdownMenuItem(label = "Back", leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
-                        SheetGlassDropdownMenuItem(label = "Barcode", leadingIcon = Icons.Filled.QrCodeScanner) { showAddMenu = false; addMenuGroup = null; openBarcodeScanner() }
-                        SheetGlassDropdownMenuItem(label = "Nutrition Label", leadingIcon = Icons.Filled.DocumentScanner) { showAddMenu = false; addMenuGroup = null; openCamera() }
-                        SheetGlassDropdownMenuItem(label = "Camera + Camera", leadingIcon = Icons.Filled.AddAPhoto) { showAddMenu = false; addMenuGroup = null; openCamera(withSecondPhoto = true) }
-                        SheetGlassDropdownMenuItem(label = "Camera + Note", leadingIcon = Icons.AutoMirrored.Filled.Note) { showAddMenu = false; addMenuGroup = null; openCamera(withNote = true) }
                         SheetGlassDropdownMenuItem(label = "Camera", leadingIcon = Icons.Filled.CameraAlt) { showAddMenu = false; addMenuGroup = null; openCamera() }
+                        SheetGlassDropdownMenuItem(label = "Camera + Note", leadingIcon = Icons.AutoMirrored.Filled.Note) { showAddMenu = false; addMenuGroup = null; openCamera(withNote = true) }
+                        SheetGlassDropdownMenuItem(label = "Camera + Camera", leadingIcon = Icons.Filled.AddAPhoto) { showAddMenu = false; addMenuGroup = null; openCamera(withSecondPhoto = true) }
+                        SheetGlassDropdownMenuItem(label = "Nutrition Label", leadingIcon = Icons.Filled.DocumentScanner) { showAddMenu = false; addMenuGroup = null; openCamera() }
+                        SheetGlassDropdownMenuItem(label = "Barcode", leadingIcon = Icons.Filled.QrCodeScanner) { showAddMenu = false; addMenuGroup = null; openBarcodeScanner() }
+                        SheetGlassDropdownMenuItem(label = "Back", leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
                     }
 
                     AddMenuGroup.ImportPhotos -> {
-                        SheetGlassDropdownMenuItem(label = "Back", leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
-                        SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_from_photos_note), leadingIcon = Icons.AutoMirrored.Filled.Note) {
-                            showAddMenu = false
-                            addMenuGroup = null
-                            pendingPickedPhotoWantsNote = true
-                            photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                        }
                         SheetGlassDropdownMenuItem(label = "From Photos", leadingIcon = Icons.Filled.PhotoLibrary) {
                             showAddMenu = false
                             addMenuGroup = null
                             pendingPickedPhotoWantsNote = false
                             photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
                         }
+                        SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_from_photos_note), leadingIcon = Icons.AutoMirrored.Filled.Note) {
+                            showAddMenu = false
+                            addMenuGroup = null
+                            pendingPickedPhotoWantsNote = true
+                            photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                        }
+                        SheetGlassDropdownMenuItem(label = "Back", leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
                     }
 
                     AddMenuGroup.DescribeMeal -> {
-                        SheetGlassDropdownMenuItem(label = "Back", leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
-                        SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_manual_entry), leadingIcon = Icons.Filled.DriveFileRenameOutline) { showAddMenu = false; addMenuGroup = null; showManual = true }
-                        SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_voice), leadingIcon = Icons.Filled.Mic) { showAddMenu = false; addMenuGroup = null; showVoice = true }
                         SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_text_input), leadingIcon = Icons.Filled.Edit) { showAddMenu = false; addMenuGroup = null; showText = true }
+                        SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_voice), leadingIcon = Icons.Filled.Mic) { showAddMenu = false; addMenuGroup = null; showVoice = true }
+                        SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_manual_entry), leadingIcon = Icons.Filled.DriveFileRenameOutline) { showAddMenu = false; addMenuGroup = null; showManual = true }
+                        SheetGlassDropdownMenuItem(label = "Back", leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
                     }
 
                     AddMenuGroup.ReuseMeal -> {
-                        SheetGlassDropdownMenuItem(label = "Back", leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
-                        SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_copy_from_day), leadingIcon = Icons.Filled.CalendarMonth) { showAddMenu = false; addMenuGroup = null; showCopyFromDay = true }
                         SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_saved_meals), leadingIcon = Icons.Filled.Bookmark) { showAddMenu = false; addMenuGroup = null; showSaved = true }
+                        SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_copy_from_day), leadingIcon = Icons.Filled.CalendarMonth) { showAddMenu = false; addMenuGroup = null; showCopyFromDay = true }
+                        SheetGlassDropdownMenuItem(label = "Back", leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
                     }
                 }
             }
