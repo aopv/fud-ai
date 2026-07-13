@@ -2867,6 +2867,8 @@ struct ProfileView: View {
     @AppStorage("weekStartsOnMonday") private var weekStartsOnMonday = true
     @AppStorage(FoodMeasurementSettings.preferGramsByDefaultKey) private var preferGramsByDefault = false
     @AppStorage(AppThemeColor.storageKey) private var appThemeColorRaw = AppThemeColor.defaultColor.rawValue
+    @AppStorage(WaterSettings.enabledKey) private var waterTrackingEnabled = false
+    @AppStorage(WaterSettings.dailyGoalKey) private var waterDailyGoal = WaterSettings.defaultDailyGoalMl
 
     // App-update state is owned by ContentView (it also drives the one-shot update
     // notification). It's forwarded here so the About section — now the last section
@@ -2888,6 +2890,7 @@ struct ProfileView: View {
     @State private var showDeleteConfirmation = false
     @State private var showClearFoodLogConfirmation = false
     @State private var showCalculationMethods = false
+    @State private var showWaterGoalPicker = false
     @State private var showAutoMacroEditAlert = false
     @State private var showMaxPinnedAlert = false
     @State private var showInvalidGoalWeightAlert = false
@@ -3342,14 +3345,44 @@ struct ProfileView: View {
                         }
                     }
 
-                    NavigationLink {
-                        WaterSettingsView()
-                    } label: {
+                    HStack {
                         Label {
                             Text("Water Tracking")
                         } icon: {
                             Image(systemName: "drop.fill")
                                 .foregroundStyle(AppColors.calorie)
+                        }
+                        Spacer()
+                        Toggle("Water Tracking", isOn: $waterTrackingEnabled)
+                            .labelsHidden()
+                            .tint(AppColors.calorie)
+                            .onChange(of: waterTrackingEnabled) { _, isEnabled in
+                                if !isEnabled {
+                                    notificationManager.scheduleWaterReminder(enabled: false, hour: 14, minute: 0)
+                                    UserDefaults.standard.set(false, forKey: WaterSettings.reminderEnabledKey)
+                                }
+                            }
+                    }
+
+                    if waterTrackingEnabled {
+                        Button {
+                            showWaterGoalPicker = true
+                        } label: {
+                            HStack {
+                                Label {
+                                    Text("Daily Water Goal")
+                                } icon: {
+                                    Image(systemName: "target")
+                                        .foregroundStyle(AppColors.calorie)
+                                }
+                                .foregroundStyle(.primary)
+                                Spacer()
+                                Text("\(waterDailyGoal.formatted()) ml")
+                                    .foregroundStyle(.secondary)
+                                Image(systemName: "chevron.right")
+                                    .font(.caption)
+                                    .foregroundStyle(.tertiary)
+                            }
                         }
                     }
 
@@ -4105,6 +4138,9 @@ struct ProfileView: View {
             }
             .sheet(isPresented: $showCalculationMethods) {
                 CalculationMethodsView()
+            }
+            .sheet(isPresented: $showWaterGoalPicker) {
+                WaterGoalPickerSheet(currentGoal: waterDailyGoal) { waterDailyGoal = $0 }
             }
             .onAppear {
                 // Existing users (and anyone who has never recalculated) start with no baseline.

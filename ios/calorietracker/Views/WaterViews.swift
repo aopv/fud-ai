@@ -114,63 +114,7 @@ struct WaterLogSheet: View {
     }
 }
 
-struct WaterSettingsView: View {
-    @Environment(NotificationManager.self) private var notificationManager
-    @AppStorage(WaterSettings.enabledKey) private var enabled = false
-    @AppStorage(WaterSettings.dailyGoalKey) private var dailyGoal = WaterSettings.defaultDailyGoalMl
-    @State private var showGoalPicker = false
-
-    var body: some View {
-        List {
-            Section {
-                Toggle("Water Tracking", isOn: $enabled)
-                    .tint(AppColors.calorie)
-                    .onChange(of: enabled) { _, isEnabled in
-                        if !isEnabled {
-                            notificationManager.scheduleWaterReminder(enabled: false, hour: 14, minute: 0)
-                            UserDefaults.standard.set(false, forKey: WaterSettings.reminderEnabledKey)
-                        }
-                    }
-            } footer: {
-                Text("When enabled, Water appears in the add menu and your daily progress is shown on Home.")
-            }
-            .listRowBackground(AppColors.appCard)
-
-            if enabled {
-                Section {
-                    Button {
-                        showGoalPicker = true
-                    } label: {
-                        HStack {
-                            Text("Goal")
-                                .foregroundStyle(.primary)
-                            Spacer()
-                            Text("\(dailyGoal.formatted()) ml")
-                                .foregroundStyle(.secondary)
-                            Image(systemName: "chevron.right")
-                                .font(.caption)
-                                .foregroundStyle(.tertiary)
-                        }
-                    }
-                } header: {
-                    Text("Daily Goal")
-                } footer: {
-                    Text("Tap Goal to select an amount with the scroll wheel. Water reminders are optional and can be enabled under Notifications.")
-                }
-                .listRowBackground(AppColors.appCard)
-            }
-        }
-        .scrollContentBackground(.hidden)
-        .background(AppColors.appBackground)
-        .navigationTitle("Water Tracking")
-        .navigationBarTitleDisplayMode(.inline)
-        .sheet(isPresented: $showGoalPicker) {
-            WaterGoalPickerSheet(currentGoal: dailyGoal) { dailyGoal = $0 }
-        }
-    }
-}
-
-private struct WaterGoalPickerSheet: View {
+struct WaterGoalPickerSheet: View {
     @Environment(\.dismiss) private var dismiss
     let onSave: (Int) -> Void
     @State private var selectedGoal: Int
