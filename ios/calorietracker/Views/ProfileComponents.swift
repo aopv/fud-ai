@@ -490,44 +490,36 @@ struct ActivityLevelSelectionView: View {
 
     var body: some View {
         List {
-            Section {
-                ForEach(ActivityLevel.allCases, id: \.self) { level in
-                    Button {
-                        selected = level
-                        onSave()
-                    } label: {
-                        HStack(spacing: 14) {
-                            Image(systemName: level.icon)
-                                .font(.title2)
+            ForEach(ActivityLevel.allCases, id: \.self) { level in
+                Button {
+                    selected = level
+                    onSave()
+                } label: {
+                    HStack(spacing: 14) {
+                        Image(systemName: level.icon)
+                            .font(.title2)
+                            .foregroundStyle(AppColors.calorie)
+                            .frame(width: 32)
+
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(level.displayName)
+                                .font(.system(.body, design: .rounded, weight: .medium))
+                                .foregroundStyle(.primary)
+                            Text(level.subtitle)
+                                .font(.system(.caption, design: .rounded))
+                                .foregroundStyle(.secondary)
+                        }
+
+                        Spacer()
+
+                        if level == selected {
+                            Image(systemName: "checkmark")
                                 .foregroundStyle(AppColors.calorie)
-                                .frame(width: 32)
-
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(level.displayName)
-                                    .font(.system(.body, design: .rounded, weight: .medium))
-                                    .foregroundStyle(.primary)
-                                Text(level.subtitle)
-                                    .font(.system(.caption, design: .rounded))
-                                    .foregroundStyle(.secondary)
-                            }
-
-                            Spacer()
-
-                            if level == selected {
-                                Image(systemName: "checkmark")
-                                    .foregroundStyle(AppColors.calorie)
-                                    .fontWeight(.semibold)
-                            }
+                                .fontWeight(.semibold)
                         }
                     }
-                    .listRowBackground(AppColors.appCard)
                 }
-            } header: {
-                Text(LocalizedDisplayText.text(
-                    "Choose based on your average week, including work and exercise.",
-                    polish: "Wybierz na podstawie typowego tygodnia, uwzględniając pracę i ćwiczenia."
-                ))
-                .textCase(nil)
+                .listRowBackground(AppColors.appCard)
             }
         }
         .scrollContentBackground(.hidden)
