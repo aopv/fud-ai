@@ -815,6 +815,11 @@ struct HomeView: View {
                     }
 
                     Menu {
+                        Button {
+                            showBarcodeScanner = true
+                        } label: {
+                            Label("Barcode", systemImage: "barcode.viewfinder")
+                        }
                         Button(action: {
                             cameraMode = .snapFoodWithContext
                             isImportingPhotos = true
@@ -824,16 +829,6 @@ struct HomeView: View {
                             showPhotoPicker = true
                         }) {
                             Label("Photos", systemImage: "photo.on.rectangle")
-                        }
-                    } label: {
-                        Label("Import Photos", systemImage: "photo.on.rectangle.angled")
-                    }
-
-                    Menu {
-                        Button {
-                            showBarcodeScanner = true
-                        } label: {
-                            Label("Barcode", systemImage: "barcode.viewfinder")
                         }
                         Button(action: {
                             cameraMode = .snapFoodWithContext
@@ -845,7 +840,7 @@ struct HomeView: View {
                             Label("Camera", systemImage: "camera.fill")
                         }
                     } label: {
-                        Label("Capture & Scan", systemImage: "camera.viewfinder")
+                        Label("Photo & Scan", systemImage: "camera.viewfinder")
                     }
                 } label: {
                             Image(systemName: "plus")

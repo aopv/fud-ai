@@ -159,8 +159,7 @@ import java.util.Locale
 import kotlin.math.roundToInt
 
 private enum class AddMenuGroup {
-    CaptureAndScan,
-    ImportPhotos,
+    PhotoAndScan,
     DescribeMeal,
     ReuseMeal
 }
@@ -429,19 +428,13 @@ fun HomeScreen(container: AppContainer) {
             ) {
                 when (addMenuGroup) {
                     null -> {
-                        SheetGlassDropdownMenuItem(label = "Capture & Scan", leadingIcon = Icons.Filled.CameraAlt, trailingIcon = Icons.Filled.ChevronRight) { addMenuGroup = AddMenuGroup.CaptureAndScan }
-                        SheetGlassDropdownMenuItem(label = "Import Photos", leadingIcon = Icons.Filled.PhotoLibrary, trailingIcon = Icons.Filled.ChevronRight) { addMenuGroup = AddMenuGroup.ImportPhotos }
+                        SheetGlassDropdownMenuItem(label = "Photo & Scan", leadingIcon = Icons.Filled.CameraAlt, trailingIcon = Icons.Filled.ChevronRight) { addMenuGroup = AddMenuGroup.PhotoAndScan }
                         SheetGlassDropdownMenuItem(label = "Describe Meal", leadingIcon = Icons.Filled.Edit, trailingIcon = Icons.Filled.ChevronRight) { addMenuGroup = AddMenuGroup.DescribeMeal }
                         SheetGlassDropdownMenuItem(label = "Reuse Meal", leadingIcon = Icons.Filled.Bookmark, trailingIcon = Icons.Filled.ChevronRight) { addMenuGroup = AddMenuGroup.ReuseMeal }
                     }
 
-                    AddMenuGroup.CaptureAndScan -> {
+                    AddMenuGroup.PhotoAndScan -> {
                         SheetGlassDropdownMenuItem(label = "Camera", leadingIcon = Icons.Filled.CameraAlt) { showAddMenu = false; addMenuGroup = null; openCamera() }
-                        SheetGlassDropdownMenuItem(label = "Barcode", leadingIcon = Icons.Filled.QrCodeScanner) { showAddMenu = false; addMenuGroup = null; openBarcodeScanner() }
-                        SheetGlassDropdownMenuItem(label = "Back", leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
-                    }
-
-                    AddMenuGroup.ImportPhotos -> {
                         SheetGlassDropdownMenuItem(label = "Photos", leadingIcon = Icons.Filled.PhotoLibrary) {
                             showAddMenu = false
                             addMenuGroup = null
@@ -449,6 +442,7 @@ fun HomeScreen(container: AppContainer) {
                             pendingCaptureImageBytes = emptyList()
                             photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
                         }
+                        SheetGlassDropdownMenuItem(label = "Barcode", leadingIcon = Icons.Filled.QrCodeScanner) { showAddMenu = false; addMenuGroup = null; openBarcodeScanner() }
                         SheetGlassDropdownMenuItem(label = "Back", leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
                     }
 
