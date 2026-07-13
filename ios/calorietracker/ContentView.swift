@@ -10,7 +10,6 @@ import AVFoundation
 enum CameraMode {
     case snapFood
     case snapFoodWithContext
-    case nutritionLabel
 }
 
 private let fudAIAppStoreID = "6758935726"
@@ -842,13 +841,6 @@ struct HomeView: View {
                             Label("Barcode", systemImage: "barcode.viewfinder")
                         }
                         Button(action: {
-                            cameraMode = .nutritionLabel
-                            captureImages = []
-                            showCamera = true
-                        }) {
-                            Label("Nutrition Label", systemImage: "text.viewfinder")
-                        }
-                        Button(action: {
                             cameraMode = .snapFoodWithContext
                             captureImages = []
                             contextDescription = ""
@@ -942,15 +934,9 @@ struct HomeView: View {
                 capturedImage = nil
                 currentEmoji = nil
 
-                if cameraMode == .nutritionLabel {
-                    currentImage = image
-                    currentImages = [image]
-                    startAnalysis(image: image, mode: cameraMode)
-                } else {
-                    captureImages.append(image)
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
-                        showMultiPhotoCaptureSheet = true
-                    }
+                captureImages.append(image)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                    showMultiPhotoCaptureSheet = true
                 }
             }
             .sheet(isPresented: $showMultiPhotoCaptureSheet) {
@@ -1255,14 +1241,6 @@ struct HomeView: View {
                     retryRequest = nil
                     activeSheet = .foodResult
 
-                case .nutritionLabel:
-                    guard let image = images.first else { throw GeminiService.AnalysisError.imageConversionFailed }
-                    let label = try await GeminiService.analyzeNutritionLabel(image: image)
-                    let servingGrams = label.servingSizeGrams ?? 100
-                    currentFoodResult = label.scaled(to: servingGrams)
-                    currentFoodSource = .nutritionLabel
-                    retryRequest = nil
-                    activeSheet = .foodResult
                 }
             } catch {
                 activeSheet = nil

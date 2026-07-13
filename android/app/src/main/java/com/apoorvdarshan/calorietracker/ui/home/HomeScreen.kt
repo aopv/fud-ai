@@ -55,7 +55,6 @@ import androidx.compose.material.icons.filled.AddAPhoto
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Calculate
 import androidx.compose.material.icons.filled.LocalFireDepartment
-import androidx.compose.material.icons.filled.DocumentScanner
 import androidx.compose.material.icons.filled.DriveFileRenameOutline
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.CameraAlt
@@ -168,11 +167,6 @@ private enum class AddMenuGroup {
     ReuseMeal
 }
 
-private enum class CameraCaptureMode {
-    Food,
-    NutritionLabel
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(container: AppContainer) {
@@ -196,7 +190,6 @@ fun HomeScreen(container: AppContainer) {
 
     var showCameraCapture by remember { mutableStateOf(false) }
     var showMultiPhotoCapture by remember { mutableStateOf(false) }
-    var cameraCaptureMode by remember { mutableStateOf(CameraCaptureMode.Food) }
     var pendingCaptureImageBytes by remember { mutableStateOf<List<ByteArray>>(emptyList()) }
     // Holds a picked photo while the optional-note sheet is shown.
     var pendingNoteImageBytes by remember { mutableStateOf<ByteArray?>(null) }
@@ -219,27 +212,22 @@ fun HomeScreen(container: AppContainer) {
         }
     }
 
-    var permissionCaptureMode by remember { mutableStateOf(CameraCaptureMode.Food) }
     val cameraPermission = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
         if (granted) {
-            cameraCaptureMode = permissionCaptureMode
             pendingCaptureImageBytes = emptyList()
             showCameraCapture = true
         }
-        permissionCaptureMode = CameraCaptureMode.Food
     }
 
-    fun openCamera(mode: CameraCaptureMode = CameraCaptureMode.Food) {
+    fun openCamera() {
         if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.CAMERA) ==
             PackageManager.PERMISSION_GRANTED
         ) {
-            cameraCaptureMode = mode
             pendingCaptureImageBytes = emptyList()
             showCameraCapture = true
         } else {
-            permissionCaptureMode = mode
             cameraPermission.launch(Manifest.permission.CAMERA)
         }
     }
@@ -456,7 +444,6 @@ fun HomeScreen(container: AppContainer) {
 
                     AddMenuGroup.CaptureAndScan -> {
                         SheetGlassDropdownMenuItem(label = "Camera", leadingIcon = Icons.Filled.CameraAlt) { showAddMenu = false; addMenuGroup = null; openCamera() }
-                        SheetGlassDropdownMenuItem(label = "Nutrition Label", leadingIcon = Icons.Filled.DocumentScanner) { showAddMenu = false; addMenuGroup = null; openCamera(CameraCaptureMode.NutritionLabel) }
                         SheetGlassDropdownMenuItem(label = "Barcode", leadingIcon = Icons.Filled.QrCodeScanner) { showAddMenu = false; addMenuGroup = null; openBarcodeScanner() }
                         SheetGlassDropdownMenuItem(label = "Back", leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
                     }
@@ -556,12 +543,8 @@ fun HomeScreen(container: AppContainer) {
         InAppCameraCaptureDialog(
             onCapture = { bytes ->
                 showCameraCapture = false
-                if (cameraCaptureMode == CameraCaptureMode.NutritionLabel) {
-                    vm.analyzePhoto(bytes)
-                } else {
-                    pendingCaptureImageBytes = (pendingCaptureImageBytes + bytes).take(10)
-                    showMultiPhotoCapture = true
-                }
+                pendingCaptureImageBytes = (pendingCaptureImageBytes + bytes).take(10)
+                showMultiPhotoCapture = true
             },
             onDismiss = {
                 showCameraCapture = false
