@@ -134,6 +134,22 @@ enum WeightGoal: String, Codable, CaseIterable {
     }
 }
 
+enum WeightDisplayFormatter {
+    private static let poundsPerKilogram = 2.20462
+
+    static func weeklyChangeValue(kilograms: Double, useMetric: Bool) -> String {
+        let value = useMetric ? kilograms : kilograms * poundsPerKilogram
+        return String(format: "%.2f", value)
+            .replacingOccurrences(of: "0+$", with: "", options: .regularExpression)
+            .replacingOccurrences(of: "\\.$", with: "", options: .regularExpression)
+    }
+
+    static func weeklyChange(kilograms: Double, useMetric: Bool, period: String = "week") -> String {
+        let unit = useMetric ? "kg" : "lbs"
+        return "\(weeklyChangeValue(kilograms: kilograms, useMetric: useMetric)) \(unit)/\(period)"
+    }
+}
+
 // MARK: - User Profile
 
 struct UserProfile: Codable, Equatable {

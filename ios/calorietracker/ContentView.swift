@@ -3001,10 +3001,7 @@ struct ProfileView: View {
     // Weekly change display
     private var weeklyChangeDisplay: String {
         let rate = profile.weeklyChangeKg ?? 0.5
-        if weightMetric {
-            return String(format: "%.2f kg/week", rate)
-        }
-        return String(format: "%.1f lbs/week", rate * 2.20462)
+        return WeightDisplayFormatter.weeklyChange(kilograms: rate, useMetric: weightMetric)
     }
 
     var body: some View {
@@ -3147,9 +3144,9 @@ struct ProfileView: View {
                             get: { profile.weeklyChangeKg ?? 0.5 },
                             set: { profile.weeklyChangeKg = $0; saveProfile() }
                         )) {
-                            Text("Slow (0.25 kg/wk)").tag(0.25)
-                            Text("Moderate (0.5 kg/wk)").tag(0.5)
-                            Text("Fast (1.0 kg/wk)").tag(1.0)
+                            Text("Slow (\(WeightDisplayFormatter.weeklyChange(kilograms: 0.25, useMetric: weightMetric, period: "wk")))").tag(0.25)
+                            Text("Moderate (\(WeightDisplayFormatter.weeklyChange(kilograms: 0.5, useMetric: weightMetric, period: "wk")))").tag(0.5)
+                            Text("Fast (\(WeightDisplayFormatter.weeklyChange(kilograms: 1.0, useMetric: weightMetric, period: "wk")))").tag(1.0)
                         } label: {
                             Label {
                                 Text("Weekly Change")

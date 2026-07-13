@@ -103,6 +103,7 @@ import com.apoorvdarshan.calorietracker.R
 import com.apoorvdarshan.calorietracker.models.ActivityLevel
 import com.apoorvdarshan.calorietracker.models.AIProvider
 import com.apoorvdarshan.calorietracker.models.Gender
+import com.apoorvdarshan.calorietracker.models.WeightDisplayFormatter
 import com.apoorvdarshan.calorietracker.models.WeightGoal
 import com.apoorvdarshan.calorietracker.services.update.AndroidUpdateChecker
 import com.apoorvdarshan.calorietracker.ui.components.DateWheelPicker
@@ -867,8 +868,7 @@ private fun GoalSpeedStep(
                 else -> 1
             }
             val unit = if (useMetric) stringResource(R.string.unit_kg) else stringResource(R.string.unit_lbs)
-            val display = if (useMetric) String.format(Locale.US, "%.1f", weeklyKg)
-                          else String.format(Locale.US, "%.1f", weeklyKg * 2.20462)
+            val display = WeightDisplayFormatter.weeklyChangeValue(weeklyKg, useMetric)
             val diffKg = kotlin.math.abs(targetKg - currentKg)
             val estimatedDays = if (weeklyKg > 0) (diffKg / weeklyKg * 7).toInt() else 0
             Spacer(Modifier.weight(1f))

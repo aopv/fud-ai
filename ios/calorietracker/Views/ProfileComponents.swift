@@ -619,13 +619,15 @@ struct GoalSpeedSelectionView: View {
     @Binding var selected: Double?
     let goal: WeightGoal
     let onSave: () -> Void
+    @AppStorage("weightUnit") private var weightUnitRaw = "lbs"
 
     private var options: [(label: String, subtitle: String, value: Double)] {
         let unit = goal == .lose ? "loss" : "gain"
+        let useMetric = weightUnitRaw == "kg"
         return [
-            ("Slow", "0.25 kg/week \(unit)", 0.25),
-            ("Recommended", "0.5 kg/week \(unit)", 0.5),
-            ("Fast", "1.0 kg/week \(unit)", 1.0),
+            ("Slow", "\(WeightDisplayFormatter.weeklyChange(kilograms: 0.25, useMetric: useMetric)) \(unit)", 0.25),
+            ("Recommended", "\(WeightDisplayFormatter.weeklyChange(kilograms: 0.5, useMetric: useMetric)) \(unit)", 0.5),
+            ("Fast", "\(WeightDisplayFormatter.weeklyChange(kilograms: 1.0, useMetric: useMetric)) \(unit)", 1.0),
         ]
     }
 

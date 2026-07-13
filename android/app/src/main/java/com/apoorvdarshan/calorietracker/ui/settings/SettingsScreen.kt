@@ -148,6 +148,7 @@ import com.apoorvdarshan.calorietracker.models.OptionalNutrientGoals
 import com.apoorvdarshan.calorietracker.models.SpeechLanguage
 import com.apoorvdarshan.calorietracker.models.SpeechProvider
 import com.apoorvdarshan.calorietracker.models.UserProfile
+import com.apoorvdarshan.calorietracker.models.WeightDisplayFormatter
 import com.apoorvdarshan.calorietracker.models.WeightGoal
 import java.time.Instant
 import java.time.LocalDate
@@ -383,10 +384,10 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController) {
                         HorizontalDivider()
                         SettingRow(
                             stringResource(R.string.settings_weekly_change),
-                            p.weeklyChangeKg?.let {
-                                if (ui.weightMetric) String.format(Locale.US, "%.2f kg/wk", it)
-                                else String.format(Locale.US, "%.2f lbs/wk", it * 2.20462)
-                            } ?: stringResource(R.string.settings_weekly_default),
+                            WeightDisplayFormatter.weeklyChange(
+                                kilograms = p.weeklyChangeKg ?: 0.5,
+                                useMetric = ui.weightMetric
+                            ),
                             icon = Icons.Outlined.Speed
                         ) { sheet = SettingsSheet.GOAL_SPEED }
                         HorizontalDivider()
@@ -2140,9 +2141,9 @@ private fun GoalSpeedSheet(current: Double, goal: WeightGoal, useMetric: Boolean
     val wUnit = if (useMetric) stringResource(R.string.unit_kg) else stringResource(R.string.unit_lbs)
     val paceRes = if (goal == WeightGoal.LOSE) R.string.settings_pace_loss_format else R.string.settings_pace_gain_format
     val options = listOf(
-        Triple(0.25, stringResource(R.string.onboarding_pace_slow), stringResource(paceRes, "0.25 $wUnit")),
-        Triple(0.5, stringResource(R.string.onboarding_pace_recommended), stringResource(paceRes, "0.5 $wUnit")),
-        Triple(1.0, stringResource(R.string.onboarding_pace_fast), stringResource(paceRes, "1.0 $wUnit"))
+        Triple(0.25, stringResource(R.string.onboarding_pace_slow), stringResource(paceRes, "${WeightDisplayFormatter.weeklyChangeValue(0.25, useMetric)} $wUnit")),
+        Triple(0.5, stringResource(R.string.onboarding_pace_recommended), stringResource(paceRes, "${WeightDisplayFormatter.weeklyChangeValue(0.5, useMetric)} $wUnit")),
+        Triple(1.0, stringResource(R.string.onboarding_pace_fast), stringResource(paceRes, "${WeightDisplayFormatter.weeklyChangeValue(1.0, useMetric)} $wUnit"))
     )
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         for ((kg, title, subtitle) in options) {

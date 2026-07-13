@@ -573,7 +573,7 @@ struct OnboardingView: View {
                 Spacer()
                 VStack(spacing: 24) {
                     VStack(spacing: 4) {
-                        Text(String(format: "%.1f %@", weeklyChangeKg * (isWeightMetric ? 1 : 2.205), weightUnit))
+                        Text("\(WeightDisplayFormatter.weeklyChangeValue(kilograms: weeklyChangeKg, useMetric: isWeightMetric)) \(weightUnit)")
                             .font(.system(size: 40, weight: .bold, design: .rounded))
                             .contentTransition(.numericText()).animation(.snappy, value: goalSpeed)
                         Text("per week").font(.system(.callout, design: .rounded)).foregroundStyle(.secondary)
