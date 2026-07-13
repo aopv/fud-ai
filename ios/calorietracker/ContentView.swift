@@ -558,7 +558,6 @@ struct HomeView: View {
     private var carbsGoal: Int { userProfile.effectiveCarbs }
     private var fatGoal: Int { userProfile.effectiveFat }
     private var selectedCalories: Int { foodStore.calories(for: selectedDate) }
-    private var caloriesRemaining: Int { max(calorieGoal - selectedCalories, 0) }
     private var isToday: Bool { Calendar.current.isDateInToday(selectedDate) }
     private var foodLogSortOrder: FoodLogSortOrder { FoodLogSortOrder.order(for: foodLogSortOrderRaw) }
     private var homeTopNutrients: [HomeTopNutrient] { HomeTopNutrient.selection(from: homeTopNutrientsRaw) }
@@ -632,7 +631,7 @@ struct HomeView: View {
 
                 // Calorie hero (semicircle gauge)
                 Section {
-                    CalorieGauge(eaten: selectedCalories, goal: calorieGoal, remaining: caloriesRemaining, launchFillEpoch: launchFillEpoch)
+                    CalorieGauge(eaten: selectedCalories, goal: calorieGoal, launchFillEpoch: launchFillEpoch)
                         .frame(maxWidth: .infinity)
                         .padding(.top, 8)
                         .padding(.bottom, 4)

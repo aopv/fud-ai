@@ -37,7 +37,8 @@ import com.apoorvdarshan.calorietracker.ui.theme.AppColors
 
 /**
  * A single macro shown as a vertical fill bar (rounded tube that fills bottom-up toward the goal),
- * with the value above and the name + goal beneath. Port of iOS `MacroVerticalBar`.
+ * with the value above and the name + remaining/over status beneath. Port of iOS
+ * `MacroVerticalBar`.
  */
 @Composable
 fun MacroCard(
@@ -66,6 +67,13 @@ fun MacroCard(
     }
     val animated = animatable.value
     val firstColor = gradientColors.firstOrNull() ?: AppColors.Calorie
+    val goalValue = goal.toDouble()
+    val statusText = when {
+        goal <= 0 -> "No goal"
+        current == goalValue -> "Goal reached"
+        current < goalValue -> "${MacroValueFormatter.string(goalValue - current)}$unit left"
+        else -> "${MacroValueFormatter.string(current - goalValue)}$unit over"
+    }
 
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -113,7 +121,7 @@ fun MacroCard(
             )
         }
 
-        // Name + goal — a tight pair (iOS groups them in an inner VStack(spacing: 1)
+        // Name + status — a tight pair (iOS groups them in an inner VStack(spacing: 1)
         // inside the outer VStack(spacing: 10)).
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -127,10 +135,14 @@ fun MacroCard(
                 maxLines = 1
             )
             Text(
-                "/$goal$unit",
+                statusText,
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
+                color = if (goal > 0 && current > goal) {
+                    AppColors.Calorie
+                } else {
+                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
+                },
                 maxLines = 1
             )
         }

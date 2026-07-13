@@ -807,7 +807,12 @@ private fun CalorieHero(current: Int, goal: Int) {
             animatedRatio.animateTo(ratio, spec)
         }
     }
-    val remaining = maxOf(0, goal - current)
+    val statusText = when {
+        goal <= 0 -> "No goal"
+        current < goal -> "${goal - current} left of $goal"
+        current > goal -> "${current - goal} over"
+        else -> "Goal reached"
+    }
     val gradientColors = listOf(AppColors.CalorieStart, AppColors.CalorieEnd)
     val trackColor = AppColors.Calorie.copy(alpha = 0.12f)
 
@@ -871,8 +876,8 @@ private fun CalorieHero(current: Int, goal: Int) {
                 ),
                 maxLines = 1
             )
-            // Flame + remaining, mirroring iOS HStack(spacing: 5) { flame.fill (11pt) ;
-            // Text("\(remaining) left") } tinted to AppColors.calorie — a pink monochrome
+            // Flame + calorie status, mirroring iOS HStack(spacing: 5) { flame.fill (11pt) ;
+            // Text(statusText) } tinted to AppColors.calorie — a pink monochrome
             // glyph, not a multicolor emoji, and the count is un-grouped (no thousands comma).
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -885,7 +890,7 @@ private fun CalorieHero(current: Int, goal: Int) {
                     modifier = Modifier.size(13.dp)
                 )
                 Text(
-                    "$remaining left",
+                    statusText,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = AppColors.Calorie

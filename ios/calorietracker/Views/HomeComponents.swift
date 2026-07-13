@@ -485,7 +485,6 @@ struct MacroCard: View {
 struct CalorieGauge: View {
     let eaten: Int
     let goal: Int
-    let remaining: Int
     /// Increments when the app is opened; drives the fill-from-zero reveal.
     var launchFillEpoch: Int = 0
 
@@ -501,6 +500,13 @@ struct CalorieGauge: View {
 
     private var progress: Double {
         goal > 0 ? min(Double(eaten) / Double(goal), 1.0) : 0
+    }
+
+    private var statusText: String {
+        guard goal > 0 else { return "No goal" }
+        if eaten < goal { return "\(goal - eaten) left of \(goal)" }
+        if eaten > goal { return "\(eaten - goal) over" }
+        return "Goal reached"
     }
 
     private var dashedStroke: StrokeStyle {
@@ -552,7 +558,7 @@ struct CalorieGauge: View {
                 HStack(spacing: 5) {
                     Image(systemName: "flame.fill")
                         .font(.system(size: 11, weight: .semibold))
-                    Text("\(remaining) left")
+                    Text(statusText)
                         .font(.system(.footnote, design: .rounded, weight: .semibold))
                 }
                 .foregroundStyle(AppColors.calorie)
@@ -601,6 +607,14 @@ struct MacroVerticalBar: View {
         goal > 0 ? CGFloat(min(current / goal, 1.0)) : 0
     }
 
+    private var statusText: String {
+        guard goal > 0 else { return "No goal" }
+        let difference = goal - current
+        if abs(difference) < 0.0001 { return "Goal reached" }
+        let amount = MacroValueFormatter.string(abs(difference))
+        return difference > 0 ? "\(amount)\(unit) left" : "\(amount)\(unit) over"
+    }
+
     var body: some View {
         VStack(spacing: 10) {
             Text(MacroValueFormatter.string(current))
@@ -628,9 +642,9 @@ struct MacroVerticalBar: View {
                 Text(LocalizedDisplayText.text(label))
                     .font(.system(.caption, design: .rounded, weight: .semibold))
                     .foregroundStyle(.primary)
-                Text("/\(MacroValueFormatter.string(goal))\(unit)")
+                Text(statusText)
                     .font(.system(.caption2, design: .rounded, weight: .medium))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(current > goal && goal > 0 ? AppColors.calorie : .secondary)
             }
             .lineLimit(1)
             .minimumScaleFactor(0.6)
