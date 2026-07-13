@@ -217,9 +217,8 @@ internal fun SpeedometerWithCenter(
         endRgb = WidgetTheme.themeEnd(endHex)
     )
     val gaugeHeightDp = (gaugeWidthDp * 0.58f).toInt()
-    val largeSp = (gaugeWidthDp * 0.19f).toInt().coerceIn(17, 34)
-    val centerLargeFontSize = (if (centerLarge.length > 5) largeSp - 4 else largeSp).sp
-    val centerSmallFontSize = (gaugeWidthDp * 0.10f).toInt().coerceIn(10, 15).sp
+    val centerLargeFontSize = gaugeCenterFontSizeSp(gaugeWidthDp, centerLarge).sp
+    val centerSmallFontSize = gaugeSecondaryFontSizeSp(gaugeWidthDp, centerSmall).sp
 
     Box(
         modifier = GlanceModifier.size(gaugeWidthDp.dp, gaugeHeightDp.dp),
@@ -248,6 +247,27 @@ internal fun SpeedometerWithCenter(
             )
         }
     }
+}
+
+/**
+ * Keeps the primary readout inside the clear center of the semicircle. Values
+ * can be much wider than calories when the Protein widget follows a selected
+ * micronutrient (for example, "1234mg"), so gauge width and text length both
+ * participate in sizing.
+ */
+internal fun gaugeCenterFontSizeSp(gaugeWidthDp: Int, text: String): Int {
+    val baseSize = (gaugeWidthDp * 0.19f).toInt().coerceIn(17, 34)
+    val characterCount = text.length.coerceAtLeast(1)
+    val widthSafeSize = (gaugeWidthDp * 0.80f / characterCount).toInt()
+    return minOf(baseSize, widthSafeSize).coerceAtLeast(10)
+}
+
+/** Goal/subtitle equivalent of [gaugeCenterFontSizeSp]. */
+internal fun gaugeSecondaryFontSizeSp(gaugeWidthDp: Int, text: String): Int {
+    val baseSize = (gaugeWidthDp * 0.10f).toInt().coerceIn(10, 15)
+    val characterCount = text.length.coerceAtLeast(1)
+    val widthSafeSize = (gaugeWidthDp * 0.90f / characterCount).toInt()
+    return minOf(baseSize, widthSafeSize).coerceAtLeast(9)
 }
 
 /** The user's 4 selected Home nutrients as vertical fill tubes, like the app's Home bars. */
