@@ -1,0 +1,132 @@
+package com.apoorvdarshan.calorietracker.widget
+
+import android.content.Context
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.glance.GlanceId
+import androidx.glance.GlanceModifier
+import androidx.glance.GlanceTheme
+import androidx.glance.Image
+import androidx.glance.ImageProvider
+import androidx.glance.action.actionStartActivity
+import androidx.glance.action.clickable
+import androidx.glance.appwidget.GlanceAppWidget
+import androidx.glance.appwidget.GlanceAppWidgetReceiver
+import androidx.glance.appwidget.SizeMode
+import androidx.glance.appwidget.cornerRadius
+import androidx.glance.appwidget.provideContent
+import androidx.glance.background
+import androidx.glance.layout.Alignment
+import androidx.glance.layout.Box
+import androidx.glance.layout.Column
+import androidx.glance.layout.Spacer
+import androidx.glance.layout.fillMaxSize
+import androidx.glance.layout.fillMaxWidth
+import androidx.glance.layout.height
+import androidx.glance.layout.padding
+import androidx.glance.layout.size
+import androidx.glance.text.FontWeight
+import androidx.glance.text.Text
+import androidx.glance.text.TextStyle
+import com.apoorvdarshan.calorietracker.MainActivity
+import com.apoorvdarshan.calorietracker.R
+import com.apoorvdarshan.calorietracker.data.PreferencesStore
+import com.apoorvdarshan.calorietracker.models.WidgetSnapshot
+import kotlinx.coroutines.flow.first
+
+class WaterAppWidget : GlanceAppWidget() {
+    override val sizeMode: SizeMode = SizeMode.Exact
+
+    override suspend fun provideGlance(context: Context, id: GlanceId) {
+        val snapshot = runCatching {
+            PreferencesStore(context).widgetSnapshot.first()?.let {
+                if (it.isStale) it.emptyForToday() else it
+            }
+        }.getOrNull() ?: WidgetSnapshot.empty()
+
+        provideContent {
+            GlanceTheme {
+                WaterWidgetContent(snapshot)
+            }
+        }
+    }
+
+    companion object {
+        val SMALL_SIZE = DpSize(140.dp, 140.dp)
+    }
+}
+
+class WaterWidgetReceiver : GlanceAppWidgetReceiver() {
+    override val glanceAppWidget: GlanceAppWidget = WaterAppWidget()
+}
+
+@Composable
+private fun WaterWidgetContent(snapshot: WidgetSnapshot) {
+    Box(
+        modifier = GlanceModifier
+            .fillMaxSize()
+            .background(WidgetTheme.backgroundProvider)
+            .cornerRadius(22.dp)
+            .padding(14.dp)
+            .clickable(actionStartActivity<MainActivity>())
+    ) {
+        if (snapshot.waterTrackingEnabled) {
+            WaterProgressContent(snapshot)
+        } else {
+            WaterDisabledContent()
+        }
+    }
+}
+
+@Composable
+private fun WaterProgressContent(snapshot: WidgetSnapshot) {
+    Column(modifier = GlanceModifier.fillMaxSize()) {
+        WidgetHeader(iconRes = R.drawable.ic_widget_water, label = "Water")
+        Box(
+            modifier = GlanceModifier.fillMaxWidth().defaultWeight(),
+            contentAlignment = Alignment.Center
+        ) {
+            SpeedometerWithCenter(
+                progress = snapshot.waterProgress.toFloat(),
+                gaugeWidthDp = 112,
+                startHex = snapshot.themeStartHex,
+                endHex = snapshot.themeEndHex,
+                centerLarge = "${snapshot.waterCurrentMl} ml",
+                centerSmall = "/ ${snapshot.waterGoalMl} ml"
+            )
+        }
+        Text(
+            text = "${snapshot.waterRemaining} ml left",
+            style = TextStyle(
+                color = WidgetTheme.themeTextProvider(snapshot.themeStartHex),
+                fontWeight = FontWeight.Medium,
+                fontSize = 12.sp
+            )
+        )
+    }
+}
+
+@Composable
+private fun WaterDisabledContent() {
+    Box(modifier = GlanceModifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Image(
+                provider = ImageProvider(R.drawable.ic_widget_water),
+                contentDescription = null,
+                modifier = GlanceModifier.size(30.dp)
+            )
+            Spacer(modifier = GlanceModifier.height(8.dp))
+            Text(
+                text = "Water Tracking",
+                style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            )
+            Spacer(modifier = GlanceModifier.height(4.dp))
+            Text(
+                text = "Enable in Fud AI",
+                style = TextStyle(color = WidgetTheme.secondaryTextProvider, fontSize = 12.sp)
+            )
+        }
+    }
+}

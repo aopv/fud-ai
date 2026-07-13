@@ -6,11 +6,15 @@
     <string name="widget_calorie_description">See today\'s calories and macros at a glance.</string>
     <string name="widget_protein_label">Fud AI Protein</string>
     <string name="widget_protein_description">See today\'s protein progress at a glance.</string>
+    <string name="widget_water_label">Fud AI Water</string>
+    <string name="widget_water_description">See today\'s water progress at a glance.</string>
+    <string name="widget_water_disabled">Enable Water Tracking in Fud AI</string>
     <string name="widget_today">Today</string>
     <string name="widget_protein">Protein</string>
     <string name="widget_calories">Calories</string>
     <string name="widget_carbs">Carbs</string>
     <string name="widget_fat">Fat</string>
+    <string name="widget_water">Water</string>
     <string name="widget_kcal_left_format">%1$d kcal left</string>
     <string name="widget_g_left_format">%1$dg left</string>
     <string name="widget_kcal">kcal</string>

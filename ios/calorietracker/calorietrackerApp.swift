@@ -328,6 +328,10 @@ struct calorietrackerApp: App {
                 WidgetSnapshotWriter.publish(foods: foodStore.entries, profile: profile)
             }
         }
+        waterStore.onEntriesChanged = { [foodStore] in
+            guard let profile = UserProfile.load() else { return }
+            WidgetSnapshotWriter.publish(foods: foodStore.entries, profile: profile)
+        }
     }
 
     private func refreshWidgetSnapshot() {

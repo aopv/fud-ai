@@ -41,7 +41,11 @@ data class WidgetSnapshot(
     val homeNutrients: List<WidgetNutrient>? = null,
     /** User's theme gradient as raw RGB hex (e.g. 0xFF375F). Fud Pink when absent. */
     val themeStartHex: Int? = null,
-    val themeEndHex: Int? = null
+    val themeEndHex: Int? = null,
+    /** Defaults preserve decoding of snapshots written before the Water widget. */
+    val waterTrackingEnabled: Boolean = false,
+    val waterCurrentMl: Int = 0,
+    val waterGoalMl: Int = 2_000
 ) {
     val caloriesRemaining: Int get() = maxOf(0, calorieGoal - calories)
     val proteinRemaining: Double get() = maxOf(0.0, proteinGoal.toDouble() - protein)
@@ -51,6 +55,8 @@ data class WidgetSnapshot(
     val proteinProgress: Double get() = if (proteinGoal > 0) minOf(1.0, protein / proteinGoal) else 0.0
     val carbsProgress: Double get() = if (carbsGoal > 0) minOf(1.0, carbs / carbsGoal) else 0.0
     val fatProgress: Double get() = if (fatGoal > 0) minOf(1.0, fat / fatGoal) else 0.0
+    val waterRemaining: Int get() = maxOf(0, waterGoalMl - waterCurrentMl)
+    val waterProgress: Double get() = if (waterGoalMl > 0) minOf(1.0, waterCurrentMl.toDouble() / waterGoalMl) else 0.0
 
     val isStale: Boolean get() {
         val snapshotDay = dayStart.atZone(ZoneId.systemDefault()).toLocalDate()
@@ -71,6 +77,12 @@ data class WidgetSnapshot(
     /** First selected nutrient — what the "Protein" widget actually tracks. */
     val primaryHomeNutrient: WidgetNutrient get() = displayedHomeNutrients.first()
 
+    fun emptyForToday(): WidgetSnapshot = copy(
+        date = Instant.now(),
+        dayStart = todayStart(),
+        waterCurrentMl = 0
+    )
+
     companion object {
         fun placeholder(): WidgetSnapshot {
             val now = Instant.now()
@@ -80,7 +92,10 @@ data class WidgetSnapshot(
                 calories = 1247, calorieGoal = 2000,
                 protein = 84.0, proteinGoal = 150,
                 carbs = 132.0, carbsGoal = 220,
-                fat = 42.0, fatGoal = 70
+                fat = 42.0, fatGoal = 70,
+                waterTrackingEnabled = true,
+                waterCurrentMl = 1_250,
+                waterGoalMl = 2_000
             )
         }
 

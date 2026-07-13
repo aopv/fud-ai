@@ -6,5 +6,6 @@ struct FudAIWidgetsBundle: WidgetBundle {
     var body: some Widget {
         CalorieWidget()
         ProteinWidget()
+        WaterWidget()
     }
 }

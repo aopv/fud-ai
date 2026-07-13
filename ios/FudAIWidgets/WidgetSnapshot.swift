@@ -53,6 +53,11 @@ struct WidgetSnapshot: Codable, Equatable {
     let fat: Double
     let fatGoal: Int
     let homeNutrients: [WidgetNutrientValue]?
+    /// Optional for backward compatibility with snapshots written before the
+    /// standalone Water widget existed.
+    var waterTrackingEnabled: Bool? = nil
+    var waterCurrentMl: Int? = nil
+    var waterGoalMl: Int? = nil
     /// User's theme gradient as raw hex (e.g. 0xFF375F). Optional so snapshots
     /// written by older builds still decode; consumers fall back to Fud Pink.
     var themeStartHex: UInt?
@@ -95,7 +100,10 @@ struct WidgetSnapshot: Codable, Equatable {
                 WidgetNutrientValue(id: "protein", label: "Protein", shortLabel: "P", unit: "g", iconName: "fork.knife", value: 84, goal: 150),
                 WidgetNutrientValue(id: "carbs", label: "Carbs", shortLabel: "C", unit: "g", iconName: "leaf", value: 132, goal: 220),
                 WidgetNutrientValue(id: "fat", label: "Fat", shortLabel: "F", unit: "g", iconName: "drop.fill", value: 42, goal: 70),
-            ]
+            ],
+            waterTrackingEnabled: true,
+            waterCurrentMl: 1_250,
+            waterGoalMl: 2_000
         )
     }
 
@@ -112,7 +120,10 @@ struct WidgetSnapshot: Codable, Equatable {
                 WidgetNutrientValue(id: "protein", label: "Protein", shortLabel: "P", unit: "g", iconName: "fork.knife", value: 0, goal: 150),
                 WidgetNutrientValue(id: "carbs", label: "Carbs", shortLabel: "C", unit: "g", iconName: "leaf", value: 0, goal: 220),
                 WidgetNutrientValue(id: "fat", label: "Fat", shortLabel: "F", unit: "g", iconName: "drop.fill", value: 0, goal: 70),
-            ]
+            ],
+            waterTrackingEnabled: false,
+            waterCurrentMl: 0,
+            waterGoalMl: 2_000
         )
     }
 
@@ -150,6 +161,9 @@ struct WidgetSnapshot: Codable, Equatable {
             fat: 0,
             fatGoal: fatGoal,
             homeNutrients: displayedHomeNutrients.map { $0.zeroedForToday() },
+            waterTrackingEnabled: waterTrackingEnabled,
+            waterCurrentMl: 0,
+            waterGoalMl: waterGoalMl,
             themeStartHex: themeStartHex,
             themeEndHex: themeEndHex
         )
@@ -159,6 +173,11 @@ struct WidgetSnapshot: Codable, Equatable {
     var proteinRemaining: Double { max(0, Double(proteinGoal) - protein) }
     var carbsRemaining: Double { max(0, Double(carbsGoal) - carbs) }
     var fatRemaining: Double { max(0, Double(fatGoal) - fat) }
+    var waterIsEnabled: Bool { waterTrackingEnabled ?? false }
+    var waterCurrent: Int { max(0, waterCurrentMl ?? 0) }
+    var waterGoal: Int { max(1, waterGoalMl ?? 2_000) }
+    var waterRemaining: Int { max(0, waterGoal - waterCurrent) }
+    var waterProgress: Double { min(1, Double(waterCurrent) / Double(waterGoal)) }
     var calorieProgress: Double {
         guard calorieGoal > 0 else { return 0 }
         return min(1.0, Double(calories) / Double(calorieGoal))

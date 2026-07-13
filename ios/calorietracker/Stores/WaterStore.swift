@@ -27,6 +27,7 @@ struct WaterEntry: Codable, Identifiable, Equatable {
 @Observable
 final class WaterStore {
     private(set) var entries: [WaterEntry] = []
+    var onEntriesChanged: (() -> Void)?
 
     init() {
         guard let data = UserDefaults.standard.data(forKey: WaterSettings.entriesKey),
@@ -40,17 +41,20 @@ final class WaterStore {
         let entry = WaterEntry(date: date, milliliters: milliliters)
         entries.append(entry)
         save()
+        onEntriesChanged?()
         return entry
     }
 
     func delete(id: UUID) {
         entries.removeAll { $0.id == id }
         save()
+        onEntriesChanged?()
     }
 
     func clear() {
         entries = []
         UserDefaults.standard.removeObject(forKey: WaterSettings.entriesKey)
+        onEntriesChanged?()
     }
 
     func total(on date: Date) -> Int {

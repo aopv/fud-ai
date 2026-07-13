@@ -12,13 +12,16 @@ import com.apoorvdarshan.calorietracker.models.HomeTopNutrient
 import com.apoorvdarshan.calorietracker.models.UserProfile
 import com.apoorvdarshan.calorietracker.models.WidgetNutrient
 import com.apoorvdarshan.calorietracker.models.WidgetSnapshot
+import com.apoorvdarshan.calorietracker.models.WaterEntry
 import com.apoorvdarshan.calorietracker.ui.theme.AppThemeColor
 import com.apoorvdarshan.calorietracker.widget.AllMetricsAppWidget
 import com.apoorvdarshan.calorietracker.widget.CalorieAppWidget
 import com.apoorvdarshan.calorietracker.widget.ProteinAppWidget
+import com.apoorvdarshan.calorietracker.widget.WaterAppWidget
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import java.time.Instant
 import java.time.LocalDate
@@ -38,20 +41,30 @@ class WidgetSnapshotWriter(
     private val profileRepository: ProfileRepository
 ) {
     fun observe() = combine(
-        foodRepository.entries,
-        profileRepository.profile,
-        prefs.homeTopNutrients,
-        prefs.appThemeColor,
-        prefs.optionalNutrientGoals
-    ) { entries, profile, _, _, _ ->
-        // Selection / theme / goals are re-read inside publish; they're combined
-        // here only so their changes re-trigger a snapshot write.
-        entries to profile
-    }
+        combine(
+            foodRepository.entries,
+            profileRepository.profile,
+            prefs.homeTopNutrients,
+            prefs.appThemeColor,
+            prefs.optionalNutrientGoals
+        ) { entries, profile, _, _, _ ->
+            // Selection / theme / goals are re-read inside publish; they're combined
+            // here only so their changes re-trigger a snapshot write.
+            CoreWidgetState(entries, profile)
+        },
+        combine(
+            prefs.waterTrackingEnabled,
+            prefs.waterDailyGoalMl,
+            prefs.waterEntries
+        ) { enabled, goalMl, entries ->
+            WaterWidgetState(enabled, goalMl, entries)
+        }
+    ) { core, water -> WidgetInputs(core, water) }
         .distinctUntilChanged()
-        .onEach { (entries, profile) -> publish(entries, profile) }
+        .onEach { inputs -> publish(inputs.core.entries, inputs.core.profile, inputs.water) }
+        .map { Unit }
 
-    suspend fun publish(entries: List<FoodEntry>, profile: UserProfile?) {
+    private suspend fun publish(entries: List<FoodEntry>, profile: UserProfile?, water: WaterWidgetState) {
         val todaysEntries = entries.filter {
             it.timestamp.atZone(ZoneId.systemDefault()).toLocalDate() == LocalDate.now()
         }
@@ -61,6 +74,9 @@ class WidgetSnapshotWriter(
             val selection = HomeTopNutrient.fromStorage(prefs.homeTopNutrients.first())
             val optionalGoals = prefs.optionalNutrientGoals.first()
             val theme = AppThemeColor.fromKey(prefs.appThemeColor.first())
+            val waterTodayMl = water.entries
+                .filter { it.date.atZone(ZoneId.systemDefault()).toLocalDate() == LocalDate.now() }
+                .sumOf { it.milliliters }
             val snapshot = WidgetSnapshot(
                 date = Instant.now(),
                 dayStart = WidgetSnapshot.todayStart(),
@@ -82,7 +98,10 @@ class WidgetSnapshotWriter(
                     )
                 },
                 themeStartHex = theme.start.toArgb() and 0xFFFFFF,
-                themeEndHex = theme.end.toArgb() and 0xFFFFFF
+                themeEndHex = theme.end.toArgb() and 0xFFFFFF,
+                waterTrackingEnabled = water.enabled,
+                waterCurrentMl = waterTodayMl,
+                waterGoalMl = water.goalMl.coerceAtLeast(1)
             )
             prefs.setWidgetSnapshot(snapshot)
         }
@@ -92,9 +111,27 @@ class WidgetSnapshotWriter(
             .onFailure { Log.e(TAG, "ProteinAppWidget.updateAll failed", it) }
         runCatching { AllMetricsAppWidget().updateAll(context) }
             .onFailure { Log.e(TAG, "AllMetricsAppWidget.updateAll failed", it) }
+        runCatching { WaterAppWidget().updateAll(context) }
+            .onFailure { Log.e(TAG, "WaterAppWidget.updateAll failed", it) }
     }
 
     private companion object {
         const val TAG = "FudAIWidget"
     }
 }
+
+private data class CoreWidgetState(
+    val entries: List<FoodEntry>,
+    val profile: UserProfile?
+)
+
+private data class WaterWidgetState(
+    val enabled: Boolean,
+    val goalMl: Int,
+    val entries: List<WaterEntry>
+)
+
+private data class WidgetInputs(
+    val core: CoreWidgetState,
+    val water: WaterWidgetState
+)

@@ -26,6 +26,13 @@ enum WidgetSnapshotWriter {
         let theme = AppThemeColor(
             rawValue: UserDefaults.standard.string(forKey: AppThemeColor.storageKey) ?? ""
         ) ?? .defaultColor
+        let waterEntries: [WaterEntry] = UserDefaults.standard.data(forKey: WaterSettings.entriesKey)
+            .flatMap { try? JSONDecoder().decode([WaterEntry].self, from: $0) } ?? []
+        let waterCurrentMl = waterEntries
+            .filter { calendar.isDate($0.date, inSameDayAs: Date()) }
+            .reduce(0) { $0 + $1.milliliters }
+        let storedWaterGoal = UserDefaults.standard.integer(forKey: WaterSettings.dailyGoalKey)
+        let waterGoalMl = storedWaterGoal > 0 ? storedWaterGoal : WaterSettings.defaultDailyGoalMl
 
         let snapshot = WidgetSnapshot(
             date: Date(),
@@ -41,6 +48,9 @@ enum WidgetSnapshotWriter {
             homeNutrients: selectedHomeNutrients.map {
                 homeNutrientValue(for: $0, foods: today, profile: profile, optionalGoals: optionalGoals)
             },
+            waterTrackingEnabled: UserDefaults.standard.bool(forKey: WaterSettings.enabledKey),
+            waterCurrentMl: waterCurrentMl,
+            waterGoalMl: waterGoalMl,
             themeStartHex: theme.startHex,
             themeEndHex: theme.endHex
         )

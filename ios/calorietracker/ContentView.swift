@@ -3387,6 +3387,7 @@ struct ProfileView: View {
                                     notificationManager.scheduleWaterReminder(enabled: false, hour: 14, minute: 0)
                                     UserDefaults.standard.set(false, forKey: WaterSettings.reminderEnabledKey)
                                 }
+                                WidgetSnapshotWriter.publish(foods: foodStore.entries, profile: profile)
                             }
                     }
 
@@ -4167,7 +4168,10 @@ struct ProfileView: View {
                 CalculationMethodsView()
             }
             .sheet(isPresented: $showWaterGoalPicker) {
-                WaterGoalPickerSheet(currentGoal: waterDailyGoal) { waterDailyGoal = $0 }
+                WaterGoalPickerSheet(currentGoal: waterDailyGoal) {
+                    waterDailyGoal = $0
+                    WidgetSnapshotWriter.publish(foods: foodStore.entries, profile: profile)
+                }
             }
             .onAppear {
                 // Existing users (and anyone who has never recalculated) start with no baseline.
