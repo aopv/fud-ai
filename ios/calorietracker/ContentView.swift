@@ -517,6 +517,7 @@ struct HomeView: View {
     @State private var showVoicePopover = false
     @State private var showTextPopover = false
     @State private var showManualPopover = false
+    @State private var showSiriPhrases = false
     @State private var showRecentSheet = false
     @State private var showCopyFromDaySheet = false
     @State private var pendingContextImage: UIImage?
@@ -788,6 +789,11 @@ struct HomeView: View {
                             showManualPopover = true
                         } label: {
                             Label("Manual Entry", systemImage: "square.and.pencil")
+                        }
+                        Button {
+                            showSiriPhrases = true
+                        } label: {
+                            Label("Siri Phrases", systemImage: "waveform.circle.fill")
                         }
                         Button {
                             showVoicePopover = true
@@ -1136,6 +1142,18 @@ struct HomeView: View {
             })
             .sheet(isPresented: $showCopyFromDaySheet) {
                 CopyFromDaySheet(targetDate: selectedDate)
+            }
+            .sheet(isPresented: $showSiriPhrases) {
+                NavigationStack {
+                    SiriPhrasesSettingsView()
+                        .toolbar {
+                            ToolbarItem(placement: .confirmationAction) {
+                                Button("Done") {
+                                    showSiriPhrases = false
+                                }
+                            }
+                        }
+                }
             }
             .interactiveDismissDisabled(activeSheet == .analyzing || activeSheet == .analyzingText || activeSheet == .lookingUpBarcode)
             .photosPicker(isPresented: $showPhotoPicker, selection: $selectedPhotoItem, matching: .images)
@@ -3186,16 +3204,6 @@ struct ProfileView: View {
                         }
                     }
 
-                    NavigationLink {
-                        SiriPhrasesSettingsView()
-                    } label: {
-                        Label {
-                            Text("Siri Phrases")
-                        } icon: {
-                            Image(systemName: "waveform.circle.fill")
-                                .foregroundStyle(AppColors.calorie)
-                        }
-                    }
                 }
                 .listRowBackground(AppColors.appCard)
 
