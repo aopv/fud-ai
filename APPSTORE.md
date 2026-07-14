@@ -32,11 +32,9 @@ Secondary: Food & Drink
 ```
 Effortless calorie tracking with AI-powered food recognition. Snap, scan, speak, or type a meal — get instant calories, macros, and nutrients.
 
-NEW in v5.11: Home and Lock Screen nutrition widgets now update more reliably. Camera and Photos can analyze up to 10 separate images together, with an optional note and unlimited Retry after a failed analysis. The add menu is grouped into Photo & Scan, Describe Meal, Reuse Meal, and optional Water. Enable local water tracking only if you want it, choose your goal, quick-log glasses or a custom amount, see progress below calories, and add a separate Home or Lock Screen Water widget. Activity Level now has six work-and-training based choices, Breakfast/Lunch/Dinner/Snack boundaries are customizable, image previews show the complete frame, weekly-change units stay consistent, and Health permissions are easier to review through Manage Access.
+NEW in v5.11: Home and Lock Screen widgets update more reliably. Camera and Photos analyze up to 10 images together with an optional note and unlimited Retry. The grouped add menu includes Photo & Scan, Describe Meal, Reuse Meal, and optional Water. Water tracking is optional, with custom goals, quick logging, in-app progress, and dedicated widgets. Activity Level has six work-and-training choices; meal boundaries are customizable; previews show complete images; weekly-change units stay consistent; and Health permissions are easier to manage.
 
-Fud AI remains fully free, open source, and bring-your-own-key. No ads — an optional Tip Jar is the only way to support development.
-
-Free, open source, privacy-first. Bring your own API key — a free Gemini key takes a minute to create.
+Fud AI is free, open source, privacy-first, and bring-your-own-key. There are no ads; an optional Tip Jar supports development. A free Gemini key takes a minute to create.
 
 LOG MEALS
 Camera (up to 10 photos + optional note), Photos (up to 10 imports + optional note), Barcode, Voice, Text, Manual Entry, Saved Meals, Copy from Day, and iOS Siri shortcuts for food, weight, and today's calories.
