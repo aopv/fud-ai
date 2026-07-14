@@ -1,6 +1,6 @@
 # App Store Listing
 
-App Store Connect submission details for Fud AI v5.1 build 31. Each field is in a code block for easy copy-paste.
+App Store Connect submission details for Fud AI v5.11 build 32. Each field is in a code block for easy copy-paste.
 
 ## App Name
 ```
@@ -14,7 +14,7 @@ Macros, AI Coach & Workouts
 
 ## Promotional Text (170 chars max)
 ```
-New in 5.1: multi-photo meal logging, optional water tracking and Water widgets, clearer activity levels, customizable meal times, and easier Health access.
+New in 5.11: reliable Home and Lock Screen widgets, multi-photo logging, optional water tracking, clearer activity levels, and custom meal times.
 ```
 
 ## Keywords (100 chars max)
@@ -32,7 +32,7 @@ Secondary: Food & Drink
 ```
 Effortless calorie tracking with AI-powered food recognition. Snap, scan, speak, or type a meal — get instant calories, macros, and nutrients.
 
-NEW in v5.1: Camera and Photos can analyze up to 10 separate images together, with an optional note and unlimited Retry after a failed analysis. The add menu is grouped into Photo & Scan, Describe Meal, Reuse Meal, and optional Water. Enable local water tracking only if you want it, choose your goal, quick-log glasses or a custom amount, see progress below calories, and add a separate Home or Lock Screen Water widget. Activity Level now has six work-and-training based choices, Breakfast/Lunch/Dinner/Snack boundaries are customizable, image previews show the complete frame, weekly-change units stay consistent, and Health permissions are easier to review through Manage Access.
+NEW in v5.11: Home and Lock Screen nutrition widgets now update more reliably. Camera and Photos can analyze up to 10 separate images together, with an optional note and unlimited Retry after a failed analysis. The add menu is grouped into Photo & Scan, Describe Meal, Reuse Meal, and optional Water. Enable local water tracking only if you want it, choose your goal, quick-log glasses or a custom amount, see progress below calories, and add a separate Home or Lock Screen Water widget. Activity Level now has six work-and-training based choices, Breakfast/Lunch/Dinner/Snack boundaries are customizable, image previews show the complete frame, weekly-change units stay consistent, and Health permissions are easier to review through Manage Access.
 
 Fud AI remains fully free, open source, and bring-your-own-key. No ads — an optional Tip Jar is the only way to support development.
 
@@ -82,9 +82,9 @@ Source: https://github.com/apoorvdarshan/fud-ai
 
 ```
 
-## What's New (v5.1)
+## What's New (v5.11)
 ```
-Fud AI 5.1 — faster logging, optional water tracking, and clearer goals.
+Fud AI 5.11 — more reliable widgets, faster logging, optional water tracking, and clearer goals.
 
 NEW
 • Camera and Photos now accept up to 10 images in one analysis. Add an optional note, review every image, and keep Retry available if the AI request fails.
@@ -95,6 +95,7 @@ NEW
 • Automatic meal assignment follows those custom time boundaries.
 
 IMPROVED
+• Home and Lock Screen calorie, protein, and water widgets now use more reliable shared updates so current values appear consistently after app updates.
 • Photo previews now fit the complete image on both the capture review and food review screens.
 • Weekly weight-change controls consistently follow your selected unit during onboarding and later edits.
 • Health settings now offer Manage Access so permissions are easier to review or change.

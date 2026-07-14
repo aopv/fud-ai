@@ -69,19 +69,47 @@ struct WidgetSnapshot: Codable, Equatable {
     var themeStartHex: UInt?
     var themeEndHex: UInt?
 
-    static var appGroupID: String {
-        Bundle.main.object(forInfoDictionaryKey: "AppGroupIdentifier") as? String
-            ?? "group.com.apoorvdarshan.calorietracker"
-    }
+    private static let productionAppGroupID = "group.com.apoorvdarshan.calorietracker"
+    private static let debugAppGroupID = "group.com.apoorvdarshan.calorietracker.debug"
     private static let key = "widget_snapshot_v1"
+    private static let fileName = "widget_snapshot_v1.json"
     static let watchPayloadKey = "widget_snapshot_data_v1"
+
+    static var appGroupID: String {
+        if let configured = Bundle.main.object(forInfoDictionaryKey: "AppGroupIdentifier") as? String,
+           !configured.isEmpty,
+           !configured.contains("$(") {
+            return configured
+        }
+        return Bundle.main.bundleIdentifier?.contains(".debug") == true
+            ? debugAppGroupID
+            : productionAppGroupID
+    }
 
     static var sharedDefaults: UserDefaults? {
         UserDefaults(suiteName: appGroupID)
     }
 
+    private static var snapshotDirectoryURL: URL? {
+        FileManager.default
+            .containerURL(forSecurityApplicationGroupIdentifier: appGroupID)?
+            .appendingPathComponent("Library/Application Support/FudAIWidgets", isDirectory: true)
+    }
+
+    private static var snapshotFileURL: URL? {
+        snapshotDirectoryURL?.appendingPathComponent(fileName, isDirectory: false)
+    }
+
+    private static func storedData() -> Data? {
+        if let fileURL = snapshotFileURL,
+           let data = try? Data(contentsOf: fileURL) {
+            return data
+        }
+        return sharedDefaults?.data(forKey: key)
+    }
+
     static func read() -> WidgetSnapshot? {
-        guard let data = sharedDefaults?.data(forKey: key),
+        guard let data = storedData(),
               let snapshot = try? JSONDecoder().decode(WidgetSnapshot.self, from: data)
         else { return nil }
         return snapshot
@@ -89,6 +117,17 @@ struct WidgetSnapshot: Codable, Equatable {
 
     static func write(_ snapshot: WidgetSnapshot) {
         guard let data = try? JSONEncoder().encode(snapshot) else { return }
+        if let directoryURL = snapshotDirectoryURL,
+           let fileURL = snapshotFileURL {
+            try? FileManager.default.createDirectory(
+                at: directoryURL,
+                withIntermediateDirectories: true
+            )
+            try? data.write(
+                to: fileURL,
+                options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication]
+            )
+        }
         sharedDefaults?.set(data, forKey: key)
     }
 
@@ -104,6 +143,9 @@ struct WidgetSnapshot: Codable, Equatable {
     /// showing the previous profile's numbers after a reset.
     static func clear() {
         sharedDefaults?.removeObject(forKey: key)
+        if let fileURL = snapshotFileURL {
+            try? FileManager.default.removeItem(at: fileURL)
+        }
     }
 
     static var placeholder: WidgetSnapshot {

@@ -27,7 +27,7 @@
 
 Open-source, privacy-first calorie tracker for iOS and Android. Bring your own AI provider — 13 supported including Gemini, OpenAI, Claude, Grok, Groq, Hugging Face, Fireworks AI, DeepInfra, Mistral, and any custom OpenAI-compatible endpoint. Capture or import up to 10 food photos with an optional note, scan a barcode, ask your AI coach how to hit your goal, speak your lunch, or use Siri Shortcuts on iOS to log food and weight. On supported iPhones, food-description analysis for text, voice-transcribed, and Siri food logs can use Apple Intelligence on-device as the final fallback after BYOK provider/fallback attempts fail. No accounts, Fud AI cloud sync, tracking, or ads — completely free.
 
-iOS 5.1 build 31 prepares the next update with a grouped add menu, multi-photo Camera and Photos flows with optional notes, retryable analysis errors, optional local water tracking and a separate Water widget, six clearer activity levels, customizable Breakfast/Lunch/Dinner/Snack boundaries, complete image previews, consistent weekly-change units, and health-permission management. It keeps the Workouts tab, redesigned Home, Coach voice input, meal-share links, diary export, AI meal reprocessing, theme colors, and Apple Health restore introduced in 5.0.
+iOS 5.11 build 32 prepares the next update with more reliable Home and Lock Screen widget updates, a grouped add menu, multi-photo Camera and Photos flows with optional notes, retryable analysis errors, optional local water tracking and a separate Water widget, six clearer activity levels, customizable Breakfast/Lunch/Dinner/Snack boundaries, complete image previews, consistent weekly-change units, and health-permission management. It keeps the Workouts tab, redesigned Home, Coach voice input, meal-share links, diary export, AI meal reprocessing, theme colors, and Apple Health restore introduced in 5.0.
 
 Android 3.1 (versionCode 32) prepares the matching update: grouped logging actions, up to 10 camera or imported photos in one analysis with optional notes, optional local water tracking plus a dedicated Water widget, six activity levels, customizable Breakfast/Lunch/Dinner/Snack boundaries, complete image previews, corrected unit-aware weekly-change controls, and a Health Connect Manage Access path. Existing local data and Health Connect data are preserved during a normal update.
 
@@ -257,7 +257,7 @@ All values can be manually overridden in Settings, with a **Recalculate Goals** 
 
 ```
 fud-ai/
-├── ios/          # SwiftUI iOS app (next release: v5.1 build 31)
+├── ios/          # SwiftUI iOS app (next release: v5.11 build 32)
 ├── android/      # Kotlin + Jetpack Compose app (min SDK 26 / Android 8.0, v3.1 / versionCode 32)
 ├── web/          # Marketing site — https://fud-ai.app (static HTML/CSS, Cloudflare Workers)
 ├── APPSTORE.md   # App Store Connect listing copy (iOS)
