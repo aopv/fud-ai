@@ -22,7 +22,6 @@ struct calorietrackerApp: App {
     @State private var profileStore = ProfileStore()
     @State private var chatStore = ChatStore()
     @State private var waterStore = WaterStore()
-    @State private var strengthWorkoutStore = StrengthWorkoutStore()
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
     @AppStorage("appearanceMode") private var appearanceMode = "system"
     @AppStorage("notificationsEnabled") private var notificationsEnabled = false
@@ -65,7 +64,6 @@ struct calorietrackerApp: App {
                         .environment(profileStore)
                         .environment(chatStore)
                         .environment(waterStore)
-                        .environment(strengthWorkoutStore)
                 } else {
                     OnboardingView(hasCompletedOnboarding: $hasCompletedOnboarding)
                         .environment(notificationManager)
