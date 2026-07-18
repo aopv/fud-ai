@@ -2,13 +2,58 @@ import SwiftUI
 import UIKit
 
 struct WorkoutsView: View {
+    @AppStorage(StrengthWorkoutSettings.enabledKey) private var strengthWorkoutLoggerEnabled = false
+    @State private var selectedSection = WorkoutsSection.exercises
+
     var body: some View {
         NavigationStack {
-            ExerciseLibraryBrowserView()
-                .background(WorkoutsScreenBackground())
-                .navigationTitle("Workouts")
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar(.hidden, for: .navigationBar)
+            Group {
+                if strengthWorkoutLoggerEnabled {
+                    VStack(spacing: 0) {
+                        Picker("Workout section", selection: $selectedSection) {
+                            ForEach(WorkoutsSection.allCases) { section in
+                                Text(section.title).tag(section)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+                        .tint(Color.workoutAccent)
+                        .padding(.horizontal, 20)
+                        .padding(.top, 14)
+                        .padding(.bottom, 8)
+
+                        switch selectedSection {
+                        case .exercises:
+                            ExerciseLibraryBrowserView()
+                        case .strengthLog:
+                            StrengthWorkoutLogView()
+                        }
+                    }
+                    .background(WorkoutBackground())
+                } else {
+                    ExerciseLibraryBrowserView()
+                }
+            }
+            .background(WorkoutsScreenBackground())
+            .navigationTitle("Workouts")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar(.hidden, for: .navigationBar)
+        }
+        .onChange(of: strengthWorkoutLoggerEnabled) { _, _ in
+            selectedSection = .exercises
+        }
+    }
+}
+
+private enum WorkoutsSection: String, CaseIterable, Identifiable {
+    case exercises
+    case strengthLog
+
+    var id: Self { self }
+
+    var title: String {
+        switch self {
+        case .exercises: "Exercises"
+        case .strengthLog: "Strength Log"
         }
     }
 }
@@ -646,7 +691,9 @@ private struct LibraryTag: View {
 
 struct ExerciseLibraryDetailView: View {
     let item: ExerciseLibraryItem
+    @AppStorage(StrengthWorkoutSettings.enabledKey) private var strengthWorkoutLoggerEnabled = false
     @State private var isMetricsPresented = false
+    @State private var isWorkoutLoggerPresented = false
 
     var body: some View {
         GeometryReader { geometry in
@@ -680,6 +727,24 @@ struct ExerciseLibraryDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(.visible, for: .navigationBar)
         .toolbarBackground(Color.workoutBackground, for: .navigationBar)
+        .toolbar {
+            if strengthWorkoutLoggerEnabled {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        isWorkoutLoggerPresented = true
+                    } label: {
+                        Label("Log", systemImage: "plus.circle.fill")
+                            .fontWeight(.semibold)
+                    }
+                    .accessibilityHint("Log sets and repetitions for this exercise")
+                }
+            }
+        }
+        .sheet(isPresented: $isWorkoutLoggerPresented) {
+            StrengthWorkoutQuickAddView(preselectedExercise: item)
+                .presentationDetents([.large])
+                .presentationDragIndicator(.visible)
+        }
     }
 
     private func detailHero(width: CGFloat) -> some View {
