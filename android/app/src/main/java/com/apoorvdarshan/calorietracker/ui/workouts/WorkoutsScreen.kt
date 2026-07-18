@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -47,6 +46,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -57,6 +57,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -65,13 +66,11 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
@@ -136,7 +135,7 @@ fun WorkoutsScreen(modifier: Modifier = Modifier) {
             .background(workoutsColors().background)
     ) {
         Column(
-            Modifier.padding(start = 20.dp, end = 20.dp, top = 14.dp, bottom = 18.dp),
+            Modifier.padding(start = 20.dp, end = 20.dp, top = 16.dp, bottom = 18.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             SearchPill(value = vm.search, onValueChange = { vm.search = it })
@@ -162,7 +161,7 @@ fun WorkoutsScreen(modifier: Modifier = Modifier) {
                 items(items, key = { it.id }) { item ->
                     ExerciseRow(item = item, onClick = { vm.openExerciseId = item.id })
                     HorizontalDivider(
-                        color = workoutsColors().hairline.copy(alpha = 0.28f),
+                        color = workoutsColors().hairline.copy(alpha = 0.72f),
                         thickness = 0.5.dp,
                         modifier = Modifier.padding(start = 144.dp, end = 20.dp)
                     )
@@ -176,14 +175,22 @@ fun WorkoutsScreen(modifier: Modifier = Modifier) {
 @Composable
 private fun SearchPill(value: String, onValueChange: (String) -> Unit) {
     val colors = workoutsColors()
+    val shape = RoundedCornerShape(20.dp)
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .heightIn(min = 50.dp)
-            .clip(RoundedCornerShape(22.dp))
-            .background(colors.panel.copy(alpha = 0.62f))
-            .border(0.5.dp, colors.hairline.copy(alpha = 0.52f), RoundedCornerShape(22.dp))
-            .padding(horizontal = 14.dp),
+            .heightIn(min = 52.dp)
+            .shadow(
+                elevation = 4.dp,
+                shape = shape,
+                ambientColor = Color.Black.copy(alpha = if (colors.isDark) 0.20f else 0.07f),
+                spotColor = Color.Black.copy(alpha = if (colors.isDark) 0.20f else 0.07f)
+            )
+            .clip(shape)
+            .background(colors.card)
+            .background(colors.accent.copy(alpha = 0.025f))
+            .border(0.7.dp, colors.hairline, shape)
+            .padding(start = 16.dp, end = 2.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
@@ -201,12 +208,19 @@ private fun SearchPill(value: String, onValueChange: (String) -> Unit) {
                 autoCorrectEnabled = false,
                 capitalization = KeyboardCapitalization.None
             ),
-            textStyle = TextStyle(color = colors.charcoal, fontSize = 15.sp, fontWeight = FontWeight.SemiBold),
+            textStyle = MaterialTheme.typography.bodyLarge.copy(
+                color = colors.charcoal,
+                fontWeight = FontWeight.Medium
+            ),
             cursorBrush = SolidColor(colors.accent),
             decorationBox = { inner ->
                 Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart) {
                     if (value.isEmpty()) {
-                        Text(stringResource(R.string.search), color = colors.mutedText, fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
+                        Text(
+                            stringResource(R.string.search),
+                            color = colors.mutedText,
+                            style = MaterialTheme.typography.bodyLarge
+                        )
                     }
                     inner()
                 }
@@ -214,12 +228,21 @@ private fun SearchPill(value: String, onValueChange: (String) -> Unit) {
             modifier = Modifier.weight(1f)
         )
         if (value.isNotEmpty()) {
-            Icon(
-                Icons.Filled.Cancel,
-                contentDescription = stringResource(R.string.clear_search),
-                tint = colors.mutedText,
-                modifier = Modifier.size(18.dp).clip(CircleShape).clickable { onValueChange("") }
-            )
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clickable { onValueChange("") },
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    Icons.Filled.Cancel,
+                    contentDescription = stringResource(R.string.clear_search),
+                    tint = colors.mutedText,
+                    modifier = Modifier.size(18.dp)
+                )
+            }
+        } else {
+            Spacer(Modifier.size(10.dp))
         }
     }
 }
@@ -286,28 +309,42 @@ private fun FilterPill(
     val active = selected.isNotEmpty()
     val value = if (active) selected.first() else emptyDisplay
     val clearLabel = "${stringResource(R.string.filter_all)} $title"
+    val shape = RoundedCornerShape(18.dp)
 
     Box {
         Row(
             modifier = Modifier
-                .heightIn(min = 46.dp)
+                .heightIn(min = 48.dp)
                 .widthIn(min = 112.dp)
-                .clip(RoundedCornerShape(17.dp))
-                .background(colors.panel.copy(alpha = if (active) 0.46f else 0.30f))
+                .clip(shape)
+                .background(if (active) colors.card else colors.panel.copy(alpha = 0.78f))
+                .background(colors.accent.copy(alpha = if (active) 0.075f else 0.018f))
                 .border(
-                    0.5.dp,
-                    (if (active) colors.accent else colors.hairline).copy(alpha = if (active) 0.42f else 0.30f),
-                    RoundedCornerShape(17.dp)
+                    0.7.dp,
+                    if (active) colors.accent.copy(alpha = 0.40f) else colors.hairline,
+                    shape
                 )
                 .clickable { expanded = true }
-                .padding(horizontal = 12.dp),
+                .padding(horizontal = 13.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(9.dp)
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             Icon(icon, null, tint = if (active) colors.accent else colors.secondaryAccent, modifier = Modifier.size(18.dp))
-            Column {
-                Text(title.uppercase(), color = colors.mutedText, fontSize = 10.sp, fontWeight = FontWeight.Bold, maxLines = 1)
-                Text(value, color = colors.charcoal, fontSize = 14.sp, fontWeight = FontWeight.Bold, maxLines = 1)
+            Column(verticalArrangement = Arrangement.spacedBy(1.dp)) {
+                Text(
+                    title.uppercase(),
+                    color = colors.mutedText,
+                    style = MaterialTheme.typography.labelSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1
+                )
+                Text(
+                    value,
+                    color = colors.charcoal,
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1
+                )
             }
             Icon(Icons.Filled.KeyboardArrowDown, null, tint = colors.mutedText, modifier = Modifier.size(16.dp))
         }
@@ -316,7 +353,8 @@ private fun FilterPill(
             onDismissRequest = { expanded = false },
             modifier = Modifier.heightIn(max = 340.dp),
             containerColor = colors.card,
-            shape = RoundedCornerShape(16.dp)
+            shape = RoundedCornerShape(18.dp),
+            shadowElevation = 14.dp
         ) {
             DropdownMenuItem(
                 text = { Text(clearLabel, color = if (!active) colors.accent else colors.charcoal, fontWeight = if (!active) FontWeight.Bold else FontWeight.Normal) },
@@ -328,7 +366,14 @@ private fun FilterPill(
             options.forEach { option ->
                 val isSel = selected.contains(option)
                 DropdownMenuItem(
-                    text = { Text(option, color = if (isSel) colors.accent else colors.charcoal, fontWeight = if (isSel) FontWeight.Bold else FontWeight.Normal) },
+                    text = {
+                        Text(
+                            option,
+                            color = if (isSel) colors.accent else colors.charcoal,
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontWeight = if (isSel) FontWeight.SemiBold else FontWeight.Normal
+                        )
+                    },
                     onClick = { onSelect(setOf(option)); expanded = false },
                     leadingIcon = glyphFor?.let { fn ->
                         {
@@ -361,13 +406,19 @@ private fun ResultsHeader(
 ) {
     val colors = workoutsColors()
     var sortExpanded by remember { mutableStateOf(false) }
-    Row(modifier = modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
+    Row(modifier = modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Column(Modifier.weight(1f)) {
             Text(
                 pluralStringResource(R.plurals.exercises_count, count, count),
-                color = colors.charcoal, fontSize = 17.sp, fontWeight = FontWeight.SemiBold
+                color = colors.charcoal,
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.SemiBold
             )
-            Text(sortTitle, color = colors.mutedText, fontSize = 12.sp)
+            Text(
+                sortTitle,
+                color = colors.mutedText,
+                style = MaterialTheme.typography.bodySmall
+            )
         }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
             CapsuleButton(
@@ -385,7 +436,8 @@ private fun ResultsHeader(
                     expanded = sortExpanded,
                     onDismissRequest = { sortExpanded = false },
                     containerColor = colors.card,
-                    shape = RoundedCornerShape(16.dp)
+                    shape = RoundedCornerShape(18.dp),
+                    shadowElevation = 14.dp
                 ) {
                     ExerciseSort.entries.forEach { sort ->
                         val isSel = selectedSort == sort
@@ -410,16 +462,22 @@ private fun CapsuleButton(text: String, icon: ImageVector, tint: Color, enabled:
     val border = if (active) tint.copy(alpha = 0.32f) else colors.hairline.copy(alpha = 0.30f)
     Row(
         modifier = Modifier
+            .heightIn(min = 48.dp)
             .clip(CircleShape)
             .background(bg)
-            .border(0.5.dp, border, CircleShape)
+            .border(0.7.dp, border, CircleShape)
             .then(if (enabled) Modifier.clickable { onClick() } else Modifier)
-            .padding(horizontal = 11.dp, vertical = 7.dp),
+            .padding(horizontal = 12.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(5.dp)
     ) {
         Icon(icon, null, tint = tint, modifier = Modifier.size(15.dp))
-        Text(text, color = tint, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+        Text(
+            text,
+            color = tint,
+            style = MaterialTheme.typography.labelMedium,
+            fontWeight = FontWeight.SemiBold
+        )
     }
 }
 
@@ -430,21 +488,35 @@ private fun ExerciseRow(item: ExerciseItem, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() }
-            .padding(horizontal = 20.dp, vertical = 15.dp),
+            .padding(horizontal = 20.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
+        horizontalArrangement = Arrangement.spacedBy(14.dp)
     ) {
+        val imageShape = RoundedCornerShape(18.dp)
         Box(
             Modifier
-                .size(104.dp)
-                .clip(RoundedCornerShape(18.dp))
-                .background(colors.panel.copy(alpha = 0.32f))
-                .border(0.5.dp, colors.hairline.copy(alpha = 0.38f), RoundedCornerShape(18.dp))
+                .size(102.dp)
+                .shadow(
+                    elevation = 4.dp,
+                    shape = imageShape,
+                    ambientColor = Color.Black.copy(alpha = if (colors.isDark) 0.26f else 0.09f),
+                    spotColor = Color.Black.copy(alpha = if (colors.isDark) 0.26f else 0.09f)
+                )
+                .clip(imageShape)
+                .background(colors.panel)
+                .border(0.8.dp, colors.hairline, imageShape)
         ) {
             AnimatedExerciseImage(item.imagePaths, Modifier.fillMaxSize())
         }
-        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(9.dp)) {
-            Text(item.name, color = colors.charcoal, fontSize = 17.sp, fontWeight = FontWeight.SemiBold, maxLines = 2, overflow = TextOverflow.Ellipsis)
+        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(
+                item.name,
+                color = colors.charcoal,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
             FlowRow(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(5.dp)
@@ -454,11 +526,23 @@ private fun ExerciseRow(item: ExerciseItem, onClick: () -> Unit) {
                 Tag(item.level, Icons.Filled.BarChart)
             }
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(5.dp)) {
-                Icon(Icons.Filled.Storage, null, tint = colors.secondaryAccent, modifier = Modifier.size(13.dp))
-                Text(item.databaseMetadataSummary, color = colors.secondaryAccent, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Icon(Icons.Filled.Storage, null, tint = colors.accent.copy(alpha = 0.80f), modifier = Modifier.size(13.dp))
+                Text(
+                    item.databaseMetadataSummary,
+                    color = colors.mutedText,
+                    style = MaterialTheme.typography.bodySmall,
+                    fontWeight = FontWeight.Medium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
         }
-        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, null, tint = colors.hairline, modifier = Modifier.size(20.dp))
+        Icon(
+            Icons.AutoMirrored.Filled.KeyboardArrowRight,
+            null,
+            tint = colors.mutedText.copy(alpha = 0.64f),
+            modifier = Modifier.size(20.dp)
+        )
     }
 }
 
@@ -468,14 +552,21 @@ private fun Tag(title: String, icon: ImageVector) {
     Row(
         modifier = Modifier
             .clip(CircleShape)
-            .background(colors.panel.copy(alpha = 0.28f))
-            .border(0.5.dp, colors.hairline.copy(alpha = 0.22f), CircleShape)
-            .padding(horizontal = 9.dp, vertical = 4.dp),
+            .background(colors.panel.copy(alpha = 0.74f))
+            .border(0.6.dp, colors.hairline.copy(alpha = 0.82f), CircleShape)
+            .padding(horizontal = 9.dp, vertical = 5.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         Icon(icon, null, tint = colors.mutedText, modifier = Modifier.size(11.dp))
-        Text(title, color = colors.mutedText, fontSize = 11.sp, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        Text(
+            title,
+            color = colors.mutedText,
+            style = MaterialTheme.typography.labelSmall,
+            fontWeight = FontWeight.Medium,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
     }
 }
 
@@ -485,13 +576,28 @@ private fun EmptyState() {
     Column(
         Modifier.fillMaxWidth().heightIn(min = 240.dp).padding(horizontal = 32.dp, vertical = 48.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        Icon(Icons.Filled.FilterListOff, null, tint = colors.mutedText, modifier = Modifier.size(40.dp))
-        Text(stringResource(R.string.empty_title), color = colors.charcoal, fontSize = 17.sp, fontWeight = FontWeight.Bold)
+        Box(
+            Modifier
+                .size(72.dp)
+                .clip(CircleShape)
+                .background(colors.card)
+                .border(0.7.dp, colors.hairline, CircleShape),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(Icons.Filled.FilterListOff, null, tint = colors.accent, modifier = Modifier.size(32.dp))
+        }
+        Text(
+            stringResource(R.string.empty_title),
+            color = colors.charcoal,
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.SemiBold
+        )
         Text(
             stringResource(R.string.empty_subtitle),
-            color = colors.mutedText, fontSize = 14.sp,
+            color = colors.mutedText,
+            style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center
         )

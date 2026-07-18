@@ -3,6 +3,7 @@ package com.apoorvdarshan.calorietracker.ui.workouts
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import com.apoorvdarshan.calorietracker.ui.theme.AppColors
 
 /**
@@ -27,21 +28,19 @@ data class WorkoutsColors(
 
 @Composable
 fun workoutsColors(): WorkoutsColors {
-    // Same dark-detection trick as FudAIBottomNavBar: the resolved background
-    // luminance tracks the user's appearance override, not just the system.
-    val bg = MaterialTheme.colorScheme.background
-    val isDark = (bg.red + bg.green + bg.blue) / 3f < 0.5f
+    val scheme = MaterialTheme.colorScheme
+    val isDark = scheme.background.luminance() < 0.5f
 
     return WorkoutsColors(
-        background = if (isDark) AppColors.AppBackgroundDark else AppColors.AppBackgroundLight,
-        charcoal = if (isDark) AppColors.OnDark else AppColors.OnLight,
-        card = if (isDark) AppColors.AppCardDark else AppColors.AppCardLight,
-        panel = if (isDark) Color(0xFF2A2A2E) else Color(0xFFEFE7DF),
-        hairline = if (isDark) AppColors.DividerDark else AppColors.DividerLight,
+        background = scheme.background,
+        charcoal = scheme.onSurface,
+        card = scheme.surfaceContainerLow,
+        panel = scheme.surfaceContainerHigh,
+        hairline = scheme.outlineVariant,
         accent = AppColors.Calorie,
-        secondaryAccent = AppColors.CalorieEnd,
-        onAccent = Color.White,
-        mutedText = if (isDark) AppColors.MutedDark else AppColors.MutedLight,
+        secondaryAccent = scheme.secondary,
+        onAccent = AppColors.OnAccent,
+        mutedText = scheme.onSurfaceVariant,
         isDark = isDark
     )
 }

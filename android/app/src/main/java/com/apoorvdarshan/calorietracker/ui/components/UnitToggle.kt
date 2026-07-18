@@ -2,28 +2,36 @@ package com.apoorvdarshan.calorietracker.ui.components
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.apoorvdarshan.calorietracker.ui.theme.AppColors
+import com.apoorvdarshan.calorietracker.ui.theme.FudElevation
+import com.apoorvdarshan.calorietracker.ui.theme.FudRadii
+import com.apoorvdarshan.calorietracker.ui.theme.FudTheme
 
 /**
- * iOS-style segmented control. Two options side-by-side inside a pill;
- * the selected side gets the pink fill and white text.
+ * Two options side-by-side inside a softly inset glass track. The selected
+ * segment is a raised neutral surface so unit changes remain calm and legible.
  */
 @Composable
 fun UnitToggle(
@@ -33,16 +41,18 @@ fun UnitToggle(
     onSelect: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
-    val trackColor = if (isDark) {
-        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
-    } else {
-        Color(0xFFE5DAD3).copy(alpha = 0.88f)
-    }
+    val colors = FudTheme.colors
+    val trackShape = RoundedCornerShape(22.dp)
+    val trackColor = colors.surfaceMuted.copy(alpha = if (colors.isDark) 0.72f else 0.88f)
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(22.dp))
+            .clip(trackShape)
             .background(trackColor)
+            .border(
+                0.7.dp,
+                colors.glassBorder.copy(alpha = if (colors.isDark) 0.42f else 0.72f),
+                trackShape
+            )
             .padding(4.dp)
     ) {
         Row {
@@ -69,34 +79,57 @@ private fun UnitSegment(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
+    val colors = FudTheme.colors
+    val shape = RoundedCornerShape(FudRadii.medium)
     // iOS UISegmentedControl uses a slightly lighter neutral fill for the
     // selected thumb (not an accent colour) — matches that look.
     val bg by animateColorAsState(
         if (selected) {
-            if (isDark) MaterialTheme.colorScheme.onSurface.copy(alpha = 0.22f)
-            else Color.White.copy(alpha = 0.72f)
+            if (colors.isDark) colors.surfaceRaised.copy(alpha = 0.96f)
+            else Color.White.copy(alpha = 0.82f)
         }
         else Color.Transparent,
         label = "segBg"
     )
     val fg by animateColorAsState(
-        if (selected) MaterialTheme.colorScheme.onSurface
-        else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+        if (selected) colors.textPrimary else colors.textSecondary,
         label = "segFg"
     )
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(18.dp))
+            .heightIn(min = 40.dp)
+            .then(
+                if (selected) {
+                    Modifier.shadow(
+                        elevation = FudElevation.resting,
+                        shape = shape,
+                        ambientColor = colors.shadow,
+                        spotColor = colors.shadow
+                    )
+                } else Modifier
+            )
+            .clip(shape)
             .background(bg)
+            .border(
+                0.6.dp,
+                if (selected) colors.glassBorder.copy(alpha = 0.62f) else Color.Transparent,
+                shape
+            )
+            .semantics { this.selected = selected }
             .clickable(
-                interactionSource = MutableInteractionSource(),
+                interactionSource = remember { MutableInteractionSource() },
                 indication = null,
+                role = Role.Button,
                 onClick = onClick
             )
             .padding(horizontal = 16.dp, vertical = 10.dp),
         contentAlignment = Alignment.Center
     ) {
-        Text(label, color = fg, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+        Text(
+            label,
+            color = fg,
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Medium
+        )
     }
 }

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DatePicker
@@ -87,12 +88,20 @@ fun ExportDiarySheet(
     ) {
         Column(
             Modifier.fillMaxWidth().padding(horizontal = 24.dp).padding(bottom = 28.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(18.dp),
         ) {
-            Text(stringResource(R.string.export_diary_title), fontSize = 22.sp, fontWeight = FontWeight.Bold)
+            Text(
+                stringResource(R.string.export_diary_title),
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.SemiBold
+            )
 
-            Text(stringResource(R.string.export_range), fontSize = 13.sp, fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
+            Text(
+                stringResource(R.string.export_range),
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.66f)
+            )
             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 DiaryRange.values().forEach { r ->
                     FilterChip(
@@ -112,8 +121,12 @@ fun ExportDiarySheet(
                 DateRow(stringResource(R.string.export_to), customEnd.format(niceDate)) { picking = "end" }
             }
 
-            Text(stringResource(R.string.export_format), fontSize = 13.sp, fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
+            Text(
+                stringResource(R.string.export_format),
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.66f)
+            )
             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 DiaryFormat.values().forEach { f ->
                     FilterChip(
@@ -135,6 +148,7 @@ fun ExportDiarySheet(
             Box(
                 Modifier
                     .fillMaxWidth()
+                    .heightIn(min = 52.dp)
                     .clip(RoundedCornerShape(16.dp))
                     .background(AppColors.CalorieGradient)
                     .clickable {
@@ -171,7 +185,7 @@ fun ExportDiarySheet(
                     .padding(vertical = 14.dp),
                 contentAlignment = Alignment.Center,
             ) {
-                Text(stringResource(R.string.export_action), color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                Text(stringResource(R.string.export_action), color = AppColors.OnAccent, fontWeight = FontWeight.Bold, fontSize = 16.sp)
             }
         }
     }
@@ -204,12 +218,19 @@ private fun DateRow(label: String, value: String, onClick: () -> Unit) {
     Row(
         Modifier
             .fillMaxWidth()
+            .heightIn(min = 52.dp)
             .clip(RoundedCornerShape(14.dp))
             .clickable(onClick = onClick)
-            .padding(vertical = 10.dp),
+            .padding(horizontal = 12.dp, vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(label, fontSize = 15.sp, modifier = Modifier.padding(end = 8.dp))
+        Text(label, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(end = 8.dp))
         Spacer(Modifier.weight(1f))
-        Text(value, fontSize = 15.sp, fontWeight = FontWeight.SemiBold, color = AppColors.Calorie)
+        Text(
+            value,
+            style = MaterialTheme.typography.bodyMedium.copy(fontFeatureSettings = "tnum"),
+            fontWeight = FontWeight.SemiBold,
+            color = AppColors.Calorie
+        )
     }
 }

@@ -39,6 +39,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -303,8 +304,8 @@ fun HomeScreen(container: AppContainer) {
                     Row(
                         Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            .padding(horizontal = 20.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         ui.homeTopNutrients.forEach { nutrient ->
                             MacroCard(
@@ -423,7 +424,7 @@ fun HomeScreen(container: AppContainer) {
                 Icon(
                     Icons.Filled.Add,
                     contentDescription = stringResource(R.string.cd_add_food),
-                    tint = Color.White,
+                    tint = AppColors.contentColorFor(AppColors.Calorie),
                     modifier = Modifier.size(30.dp)
                 )
             }
@@ -845,13 +846,13 @@ private fun CalorieHero(current: Int, goal: Int) {
         Column(
             modifier = Modifier.padding(top = 44.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(2.dp)
+            verticalArrangement = Arrangement.spacedBy(3.dp)
         ) {
             Text(
                 "CALORIES",
-                fontSize = 12.sp,
-                fontWeight = FontWeight.SemiBold,
-                letterSpacing = 0.5.sp,
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 0.9.sp,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
             )
             Text(
@@ -859,7 +860,9 @@ private fun CalorieHero(current: Int, goal: Int) {
                 style = TextStyle(
                     brush = Brush.linearGradient(gradientColors),
                     fontSize = 54.sp,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = (-1.4).sp,
+                    fontFeatureSettings = "tnum"
                 ),
                 maxLines = 1
             )
@@ -898,20 +901,21 @@ private fun ViewMoreButton() {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-            .padding(horizontal = 10.dp, vertical = 8.dp)
+            .heightIn(min = 48.dp)
+            .padding(horizontal = 14.dp)
     ) {
         Text(
             stringResource(R.string.home_view_more),
-            fontSize = 15.sp,
-            fontWeight = FontWeight.Medium,
-            color = AppColors.Calorie.copy(alpha = 0.6f)
+            style = MaterialTheme.typography.labelLarge,
+            fontWeight = FontWeight.SemiBold,
+            color = AppColors.Calorie.copy(alpha = 0.82f)
         )
-        Spacer(Modifier.width(5.dp))
+        Spacer(Modifier.width(4.dp))
         Icon(
             Icons.Filled.ChevronRight,
             contentDescription = null,
-            tint = AppColors.Calorie.copy(alpha = 0.6f),
-            modifier = Modifier.size(11.dp)
+            tint = AppColors.Calorie.copy(alpha = 0.82f),
+            modifier = Modifier.size(16.dp)
         )
     }
 }
@@ -924,10 +928,10 @@ private fun SectionHeader(title: String) {
     // (no uppercase transform), bold, ~22sp on the iOS calorie/food page. Match that.
     Text(
         title,
-        fontSize = 22.sp,
-        fontWeight = FontWeight.Bold,
+        style = MaterialTheme.typography.headlineMedium,
+        fontWeight = FontWeight.SemiBold,
         color = MaterialTheme.colorScheme.onBackground,
-        modifier = Modifier.padding(start = 24.dp, top = 12.dp, bottom = 8.dp)
+        modifier = Modifier.padding(start = 24.dp, top = 16.dp, bottom = 10.dp)
     )
 }
 
@@ -950,7 +954,7 @@ private fun MealSectionHeader(
     Row(
         Modifier
             .fillMaxWidth()
-            .padding(start = 22.dp, end = 30.dp, top = 18.dp, bottom = 10.dp),
+            .padding(start = 22.dp, end = 22.dp, top = 20.dp, bottom = 10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
@@ -962,8 +966,8 @@ private fun MealSectionHeader(
         Spacer(Modifier.width(8.dp))
         Text(
             stringResource(meal.displayNameRes),
-            fontSize = 17.sp,
-            fontWeight = FontWeight.Medium,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.85f)
         )
         if (showSortMenu) {
@@ -982,7 +986,7 @@ private fun MealSectionHeader(
                     )
                     Text(
                         stringResource(R.string.sort),
-                        fontSize = 17.sp,
+                        style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.SemiBold,
                         color = AppColors.Calorie
                     )
@@ -1022,15 +1026,14 @@ private fun MealSectionHeader(
             Column(horizontalAlignment = Alignment.End) {
                 Text(
                     "$totalCalories kcal",
-                    fontSize = 15.sp,
+                    style = MaterialTheme.typography.titleSmall.copy(fontFeatureSettings = "tnum"),
                     fontWeight = FontWeight.SemiBold,
                     color = AppColors.Calorie
                 )
                 Text(
                     "${totalProtein.roundToInt()}P · ${totalCarbs.roundToInt()}C · ${totalFat.roundToInt()}F",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.55f)
+                    style = MaterialTheme.typography.labelMedium.copy(fontFeatureSettings = "tnum"),
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.58f)
                 )
             }
         }
@@ -1128,7 +1131,7 @@ private fun SectionCardWrapper(
     Box(
         Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = 20.dp)
             .clip(shape)
             .background(if (transparent) Color.Transparent else MaterialTheme.colorScheme.surface)
     ) { content() }
@@ -1271,17 +1274,17 @@ private fun FoodRow(
             .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.86f))
             .background(AppColors.Calorie.copy(alpha = 0.025f))
             .border(
-                0.7.dp,
+                0.8.dp,
                 Brush.linearGradient(
                     listOf(
-                        Color.White.copy(alpha = 0.14f),
+                        Color.White.copy(alpha = 0.18f),
                         Color.White.copy(alpha = 0.035f),
-                        AppColors.Calorie.copy(alpha = 0.07f)
+                        AppColors.Calorie.copy(alpha = 0.09f)
                     )
                 ),
                 rowShape
             )
-            .padding(horizontal = 14.dp, vertical = 12.dp),
+            .padding(horizontal = 14.dp, vertical = 14.dp),
         verticalAlignment = Alignment.Top,
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
@@ -1338,7 +1341,7 @@ private fun FoodRow(
                 ) {
                     Text(
                         entry.name,
-                        fontSize = 16.sp,
+                        style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.SemiBold,
                         maxLines = 2,
                         modifier = Modifier.weight(1f, fill = false)
@@ -1354,8 +1357,8 @@ private fun FoodRow(
                 }
                 Text(
                     timeFmt.format(entry.timestamp).lowercase(),
-                    fontSize = 12.sp,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.45f)
+                    style = MaterialTheme.typography.labelMedium.copy(fontFeatureSettings = "tnum"),
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.50f)
                 )
             }
 
@@ -1366,7 +1369,7 @@ private fun FoodRow(
             ) {
                 Text(
                     "${entry.calories} kcal",
-                    fontSize = 14.sp,
+                    style = MaterialTheme.typography.labelLarge.copy(fontFeatureSettings = "tnum"),
                     fontWeight = FontWeight.SemiBold,
                     color = AppColors.Calorie
                 )
@@ -1678,7 +1681,7 @@ private fun CameraPairTransitionOverlay() {
                     Icon(
                         Icons.Filled.AddAPhoto,
                         contentDescription = null,
-                        tint = Color.White,
+                        tint = AppColors.OnAccent,
                         modifier = Modifier.size(30.dp)
                     )
                 }

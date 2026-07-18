@@ -57,6 +57,7 @@ import com.apoorvdarshan.calorietracker.models.UserProfile
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassDialog
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassDialogActions
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassSurface
+import com.apoorvdarshan.calorietracker.ui.components.FudIconBubble
 import com.apoorvdarshan.calorietracker.ui.theme.AppColors
 
 /**
@@ -122,12 +123,16 @@ fun NutritionDetailSheet(
         containerColor = sheetSurface
     ) {
         LazyColumn(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp).padding(bottom = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp)
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp).padding(bottom = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item {
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                    Text(stringResource(R.string.nutrition_details_title), fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
+                    Text(
+                        stringResource(R.string.nutrition_details_title),
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.SemiBold
+                    )
                     Spacer(Modifier.weight(1f))
                     TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_done), color = AppColors.Calorie) }
                 }
@@ -231,10 +236,10 @@ private fun Card(content: @Composable () -> Unit) {
 private fun SectionHeader(title: String) {
     Text(
         title.uppercase(),
-        fontSize = 12.sp,
+        style = MaterialTheme.typography.labelMedium,
         fontWeight = FontWeight.SemiBold,
-        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
-        letterSpacing = 0.sp,
+        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.62f),
+        letterSpacing = 0.35.sp,
         modifier = Modifier.padding(start = 14.dp, top = 6.dp, bottom = 4.dp)
     )
 }
@@ -247,18 +252,19 @@ private fun HomeCardsRow(
     Row(
         Modifier
             .fillMaxWidth()
+            .heightIn(min = 62.dp)
             .clickable(onClick = onClick)
-            .padding(horizontal = 14.dp, vertical = 14.dp),
+            .padding(horizontal = 14.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Icon(Icons.Filled.Spa, null, tint = AppColors.Calorie, modifier = Modifier.size(20.dp))
+        FudIconBubble(icon = Icons.Filled.Spa, size = 34.dp, iconSize = 17.dp)
         Column(Modifier.weight(1f)) {
-            Text(stringResource(R.string.home_nutrient_cards), fontSize = 17.sp)
+            Text(stringResource(R.string.home_nutrient_cards), style = MaterialTheme.typography.bodyLarge)
             Text(
                 selected.map { stringResource(it.displayNameRes) }.joinToString(", "),
-                fontSize = 13.sp,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.62f)
             )
         }
         Icon(
@@ -307,6 +313,7 @@ private fun HomeTopNutrientPickerDialog(
                 Row(
                     Modifier
                         .fillMaxWidth()
+                        .heightIn(min = 56.dp)
                         .clip(shape)
                         .background(
                             if (checked) AppColors.Calorie.copy(alpha = 0.11f)
@@ -361,7 +368,7 @@ private fun HomeTopNutrientPickerDialog(
                             Icon(
                                 Icons.Filled.Check,
                                 contentDescription = null,
-                                tint = Color.White,
+                                tint = AppColors.OnAccent,
                                 modifier = Modifier.size(20.dp)
                             )
                         }
@@ -407,7 +414,10 @@ private fun DetailRow(
     labelGlyph: String? = null
 ) {
     Row(
-        Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 14.dp),
+        Modifier
+            .fillMaxWidth()
+            .heightIn(min = 58.dp)
+            .padding(horizontal = 14.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
@@ -426,16 +436,21 @@ private fun DetailRow(
         } else {
             Spacer(Modifier.width(20.dp))
         }
-        Text(label, fontSize = 17.sp, modifier = Modifier.weight(1f))
+        Text(label, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
         Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(3.dp)) {
-            Text(value, fontSize = 17.sp, fontWeight = FontWeight.SemiBold, color = AppColors.Calorie)
-            Text(unit, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
+            Text(
+                value,
+                style = MaterialTheme.typography.titleMedium.copy(fontFeatureSettings = "tnum"),
+                fontWeight = FontWeight.SemiBold,
+                color = AppColors.Calorie
+            )
+            Text(unit, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.65f))
         }
         goal?.let {
             Text(
                 "/ $it",
-                fontSize = 12.sp,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                style = MaterialTheme.typography.labelMedium.copy(fontFeatureSettings = "tnum"),
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.52f),
                 modifier = Modifier.padding(start = 6.dp)
             )
         }
@@ -446,7 +461,7 @@ private fun DetailRow(
 private fun Hairline() {
     Box(
         Modifier
-            .padding(start = 14.dp)
+            .padding(start = 60.dp, end = 14.dp)
             .fillMaxWidth()
             .height(0.5.dp)
             .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))

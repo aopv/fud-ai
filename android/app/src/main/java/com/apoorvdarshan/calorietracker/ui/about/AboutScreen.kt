@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -60,6 +61,7 @@ import com.apoorvdarshan.calorietracker.AppContainer
 import com.apoorvdarshan.calorietracker.services.update.AndroidUpdateChecker
 import com.apoorvdarshan.calorietracker.services.update.AndroidUpdateState
 import com.apoorvdarshan.calorietracker.ui.theme.AppColors
+import com.apoorvdarshan.calorietracker.ui.components.FudIconBubble
 import kotlinx.coroutines.launch
 
 /**
@@ -162,14 +164,14 @@ fun AboutSettingsRows(container: AppContainer) {
         ) {
             Text(
                 stringResource(R.string.about_made_by),
-                fontSize = 13.sp,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.68f)
             )
             Text(
                 stringResource(R.string.about_with_care),
-                fontSize = 11.sp,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f)
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.52f)
             )
         }
     }
@@ -264,16 +266,16 @@ private fun AboutRow(
     Row(
         Modifier
             .fillMaxWidth()
+            .heightIn(min = 58.dp)
             .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 12.dp),
+            .padding(horizontal = 16.dp, vertical = 9.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Box(Modifier.size(22.dp), contentAlignment = Alignment.Center) {
-            Icon(
-                icon,
-                contentDescription = null,
-                tint = AppColors.Calorie,
-                modifier = Modifier.size(22.dp)
+        Box(Modifier.size(34.dp), contentAlignment = Alignment.Center) {
+            FudIconBubble(
+                icon = icon,
+                size = 34.dp,
+                iconSize = 17.dp
             )
             if (showDot) {
                 Box(
@@ -285,14 +287,19 @@ private fun AboutRow(
                 )
             }
         }
-        Spacer(Modifier.width(16.dp))
+        Spacer(Modifier.width(12.dp))
         Column(Modifier.weight(1f)) {
-            Text(label, fontSize = 17.sp, color = MaterialTheme.colorScheme.onSurface)
+            Text(
+                label,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
             if (!subtitle.isNullOrBlank()) {
                 Text(
                     subtitle,
-                    fontSize = 12.sp,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.62f)
                 )
             }
         }
@@ -307,7 +314,7 @@ private fun AboutRow(
 private fun Hairline() {
     Box(
         Modifier
-            .padding(start = 54.dp)
+            .padding(start = 62.dp, end = 12.dp)
             .fillMaxWidth()
             .height(0.5.dp)
             .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))

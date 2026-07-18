@@ -10,11 +10,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
@@ -32,15 +29,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.apoorvdarshan.calorietracker.ui.theme.AppColors
+import com.apoorvdarshan.calorietracker.ui.theme.FudTheme
+import com.apoorvdarshan.calorietracker.ui.theme.FudTypeTokens
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
-import java.time.temporal.WeekFields
-import java.util.Locale
 
 /**
  * Verbatim port of struct WeekEnergyStrip in
@@ -165,11 +164,15 @@ private fun DayTile(
     onTap: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val colors = FudTheme.colors
     Column(
         modifier = modifier
+            .heightIn(min = 56.dp)
+            .semantics { selected = isSelected }
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
+                role = Role.Button,
                 onClick = onTap
             ),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -179,10 +182,10 @@ private fun DayTile(
         // .foregroundStyle(isSelected ? AppColors.calorie : Color.secondary.opacity(0.6))
         Text(
             narrowDay(date.dayOfWeek),
-            fontSize = 11.sp,
+            style = MaterialTheme.typography.labelSmall,
             fontWeight = FontWeight.Medium,
-            color = if (isSelected) AppColors.Calorie
-                    else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f * 0.6f)
+            letterSpacing = 0.18.sp,
+            color = if (isSelected) colors.accent else colors.textTertiary
         )
 
         // .font(.system(.body, design: .rounded, weight: .semibold))
@@ -197,29 +200,37 @@ private fun DayTile(
                     if (isSelected) {
                         it
                             .shadow(
-                                elevation = 6.dp,
+                                elevation = 5.dp,
                                 shape = CircleShape,
-                                ambientColor = AppColors.Calorie.copy(alpha = 0.35f),
-                                spotColor = AppColors.Calorie.copy(alpha = 0.35f)
+                                ambientColor = colors.accent.copy(alpha = 0.28f),
+                                spotColor = colors.accent.copy(alpha = 0.28f)
                             )
                             .clip(CircleShape)
-                            .background(Brush.linearGradient(listOf(AppColors.CalorieStart, AppColors.CalorieEnd)))
+                            .background(Brush.linearGradient(listOf(colors.accent, colors.accentEnd)))
+                            .border(
+                                width = 0.7.dp,
+                                color = Color.White.copy(alpha = if (colors.isDark) 0.20f else 0.55f),
+                                shape = CircleShape
+                            )
                     } else if (isToday) {
                         it
                             .clip(CircleShape)
-                            .border(1.5.dp, AppColors.Calorie.copy(alpha = 0.35f), CircleShape)
+                            .background(colors.accent.copy(alpha = 0.045f))
+                            .border(1.25.dp, colors.accent.copy(alpha = 0.42f), CircleShape)
                     } else it
                 },
             contentAlignment = Alignment.Center
         ) {
             Text(
                 date.dayOfMonth.toString(),
-                fontSize = 17.sp,
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontFeatureSettings = FudTypeTokens.numericFeatures
+                ),
                 fontWeight = FontWeight.SemiBold,
                 color = when {
-                    isSelected -> Color.White
-                    isToday -> AppColors.Calorie
-                    else -> MaterialTheme.colorScheme.onSurface
+                    isSelected -> colors.onAccent
+                    isToday -> colors.accent
+                    else -> colors.textPrimary
                 }
             )
         }

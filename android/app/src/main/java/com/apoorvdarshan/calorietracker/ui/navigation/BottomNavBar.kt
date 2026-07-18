@@ -77,10 +77,10 @@ val BottomTabs = listOf(
     BottomTab(FudAIRoutes.WORKOUTS, Icons.Filled.FitnessCenter, R.string.nav_workouts)
 )
 
-private val BarHeight = 72.dp
-private val BarCorner = 36.dp
-private val PillCorner = 26.dp
-private val PillInsetH = 8.dp
+private val BarHeight = 70.dp
+private val BarCorner = 35.dp
+private val PillCorner = 24.dp
+private val PillInsetH = 7.dp
 private val PillInsetV = 6.dp
 
 val BottomNavScrollPadding = 132.dp
@@ -110,48 +110,48 @@ fun FudAIBottomNavBar(
 
     val barShape = RoundedCornerShape(BarCorner)
 
-    val backdropColor = if (isDark) Color(0xFF15151A).copy(alpha = 0.86f)
-                        else Color(0xFFFCF6F1).copy(alpha = 0.74f)
+    val backdropColor = if (isDark) Color(0xFF15151A).copy(alpha = 0.92f)
+                        else Color(0xFFFCF6F1).copy(alpha = 0.90f)
 
     val barSheen = Brush.verticalGradient(
         colors = if (isDark)
-            listOf(Color.White.copy(alpha = 0.14f), Color.White.copy(alpha = 0.0f))
+            listOf(Color.White.copy(alpha = 0.13f), Color.White.copy(alpha = 0.0f))
         else
             listOf(
-                Color.White.copy(alpha = 0.76f),
-                Color.White.copy(alpha = 0.22f),
-                AppColors.Calorie.copy(alpha = 0.035f)
+                Color.White.copy(alpha = 0.70f),
+                Color.White.copy(alpha = 0.18f),
+                AppColors.Calorie.copy(alpha = 0.030f)
             )
     )
 
     val barBorder = Brush.linearGradient(
         if (isDark) {
             listOf(
-                Color.White.copy(alpha = 0.28f),
-                Color.White.copy(alpha = 0.06f)
+                Color.White.copy(alpha = 0.24f),
+                Color.White.copy(alpha = 0.07f)
             )
         } else {
             listOf(
-                Color.White.copy(alpha = 0.95f),
-                Color.White.copy(alpha = 0.32f),
-                AppColors.Calorie.copy(alpha = 0.16f)
+                Color.White.copy(alpha = 0.92f),
+                Color.White.copy(alpha = 0.36f),
+                AppColors.Calorie.copy(alpha = 0.13f)
             )
         }
     )
-    val shadowAlpha = if (isDark) 0.35f else 0.16f
+    val shadowAlpha = if (isDark) 0.32f else 0.14f
 
     Box(
         modifier = modifier
             .fillMaxWidth()
             .navigationBarsPadding()
-            .padding(horizontal = 14.dp, vertical = 10.dp)
+            .padding(horizontal = 16.dp, vertical = 10.dp)
     ) {
         BoxWithConstraints(
             Modifier
                 .fillMaxWidth()
                 .height(BarHeight)
                 .shadow(
-                    elevation = if (isDark) 22.dp else 18.dp,
+                    elevation = if (isDark) 20.dp else 16.dp,
                     shape = barShape,
                     ambientColor = Color.Black.copy(alpha = shadowAlpha),
                     spotColor = Color.Black.copy(alpha = shadowAlpha)
@@ -160,7 +160,7 @@ fun FudAIBottomNavBar(
                 .background(backdropColor)
                 .background(if (isDark) Brush.linearGradient(listOf(Color.Transparent, Color.Transparent)) else Brush.linearGradient(listOf(Color.White.copy(alpha = 0.18f), AppColors.Calorie.copy(alpha = 0.020f))))
                 .background(barSheen)
-                .border(0.8.dp, barBorder, barShape)
+                .border(0.75.dp, barBorder, barShape)
         ) {
             val density = LocalDensity.current
             val haptic = LocalHapticFeedback.current
@@ -307,20 +307,20 @@ fun FudAIBottomNavBar(
 private fun ActivePill(tabWidth: Dp, isDark: Boolean, modifier: Modifier = Modifier) {
     val pillShape = RoundedCornerShape(PillCorner)
 
-    val fill = if (isDark) Color.White.copy(alpha = 0.16f)
-               else AppColors.Calorie.copy(alpha = 0.14f)
+    val fill = if (isDark) Color.White.copy(alpha = 0.15f)
+               else AppColors.Calorie.copy(alpha = 0.13f)
 
     val sheen = Brush.verticalGradient(
         colors = if (isDark)
-            listOf(Color.White.copy(alpha = 0.20f), Color.White.copy(alpha = 0.0f))
+            listOf(Color.White.copy(alpha = 0.19f), Color.White.copy(alpha = 0.0f))
         else
-            listOf(Color.White.copy(alpha = 0.55f), Color.White.copy(alpha = 0.10f))
+            listOf(Color.White.copy(alpha = 0.52f), Color.White.copy(alpha = 0.09f))
     )
 
     val border = Brush.linearGradient(
         listOf(
-            Color.White.copy(alpha = if (isDark) 0.32f else 0.75f),
-            Color.White.copy(alpha = if (isDark) 0.06f else 0.18f)
+            Color.White.copy(alpha = if (isDark) 0.28f else 0.70f),
+            Color.White.copy(alpha = if (isDark) 0.07f else 0.20f)
         )
     )
 
@@ -332,7 +332,7 @@ private fun ActivePill(tabWidth: Dp, isDark: Boolean, modifier: Modifier = Modif
             .clip(pillShape)
             .background(fill)
             .background(sheen)
-            .border(0.7.dp, border, pillShape)
+            .border(0.75.dp, border, pillShape)
     )
 }
 
@@ -346,8 +346,8 @@ private fun TabItem(
     onClick: () -> Unit
 ) {
     val activeColor = AppColors.Calorie
-    val inactiveColor = if (isDark) Color.White.copy(alpha = 0.62f)
-                        else Color.Black.copy(alpha = 0.55f)
+    val inactiveColor = if (isDark) Color.White.copy(alpha = 0.70f)
+                        else Color.Black.copy(alpha = 0.62f)
     val tint = if (selected) activeColor else inactiveColor
 
     val iconScale by animateFloatAsState(
@@ -360,9 +360,10 @@ private fun TabItem(
     )
 
     val label = stringResource(tab.labelRes)
+    val interactionSource = remember { MutableInteractionSource() }
     Column(
         modifier = modifier.clickable(
-            interactionSource = MutableInteractionSource(),
+            interactionSource = interactionSource,
             indication = null,
             onClick = onClick
         ),
@@ -374,7 +375,7 @@ private fun TabItem(
                 tab.icon,
                 contentDescription = label,
                 tint = tint,
-                modifier = Modifier.size(if (selected) 26.dp else 24.dp).scale(iconScale)
+                modifier = Modifier.size(if (selected) 25.dp else 23.dp).scale(iconScale)
             )
             if (showBadge) {
                 Box(
@@ -386,12 +387,14 @@ private fun TabItem(
                 )
             }
         }
-        Spacer(Modifier.height(3.dp))
+        Spacer(Modifier.height(2.dp))
         Text(
             label,
             color = tint,
             fontSize = 11.sp,
-            fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Medium
+            lineHeight = 13.sp,
+            fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Medium,
+            letterSpacing = 0.1.sp
         )
     }
 }
