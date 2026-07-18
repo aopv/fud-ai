@@ -34,15 +34,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.selected
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.apoorvdarshan.calorietracker.R
-import com.apoorvdarshan.calorietracker.ui.theme.FudRadii
-import com.apoorvdarshan.calorietracker.ui.theme.FudTheme
+import com.apoorvdarshan.calorietracker.ui.theme.AppColors
 
 /**
  * Polished selection bottom sheet shared by Settings and Onboarding so the two stay
@@ -66,17 +63,16 @@ fun <T> OptionPickerSheet(
     customPlaceholder: String? = null,
     onCustomSubmit: ((String) -> Unit)? = null
 ) {
-    val colors = FudTheme.colors
+    val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = state,
-        shape = RoundedCornerShape(topStart = FudRadii.sheet, topEnd = FudRadii.sheet),
-        containerColor = colors.sheet,
-        contentColor = colors.textPrimary
+        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
+        containerColor = if (isDark) Color(0xF2141416) else Color(0xFFFAF3EE)
     ) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp)) {
-            Text(title, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.SemiBold)
+            Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(12.dp))
             LazyColumn(
                 Modifier.fillMaxWidth().heightIn(max = 420.dp),
@@ -87,6 +83,7 @@ fun <T> OptionPickerSheet(
                         label = label(item),
                         subtitle = subtitle?.invoke(item),
                         isSelected = selected(item),
+                        isDark = isDark,
                         onClick = { onSelect(item) }
                     )
                 }
@@ -97,7 +94,7 @@ fun <T> OptionPickerSheet(
                     Text(
                         it,
                         style = MaterialTheme.typography.bodySmall,
-                        color = colors.textSecondary
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                     )
                 }
                 var custom by remember { mutableStateOf("") }
@@ -125,25 +122,25 @@ private fun OptionPickerRow(
     label: String,
     subtitle: String?,
     isSelected: Boolean,
+    isDark: Boolean,
     onClick: () -> Unit
 ) {
-    val colors = FudTheme.colors
-    val shape = RoundedCornerShape(FudRadii.medium)
+    val shape = RoundedCornerShape(16.dp)
     Row(
         Modifier
             .fillMaxWidth()
-            .heightIn(min = 54.dp)
             .clip(shape)
             .background(
-                if (isSelected) colors.accent.copy(alpha = if (colors.isDark) 0.16f else 0.11f)
-                else colors.surfaceMuted.copy(alpha = if (colors.isDark) 0.68f else 0.78f)
+                if (isSelected) AppColors.Calorie.copy(alpha = 0.13f)
+                else if (isDark) MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.38f)
+                else Color(0xFFEDE3DD).copy(alpha = 0.76f)
             )
             .background(
                 Brush.verticalGradient(
                     listOf(
-                        Color.White.copy(alpha = if (colors.isDark) 0.075f else 0.20f),
-                        Color.White.copy(alpha = if (colors.isDark) 0.018f else 0.045f),
-                        colors.accent.copy(alpha = if (isSelected) 0.06f else if (colors.isDark) 0.02f else 0.035f)
+                        Color.White.copy(alpha = if (isDark) 0.08f else 0.18f),
+                        Color.White.copy(alpha = if (isDark) 0.02f else 0.04f),
+                        AppColors.Calorie.copy(alpha = if (isSelected) 0.065f else if (isDark) 0.025f else 0.050f)
                     )
                 )
             )
@@ -151,14 +148,13 @@ private fun OptionPickerRow(
                 0.7.dp,
                 Brush.linearGradient(
                     listOf(
-                        colors.glassBorder.copy(alpha = if (colors.isDark) 0.82f else 0.76f),
-                        colors.accent.copy(alpha = if (isSelected) 0.26f else if (colors.isDark) 0.07f else 0.12f)
+                        Color.White.copy(alpha = if (isDark) 0.16f else 0.46f),
+                        AppColors.Calorie.copy(alpha = if (isSelected) 0.22f else if (isDark) 0.08f else 0.16f)
                     )
                 ),
                 shape
             )
-            .semantics { selected = isSelected }
-            .clickable(role = Role.Button, onClick = onClick)
+            .clickable(onClick = onClick)
             .padding(horizontal = 14.dp, vertical = 14.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -166,15 +162,14 @@ private fun OptionPickerRow(
             Text(
                 label,
                 style = MaterialTheme.typography.bodyLarge,
-                fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Medium,
-                color = colors.textPrimary
+                fontWeight = FontWeight.Medium
             )
             if (!subtitle.isNullOrBlank()) {
                 Spacer(Modifier.height(2.dp))
                 Text(
                     subtitle,
                     style = MaterialTheme.typography.bodySmall,
-                    color = colors.textSecondary
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                 )
             }
         }
@@ -183,7 +178,7 @@ private fun OptionPickerRow(
             Icon(
                 Icons.Filled.Check,
                 contentDescription = stringResource(R.string.sheet_selected_a11y),
-                tint = colors.accent,
+                tint = AppColors.Calorie,
                 modifier = Modifier.size(20.dp)
             )
         }

@@ -9,7 +9,10 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -32,7 +35,6 @@ import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -59,6 +61,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -95,6 +98,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -102,6 +106,7 @@ import androidx.compose.ui.text.style.TextAlign
 import com.apoorvdarshan.calorietracker.R
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.apoorvdarshan.calorietracker.AppContainer
 import com.apoorvdarshan.calorietracker.models.ChatMessage
@@ -213,13 +218,7 @@ fun CoachScreen(container: AppContainer) {
             // iOS Coach: centered "Coach" title, with a small circular dark
             // chip on the right wrapping a counterclockwise arrow reset icon.
             CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        stringResource(R.string.coach_title),
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                },
+                title = { Text(stringResource(R.string.coach_title), fontWeight = FontWeight.SemiBold) },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background
                 ),
@@ -227,32 +226,21 @@ fun CoachScreen(container: AppContainer) {
                     val canReset = ui.messages.isNotEmpty()
                     Box(
                         modifier = Modifier
-                            .padding(end = 8.dp)
-                            .size(48.dp)
+                            .padding(end = 12.dp)
+                            .size(34.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.10f))
                             .clickable(enabled = canReset) { showResetConfirm = true },
                         contentAlignment = Alignment.Center
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .size(36.dp)
-                                .clip(CircleShape)
-                                .background(MaterialTheme.colorScheme.surfaceContainerHigh)
-                                .border(
-                                    0.7.dp,
-                                    MaterialTheme.colorScheme.outlineVariant,
-                                    CircleShape
-                                ),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                Icons.Filled.Replay,
-                                contentDescription = stringResource(R.string.coach_reset_chat_a11y),
-                                tint = if (canReset)
-                                    MaterialTheme.colorScheme.onSurface
-                                else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.55f),
-                                modifier = Modifier.size(18.dp)
-                            )
-                        }
+                        Icon(
+                            Icons.Filled.Replay,
+                            contentDescription = stringResource(R.string.coach_reset_chat_a11y),
+                            tint = if (canReset)
+                                MaterialTheme.colorScheme.onBackground
+                            else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f),
+                            modifier = Modifier.size(18.dp)
+                        )
                     }
                 }
             )
@@ -350,7 +338,7 @@ fun CoachScreen(container: AppContainer) {
                 TextButton(onClick = {
                     vm.resetConversation()
                     showResetConfirm = false
-                }) { Text(stringResource(R.string.coach_reset_confirm), color = MaterialTheme.colorScheme.error) }
+                }) { Text(stringResource(R.string.coach_reset_confirm), color = Color(0xFFD32F2F)) }
             },
             dismissButton = {
                 TextButton(onClick = { showResetConfirm = false }) { Text(stringResource(R.string.action_cancel)) }
@@ -374,24 +362,19 @@ private fun EmptyState(modifier: Modifier = Modifier) {
     ) {
         Box(
             Modifier
-                .size(104.dp)
+                .size(108.dp)
                 .shadow(
-                    elevation = 12.dp,
+                    elevation = 16.dp,
                     shape = CircleShape,
-                    ambientColor = AppColors.Calorie.copy(alpha = 0.16f),
-                    spotColor = AppColors.Calorie.copy(alpha = 0.16f)
+                    ambientColor = AppColors.Calorie.copy(alpha = 0.18f),
+                    spotColor = AppColors.Calorie.copy(alpha = 0.18f)
                 )
                 .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.surfaceContainerLow)
-                .background(AppColors.Calorie.copy(alpha = 0.035f))
+                .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.85f))
                 .border(
                     0.8.dp,
                     Brush.linearGradient(
-                        listOf(
-                            Color.White.copy(alpha = 0.34f),
-                            MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.72f),
-                            AppColors.Calorie.copy(alpha = 0.12f)
-                        )
+                        listOf(Color.White.copy(alpha = 0.35f), Color.White.copy(alpha = 0.05f))
                     ),
                     CircleShape
                 ),
@@ -407,16 +390,16 @@ private fun EmptyState(modifier: Modifier = Modifier) {
         Spacer(Modifier.height(16.dp))
         Text(
             stringResource(R.string.coach_empty_title),
-            style = MaterialTheme.typography.headlineMedium,
+            fontSize = 22.sp,
             fontWeight = FontWeight.SemiBold
         )
         Spacer(Modifier.height(8.dp))
         Text(
             stringResource(R.string.coach_empty_subtitle),
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            fontSize = 15.sp,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
             textAlign = TextAlign.Center,
-            modifier = Modifier.widthIn(max = 300.dp)
+            lineHeight = 21.sp
         )
     }
 }
@@ -446,10 +429,10 @@ private fun MessageList(
                     Box(
                         Modifier
                             .clip(RoundedCornerShape(18.dp))
-                            .background(MaterialTheme.colorScheme.surfaceContainerLow)
+                            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.85f))
                             .border(
-                                0.7.dp,
-                                MaterialTheme.colorScheme.outlineVariant,
+                                0.5.dp,
+                                Color.White.copy(alpha = 0.15f),
                                 RoundedCornerShape(18.dp)
                             )
                             .padding(horizontal = 14.dp, vertical = 10.dp)
@@ -465,16 +448,12 @@ private fun MessageList(
                     Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
-                        .clip(RoundedCornerShape(14.dp))
-                        .background(MaterialTheme.colorScheme.errorContainer)
-                        .border(0.7.dp, MaterialTheme.colorScheme.error.copy(alpha = 0.28f), RoundedCornerShape(14.dp))
-                        .padding(horizontal = 14.dp, vertical = 10.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color(0xFFFFEBEE).copy(alpha = 0.6f))
+                        .border(0.5.dp, Color(0xFFD32F2F).copy(alpha = 0.25f), RoundedCornerShape(12.dp))
+                        .padding(horizontal = 14.dp, vertical = 8.dp)
                 ) {
-                    Text(
-                        error,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onErrorContainer
-                    )
+                    Text(error, fontSize = 12.sp, color = Color(0xFFD32F2F))
                 }
             }
         }
@@ -549,16 +528,16 @@ private fun AssistantBadge() {
     Box(
         Modifier
             .padding(top = 8.dp)
-            .size(28.dp)
+            .size(26.dp)
             .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.surfaceContainerHigh)
-            .border(0.7.dp, MaterialTheme.colorScheme.outlineVariant, CircleShape),
+            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.85f))
+            .border(0.5.dp, Color.White.copy(alpha = 0.18f), CircleShape),
         contentAlignment = Alignment.Center
     ) {
         Icon(
             Icons.Filled.AutoAwesome,
             contentDescription = null,
-            modifier = Modifier.size(12.dp),
+            modifier = Modifier.size(11.dp),
             tint = AppColors.Calorie
         )
     }
@@ -580,13 +559,12 @@ private fun Bubble(content: String, isUser: Boolean, attachmentImageBase64: Stri
     val shape = RoundedCornerShape(20.dp)
     val borderBrush = Brush.linearGradient(
         listOf(
-            Color.White.copy(alpha = if (isUser) 0.42f else 0.20f),
-            if (isUser) AppColors.CalorieEnd.copy(alpha = 0.22f)
-            else MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.88f)
+            Color.White.copy(alpha = if (isUser) 0.45f else 0.22f),
+            Color.White.copy(alpha = if (isUser) 0.05f else 0.04f)
         )
     )
-    val shadowElevation = if (isUser) 8.dp else 4.dp
-    val shadowColor = if (isUser) AppColors.Calorie.copy(alpha = 0.22f) else Color.Black.copy(alpha = 0.10f)
+    val shadowElevation = if (isUser) 10.dp else 6.dp
+    val shadowColor = if (isUser) AppColors.Calorie.copy(alpha = 0.28f) else Color.Black.copy(alpha = 0.12f)
 
     Box(
         modifier = Modifier
@@ -603,8 +581,8 @@ private fun Bubble(content: String, isUser: Boolean, attachmentImageBase64: Stri
                     Modifier.background(AppColors.CalorieGradient)
                 } else {
                     Modifier
-                        .background(MaterialTheme.colorScheme.surfaceContainerLow)
-                        .background(AppColors.Calorie.copy(alpha = 0.025f))
+                        .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.85f))
+                        .background(AppColors.Calorie.copy(alpha = 0.035f))
                 }
             )
             .border(0.7.dp, borderBrush, shape)
@@ -617,8 +595,8 @@ private fun Bubble(content: String, isUser: Boolean, attachmentImageBase64: Stri
                     .height(28.dp)
                     .background(
                         Brush.verticalGradient(
-                    colors = listOf(
-                                Color.White.copy(alpha = 0.28f),
+                            colors = listOf(
+                                Color.White.copy(alpha = 0.35f),
                                 Color.Transparent
                             )
                         )
@@ -650,8 +628,10 @@ private fun Bubble(content: String, isUser: Boolean, attachmentImageBase64: Stri
                 // User's own typed text — show verbatim, no markdown.
                 Text(
                     content,
-                    color = AppColors.OnAccent,
-                    style = MaterialTheme.typography.bodyLarge
+                    fontSize = 17.sp,
+                    color = Color.White,
+                    lineHeight = 22.sp,
+                    style = TextStyle(fontWeight = FontWeight.Normal)
                 )
             } else {
                 // Coach replies often use markdown — render it.
@@ -689,20 +669,18 @@ private fun PromptChip(text: String, enabled: Boolean, onTap: (String) -> Unit) 
     )
     Box(
         Modifier
-            .heightIn(min = 48.dp)
             .clip(shape)
-            .background(MaterialTheme.colorScheme.surfaceContainerLow)
-            .background(AppColors.Calorie.copy(alpha = 0.075f))
+            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.85f))
+            .background(AppColors.Calorie.copy(alpha = 0.10f))
             .border(0.6.dp, strokeBrush, shape)
             .clickable(enabled = enabled) { onTap(text) }
-            .padding(horizontal = 15.dp, vertical = 10.dp),
-        contentAlignment = Alignment.Center
+            .padding(horizontal = 14.dp, vertical = 9.dp)
     ) {
         Text(
             text,
-            style = MaterialTheme.typography.labelLarge,
-            color = if (enabled) AppColors.Calorie
-            else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.55f)
+            fontSize = 13.sp,
+            fontWeight = FontWeight.Medium,
+            color = AppColors.Calorie
         )
     }
 }
@@ -734,22 +712,17 @@ private fun InputBar(
             .padding(top = 4.dp, bottom = 10.dp)
             .fillMaxWidth()
             .shadow(
-                elevation = 12.dp,
+                elevation = 14.dp,
                 shape = capsule,
-                ambientColor = Color.Black.copy(alpha = 0.16f),
-                spotColor = Color.Black.copy(alpha = 0.16f)
+                ambientColor = Color.Black.copy(alpha = 0.18f),
+                spotColor = Color.Black.copy(alpha = 0.18f)
             )
             .clip(capsule)
-            .background(MaterialTheme.colorScheme.surfaceContainerLow)
-            .background(AppColors.Calorie.copy(alpha = 0.018f))
+            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.85f))
             .border(
                 0.8.dp,
                 Brush.linearGradient(
-                    listOf(
-                        Color.White.copy(alpha = 0.24f),
-                        MaterialTheme.colorScheme.outlineVariant,
-                        AppColors.Calorie.copy(alpha = 0.08f)
-                    )
+                    listOf(Color.White.copy(alpha = 0.25f), Color.White.copy(alpha = 0.05f))
                 ),
                 capsule
             )
@@ -774,22 +747,12 @@ private fun InputBar(
                         onClick = onRemoveImage,
                         modifier = Modifier
                             .align(Alignment.TopEnd)
-                            .size(48.dp)
+                            .padding(4.dp)
+                            .size(24.dp)
+                            .clip(CircleShape)
+                            .background(Color.Black.copy(alpha = 0.55f))
                     ) {
-                        Box(
-                            Modifier
-                                .size(28.dp)
-                                .clip(CircleShape)
-                                .background(Color.Black.copy(alpha = 0.62f)),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                Icons.Filled.Close,
-                                contentDescription = stringResource(R.string.cd_remove_image),
-                                tint = Color.White,
-                                modifier = Modifier.size(14.dp)
-                            )
-                        }
+                        Icon(Icons.Filled.Close, contentDescription = stringResource(R.string.cd_remove_image), tint = Color.White, modifier = Modifier.size(14.dp))
                     }
                 }
             }
@@ -814,15 +777,16 @@ private fun InputBar(
                     if (value.isEmpty()) {
                         Text(
                             stringResource(R.string.coach_input_placeholder),
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.72f)
+                            fontSize = 17.sp,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.45f)
                         )
                     }
                     BasicTextField(
                         value = value,
                         onValueChange = onValueChange,
-                        textStyle = MaterialTheme.typography.bodyLarge.copy(
+                        textStyle = LocalTextStyle.current.copy(
                             color = MaterialTheme.colorScheme.onSurface,
+                            fontSize = 17.sp,
                             fontWeight = FontWeight.Normal
                         ),
                         cursorBrush = SolidColor(AppColors.Calorie),
@@ -855,25 +819,23 @@ private fun CoachMediaActions(
     onPickImage: () -> Unit,
     onCaptureImage: () -> Unit
 ) {
-    val shape = RoundedCornerShape(22.dp)
+    val shape = RoundedCornerShape(19.dp)
     Row(
         modifier = Modifier
             .clip(shape)
-            .background(MaterialTheme.colorScheme.surfaceContainerHigh)
-            .background(AppColors.Calorie.copy(alpha = 0.045f))
+            .background(AppColors.Calorie.copy(alpha = 0.075f))
             .border(
                 0.6.dp,
                 Brush.linearGradient(
                     listOf(
-                        Color.White.copy(alpha = 0.15f),
-                        MaterialTheme.colorScheme.outlineVariant,
-                        AppColors.Calorie.copy(alpha = 0.10f)
+                        Color.White.copy(alpha = 0.16f),
+                        AppColors.Calorie.copy(alpha = 0.12f)
                     )
                 ),
                 shape
             )
-            .padding(horizontal = 1.dp),
-        horizontalArrangement = Arrangement.spacedBy(0.dp),
+            .padding(2.dp),
+        horizontalArrangement = Arrangement.spacedBy(2.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         CoachMediaActionButton(
@@ -900,75 +862,60 @@ private fun CoachMediaActionButton(
 ) {
     Box(
         modifier = Modifier
-            .size(48.dp)
+            .size(30.dp)
+            .clip(CircleShape)
+            .background(
+                if (enabled) AppColors.Calorie.copy(alpha = 0.11f)
+                else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f)
+            )
             .clickable(enabled = enabled, onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
-        Box(
-            modifier = Modifier
-                .size(32.dp)
-                .clip(CircleShape)
-                .background(
-                    if (enabled) AppColors.Calorie.copy(alpha = 0.10f)
-                    else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.05f)
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                icon,
-                contentDescription = contentDescription,
-                tint = if (enabled) AppColors.Calorie
-                else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.50f),
-                modifier = Modifier.size(17.dp)
-            )
-        }
+        Icon(
+            icon,
+            contentDescription = contentDescription,
+            tint = if (enabled) AppColors.Calorie else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.32f),
+            modifier = Modifier.size(17.dp)
+        )
     }
 }
 
 @Composable
 private fun SendButton(canSend: Boolean, onClick: () -> Unit) {
-    val visualSize: Dp = 36.dp
+    val size: Dp = 34.dp
     val shape = CircleShape
     Box(
         Modifier
-            .size(48.dp)
+            .size(size)
+            .then(
+                if (canSend) {
+                    Modifier.shadow(
+                        elevation = 8.dp,
+                        shape = shape,
+                        ambientColor = AppColors.Calorie.copy(alpha = 0.35f),
+                        spotColor = AppColors.Calorie.copy(alpha = 0.35f)
+                    )
+                } else Modifier
+            )
+            .clip(shape)
+            .then(
+                if (canSend) Modifier.background(AppColors.CalorieGradient)
+                else Modifier.background(Color.Gray.copy(alpha = 0.35f))
+            )
+            .border(
+                0.6.dp,
+                Color.White.copy(alpha = if (canSend) 0.25f else 0.10f),
+                shape
+            )
             .clickable(enabled = canSend, onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
-        Box(
-            Modifier
-                .size(visualSize)
-                .then(
-                    if (canSend) {
-                        Modifier.shadow(
-                            elevation = 7.dp,
-                            shape = shape,
-                            ambientColor = AppColors.Calorie.copy(alpha = 0.30f),
-                            spotColor = AppColors.Calorie.copy(alpha = 0.30f)
-                        )
-                    } else Modifier
-                )
-                .clip(shape)
-                .then(
-                    if (canSend) Modifier.background(AppColors.CalorieGradient)
-                    else Modifier.background(MaterialTheme.colorScheme.surfaceContainerHighest)
-                )
-                .border(
-                    0.7.dp,
-                    if (canSend) Color.White.copy(alpha = 0.24f)
-                    else MaterialTheme.colorScheme.outlineVariant,
-                    shape
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                Icons.Filled.ArrowUpward,
-                contentDescription = stringResource(R.string.coach_send_a11y),
-                tint = if (canSend) AppColors.OnAccent
-                else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.55f),
-                modifier = Modifier.size(16.dp)
-            )
-        }
+        Icon(
+            Icons.Filled.ArrowUpward,
+            contentDescription = stringResource(R.string.coach_send_a11y),
+            tint = Color.White,
+            modifier = Modifier.size(16.dp)
+        )
     }
 }
 
@@ -1105,65 +1052,36 @@ private fun inlineMarkdown(text: String, linkColor: Color, codeBg: Color): Annot
 @Composable
 private fun MarkdownText(content: String, color: Color) {
     val linkColor = AppColors.Calorie
-    val codeBg = MaterialTheme.colorScheme.surfaceContainerHighest
+    val codeBg = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.10f)
     val blocks = remember(content) { parseMarkdownBlocks(content) }
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         blocks.forEach { block ->
             when (block) {
                 is MdBlock.Heading -> Text(
                     inlineMarkdown(block.text, linkColor, codeBg),
                     color = color,
-                    style = when (block.level) {
-                        1 -> MaterialTheme.typography.headlineSmall
-                        2 -> MaterialTheme.typography.titleLarge
-                        else -> MaterialTheme.typography.titleMedium
-                    },
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.Bold,
+                    fontSize = when (block.level) { 1 -> 20.sp; 2 -> 18.sp; else -> 16.sp },
+                    lineHeight = 24.sp
                 )
-                is MdBlock.Bullet -> Row(verticalAlignment = Alignment.Top) {
-                    Text("•", color = AppColors.Calorie, style = MaterialTheme.typography.bodyLarge)
+                is MdBlock.Bullet -> Row {
+                    Text("•", color = color, fontSize = 17.sp, lineHeight = 22.sp)
                     Spacer(Modifier.width(8.dp))
-                    Text(
-                        inlineMarkdown(block.text, linkColor, codeBg),
-                        color = color,
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.weight(1f, fill = false)
-                    )
+                    Text(inlineMarkdown(block.text, linkColor, codeBg), color = color, fontSize = 17.sp, lineHeight = 22.sp)
                 }
-                is MdBlock.Numbered -> Row(verticalAlignment = Alignment.Top) {
-                    Text(
-                        "${block.number}.",
-                        color = AppColors.Calorie,
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.SemiBold
-                    )
+                is MdBlock.Numbered -> Row {
+                    Text("${block.number}.", color = color, fontSize = 17.sp, fontWeight = FontWeight.Medium, lineHeight = 22.sp)
                     Spacer(Modifier.width(8.dp))
-                    Text(
-                        inlineMarkdown(block.text, linkColor, codeBg),
-                        color = color,
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.weight(1f, fill = false)
-                    )
+                    Text(inlineMarkdown(block.text, linkColor, codeBg), color = color, fontSize = 17.sp, lineHeight = 22.sp)
                 }
                 is MdBlock.Code -> Box(
-                    Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(codeBg)
-                        .border(0.7.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(12.dp))
-                        .padding(12.dp)
+                    Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp)).background(codeBg).padding(10.dp)
                 ) {
-                    Text(
-                        block.text,
-                        color = color,
-                        fontFamily = FontFamily.Monospace,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
+                    Text(block.text, color = color, fontFamily = FontFamily.Monospace, fontSize = 14.sp, lineHeight = 20.sp)
                 }
                 is MdBlock.Paragraph -> Text(
                     inlineMarkdown(block.text, linkColor, codeBg),
-                    color = color,
-                    style = MaterialTheme.typography.bodyLarge
+                    color = color, fontSize = 17.sp, lineHeight = 22.sp
                 )
             }
         }

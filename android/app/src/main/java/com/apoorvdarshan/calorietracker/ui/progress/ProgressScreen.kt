@@ -196,12 +196,12 @@ fun ProgressScreen(container: AppContainer) {
         LazyColumn(
             modifier = Modifier.fillMaxSize().padding(padding),
             contentPadding = androidx.compose.foundation.layout.PaddingValues(
-                start = 20.dp,
-                top = 14.dp,
-                end = 20.dp,
+                start = 16.dp,
+                top = 16.dp,
+                end = 16.dp,
                 bottom = BottomNavScrollPadding
             ),
-            verticalArrangement = Arrangement.spacedBy(14.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             // 1. Segmented TimeRange picker
             item { TimeRangePicker(selected = range, onSelect = { range = it }) }
@@ -353,7 +353,7 @@ private fun TimeRangePicker(selected: TimeRange, onSelect: (TimeRange) -> Unit) 
     // iOS .pickerStyle(.segmented): a track tinted with the system fill colour,
     // active segment drawn as a slightly raised darker pill, active text uses
     // the primary on-background colour (white in dark mode), not the brand pink.
-    val shape = RoundedCornerShape(18.dp)
+    val shape = RoundedCornerShape(16.dp)
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
     val trackFill = if (isDark) {
         MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.34f)
@@ -391,7 +391,6 @@ private fun TimeRangePicker(selected: TimeRange, onSelect: (TimeRange) -> Unit) 
                 ),
                 shape
             )
-            .heightIn(min = 46.dp)
             .padding(3.dp)
     ) {
         for (r in TimeRange.values()) {
@@ -399,21 +398,20 @@ private fun TimeRangePicker(selected: TimeRange, onSelect: (TimeRange) -> Unit) 
             Box(
                 Modifier
                     .weight(1f)
-                    .clip(RoundedCornerShape(15.dp))
+                    .clip(RoundedCornerShape(13.dp))
                     .then(
                         if (isSel) Modifier.background(AppColors.CalorieGradient)
                         else Modifier.background(Color.Transparent)
                     )
                     .clickable { onSelect(r) }
-                    .heightIn(min = 40.dp)
-                    .padding(vertical = 9.dp),
+                    .padding(vertical = 7.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     stringResource(r.labelRes),
                     fontSize = 13.sp,
                     fontWeight = if (isSel) FontWeight.SemiBold else FontWeight.Medium,
-                    color = if (isSel) AppColors.OnAccent else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.72f)
+                    color = if (isSel) Color.White else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.72f)
                 )
             }
         }
@@ -424,8 +422,8 @@ private fun TimeRangePicker(selected: TimeRange, onSelect: (TimeRange) -> Unit) 
 private fun CardSection(content: @Composable () -> Unit) {
     FudGlassSurface(
         modifier = Modifier.fillMaxWidth(),
-        cornerRadius = 20.dp,
-        padding = 18.dp
+        cornerRadius = 16.dp,
+        padding = 16.dp
     ) { content() }
 }
 
@@ -443,11 +441,7 @@ private fun WeightSection(
             Text(stringResource(R.string.progress_weight_section), fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
             Spacer(Modifier.weight(1f))
             Row(
-                modifier = Modifier
-                    .heightIn(min = 48.dp)
-                    .clip(RoundedCornerShape(14.dp))
-                    .clickable(onClick = onLogWeight)
-                    .padding(horizontal = 8.dp),
+                modifier = Modifier.clickable(onClick = onLogWeight),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(Icons.Filled.AddCircle, null, tint = AppColors.Calorie, modifier = Modifier.size(16.dp))
@@ -508,17 +502,13 @@ private fun StatBadgeRow(items: List<Pair<String, String>>) {
 @Composable
 private fun StatBadge(label: String, value: String, modifier: Modifier = Modifier) {
     Column(
-        modifier = modifier
-            .clip(RoundedCornerShape(12.dp))
-            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.045f))
-            .padding(horizontal = 5.dp, vertical = 8.dp),
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {
         Text(
             value,
             modifier = Modifier.fillMaxWidth(),
-            style = MaterialTheme.typography.titleSmall.copy(fontFeatureSettings = "tnum"),
             fontSize = 15.sp,
             fontWeight = FontWeight.SemiBold,
             maxLines = 1,

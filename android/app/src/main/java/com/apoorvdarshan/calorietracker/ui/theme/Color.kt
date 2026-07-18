@@ -1,10 +1,8 @@
 package com.apoorvdarshan.calorietracker.ui.theme
 
 import androidx.annotation.StringRes
-import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.luminance
 import com.apoorvdarshan.calorietracker.R
 
 enum class AppThemeColor(
@@ -71,126 +69,18 @@ object AppColors {
     val CalorieGradient: Brush
         get() = Brush.linearGradient(listOf(CalorieStart, CalorieEnd))
 
-    // Core canvas and surface palette. The light colors intentionally retain
-    // Fud AI's warm, food-adjacent paper tint; dark surfaces stay neutral so
-    // user-selected accent colors remain clear.
-    val CanvasLight = Color(0xFFF3ECE6)
-    val CanvasDark = Color(0xFF0C0C0C)
+    val AppBackgroundLight = Color(0xFFF3ECE6)
+    val AppBackgroundDark = Color(0xFF0C0C0C)
 
-    val SurfaceLight = Color(0xFFFFFFFF)
-    val SurfaceDark = Color(0xFF1C1C1E)
-
-    val SurfaceRaisedLight = Color(0xFFFAF6F2)
-    val SurfaceRaisedDark = Color(0xFF232327)
-
-    val SurfaceMutedLight = Color(0xFFEDE3DD)
-    val SurfaceMutedDark = Color(0xFF29292E)
-
-    val SheetLight = Color(0xFFFAF3EE)
-    val SheetDark = Color(0xFF141416)
-
-    val AppBackgroundLight = CanvasLight
-    val AppBackgroundDark = CanvasDark
-
-    val AppCardLight = SurfaceLight
-    val AppCardDark = SurfaceDark
+    val AppCardLight = Color(0xFFFFFFFF)
+    val AppCardDark = Color(0xFF1C1C1E)
 
     val OnLight = Color(0xFF1C1C1E)
     val OnDark = Color(0xFFF2F2F7)
 
-    val MutedLight = Color(0xFF6F6966)
-    val MutedDark = Color(0xFFAAA6AD)
+    val MutedLight = Color(0xFF8E8E93)
+    val MutedDark = Color(0xFF8E8E93)
 
-    val DividerLight = Color(0xFFE2D8D2)
-    val DividerDark = Color(0xFF343439)
-
-    val ErrorLight = Color(0xFFB42318)
-    val ErrorDark = Color(0xFFFF6B63)
-    val OnErrorLight = Color.White
-    val OnErrorDark = Color(0xFF3B0503)
-    val ErrorContainerLight = Color(0xFFFFE9E6)
-    val ErrorContainerDark = Color(0xFF5B1D19)
-    val OnErrorContainerLight = Color(0xFF6B1510)
-    val OnErrorContainerDark = Color(0xFFFFDAD6)
-
-    val SurfaceDimLight = Color(0xFFE9DFD9)
-    val SurfaceBrightLight = Color(0xFFFFFBF8)
-    val SurfaceContainerLight = Color(0xFFF5EDE8)
-    val SurfaceContainerHighLight = Color(0xFFEFE5DF)
-    val SurfaceContainerHighestLight = Color(0xFFE9DED8)
-
-    val SurfaceBrightDark = Color(0xFF303034)
-    val SurfaceLowestDark = Color(0xFF09090A)
-    val SurfaceLowDark = Color(0xFF161618)
-
-    val OnAccent: Color
-        get() = contentColorForGradient(CalorieStart, CalorieEnd)
-
-    /** Chooses the higher-contrast app foreground for an arbitrary accent. */
-    fun contentColorFor(background: Color): Color {
-        val darkContrast = contrastRatio(background, OnLight)
-        val lightContrast = contrastRatio(background, OnDark)
-        return if (darkContrast >= lightContrast) OnLight else OnDark
-    }
-
-    /** Chooses one foreground that remains legible across both gradient stops. */
-    fun contentColorForGradient(start: Color, end: Color): Color {
-        val darkMinimum = minOf(contrastRatio(start, OnLight), contrastRatio(end, OnLight))
-        val lightMinimum = minOf(contrastRatio(start, OnDark), contrastRatio(end, OnDark))
-        return if (darkMinimum >= lightMinimum) OnLight else OnDark
-    }
-
-    private fun contrastRatio(a: Color, b: Color): Float {
-        val lighter = maxOf(a.luminance(), b.luminance())
-        val darker = minOf(a.luminance(), b.luminance())
-        return (lighter + 0.05f) / (darker + 0.05f)
-    }
-}
-
-@Immutable
-data class FudSemanticColors(
-    val isDark: Boolean,
-    val canvas: Color,
-    val surface: Color,
-    val surfaceRaised: Color,
-    val surfaceMuted: Color,
-    val sheet: Color,
-    val glassBase: Color,
-    val glassHighlight: Color,
-    val glassBorder: Color,
-    val field: Color,
-    val divider: Color,
-    val textPrimary: Color,
-    val textSecondary: Color,
-    val textTertiary: Color,
-    val accent: Color,
-    val accentEnd: Color,
-    val onAccent: Color,
-    val shadow: Color,
-    val error: Color
-)
-
-internal fun fudSemanticColors(themeColor: AppThemeColor, isDark: Boolean): FudSemanticColors {
-    val primaryText = if (isDark) AppColors.OnDark else AppColors.OnLight
-    return FudSemanticColors(
-        isDark = isDark,
-        canvas = if (isDark) AppColors.CanvasDark else AppColors.CanvasLight,
-        surface = if (isDark) AppColors.SurfaceDark else AppColors.SurfaceLight,
-        surfaceRaised = if (isDark) AppColors.SurfaceRaisedDark else AppColors.SurfaceRaisedLight,
-        surfaceMuted = if (isDark) AppColors.SurfaceMutedDark else AppColors.SurfaceMutedLight,
-        sheet = if (isDark) AppColors.SheetDark else AppColors.SheetLight,
-        glassBase = if (isDark) Color(0xE817171B) else Color(0xFAFAF4EF),
-        glassHighlight = Color.White.copy(alpha = if (isDark) 0.09f else 0.42f),
-        glassBorder = Color.White.copy(alpha = if (isDark) 0.16f else 0.72f),
-        field = if (isDark) Color(0xCC252529) else Color(0xE8EDE3DD),
-        divider = if (isDark) AppColors.DividerDark else AppColors.DividerLight,
-        textPrimary = primaryText,
-        textSecondary = if (isDark) AppColors.MutedDark else AppColors.MutedLight,
-        textTertiary = primaryText.copy(alpha = if (isDark) 0.48f else 0.46f),
-        accent = themeColor.start,
-        accentEnd = themeColor.end,
-        onAccent = AppColors.contentColorForGradient(themeColor.start, themeColor.end),
-        shadow = Color.Black.copy(alpha = if (isDark) 0.34f else 0.12f),
-        error = if (isDark) AppColors.ErrorDark else AppColors.ErrorLight
-    )
+    val DividerLight = Color(0xFFE5E5EA)
+    val DividerDark = Color(0xFF2C2C2E)
 }

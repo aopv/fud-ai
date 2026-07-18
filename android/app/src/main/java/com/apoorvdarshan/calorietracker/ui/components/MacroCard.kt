@@ -3,7 +3,6 @@ package com.apoorvdarshan.calorietracker.ui.components
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,8 +34,6 @@ import androidx.compose.ui.unit.sp
 import com.apoorvdarshan.calorietracker.models.MacroValueFormatter
 import com.apoorvdarshan.calorietracker.ui.navigation.LocalLaunchFillEpoch
 import com.apoorvdarshan.calorietracker.ui.theme.AppColors
-import com.apoorvdarshan.calorietracker.ui.theme.FudTheme
-import com.apoorvdarshan.calorietracker.ui.theme.FudTypeTokens
 
 /**
  * A single macro shown as a vertical fill bar (rounded tube that fills bottom-up toward the goal),
@@ -51,7 +49,6 @@ fun MacroCard(
     modifier: Modifier = Modifier,
     gradientColors: List<Color> = listOf(AppColors.CalorieStart, AppColors.CalorieEnd)
 ) {
-    val colors = FudTheme.colors
     val progress = if (goal > 0) (current.toFloat() / goal).coerceIn(0f, 1f) else 0f
     // Fill-from-zero on app open (see CalorieHero). Saveable lastEpoch survives tab
     // switches so only a real app-open replays the fill; tab returns snap.
@@ -89,10 +86,7 @@ fun MacroCard(
             style = TextStyle(
                 brush = Brush.verticalGradient(gradientColors),
                 fontSize = 20.sp,
-                lineHeight = 24.sp,
-                letterSpacing = (-0.25).sp,
-                fontWeight = FontWeight.Bold,
-                fontFeatureSettings = FudTypeTokens.numericFeatures
+                fontWeight = FontWeight.Bold
             ),
             maxLines = 1
         )
@@ -107,11 +101,6 @@ fun MacroCard(
                     .fillMaxSize()
                     .clip(CircleShape)
                     .background(firstColor.copy(alpha = 0.12f))
-                    .border(
-                        width = 0.7.dp,
-                        color = colors.glassBorder.copy(alpha = if (colors.isDark) 0.34f else 0.70f),
-                        shape = CircleShape
-                    )
             )
             val fillHeight = (74.dp * animated).coerceAtLeast(16.dp)
             Box(
@@ -119,10 +108,10 @@ fun MacroCard(
                     .width(16.dp)
                     .height(fillHeight)
                     .shadow(
-                        elevation = 4.dp,
+                        elevation = 5.dp,
                         shape = CircleShape,
-                        ambientColor = firstColor.copy(alpha = 0.32f),
-                        spotColor = firstColor.copy(alpha = 0.32f)
+                        ambientColor = firstColor.copy(alpha = 0.4f),
+                        spotColor = firstColor.copy(alpha = 0.4f)
                     )
                     .clip(CircleShape)
                     // iOS fills bottom-up with the base color at the BOTTOM
@@ -142,8 +131,7 @@ fun MacroCard(
                 label,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.SemiBold,
-                letterSpacing = 0.08.sp,
-                color = colors.textPrimary,
+                color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1
             )
             Text(
@@ -153,9 +141,8 @@ fun MacroCard(
                 color = if (goal > 0 && current > goal) {
                     AppColors.Calorie
                 } else {
-                    colors.textSecondary
+                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
                 },
-                letterSpacing = 0.08.sp,
                 maxLines = 1
             )
         }

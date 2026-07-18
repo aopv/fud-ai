@@ -1,6 +1,7 @@
 package com.apoorvdarshan.calorietracker.ui.components
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
@@ -24,8 +25,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.apoorvdarshan.calorietracker.ui.theme.AppColors
-import com.apoorvdarshan.calorietracker.ui.theme.FudTheme
-import com.apoorvdarshan.calorietracker.ui.theme.FudTypeTokens
 import kotlinx.coroutines.delay
 import kotlin.math.cos
 import kotlin.math.min
@@ -54,7 +53,6 @@ fun ActivityRing(
     gradientColors: List<Color> = listOf(AppColors.CalorieStart, AppColors.CalorieEnd),
     centerContent: @Composable () -> Unit = {}
 ) {
-    val colors = FudTheme.colors
     val animated = remember { Animatable(0f) }
 
     // .onAppear { withAnimation(.spring(response: 1.2, dampingFraction: 0.75).delay(0.15)) }
@@ -75,7 +73,7 @@ fun ActivityRing(
 
     val firstColor = gradientColors.firstOrNull() ?: Color.Transparent
     val lastColor = gradientColors.lastOrNull() ?: Color.White
-    val trackColor = firstColor.copy(alpha = if (colors.isDark) 0.18f else 0.12f)
+    val trackColor = firstColor.copy(alpha = 0.15f)
 
     Box(modifier = modifier.size(size).aspectRatio(1f), contentAlignment = Alignment.Center) {
         Canvas(modifier = Modifier.size(size)) {
@@ -128,16 +126,10 @@ fun ActivityRing(
                 val dotY = centerY + radius * sin(endAngleRad).toFloat()
                 val dotRadius = strokeWidth.toPx() / 2f
 
-                // Layered falloff reads as a soft glow without painting one hard,
-                // oversized dot around the endpoint.
+                // .shadow(color: last.opacity(0.6), radius: 6) — soft glow
                 drawCircle(
-                    color = lastColor.copy(alpha = 0.12f),
-                    radius = dotRadius * 2.25f,
-                    center = Offset(dotX, dotY)
-                )
-                drawCircle(
-                    color = lastColor.copy(alpha = 0.24f),
-                    radius = dotRadius * 1.55f,
+                    color = lastColor.copy(alpha = 0.6f),
+                    radius = dotRadius * 1.6f,
                     center = Offset(dotX, dotY)
                 )
                 drawCircle(
@@ -154,19 +146,16 @@ fun ActivityRing(
 /** Ready-made center label: big number + small label (e.g. "1,247\nkcal"). */
 @Composable
 fun RingCenterLabel(primary: String, secondary: String) {
-    val colors = FudTheme.colors
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             primary,
-            style = MaterialTheme.typography.headlineLarge.copy(
-                fontFeatureSettings = FudTypeTokens.numericFeatures
-            ),
+            style = MaterialTheme.typography.headlineLarge,
             fontWeight = FontWeight.Bold
         )
         Text(
             secondary,
             style = MaterialTheme.typography.labelSmall,
-            color = colors.textSecondary
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
         )
     }
 }

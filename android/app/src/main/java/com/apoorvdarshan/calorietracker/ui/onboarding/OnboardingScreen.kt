@@ -80,7 +80,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -120,10 +119,6 @@ import java.time.LocalDate
 import java.time.Period
 import java.util.Locale
 
-private val OnboardingActionShape = RoundedCornerShape(18.dp)
-private val OnboardingActionHeight = 56.dp
-private val OnboardingCardShape = RoundedCornerShape(20.dp)
-
 @Composable
 fun OnboardingScreen(container: AppContainer, onComplete: () -> Unit) {
     val vm: OnboardingViewModel = viewModel(factory = OnboardingViewModel.Factory(container))
@@ -141,57 +136,41 @@ fun OnboardingScreen(container: AppContainer, onComplete: () -> Unit) {
         // iOS shows a chevron-left back button + a thin Capsule progress bar at
         // the top, only on steps 1..N-2 (hidden on Welcome and Review).
         if (ui.step != OnboardingStep.WELCOME && ui.step != OnboardingStep.BUILDING_PLAN) {
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(12.dp))
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 20.dp),
+                    .padding(horizontal = 24.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Box(
+                Icon(
+                    imageVector = Icons.Outlined.ChevronLeft,
+                    contentDescription = stringResource(R.string.onboarding_back),
+                    tint = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier
-                        .size(48.dp)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.055f))
-                        .border(
-                            0.7.dp,
-                            MaterialTheme.colorScheme.onBackground.copy(alpha = 0.10f),
-                            CircleShape
-                        )
-                        .clickable { vm.back() },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.ChevronLeft,
-                        contentDescription = stringResource(R.string.onboarding_back),
-                        tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.90f),
-                        modifier = Modifier.size(26.dp)
-                    )
-                }
+                        .size(28.dp)
+                        .clickable { vm.back() }
+                )
                 val totalSteps = OnboardingStep.values().size
                 val progress = ui.step.ordinal.toFloat() / (totalSteps - 1).toFloat()
                 Box(
                     Modifier
                         .weight(1f)
-                        .height(5.dp)
-                        .clip(RoundedCornerShape(3.dp))
-                        .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.10f))
+                        .height(4.dp)
+                        .clip(RoundedCornerShape(2.dp))
+                        .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.08f))
                 ) {
                     Box(
                         Modifier
                             .fillMaxHeight()
                             .fillMaxWidth(progress)
-                            .clip(RoundedCornerShape(3.dp))
-                            .background(
-                                Brush.horizontalGradient(
-                                    listOf(AppColors.CalorieStart, AppColors.CalorieEnd)
-                                )
-                            )
+                            .clip(RoundedCornerShape(2.dp))
+                            .background(MaterialTheme.colorScheme.onBackground)
                     )
                 }
             }
-            Spacer(Modifier.height(6.dp))
+            Spacer(Modifier.height(8.dp))
         } else {
             Spacer(Modifier.height(24.dp))
         }
@@ -265,38 +244,68 @@ fun OnboardingScreen(container: AppContainer, onComplete: () -> Unit) {
                 Box(
                     Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 24.dp, vertical = 32.dp)
+                        .padding(horizontal = 24.dp, vertical = 36.dp)
                 ) {
-                    OnboardingGradientAction(
-                        text = stringResource(R.string.action_get_started),
-                        onClick = { vm.next() }
-                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp)
+                            .clip(RoundedCornerShape(14.dp))
+                            .background(
+                                Brush.horizontalGradient(
+                                    listOf(AppColors.CalorieStart, AppColors.CalorieEnd)
+                                )
+                            )
+                            .clickable { vm.next() },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            stringResource(R.string.action_get_started),
+                            color = Color.White,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
                 }
             }
             OnboardingStep.BUILDING_PLAN -> {
                 // Auto-advancing animation; no CTA. Reserve the same footer
                 // height so layout doesn't jump when we land on this step.
-                Spacer(Modifier.height(OnboardingActionHeight + 36.dp + 24.dp))
+                Spacer(Modifier.height(54.dp + 36.dp + 24.dp))
             }
             OnboardingStep.PLAN_READY -> {
                 // Final step — completes onboarding directly (the old Rate-fud
                 // review step was removed; store-rating pressure in onboarding
                 // is rejection bait on both stores).
-                OnboardingGradientAction(
-                    text = stringResource(R.string.action_get_started),
-                    onClick = { vm.complete(onComplete) },
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp)
                         .padding(bottom = 36.dp)
-                )
+                        .height(54.dp)
+                        .clip(RoundedCornerShape(28.dp))
+                        .background(
+                            Brush.horizontalGradient(
+                                listOf(AppColors.CalorieStart, AppColors.CalorieEnd)
+                            )
+                        )
+                        .clickable { vm.complete(onComplete) },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        stringResource(R.string.action_get_started),
+                        color = Color.White,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
             }
             else -> {
                 // iOS continueButton: full-width inverse-coloured capsule.
                 Button(
                     onClick = { vm.next() },
                     enabled = ui.canAdvance,
-                    shape = OnboardingActionShape,
+                    shape = RoundedCornerShape(28.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.onBackground,
                         contentColor = MaterialTheme.colorScheme.background
@@ -305,7 +314,7 @@ fun OnboardingScreen(container: AppContainer, onComplete: () -> Unit) {
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp)
                         .padding(bottom = 36.dp)
-                        .height(OnboardingActionHeight)
+                        .height(54.dp)
                 ) {
                     Text(
                         stringResource(R.string.action_continue),
@@ -315,64 +324,6 @@ fun OnboardingScreen(container: AppContainer, onComplete: () -> Unit) {
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun OnboardingGradientAction(
-    text: String,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier.fillMaxWidth(),
-    enabled: Boolean = true
-) {
-    val actionGradient = if (enabled) {
-        listOf(AppColors.CalorieStart, AppColors.CalorieEnd)
-    } else {
-        listOf(
-            MaterialTheme.colorScheme.onBackground.copy(alpha = 0.15f),
-            MaterialTheme.colorScheme.onBackground.copy(alpha = 0.15f)
-        )
-    }
-    Box(
-        modifier = modifier
-            .height(OnboardingActionHeight)
-            .shadow(
-                elevation = if (enabled) 9.dp else 0.dp,
-                shape = OnboardingActionShape,
-                ambientColor = AppColors.Calorie.copy(alpha = 0.22f),
-                spotColor = AppColors.Calorie.copy(alpha = 0.22f)
-            )
-            .clip(OnboardingActionShape)
-            .background(
-                Brush.horizontalGradient(actionGradient)
-            )
-            .background(
-                Brush.verticalGradient(
-                    listOf(
-                        Color.White.copy(alpha = if (enabled) 0.20f else 0.08f),
-                        Color.Transparent
-                    )
-                )
-            )
-            .border(
-                0.7.dp,
-                Color.White.copy(alpha = if (enabled) 0.22f else 0.10f),
-                OnboardingActionShape
-            )
-            .clickable(enabled = enabled, onClick = onClick),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text,
-            color = if (enabled) {
-                AppColors.OnAccent
-            } else {
-                MaterialTheme.colorScheme.onBackground.copy(alpha = 0.55f)
-            },
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.SemiBold,
-            letterSpacing = 0.1.sp
-        )
     }
 }
 
@@ -453,19 +404,17 @@ private fun StepHeader(title: String, subtitle: String? = null) {
         Text(
             title,
             style = MaterialTheme.typography.displaySmall,
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.96f),
-            fontWeight = FontWeight.Bold,
-            letterSpacing = (-0.35).sp
+            fontWeight = FontWeight.Bold
         )
         subtitle?.let {
             Spacer(Modifier.height(6.dp))
             Text(
                 it,
                 style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.64f)
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
             )
         }
-        Spacer(Modifier.height(28.dp))
+        Spacer(Modifier.height(32.dp))
     }
 }
 
@@ -1053,20 +1002,30 @@ private fun NotificationsStep(enabled: Boolean, onToggle: (Boolean) -> Unit) {
             textAlign = androidx.compose.ui.text.style.TextAlign.Center
         )
         Spacer(Modifier.height(28.dp))
-        OnboardingGradientAction(
-            text = if (enabled) {
-                stringResource(R.string.onboarding_notifications_enabled)
-            } else {
-                stringResource(R.string.onboarding_notifications_allow)
-            },
-            onClick = {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    notifLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-                } else {
-                    onToggle(true)
-                }
-            }
-        )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(52.dp)
+                .clip(RoundedCornerShape(14.dp))
+                .background(
+                    Brush.horizontalGradient(listOf(AppColors.CalorieStart, AppColors.CalorieEnd))
+                )
+                .clickable {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        notifLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                    } else {
+                        onToggle(true)
+                    }
+                },
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                if (enabled) stringResource(R.string.onboarding_notifications_enabled) else stringResource(R.string.onboarding_notifications_allow),
+                color = Color.White,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold
+            )
+        }
         Spacer(Modifier.height(10.dp))
         Text(
             stringResource(R.string.onboarding_notifications_change_anytime),
@@ -1132,15 +1091,36 @@ private fun HealthConnectStep(container: AppContainer, enabled: Boolean, onToggl
             HealthFeatureRow(icon = Icons.Outlined.Accessibility, label = stringResource(R.string.onboarding_health_feature_body))
         }
         Spacer(Modifier.height(24.dp))
-        OnboardingGradientAction(
-            text = when {
-                !available -> stringResource(R.string.onboarding_health_unavailable)
-                enabled -> stringResource(R.string.onboarding_health_connected)
-                else -> stringResource(R.string.onboarding_health_connect)
-            },
-            onClick = { hcLauncher.launch(container.health.permissions) },
-            enabled = available
-        )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(52.dp)
+                .clip(RoundedCornerShape(14.dp))
+                .background(
+                    if (available)
+                        Brush.horizontalGradient(listOf(AppColors.CalorieStart, AppColors.CalorieEnd))
+                    else
+                        Brush.horizontalGradient(listOf(
+                            MaterialTheme.colorScheme.onBackground.copy(alpha = 0.15f),
+                            MaterialTheme.colorScheme.onBackground.copy(alpha = 0.15f)
+                        ))
+                )
+                .clickable(enabled = available) {
+                    hcLauncher.launch(container.health.permissions)
+                },
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                when {
+                    !available -> stringResource(R.string.onboarding_health_unavailable)
+                    enabled -> stringResource(R.string.onboarding_health_connected)
+                    else -> stringResource(R.string.onboarding_health_connect)
+                },
+                color = Color.White,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold
+            )
+        }
         if (available) {
             TextButton(onClick = { context.startActivity(container.health.manageAccessIntent()) }) {
                 Text(
@@ -1389,7 +1369,7 @@ private fun AiSetupRow(number: String, text: String) {
         ) {
             Text(
                 number,
-                color = AppColors.contentColorFor(AppColors.Calorie),
+                color = Color.White,
                 style = MaterialTheme.typography.labelSmall,
                 fontWeight = FontWeight.Bold
             )
@@ -1762,16 +1742,9 @@ private fun SelectionCard(
     selected: Boolean,
     onClick: () -> Unit
 ) {
-    val accent = if (selected) {
-        AppColors.Calorie
-    } else {
-        MaterialTheme.colorScheme.onBackground.copy(alpha = 0.72f)
-    }
+    val accent = if (selected) AppColors.Calorie else MaterialTheme.colorScheme.onBackground
     val selectedBorder = if (selected) {
-        Modifier.border(
-            BorderStroke(1.25.dp, AppColors.Calorie.copy(alpha = 0.68f)),
-            OnboardingCardShape
-        )
+        Modifier.border(BorderStroke(1.4.dp, AppColors.Calorie.copy(alpha = 0.55f)), RoundedCornerShape(20.dp))
     } else {
         Modifier
     }
@@ -1790,27 +1763,21 @@ private fun SelectionCard(
                 Text(
                     title,
                     style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.94f),
-                    fontWeight = FontWeight.SemiBold,
-                    letterSpacing = 0.05.sp
+                    fontWeight = FontWeight.SemiBold
                 )
                 subtitle?.let {
                     Spacer(Modifier.height(2.dp))
                     Text(
                         it,
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.62f)
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.55f)
                     )
                 }
             }
             Icon(
                 imageVector = if (selected) Icons.Filled.CheckCircle else Icons.Outlined.RadioButtonUnchecked,
                 contentDescription = null,
-                tint = if (selected) {
-                    AppColors.Calorie
-                } else {
-                    MaterialTheme.colorScheme.onBackground.copy(alpha = 0.40f)
-                },
+                tint = if (selected) AppColors.Calorie else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f),
                 modifier = Modifier.size(22.dp)
             )
         }
@@ -1904,8 +1871,6 @@ private fun PlanEditDialog(
     }
     AlertDialog(
         onDismissRequest = onDismiss,
-        shape = RoundedCornerShape(28.dp),
-        containerColor = MaterialTheme.colorScheme.surface,
         title = { Text(stringResource(field.titleRes)) },
         text = {
             NumericWheelPicker(

@@ -42,6 +42,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.apoorvdarshan.calorietracker.R
 import com.apoorvdarshan.calorietracker.AppContainer
 import com.apoorvdarshan.calorietracker.models.SpeechProvider
@@ -251,7 +252,13 @@ fun CoachMicButton(controller: CoachVoiceController) {
     val holding = controller.phase == VoicePhase.Holding
     Box(
         modifier = Modifier
-            .size(48.dp)
+            .size(34.dp)
+            .scale(if (holding) 1.18f else 1f)
+            .clip(CircleShape)
+            .background(
+                if (holding) AppColors.Calorie
+                else AppColors.Calorie.copy(alpha = 0.12f)
+            )
             .pointerInput(Unit) {
                 awaitEachGesture {
                     val down = awaitFirstDown(requireUnconsumed = false)
@@ -286,29 +293,12 @@ fun CoachMicButton(controller: CoachVoiceController) {
             },
         contentAlignment = Alignment.Center
     ) {
-        Box(
-            modifier = Modifier
-                .size(36.dp)
-                .scale(if (holding) 1.12f else 1f)
-                .clip(CircleShape)
-                .background(
-                    if (holding) AppColors.CalorieGradient
-                    else androidx.compose.ui.graphics.Brush.linearGradient(
-                        listOf(
-                            MaterialTheme.colorScheme.surfaceContainerHighest,
-                            AppColors.Calorie.copy(alpha = 0.10f)
-                        )
-                    )
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                Icons.Filled.Mic,
-                contentDescription = stringResource(R.string.cd_hold_to_record),
-                tint = if (holding) AppColors.OnAccent else AppColors.Calorie,
-                modifier = Modifier.size(18.dp)
-            )
-        }
+        Icon(
+            Icons.Filled.Mic,
+            contentDescription = stringResource(R.string.cd_hold_to_record),
+            tint = if (holding) Color.White else AppColors.Calorie,
+            modifier = Modifier.size(18.dp)
+        )
     }
 }
 
@@ -335,8 +325,8 @@ fun CoachRecordingIndicator(controller: CoachVoiceController, modifier: Modifier
             )
             Text(
                 "Transcribing…",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                fontSize = 15.sp,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
             )
             return@Row
         }
@@ -350,8 +340,8 @@ fun CoachRecordingIndicator(controller: CoachVoiceController, modifier: Modifier
         )
         Text(
             formatElapsed(controller.elapsedMs),
-            style = MaterialTheme.typography.labelLarge,
-            fontWeight = FontWeight.SemiBold,
+            fontSize = 15.sp,
+            fontWeight = FontWeight.Medium,
             color = MaterialTheme.colorScheme.onSurface
         )
 
@@ -364,9 +354,9 @@ fun CoachRecordingIndicator(controller: CoachVoiceController, modifier: Modifier
                 live.isNotBlank() -> live
                 else -> stringResource(R.string.voice_listening)
             },
-            style = MaterialTheme.typography.bodyMedium,
-            color = if (armed) MaterialTheme.colorScheme.error
-                    else MaterialTheme.colorScheme.onSurfaceVariant,
+            fontSize = 15.sp,
+            color = if (armed) Color(0xFFFF3B30)
+                    else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.45f),
             maxLines = 1,
             modifier = Modifier.weight(1f, fill = false)
         )
@@ -378,23 +368,17 @@ fun CoachRecordingIndicator(controller: CoachVoiceController, modifier: Modifier
 fun CoachVoiceCancelButton(onClick: () -> Unit) {
     Box(
         Modifier
-            .size(48.dp)
+            .size(34.dp)
+            .clip(CircleShape)
+            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f))
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
-        Box(
-            Modifier
-                .size(36.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.errorContainer),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                Icons.Filled.Delete,
-                contentDescription = stringResource(R.string.cd_cancel_recording),
-                tint = MaterialTheme.colorScheme.error,
-                modifier = Modifier.size(18.dp)
-            )
-        }
+        Icon(
+            Icons.Filled.Delete,
+            contentDescription = stringResource(R.string.cd_cancel_recording),
+            tint = Color(0xFFFF3B30),
+            modifier = Modifier.size(18.dp)
+        )
     }
 }

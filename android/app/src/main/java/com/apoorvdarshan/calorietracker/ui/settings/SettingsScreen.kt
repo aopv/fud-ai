@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -330,8 +329,8 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController) {
                 .fillMaxSize()
                 .padding(padding)
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp, vertical = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(18.dp)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             // Section 1 — Personal Info (matches iOS Section "Personal Info")
             SectionCard(title = stringResource(R.string.settings_section_personal)) {
@@ -2414,7 +2413,7 @@ fun NutritionPickerSheet(
     ) {
         Text(
             stringResource(R.string.action_save),
-            color = AppColors.OnAccent,
+            color = Color.White,
             fontWeight = FontWeight.SemiBold,
             style = MaterialTheme.typography.titleMedium
         )
@@ -2519,16 +2518,15 @@ private fun SectionCard(title: String, content: @Composable () -> Unit) {
         Text(
             title,
             style = MaterialTheme.typography.labelMedium,
-            fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.62f),
-            modifier = Modifier.padding(start = 6.dp, bottom = 8.dp)
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.55f),
+            modifier = Modifier.padding(start = 4.dp, bottom = 6.dp)
         )
         FudGlassSurface(
             modifier = Modifier.fillMaxWidth(),
-            cornerRadius = 20.dp,
+            cornerRadius = 18.dp,
             padding = 0.dp
         ) {
-            Column(Modifier.padding(vertical = 3.dp)) { content() }
+            Column(Modifier.padding(vertical = 4.dp)) { content() }
         }
     }
 }
@@ -2547,14 +2545,13 @@ private fun SettingRow(
     Row(
         Modifier
             .fillMaxWidth()
-            .heightIn(min = 58.dp)
             .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 10.dp),
+            .padding(horizontal = 16.dp, vertical = 14.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (icon != null) {
-            FudIconBubble(icon = icon, size = 34.dp, iconSize = 17.dp)
-            Spacer(Modifier.width(12.dp))
+            FudIconBubble(icon = icon, size = 22.dp, iconSize = 14.dp)
+            Spacer(Modifier.width(14.dp))
         }
         Text(
             label,
@@ -2564,19 +2561,14 @@ private fun SettingRow(
         )
         Text(
             value,
-            modifier = Modifier
-                .padding(start = 10.dp)
-                .widthIn(max = 156.dp),
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.62f),
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.58f)
         )
         Icon(
             if (inlineMenu) Icons.Filled.UnfoldMore else Icons.Filled.ChevronRight,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
-            modifier = Modifier.size(18.dp)
+            modifier = if (inlineMenu) Modifier.size(18.dp) else Modifier
         )
     }
 }
@@ -2589,13 +2581,12 @@ private fun ActivityLevelSettingRow(
     Row(
         Modifier
             .fillMaxWidth()
-            .heightIn(min = 58.dp)
             .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 10.dp),
+            .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        FudIconBubble(icon = Icons.AutoMirrored.Outlined.DirectionsRun, size = 34.dp, iconSize = 17.dp)
-        Spacer(Modifier.width(12.dp))
+        FudIconBubble(icon = Icons.AutoMirrored.Outlined.DirectionsRun, size = 22.dp, iconSize = 14.dp)
+        Spacer(Modifier.width(14.dp))
         Column(
             modifier = Modifier
                 .weight(1f)
@@ -2611,7 +2602,6 @@ private fun ActivityLevelSettingRow(
         }
         Text(
             stringResource(level.displayNameRes),
-            modifier = Modifier.widthIn(max = 142.dp),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.58f),
             maxLines = 1,
@@ -2643,13 +2633,12 @@ private fun LockableGoalRow(
     Row(
         Modifier
             .fillMaxWidth()
-            .heightIn(min = 58.dp)
             .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 10.dp),
+            .padding(horizontal = 16.dp, vertical = 14.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        FudIconBubble(icon = icon, size = 34.dp, iconSize = 17.dp)
-        Spacer(Modifier.width(12.dp))
+        FudIconBubble(icon = icon, size = 22.dp, iconSize = 14.dp)
+        Spacer(Modifier.width(14.dp))
         Text(
             label,
             modifier = Modifier.weight(1f),
@@ -2658,7 +2647,6 @@ private fun LockableGoalRow(
         )
         Text(
             value,
-            modifier = Modifier.widthIn(max = 116.dp),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
         )
@@ -2736,15 +2724,12 @@ private fun ToggleRow(
     onChange: (Boolean) -> Unit
 ) {
     Row(
-        Modifier
-            .fillMaxWidth()
-            .heightIn(min = 58.dp)
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+        Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (icon != null) {
-            FudIconBubble(icon = icon, size = 34.dp, iconSize = 17.dp)
-            Spacer(Modifier.width(12.dp))
+            FudIconBubble(icon = icon, size = 22.dp, iconSize = 14.dp)
+            Spacer(Modifier.width(14.dp))
         }
         Text(
             label,
@@ -2766,15 +2751,12 @@ private fun ToggleRowWithInfo(
     enabled: Boolean = true
 ) {
     Row(
-        Modifier
-            .fillMaxWidth()
-            .heightIn(min = 58.dp)
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+        Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (icon != null) {
-            FudIconBubble(icon = icon, size = 34.dp, iconSize = 17.dp)
-            Spacer(Modifier.width(12.dp))
+            FudIconBubble(icon = icon, size = 22.dp, iconSize = 14.dp)
+            Spacer(Modifier.width(14.dp))
         }
         Text(
             label,
@@ -2782,7 +2764,7 @@ private fun ToggleRowWithInfo(
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Medium
         )
-        IconButton(onClick = onInfo, modifier = Modifier.size(48.dp)) {
+        IconButton(onClick = onInfo, modifier = Modifier.size(36.dp)) {
             Icon(
                 Icons.Outlined.Info,
                 contentDescription = stringResource(R.string.action_info),
@@ -2803,14 +2785,11 @@ private fun EnergyBurnGoalsRow(
     onChange: (Boolean) -> Unit
 ) {
     Row(
-        Modifier
-            .fillMaxWidth()
-            .heightIn(min = 62.dp)
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+        Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        FudIconBubble(icon = Icons.Outlined.LocalFireDepartment, size = 34.dp, iconSize = 17.dp)
-        Spacer(Modifier.width(12.dp))
+        FudIconBubble(icon = Icons.Outlined.LocalFireDepartment, size = 22.dp, iconSize = 14.dp)
+        Spacer(Modifier.width(14.dp))
         Column(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(2.dp)
@@ -2836,7 +2815,7 @@ private fun EnergyBurnGoalsRow(
             )
             Spacer(Modifier.width(14.dp))
         }
-        IconButton(onClick = onInfo, modifier = Modifier.size(48.dp)) {
+        IconButton(onClick = onInfo, modifier = Modifier.size(36.dp)) {
             Icon(
                 Icons.Outlined.Info,
                 contentDescription = stringResource(R.string.action_info),
@@ -2856,14 +2835,11 @@ private fun AdaptiveGoalsRow(
     onChange: (Boolean) -> Unit
 ) {
     Row(
-        Modifier
-            .fillMaxWidth()
-            .heightIn(min = 58.dp)
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+        Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        FudIconBubble(icon = Icons.Outlined.TrackChanges, size = 34.dp, iconSize = 17.dp)
-        Spacer(Modifier.width(12.dp))
+        FudIconBubble(icon = Icons.Outlined.TrackChanges, size = 22.dp, iconSize = 14.dp)
+        Spacer(Modifier.width(14.dp))
         Text(
             stringResource(R.string.settings_adaptive_goals),
             style = MaterialTheme.typography.bodyLarge,
@@ -2878,7 +2854,7 @@ private fun AdaptiveGoalsRow(
             )
             Spacer(Modifier.width(14.dp))
         }
-        IconButton(onClick = onInfo, modifier = Modifier.size(48.dp)) {
+        IconButton(onClick = onInfo, modifier = Modifier.size(36.dp)) {
             Icon(
                 Icons.Outlined.Info,
                 contentDescription = stringResource(R.string.action_info),
@@ -3039,11 +3015,6 @@ private fun GradientSaveButton(
             .padding(vertical = 14.dp),
         contentAlignment = Alignment.Center
     ) {
-        Text(
-            text ?: stringResource(R.string.action_save),
-            color = if (enabled) AppColors.OnAccent else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.46f),
-            fontWeight = FontWeight.SemiBold,
-            fontSize = 16.sp
-        )
+        Text(text ?: stringResource(R.string.action_save), color = Color.White, fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
     }
 }
