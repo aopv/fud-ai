@@ -2869,7 +2869,6 @@ struct ProfileView: View {
     @Environment(FoodStore.self) private var foodStore
     @Environment(WaterStore.self) private var waterStore
     @Environment(BodyMeasurementStore.self) private var bodyMeasurementStore
-    @Environment(StrengthWorkoutStore.self) private var strengthWorkoutStore
     @Environment(NotificationManager.self) private var notificationManager
     @Environment(HealthKitManager.self) private var healthKitManager
     private var profile: UserProfile {
@@ -2891,7 +2890,6 @@ struct ProfileView: View {
     @AppStorage(AppThemeColor.storageKey) private var appThemeColorRaw = AppThemeColor.defaultColor.rawValue
     @AppStorage(WaterSettings.enabledKey) private var waterTrackingEnabled = false
     @AppStorage(WaterSettings.dailyGoalKey) private var waterDailyGoal = WaterSettings.defaultDailyGoalMl
-    @AppStorage(StrengthWorkoutSettings.enabledKey) private var strengthWorkoutLoggingEnabled = false
 
     // App-update state is owned by ContentView (it also drives the one-shot update
     // notification). It's forwarded here so the About section — now the last section
@@ -3431,28 +3429,6 @@ struct ProfileView: View {
                         .buttonStyle(.plain)
                     }
 
-                }
-                .listRowBackground(AppColors.appCard)
-
-                Section {
-                    Toggle(isOn: $strengthWorkoutLoggingEnabled) {
-                        Label {
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text("Workout Logging")
-                                Text("Sessions, sets, and progress")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-                        } icon: {
-                            Image(systemName: "figure.strengthtraining.traditional")
-                                .foregroundStyle(AppColors.calorie)
-                        }
-                    }
-                    .tint(AppColors.calorie)
-                } header: {
-                    Text("Experimental")
-                } footer: {
-                    Text("Adds a Start Workout action and local training history to Workouts. Your logs stay on this device and are never sent to AI, Apple Health, or a server.")
                 }
                 .listRowBackground(AppColors.appCard)
 
@@ -4245,7 +4221,6 @@ struct ProfileView: View {
                     foodStore.replaceAllEntries([])
                     weightStore.replaceAllEntries([])
                     waterStore.clear()
-                    strengthWorkoutStore.clearAll()
                     // Wipe the food-image folder defensively — replaceAllEntries
                     // already cleans per-entry files, but a belt-and-braces
                     // deleteAll catches any orphans from earlier crash recovery.
@@ -4267,7 +4242,7 @@ struct ProfileView: View {
                     hasCompletedOnboarding = false
                 }
             } message: {
-                Text("This will permanently delete all your data including food logs, workout logs, weight entries, and profile. This action cannot be undone.")
+                Text("This will permanently delete all your data including food logs, weight entries, and profile. This action cannot be undone.")
             }
         }
     }
