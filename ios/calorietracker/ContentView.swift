@@ -110,27 +110,15 @@ private enum AppUpdateChecker {
 struct ContentView: View {
     @Environment(NotificationManager.self) private var notificationManager
     @AppStorage(AppThemeColor.storageKey) private var appThemeColorRaw = AppThemeColor.defaultColor.rawValue
-    @AppStorage(StrengthWorkoutSettings.enabledKey) private var workoutDiaryEnabled = false
     @State private var appUpdateState: AppUpdateState = .idle
     @State private var selectedTab: AppTab = .home
 
     var body: some View {
-        Group {
-            if workoutDiaryEnabled {
-                enabledWorkoutTabView
-            } else {
-                standardTabView
+        standardTabView
+            .tint(AppThemeColor.color(for: appThemeColorRaw).color)
+            .task {
+                await refreshAppUpdateState()
             }
-        }
-        .tint(AppThemeColor.color(for: appThemeColorRaw).color)
-        .task {
-            await refreshAppUpdateState()
-        }
-        .onChange(of: workoutDiaryEnabled) { _, enabled in
-            if !enabled, selectedTab == .workoutLog {
-                selectedTab = .home
-            }
-        }
     }
 
     private var standardTabView: some View {
@@ -170,9 +158,6 @@ struct ContentView: View {
                 .badge(appUpdateState.isUpdateAvailable ? "!" : nil)
 
             WorkoutsView()
-                // Workouts reads its palette via static Color.workout* accessors, so
-                // nothing observes the theme; re-key the subtree to re-tint instantly.
-                .id(appThemeColorRaw)
                 .tag(AppTab.workouts)
                 .tabItem {
                     Image(systemName: "dumbbell.fill")
@@ -181,97 +166,12 @@ struct ContentView: View {
         }
     }
 
-    /// Keep the system tab bar when the optional diary is enabled. On iOS 26 the
-    /// native bar automatically adopts Liquid Glass; hiding it and drawing a
-    /// material-backed replacement loses that system appearance and behavior.
-    /// Workout Log is ordered before the overflow destinations so it remains a
-    /// first-level tab when iPhone groups six destinations under More.
-    private var enabledWorkoutTabView: some View {
-        TabView(selection: $selectedTab) {
-            HomeView()
-                .tag(AppTab.home)
-                .tabItem {
-                    Image(systemName: AppTab.home.icon)
-                    Text(AppTab.home.title)
-                }
-
-            ProgressTabView()
-                .tag(AppTab.progress)
-                .tabItem {
-                    Image(systemName: AppTab.progress.icon)
-                    Text(AppTab.progress.title)
-                }
-
-            ChatView()
-                .tag(AppTab.coach)
-                .tabItem {
-                    Image(systemName: AppTab.coach.icon)
-                    Text(AppTab.coach.title)
-                }
-
-            WorkoutLogView()
-                .tag(AppTab.workoutLog)
-                .tabItem {
-                    Image(systemName: AppTab.workoutLog.icon)
-                    Text(AppTab.workoutLog.title)
-                }
-
-            ProfileView(
-                updateState: $appUpdateState,
-                refreshUpdateState: {
-                    await refreshAppUpdateState(force: true)
-                }
-            )
-                .tag(AppTab.settings)
-                .tabItem {
-                    Image(systemName: AppTab.settings.icon)
-                    Text(AppTab.settings.title)
-                }
-                .badge(appUpdateState.isUpdateAvailable ? "!" : nil)
-
-            WorkoutsView()
-                .id(appThemeColorRaw)
-                .tag(AppTab.workouts)
-                .tabItem {
-                    Image(systemName: AppTab.workouts.icon)
-                    Text(AppTab.workouts.title)
-                }
-        }
-    }
-
-    private enum AppTab: String, CaseIterable, Hashable {
+    private enum AppTab: String, Hashable {
         case home
         case progress
         case coach
         case settings
         case workouts
-        case workoutLog
-
-        var title: String {
-            switch self {
-            case .home: return "Home"
-            case .progress: return "Progress"
-            case .coach: return "Coach"
-            case .settings: return "Settings"
-            case .workouts: return "Workouts"
-            case .workoutLog: return "Workout Log"
-            }
-        }
-
-        var accessibilityTitle: String {
-            self == .workoutLog ? "Workout Log" : title
-        }
-
-        var icon: String {
-            switch self {
-            case .home: return "house.fill"
-            case .progress: return "chart.bar.fill"
-            case .coach: return "bubble.left.and.bubble.right.fill"
-            case .settings: return "gearshape.fill"
-            case .workouts: return "dumbbell.fill"
-            case .workoutLog: return "figure.strengthtraining.traditional"
-            }
-        }
     }
 
     @MainActor

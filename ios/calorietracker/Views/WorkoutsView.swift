@@ -2,18 +2,42 @@ import SwiftUI
 import UIKit
 
 struct WorkoutsView: View {
+    @AppStorage(StrengthWorkoutSettings.enabledKey) private var workoutLoggingEnabled = false
+    @AppStorage(AppThemeColor.storageKey) private var appThemeColorRaw = AppThemeColor.defaultColor.rawValue
+    @State private var showsWorkoutLog = false
+    @State private var workoutLogSession = WorkoutLogSessionState()
+
     var body: some View {
         NavigationStack {
-            ExerciseLibraryBrowserView()
+            ExerciseLibraryBrowserView(
+                onShowWorkoutLog: workoutLoggingEnabled ? { showsWorkoutLog = true } : nil
+            )
                 .background(WorkoutsScreenBackground())
                 .navigationTitle("Workouts")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar(.hidden, for: .navigationBar)
+                .navigationDestination(isPresented: $showsWorkoutLog) {
+                    WorkoutLogView(
+                        session: workoutLogSession,
+                        embedsInNavigationStack: false
+                    )
+                }
         }
+        .onChange(of: workoutLoggingEnabled) { _, enabled in
+            if !enabled {
+                showsWorkoutLog = false
+                workoutLogSession.reset()
+            }
+        }
+        // Refresh static workout theme tokens without replacing this stack or
+        // discarding its route and session-only timer state.
+        .animation(.easeInOut(duration: 0.2), value: appThemeColorRaw)
     }
 }
 
 private struct ExerciseLibraryBrowserView: View {
+    var onShowWorkoutLog: (() -> Void)?
+
     @State private var searchText = ""
     @State private var selectedLevels: Set<String> = []
     @State private var selectedRawEquipment: Set<String> = []
@@ -159,7 +183,24 @@ private struct ExerciseLibraryBrowserView: View {
 
     private var filters: some View {
         VStack(alignment: .leading, spacing: 12) {
-            WorkoutsSearchPill(searchText: $searchText)
+            HStack(spacing: 10) {
+                WorkoutsSearchPill(searchText: $searchText)
+
+                if let onShowWorkoutLog {
+                    Button(action: onShowWorkoutLog) {
+                        Image(systemName: "figure.strengthtraining.traditional")
+                            .font(.system(size: 18, weight: .bold))
+                            .foregroundStyle(Color.workoutAccent)
+                            .frame(width: 50, height: 50)
+                            .contentShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+                    }
+                    .buttonStyle(.plain)
+                    .workoutPressable()
+                    .workoutLiquidBarSurface(cornerRadius: 22)
+                    .accessibilityLabel("Workout log")
+                    .accessibilityHint("Opens your workout diary")
+                }
+            }
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 9) {

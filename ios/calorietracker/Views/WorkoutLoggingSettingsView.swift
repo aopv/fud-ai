@@ -47,7 +47,7 @@ struct WorkoutLoggingSettingsSection: View {
             Text(
                 workoutLoggingEnabled
                     ? "Your workout diary stays separate from nutrition. When you chat about training, plans, logged sets, and preferences may be sent to your selected AI provider so Coach can answer."
-                    : "Adds a dedicated Workout Log to the app. Existing nutrition data is not changed."
+                    : "Adds a strength diary inside Workouts. Existing nutrition data is not changed."
             )
         }
         .listRowBackground(AppColors.appCard)

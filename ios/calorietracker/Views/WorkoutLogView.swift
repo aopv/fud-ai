@@ -2,6 +2,26 @@ import AudioToolbox
 import SwiftUI
 import UIKit
 
+/// Ephemeral logger state owned by the Workouts tab so a native Back navigation
+/// does not discard an in-progress timer. Planned and completed workouts remain
+/// persisted separately by `StrengthWorkoutStore`.
+@Observable
+final class WorkoutLogSessionState {
+    var activeSessionDate: Date?
+    var activeSessionDateKey: String?
+    var workoutStartedAt: Date?
+    var runningSegmentStartedAt: Date?
+    var accumulatedElapsedSeconds = 0
+
+    func reset() {
+        activeSessionDate = nil
+        activeSessionDateKey = nil
+        workoutStartedAt = nil
+        runningSegmentStartedAt = nil
+        accumulatedElapsedSeconds = 0
+    }
+}
+
 /// The optional strength diary. Its information stays in `StrengthWorkoutStore`,
 /// separate from the food diary, while the visual language is bridged through
 /// Fud AI's existing workout theme tokens.
@@ -15,18 +35,46 @@ struct WorkoutLogView: View {
     @State private var isCopySheetPresented = false
     @State private var selectedDetailItem: ExerciseLibraryItem?
 
-    // Timer state intentionally lasts for the current app session, matching the
-    // original Delts diary. Planned and completed workouts remain persisted.
-    @State private var activeSessionDate: Date?
-    @State private var activeSessionDateKey: String?
-    @State private var workoutStartedAt: Date?
-    @State private var runningSegmentStartedAt: Date?
-    @State private var accumulatedElapsedSeconds = 0
     @State private var isOtherDateTimerDialogPresented = false
     @State private var isEmptyWorkoutAlertPresented = false
     @FocusState private var focusedSetField: WorkoutLogSetFocus?
 
     private let library = ExerciseLibraryService.shared
+    private let session: WorkoutLogSessionState
+    private let embedsInNavigationStack: Bool
+
+    init(
+        session: WorkoutLogSessionState = WorkoutLogSessionState(),
+        embedsInNavigationStack: Bool = true
+    ) {
+        self.session = session
+        self.embedsInNavigationStack = embedsInNavigationStack
+    }
+
+    private var activeSessionDate: Date? {
+        get { session.activeSessionDate }
+        nonmutating set { session.activeSessionDate = newValue }
+    }
+
+    private var activeSessionDateKey: String? {
+        get { session.activeSessionDateKey }
+        nonmutating set { session.activeSessionDateKey = newValue }
+    }
+
+    private var workoutStartedAt: Date? {
+        get { session.workoutStartedAt }
+        nonmutating set { session.workoutStartedAt = newValue }
+    }
+
+    private var runningSegmentStartedAt: Date? {
+        get { session.runningSegmentStartedAt }
+        nonmutating set { session.runningSegmentStartedAt = newValue }
+    }
+
+    private var accumulatedElapsedSeconds: Int {
+        get { session.accumulatedElapsedSeconds }
+        nonmutating set { session.accumulatedElapsedSeconds = newValue }
+    }
 
     private var selectedDateKey: String {
         StrengthWorkoutStore.dateKey(for: selectedDate)
@@ -96,8 +144,23 @@ struct WorkoutLogView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            ScrollViewReader { proxy in
+        Group {
+            if embedsInNavigationStack {
+                NavigationStack {
+                    workoutContent
+                }
+            } else {
+                workoutContent
+            }
+        }
+        .workoutScreen()
+        // Observe theme changes without re-keying this view; re-keying would
+        // destroy an in-progress session-only timer.
+        .animation(.easeInOut(duration: 0.2), value: appThemeColorRaw)
+    }
+
+    private var workoutContent: some View {
+        ScrollViewReader { proxy in
                 List {
                     Section {
                         WorkoutLogWeekStrip(
@@ -236,6 +299,7 @@ struct WorkoutLogView: View {
             // names the feature while the date strip and timer lead the page.
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar(.visible, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     addExerciseMenu
@@ -299,11 +363,6 @@ struct WorkoutLogView: View {
                 dismissKeyboard()
             }
         }
-        .workoutScreen()
-        // Observe theme changes without re-keying this view; re-keying would
-        // destroy an in-progress session-only timer.
-        .animation(.easeInOut(duration: 0.2), value: appThemeColorRaw)
-    }
 
     private var addExerciseMenu: some View {
         Menu {
@@ -423,11 +482,7 @@ struct WorkoutLogView: View {
     }
 
     private func resetTimerState() {
-        activeSessionDate = nil
-        activeSessionDateKey = nil
-        workoutStartedAt = nil
-        runningSegmentStartedAt = nil
-        accumulatedElapsedSeconds = 0
+        session.reset()
     }
 
     private func currentElapsedSeconds(at date: Date) -> Int {
