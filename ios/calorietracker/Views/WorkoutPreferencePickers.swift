@@ -276,27 +276,21 @@ struct WorkoutEquipmentImagePickerRow: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            WorkoutPreferenceFieldRow(title: title, systemImage: systemImage) {
-                Button {
-                    isPickerPresented = true
-                } label: {
-                    WorkoutPreferenceMenuValueLabel(text: summary)
-                }
-                .workoutPressable()
-                .accessibilityLabel(title)
-                .accessibilityValue(summary)
-                .sheet(isPresented: $isPickerPresented) {
-                    WorkoutEquipmentImagePickerSheet(
-                        title: title,
-                        options: imageOptions,
-                        selection: $selection
-                    )
-                }
+        WorkoutPreferenceFieldRow(title: title, systemImage: systemImage) {
+            Button {
+                isPickerPresented = true
+            } label: {
+                WorkoutPreferenceMenuValueLabel(text: summary)
             }
-
-            if !selectedTitles.isEmpty {
-                WorkoutPreferenceChipRail(titles: selectedTitles)
+            .workoutPressable()
+            .accessibilityLabel(title)
+            .accessibilityValue(summary)
+            .sheet(isPresented: $isPickerPresented) {
+                WorkoutEquipmentImagePickerSheet(
+                    title: title,
+                    options: imageOptions,
+                    selection: $selection
+                )
             }
         }
     }
@@ -446,22 +440,15 @@ struct WorkoutRPEScalePickerRow: View {
     var title = String(localized: "RPE Scale")
     var systemImage = "gauge.with.dots.needle.50percent"
     @Binding var selection: StrengthWorkoutRPEScale
-    @State private var isPickerPresented = false
 
     var body: some View {
-        WorkoutPreferenceFieldRow(title: title, systemImage: systemImage) {
-            Button {
-                isPickerPresented = true
-            } label: {
-                WorkoutPreferenceMenuValueLabel(text: selection.title)
-            }
-            .workoutPressable()
-            .accessibilityLabel(title)
-            .accessibilityValue(selection.title)
-            .sheet(isPresented: $isPickerPresented) {
-                WorkoutRPEScalePickerSheet(selection: $selection)
-            }
-        }
+        WorkoutPreferenceMenuRow(
+            title: title,
+            systemImage: systemImage,
+            selection: $selection,
+            options: StrengthWorkoutRPEScale.allCases,
+            label: \.title
+        )
     }
 }
 
