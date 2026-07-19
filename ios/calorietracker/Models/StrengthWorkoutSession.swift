@@ -6,6 +6,29 @@ enum StrengthWorkoutSettings {
     static let enabledKey = "fudai.workouts.diary.enabled.v1"
 }
 
+enum WorkoutTabMode: String {
+    case library
+    case log
+
+    static let storageKey = "fudai.workouts.tab.mode.v1"
+    static let defaultMode: WorkoutTabMode = .library
+
+    static func mode(
+        for rawValue: String,
+        isLoggingEnabled: Bool = true
+    ) -> WorkoutTabMode {
+        guard isLoggingEnabled else { return defaultMode }
+        return WorkoutTabMode(rawValue: rawValue) ?? defaultMode
+    }
+
+    var tabIcon: String {
+        switch self {
+        case .library: return "dumbbell.fill"
+        case .log: return "figure.strengthtraining.traditional"
+        }
+    }
+}
+
 enum StrengthWorkoutDate {
     static func key(for date: Date, calendar: Calendar = .current) -> String {
         let components = calendar.dateComponents([.year, .month, .day], from: date)

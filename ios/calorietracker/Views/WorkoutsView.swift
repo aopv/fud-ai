@@ -1,16 +1,18 @@
 import SwiftUI
 import UIKit
 
-private enum WorkoutsMode {
-    case library
-    case log
-}
-
 struct WorkoutsView: View {
     @AppStorage(StrengthWorkoutSettings.enabledKey) private var workoutLoggingEnabled = false
+    @AppStorage(WorkoutTabMode.storageKey) private var selectedModeRaw = WorkoutTabMode.defaultMode.rawValue
     @AppStorage(AppThemeColor.storageKey) private var appThemeColorRaw = AppThemeColor.defaultColor.rawValue
-    @State private var selectedMode: WorkoutsMode = .library
     @State private var workoutLogSession = WorkoutLogSessionState()
+
+    private var selectedMode: WorkoutTabMode {
+        WorkoutTabMode.mode(
+            for: selectedModeRaw,
+            isLoggingEnabled: workoutLoggingEnabled
+        )
+    }
 
     var body: some View {
         NavigationStack {
@@ -36,7 +38,7 @@ struct WorkoutsView: View {
         }
         .onChange(of: workoutLoggingEnabled) { _, enabled in
             if !enabled {
-                selectedMode = .library
+                selectedModeRaw = WorkoutTabMode.library.rawValue
                 workoutLogSession.reset()
             }
         }
@@ -45,9 +47,9 @@ struct WorkoutsView: View {
         .animation(.easeInOut(duration: 0.2), value: appThemeColorRaw)
     }
 
-    private func showMode(_ mode: WorkoutsMode) {
+    private func showMode(_ mode: WorkoutTabMode) {
         withAnimation(.easeInOut(duration: 0.2)) {
-            selectedMode = mode
+            selectedModeRaw = mode.rawValue
         }
     }
 }

@@ -4,6 +4,15 @@ import Testing
 
 @MainActor
 struct StrengthWorkoutStoreTests {
+    @Test func workoutTabModeUsesModeSpecificIconsAndSafeFallback() {
+        #expect(WorkoutTabMode.mode(for: WorkoutTabMode.library.rawValue) == .library)
+        #expect(WorkoutTabMode.mode(for: WorkoutTabMode.log.rawValue) == .log)
+        #expect(WorkoutTabMode.mode(for: "unknown") == .library)
+        #expect(WorkoutTabMode.mode(for: WorkoutTabMode.log.rawValue, isLoggingEnabled: false) == .library)
+        #expect(WorkoutTabMode.library.tabIcon == "dumbbell.fill")
+        #expect(WorkoutTabMode.log.tabIcon == "figure.strengthtraining.traditional")
+    }
+
     @Test func workoutLogTimerResetPreservesSelectedDay() {
         let selectedDate = WorkoutTestFixture.date(2026, 7, 12)
         let session = WorkoutLogSessionState()
