@@ -44,6 +44,36 @@ struct StrengthWorkoutStoreTests {
         #expect(session.activeSessionDate == nil)
     }
 
+    @Test func workoutLogDayNavigationMovesOneDayAndStopsAtToday() throws {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = try #require(TimeZone(secondsFromGMT: 0))
+        let today = try #require(calendar.date(from: DateComponents(
+            year: 2026,
+            month: 7,
+            day: 20,
+            hour: 12
+        )))
+        let yesterday = try #require(calendar.date(byAdding: .day, value: -1, to: today))
+        let session = WorkoutLogSessionState()
+        session.selectedDate = yesterday
+
+        #expect(session.moveSelectedDay(by: 1, now: today, calendar: calendar))
+        #expect(calendar.isDate(session.selectedDate, inSameDayAs: today))
+
+        #expect(!session.moveSelectedDay(by: 1, now: today, calendar: calendar))
+        #expect(calendar.isDate(session.selectedDate, inSameDayAs: today))
+
+        #expect(session.moveSelectedDay(by: -1, now: today, calendar: calendar))
+        #expect(calendar.isDate(session.selectedDate, inSameDayAs: yesterday))
+    }
+
+    @Test func workoutLogDaySwipeRequiresADeliberateHorizontalFlick() {
+        #expect(WorkoutLogDaySwipeNavigation.dayDelta(for: CGSize(width: -61, height: 10)) == 1)
+        #expect(WorkoutLogDaySwipeNavigation.dayDelta(for: CGSize(width: 61, height: -10)) == -1)
+        #expect(WorkoutLogDaySwipeNavigation.dayDelta(for: CGSize(width: 60, height: 0)) == nil)
+        #expect(WorkoutLogDaySwipeNavigation.dayDelta(for: CGSize(width: 100, height: 70)) == nil)
+    }
+
     @Test func persistenceReloadRestoresDiarySavedExercisesAndPreferences() throws {
         let fixture = WorkoutTestFixture()
         defer { fixture.cleanUp() }

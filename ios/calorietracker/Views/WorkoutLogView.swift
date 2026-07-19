@@ -26,6 +26,35 @@ final class WorkoutLogSessionState {
         runningSegmentStartedAt = nil
         accumulatedElapsedSeconds = 0
     }
+
+    /// Moves the diary by whole days while keeping forward swipes bounded by today,
+    /// matching the nutrition diary's navigation behavior.
+    @discardableResult
+    func moveSelectedDay(
+        by delta: Int,
+        now: Date = .now,
+        calendar: Calendar = .current
+    ) -> Bool {
+        guard delta != 0,
+              let newDate = calendar.date(byAdding: .day, value: delta, to: selectedDate)
+        else { return false }
+
+        if delta > 0 && calendar.startOfDay(for: newDate) > calendar.startOfDay(for: now) {
+            return false
+        }
+
+        selectedDate = newDate
+        return true
+    }
+}
+
+enum WorkoutLogDaySwipeNavigation {
+    static func dayDelta(for translation: CGSize) -> Int? {
+        let dx = translation.width
+        let dy = translation.height
+        guard abs(dx) > 60, abs(dx) > abs(dy) * 1.5 else { return nil }
+        return dx < 0 ? 1 : -1
+    }
 }
 
 /// The optional strength diary. Its information stays in `StrengthWorkoutStore`,
@@ -163,6 +192,17 @@ struct WorkoutLogView: View {
         }
     }
 
+    /// Match Home's nutrition diary: respond only to a deliberate horizontal flick.
+    /// This is attached to summary/empty-state surfaces rather than exercise cards,
+    /// preserving their native Save and Delete swipe actions.
+    private var daySwipeGesture: some Gesture {
+        DragGesture(minimumDistance: 24)
+            .onEnded { value in
+                guard let delta = WorkoutLogDaySwipeNavigation.dayDelta(for: value.translation) else { return }
+                changeDay(by: delta)
+            }
+    }
+
     var body: some View {
         Group {
             if embedsInNavigationStack {
@@ -205,7 +245,8 @@ struct WorkoutLogView: View {
                             completedDurationMinutes: selectedCompletedSession?.durationMinutes,
                             toggleTimer: handleTimerTap,
                             stopTimer: stopTimer,
-                            discardTimer: discardTimer
+                            discardTimer: discardTimer,
+                            changeDay: { changeDay(by: $0) }
                         )
                         .listRowBackground(Color.clear)
                         .listRowSeparator(.hidden)
@@ -215,6 +256,8 @@ struct WorkoutLogView: View {
                     Section {
                         if selectedExercises.isEmpty {
                             WorkoutLogEmptyRoutineRow(splitTitle: workoutStore.preferences.split.title)
+                                .contentShape(Rectangle())
+                                .simultaneousGesture(daySwipeGesture)
                                 .listRowBackground(Color.clear)
                                 .listRowSeparator(.hidden)
                                 .listRowInsets(EdgeInsets(top: 7, leading: 16, bottom: 7, trailing: 16))
@@ -296,6 +339,8 @@ struct WorkoutLogView: View {
                                 .font(.caption.weight(.bold))
                         }
                         .textCase(nil)
+                        .contentShape(Rectangle())
+                        .simultaneousGesture(daySwipeGesture)
                     }
                 }
                 .scrollContentBackground(.hidden)
@@ -459,6 +504,13 @@ struct WorkoutLogView: View {
         return activeSessionDate.formatted(.dateTime.weekday(.wide).month(.abbreviated).day())
     }
 
+    private func changeDay(by delta: Int) {
+        guard focusedSetField == nil,
+              session.moveSelectedDay(by: delta)
+        else { return }
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+    }
+
     private func handleTimerTap() {
         if isTimerRunning {
             playTimerClick()
@@ -542,7 +594,7 @@ private struct WorkoutLogWeekStrip: View {
     @Binding var selectedDate: Date
     let workoutCountForDate: (Date) -> Int
     @AppStorage("weekStartsOnMonday") private var weekStartsOnMonday = true
-    @State private var hasScrolledToInitialWeek = false
+    @State private var scrolledWeek: Int?
 
     private static let totalWeeks = 53
     private static let currentWeekIndex = totalWeeks - 1
@@ -554,25 +606,31 @@ private struct WorkoutLogWeekStrip: View {
     }
 
     var body: some View {
-        ScrollViewReader { proxy in
-            ScrollView(.horizontal, showsIndicators: false) {
-                LazyHStack(spacing: 0) {
-                    ForEach(0..<Self.totalWeeks, id: \.self) { weekIndex in
-                        weekRow(for: weekIndex)
-                            .containerRelativeFrame(.horizontal)
-                            .id(weekIndex)
-                    }
+        ScrollView(.horizontal, showsIndicators: false) {
+            LazyHStack(spacing: 0) {
+                ForEach(0..<Self.totalWeeks, id: \.self) { weekIndex in
+                    weekRow(for: weekIndex)
+                        .containerRelativeFrame(.horizontal)
+                        .id(weekIndex)
                 }
-                .scrollTargetLayout()
             }
-            .scrollTargetBehavior(.paging)
-            .onAppear {
-                guard !hasScrolledToInitialWeek else { return }
-                hasScrolledToInitialWeek = true
-                proxy.scrollTo(boundedWeekIndex(for: selectedDate), anchor: .trailing)
+            .scrollTargetLayout()
+        }
+        .scrollTargetBehavior(.paging)
+        .defaultScrollAnchor(.trailing)
+        .scrollPosition(id: $scrolledWeek)
+        .onAppear {
+            if scrolledWeek == nil {
+                scrolledWeek = boundedWeekIndex(for: selectedDate)
             }
-            .onChange(of: weekStartsOnMonday) { _, _ in
-                proxy.scrollTo(Self.currentWeekIndex, anchor: .trailing)
+        }
+        .onChange(of: weekStartsOnMonday) { _, _ in
+            scrolledWeek = boundedWeekIndex(for: selectedDate)
+        }
+        .onChange(of: selectedDate) { _, newValue in
+            let target = boundedWeekIndex(for: newValue)
+            if scrolledWeek != target {
+                withAnimation(.snappy) { scrolledWeek = target }
             }
         }
         .accessibilityElement(children: .contain)
@@ -630,22 +688,26 @@ private struct WorkoutLogWeekStrip: View {
     }
 
     private func weekDates(for weekIndex: Int) -> [Date] {
-        let today = calendar.startOfDay(for: .now)
-        let weekday = calendar.component(.weekday, from: today)
-        let daysBack = (weekday - calendar.firstWeekday + 7) % 7
-        let currentWeekStart = calendar.date(byAdding: .day, value: -daysBack, to: today) ?? today
+        let currentWeekStart = weekStart(for: .now)
         let weekOffset = weekIndex - Self.currentWeekIndex
         let weekStart = calendar.date(byAdding: .weekOfYear, value: weekOffset, to: currentWeekStart) ?? currentWeekStart
         return (0..<7).compactMap { calendar.date(byAdding: .day, value: $0, to: weekStart) }
     }
 
     private func boundedWeekIndex(for date: Date) -> Int {
-        let today = calendar.startOfDay(for: .now)
-        let weekday = calendar.component(.weekday, from: today)
+        let days = calendar.dateComponents(
+            [.day],
+            from: weekStart(for: .now),
+            to: weekStart(for: date)
+        ).day ?? 0
+        return min(max(Self.currentWeekIndex + (days / 7), 0), Self.currentWeekIndex)
+    }
+
+    private func weekStart(for date: Date) -> Date {
+        let day = calendar.startOfDay(for: date)
+        let weekday = calendar.component(.weekday, from: day)
         let daysBack = (weekday - calendar.firstWeekday + 7) % 7
-        let currentWeekStart = calendar.date(byAdding: .day, value: -daysBack, to: today) ?? today
-        let components = calendar.dateComponents([.weekOfYear], from: currentWeekStart, to: calendar.startOfDay(for: date))
-        return min(max(Self.currentWeekIndex + (components.weekOfYear ?? 0), 0), Self.currentWeekIndex)
+        return calendar.date(byAdding: .day, value: -daysBack, to: day) ?? day
     }
 }
 
@@ -664,6 +726,7 @@ private struct WorkoutLogTimerHero: View {
     let toggleTimer: () -> Void
     let stopTimer: () -> Void
     let discardTimer: () -> Void
+    let changeDay: (Int) -> Void
 
     var body: some View {
         VStack(spacing: 22) {
@@ -697,10 +760,20 @@ private struct WorkoutLogTimerHero: View {
                 repCount: repCount,
                 durationText: completedDurationMinutes.map { "\($0) min" } ?? "-- min"
             )
+            .contentShape(Rectangle())
+            .simultaneousGesture(daySwipeGesture)
         }
         .frame(maxWidth: .infinity)
         .padding(.top, 18)
         .padding(.bottom, 10)
+    }
+
+    private var daySwipeGesture: some Gesture {
+        DragGesture(minimumDistance: 24)
+            .onEnded { value in
+                guard let delta = WorkoutLogDaySwipeNavigation.dayDelta(for: value.translation) else { return }
+                changeDay(delta)
+            }
     }
 }
 
