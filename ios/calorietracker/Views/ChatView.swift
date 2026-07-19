@@ -3,8 +3,8 @@ import SwiftUI
 import UIKit
 
 /// "Coach" tab — a persistent AI conversation that has access to the user's profile,
-/// weight history, food log, and computed forecast. Handles multi-turn chat with memory
-/// (saved locally), a reset button, and context-aware quick-reply prompt chips.
+/// weight history, food log, computed forecast, and (when explicitly enabled) workout
+/// diary. Handles multi-turn chat with memory, a reset button, and prompt chips.
 struct ChatView: View {
     @Environment(ChatStore.self) private var chatStore
     @Environment(ProfileStore.self) private var profileStore
@@ -12,8 +12,10 @@ struct ChatView: View {
     @Environment(BodyFatStore.self) private var bodyFatStore
     @Environment(BodyMeasurementStore.self) private var bodyMeasurementStore
     @Environment(FoodStore.self) private var foodStore
+    @Environment(StrengthWorkoutStore.self) private var strengthWorkoutStore
     @AppStorage("heightUnit") private var heightUnitRaw = "ftin"
     @AppStorage("weightUnit") private var weightUnitRaw = "lbs"
+    @AppStorage(StrengthWorkoutSettings.enabledKey) private var workoutDiaryEnabled = false
 
     @State private var draft = ""
     @State private var attachedImage: UIImage?
@@ -137,7 +139,9 @@ struct ChatView: View {
             }
             Text("Ask your Coach")
                 .font(.system(.title2, design: .rounded, weight: .semibold))
-            Text("Your coach can see your weight history, calorie log, and goals. Ask about expected weight, what to eat, or how to hit your target.")
+            Text(workoutDiaryEnabled
+                ? "Your coach can see your nutrition, goals, and workout diary. Ask about food, progress, recovery, or your training plan."
+                : "Your coach can see your weight history, calorie log, and goals. Ask about expected weight, what to eat, or how to hit your target.")
                 .font(.system(.subheadline, design: .rounded))
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -222,29 +226,34 @@ struct ChatView: View {
     /// Context-aware suggested prompts — pick a different set based on goal to keep them relevant.
     private var promptChips: some View {
         let chips: [String] = {
+            var values: [String]
             switch userProfile.goal {
             case .lose:
-                return [
+                values = [
                     "What's my expected weight in 30 days?",
                     "How do I lose weight faster safely?",
                     "Am I eating too much?",
                     "What should I eat for dinner?",
                 ]
             case .gain:
-                return [
+                values = [
                     "What's my expected weight in 30 days?",
                     "How do I gain weight healthily?",
                     "Am I eating enough?",
                     "High-protein foods I can add?",
                 ]
             case .maintain:
-                return [
+                values = [
                     "Am I holding my weight?",
                     "What's my average intake?",
                     "Macro suggestions?",
                     "How's my trend?",
                 ]
             }
+            if workoutDiaryEnabled, !strengthWorkoutStore.completedSessions.isEmpty {
+                values.insert("Analyze my last 4 weeks of training", at: 0)
+            }
+            return values
         }()
 
         return ScrollView(.horizontal, showsIndicators: false) {
@@ -597,7 +606,11 @@ struct ChatView: View {
                     measurements: bodyMeasurementStore.entries,
                     foods: foodStore.entries,
                     heightMetric: heightUnitRaw == "cm",
-                    weightMetric: weightUnitRaw == "kg"
+                    weightMetric: weightUnitRaw == "kg",
+                    workoutSessions: strengthWorkoutStore.completedSessions,
+                    workoutPlans: Array(strengthWorkoutStore.dayPlans.values),
+                    workoutPreferences: strengthWorkoutStore.preferences,
+                    workoutAccessEnabled: workoutDiaryEnabled
                 )
                 chatStore.append(ChatMessage(role: .assistant, content: reply))
             } catch {

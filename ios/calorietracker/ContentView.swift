@@ -110,23 +110,47 @@ private enum AppUpdateChecker {
 struct ContentView: View {
     @Environment(NotificationManager.self) private var notificationManager
     @AppStorage(AppThemeColor.storageKey) private var appThemeColorRaw = AppThemeColor.defaultColor.rawValue
+    @AppStorage(StrengthWorkoutSettings.enabledKey) private var workoutDiaryEnabled = false
     @State private var appUpdateState: AppUpdateState = .idle
+    @State private var selectedTab: AppTab = .home
 
     var body: some View {
-        TabView {
+        Group {
+            if workoutDiaryEnabled {
+                enabledWorkoutTabView
+            } else {
+                standardTabView
+            }
+        }
+        .tint(AppThemeColor.color(for: appThemeColorRaw).color)
+        .task {
+            await refreshAppUpdateState()
+        }
+        .onChange(of: workoutDiaryEnabled) { _, enabled in
+            if !enabled, selectedTab == .workoutLog {
+                selectedTab = .home
+            }
+        }
+    }
+
+    private var standardTabView: some View {
+        TabView(selection: $selectedTab) {
             HomeView()
+                .tag(AppTab.home)
                 .tabItem {
                     Image(systemName: "house.fill")
                     Text("Home")
                 }
 
             ProgressTabView()
+                .tag(AppTab.progress)
                 .tabItem {
                     Image(systemName: "chart.bar.fill")
                     Text("Progress")
                 }
 
             ChatView()
+                .tag(AppTab.coach)
                 .tabItem {
                     Image(systemName: "bubble.left.and.bubble.right.fill")
                     Text("Coach")
@@ -138,6 +162,7 @@ struct ContentView: View {
                     await refreshAppUpdateState(force: true)
                 }
             )
+                .tag(AppTab.settings)
                 .tabItem {
                     Image(systemName: "gearshape.fill")
                     Text("Settings")
@@ -148,14 +173,137 @@ struct ContentView: View {
                 // Workouts reads its palette via static Color.workout* accessors, so
                 // nothing observes the theme; re-key the subtree to re-tint instantly.
                 .id(appThemeColorRaw)
+                .tag(AppTab.workouts)
                 .tabItem {
                     Image(systemName: "dumbbell.fill")
                     Text("Workouts")
                 }
         }
-        .tint(AppThemeColor.color(for: appThemeColorRaw).color)
-        .task {
-            await refreshAppUpdateState()
+    }
+
+    /// Six native iPhone tab items collapse into a system “More” menu. Once the
+    /// optional diary is on, retain every existing destination and render a
+    /// compact Fud-themed bar so Workout Log remains a genuine first-level tab.
+    private var enabledWorkoutTabView: some View {
+        TabView(selection: $selectedTab) {
+            HomeView()
+                .tag(AppTab.home)
+                .toolbar(.hidden, for: .tabBar)
+
+            ProgressTabView()
+                .tag(AppTab.progress)
+                .toolbar(.hidden, for: .tabBar)
+
+            ChatView()
+                .tag(AppTab.coach)
+                .toolbar(.hidden, for: .tabBar)
+
+            ProfileView(
+                updateState: $appUpdateState,
+                refreshUpdateState: {
+                    await refreshAppUpdateState(force: true)
+                }
+            )
+                .tag(AppTab.settings)
+                .toolbar(.hidden, for: .tabBar)
+
+            WorkoutsView()
+                .id(appThemeColorRaw)
+                .tag(AppTab.workouts)
+                .toolbar(.hidden, for: .tabBar)
+
+            WorkoutLogView()
+                .tag(AppTab.workoutLog)
+                .toolbar(.hidden, for: .tabBar)
+        }
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            WorkoutEnabledTabBar(
+                selection: $selectedTab,
+                showsSettingsBadge: appUpdateState.isUpdateAvailable
+            )
+        }
+    }
+
+    private enum AppTab: String, CaseIterable, Hashable {
+        case home
+        case progress
+        case coach
+        case settings
+        case workouts
+        case workoutLog
+
+        var title: String {
+            switch self {
+            case .home: return "Home"
+            case .progress: return "Progress"
+            case .coach: return "Coach"
+            case .settings: return "Settings"
+            case .workouts: return "Workouts"
+            case .workoutLog: return "Log"
+            }
+        }
+
+        var accessibilityTitle: String {
+            self == .workoutLog ? "Workout Log" : title
+        }
+
+        var icon: String {
+            switch self {
+            case .home: return "house.fill"
+            case .progress: return "chart.bar.fill"
+            case .coach: return "bubble.left.and.bubble.right.fill"
+            case .settings: return "gearshape.fill"
+            case .workouts: return "dumbbell.fill"
+            case .workoutLog: return "figure.strengthtraining.traditional"
+            }
+        }
+    }
+
+    private struct WorkoutEnabledTabBar: View {
+        @Binding var selection: AppTab
+        let showsSettingsBadge: Bool
+
+        var body: some View {
+            HStack(spacing: 0) {
+                ForEach(AppTab.allCases, id: \.self) { tab in
+                    Button {
+                        selection = tab
+                    } label: {
+                        VStack(spacing: 3) {
+                            ZStack(alignment: .topTrailing) {
+                                Image(systemName: tab.icon)
+                                    .font(.system(size: 18, weight: selection == tab ? .semibold : .regular))
+
+                                if tab == .settings, showsSettingsBadge {
+                                    Circle()
+                                        .fill(Color.red)
+                                        .frame(width: 7, height: 7)
+                                        .offset(x: 5, y: -3)
+                                }
+                            }
+                            .frame(height: 20)
+
+                            Text(tab.title)
+                                .font(.system(size: 9, weight: selection == tab ? .semibold : .medium, design: .rounded))
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.72)
+                        }
+                        .foregroundStyle(selection == tab ? AppColors.calorie : Color.secondary)
+                        .frame(maxWidth: .infinity, minHeight: 44)
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(tab.accessibilityTitle)
+                    .accessibilityAddTraits(selection == tab ? .isSelected : [])
+                }
+            }
+            .padding(.horizontal, 4)
+            .padding(.top, 8)
+            .padding(.bottom, 5)
+            .background(.ultraThinMaterial)
+            .overlay(alignment: .top) {
+                Divider().opacity(0.45)
+            }
         }
     }
 
@@ -2684,6 +2832,7 @@ struct ProgressTabView: View {
     @Environment(BodyFatStore.self) private var bodyFatStore
     @Environment(ProfileStore.self) private var profileStore
     @AppStorage("weightUnit") private var weightUnitRaw = "lbs"
+    @AppStorage(StrengthWorkoutSettings.enabledKey) private var workoutDiaryEnabled = false
     @State private var timeRange: TimeRange = .week
     @State private var showLogWeight = false
     @State private var showLogBodyFat = false
@@ -2812,6 +2961,10 @@ struct ProgressTabView: View {
                     )
                     .padding(.horizontal)
 
+                    if workoutDiaryEnabled {
+                        TrainingProgressSection(dateRange: dateRange)
+                            .padding(.horizontal)
+                    }
 
                 }
                 .padding(.vertical)
@@ -2868,6 +3021,7 @@ struct ProfileView: View {
     @Environment(WeightStore.self) private var weightStore
     @Environment(FoodStore.self) private var foodStore
     @Environment(WaterStore.self) private var waterStore
+    @Environment(StrengthWorkoutStore.self) private var strengthWorkoutStore
     @Environment(BodyMeasurementStore.self) private var bodyMeasurementStore
     @Environment(NotificationManager.self) private var notificationManager
     @Environment(HealthKitManager.self) private var healthKitManager
@@ -3431,6 +3585,8 @@ struct ProfileView: View {
 
                 }
                 .listRowBackground(AppColors.appCard)
+
+                WorkoutLoggingSettingsSection()
 
                 Group {
                     // Section 4: AI Provider
@@ -4157,7 +4313,7 @@ struct ProfileView: View {
                     foodStore.replaceAllEntries([])
                 }
             } message: {
-                Text("This will permanently delete all your logged food entries. Your profile, weight entries, and favorites will be kept. This action cannot be undone.")
+                Text("This will permanently delete all your logged food entries. Your profile, weight entries, favorites, and workout history will be kept. This action cannot be undone.")
             }
             .alert("Default to Grams", isPresented: $showDefaultGramsInfo) {
                 Button("OK", role: .cancel) { }
@@ -4221,6 +4377,7 @@ struct ProfileView: View {
                     foodStore.replaceAllEntries([])
                     weightStore.replaceAllEntries([])
                     waterStore.clear()
+                    strengthWorkoutStore.clearAll()
                     // Wipe the food-image folder defensively — replaceAllEntries
                     // already cleans per-entry files, but a belt-and-braces
                     // deleteAll catches any orphans from earlier crash recovery.
@@ -4242,7 +4399,7 @@ struct ProfileView: View {
                     hasCompletedOnboarding = false
                 }
             } message: {
-                Text("This will permanently delete all your data including food logs, weight entries, and profile. This action cannot be undone.")
+                Text("This will permanently delete all your data including food logs, weight entries, workout history, and profile. This action cannot be undone.")
             }
         }
     }

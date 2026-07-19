@@ -44,7 +44,11 @@ struct ChatService {
         measurements: [BodyMeasurement] = [],
         foods: [FoodEntry],
         heightMetric: Bool,
-        weightMetric: Bool
+        weightMetric: Bool,
+        workoutSessions: [StrengthWorkoutSession] = [],
+        workoutPlans: [StrengthWorkoutDayPlan] = [],
+        workoutPreferences: StrengthWorkoutPreferences? = nil,
+        workoutAccessEnabled: Bool = false
     ) async throws -> String {
         let systemPrompt = buildSystemPrompt(
             profile: profile,
@@ -53,9 +57,21 @@ struct ChatService {
             measurements: measurements,
             foods: foods,
             heightMetric: heightMetric,
-            weightMetric: weightMetric
+            weightMetric: weightMetric,
+            workoutSessions: workoutSessions,
+            workoutPlans: workoutPlans,
+            workoutAccessEnabled: workoutAccessEnabled
         )
-        let tools = CoachTools(weights: weights, bodyFats: bodyFats, foods: foods)
+        let tools = CoachTools(
+            weights: weights,
+            bodyFats: bodyFats,
+            foods: foods,
+            workoutSessions: workoutSessions,
+            workoutPlans: workoutPlans,
+            workoutPreferences: workoutPreferences,
+            workoutPlanWeightUnit: weightMetric ? .kg : .lbs,
+            workoutAccessEnabled: workoutAccessEnabled
+        )
 
         let provider: AIProvider = AIProviderSettings.selectedProvider
         let model = AIProviderSettings.selectedModel
@@ -82,7 +98,18 @@ struct ChatService {
     /// gone — Coach calls tools when it actually needs older data, so token
     /// cost per message stays low and Coach can reach **all** of the user's
     /// history (not just the previously-hardcoded last 10/14 entries).
-    private static func buildSystemPrompt(profile: UserProfile, weights: [WeightEntry], bodyFats: [BodyFatEntry], measurements: [BodyMeasurement] = [], foods: [FoodEntry], heightMetric: Bool, weightMetric: Bool) -> String {
+    private static func buildSystemPrompt(
+        profile: UserProfile,
+        weights: [WeightEntry],
+        bodyFats: [BodyFatEntry],
+        measurements: [BodyMeasurement] = [],
+        foods: [FoodEntry],
+        heightMetric: Bool,
+        weightMetric: Bool,
+        workoutSessions: [StrengthWorkoutSession] = [],
+        workoutPlans: [StrengthWorkoutDayPlan] = [],
+        workoutAccessEnabled: Bool = false
+    ) -> String {
         let forecast = WeightAnalysisService.compute(weights: weights, foods: foods, profile: profile)
         let currentDateFormatter = DateFormatter()
         currentDateFormatter.dateFormat = "yyyy-MM-dd"
@@ -108,7 +135,11 @@ struct ChatService {
         }
 
         var lines: [String] = []
-        lines.append("You are Coach, an AI nutrition and weight-change assistant inside a calorie tracking app. Answer in plain English, be specific and factual, and ground your recommendations in the user's own data. Avoid medical advice; when relevant, suggest consulting a doctor. Be concise — 2–5 sentences per response unless the user asks for detail.")
+        if workoutAccessEnabled {
+            lines.append("You are Coach, an AI nutrition, weight-change, and strength-training assistant inside a calorie tracking app. Answer in plain English, be specific and factual, and ground your recommendations in the user's own data. Avoid medical advice; when relevant, suggest consulting a doctor. Be concise — 2–5 sentences per response unless the user asks for detail.")
+        } else {
+            lines.append("You are Coach, an AI nutrition and weight-change assistant inside a calorie tracking app. Answer in plain English, be specific and factual, and ground your recommendations in the user's own data. Avoid medical advice; when relevant, suggest consulting a doctor. Be concise — 2–5 sentences per response unless the user asks for detail.")
+        }
         lines.append("")
         lines.append("## Current date")
         lines.append("- Today: \(currentDate) (\(currentTimeZone))")
@@ -119,6 +150,11 @@ struct ChatService {
         lines.append("- \"How was my weight in March?\" → call get_weight_history(from, to)")
         lines.append("- \"What did I eat last Tuesday?\" → call get_food_entries(from, to)")
         lines.append("- \"What's my data range?\" → call get_data_summary")
+        if workoutAccessEnabled {
+            lines.append("- \"How is my training progressing?\" → call get_training_summary(from, to), then get_workout_history only if individual sets are needed")
+            lines.append("- \"What workout do I have planned?\" → call get_workout_plans")
+            lines.append("- Use get_workout_preferences when injuries, available equipment, split, schedule, RPE scale, or strength baselines affect the answer.")
+        }
         lines.append("Do NOT call tools for questions you can answer from the profile/forecast below.")
         lines.append("")
         lines.append("## User profile")
@@ -169,6 +205,10 @@ struct ChatService {
         lines.append("")
         lines.append("## Data available")
         lines.append("- \(weights.count) weight entries, \(bodyFats.count) body-fat readings, \(foods.count) food entries logged total. Use get_data_summary to see exact date ranges.")
+        if workoutAccessEnabled {
+            lines.append("- \(workoutSessions.count) completed strength workouts and \(workoutPlans.count) dated workout plans are available through the workout tools.")
+            lines.append("- Workout logs may guide training, recovery, exercise selection, and progressive-overload advice. Never use estimated workout burn or workout volume to recalculate calorie/macro targets, alter the nutrition forecast, or invent energy expenditure.")
+        }
         if let latest = measurements.max(by: { $0.date < $1.date }),
            let summary = latest.promptSummary(gender: profile.gender, heightCm: profile.heightCm) {
             lines.append("")
@@ -189,25 +229,14 @@ struct ChatService {
     // MARK: - OpenAI-compatible (/chat/completions) — covers 10 of 13 providers
 
     /// OpenAI-style tool schema: each tool is `{"type":"function","function":{name, description, parameters}}`.
-    private static func openAIToolsArray() -> [[String: Any]] {
-        let dateRangeSchema: [String: Any] = [
-            "type": "object",
-            "properties": [
-                "from": ["type": "string", "description": "ISO date yyyy-MM-dd, inclusive start"],
-                "to": ["type": "string", "description": "ISO date yyyy-MM-dd, inclusive end"],
-                "limit": ["type": "integer", "description": "Optional max entries to return"],
-            ],
-            "required": ["from", "to"],
-        ]
-        let summarySchema: [String: Any] = ["type": "object", "properties": [:]]
-
-        return CoachTools.toolNames.map { name -> [String: Any] in
+    private static func openAIToolsArray(for tools: CoachTools) -> [[String: Any]] {
+        tools.availableToolNames.map { name -> [String: Any] in
             [
                 "type": "function",
                 "function": [
                     "name": name,
                     "description": CoachTools.toolDescriptions[name] ?? "",
-                    "parameters": name == "get_data_summary" ? summarySchema : dateRangeSchema,
+                    "parameters": CoachTools.parameterSchema(for: name),
                 ],
             ]
         }
@@ -237,7 +266,7 @@ struct ChatService {
             headers["X-Title"] = "Fud AI"
         }
 
-        let toolsArray = openAIToolsArray()
+        let toolsArray = openAIToolsArray(for: tools)
 
         for _ in 0..<maxToolRounds {
             var body: [String: Any] = [
@@ -299,22 +328,12 @@ struct ChatService {
     /// Anthropic tool schema: `{name, description, input_schema}`. Tool calls
     /// arrive as `tool_use` content blocks; results go back as `tool_result`
     /// blocks within a user message.
-    private static func anthropicToolsArray() -> [[String: Any]] {
-        let dateRangeSchema: [String: Any] = [
-            "type": "object",
-            "properties": [
-                "from": ["type": "string", "description": "ISO date yyyy-MM-dd"],
-                "to": ["type": "string", "description": "ISO date yyyy-MM-dd"],
-                "limit": ["type": "integer", "description": "Optional max entries"],
-            ],
-            "required": ["from", "to"],
-        ]
-        let summarySchema: [String: Any] = ["type": "object", "properties": [:]]
-        return CoachTools.toolNames.map { name -> [String: Any] in
+    private static func anthropicToolsArray(for tools: CoachTools) -> [[String: Any]] {
+        tools.availableToolNames.map { name -> [String: Any] in
             [
                 "name": name,
                 "description": CoachTools.toolDescriptions[name] ?? "",
-                "input_schema": name == "get_data_summary" ? summarySchema : dateRangeSchema,
+                "input_schema": CoachTools.parameterSchema(for: name),
             ]
         }
     }
@@ -334,7 +353,7 @@ struct ChatService {
             messages.append(["role": "user", "content": newUserMessage])
         }
 
-        let toolsArray = anthropicToolsArray()
+        let toolsArray = anthropicToolsArray(for: tools)
         let headers = [
             "Content-Type": "application/json",
             "x-api-key": apiKey,
@@ -407,23 +426,12 @@ struct ChatService {
 
     /// Gemini tool schema: `{"functionDeclarations": [{name, description, parameters}]}`
     /// where parameters use OpenAPI type names (object/string/integer).
-    private static func geminiToolsObject() -> [String: Any] {
-        let dateRangeSchema: [String: Any] = [
-            "type": "object",
-            "properties": [
-                "from": ["type": "string", "description": "ISO date yyyy-MM-dd"],
-                "to": ["type": "string", "description": "ISO date yyyy-MM-dd"],
-                "limit": ["type": "integer", "description": "Optional max entries"],
-            ],
-            "required": ["from", "to"],
-        ]
-        let summarySchema: [String: Any] = ["type": "object", "properties": [:]]
-
-        let declarations: [[String: Any]] = CoachTools.toolNames.map { name in
+    private static func geminiToolsObject(for tools: CoachTools) -> [String: Any] {
+        let declarations: [[String: Any]] = tools.availableToolNames.map { name in
             [
                 "name": name,
                 "description": CoachTools.toolDescriptions[name] ?? "",
-                "parameters": name == "get_data_summary" ? summarySchema : dateRangeSchema,
+                "parameters": CoachTools.parameterSchema(for: name),
             ]
         }
         return ["functionDeclarations": declarations]
@@ -445,7 +453,7 @@ struct ChatService {
         }
         contents.append(["role": "user", "parts": geminiUserParts(text: newUserMessage, imageData: imageData)])
 
-        let toolsObj = geminiToolsObject()
+        let toolsObj = geminiToolsObject(for: tools)
 
         for _ in 0..<maxToolRounds {
             let body: [String: Any] = [

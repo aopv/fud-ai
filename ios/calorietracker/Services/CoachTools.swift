@@ -18,16 +18,32 @@ struct CoachTools {
     let weights: [WeightEntry]
     let bodyFats: [BodyFatEntry]
     let foods: [FoodEntry]
+    var workoutSessions: [StrengthWorkoutSession] = []
+    var workoutPlans: [StrengthWorkoutDayPlan] = []
+    var workoutPreferences: StrengthWorkoutPreferences? = nil
+    var workoutPlanWeightUnit: WeightUnit = .lbs
+    var workoutAccessEnabled = false
 
-    /// All available tool names — used by per-provider schema builders to stay
-    /// in sync with the executor.
-    static let toolNames: [String] = [
+    static let nutritionToolNames: [String] = [
         "get_data_summary",
         "get_weight_history",
         "get_body_fat_history",
         "get_calorie_totals",
         "get_food_entries",
     ]
+
+    static let workoutToolNames: [String] = [
+        "get_workout_history",
+        "get_workout_plans",
+        "get_workout_preferences",
+        "get_training_summary",
+    ]
+
+    /// The provider schemas are built from this instance value, preventing any
+    /// workout tool from being disclosed when the user has the diary disabled.
+    var availableToolNames: [String] {
+        Self.nutritionToolNames + (workoutAccessEnabled ? Self.workoutToolNames : [])
+    }
 
     /// Per-provider tool descriptions kept in one place so all three formats
     /// see the same human-readable text.
@@ -37,7 +53,39 @@ struct CoachTools {
         "get_body_fat_history": "Fetch body-fat readings between two dates (inclusive). Returns date + percent. Use when the user asks about body composition trends older than the last 10 readings.",
         "get_calorie_totals": "Daily calorie totals (sum of all logged foods per day) between two dates. Returns date + kcal. Use when the user asks about intake patterns older than the last 14 days.",
         "get_food_entries": "Individual logged food items (name + calories + macros) between two dates. Use when the user asks about specific meals, what they ate on a given date, or wants macro breakdowns rather than just kcal totals.",
+        "get_workout_history": "Fetch completed strength workouts between two dates, including every exercise and logged set with weight, reps, and RPE.",
+        "get_workout_plans": "Fetch dated workout diary plans and set targets. Optional ISO from/to dates narrow the result; without them it returns recent and upcoming plans around today.",
+        "get_workout_preferences": "Fetch workout-only preferences such as target muscles, injuries or issues, equipment, schedule, split, RPE scale, and strength numbers.",
+        "get_training_summary": "Summarize strength training between two dates by exercise: sessions, sets, reps, volume, best load, and average RPE.",
     ]
+
+    /// One schema source is translated to each provider's wrapper by
+    /// ChatService, so no-argument workout tools never accidentally inherit a
+    /// required date range.
+    static func parameterSchema(for toolName: String) -> [String: Any] {
+        if ["get_data_summary", "get_workout_preferences"].contains(toolName) {
+            return ["type": "object", "properties": [:]]
+        }
+        if toolName == "get_workout_plans" {
+            return [
+                "type": "object",
+                "properties": [
+                    "from": ["type": "string", "description": "Optional ISO date yyyy-MM-dd, inclusive start"],
+                    "to": ["type": "string", "description": "Optional ISO date yyyy-MM-dd, inclusive end"],
+                    "limit": ["type": "integer", "description": "Optional max plans to return"],
+                ],
+            ]
+        }
+        return [
+            "type": "object",
+            "properties": [
+                "from": ["type": "string", "description": "ISO date yyyy-MM-dd, inclusive start"],
+                "to": ["type": "string", "description": "ISO date yyyy-MM-dd, inclusive end"],
+                "limit": ["type": "integer", "description": "Optional max entries to return"],
+            ],
+            "required": ["from", "to"],
+        ]
+    }
 
     // MARK: - Execution
 
@@ -45,6 +93,9 @@ struct CoachTools {
     /// return a JSON error so the LLM can correct course rather than silently
     /// hallucinate; callers should always pass through whatever this returns.
     func execute(name: String, arguments: [String: Any]) -> String {
+        if Self.workoutToolNames.contains(name), !workoutAccessEnabled {
+            return jsonError("Workout access is disabled.")
+        }
         switch name {
         case "get_data_summary":
             return getDataSummary()
@@ -56,8 +107,16 @@ struct CoachTools {
             return getCalorieTotals(arguments: arguments)
         case "get_food_entries":
             return getFoodEntries(arguments: arguments)
+        case "get_workout_history":
+            return getWorkoutHistory(arguments: arguments)
+        case "get_workout_plans":
+            return getWorkoutPlans(arguments: arguments)
+        case "get_workout_preferences":
+            return getWorkoutPreferences()
+        case "get_training_summary":
+            return getTrainingSummary(arguments: arguments)
         default:
-            return jsonError("Unknown tool: \(name). Available tools: \(Self.toolNames.joined(separator: ", "))")
+            return jsonError("Unknown tool: \(name). Available tools: \(availableToolNames.joined(separator: ", "))")
         }
     }
 
@@ -87,7 +146,16 @@ struct CoachTools {
                 "last_date": (foodDates.last.map(Self.iso) ?? NSNull()) as Any,
             ],
         ]
-        return jsonString(payload)
+        guard workoutAccessEnabled else { return jsonString(payload) }
+        var expanded = payload
+        let workoutDateKeys = workoutSessions.map(\.stableDiaryDateKey).sorted()
+        expanded["workouts"] = [
+            "count": workoutSessions.count,
+            "first_date": workoutDateKeys.first.map { $0 as Any } ?? NSNull(),
+            "last_date": workoutDateKeys.last.map { $0 as Any } ?? NSNull(),
+        ]
+        expanded["workout_plans"] = ["count": workoutPlans.count]
+        return jsonString(expanded)
     }
 
     private func getWeightHistory(arguments: [String: Any]) -> String {
@@ -208,6 +276,208 @@ struct CoachTools {
         ])
     }
 
+    private func getWorkoutHistory(arguments: [String: Any]) -> String {
+        let (from, to) = parseRange(arguments)
+        let limit = (arguments["limit"] as? Int).map { min(max($0, 1), 200) } ?? 100
+        let sessions = workoutSessions
+            .filter { $0.calendarDiaryDate >= from && $0.calendarDiaryDate <= to }
+            .sorted {
+                if $0.stableDiaryDateKey == $1.stableDiaryDateKey {
+                    return $0.completedAt < $1.completedAt
+                }
+                return $0.stableDiaryDateKey < $1.stableDiaryDateKey
+            }
+            .prefix(limit)
+            .map(workoutSessionPayload)
+        return jsonString([
+            "from": Self.iso(from),
+            "to": Self.iso(to),
+            "count": sessions.count,
+            "workouts": sessions,
+        ])
+    }
+
+    private func getWorkoutPlans(arguments: [String: Any]) -> String {
+        let (from, to) = parsePlanRange(arguments)
+        let limit = (arguments["limit"] as? Int).map { min(max($0, 1), 120) } ?? 120
+        let plans = workoutPlans
+            .filter { !$0.exercises.isEmpty }
+            .filter { plan in
+                guard let date = StrengthWorkoutStore.date(for: plan.dateKey) else { return false }
+                return date >= from && date <= to
+            }
+            .sorted { $0.dateKey < $1.dateKey }
+            .prefix(limit)
+            .map { plan -> [String: Any] in
+                [
+                    "date": plan.dateKey,
+                    "exercises": plan.exercises.map { exercise -> [String: Any] in
+                        [
+                            "catalog_id": exercise.itemID,
+                            "name": exercise.name,
+                            "target_muscles": exercise.primaryMuscles,
+                            "equipment": exercise.rawEquipment,
+                            "sets": exercise.sets.enumerated().map { index, set -> [String: Any] in
+                                var value: [String: Any] = [
+                                    "set": index + 1,
+                                    "weight_unit": set.weightUnit ?? workoutPlanWeightUnit.rawValue,
+                                ]
+                                if !set.weight.isEmpty { value["weight"] = set.weight }
+                                if !set.reps.isEmpty {
+                                    value["reps"] = Int(set.reps) ?? 0
+                                }
+                                if !set.rpe.isEmpty {
+                                    value["rpe"] = Double(set.rpe) ?? 0
+                                    value["rpe_scale"] = (set.rpeScale ?? workoutPreferences?.rpeScale)?.title ?? "Unspecified"
+                                }
+                                return value
+                            },
+                        ]
+                    },
+                ]
+            }
+        return jsonString([
+            "from": Self.iso(from),
+            "to": Self.iso(to),
+            "count": plans.count,
+            "plans": plans,
+        ])
+    }
+
+    private func getWorkoutPreferences() -> String {
+        guard let preferences = workoutPreferences else {
+            return jsonString(["configured": false])
+        }
+        func strengthValue(_ kg: Double?) -> Any {
+            if let kg { return kg }
+            return NSNull()
+        }
+        return jsonString([
+            "configured": true,
+            "target_muscles": preferences.targetMuscles.sorted(),
+            "issues_or_injuries": preferences.issues.map(\.rawValue).sorted(),
+            "additional_issues": preferences.additionalIssues,
+            "frequency_days_per_week": preferences.frequencyDays,
+            "duration_minutes": preferences.duration.rawValue,
+            "split": preferences.split.title,
+            "custom_split": preferences.customSplit,
+            "equipment": preferences.equipment.sorted(),
+            "rpe_scale": preferences.rpeScale.title,
+            "strength_kg": [
+                "bench_press": strengthValue(preferences.strength.benchPressKg),
+                "squat": strengthValue(preferences.strength.squatKg),
+                "deadlift": strengthValue(preferences.strength.deadliftKg),
+                "overhead_press": strengthValue(preferences.strength.overheadPressKg),
+            ],
+        ])
+    }
+
+    private func getTrainingSummary(arguments: [String: Any]) -> String {
+        let (from, to) = parseRange(arguments)
+        let sessions = workoutSessions.filter { $0.calendarDiaryDate >= from && $0.calendarDiaryDate <= to }
+        struct ExerciseAggregate {
+            var sessionIDs: Set<UUID> = []
+            var sets = 0
+            var reps = 0
+            var volumeKg = 0.0
+            var bestLoadKg: Double?
+            var rpeByScale: [String: RPEAggregate] = [:]
+        }
+        struct RPEAggregate {
+            var total = 0.0
+            var count = 0
+        }
+        var aggregates: [String: ExerciseAggregate] = [:]
+        for session in sessions {
+            for exercise in session.exercises {
+                var aggregate = aggregates[exercise.name] ?? ExerciseAggregate()
+                aggregate.sessionIDs.insert(session.id)
+                for set in exercise.sets where set.isPerformed {
+                    aggregate.sets += 1
+                    let reps = Int(set.reps) ?? 0
+                    aggregate.reps += reps
+                    if let kg = Self.weightKg(value: set.weight, unit: set.weightUnit) {
+                        aggregate.volumeKg += kg * Double(reps)
+                        aggregate.bestLoadKg = max(aggregate.bestLoadKg ?? kg, kg)
+                    }
+                    if let rpe = Double(set.rpe) {
+                        let scale = set.rpeScale?.title ?? "Unspecified"
+                        var rpeAggregate = aggregate.rpeByScale[scale] ?? RPEAggregate()
+                        rpeAggregate.total += rpe
+                        rpeAggregate.count += 1
+                        aggregate.rpeByScale[scale] = rpeAggregate
+                    }
+                }
+                aggregates[exercise.name] = aggregate
+            }
+        }
+        let exercisePayloads = aggregates.sorted { $0.key < $1.key }.map { name, value -> [String: Any] in
+            var payload: [String: Any] = [
+                "name": name,
+                "sessions": value.sessionIDs.count,
+                "sets": value.sets,
+                "reps": value.reps,
+                "external_load_volume_kg": (value.volumeKg * 10).rounded() / 10,
+            ]
+            if let best = value.bestLoadKg { payload["best_load_kg"] = (best * 10).rounded() / 10 }
+            if !value.rpeByScale.isEmpty {
+                let averages = value.rpeByScale.mapValues { aggregate in
+                    (aggregate.total / Double(aggregate.count) * 10).rounded() / 10
+                }
+                payload["average_rpe_by_scale"] = averages
+                if averages.count == 1, let only = averages.first {
+                    payload["average_rpe"] = only.value
+                    payload["rpe_scale"] = only.key
+                }
+            }
+            return payload
+        }
+        return jsonString([
+            "from": Self.iso(from),
+            "to": Self.iso(to),
+            "sessions": sessions.count,
+            "sets": sessions.reduce(0) { $0 + $1.performedSetCount },
+            "reps": sessions.reduce(0) { $0 + $1.repCount },
+            "minutes": sessions.reduce(0) { $0 + $1.durationMinutes },
+            "by_exercise": exercisePayloads,
+        ])
+    }
+
+    private func workoutSessionPayload(_ session: StrengthWorkoutSession) -> [String: Any] {
+        [
+            "id": session.id.uuidString,
+            "date": session.stableDiaryDateKey,
+            "started_at": Self.isoTimestamp(session.startedAt),
+            "completed_at": Self.isoTimestamp(session.completedAt),
+            "duration_seconds": session.durationSeconds,
+            "exercises": session.exercises.map { exercise -> [String: Any] in
+                [
+                    "catalog_id": exercise.itemID,
+                    "name": exercise.name,
+                    "target_muscles": exercise.targetMuscles,
+                    "equipment": exercise.equipment,
+                    "sets": exercise.sets.map { set -> [String: Any] in
+                        var payload: [String: Any] = [
+                            "set": set.setNumber,
+                            "performed": set.isPerformed,
+                            "weight_unit": set.weightUnit,
+                        ]
+                        if !set.weight.isEmpty {
+                            payload["weight"] = Double(set.weight) ?? 0
+                        }
+                        if let kg = Self.weightKg(value: set.weight, unit: set.weightUnit) { payload["weight_kg"] = kg }
+                        if !set.reps.isEmpty { payload["reps"] = Int(set.reps) ?? 0 }
+                        if !set.rpe.isEmpty {
+                            payload["rpe"] = Double(set.rpe) ?? 0
+                            payload["rpe_scale"] = set.rpeScale?.title ?? "Unspecified"
+                        }
+                        return payload
+                    },
+                ]
+            },
+        ]
+    }
+
     // MARK: - Helpers
 
     /// Parse a `from` / `to` date range from the LLM's tool args. Defaults to
@@ -222,6 +492,22 @@ struct CoachTools {
         // Inclusive end-of-day so "to: 2025-04-26" includes everything that day.
         let endOfDay = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: to) ?? to
         let startOfDay = Calendar.current.startOfDay(for: from)
+        return (startOfDay, endOfDay)
+    }
+
+    /// Plans default to a bounded window around today so a simple training
+    /// question never injects years of stale plans or omits upcoming work.
+    private func parsePlanRange(_ args: [String: Any]) -> (Date, Date) {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: .now)
+        let from = (args["from"] as? String).flatMap(Self.parseDate)
+            ?? calendar.date(byAdding: .day, value: -14, to: today)
+            ?? today
+        let to = (args["to"] as? String).flatMap(Self.parseDate)
+            ?? calendar.date(byAdding: .day, value: 90, to: today)
+            ?? today
+        let startOfDay = calendar.startOfDay(for: from)
+        let endOfDay = calendar.date(bySettingHour: 23, minute: 59, second: 59, of: to) ?? to
         return (startOfDay, endOfDay)
     }
 
@@ -240,6 +526,17 @@ struct CoachTools {
 
     nonisolated private static func iso(_ date: Date) -> String { isoFormatter.string(from: date) }
     nonisolated private static func parseDate(_ s: String) -> Date? { isoFormatter.date(from: s) }
+
+    nonisolated private static func isoTimestamp(_ date: Date) -> String {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return formatter.string(from: date)
+    }
+
+    nonisolated private static func weightKg(value: String, unit: String) -> Double? {
+        guard let value = Double(value.replacingOccurrences(of: ",", with: ".")), value.isFinite else { return nil }
+        return unit == WeightUnit.lbs.rawValue ? value / 2.20462 : value
+    }
 
     private func jsonString(_ obj: Any) -> String {
         guard let data = try? JSONSerialization.data(withJSONObject: obj, options: [.sortedKeys]),
