@@ -3,8 +3,8 @@ import SwiftUI
 import UIKit
 
 /// "Coach" tab — a persistent AI conversation that has access to the user's profile,
-/// weight history, food log, computed forecast, and (when explicitly enabled) workout
-/// diary. Handles multi-turn chat with memory, a reset button, and prompt chips.
+/// weight history, food log, computed forecast, and workout diary. Handles multi-turn
+/// chat with memory, a reset button, and prompt chips.
 struct ChatView: View {
     @Environment(ChatStore.self) private var chatStore
     @Environment(ProfileStore.self) private var profileStore
@@ -15,7 +15,6 @@ struct ChatView: View {
     @Environment(StrengthWorkoutStore.self) private var strengthWorkoutStore
     @AppStorage("heightUnit") private var heightUnitRaw = "ftin"
     @AppStorage("weightUnit") private var weightUnitRaw = "lbs"
-    @AppStorage(StrengthWorkoutSettings.enabledKey) private var workoutDiaryEnabled = false
 
     @State private var draft = ""
     @State private var attachedImage: UIImage?
@@ -139,9 +138,7 @@ struct ChatView: View {
             }
             Text("Ask your Coach")
                 .font(.system(.title2, design: .rounded, weight: .semibold))
-            Text(workoutDiaryEnabled
-                ? "Your coach can see your nutrition, goals, and workout diary. Ask about food, progress, recovery, or your training plan."
-                : "Your coach can see your weight history, calorie log, and goals. Ask about expected weight, what to eat, or how to hit your target.")
+            Text("Your coach can see your nutrition, goals, and workout diary. Ask about food, progress, recovery, or your training plan.")
                 .font(.system(.subheadline, design: .rounded))
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -250,7 +247,7 @@ struct ChatView: View {
                     "How's my trend?",
                 ]
             }
-            if workoutDiaryEnabled, !strengthWorkoutStore.completedSessions.isEmpty {
+            if !strengthWorkoutStore.completedSessions.isEmpty {
                 values.insert("Analyze my last 4 weeks of training", at: 0)
             }
             return values
@@ -610,7 +607,7 @@ struct ChatView: View {
                     workoutSessions: strengthWorkoutStore.completedSessions,
                     workoutPlans: Array(strengthWorkoutStore.dayPlans.values),
                     workoutPreferences: strengthWorkoutStore.preferences,
-                    workoutAccessEnabled: workoutDiaryEnabled
+                    workoutAccessEnabled: true
                 )
                 chatStore.append(ChatMessage(role: .assistant, content: reply))
             } catch {

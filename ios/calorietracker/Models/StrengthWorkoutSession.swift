@@ -1,23 +1,14 @@
 import Foundation
 
-/// Feature-level settings for the optional iOS workout diary.
-enum StrengthWorkoutSettings {
-    /// Deliberately new: previously-reverted experimental builds used a different key.
-    static let enabledKey = "fudai.workouts.diary.enabled.v1"
-}
-
 enum WorkoutTabMode: String {
     case library
     case log
 
-    static let storageKey = "fudai.workouts.tab.mode.v1"
-    static let defaultMode: WorkoutTabMode = .library
+    /// v2 resets the former library-first default once; later user switches persist normally.
+    static let storageKey = "fudai.workouts.tab.mode.v2"
+    static let defaultMode: WorkoutTabMode = .log
 
-    static func mode(
-        for rawValue: String,
-        isLoggingEnabled: Bool = true
-    ) -> WorkoutTabMode {
-        guard isLoggingEnabled else { return defaultMode }
+    static func mode(for rawValue: String) -> WorkoutTabMode {
         return WorkoutTabMode(rawValue: rawValue) ?? defaultMode
     }
 

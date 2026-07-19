@@ -2,22 +2,18 @@ import SwiftUI
 import UIKit
 
 struct WorkoutsView: View {
-    @AppStorage(StrengthWorkoutSettings.enabledKey) private var workoutLoggingEnabled = false
     @AppStorage(WorkoutTabMode.storageKey) private var selectedModeRaw = WorkoutTabMode.defaultMode.rawValue
     @AppStorage(AppThemeColor.storageKey) private var appThemeColorRaw = AppThemeColor.defaultColor.rawValue
     @State private var workoutLogSession = WorkoutLogSessionState()
 
     private var selectedMode: WorkoutTabMode {
-        WorkoutTabMode.mode(
-            for: selectedModeRaw,
-            isLoggingEnabled: workoutLoggingEnabled
-        )
+        WorkoutTabMode.mode(for: selectedModeRaw)
     }
 
     var body: some View {
         NavigationStack {
             Group {
-                if workoutLoggingEnabled, selectedMode == .log {
+                if selectedMode == .log {
                     WorkoutLogView(
                         session: workoutLogSession,
                         embedsInNavigationStack: false,
@@ -26,7 +22,7 @@ struct WorkoutsView: View {
                     .transition(.opacity)
                 } else {
                     ExerciseLibraryBrowserView(
-                        onShowWorkoutLog: workoutLoggingEnabled ? { showMode(.log) } : nil
+                        onShowWorkoutLog: { showMode(.log) }
                     )
                     .background(WorkoutsScreenBackground())
                     .navigationTitle("Workouts")
@@ -34,12 +30,6 @@ struct WorkoutsView: View {
                     .toolbar(.hidden, for: .navigationBar)
                     .transition(.opacity)
                 }
-            }
-        }
-        .onChange(of: workoutLoggingEnabled) { _, enabled in
-            if !enabled {
-                selectedModeRaw = WorkoutTabMode.library.rawValue
-                workoutLogSession.reset()
             }
         }
         // Refresh static workout theme tokens without replacing this stack or

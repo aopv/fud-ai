@@ -110,27 +110,19 @@ private enum AppUpdateChecker {
 struct ContentView: View {
     @Environment(NotificationManager.self) private var notificationManager
     @AppStorage(AppThemeColor.storageKey) private var appThemeColorRaw = AppThemeColor.defaultColor.rawValue
-    @AppStorage(StrengthWorkoutSettings.enabledKey) private var workoutLoggingEnabled = false
     @AppStorage(WorkoutTabMode.storageKey) private var workoutTabModeRaw = WorkoutTabMode.defaultMode.rawValue
     @State private var appUpdateState: AppUpdateState = .idle
     @State private var selectedTab: AppTab = .home
 
     private var workoutsTabIcon: String {
-        WorkoutTabMode.mode(
-            for: workoutTabModeRaw,
-            isLoggingEnabled: workoutLoggingEnabled
-        ).tabIcon
+        WorkoutTabMode.mode(for: workoutTabModeRaw).tabIcon
     }
 
     var body: some View {
         standardTabView
             .tint(AppThemeColor.color(for: appThemeColorRaw).color)
             .task {
-                normalizeWorkoutTabMode()
                 await refreshAppUpdateState()
-            }
-            .onChange(of: workoutLoggingEnabled) { _, _ in
-                normalizeWorkoutTabMode()
             }
     }
 
@@ -185,16 +177,6 @@ struct ContentView: View {
         case coach
         case settings
         case workouts
-    }
-
-    private func normalizeWorkoutTabMode() {
-        let mode = WorkoutTabMode.mode(
-            for: workoutTabModeRaw,
-            isLoggingEnabled: workoutLoggingEnabled
-        )
-        if workoutTabModeRaw != mode.rawValue {
-            workoutTabModeRaw = mode.rawValue
-        }
     }
 
     @MainActor
@@ -2722,7 +2704,6 @@ struct ProgressTabView: View {
     @Environment(BodyFatStore.self) private var bodyFatStore
     @Environment(ProfileStore.self) private var profileStore
     @AppStorage("weightUnit") private var weightUnitRaw = "lbs"
-    @AppStorage(StrengthWorkoutSettings.enabledKey) private var workoutDiaryEnabled = false
     @State private var timeRange: TimeRange = .week
     @State private var showLogWeight = false
     @State private var showLogBodyFat = false
@@ -2851,10 +2832,8 @@ struct ProgressTabView: View {
                     )
                     .padding(.horizontal)
 
-                    if workoutDiaryEnabled {
-                        TrainingProgressSection(dateRange: dateRange)
-                            .padding(.horizontal)
-                    }
+                    TrainingProgressSection(dateRange: dateRange)
+                        .padding(.horizontal)
 
                 }
                 .padding(.vertical)

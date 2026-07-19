@@ -7,8 +7,9 @@ struct StrengthWorkoutStoreTests {
     @Test func workoutTabModeUsesModeSpecificIconsAndSafeFallback() {
         #expect(WorkoutTabMode.mode(for: WorkoutTabMode.library.rawValue) == .library)
         #expect(WorkoutTabMode.mode(for: WorkoutTabMode.log.rawValue) == .log)
-        #expect(WorkoutTabMode.mode(for: "unknown") == .library)
-        #expect(WorkoutTabMode.mode(for: WorkoutTabMode.log.rawValue, isLoggingEnabled: false) == .library)
+        #expect(WorkoutTabMode.mode(for: "unknown") == .log)
+        #expect(WorkoutTabMode.defaultMode == .log)
+        #expect(WorkoutTabMode.storageKey == "fudai.workouts.tab.mode.v2")
         #expect(WorkoutTabMode.library.tabIcon == "dumbbell.fill")
         #expect(WorkoutTabMode.log.tabIcon == "figure.strengthtraining.traditional")
     }
