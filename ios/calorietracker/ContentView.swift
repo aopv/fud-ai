@@ -3455,8 +3455,6 @@ struct ProfileView: View {
                 }
                 .listRowBackground(AppColors.appCard)
 
-                WorkoutLoggingSettingsSection()
-
                 Group {
                     // Section 4: AI Provider
                     Section("AI Provider") {
@@ -3957,6 +3955,8 @@ struct ProfileView: View {
                     }
                         .listRowBackground(AppColors.appCard)
                 }
+
+                WorkoutLoggingSettingsSection()
 
                 // Section 5: Health & Data
                 Section("Health & Data") {

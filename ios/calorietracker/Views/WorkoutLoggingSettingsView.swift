@@ -9,11 +9,11 @@ struct WorkoutLoggingSettingsSection: View {
 
     private static let equipmentOptions: [String] = {
         let libraryValues = ExerciseLibraryService.shared.availableRawEquipment
-            .filter { $0 != "Unspecified" }
         if !libraryValues.isEmpty { return libraryValues }
         return [
             "Bands", "Barbell", "Body Only", "Cable", "Dumbbell", "E-Z Curl Bar",
-            "Exercise Ball", "Foam Roll", "Kettlebells", "Machine", "Medicine Ball", "Other"
+            "Exercise Ball", "Foam Roll", "Kettlebells", "Machine", "Medicine Ball", "Other",
+            "Unspecified"
         ]
     }()
 
