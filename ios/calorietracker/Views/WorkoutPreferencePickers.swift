@@ -651,22 +651,15 @@ struct WorkoutSplitPickerRow: View {
     var title = String(localized: "Training Split")
     var systemImage = "square.grid.2x2.fill"
     @Binding var selection: StrengthWorkoutSplit
-    @State private var isPickerPresented = false
 
     var body: some View {
-        WorkoutPreferenceFieldRow(title: title, systemImage: systemImage) {
-            Button {
-                isPickerPresented = true
-            } label: {
-                WorkoutPreferenceMenuValueLabel(text: selection.title)
-            }
-            .workoutPressable()
-            .accessibilityLabel(title)
-            .accessibilityValue(selection.title)
-            .sheet(isPresented: $isPickerPresented) {
-                WorkoutSplitPickerSheet(selection: $selection)
-            }
-        }
+        WorkoutPreferenceMenuRow(
+            title: title,
+            systemImage: systemImage,
+            selection: $selection,
+            options: StrengthWorkoutSplit.allCases,
+            label: \.title
+        )
     }
 }
 
