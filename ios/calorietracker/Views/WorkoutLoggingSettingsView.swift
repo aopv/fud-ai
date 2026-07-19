@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Workout logging controls embedded directly in Fud AI's main Settings list.
-/// The Delts preference sections appear in place after the user enables the diary.
+/// Enabling the diary reveals its Delts preferences inside the same compact card.
 struct WorkoutLoggingSettingsSection: View {
     @Environment(StrengthWorkoutStore.self) private var workoutStore
     @Environment(ProfileStore.self) private var profileStore
@@ -33,18 +33,6 @@ struct WorkoutLoggingSettingsSection: View {
     }()
 
     var body: some View {
-        Group {
-            enablementSection
-
-            if workoutLoggingEnabled {
-                trainingFocusSection
-                scheduleSection
-                workoutSetupSection
-            }
-        }
-    }
-
-    private var enablementSection: some View {
         Section {
             HStack {
                 Label {
@@ -67,14 +55,71 @@ struct WorkoutLoggingSettingsSection: View {
                     gender: profileStore.profile.gender
                 )
             }
+
+            if workoutLoggingEnabled {
+                WorkoutTargetMuscleSelectorRow(
+                    selection: $draft.targetMuscles,
+                    allowedValues: Self.targetMuscleOptions,
+                    isPresented: $isTargetMusclePickerPresented
+                )
+
+                WorkoutIssueMultiSelectRow(
+                    title: "Issues & Injuries",
+                    systemImage: "cross.case.fill",
+                    selection: $draft.issues
+                )
+
+                if draft.issues.contains(.other) {
+                    TextField("Describe anything else", text: $draft.additionalIssues, axis: .vertical)
+                        .lineLimit(2...4)
+                        .textInputAutocapitalization(.sentences)
+                }
+
+                WorkoutPreferenceMenuRow(
+                    title: "Frequency",
+                    systemImage: "calendar.badge.clock",
+                    selection: $draft.frequencyDays,
+                    options: Array(1...7),
+                    label: { "\($0) \($0 == 1 ? "day" : "days") / week" }
+                )
+
+                WorkoutPreferenceMenuRow(
+                    title: "Session Length",
+                    systemImage: "clock.fill",
+                    selection: $draft.duration,
+                    options: StrengthWorkoutDuration.allCases,
+                    label: \.title
+                )
+
+                WorkoutSplitPickerRow(
+                    title: "Training Split",
+                    systemImage: "square.grid.2x2.fill",
+                    selection: $draft.split
+                )
+
+                if draft.split == .custom {
+                    TextField("e.g. Chest + back / Legs / Arms", text: $draft.customSplit, axis: .vertical)
+                        .lineLimit(1...3)
+                        .textInputAutocapitalization(.sentences)
+                }
+
+                WorkoutRPEScalePickerRow(
+                    title: "RPE Scale",
+                    systemImage: "gauge.with.dots.needle.50percent",
+                    selection: $draft.rpeScale
+                )
+
+                WorkoutEquipmentImagePickerRow(
+                    title: "Available Equipment",
+                    systemImage: "dumbbell.fill",
+                    options: Self.equipmentOptions,
+                    exercises: ExerciseLibraryService.shared.exercises,
+                    selection: $draft.equipment,
+                    label: { $0 }
+                )
+            }
         } header: {
             Text("Workout")
-        } footer: {
-            Text(
-                workoutLoggingEnabled
-                    ? "Your workout diary stays separate from nutrition. Training preferences and logged sets may be sent to your selected AI provider when you ask Coach about training."
-                    : "Adds a strength diary inside Workouts. Existing nutrition data is not changed."
-            )
         }
         .listRowBackground(AppColors.appCard)
         .onAppear(perform: loadPreferences)
@@ -88,90 +133,6 @@ struct WorkoutLoggingSettingsSection: View {
         .onChange(of: draft.issues) { _, issues in
             if !issues.contains(.other) { draft.additionalIssues = "" }
         }
-    }
-
-    private var trainingFocusSection: some View {
-        Section {
-            WorkoutTargetMuscleSelectorRow(
-                selection: $draft.targetMuscles,
-                allowedValues: Self.targetMuscleOptions,
-                isPresented: $isTargetMusclePickerPresented
-            )
-
-            WorkoutIssueMultiSelectRow(
-                title: "Issues & Injuries",
-                systemImage: "cross.case.fill",
-                selection: $draft.issues
-            )
-
-            if draft.issues.contains(.other) {
-                TextField("Describe anything else", text: $draft.additionalIssues, axis: .vertical)
-                    .lineLimit(2...4)
-                    .textInputAutocapitalization(.sentences)
-            }
-        } header: {
-            Text("Training Focus")
-        } footer: {
-            Text("Choose areas to prioritize, or leave target muscles empty for balanced training. Issues help keep suggestions relevant; follow your clinician's advice.")
-        }
-        .listRowBackground(AppColors.appCard)
-    }
-
-    private var scheduleSection: some View {
-        Section("Schedule") {
-            WorkoutPreferenceMenuRow(
-                title: "Frequency",
-                systemImage: "calendar.badge.clock",
-                selection: $draft.frequencyDays,
-                options: Array(1...7),
-                label: { "\($0) \($0 == 1 ? "day" : "days") / week" }
-            )
-
-            WorkoutPreferenceMenuRow(
-                title: "Session Length",
-                systemImage: "clock.fill",
-                selection: $draft.duration,
-                options: StrengthWorkoutDuration.allCases,
-                label: \.title
-            )
-
-            WorkoutSplitPickerRow(
-                title: "Training Split",
-                systemImage: "square.grid.2x2.fill",
-                selection: $draft.split
-            )
-
-            if draft.split == .custom {
-                TextField("e.g. Chest + back / Legs / Arms", text: $draft.customSplit, axis: .vertical)
-                    .lineLimit(1...3)
-                    .textInputAutocapitalization(.sentences)
-            }
-        }
-        .listRowBackground(AppColors.appCard)
-    }
-
-    private var workoutSetupSection: some View {
-        Section {
-            WorkoutRPEScalePickerRow(
-                title: "RPE Scale",
-                systemImage: "gauge.with.dots.needle.50percent",
-                selection: $draft.rpeScale
-            )
-
-            WorkoutEquipmentImagePickerRow(
-                title: "Available Equipment",
-                systemImage: "dumbbell.fill",
-                options: Self.equipmentOptions,
-                exercises: ExerciseLibraryService.shared.exercises,
-                selection: $draft.equipment,
-                label: { $0 }
-            )
-        } header: {
-            Text("Workout Setup")
-        } footer: {
-            Text("Leave equipment empty if it changes between workouts. Your RPE choice controls the effort field beside every logged set.")
-        }
-        .listRowBackground(AppColors.appCard)
     }
 
     private func loadPreferences() {

@@ -99,18 +99,18 @@ struct WorkoutIssueMultiSelectRow: View {
 private struct WorkoutPreferenceFieldLabel: View {
     let title: String
     let systemImage: String
-    var tint = Color.workoutSecondaryAccent
+    var tint = Color.workoutAccent
 
     var body: some View {
-        HStack(alignment: .center, spacing: 11) {
+        HStack(alignment: .center, spacing: 8) {
             Image(systemName: systemImage)
-                .font(.system(size: 19, weight: .semibold))
-                .symbolRenderingMode(.hierarchical)
+                .font(.body)
+                .symbolRenderingMode(.monochrome)
                 .foregroundStyle(tint)
-                .frame(width: 38, height: 34)
+                .frame(width: 24)
 
             Text(title)
-                .font(.body.weight(.semibold))
+                .font(.body)
                 .foregroundStyle(Color.workoutCharcoal)
                 .lineLimit(1)
                 .minimumScaleFactor(0.82)
@@ -130,7 +130,7 @@ private struct WorkoutPreferenceFieldRow<Content: View>: View {
     init(
         title: String,
         systemImage: String,
-        tint: Color = .workoutSecondaryAccent,
+        tint: Color = .workoutAccent,
         @ViewBuilder content: () -> Content
     ) {
         self.title = title
@@ -158,7 +158,6 @@ private struct WorkoutPreferenceFieldRow<Content: View>: View {
                 content
                     .layoutPriority(0)
             }
-            .padding(.vertical, 9)
             .contentShape(Rectangle())
         }
     }
@@ -188,7 +187,7 @@ private struct WorkoutPreferenceMenuValueLabel: View {
     var body: some View {
         HStack(spacing: 7) {
             Text(text)
-                .font(.body.weight(.semibold))
+                .font(.body)
                 .foregroundStyle(Color.workoutMutedText)
                 .lineLimit(1)
                 .minimumScaleFactor(0.82)
@@ -198,7 +197,7 @@ private struct WorkoutPreferenceMenuValueLabel: View {
                 .font(.caption2.weight(.bold))
                 .foregroundStyle(Color.workoutMutedText)
         }
-        .frame(minWidth: 72, maxWidth: 178, minHeight: 38, alignment: .trailing)
+        .frame(minWidth: 72, maxWidth: 178, alignment: .trailing)
     }
 }
 
