@@ -2,18 +2,68 @@ import SwiftUI
 import UIKit
 
 struct WorkoutsView: View {
+    @Environment(StrengthWorkoutStore.self) private var strengthWorkoutStore
+    @AppStorage(StrengthWorkoutSettings.enabledKey) private var workoutLoggingEnabled = false
+
+    @State private var showsActiveWorkout = false
+    @State private var showsWorkoutHistory = false
+    @State private var completedWorkout: StrengthWorkoutSession?
+
     var body: some View {
         NavigationStack {
-            ExerciseLibraryBrowserView()
-                .background(WorkoutsScreenBackground())
-                .navigationTitle("Workouts")
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar(.hidden, for: .navigationBar)
+            Group {
+                if workoutLoggingEnabled {
+                    ExerciseLibraryBrowserView {
+                        showsWorkoutHistory = true
+                    }
+                    .safeAreaInset(edge: .bottom, spacing: 0) {
+                        WorkoutSessionDock {
+                            completedWorkout = nil
+                            showsActiveWorkout = true
+                        }
+                        .padding(.horizontal, 20)
+                        .padding(.top, 8)
+                        .padding(.bottom, 6)
+                    }
+                } else {
+                    ExerciseLibraryBrowserView()
+                }
+            }
+            .background(WorkoutsScreenBackground())
+            .navigationTitle("Workouts")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar(.hidden, for: .navigationBar)
+        }
+        .sheet(isPresented: $showsWorkoutHistory) {
+            WorkoutHistoryView()
+                .environment(strengthWorkoutStore)
+                .presentationDetents([.large])
+                .presentationBackground(Color.workoutBackground)
+        }
+        .fullScreenCover(isPresented: $showsActiveWorkout, onDismiss: {
+            completedWorkout = nil
+        }) {
+            Group {
+                if let completedWorkout {
+                    WorkoutCompletionSummaryView(session: completedWorkout) {
+                        showsActiveWorkout = false
+                    }
+                } else {
+                    ActiveWorkoutSessionView { session in
+                        completedWorkout = session
+                    } onClosed: {
+                        showsActiveWorkout = false
+                    }
+                }
+            }
+            .environment(strengthWorkoutStore)
         }
     }
 }
 
 private struct ExerciseLibraryBrowserView: View {
+    var onShowWorkoutHistory: (() -> Void)? = nil
+
     @State private var searchText = ""
     @State private var selectedLevels: Set<String> = []
     @State private var selectedRawEquipment: Set<String> = []
@@ -159,7 +209,24 @@ private struct ExerciseLibraryBrowserView: View {
 
     private var filters: some View {
         VStack(alignment: .leading, spacing: 12) {
-            WorkoutsSearchPill(searchText: $searchText)
+            HStack(spacing: 10) {
+                WorkoutsSearchPill(searchText: $searchText)
+
+                if let onShowWorkoutHistory {
+                    Button(action: onShowWorkoutHistory) {
+                        Image(systemName: "clock.arrow.circlepath")
+                            .font(.system(size: 18, weight: .bold))
+                            .foregroundStyle(Color.workoutAccent)
+                            .frame(width: 50, height: 50)
+                            .contentShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+                    }
+                    .buttonStyle(.plain)
+                    .workoutPressable()
+                    .workoutLiquidBarSurface(cornerRadius: 22)
+                    .accessibilityLabel("Workout history")
+                    .accessibilityHint("Shows completed workouts and exercise progress")
+                }
+            }
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 9) {
@@ -646,7 +713,13 @@ private struct LibraryTag: View {
 
 struct ExerciseLibraryDetailView: View {
     let item: ExerciseLibraryItem
+
+    @Environment(StrengthWorkoutStore.self) private var strengthWorkoutStore
+    @AppStorage(StrengthWorkoutSettings.enabledKey) private var workoutLoggingEnabled = false
+
     @State private var isMetricsPresented = false
+    @State private var showsActiveWorkout = false
+    @State private var completedWorkout: StrengthWorkoutSession?
 
     var body: some View {
         GeometryReader { geometry in
@@ -659,6 +732,13 @@ struct ExerciseLibraryDetailView: View {
                             .frame(width: screenWidth, height: 294)
 
                         VStack(alignment: .leading, spacing: 24) {
+                            if workoutLoggingEnabled {
+                                ExerciseWorkoutActionCard(item: item) {
+                                    completedWorkout = nil
+                                    showsActiveWorkout = true
+                                }
+                            }
+
                             DetailInstructionSection(instructions: item.instructions)
                         }
                         .padding(.horizontal, 20)
@@ -680,6 +760,24 @@ struct ExerciseLibraryDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(.visible, for: .navigationBar)
         .toolbarBackground(Color.workoutBackground, for: .navigationBar)
+        .fullScreenCover(isPresented: $showsActiveWorkout, onDismiss: {
+            completedWorkout = nil
+        }) {
+            Group {
+                if let completedWorkout {
+                    WorkoutCompletionSummaryView(session: completedWorkout) {
+                        showsActiveWorkout = false
+                    }
+                } else {
+                    ActiveWorkoutSessionView { session in
+                        completedWorkout = session
+                    } onClosed: {
+                        showsActiveWorkout = false
+                    }
+                }
+            }
+            .environment(strengthWorkoutStore)
+        }
     }
 
     private func detailHero(width: CGFloat) -> some View {
