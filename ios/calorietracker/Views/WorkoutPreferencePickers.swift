@@ -644,7 +644,7 @@ struct WorkoutSplitPickerRow: View {
             title: title,
             systemImage: systemImage,
             selection: $selection,
-            options: StrengthWorkoutSplit.allCases,
+            options: StrengthWorkoutSplit.selectableCases,
             label: \.title
         )
     }
@@ -656,7 +656,7 @@ private struct WorkoutSplitPickerSheet: View {
 
     private let splits: [StrengthWorkoutSplit] = [
         .fullBody, .upperLower, .pushPullLegs, .broSplit, .arnold,
-        .pushPull, .antagonistSplit, .hybridSplit, .custom
+        .pushPull, .antagonistSplit, .hybridSplit
     ]
 
     var body: some View {

@@ -15,12 +15,6 @@ struct WorkoutLoggingSettingsSection: View {
                 selection: $draft.split
             )
 
-            if draft.split == .custom {
-                TextField("e.g. Chest + back / Legs / Arms", text: $draft.customSplit, axis: .vertical)
-                    .lineLimit(1...3)
-                    .textInputAutocapitalization(.sentences)
-            }
-
             WorkoutRPEScalePickerRow(
                 title: "RPE Scale",
                 systemImage: "gauge.with.dots.needle.50percent",
@@ -36,9 +30,6 @@ struct WorkoutLoggingSettingsSection: View {
         .onChange(of: draft) { _, newValue in
             guard hasLoaded else { return }
             workoutStore.updatePreferences { $0 = newValue }
-        }
-        .onChange(of: draft.split) { _, split in
-            if split != .custom { draft.customSplit = "" }
         }
     }
 

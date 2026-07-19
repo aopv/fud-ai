@@ -134,6 +134,11 @@ enum StrengthWorkoutSplit: String, Codable, CaseIterable, Identifiable {
     case fullBody
     case custom
 
+    static let selectableCases: [StrengthWorkoutSplit] = [
+        .fullBody, .upperLower, .pushPullLegs, .broSplit, .arnold,
+        .pushPull, .antagonistSplit, .hybridSplit
+    ]
+
     var id: String { rawValue }
 
     var title: String {
@@ -188,7 +193,7 @@ struct StrengthWorkoutPreferences: Codable, Equatable {
     var additionalIssues = ""
     var frequencyDays = 3
     var duration: StrengthWorkoutDuration = .sixty
-    var split: StrengthWorkoutSplit = .pushPullLegs
+    var split: StrengthWorkoutSplit = .fullBody
     var customSplit = ""
     var equipment: Set<String> = []
     var rpeScale: StrengthWorkoutRPEScale = .strength
@@ -199,7 +204,8 @@ struct StrengthWorkoutPreferences: Codable, Equatable {
         additionalIssues = additionalIssues.trimmingCharacters(in: .whitespacesAndNewlines)
         customSplit = customSplit.trimmingCharacters(in: .whitespacesAndNewlines)
         if !issues.contains(.other) { additionalIssues = "" }
-        if split != .custom { customSplit = "" }
+        if split == .custom { split = .fullBody }
+        customSplit = ""
         strength.benchPressKg = Self.validLoad(strength.benchPressKg)
         strength.squatKg = Self.validLoad(strength.squatKg)
         strength.deadliftKg = Self.validLoad(strength.deadliftKg)

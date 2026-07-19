@@ -14,6 +14,21 @@ struct StrengthWorkoutStoreTests {
         #expect(WorkoutTabMode.log.tabIcon == "figure.strengthtraining.traditional")
     }
 
+    @Test func workoutPreferencesDefaultToFullBodyAndMigrateLegacyCustomSplits() {
+        var preferences = StrengthWorkoutPreferences()
+
+        #expect(preferences.split == .fullBody)
+        #expect(StrengthWorkoutSplit.selectableCases.first == .fullBody)
+        #expect(!StrengthWorkoutSplit.selectableCases.contains(.custom))
+
+        preferences.split = .custom
+        preferences.customSplit = "Chest + back / Legs / Arms"
+        preferences.sanitize()
+
+        #expect(preferences.split == .fullBody)
+        #expect(preferences.customSplit.isEmpty)
+    }
+
     @Test func workoutLogTimerResetPreservesSelectedDay() {
         let selectedDate = WorkoutTestFixture.date(2026, 7, 12)
         let session = WorkoutLogSessionState()
