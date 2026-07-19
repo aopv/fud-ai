@@ -2,11 +2,12 @@ import AudioToolbox
 import SwiftUI
 import UIKit
 
-/// Ephemeral logger state owned by the Workouts tab so a native Back navigation
-/// does not discard an in-progress timer. Planned and completed workouts remain
-/// persisted separately by `StrengthWorkoutStore`.
+/// Ephemeral logger state owned by the Workouts tab so switching between the
+/// library and logger does not discard the selected day or an in-progress timer.
+/// Planned and completed workouts remain persisted by `StrengthWorkoutStore`.
 @Observable
 final class WorkoutLogSessionState {
+    var selectedDate = Date.now
     var activeSessionDate: Date?
     var activeSessionDateKey: String?
     var workoutStartedAt: Date?
@@ -14,6 +15,11 @@ final class WorkoutLogSessionState {
     var accumulatedElapsedSeconds = 0
 
     func reset() {
+        selectedDate = .now
+        resetTimer()
+    }
+
+    func resetTimer() {
         activeSessionDate = nil
         activeSessionDateKey = nil
         workoutStartedAt = nil
@@ -30,7 +36,6 @@ struct WorkoutLogView: View {
     @AppStorage(WeightUnit.storageKey) private var weightUnitRaw = WeightUnit.lbs.rawValue
     @AppStorage(AppThemeColor.storageKey) private var appThemeColorRaw = AppThemeColor.defaultColor.rawValue
 
-    @State private var selectedDate = Date.now
     @State private var pickerRequest: WorkoutLogPickerRequest?
     @State private var isCopySheetPresented = false
     @State private var selectedDetailItem: ExerciseLibraryItem?
@@ -42,13 +47,28 @@ struct WorkoutLogView: View {
     private let library = ExerciseLibraryService.shared
     private let session: WorkoutLogSessionState
     private let embedsInNavigationStack: Bool
+    private let onShowLibrary: (() -> Void)?
 
     init(
         session: WorkoutLogSessionState = WorkoutLogSessionState(),
-        embedsInNavigationStack: Bool = true
+        embedsInNavigationStack: Bool = true,
+        onShowLibrary: (() -> Void)? = nil
     ) {
         self.session = session
         self.embedsInNavigationStack = embedsInNavigationStack
+        self.onShowLibrary = onShowLibrary
+    }
+
+    private var selectedDate: Date {
+        get { session.selectedDate }
+        nonmutating set { session.selectedDate = newValue }
+    }
+
+    private var selectedDateBinding: Binding<Date> {
+        Binding(
+            get: { session.selectedDate },
+            set: { session.selectedDate = $0 }
+        )
     }
 
     private var activeSessionDate: Date? {
@@ -164,7 +184,7 @@ struct WorkoutLogView: View {
                 List {
                     Section {
                         WorkoutLogWeekStrip(
-                            selectedDate: $selectedDate,
+                            selectedDate: selectedDateBinding,
                             workoutCountForDate: workoutStore.workoutCount
                         )
                         .listRowBackground(Color.clear)
@@ -282,6 +302,7 @@ struct WorkoutLogView: View {
                 .background(Color.workoutBackground.ignoresSafeArea())
                 .listSectionSpacing(8)
                 .scrollDismissesKeyboard(.interactively)
+                .contentMargins(.bottom, 96, for: .scrollContent)
                 .animation(.snappy, value: selectedDate)
                 .onChange(of: focusedSetField) { oldValue, newValue in
                     guard let exerciseID = newValue?.exerciseID,
@@ -294,6 +315,10 @@ struct WorkoutLogView: View {
                         }
                     }
                 }
+                .overlay(alignment: .bottomTrailing) {
+                    addExerciseMenu
+                        .padding(24)
+                }
             }
             // Delts' diary deliberately kept the chrome quiet: the tab label
             // names the feature while the date strip and timer lead the page.
@@ -301,8 +326,16 @@ struct WorkoutLogView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar(.visible, for: .navigationBar)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    addExerciseMenu
+                if let onShowLibrary {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button(action: onShowLibrary) {
+                            Image(systemName: "dumbbell.fill")
+                                .font(.system(size: 18, weight: .bold))
+                        }
+                        .tint(Color.workoutAccent)
+                        .accessibilityLabel("Exercise library")
+                        .accessibilityHint("Switches back to the workout library")
+                    }
                 }
 
                 ToolbarItemGroup(placement: .keyboard) {
@@ -402,7 +435,10 @@ struct WorkoutLogView: View {
             }
         } label: {
             Image(systemName: "plus")
-                .font(.title2.weight(.semibold))
+                .font(.system(size: 26, weight: .semibold))
+                .foregroundStyle(.white)
+                .frame(width: 60, height: 60)
+                .background(Color.workoutAccent, in: Circle())
         }
         .tint(Color.workoutAccent)
         .accessibilityLabel("Add workout")
@@ -482,7 +518,7 @@ struct WorkoutLogView: View {
     }
 
     private func resetTimerState() {
-        session.reset()
+        session.resetTimer()
     }
 
     private func currentElapsedSeconds(at date: Date) -> Int {

@@ -4,6 +4,37 @@ import Testing
 
 @MainActor
 struct StrengthWorkoutStoreTests {
+    @Test func workoutLogTimerResetPreservesSelectedDay() {
+        let selectedDate = WorkoutTestFixture.date(2026, 7, 12)
+        let session = WorkoutLogSessionState()
+        session.selectedDate = selectedDate
+        session.activeSessionDate = selectedDate
+        session.activeSessionDateKey = StrengthWorkoutStore.dateKey(for: selectedDate)
+        session.workoutStartedAt = selectedDate
+        session.runningSegmentStartedAt = selectedDate
+        session.accumulatedElapsedSeconds = 90
+
+        session.resetTimer()
+
+        #expect(session.selectedDate == selectedDate)
+        #expect(session.activeSessionDate == nil)
+        #expect(session.activeSessionDateKey == nil)
+        #expect(session.workoutStartedAt == nil)
+        #expect(session.runningSegmentStartedAt == nil)
+        #expect(session.accumulatedElapsedSeconds == 0)
+    }
+
+    @Test func workoutLogFullResetReturnsToToday() {
+        let session = WorkoutLogSessionState()
+        session.selectedDate = WorkoutTestFixture.date(2026, 7, 12)
+        session.activeSessionDate = session.selectedDate
+
+        session.reset()
+
+        #expect(Calendar.current.isDateInToday(session.selectedDate))
+        #expect(session.activeSessionDate == nil)
+    }
+
     @Test func persistenceReloadRestoresDiarySavedExercisesAndPreferences() throws {
         let fixture = WorkoutTestFixture()
         defer { fixture.cleanUp() }

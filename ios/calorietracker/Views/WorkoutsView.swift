@@ -1,37 +1,54 @@
 import SwiftUI
 import UIKit
 
+private enum WorkoutsMode {
+    case library
+    case log
+}
+
 struct WorkoutsView: View {
     @AppStorage(StrengthWorkoutSettings.enabledKey) private var workoutLoggingEnabled = false
     @AppStorage(AppThemeColor.storageKey) private var appThemeColorRaw = AppThemeColor.defaultColor.rawValue
-    @State private var showsWorkoutLog = false
+    @State private var selectedMode: WorkoutsMode = .library
     @State private var workoutLogSession = WorkoutLogSessionState()
 
     var body: some View {
         NavigationStack {
-            ExerciseLibraryBrowserView(
-                onShowWorkoutLog: workoutLoggingEnabled ? { showsWorkoutLog = true } : nil
-            )
-                .background(WorkoutsScreenBackground())
-                .navigationTitle("Workouts")
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar(.hidden, for: .navigationBar)
-                .navigationDestination(isPresented: $showsWorkoutLog) {
+            Group {
+                if workoutLoggingEnabled, selectedMode == .log {
                     WorkoutLogView(
                         session: workoutLogSession,
-                        embedsInNavigationStack: false
+                        embedsInNavigationStack: false,
+                        onShowLibrary: { showMode(.library) }
                     )
+                    .transition(.opacity)
+                } else {
+                    ExerciseLibraryBrowserView(
+                        onShowWorkoutLog: workoutLoggingEnabled ? { showMode(.log) } : nil
+                    )
+                    .background(WorkoutsScreenBackground())
+                    .navigationTitle("Workouts")
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar(.hidden, for: .navigationBar)
+                    .transition(.opacity)
                 }
+            }
         }
         .onChange(of: workoutLoggingEnabled) { _, enabled in
             if !enabled {
-                showsWorkoutLog = false
+                selectedMode = .library
                 workoutLogSession.reset()
             }
         }
         // Refresh static workout theme tokens without replacing this stack or
         // discarding its route and session-only timer state.
         .animation(.easeInOut(duration: 0.2), value: appThemeColorRaw)
+    }
+
+    private func showMode(_ mode: WorkoutsMode) {
+        withAnimation(.easeInOut(duration: 0.2)) {
+            selectedMode = mode
+        }
     }
 }
 
