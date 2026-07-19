@@ -7,16 +7,6 @@ struct WorkoutLoggingSettingsSection: View {
     @State private var draft = StrengthWorkoutPreferences()
     @State private var hasLoaded = false
 
-    private static let equipmentOptions: [String] = {
-        let libraryValues = ExerciseLibraryService.shared.availableRawEquipment
-        if !libraryValues.isEmpty { return libraryValues }
-        return [
-            "Bands", "Barbell", "Body Only", "Cable", "Dumbbell", "E-Z Curl Bar",
-            "Exercise Ball", "Foam Roll", "Kettlebells", "Machine", "Medicine Ball", "Other",
-            "Unspecified"
-        ]
-    }()
-
     var body: some View {
         Section {
             WorkoutSplitPickerRow(
@@ -38,15 +28,6 @@ struct WorkoutLoggingSettingsSection: View {
             )
 
             rpeScaleGuide
-
-            WorkoutEquipmentImagePickerRow(
-                title: "Available Equipment",
-                systemImage: "dumbbell.fill",
-                options: Self.equipmentOptions,
-                exercises: ExerciseLibraryService.shared.exercises,
-                selection: $draft.equipment,
-                label: { $0 }
-            )
         } header: {
             Text("Workout")
         }
