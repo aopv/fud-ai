@@ -1,3 +1,4 @@
+import AudioToolbox
 import SwiftUI
 import UIKit
 
@@ -138,7 +139,6 @@ struct WorkoutLogView: View {
                             ForEach(selectedExercises) { exercise in
                                 WorkoutLogExerciseCard(
                                     exercise: exercise,
-                                    date: selectedDate,
                                     weightUnit: weightUnit.rawValue,
                                     rpeScale: workoutStore.preferences.rpeScale,
                                     isLoggingEnabled: isTimerRunning,
@@ -190,6 +190,7 @@ struct WorkoutLogView: View {
                                     } label: {
                                         Label("Delete", systemImage: "trash.fill")
                                     }
+                                    .tint(Color(red: 0.58, green: 0.10, blue: 0.08))
 
                                     Button {
                                         workoutStore.toggleSaved(exercise.itemID)
@@ -200,7 +201,7 @@ struct WorkoutLogView: View {
                                             systemImage: isSaved ? "bookmark.slash.fill" : "bookmark.fill"
                                         )
                                     }
-                                    .tint(Color.workoutAccent)
+                                    .tint(Color(red: 0.18, green: 0.42, blue: 0.16))
                                 }
                             }
                         }
@@ -208,8 +209,8 @@ struct WorkoutLogView: View {
                         HStack(alignment: .center) {
                             Label(selectedDateTitle, systemImage: "dumbbell.fill")
                             Spacer()
-                            Text("\(selectedExercises.count) \(selectedExercises.count == 1 ? "exercise" : "exercises")")
-                                .font(.system(.caption, design: .rounded, weight: .bold))
+                            Text("\(selectedExercises.count) workout\(selectedExercises.count == 1 ? "" : "s")")
+                                .font(.caption.weight(.bold))
                         }
                         .textCase(nil)
                     }
@@ -235,8 +236,6 @@ struct WorkoutLogView: View {
             // names the feature while the date strip and timer lead the page.
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(Color.workoutBackground, for: .navigationBar)
-            .toolbarBackground(.visible, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     addExerciseMenu
@@ -267,10 +266,10 @@ struct WorkoutLogView: View {
             } message: {
                 Text("Stop or discard the \(activeSessionDateTitle) timer before starting another.")
             }
-            .alert("Add exercises first", isPresented: $isEmptyWorkoutAlertPresented) {
+            .alert("Add workouts first", isPresented: $isEmptyWorkoutAlertPresented) {
                 Button("OK", role: .cancel) {}
             } message: {
-                Text("Add at least one exercise to \(selectedDateTitle) before starting the timer.")
+                Text("Add at least one workout to \(selectedDateTitle) before starting the timer.")
             }
             .sheet(item: $pickerRequest) { request in
                 WorkoutLogExercisePickerSheet(
@@ -312,7 +311,7 @@ struct WorkoutLogView: View {
                 Button {
                     pickerRequest = WorkoutLogPickerRequest(context: .saved, initialSource: .saved)
                 } label: {
-                    Label("Saved", systemImage: "bookmark.fill")
+                    WorkoutLogPickerContextMenuLabel(context: .saved)
                 }
 
                 Button {
@@ -320,13 +319,12 @@ struct WorkoutLogView: View {
                 } label: {
                     Label("Copy from day", systemImage: "calendar.badge.plus")
                 }
-                .disabled(copyableDays.isEmpty)
 
                 if splitGroups.isEmpty {
                     Button {
                         pickerRequest = WorkoutLogPickerRequest(context: .all, initialSource: .dataset)
                     } label: {
-                        Label("All exercises", systemImage: "square.grid.2x2")
+                        WorkoutLogPickerContextMenuLabel(context: .all)
                     }
                 } else {
                     ForEach(splitGroups) { group in
@@ -336,7 +334,9 @@ struct WorkoutLogView: View {
                                 initialSource: .dataset
                             )
                         } label: {
-                            Label(group.title, systemImage: WorkoutLogPickerContext.systemImage(for: group.title))
+                            WorkoutLogPickerContextMenuLabel(
+                                context: WorkoutLogPickerContext(title: group.title, muscles: group.muscles)
+                            )
                         }
                     }
                 }
@@ -346,8 +346,7 @@ struct WorkoutLogView: View {
                 .font(.title2.weight(.semibold))
         }
         .tint(Color.workoutAccent)
-        .accessibilityLabel("Add exercise")
-        .accessibilityHint("Choose saved exercises, copy a prior day, or browse your workout split")
+        .accessibilityLabel("Add workout")
     }
 
     private var selectedDateTitle: String {
@@ -366,17 +365,19 @@ struct WorkoutLogView: View {
     }
 
     private func handleTimerTap() {
-        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-
         if isTimerRunning {
+            playTimerClick()
             pauseTimer()
         } else if isTimerPaused {
+            playTimerClick()
             runningSegmentStartedAt = .now
         } else if activeSessionDateKey != nil {
+            playTimerClick()
             isOtherDateTimerDialogPresented = true
         } else if selectedExercises.isEmpty {
             isEmptyWorkoutAlertPresented = true
         } else {
+            playTimerClick()
             startTimer()
         }
     }
@@ -397,6 +398,7 @@ struct WorkoutLogView: View {
     }
 
     private func stopTimer() {
+        playTimerClick()
         let elapsed = currentElapsedSeconds(at: .now)
         let startedAt = workoutStartedAt ?? Date.now.addingTimeInterval(TimeInterval(-elapsed))
 
@@ -408,12 +410,16 @@ struct WorkoutLogView: View {
             weightUnit: weightUnit
         )
         resetTimerState()
-        UINotificationFeedbackGenerator().notificationOccurred(.success)
     }
 
     private func discardTimer() {
+        playTimerClick()
         resetTimerState()
-        UINotificationFeedbackGenerator().notificationOccurred(.warning)
+    }
+
+    private func playTimerClick() {
+        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        AudioServicesPlaySystemSound(1104)
     }
 
     private func resetTimerState() {
@@ -529,7 +535,7 @@ private struct WorkoutLogWeekStrip: View {
         .buttonStyle(.plain)
         .frame(maxWidth: .infinity)
         .accessibilityLabel(date.formatted(date: .complete, time: .omitted))
-        .accessibilityValue("\(workoutCount) \(workoutCount == 1 ? "exercise" : "exercises")\(isSelected ? ", selected" : "")")
+        .accessibilityValue("\(workoutCount) workout\(workoutCount == 1 ? "" : "s")\(isSelected ? ", selected" : "")")
     }
 
     private func weekDates(for weekIndex: Int) -> [Date] {
@@ -618,31 +624,32 @@ private struct WorkoutLogTimerButton: View {
     var body: some View {
         TimelineView(.periodic(from: .now, by: 1)) { context in
             Button(action: action) {
-                ZStack {
-                    WorkoutLogRedTimerSurface(isRunning: isRunning)
+                VStack(spacing: 10) {
+                    Image(systemName: isRunning ? "pause.fill" : "play.fill")
+                        .font(.system(size: 30, weight: .black))
+                        .foregroundStyle(Color.white)
+                        .shadow(color: Color.black.opacity(0.52), radius: 2, y: 1)
+                        .frame(height: 34)
 
-                    VStack(spacing: 10) {
-                        Image(systemName: isRunning ? "pause.fill" : "play.fill")
-                            .font(.system(size: 30, weight: .black))
-                            .foregroundStyle(.white)
-                            .shadow(color: .black.opacity(0.52), radius: 2, y: 1)
-                            .frame(height: 34)
-
-                        Text(elapsedDisplay(at: context.date))
-                            .font(.system(size: 34, weight: .black, design: .rounded))
-                            .foregroundStyle(.white)
-                            .contentTransition(.numericText())
-                            .monospacedDigit()
-                            .lineLimit(1)
-                            .shadow(color: .black.opacity(0.62), radius: 2, y: 1)
-                    }
+                    Text(elapsedDisplay(at: context.date))
+                        .font(.system(size: 34, weight: .black, design: .rounded))
+                        .foregroundStyle(Color.white)
+                        .contentTransition(.numericText())
+                        .monospacedDigit()
+                        .lineLimit(1)
+                        .shadow(color: Color.black.opacity(0.62), radius: 2, y: 1)
                 }
-                .frame(width: 176, height: 176)
+                .frame(width: 156, height: 156)
+                .background {
+                    Image("timer_button_red")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 176, height: 176)
+                        .shadow(color: Color.black.opacity(0.34), radius: 16, y: 8)
+                }
             }
             .buttonStyle(WorkoutLogTimerButtonStyle(isRunning: isRunning))
             .accessibilityLabel(accessibilityLabel)
-            .accessibilityValue(elapsedDisplay(at: context.date))
-            .accessibilityHint(isRunning ? "Double tap to pause and show stop controls" : "Double tap to start or resume logging")
         }
     }
 
@@ -654,87 +661,14 @@ private struct WorkoutLogTimerButton: View {
 
     private func elapsedDisplay(at date: Date) -> String {
         let total = totalElapsedSeconds(at: date)
-        let hours = total / 3600
-        let minutes = (total % 3600) / 60
+        let minutes = total / 60
         let seconds = total % 60
-        if hours > 0 {
-            return String(format: "%d:%02d:%02d", hours, minutes, seconds)
-        }
-        return String(format: "%02d:%02d", minutes, seconds)
+        return String(format: "%d:%02d", minutes, seconds)
     }
 
     private func totalElapsedSeconds(at date: Date) -> Int {
         guard let startedAt else { return elapsedSeconds }
         return elapsedSeconds + max(0, Int(date.timeIntervalSince(startedAt)))
-    }
-}
-
-/// A vector rendering of Delts' recognizable red timer button, so the diary
-/// keeps its visual signature without importing a separate bitmap or theme.
-private struct WorkoutLogRedTimerSurface: View {
-    let isRunning: Bool
-
-    var body: some View {
-        ZStack {
-            Circle()
-                .fill(Color.black.opacity(0.30))
-                .frame(width: 166, height: 166)
-                .offset(y: 6)
-                .blur(radius: 8)
-
-            Circle()
-                .fill(
-                    AngularGradient(
-                        colors: [
-                            Color(red: 0.45, green: 0.01, blue: 0.02),
-                            Color(red: 0.96, green: 0.07, blue: 0.08),
-                            Color(red: 0.56, green: 0.01, blue: 0.02),
-                            Color(red: 0.98, green: 0.13, blue: 0.12),
-                            Color(red: 0.45, green: 0.01, blue: 0.02)
-                        ],
-                        center: .center
-                    )
-                )
-                .frame(width: 170, height: 170)
-                .overlay {
-                    Circle()
-                        .stroke(Color.black.opacity(0.36), lineWidth: 3)
-                        .padding(2)
-                }
-
-            Circle()
-                .fill(
-                    LinearGradient(
-                        colors: [
-                            Color(red: 0.96, green: 0.11, blue: 0.11),
-                            Color(red: 0.62, green: 0.01, blue: 0.02)
-                        ],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
-                .frame(width: 148, height: 148)
-                .overlay {
-                    Circle()
-                        .stroke(Color.white.opacity(0.19), lineWidth: 1.5)
-                }
-
-            Circle()
-                .trim(from: 0.08, to: 0.39)
-                .stroke(
-                    Color.white.opacity(isRunning ? 0.32 : 0.22),
-                    style: StrokeStyle(lineWidth: 6, lineCap: .round)
-                )
-                .frame(width: 137, height: 137)
-                .rotationEffect(.degrees(195))
-
-            Ellipse()
-                .fill(Color.white.opacity(0.13))
-                .frame(width: 90, height: 38)
-                .blur(radius: 4)
-                .offset(x: -18, y: -44)
-        }
-        .shadow(color: Color.black.opacity(0.30), radius: 15, y: 8)
     }
 }
 
@@ -762,11 +696,9 @@ private struct WorkoutLogTimerSideControls: View {
 }
 
 private struct WorkoutLogTimerSideButton: View {
-    enum Role { case stop, discard }
-
     let title: String
     let systemImage: String
-    let role: Role
+    let role: WorkoutLogTimerSideButtonStyle.Role
     let action: () -> Void
 
     var body: some View {
@@ -774,9 +706,9 @@ private struct WorkoutLogTimerSideButton: View {
             HStack(spacing: 8) {
                 Image(systemName: systemImage)
                     .font(.system(size: 11, weight: .black))
-                    .foregroundStyle(role == .stop ? Color.workoutAccent : .white)
+                    .foregroundStyle(iconForeground)
                     .frame(width: 22, height: 22)
-                    .background(role == .stop ? Color.workoutOnAccent.opacity(0.96) : Color.red.opacity(0.88), in: Circle())
+                    .background(iconBackground, in: Circle())
 
                 Text(title)
                     .font(.system(size: 13, weight: .black, design: .rounded))
@@ -785,21 +717,84 @@ private struct WorkoutLogTimerSideButton: View {
 
                 Spacer(minLength: 0)
             }
-            .padding(.horizontal, 7)
-            .frame(maxWidth: .infinity, minHeight: 46)
-            .foregroundStyle(role == .stop ? Color.workoutOnAccent : Color.red)
+            .padding(.leading, 7)
+            .padding(.trailing, 8)
+            .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(WorkoutLogTimerSideButtonStyle(role: role))
+        .accessibilityLabel(title)
+    }
+
+    private var iconForeground: Color {
+        switch role {
+        case .stop: return Color.workoutAccent
+        case .discard: return Color.white
+        }
+    }
+
+    private var iconBackground: Color {
+        switch role {
+        case .stop: return Color.workoutOnAccent.opacity(0.96)
+        case .discard: return Color.red.opacity(0.88)
+        }
+    }
+}
+
+private struct WorkoutLogTimerSideButtonStyle: ButtonStyle {
+    enum Role { case stop, discard }
+
+    let role: Role
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .foregroundStyle(foreground)
+            .frame(height: 46)
             .background(
-                role == .stop ? Color.workoutAccent : Color.workoutCard.opacity(0.72),
+                configuration.isPressed ? pressedBackground : background,
                 in: RoundedRectangle(cornerRadius: 21, style: .continuous)
             )
             .overlay {
                 RoundedRectangle(cornerRadius: 21, style: .continuous)
-                    .stroke(role == .stop ? Color.workoutAccent.opacity(0.45) : Color.red.opacity(0.42), lineWidth: 0.8)
+                    .stroke(border, lineWidth: role == .stop ? 0.8 : 1)
             }
+            .shadow(color: shadowColor, radius: role == .stop ? 7 : 0, x: 0, y: role == .stop ? 4 : 0)
+            .scaleEffect(configuration.isPressed ? 0.96 : 1)
+            .animation(.snappy(duration: 0.12), value: configuration.isPressed)
+    }
+
+    private var foreground: Color {
+        switch role {
+        case .stop: return Color.workoutOnAccent
+        case .discard: return Color.red.opacity(0.92)
         }
-        .buttonStyle(.plain)
-        .workoutPressable()
-        .accessibilityLabel(title == "Stop" ? "Stop and save workout" : "Discard timer")
+    }
+
+    private var background: Color {
+        switch role {
+        case .stop: return Color.workoutAccent
+        case .discard: return Color.workoutCard.opacity(0.72)
+        }
+    }
+
+    private var pressedBackground: Color {
+        switch role {
+        case .stop: return Color.workoutAccent.opacity(0.82)
+        case .discard: return Color.red.opacity(0.10)
+        }
+    }
+
+    private var border: Color {
+        switch role {
+        case .stop: return Color.workoutAccent.opacity(0.45)
+        case .discard: return Color.red.opacity(0.42)
+        }
+    }
+
+    private var shadowColor: Color {
+        switch role {
+        case .stop: return Color.workoutAccent.opacity(0.24)
+        case .discard: return Color.clear
+        }
     }
 }
 
@@ -819,6 +814,7 @@ private struct WorkoutLogStatsStrip: View {
     let workoutCount: Int
     let repCount: Int
     let durationText: String
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         HStack(spacing: 0) {
@@ -840,7 +836,12 @@ private struct WorkoutLogStatsStrip: View {
             RoundedRectangle(cornerRadius: 26, style: .continuous)
                 .stroke(Color.workoutHairline.opacity(0.72), lineWidth: 0.8)
         }
+        .shadow(color: shadowColor, radius: colorScheme == .light ? 0 : 12, x: 0, y: colorScheme == .light ? 0 : 8)
         .accessibilityElement(children: .contain)
+    }
+
+    private var shadowColor: Color {
+        colorScheme == .light ? .clear : Color.black.opacity(0.18)
     }
 
     private var divider: some View {
@@ -855,24 +856,25 @@ private struct WorkoutLogStatsStrip: View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(spacing: 4) {
                 Image(systemName: systemImage)
-                    .font(.system(size: 10, weight: .heavy))
+                    .font(.system(size: 11, weight: .heavy))
                     .foregroundStyle(active ? Color.workoutAccent : Color.workoutMutedText.opacity(0.72))
+                    .frame(width: 14, height: 14)
                 Text(label)
-                    .font(.system(size: 9, weight: .heavy, design: .rounded))
+                    .font(.system(size: 10, weight: .heavy, design: .rounded))
                     .foregroundStyle(Color.workoutMutedText)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.65)
+                    .minimumScaleFactor(0.7)
             }
 
             Text(value)
-                .font(.system(size: 20, weight: .black, design: .rounded))
+                .font(.system(size: 24, weight: .black, design: .rounded))
                 .foregroundStyle(active ? Color.workoutAccent : Color.workoutCharcoal)
                 .contentTransition(.numericText())
-                .minimumScaleFactor(0.42)
+                .minimumScaleFactor(0.5)
                 .lineLimit(1)
         }
         .frame(maxWidth: .infinity, minHeight: 58, alignment: .leading)
-        .padding(.horizontal, 5)
+        .padding(.horizontal, 7)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(label)
         .accessibilityValue(value.replacingOccurrences(of: "--", with: "not available"))
@@ -891,7 +893,6 @@ private struct WorkoutLogSetFocus: Hashable {
 
 private struct WorkoutLogExerciseCard: View {
     let exercise: StrengthPlannedExercise
-    let date: Date
     let weightUnit: String
     let rpeScale: StrengthWorkoutRPEScale
     let isLoggingEnabled: Bool
@@ -901,6 +902,7 @@ private struct WorkoutLogExerciseCard: View {
     let updateWeight: (UUID, String) -> Void
     let updateReps: (UUID, String) -> Void
     let updateRPE: (UUID, String) -> Void
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -915,7 +917,12 @@ private struct WorkoutLogExerciseCard: View {
                     )
                     .frame(width: 64, height: 64)
                     .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 16, style: .continuous)
+                            .stroke(Color.workoutHairline.opacity(0.48), lineWidth: 0.7)
+                    }
                     .clipped()
+                    .layoutPriority(0)
                     .accessibilityHidden(true)
 
                     VStack(alignment: .leading, spacing: 6) {
@@ -931,6 +938,7 @@ private struct WorkoutLogExerciseCard: View {
                             .minimumScaleFactor(0.72)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .layoutPriority(1)
 
                     Image(systemName: "chevron.right")
                         .font(.caption.weight(.bold))
@@ -997,6 +1005,11 @@ private struct WorkoutLogExerciseCard: View {
             RoundedRectangle(cornerRadius: 24, style: .continuous)
                 .stroke(Color.workoutHairline.opacity(0.82), lineWidth: 0.8)
         }
+        .shadow(color: shadowColor, radius: colorScheme == .light ? 0 : 12, x: 0, y: colorScheme == .light ? 0 : 7)
+    }
+
+    private var shadowColor: Color {
+        colorScheme == .light ? .clear : Color.black.opacity(0.22)
     }
 }
 
@@ -1022,48 +1035,43 @@ private struct WorkoutLogSetRow: View {
                 .frame(width: 46, alignment: .leading)
 
             WorkoutLogSetValueField(
-                title: "Weight",
-                placeholder: "Weight",
-                suffix: set.weightUnit ?? weightUnit,
+                placeholder: set.weightUnit ?? weightUnit,
                 text: Binding(get: { set.weight }, set: updateWeight),
                 keyboardType: .decimalPad,
                 focus: WorkoutLogSetFocus(exerciseID: exerciseID, setID: set.id, field: .weight),
                 isEnabled: isEnabled,
                 focusedField: focusedField
             )
+            .frame(maxWidth: .infinity)
 
             WorkoutLogSetValueField(
-                title: "Reps",
                 placeholder: "Reps",
-                suffix: "reps",
                 text: Binding(get: { set.reps }, set: updateReps),
                 keyboardType: .numberPad,
                 focus: WorkoutLogSetFocus(exerciseID: exerciseID, setID: set.id, field: .reps),
                 isEnabled: isEnabled,
                 focusedField: focusedField
             )
+            .frame(maxWidth: .infinity)
 
             WorkoutLogSetValueField(
-                title: rpeScale.inputPlaceholder,
-                placeholder: "RPE",
-                suffix: set.rpeScale?.shortTitle ?? rpeScale.shortTitle,
+                placeholder: set.rpeScale?.inputPlaceholder ?? rpeScale.inputPlaceholder,
                 text: Binding(get: { set.rpe }, set: updateRPE),
                 keyboardType: rpeScale.allowsDecimalInput ? .decimalPad : .numberPad,
                 focus: WorkoutLogSetFocus(exerciseID: exerciseID, setID: set.id, field: .rpe),
                 isEnabled: isEnabled,
                 focusedField: focusedField
             )
+            .frame(maxWidth: .infinity)
         }
         .padding(.vertical, 7)
-        .accessibilityElement(children: .contain)
-        .accessibilityLabel("Set \(setIndex + 1)")
+        .contentShape(Rectangle())
+        .accessibilityHint("Opens set weight, reps and RPE input")
     }
 }
 
 private struct WorkoutLogSetValueField: View {
-    let title: String
     let placeholder: String
-    let suffix: String?
     @Binding var text: String
     let keyboardType: UIKeyboardType
     let focus: WorkoutLogSetFocus
@@ -1071,25 +1079,22 @@ private struct WorkoutLogSetValueField: View {
     let focusedField: FocusState<WorkoutLogSetFocus?>.Binding
 
     var body: some View {
-        VStack(spacing: 1) {
-            TextField(placeholder, text: $text)
-                .keyboardType(keyboardType)
-                .textFieldStyle(.plain)
-                .font(.system(.subheadline, design: .rounded, weight: .bold).monospacedDigit())
-                .foregroundStyle(isEnabled ? Color.workoutCharcoal : Color.workoutMutedText.opacity(0.72))
-                .multilineTextAlignment(.center)
-                .focused(focusedField, equals: focus)
-
-            if let suffix {
-                Text(suffix)
-                    .font(.system(size: 8, weight: .bold, design: .rounded))
-                    .foregroundStyle(Color.workoutMutedText)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.7)
+        Group {
+            if #available(iOS 18.0, *) {
+                WorkoutLogSetSelectionTextField(
+                    placeholder: placeholder,
+                    text: $text,
+                    keyboardType: keyboardType,
+                    focus: focus,
+                    isEnabled: isEnabled,
+                    focusedField: focusedField
+                )
+            } else {
+                baseTextField
             }
         }
-        .padding(.horizontal, 5)
-        .frame(maxWidth: .infinity, minHeight: 40)
+        .padding(.horizontal, 10)
+        .frame(height: 36)
         .background(Color.workoutCard.opacity(isEnabled ? 0.74 : 0.38), in: RoundedRectangle(cornerRadius: 11, style: .continuous))
         .overlay {
             RoundedRectangle(cornerRadius: 11, style: .continuous)
@@ -1097,14 +1102,60 @@ private struct WorkoutLogSetValueField: View {
         }
         .disabled(!isEnabled)
         .opacity(isEnabled ? 1 : 0.62)
-        .accessibilityLabel(title)
-        .accessibilityValue(text.isEmpty ? "Not set, \(suffix ?? "")" : "\(text) \(suffix ?? "")")
-        .accessibilityHint(isEnabled ? "Set value" : "Start the workout timer to edit")
+    }
+
+    private var baseTextField: some View {
+        TextField(placeholder, text: $text)
+            .keyboardType(keyboardType)
+            .textFieldStyle(.plain)
+            .font(.system(.subheadline, design: .rounded, weight: .bold).monospacedDigit())
+            .foregroundStyle(isEnabled ? Color.workoutCharcoal : Color.workoutMutedText.opacity(0.72))
+            .multilineTextAlignment(.center)
+            .focused(focusedField, equals: focus)
+    }
+}
+
+@available(iOS 18.0, *)
+private struct WorkoutLogSetSelectionTextField: View {
+    let placeholder: String
+    @Binding var text: String
+    let keyboardType: UIKeyboardType
+    let focus: WorkoutLogSetFocus
+    let isEnabled: Bool
+    let focusedField: FocusState<WorkoutLogSetFocus?>.Binding
+    @State private var selection: TextSelection?
+
+    var body: some View {
+        TextField(placeholder, text: $text, selection: $selection)
+            .keyboardType(keyboardType)
+            .textFieldStyle(.plain)
+            .font(.system(.subheadline, design: .rounded, weight: .bold).monospacedDigit())
+            .foregroundStyle(isEnabled ? Color.workoutCharcoal : Color.workoutMutedText.opacity(0.72))
+            .multilineTextAlignment(.center)
+            .focused(focusedField, equals: focus)
+            .onTapGesture {
+                if focusedField.wrappedValue == focus {
+                    moveCursorToEnd()
+                } else {
+                    focusedField.wrappedValue = focus
+                }
+            }
+            .onChange(of: focusedField.wrappedValue) { _, value in
+                guard value == focus else { return }
+                moveCursorToEnd()
+            }
+    }
+
+    private func moveCursorToEnd() {
+        DispatchQueue.main.async {
+            selection = TextSelection(insertionPoint: text.endIndex)
+        }
     }
 }
 
 private struct WorkoutLogEmptyRoutineRow: View {
     let splitTitle: String
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         HStack(spacing: 12) {
@@ -1113,10 +1164,10 @@ private struct WorkoutLogEmptyRoutineRow: View {
                 .foregroundStyle(Color.workoutAccent)
 
             VStack(alignment: .leading, spacing: 3) {
-                Text("No exercises logged")
+                Text("No workouts logged")
                     .font(.headline.weight(.semibold))
                     .foregroundStyle(Color.workoutCharcoal)
-                Text("Use + to pick \(splitTitle) exercises for this day")
+                Text("Use + to pick \(splitTitle) workouts for this day")
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(Color.workoutMutedText)
             }
@@ -1129,7 +1180,12 @@ private struct WorkoutLogEmptyRoutineRow: View {
             RoundedRectangle(cornerRadius: 18, style: .continuous)
                 .stroke(Color.workoutHairline.opacity(0.95), lineWidth: 1)
         }
+        .shadow(color: shadowColor, radius: colorScheme == .light ? 0 : 10, x: 0, y: colorScheme == .light ? 0 : 5)
         .accessibilityElement(children: .combine)
+    }
+
+    private var shadowColor: Color {
+        colorScheme == .light ? .clear : Color.black.opacity(0.16)
     }
 }
 
@@ -1143,25 +1199,13 @@ private enum WorkoutLogPickerSource: String, CaseIterable, Identifiable {
 }
 
 private struct WorkoutLogPickerContext: Hashable {
-    static let all = WorkoutLogPickerContext(title: "All Exercises", muscles: [])
+    static let all = WorkoutLogPickerContext(title: "All Workouts", muscles: [])
     static let saved = WorkoutLogPickerContext(title: "Saved", muscles: [])
 
     let title: String
     let muscles: Set<String>
 
-    static func systemImage(for title: String) -> String {
-        let lowered = title.lowercased()
-        if lowered.contains("push") { return "arrow.up.forward.circle" }
-        if lowered.contains("pull") { return "arrow.down.backward.circle" }
-        if lowered.contains("leg") || lowered.contains("quad") || lowered.contains("hamstring") { return "figure.run" }
-        if lowered.contains("core") || lowered.contains("ab") { return "figure.core.training" }
-        if lowered.contains("chest") { return "figure.strengthtraining.traditional" }
-        if lowered.contains("back") { return "figure.pullup" }
-        if lowered.contains("shoulder") { return "figure.strengthtraining.functional" }
-        if lowered.contains("arm") || lowered.contains("bicep") || lowered.contains("tricep") { return "dumbbell.fill" }
-        if lowered.contains("saved") { return "bookmark.fill" }
-        return "square.grid.2x2"
-    }
+    var id: String { title }
 }
 
 private struct WorkoutLogPickerRequest: Identifiable {
@@ -1170,13 +1214,58 @@ private struct WorkoutLogPickerRequest: Identifiable {
     let initialSource: WorkoutLogPickerSource
 }
 
+private struct WorkoutLogPickerContextMenuLabel: View {
+    let context: WorkoutLogPickerContext
+
+    var body: some View {
+        if context.id == WorkoutLogPickerContext.saved.id {
+            Label(context.title, systemImage: "bookmark.fill")
+        } else {
+            Label(
+                context.title,
+                image: MuscleGlyphAsset.name(title: context.title, muscles: context.muscles)
+            )
+        }
+    }
+}
+
+private struct WorkoutLogPickerFilterState: Codable, Equatable {
+    var searchText = ""
+    var levels: Set<String> = []
+    var equipment: Set<String> = []
+    var primaryMuscles: Set<String> = []
+    var secondaryMuscles: Set<String> = []
+    var forces: Set<String> = []
+    var mechanics: Set<String> = []
+    var categories: Set<String> = []
+    var sort: ExerciseLibrarySort = .name
+}
+
+private enum WorkoutLogPickerFilterStateStore {
+    static func load(contextID: String) -> WorkoutLogPickerFilterState {
+        guard let data = UserDefaults.standard.data(forKey: key(contextID)),
+              let state = try? JSONDecoder().decode(WorkoutLogPickerFilterState.self, from: data)
+        else { return WorkoutLogPickerFilterState() }
+        return state
+    }
+
+    static func save(_ state: WorkoutLogPickerFilterState, contextID: String) {
+        guard let data = try? JSONEncoder().encode(state) else { return }
+        UserDefaults.standard.set(data, forKey: key(contextID))
+    }
+
+    private static func key(_ contextID: String) -> String {
+        "fudai.workouts.picker.filter.v1.\(contextID)"
+    }
+}
+
 private struct WorkoutLogExercisePickerSheet: View {
     @Environment(StrengthWorkoutStore.self) private var workoutStore
     let request: WorkoutLogPickerRequest
     let selectedDate: Date
     let onDone: () -> Void
 
-    @State private var source: WorkoutLogPickerSource
+    @AppStorage("fudai.workouts.picker.source.v1") private var sourceRaw = WorkoutLogPickerSource.dataset.rawValue
     @State private var searchText = ""
     @State private var selectedLevels: Set<String> = []
     @State private var selectedEquipment: Set<String> = []
@@ -1193,7 +1282,52 @@ private struct WorkoutLogExercisePickerSheet: View {
         self.request = request
         self.selectedDate = selectedDate
         self.onDone = onDone
-        _source = State(initialValue: request.initialSource)
+        let state = WorkoutLogPickerFilterStateStore.load(contextID: request.context.id)
+        _searchText = State(initialValue: state.searchText)
+        _selectedLevels = State(initialValue: state.levels)
+        _selectedEquipment = State(initialValue: state.equipment)
+        _selectedPrimaryMuscles = State(initialValue: state.primaryMuscles)
+        _selectedSecondaryMuscles = State(initialValue: state.secondaryMuscles)
+        _selectedForces = State(initialValue: state.forces)
+        _selectedMechanics = State(initialValue: state.mechanics)
+        _selectedCategories = State(initialValue: state.categories)
+        _selectedSort = State(initialValue: state.sort)
+    }
+
+    private var isSavedContext: Bool {
+        request.context.id == WorkoutLogPickerContext.saved.id
+    }
+
+    private var showsSourcePicker: Bool { !isSavedContext }
+
+    private var source: WorkoutLogPickerSource {
+        isSavedContext ? .saved : (WorkoutLogPickerSource(rawValue: sourceRaw) ?? .dataset)
+    }
+
+    private var sourceBinding: Binding<WorkoutLogPickerSource> {
+        Binding(
+            get: { source },
+            set: { sourceRaw = $0.rawValue }
+        )
+    }
+
+    private var hidesPrimaryFilter: Bool {
+        (workoutStore.preferences.split == .fullBody || workoutStore.preferences.split == .custom)
+            && !request.context.muscles.isEmpty
+    }
+
+    private var filterState: WorkoutLogPickerFilterState {
+        WorkoutLogPickerFilterState(
+            searchText: searchText,
+            levels: selectedLevels,
+            equipment: selectedEquipment,
+            primaryMuscles: selectedPrimaryMuscles,
+            secondaryMuscles: selectedSecondaryMuscles,
+            forces: selectedForces,
+            mechanics: selectedMechanics,
+            categories: selectedCategories,
+            sort: selectedSort
+        )
     }
 
     private var filteredExercises: [ExerciseLibraryItem] {
@@ -1237,20 +1371,17 @@ private struct WorkoutLogExercisePickerSheet: View {
         NavigationStack {
             List {
                 Section {
-                    Picker("Source", selection: $source) {
-                        ForEach(WorkoutLogPickerSource.allCases) { source in
-                            Text(source.rawValue).tag(source)
+                    if showsSourcePicker {
+                        Picker("Source", selection: sourceBinding) {
+                            ForEach(WorkoutLogPickerSource.allCases) { source in
+                                Text(source.rawValue).tag(source)
+                            }
                         }
-                    }
-                    .pickerStyle(.segmented)
-                    .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 8, trailing: 20))
-                    .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
-
-                    WorkoutLogSearchField(searchText: $searchText)
-                        .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 10, trailing: 20))
+                        .pickerStyle(.segmented)
+                        .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 4, trailing: 20))
                         .listRowBackground(Color.clear)
                         .listRowSeparator(.hidden)
+                    }
 
                     filterStrip
                         .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 6, trailing: 20))
@@ -1265,15 +1396,11 @@ private struct WorkoutLogExercisePickerSheet: View {
 
                 Section {
                     if filteredExercises.isEmpty {
-                        ContentUnavailableView {
-                            Label(source == .saved ? "No saved exercises" : "No exercises found", systemImage: "dumbbell")
-                        } description: {
-                            Text(source == .saved ? "Save exercises from the dataset to keep them here." : "Try changing your search or filters.")
-                        }
-                        .listRowBackground(Color.clear)
-                        .listRowSeparator(.hidden)
+                        Text(!showsSourcePicker || source == .saved ? "No saved workouts yet." : "No dataset workouts found.")
+                            .foregroundStyle(Color.workoutMutedText)
+                            .listRowBackground(Color.workoutPanel.opacity(0.22))
                     } else {
-                        ForEach(filteredExercises) { item in
+                        ForEach(filteredExercises.prefix(120)) { item in
                             WorkoutLogPickerRow(
                                 item: item,
                                 isSelected: workoutStore.containsExercise(item.id, on: selectedDate)
@@ -1281,9 +1408,8 @@ private struct WorkoutLogExercisePickerSheet: View {
                                 workoutStore.toggleExercise(item, on: selectedDate)
                             }
                             .listRowBackground(
-                                Color.workoutPanel.opacity(workoutStore.containsExercise(item.id, on: selectedDate) ? 0.30 : 0.18)
+                                Color.workoutPanel.opacity(workoutStore.containsExercise(item.id, on: selectedDate) ? 0.28 : 0.18)
                             )
-                            .listRowSeparatorTint(Color.workoutHairline.opacity(0.32))
                             .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                                 Button {
                                     workoutStore.toggleSaved(item.id)
@@ -1302,13 +1428,17 @@ private struct WorkoutLogExercisePickerSheet: View {
             }
             .scrollContentBackground(.hidden)
             .listStyle(.plain)
-            .listSectionSpacing(0)
+            .contentMargins(.top, 0, for: .scrollContent)
             .background(Color.workoutBackground)
             .scrollDismissesKeyboard(.immediately)
+            .contentShape(Rectangle())
+            .onTapGesture {
+                dismissKeyboard()
+            }
+            .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search workouts")
+            .listSectionSpacing(0)
             .navigationTitle("Add \(request.context.title)")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(Color.workoutBackground, for: .navigationBar)
-            .toolbarBackground(.visible, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Done", action: onDone)
@@ -1316,8 +1446,24 @@ private struct WorkoutLogExercisePickerSheet: View {
                         .foregroundStyle(Color.workoutAccent)
                 }
             }
+            .keepsWorkoutLogToolbarDuringSearch()
         }
-        .workoutScreen()
+        .onAppear {
+            normalizePrimaryFilterSelection()
+            normalizeEquipmentFilterSelection()
+        }
+        .onChange(of: request.context.muscles) {
+            normalizePrimaryFilterSelection()
+        }
+        .onChange(of: hidesPrimaryFilter) {
+            normalizePrimaryFilterSelection()
+        }
+        .onChange(of: availableEquipment) {
+            normalizeEquipmentFilterSelection()
+        }
+        .onChange(of: filterState) { _, state in
+            WorkoutLogPickerFilterStateStore.save(state, contextID: request.context.id)
+        }
     }
 
     private var resultsHeader: some View {
@@ -1326,10 +1472,12 @@ private struct WorkoutLogExercisePickerSheet: View {
                 Text("\(filteredExercises.count) \(filteredExercises.count == 1 ? "exercise" : "exercises")")
                     .font(.headline.weight(.semibold))
                     .foregroundStyle(Color.workoutCharcoal)
+                    .textCase(nil)
 
                 Text(selectedSort.title)
                     .font(.caption)
                     .foregroundStyle(Color.workoutMutedText)
+                    .textCase(nil)
             }
 
             Spacer()
@@ -1338,12 +1486,20 @@ private struct WorkoutLogExercisePickerSheet: View {
                 Label("Reset", systemImage: "arrow.counterclockwise")
                     .font(.caption.weight(.bold))
                     .foregroundStyle(hasActiveFilters ? Color.workoutInferno : Color.workoutMutedText)
+                    .lineLimit(1)
                     .padding(.horizontal, 11)
                     .frame(height: 34)
                     .background(
                         (hasActiveFilters ? Color.workoutInferno : Color.workoutPanel).opacity(hasActiveFilters ? 0.10 : 0.22),
                         in: Capsule()
                     )
+                    .overlay {
+                        Capsule()
+                            .stroke(
+                                (hasActiveFilters ? Color.workoutInferno : Color.workoutHairline).opacity(hasActiveFilters ? 0.28 : 0.24),
+                                lineWidth: 0.5
+                            )
+                    }
             }
             .disabled(!hasActiveFilters)
             .buttonStyle(.plain)
@@ -1359,9 +1515,17 @@ private struct WorkoutLogExercisePickerSheet: View {
                 Label("Sort", systemImage: "arrow.up.arrow.down")
                     .font(.caption.weight(.bold))
                     .foregroundStyle(selectedSort == .name ? Color.workoutMutedText : Color.workoutAccent)
+                    .lineLimit(1)
                     .padding(.horizontal, 11)
                     .frame(height: 34)
                     .background(Color.workoutPanel.opacity(selectedSort == .name ? 0.30 : 0.46), in: Capsule())
+                    .overlay {
+                        Capsule()
+                            .stroke(
+                                (selectedSort == .name ? Color.workoutHairline : Color.workoutAccent).opacity(0.32),
+                                lineWidth: 0.5
+                            )
+                    }
             }
             .buttonStyle(.plain)
             .workoutPressable()
@@ -1371,14 +1535,20 @@ private struct WorkoutLogExercisePickerSheet: View {
     private var filterStrip: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 9) {
-                filterMenu(
-                    title: "Primary",
-                    value: selectionTitle(selectedPrimaryMuscles),
-                    systemImage: "scope"
-                ) {
-                    menuChoice("All Primary", isSelected: selectedPrimaryMuscles.isEmpty) { selectedPrimaryMuscles.removeAll() }
-                    ForEach(contextPrimaryMuscles, id: \.self) { value in
-                        menuChoice(value, isSelected: selectedPrimaryMuscles.contains(value)) { selectedPrimaryMuscles = [value] }
+                if !hidesPrimaryFilter {
+                    filterMenu(
+                        title: "Primary",
+                        value: primaryFilterTitle,
+                        systemImage: "scope"
+                    ) {
+                        menuChoice("All Primary (\(contextPrimaryMuscles.count))", isSelected: selectedPrimaryMuscles.isEmpty) {
+                            selectedPrimaryMuscles.removeAll()
+                        }
+                        ForEach(contextPrimaryMuscles, id: \.self) { value in
+                            muscleMenuChoice(value, muscles: [value], isSelected: selectedPrimaryMuscles.contains(value)) {
+                                selectedPrimaryMuscles = [value]
+                            }
+                        }
                     }
                 }
 
@@ -1389,16 +1559,20 @@ private struct WorkoutLogExercisePickerSheet: View {
                 ) {
                     menuChoice("All Secondary", isSelected: selectedSecondaryMuscles.isEmpty) { selectedSecondaryMuscles.removeAll() }
                     ForEach(library.availableSecondaryMuscles, id: \.self) { value in
-                        menuChoice(value, isSelected: selectedSecondaryMuscles.contains(value)) { selectedSecondaryMuscles = [value] }
+                        muscleMenuChoice(value, muscles: [value], isSelected: selectedSecondaryMuscles.contains(value)) {
+                            selectedSecondaryMuscles = [value]
+                        }
                     }
                 }
 
                 filterMenu(
                     title: "Equipment",
-                    value: selectionTitle(selectedEquipment),
+                    value: equipmentFilterTitle,
                     systemImage: "dumbbell.fill"
                 ) {
-                    menuChoice("All Equipment", isSelected: selectedEquipment.isEmpty) { selectedEquipment.removeAll() }
+                    menuChoice("All Equipment (\(availableEquipment.count))", isSelected: selectedEquipment.isEmpty) {
+                        selectedEquipment.removeAll()
+                    }
                     ForEach(availableEquipment, id: \.self) { value in
                         menuChoice(value, isSelected: selectedEquipment.contains(value)) { selectedEquipment = [value] }
                     }
@@ -1449,8 +1623,18 @@ private struct WorkoutLogExercisePickerSheet: View {
         return library.availableRawEquipment.filter(preferred.contains)
     }
 
+    private var equipmentFilterTitle: String {
+        selectedEquipment.isEmpty ? "All \(availableEquipment.count)" : selectionTitle(selectedEquipment)
+    }
+
+    private var primaryFilterTitle: String {
+        selectedPrimaryMuscles.isEmpty ? "All \(contextPrimaryMuscles.count)" : selectionTitle(selectedPrimaryMuscles)
+    }
+
     private func selectionTitle(_ selection: Set<String>) -> String {
-        selection.first ?? "All"
+        if selection.isEmpty { return "All" }
+        if selection.count == 1 { return selection.first ?? "All" }
+        return "\(selection.count) selected"
     }
 
     private func filterMenu<Content: View>(
@@ -1475,6 +1659,40 @@ private struct WorkoutLogExercisePickerSheet: View {
         }
     }
 
+    private func muscleMenuChoice(
+        _ title: String,
+        muscles: Set<String>,
+        isSelected: Bool,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            if isSelected {
+                Label(title, systemImage: "checkmark")
+            } else {
+                Label(title, image: MuscleGlyphAsset.name(title: title, muscles: muscles))
+            }
+        }
+    }
+
+    private func normalizePrimaryFilterSelection() {
+        if hidesPrimaryFilter {
+            selectedPrimaryMuscles.removeAll()
+            return
+        }
+        let valid = Set(contextPrimaryMuscles)
+        selectedPrimaryMuscles = singleStoredSelection(selectedPrimaryMuscles.intersection(valid))
+    }
+
+    private func normalizeEquipmentFilterSelection() {
+        let valid = Set(availableEquipment)
+        selectedEquipment = singleStoredSelection(selectedEquipment.intersection(valid))
+    }
+
+    private func singleStoredSelection(_ selection: Set<String>) -> Set<String> {
+        guard let value = selection.sorted().first else { return [] }
+        return [value]
+    }
+
     private func resetFilters() {
         searchText = ""
         selectedLevels.removeAll()
@@ -1486,37 +1704,25 @@ private struct WorkoutLogExercisePickerSheet: View {
         selectedCategories.removeAll()
         selectedSort = .name
     }
+
+    private func dismissKeyboard() {
+        UIApplication.shared.sendAction(
+            #selector(UIResponder.resignFirstResponder),
+            to: nil,
+            from: nil,
+            for: nil
+        )
+    }
 }
 
-private struct WorkoutLogSearchField: View {
-    @Binding var searchText: String
-
-    var body: some View {
-        HStack(spacing: 8) {
-            Image(systemName: "magnifyingglass")
-                .font(.system(size: 14, weight: .bold))
-                .foregroundStyle(searchText.isEmpty ? Color.workoutSecondaryAccent : Color.workoutAccent)
-
-            TextField("Search exercises", text: $searchText)
-                .textFieldStyle(.plain)
-                .font(.subheadline.weight(.semibold))
-                .textInputAutocapitalization(.never)
-                .autocorrectionDisabled()
-
-            if !searchText.isEmpty {
-                Button {
-                    searchText = ""
-                } label: {
-                    Image(systemName: "xmark.circle.fill")
-                        .foregroundStyle(Color.workoutMutedText)
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel("Clear search")
-            }
+private extension View {
+    @ViewBuilder
+    func keepsWorkoutLogToolbarDuringSearch() -> some View {
+        if #available(iOS 17.1, *) {
+            searchPresentationToolbarBehavior(.avoidHidingContent)
+        } else {
+            self
         }
-        .padding(.horizontal, 14)
-        .frame(maxWidth: .infinity, minHeight: 50)
-        .workoutLiquidBarSurface(cornerRadius: 22)
     }
 }
 
@@ -1550,6 +1756,7 @@ private struct WorkoutLogFilterPill: View {
             Image(systemName: "chevron.down")
                 .font(.caption2.weight(.bold))
                 .foregroundStyle(Color.workoutMutedText)
+                .padding(.leading, 1)
         }
         .padding(.horizontal, 12)
         .frame(minWidth: 112, minHeight: 46, alignment: .leading)
@@ -1559,8 +1766,12 @@ private struct WorkoutLogFilterPill: View {
         )
         .overlay {
             RoundedRectangle(cornerRadius: 17, style: .continuous)
-                .stroke((isDefault ? Color.workoutHairline : Color.workoutAccent).opacity(0.32), lineWidth: 0.5)
+                .stroke(
+                    (isDefault ? Color.workoutHairline : Color.workoutAccent).opacity(isDefault ? 0.30 : 0.42),
+                    lineWidth: 0.5
+                )
         }
+        .contentShape(RoundedRectangle(cornerRadius: 17, style: .continuous))
     }
 }
 
@@ -1582,6 +1793,7 @@ private struct WorkoutLogPickerRow: View {
                 .frame(width: 76, height: 58)
                 .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
                 .clipped()
+                .layoutPriority(0)
                 .accessibilityHidden(true)
 
                 VStack(alignment: .leading, spacing: 5) {
@@ -1597,6 +1809,7 @@ private struct WorkoutLogPickerRow: View {
                         .minimumScaleFactor(0.72)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .layoutPriority(1)
 
                 Image(systemName: isSelected ? "checkmark.circle.fill" : "plus.circle.fill")
                     .font(.title3.weight(.bold))
@@ -1653,8 +1866,6 @@ private struct WorkoutLogCopySheet: View {
             .background(Color.workoutBackground)
             .navigationTitle("Copy to \(targetTitle)")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(Color.workoutBackground, for: .navigationBar)
-            .toolbarBackground(.visible, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Done", action: onClose)
@@ -1669,7 +1880,7 @@ private struct WorkoutLogCopySheet: View {
 private struct WorkoutLogCopyDayRow: View {
     let day: WorkoutLogCopyDay
 
-    private var exerciseNames: String {
+    private var workoutNames: String {
         let names = day.exercises.prefix(3).map(\.name).joined(separator: ", ")
         let remaining = day.exercises.count - 3
         return remaining > 0 ? "\(names) + \(remaining)" : names
@@ -1682,13 +1893,17 @@ private struct WorkoutLogCopyDayRow: View {
                 .foregroundStyle(Color.workoutAccent)
                 .frame(width: 38, height: 38)
                 .background(Color.workoutCard.opacity(0.60), in: Circle())
+                .overlay {
+                    Circle()
+                        .stroke(Color.workoutHairline.opacity(0.34), lineWidth: 0.7)
+                }
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(dayTitle)
                     .font(.headline.weight(.semibold))
                     .foregroundStyle(Color.workoutCharcoal)
                     .lineLimit(1)
-                Text(exerciseNames)
+                Text(workoutNames)
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(Color.workoutMutedText)
                     .lineLimit(2)
@@ -1699,7 +1914,7 @@ private struct WorkoutLogCopyDayRow: View {
                 Text("\(day.exercises.count)")
                     .font(.system(.title3, design: .rounded, weight: .black).monospacedDigit())
                     .foregroundStyle(Color.workoutAccent)
-                Text(day.exercises.count == 1 ? "exercise" : "exercises")
+                Text(day.exercises.count == 1 ? "workout" : "workouts")
                     .font(.caption2.weight(.heavy))
                     .foregroundStyle(Color.workoutMutedText)
             }
@@ -1711,8 +1926,6 @@ private struct WorkoutLogCopyDayRow: View {
                 .background(Color.workoutAccent, in: Circle())
         }
         .padding(.vertical, 4)
-        .accessibilityElement(children: .combine)
-        .accessibilityHint("Copies these exercises to \(targetDescription)")
     }
 
     private var dayTitle: String {
@@ -1720,6 +1933,4 @@ private struct WorkoutLogCopyDayRow: View {
         if Calendar.current.isDateInYesterday(day.date) { return "Yesterday" }
         return day.date.formatted(.dateTime.weekday(.wide).month(.abbreviated).day())
     }
-
-    private var targetDescription: String { "the selected day" }
 }

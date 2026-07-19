@@ -181,22 +181,40 @@ struct ContentView: View {
         }
     }
 
-    /// Six native iPhone tab items collapse into a system “More” menu. Once the
-    /// optional diary is on, retain every existing destination and render a
-    /// compact Fud-themed bar so Workout Log remains a genuine first-level tab.
+    /// Keep the system tab bar when the optional diary is enabled. On iOS 26 the
+    /// native bar automatically adopts Liquid Glass; hiding it and drawing a
+    /// material-backed replacement loses that system appearance and behavior.
+    /// Workout Log is ordered before the overflow destinations so it remains a
+    /// first-level tab when iPhone groups six destinations under More.
     private var enabledWorkoutTabView: some View {
         TabView(selection: $selectedTab) {
             HomeView()
                 .tag(AppTab.home)
-                .toolbar(.hidden, for: .tabBar)
+                .tabItem {
+                    Image(systemName: AppTab.home.icon)
+                    Text(AppTab.home.title)
+                }
 
             ProgressTabView()
                 .tag(AppTab.progress)
-                .toolbar(.hidden, for: .tabBar)
+                .tabItem {
+                    Image(systemName: AppTab.progress.icon)
+                    Text(AppTab.progress.title)
+                }
 
             ChatView()
                 .tag(AppTab.coach)
-                .toolbar(.hidden, for: .tabBar)
+                .tabItem {
+                    Image(systemName: AppTab.coach.icon)
+                    Text(AppTab.coach.title)
+                }
+
+            WorkoutLogView()
+                .tag(AppTab.workoutLog)
+                .tabItem {
+                    Image(systemName: AppTab.workoutLog.icon)
+                    Text(AppTab.workoutLog.title)
+                }
 
             ProfileView(
                 updateState: $appUpdateState,
@@ -205,22 +223,19 @@ struct ContentView: View {
                 }
             )
                 .tag(AppTab.settings)
-                .toolbar(.hidden, for: .tabBar)
+                .tabItem {
+                    Image(systemName: AppTab.settings.icon)
+                    Text(AppTab.settings.title)
+                }
+                .badge(appUpdateState.isUpdateAvailable ? "!" : nil)
 
             WorkoutsView()
                 .id(appThemeColorRaw)
                 .tag(AppTab.workouts)
-                .toolbar(.hidden, for: .tabBar)
-
-            WorkoutLogView()
-                .tag(AppTab.workoutLog)
-                .toolbar(.hidden, for: .tabBar)
-        }
-        .safeAreaInset(edge: .bottom, spacing: 0) {
-            WorkoutEnabledTabBar(
-                selection: $selectedTab,
-                showsSettingsBadge: appUpdateState.isUpdateAvailable
-            )
+                .tabItem {
+                    Image(systemName: AppTab.workouts.icon)
+                    Text(AppTab.workouts.title)
+                }
         }
     }
 
@@ -239,7 +254,7 @@ struct ContentView: View {
             case .coach: return "Coach"
             case .settings: return "Settings"
             case .workouts: return "Workouts"
-            case .workoutLog: return "Log"
+            case .workoutLog: return "Workout Log"
             }
         }
 
@@ -255,54 +270,6 @@ struct ContentView: View {
             case .settings: return "gearshape.fill"
             case .workouts: return "dumbbell.fill"
             case .workoutLog: return "figure.strengthtraining.traditional"
-            }
-        }
-    }
-
-    private struct WorkoutEnabledTabBar: View {
-        @Binding var selection: AppTab
-        let showsSettingsBadge: Bool
-
-        var body: some View {
-            HStack(spacing: 0) {
-                ForEach(AppTab.allCases, id: \.self) { tab in
-                    Button {
-                        selection = tab
-                    } label: {
-                        VStack(spacing: 3) {
-                            ZStack(alignment: .topTrailing) {
-                                Image(systemName: tab.icon)
-                                    .font(.system(size: 18, weight: selection == tab ? .semibold : .regular))
-
-                                if tab == .settings, showsSettingsBadge {
-                                    Circle()
-                                        .fill(Color.red)
-                                        .frame(width: 7, height: 7)
-                                        .offset(x: 5, y: -3)
-                                }
-                            }
-                            .frame(height: 20)
-
-                            Text(tab.title)
-                                .font(.system(size: 9, weight: selection == tab ? .semibold : .medium, design: .rounded))
-                                .lineLimit(1)
-                                .minimumScaleFactor(0.72)
-                        }
-                        .foregroundStyle(selection == tab ? AppColors.calorie : Color.secondary)
-                        .frame(maxWidth: .infinity, minHeight: 44)
-                        .contentShape(Rectangle())
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel(tab.accessibilityTitle)
-                    .accessibilityAddTraits(selection == tab ? .isSelected : [])
-                }
-            }
-            .padding(.horizontal, 4)
-            .padding(.top, 8)
-            .padding(.bottom, 5)
-            .background(.ultraThinMaterial)
-            .overlay(alignment: .top) {
-                Divider().opacity(0.45)
             }
         }
     }
