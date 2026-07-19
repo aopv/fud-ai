@@ -61,10 +61,12 @@ struct WorkoutLoggingSettingsSection: View {
 
 struct WorkoutLoggingSettingsView: View {
     @Environment(StrengthWorkoutStore.self) private var workoutStore
+    @Environment(ProfileStore.self) private var profileStore
     @AppStorage(WeightUnit.storageKey) private var weightUnitRaw = WeightUnit.lbs.rawValue
 
     @State private var draft = StrengthWorkoutPreferences()
     @State private var hasLoaded = false
+    @State private var isTargetMusclePickerPresented = false
 
     @State private var benchPressText = ""
     @State private var squatText = ""
@@ -76,8 +78,9 @@ struct WorkoutLoggingSettingsView: View {
             .filter { $0 != "Unspecified" }
         if !libraryValues.isEmpty { return libraryValues }
         return [
-            "Abdominals", "Back", "Biceps", "Calves", "Chest", "Forearms",
-            "Glutes", "Hamstrings", "Quadriceps", "Shoulders", "Triceps"
+            "Abdominals", "Abductors", "Adductors", "Biceps", "Calves", "Chest",
+            "Forearms", "Glutes", "Hamstrings", "Lats", "Lower Back", "Middle Back",
+            "Neck", "Quadriceps", "Shoulders", "Traps", "Triceps"
         ]
     }()
 
@@ -85,7 +88,10 @@ struct WorkoutLoggingSettingsView: View {
         let libraryValues = ExerciseLibraryService.shared.availableRawEquipment
             .filter { $0 != "Unspecified" }
         if !libraryValues.isEmpty { return libraryValues }
-        return ["Body only", "Bands", "Barbell", "Dumbbell", "Cable", "Machine", "Kettlebell"]
+        return [
+            "Bands", "Barbell", "Body Only", "Cable", "Dumbbell", "E-Z Curl Bar",
+            "Exercise Ball", "Foam Roll", "Kettlebells", "Machine", "Medicine Ball", "Other"
+        ]
     }()
 
     private var weightUnit: WeightUnit {
@@ -99,29 +105,16 @@ struct WorkoutLoggingSettingsView: View {
     var body: some View {
         List {
             Section {
-                WorkoutSettingsChoiceGrid(
-                    values: Self.targetMuscleOptions,
-                    selectedValues: draft.targetMuscles,
-                    accessibilityPrefix: "Target muscle",
-                    onToggle: toggleTargetMuscle
+                WorkoutTargetMuscleSelectorRow(
+                    selection: $draft.targetMuscles,
+                    allowedValues: Self.targetMuscleOptions,
+                    isPresented: $isTargetMusclePickerPresented
                 )
-            } header: {
-                WorkoutSettingsHeader(
-                    title: "Target Muscles",
-                    count: draft.targetMuscles.count,
-                    systemImage: "scope"
-                )
-            } footer: {
-                Text("Choose any areas you want to prioritize. Leave all unselected for balanced training.")
-            }
-            .listRowBackground(AppColors.appCard)
 
-            Section {
-                WorkoutSettingsChoiceGrid(
-                    values: StrengthWorkoutIssue.allCases.map(\.rawValue),
-                    selectedValues: Set(draft.issues.map(\.rawValue)),
-                    accessibilityPrefix: "Training issue",
-                    onToggle: toggleIssue
+                WorkoutIssueMultiSelectRow(
+                    title: "Issues & Injuries",
+                    systemImage: "cross.case.fill",
+                    selection: $draft.issues
                 )
 
                 if draft.issues.contains(.other) {
@@ -130,50 +123,34 @@ struct WorkoutLoggingSettingsView: View {
                         .textInputAutocapitalization(.sentences)
                 }
             } header: {
-                WorkoutSettingsHeader(
-                    title: "Issues & Injuries",
-                    count: draft.issues.count,
-                    systemImage: "cross.case.fill"
-                )
+                Text("Training Focus")
             } footer: {
-                Text("Used to keep workout suggestions relevant. This is not medical guidance—follow your clinician's advice.")
+                Text("Choose areas to prioritize, or leave target muscles empty for balanced training. Issues help keep suggestions relevant; follow your clinician's advice.")
             }
             .listRowBackground(AppColors.appCard)
 
             Section("Schedule") {
-                Stepper(value: $draft.frequencyDays, in: 1...7) {
-                    Label {
-                        HStack {
-                            Text("Frequency")
-                            Spacer()
-                            Text("\(draft.frequencyDays) \(draft.frequencyDays == 1 ? "day" : "days") / week")
-                                .foregroundStyle(.secondary)
-                        }
-                    } icon: {
-                        Image(systemName: "calendar.badge.clock")
-                            .foregroundStyle(AppColors.calorie)
-                    }
-                }
+                WorkoutPreferenceMenuRow(
+                    title: "Frequency",
+                    systemImage: "calendar.badge.clock",
+                    selection: $draft.frequencyDays,
+                    options: Array(1...7),
+                    label: { "\($0) \($0 == 1 ? "day" : "days") / week" }
+                )
 
-                Picker(selection: $draft.duration) {
-                    ForEach(StrengthWorkoutDuration.allCases) { duration in
-                        Text(duration.title).tag(duration)
-                    }
-                } label: {
-                    Label("Session Length", systemImage: "clock.fill")
-                }
-                .pickerStyle(.menu)
-                .tint(.secondary)
+                WorkoutPreferenceMenuRow(
+                    title: "Session Length",
+                    systemImage: "clock.fill",
+                    selection: $draft.duration,
+                    options: StrengthWorkoutDuration.allCases,
+                    label: \.title
+                )
 
-                Picker(selection: $draft.split) {
-                    ForEach(StrengthWorkoutSplit.allCases) { split in
-                        Text(split.title).tag(split)
-                    }
-                } label: {
-                    Label("Training Split", systemImage: "square.grid.2x2.fill")
-                }
-                .pickerStyle(.menu)
-                .tint(.secondary)
+                WorkoutSplitPickerRow(
+                    title: "Training Split",
+                    systemImage: "square.grid.2x2.fill",
+                    selection: $draft.split
+                )
 
                 if draft.split == .custom {
                     TextField("e.g. Chest + back / Legs / Arms", text: $draft.customSplit, axis: .vertical)
@@ -184,43 +161,24 @@ struct WorkoutLoggingSettingsView: View {
             .listRowBackground(AppColors.appCard)
 
             Section {
-                WorkoutSettingsChoiceGrid(
-                    values: Self.equipmentOptions,
-                    selectedValues: draft.equipment,
-                    accessibilityPrefix: "Equipment",
-                    onToggle: toggleEquipment
+                WorkoutRPEScalePickerRow(
+                    title: "RPE Scale",
+                    systemImage: "gauge.with.dots.needle.50percent",
+                    selection: $draft.rpeScale
                 )
-            } header: {
-                WorkoutSettingsHeader(
+
+                WorkoutEquipmentImagePickerRow(
                     title: "Available Equipment",
-                    count: draft.equipment.count,
-                    systemImage: "dumbbell.fill"
+                    systemImage: "dumbbell.fill",
+                    options: Self.equipmentOptions,
+                    exercises: ExerciseLibraryService.shared.exercises,
+                    selection: $draft.equipment,
+                    label: { $0 }
                 )
-            } footer: {
-                Text("Leave all unselected if your available equipment changes from workout to workout.")
-            }
-            .listRowBackground(AppColors.appCard)
-
-            Section {
-                Picker("Effort Scale", selection: $draft.rpeScale) {
-                    ForEach(StrengthWorkoutRPEScale.allCases) { scale in
-                        Text(scale.title).tag(scale)
-                    }
-                }
-                .pickerStyle(.segmented)
-
-                Label {
-                    Text(draft.rpeScale.subtitle)
-                        .font(.system(.subheadline, design: .rounded))
-                        .foregroundStyle(.secondary)
-                } icon: {
-                    Image(systemName: "gauge.with.dots.needle.50percent")
-                        .foregroundStyle(AppColors.calorie)
-                }
             } header: {
-                Text("RPE Scale")
+                Text("Workout Setup")
             } footer: {
-                Text("This controls the effort field shown beside each logged set.")
+                Text("Leave equipment empty if it changes between workouts. Your RPE choice controls the effort field beside every logged set.")
             }
             .listRowBackground(AppColors.appCard)
 
@@ -242,6 +200,13 @@ struct WorkoutLoggingSettingsView: View {
         .navigationTitle("Workout Preferences")
         .navigationBarTitleDisplayMode(.inline)
         .tint(AppColors.calorie)
+        .fullScreenCover(isPresented: $isTargetMusclePickerPresented) {
+            WorkoutTargetMuscleSelectionView(
+                selection: $draft.targetMuscles,
+                allowedValues: Self.targetMuscleOptions,
+                gender: profileStore.profile.gender
+            )
+        }
         .onAppear(perform: loadPreferences)
         .onChange(of: draft) { _, newValue in
             guard hasLoaded else { return }
@@ -354,94 +319,4 @@ struct WorkoutLoggingSettingsView: View {
         return output
     }
 
-    private func toggleTargetMuscle(_ muscle: String) {
-        if draft.targetMuscles.contains(muscle) {
-            draft.targetMuscles.remove(muscle)
-        } else {
-            draft.targetMuscles.insert(muscle)
-        }
-    }
-
-    private func toggleIssue(_ rawIssue: String) {
-        guard let issue = StrengthWorkoutIssue(rawValue: rawIssue) else { return }
-        if draft.issues.contains(issue) {
-            draft.issues.remove(issue)
-        } else {
-            draft.issues.insert(issue)
-        }
-    }
-
-    private func toggleEquipment(_ equipment: String) {
-        if draft.equipment.contains(equipment) {
-            draft.equipment.remove(equipment)
-        } else {
-            draft.equipment.insert(equipment)
-        }
-    }
-}
-
-private struct WorkoutSettingsHeader: View {
-    let title: String
-    let count: Int
-    let systemImage: String
-
-    var body: some View {
-        HStack {
-            Label(title, systemImage: systemImage)
-            Spacer()
-            if count > 0 {
-                Text("\(count) selected")
-                    .font(.caption2)
-                    .foregroundStyle(AppColors.calorie)
-                    .textCase(nil)
-            }
-        }
-    }
-}
-
-private struct WorkoutSettingsChoiceGrid: View {
-    let values: [String]
-    let selectedValues: Set<String>
-    let accessibilityPrefix: String
-    let onToggle: (String) -> Void
-
-    private let columns = [GridItem(.adaptive(minimum: 100), spacing: 8)]
-
-    var body: some View {
-        LazyVGrid(columns: columns, alignment: .leading, spacing: 8) {
-            ForEach(values, id: \.self) { value in
-                let isSelected = selectedValues.contains(value)
-                Button {
-                    onToggle(value)
-                } label: {
-                    HStack(spacing: 5) {
-                        if isSelected {
-                            Image(systemName: "checkmark")
-                                .font(.system(size: 10, weight: .bold))
-                        }
-                        Text(value)
-                            .font(.system(.caption, design: .rounded, weight: .medium))
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.75)
-                    }
-                    .foregroundStyle(isSelected ? Color.white : Color.primary)
-                    .frame(maxWidth: .infinity, minHeight: 34)
-                    .padding(.horizontal, 8)
-                    .background(
-                        isSelected ? AppColors.calorie : AppColors.calorie.opacity(0.08),
-                        in: RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    )
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 10, style: .continuous)
-                            .strokeBorder(AppColors.calorie.opacity(isSelected ? 0 : 0.16), lineWidth: 1)
-                    }
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel("\(accessibilityPrefix), \(value)")
-                .accessibilityValue(isSelected ? "Selected" : "Not selected")
-                .accessibilityAddTraits(isSelected ? .isSelected : [])
-            }
-        }
-        .padding(.vertical, 3)
-    }
 }

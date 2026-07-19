@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "rpe_cr10.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
