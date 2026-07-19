@@ -1703,7 +1703,8 @@ private struct WorkoutLogExercisePickerSheet: View {
                     filterMenu(
                         title: "Primary",
                         value: primaryFilterTitle,
-                        systemImage: "scope"
+                        systemImage: "scope",
+                        isActive: !selectedPrimaryMuscles.isEmpty
                     ) {
                         menuChoice("All Primary (\(contextPrimaryMuscles.count))", isSelected: selectedPrimaryMuscles.isEmpty) {
                             selectedPrimaryMuscles.removeAll()
@@ -1719,7 +1720,8 @@ private struct WorkoutLogExercisePickerSheet: View {
                 filterMenu(
                     title: "Secondary",
                     value: selectionTitle(selectedSecondaryMuscles),
-                    systemImage: "scope"
+                    systemImage: "scope",
+                    isActive: !selectedSecondaryMuscles.isEmpty
                 ) {
                     menuChoice("All Secondary", isSelected: selectedSecondaryMuscles.isEmpty) { selectedSecondaryMuscles.removeAll() }
                     ForEach(library.availableSecondaryMuscles, id: \.self) { value in
@@ -1732,7 +1734,8 @@ private struct WorkoutLogExercisePickerSheet: View {
                 filterMenu(
                     title: "Equipment",
                     value: equipmentFilterTitle,
-                    systemImage: "dumbbell.fill"
+                    systemImage: "dumbbell.fill",
+                    isActive: !selectedEquipment.isEmpty
                 ) {
                     menuChoice("All Equipment (\(availableEquipment.count))", isSelected: selectedEquipment.isEmpty) {
                         selectedEquipment.removeAll()
@@ -1742,28 +1745,48 @@ private struct WorkoutLogExercisePickerSheet: View {
                     }
                 }
 
-                filterMenu(title: "Level", value: selectionTitle(selectedLevels), systemImage: "chart.bar.fill") {
+                filterMenu(
+                    title: "Level",
+                    value: selectionTitle(selectedLevels),
+                    systemImage: "chart.bar.fill",
+                    isActive: !selectedLevels.isEmpty
+                ) {
                     menuChoice("All Levels", isSelected: selectedLevels.isEmpty) { selectedLevels.removeAll() }
                     ForEach(library.availableLevels, id: \.self) { value in
                         menuChoice(value, isSelected: selectedLevels.contains(value)) { selectedLevels = [value] }
                     }
                 }
 
-                filterMenu(title: "Force", value: selectionTitle(selectedForces), systemImage: "arrow.left.arrow.right") {
+                filterMenu(
+                    title: "Force",
+                    value: selectionTitle(selectedForces),
+                    systemImage: "arrow.left.arrow.right",
+                    isActive: !selectedForces.isEmpty
+                ) {
                     menuChoice("All Forces", isSelected: selectedForces.isEmpty) { selectedForces.removeAll() }
                     ForEach(library.availableForces, id: \.self) { value in
                         menuChoice(value, isSelected: selectedForces.contains(value)) { selectedForces = [value] }
                     }
                 }
 
-                filterMenu(title: "Mechanic", value: selectionTitle(selectedMechanics), systemImage: "gearshape") {
+                filterMenu(
+                    title: "Mechanic",
+                    value: selectionTitle(selectedMechanics),
+                    systemImage: "gearshape",
+                    isActive: !selectedMechanics.isEmpty
+                ) {
                     menuChoice("All Mechanics", isSelected: selectedMechanics.isEmpty) { selectedMechanics.removeAll() }
                     ForEach(library.availableMechanics, id: \.self) { value in
                         menuChoice(value, isSelected: selectedMechanics.contains(value)) { selectedMechanics = [value] }
                     }
                 }
 
-                filterMenu(title: "Category", value: selectionTitle(selectedCategories), systemImage: "tag") {
+                filterMenu(
+                    title: "Category",
+                    value: selectionTitle(selectedCategories),
+                    systemImage: "tag",
+                    isActive: !selectedCategories.isEmpty
+                ) {
                     menuChoice("All Categories", isSelected: selectedCategories.isEmpty) { selectedCategories.removeAll() }
                     ForEach(library.availableCategoryCounts) { value in
                         menuChoice(value.category, isSelected: selectedCategories.contains(value.category)) {
@@ -1805,10 +1828,16 @@ private struct WorkoutLogExercisePickerSheet: View {
         title: String,
         value: String,
         systemImage: String,
+        isActive: Bool,
         @ViewBuilder content: () -> Content
     ) -> some View {
         Menu(content: content) {
-            WorkoutLogFilterPill(title: title, value: value, systemImage: systemImage)
+            WorkoutLogFilterPill(
+                title: title,
+                value: value,
+                systemImage: systemImage,
+                isActive: isActive
+            )
         }
         .workoutPressable()
     }
@@ -1894,14 +1923,13 @@ private struct WorkoutLogFilterPill: View {
     let title: String
     let value: String
     let systemImage: String
-
-    private var isDefault: Bool { value == "All" || value == "Name" }
+    let isActive: Bool
 
     var body: some View {
         HStack(spacing: 9) {
             Image(systemName: systemImage)
                 .font(.system(size: 14, weight: .bold))
-                .foregroundStyle(isDefault ? Color.workoutSecondaryAccent : Color.workoutAccent)
+                .foregroundStyle(isActive ? Color.workoutAccent : Color.workoutSecondaryAccent)
                 .frame(width: 18)
 
             VStack(alignment: .leading, spacing: 1) {
@@ -1925,13 +1953,13 @@ private struct WorkoutLogFilterPill: View {
         .padding(.horizontal, 12)
         .frame(minWidth: 112, minHeight: 46, alignment: .leading)
         .background(
-            Color.workoutPanel.opacity(isDefault ? 0.30 : 0.46),
+            Color.workoutPanel.opacity(isActive ? 0.46 : 0.30),
             in: RoundedRectangle(cornerRadius: 17, style: .continuous)
         )
         .overlay {
             RoundedRectangle(cornerRadius: 17, style: .continuous)
                 .stroke(
-                    (isDefault ? Color.workoutHairline : Color.workoutAccent).opacity(isDefault ? 0.30 : 0.42),
+                    (isActive ? Color.workoutAccent : Color.workoutHairline).opacity(isActive ? 0.42 : 0.30),
                     lineWidth: 0.5
                 )
         }
