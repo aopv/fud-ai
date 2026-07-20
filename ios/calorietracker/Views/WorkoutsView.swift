@@ -45,9 +45,11 @@ struct WorkoutsView: View {
 }
 
 private struct ExerciseLibraryBrowserView: View {
+    @Environment(StrengthWorkoutStore.self) private var workoutStore
     var onShowWorkoutLog: (() -> Void)?
 
     @State private var searchText = ""
+    @State private var selectedSplitGroupTitles: Set<String> = []
     @State private var selectedLevels: Set<String> = []
     @State private var selectedRawEquipment: Set<String> = []
     @State private var selectedPrimaryMuscles: Set<String> = []
@@ -59,8 +61,43 @@ private struct ExerciseLibraryBrowserView: View {
 
     private let service = ExerciseLibraryService.shared
 
+    private var selectedWorkoutSplit: StrengthWorkoutSplit {
+        workoutStore.preferences.split
+    }
+
+    private var splitFilterTitle: String {
+        switch selectedWorkoutSplit {
+        case .fullBody, .custom:
+            return String(localized: "Body Part")
+        default:
+            return selectedWorkoutSplit.title
+        }
+    }
+
+    private var usesBodyPartSplitFilter: Bool {
+        selectedWorkoutSplit == .fullBody || selectedWorkoutSplit == .custom
+    }
+
+    private var splitGroups: [StrengthWorkoutSplitGroup] {
+        StrengthWorkoutSplitGroup.selectionGroups(
+            for: selectedWorkoutSplit,
+            availablePrimaryMuscles: service.availablePrimaryMuscles,
+            availableSecondaryMuscles: service.availableSecondaryMuscles
+        )
+    }
+
+    private var selectedSplitGroups: [StrengthWorkoutSplitGroup] {
+        splitGroups.filter { selectedSplitGroupTitles.contains($0.title) }
+    }
+
+    private var shouldShowPrimaryFilter: Bool {
+        !(usesBodyPartSplitFilter && !selectedSplitGroupTitles.isEmpty)
+    }
+
     private var primaryFilterOptions: [String] {
-        service.availablePrimaryMuscles
+        guard !selectedSplitGroups.isEmpty else { return service.availablePrimaryMuscles }
+        let allowedMuscles = Set(selectedSplitGroups.flatMap(\.muscles))
+        return service.availablePrimaryMuscles.filter(allowedMuscles.contains)
     }
 
     private var profileRawEquipmentOptions: [String] {
@@ -78,7 +115,7 @@ private struct ExerciseLibraryBrowserView: View {
         let rawEquipmentSelection = effectiveRawEquipmentSelection
         guard !rawEquipmentSelection.isEmpty else { return [] }
 
-        return service.filtered(
+        let filtered = service.filtered(
             levels: selectedLevels,
             rawEquipment: rawEquipmentSelection,
             primaryMuscles: selectedPrimaryMuscles,
@@ -89,10 +126,18 @@ private struct ExerciseLibraryBrowserView: View {
             sort: selectedSort,
             searchText: searchText
         )
+
+        guard !selectedSplitGroups.isEmpty else { return filtered }
+        let selectedMuscles = Set(selectedSplitGroups.flatMap(\.muscles))
+        return filtered.filter { item in
+            item.primaryMuscles.contains(where: selectedMuscles.contains) ||
+                item.secondaryMuscles.contains(where: selectedMuscles.contains)
+        }
     }
 
     private var hasActiveFilters: Bool {
         !searchText.isEmpty ||
+            !selectedSplitGroupTitles.isEmpty ||
             !selectedLevels.isEmpty ||
             !selectedRawEquipment.isEmpty ||
             !selectedPrimaryMuscles.isEmpty ||
@@ -106,6 +151,8 @@ private struct ExerciseLibraryBrowserView: View {
     private var filterStateSnapshot: ExerciseFilterState {
         ExerciseFilterState(
             searchText: searchText,
+            splitIdentifier: selectedWorkoutSplit.rawValue,
+            splitGroups: selectedSplitGroupTitles,
             levels: selectedLevels,
             rawEquipment: selectedRawEquipment,
             primaryMuscles: selectedPrimaryMuscles,
@@ -146,11 +193,19 @@ private struct ExerciseLibraryBrowserView: View {
         .workoutScreen()
         .onAppear {
             applyFilterState(ExerciseFilterStateStore.load(key: ExerciseFilterStateStore.workoutsKey))
+            normalizeSplitGroupSelection()
             normalizePrimaryFilterSelection()
             normalizeEquipmentFilterSelection()
         }
         .onChange(of: filterStateSnapshot) { _, state in
             ExerciseFilterStateStore.save(state, key: ExerciseFilterStateStore.workoutsKey)
+        }
+        .onChange(of: selectedWorkoutSplit) {
+            selectedSplitGroupTitles.removeAll()
+            normalizePrimaryFilterSelection()
+        }
+        .onChange(of: selectedSplitGroupTitles) {
+            normalizePrimaryFilterSelection()
         }
     }
 
@@ -214,17 +269,42 @@ private struct ExerciseLibraryBrowserView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 9) {
                     filterMenuPill(
-                        title: String(localized: "Primary"),
-                        value: primaryFilterTitle,
-                        systemImage: "scope",
-                        isActive: !selectedPrimaryMuscles.isEmpty
+                        title: splitFilterTitle,
+                        value: selectionTitle(selectedSplitGroupTitles),
+                        systemImage: "square.grid.2x2",
+                        isActive: !selectedSplitGroupTitles.isEmpty
                     ) {
-                        menuChoice(allPrimaryMenuTitle, isSelected: selectedPrimaryMuscles.isEmpty) {
-                            selectedPrimaryMuscles.removeAll()
+                        menuChoice(
+                            String(localized: "All \(splitFilterTitle)"),
+                            isSelected: selectedSplitGroupTitles.isEmpty
+                        ) {
+                            selectedSplitGroupTitles.removeAll()
                         }
-                        ForEach(primaryFilterOptions, id: \.self) { muscle in
-                            muscleMenuChoice(muscle, muscles: [muscle], isSelected: selectedPrimaryMuscles.contains(muscle)) {
-                                selectedPrimaryMuscles = [muscle]
+                        ForEach(splitGroups) { group in
+                            muscleMenuChoice(
+                                group.title,
+                                muscles: group.muscles,
+                                isSelected: selectedSplitGroupTitles.contains(group.title)
+                            ) {
+                                selectedSplitGroupTitles = [group.title]
+                            }
+                        }
+                    }
+
+                    if shouldShowPrimaryFilter {
+                        filterMenuPill(
+                            title: String(localized: "Primary"),
+                            value: primaryFilterTitle,
+                            systemImage: "scope",
+                            isActive: !selectedPrimaryMuscles.isEmpty
+                        ) {
+                            menuChoice(allPrimaryMenuTitle, isSelected: selectedPrimaryMuscles.isEmpty) {
+                                selectedPrimaryMuscles.removeAll()
+                            }
+                            ForEach(primaryFilterOptions, id: \.self) { muscle in
+                                muscleMenuChoice(muscle, muscles: [muscle], isSelected: selectedPrimaryMuscles.contains(muscle)) {
+                                    selectedPrimaryMuscles = [muscle]
+                                }
                             }
                         }
                     }
@@ -354,6 +434,7 @@ private struct ExerciseLibraryBrowserView: View {
 
     private func resetFilters() {
         searchText = ""
+        selectedSplitGroupTitles.removeAll()
         selectedLevels.removeAll()
         selectedRawEquipment.removeAll()
         selectedPrimaryMuscles.removeAll()
@@ -366,6 +447,9 @@ private struct ExerciseLibraryBrowserView: View {
 
     private func applyFilterState(_ state: ExerciseFilterState) {
         searchText = state.searchText
+        selectedSplitGroupTitles = state.splitIdentifier == selectedWorkoutSplit.rawValue
+            ? singleStoredSelection(state.splitGroups)
+            : []
         selectedLevels = singleStoredSelection(state.levels)
         selectedRawEquipment = singleStoredSelection(state.rawEquipment)
         selectedPrimaryMuscles = singleStoredSelection(state.primaryMuscles)
@@ -376,7 +460,17 @@ private struct ExerciseLibraryBrowserView: View {
         selectedSort = state.sort
     }
 
+    private func normalizeSplitGroupSelection() {
+        let validTitles = Set(splitGroups.map(\.title))
+        selectedSplitGroupTitles = singleStoredSelection(selectedSplitGroupTitles.intersection(validTitles))
+    }
+
     private func normalizePrimaryFilterSelection() {
+        if !shouldShowPrimaryFilter {
+            selectedPrimaryMuscles.removeAll()
+            return
+        }
+
         let validOptions = Set(primaryFilterOptions)
         guard !validOptions.isEmpty else {
             selectedPrimaryMuscles.removeAll()

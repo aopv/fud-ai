@@ -426,4 +426,19 @@ struct StrengthWorkoutSplitGroup: Identifiable, Hashable {
             return []
         }
     }
+
+    static func selectionGroups(
+        for split: StrengthWorkoutSplit,
+        availablePrimaryMuscles: [String],
+        availableSecondaryMuscles: [String]
+    ) -> [StrengthWorkoutSplitGroup] {
+        let availableMuscles = Set(availablePrimaryMuscles + availableSecondaryMuscles).sorted()
+        let configured = groups(for: split, availableMuscles: availableMuscles)
+            .filter { !$0.muscles.isEmpty }
+        if !configured.isEmpty { return configured }
+
+        return availableMuscles.map { muscle in
+            StrengthWorkoutSplitGroup(title: muscle, muscles: [muscle])
+        }
+    }
 }

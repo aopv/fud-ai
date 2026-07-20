@@ -172,18 +172,11 @@ struct WorkoutLogView: View {
     }
 
     private var splitGroups: [StrengthWorkoutSplitGroup] {
-        let configured = StrengthWorkoutSplitGroup.groups(
+        StrengthWorkoutSplitGroup.selectionGroups(
             for: workoutStore.preferences.split,
-            availableMuscles: library.availablePrimaryMuscles
+            availablePrimaryMuscles: library.availablePrimaryMuscles,
+            availableSecondaryMuscles: library.availableSecondaryMuscles
         )
-        .filter { !$0.muscles.isEmpty }
-        if !configured.isEmpty { return configured }
-
-        // Final Delts falls back to one picker entry per catalog muscle for
-        // Full Body and Custom splits rather than hiding the add choices.
-        return Set(library.availablePrimaryMuscles + library.availableSecondaryMuscles)
-            .sorted()
-            .map { StrengthWorkoutSplitGroup(title: $0, muscles: [$0]) }
     }
 
     private var copyableDays: [WorkoutLogCopyDay] {
