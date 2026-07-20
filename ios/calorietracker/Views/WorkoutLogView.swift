@@ -57,6 +57,7 @@ struct WorkoutLogView: View {
     @State private var selectedDetailItem: ExerciseLibraryItem?
 
     @State private var isNoPerformedSetAlertPresented = false
+    @State private var isCalculatingBurn = false
     @FocusState private var focusedSetField: WorkoutLogSetFocus?
 
     private let library = ExerciseLibraryService.shared
@@ -167,6 +168,7 @@ struct WorkoutLogView: View {
                             setCount: completedSetCount,
                             repCount: completedRepCount,
                             caloriesBurned: workoutStore.caloriesBurned(on: selectedDate),
+                            isCalculatingBurn: isCalculatingBurn,
                             calculateBurn: calculateBurn,
                             changeDay: { changeDay(by: $0) }
                         )
@@ -401,6 +403,8 @@ struct WorkoutLogView: View {
     }
 
     private func calculateBurn() {
+        guard !isCalculatingBurn else { return }
+
         focusedSetField = nil
         dismissKeyboard()
 
@@ -414,13 +418,24 @@ struct WorkoutLogView: View {
             return
         }
 
+        let calculationDate = selectedDate
+        let calculationWeightUnit = weightUnit
+        isCalculatingBurn = true
         UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-        withAnimation(.snappy(duration: 0.25)) {
-            _ = workoutStore.upsertCalculatedWorkout(
-                on: selectedDate,
-                caloriesBurned: estimate.calories,
-                weightUnit: weightUnit
-            )
+
+        Task { @MainActor in
+            // Keep the local calculation state visible long enough to read rather
+            // than flashing past between two rendered frames.
+            try? await Task.sleep(for: .milliseconds(450))
+
+            withAnimation(.snappy(duration: 0.25)) {
+                _ = workoutStore.upsertCalculatedWorkout(
+                    on: calculationDate,
+                    caloriesBurned: estimate.calories,
+                    weightUnit: calculationWeightUnit
+                )
+            }
+            isCalculatingBurn = false
         }
     }
 
@@ -564,17 +579,19 @@ private struct WorkoutLogBurnHero: View {
     let setCount: Int
     let repCount: Int
     let caloriesBurned: Int?
+    let isCalculatingBurn: Bool
     let calculateBurn: () -> Void
     let changeDay: (Int) -> Void
 
     var body: some View {
         VStack(spacing: 22) {
-            WorkoutLogBurnButton(caloriesBurned: caloriesBurned, action: calculateBurn)
+            WorkoutLogBurnButton(isCalculating: isCalculatingBurn, action: calculateBurn)
 
             WorkoutLogStatsStrip(
                 setCount: setCount,
                 workoutCount: workoutCount,
-                repCount: repCount
+                repCount: repCount,
+                caloriesBurned: caloriesBurned
             )
             .contentShape(Rectangle())
             .simultaneousGesture(daySwipeGesture)
@@ -594,28 +611,35 @@ private struct WorkoutLogBurnHero: View {
 }
 
 private struct WorkoutLogBurnButton: View {
-    let caloriesBurned: Int?
+    let isCalculating: Bool
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
             VStack(spacing: 7) {
-                Image(systemName: "flame.fill")
-                    .font(.system(size: 29, weight: .black))
-                    .foregroundStyle(Color.white)
-                    .shadow(color: Color.black.opacity(0.52), radius: 2, y: 1)
-                    .frame(height: 34)
+                Group {
+                    if isCalculating {
+                        ProgressView()
+                            .tint(.white)
+                            .scaleEffect(1.1)
+                    } else {
+                        Image(systemName: "flame.fill")
+                            .font(.system(size: 29, weight: .black))
+                            .foregroundStyle(Color.white)
+                            .shadow(color: Color.black.opacity(0.52), radius: 2, y: 1)
+                    }
+                }
+                .frame(height: 34)
 
-                Text(caloriesBurned.map { "\($0) kcal" } ?? "Calculate")
-                    .font(.system(size: caloriesBurned == nil ? 26 : 30, weight: .black, design: .rounded))
+                Text(isCalculating ? "Calculating…" : "Calculate")
+                    .font(.system(size: 26, weight: .black, design: .rounded))
                     .foregroundStyle(Color.white)
-                    .contentTransition(.numericText())
-                    .monospacedDigit()
+                    .contentTransition(.opacity)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.66)
+                    .minimumScaleFactor(0.62)
                     .shadow(color: Color.black.opacity(0.62), radius: 2, y: 1)
 
-                Text(caloriesBurned == nil ? "WORKOUT BURN" : "TAP TO RECALCULATE")
+                Text("CALORIE BURN")
                     .font(.system(size: 9, weight: .black, design: .rounded))
                     .tracking(0.5)
                     .foregroundStyle(Color.white.opacity(0.90))
@@ -631,8 +655,9 @@ private struct WorkoutLogBurnButton: View {
             }
         }
         .buttonStyle(WorkoutLogBurnButtonStyle())
-        .accessibilityLabel(caloriesBurned == nil ? "Calculate workout calories" : "Recalculate workout calories")
-        .accessibilityValue(caloriesBurned.map { "\($0) kilocalories" } ?? "Not calculated")
+        .disabled(isCalculating)
+        .accessibilityLabel("Calculate calorie burn")
+        .accessibilityValue(isCalculating ? "Calculating" : "Ready")
         .accessibilityHint("Uses performed sets, repetitions, effort, load, and current body weight")
     }
 }
@@ -649,6 +674,7 @@ private struct WorkoutLogStatsStrip: View {
     let setCount: Int
     let workoutCount: Int
     let repCount: Int
+    let caloriesBurned: Int?
     @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
@@ -658,6 +684,13 @@ private struct WorkoutLogStatsStrip: View {
             metric(label: "Workouts", value: "\(workoutCount)", systemImage: "dumbbell.fill", active: workoutCount > 0)
             divider
             metric(label: "Reps", value: "\(repCount)", systemImage: "repeat", active: repCount > 0)
+            divider
+            metric(
+                label: "Burn",
+                value: caloriesBurned.map { "\($0) kcal" } ?? "-- kcal",
+                systemImage: "flame.fill",
+                active: caloriesBurned != nil
+            )
         }
         .frame(maxWidth: .infinity)
         .padding(.horizontal, 8)
