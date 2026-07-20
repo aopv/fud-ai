@@ -6,9 +6,9 @@
 import SwiftUI
 import RevenueCat
 
-/// Food-themed tip jar shown as its own always-visible Settings section immediately
-/// before About. Tips are consumable IAPs that fund development; everything in the
-/// app is already unlocked, so they grant nothing.
+/// Compact food-themed tip rows shown immediately before About in Settings.
+/// Tips are consumable IAPs that fund development; everything in the app is
+/// already unlocked, so they grant nothing.
 struct TipJarSettingsSection: View {
     private struct Tier: Identifiable {
         let productID: String
@@ -35,38 +35,18 @@ struct TipJarSettingsSection: View {
 
     var body: some View {
         Section("Leave a Tip") {
-            HStack(alignment: .top, spacing: 12) {
-                Image(systemName: "heart.fill")
-                    .foregroundStyle(AppColors.calorie)
-                    .frame(width: 22)
-
-                if didTip {
-                    VStack(alignment: .leading, spacing: 3) {
-                        Text("Thank you!")
-                            .font(.subheadline.weight(.semibold))
-                        Text("Your support keeps Fud AI free for everyone.")
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-                    }
-                } else {
-                    Text("Fud AI is free and open source — no subscriptions, no paywalls, everything already unlocked. If it's helped you, a tip keeps it that way.")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                }
-            }
-            .padding(.vertical, 2)
-
             ForEach(Self.tiers) { tier in
                 tierRow(tier)
             }
-
-            Text("Don't worry — tips have zero calories.")
-                .font(.caption2)
-                .foregroundStyle(.tertiary)
         }
         .listRowBackground(AppColors.appCard)
         .task {
             if products.isEmpty { await loadProducts() }
+        }
+        .alert("Thank you!", isPresented: $didTip) {
+            Button("Done", role: .cancel) {}
+        } message: {
+            Text("Your support keeps Fud AI free for everyone.")
         }
     }
 
@@ -82,16 +62,14 @@ struct TipJarSettingsSection: View {
                     .resizable()
                     .interpolation(.none)
                     .scaledToFit()
-                    .frame(width: 26, height: 26)
+                    .frame(width: 24, height: 24)
                 Text(tier.name)
-                    .font(.subheadline.weight(.medium))
                     .foregroundStyle(.primary)
                 Spacer()
                 if purchasingID == tier.productID || (product == nil && isLoading) {
                     ProgressView()
                 } else if let product {
                     Text(product.localizedPriceString)
-                        .font(.subheadline.weight(.semibold))
                         .foregroundStyle(AppColors.calorie)
                 } else {
                     // Store unreachable (offline, or products still propagating).
