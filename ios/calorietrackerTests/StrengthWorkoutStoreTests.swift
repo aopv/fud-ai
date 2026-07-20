@@ -190,7 +190,7 @@ struct StrengthWorkoutStoreTests {
         #expect(store.previousPlanDates(before: targetDate) == [sourceDate])
     }
 
-    @Test func setLimitsCarryWeightAndSanitizeLoadRepsAndRPEScales() throws {
+    @Test func setLimitsAddBlankRowsAndSanitizeLoadRepsAndRPEScales() throws {
         let fixture = WorkoutTestFixture()
         defer { fixture.cleanUp() }
 
@@ -206,6 +206,7 @@ struct StrengthWorkoutStoreTests {
             setID: firstSet.id,
             on: date,
             weight: "100,5 kg",
+            weightUnit: .kg,
             reps: "12a345",
             rpe: "7.5"
         )
@@ -214,10 +215,16 @@ struct StrengthWorkoutStoreTests {
         planned = try #require(store.exercises(for: date).first)
         #expect(planned.sets.count == 12)
         #expect(planned.sets[0].weight == "100.5")
+        #expect(planned.sets[0].weightUnit == WeightUnit.kg.rawValue)
         #expect(planned.sets[0].reps == "1234")
         #expect(planned.sets[0].rpe == "7.5")
-        #expect(planned.sets.dropFirst().allSatisfy { $0.weight == "100.5" })
-        #expect(planned.sets.dropFirst().allSatisfy { $0.reps.isEmpty && $0.rpe.isEmpty })
+        #expect(planned.sets.dropFirst().allSatisfy {
+            $0.weight.isEmpty
+                && $0.weightUnit == nil
+                && $0.reps.isEmpty
+                && $0.rpe.isEmpty
+                && $0.rpeScale == nil
+        })
 
         store.setSetCount(-4, exerciseID: planned.id, on: date)
         planned = try #require(store.exercises(for: date).first)
@@ -235,6 +242,22 @@ struct StrengthWorkoutStoreTests {
         #expect(store.exercises(for: date)[0].sets[0].rpe == "20")
         store.updateSet(exerciseID: planned.id, setID: firstSet.id, on: date, rpe: "5")
         #expect(store.exercises(for: date)[0].sets[0].rpe == "20")
+    }
+
+    @Test func plannedSetWeightDisplayFollowsGlobalUnitWithoutMutatingStoredLoad() {
+        let metricSet = StrengthPlannedSet(weight: "100", weightUnit: WeightUnit.kg.rawValue)
+        #expect(metricSet.displayWeight(in: .kg) == "100")
+        #expect(metricSet.displayWeight(in: .lbs) == "220.46")
+        #expect(metricSet.weight == "100")
+        #expect(metricSet.weightUnit == WeightUnit.kg.rawValue)
+
+        let imperialSet = StrengthPlannedSet(weight: "220.46", weightUnit: WeightUnit.lbs.rawValue)
+        #expect(imperialSet.displayWeight(in: .kg) == "100")
+        #expect(imperialSet.displayWeight(in: .lbs) == "220.46")
+
+        let legacySet = StrengthPlannedSet(weight: "75")
+        #expect(legacySet.displayWeight(in: .kg) == "75")
+        #expect(legacySet.displayWeight(in: .lbs) == "75")
     }
 
     @Test func completionBuildsStatisticsFiltersDatesDeletesAndPersistsSessions() throws {

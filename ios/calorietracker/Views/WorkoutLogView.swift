@@ -189,7 +189,7 @@ struct WorkoutLogView: View {
                             ForEach(selectedExercises) { exercise in
                                 WorkoutLogExerciseCard(
                                     exercise: exercise,
-                                    weightUnit: weightUnit.rawValue,
+                                    weightUnit: weightUnit,
                                     rpeScale: workoutStore.preferences.rpeScale,
                                     focusedField: $focusedSetField,
                                     openDetail: {
@@ -616,32 +616,33 @@ private struct WorkoutLogBurnButton: View {
 
     var body: some View {
         Button(action: action) {
-            VStack(spacing: 7) {
+            VStack(spacing: 5) {
                 Group {
                     if isCalculating {
                         ProgressView()
                             .tint(.white)
-                            .scaleEffect(1.1)
+                            .scaleEffect(1.05)
                     } else {
                         Image(systemName: "flame.fill")
-                            .font(.system(size: 29, weight: .black))
+                            .font(.system(size: 27, weight: .black))
                             .foregroundStyle(Color.white)
                             .shadow(color: Color.black.opacity(0.52), radius: 2, y: 1)
                     }
                 }
-                .frame(height: 34)
+                .frame(height: 32)
 
                 Text(isCalculating ? "Calculating…" : "Calculate")
-                    .font(.system(size: 26, weight: .black, design: .rounded))
+                    .font(.system(size: isCalculating ? 18 : 22, weight: .black, design: .rounded))
                     .foregroundStyle(Color.white)
                     .contentTransition(.opacity)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.62)
+                    .minimumScaleFactor(0.9)
+                    .frame(width: 118)
                     .shadow(color: Color.black.opacity(0.62), radius: 2, y: 1)
 
                 Text("CALORIE BURN")
                     .font(.system(size: 9, weight: .black, design: .rounded))
-                    .tracking(0.5)
+                    .tracking(0.4)
                     .foregroundStyle(Color.white.opacity(0.90))
                     .lineLimit(1)
             }
@@ -757,7 +758,7 @@ private struct WorkoutLogSetFocus: Hashable {
 
 private struct WorkoutLogExerciseCard: View {
     let exercise: StrengthPlannedExercise
-    let weightUnit: String
+    let weightUnit: WeightUnit
     let rpeScale: StrengthWorkoutRPEScale
     let focusedField: FocusState<WorkoutLogSetFocus?>.Binding
     let openDetail: () -> Void
@@ -877,7 +878,7 @@ private struct WorkoutLogSetRow: View {
     let setIndex: Int
     let set: StrengthPlannedSet
     let rpeScale: StrengthWorkoutRPEScale
-    let weightUnit: String
+    let weightUnit: WeightUnit
     let focusedField: FocusState<WorkoutLogSetFocus?>.Binding
     let updateWeight: (String) -> Void
     let updateReps: (String) -> Void
@@ -893,8 +894,8 @@ private struct WorkoutLogSetRow: View {
                 .frame(width: 46, alignment: .leading)
 
             WorkoutLogSetValueField(
-                placeholder: set.weightUnit ?? weightUnit,
-                text: Binding(get: { set.weight }, set: updateWeight),
+                placeholder: weightUnit.rawValue,
+                text: Binding(get: { set.displayWeight(in: weightUnit) }, set: updateWeight),
                 keyboardType: .decimalPad,
                 focus: WorkoutLogSetFocus(exerciseID: exerciseID, setID: set.id, field: .weight),
                 focusedField: focusedField

@@ -87,10 +87,8 @@ final class StrengthWorkoutStore {
         updateExercise(exerciseID, on: date) { exercise in
             let target = min(max(count, 1), 12)
             if target > exercise.sets.count {
-                let carriedWeight = exercise.sets.last?.weight ?? ""
-                let carriedWeightUnit = exercise.sets.last?.weightUnit
                 exercise.sets.append(contentsOf: (exercise.sets.count..<target).map { _ in
-                    StrengthPlannedSet(weight: carriedWeight, weightUnit: carriedWeightUnit)
+                    StrengthPlannedSet()
                 })
             } else if target < exercise.sets.count {
                 exercise.sets.removeLast(exercise.sets.count - target)

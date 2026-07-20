@@ -241,6 +241,26 @@ struct StrengthPlannedSet: Identifiable, Codable, Equatable, Hashable {
             weightUnit: carryingWeight ? weightUnit : nil
         )
     }
+
+    /// Presents a persisted load in the app-wide unit without relabeling the
+    /// underlying value. Editing the field then stores the new text together
+    /// with the currently selected global unit.
+    func displayWeight(in targetUnit: WeightUnit) -> String {
+        guard let sourceUnit = WeightUnit(rawValue: weightUnit ?? ""),
+              sourceUnit != targetUnit,
+              let numericWeight = Double(weight.replacingOccurrences(of: ",", with: ".")),
+              numericWeight.isFinite
+        else { return weight }
+
+        let poundsPerKilogram = 2.204_622_621_8
+        let converted = sourceUnit == .kg
+            ? numericWeight * poundsPerKilogram
+            : numericWeight / poundsPerKilogram
+        var text = String(format: "%.2f", converted)
+        while text.last == "0" { text.removeLast() }
+        if text.last == "." { text.removeLast() }
+        return text
+    }
 }
 
 struct StrengthPlannedExercise: Identifiable, Codable, Equatable, Hashable {
