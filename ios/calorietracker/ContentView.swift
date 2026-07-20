@@ -2891,14 +2891,12 @@ struct ProgressTabView: View {
                 )
             }
             .sheet(isPresented: $showWorkoutHistory) {
-                NavigationStack {
-                    WorkoutHistoryView(sessions: workoutCalorieSessions)
-                        .toolbar {
-                            ToolbarItem(placement: .confirmationAction) {
-                                Button("Done") { showWorkoutHistory = false }
-                            }
-                        }
-                }
+                WorkoutHistoryView(
+                    sessions: workoutCalorieSessions,
+                    onDelete: { session in
+                        strengthWorkoutStore.deleteSession(session.id)
+                    }
+                )
             }
         }
     }
