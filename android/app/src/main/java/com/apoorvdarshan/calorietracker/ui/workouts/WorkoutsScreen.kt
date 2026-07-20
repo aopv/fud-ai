@@ -64,10 +64,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -229,7 +225,17 @@ private fun WorkoutLibraryScreen(
     // Dismiss the search keyboard as soon as the list starts scrolling — matches
     // iOS, where the scroll view resigns the search field automatically.
     val listState = rememberLazyListState()
-    val keyboardDismissConnection = rememberWorkoutKeyboardDismissOnScrollConnection()
+    val focusManager = LocalFocusManager.current
+    val keyboard = LocalSoftwareKeyboardController.current
+
+    fun dismissKeyboard() {
+        focusManager.clearFocus()
+        keyboard?.hide()
+    }
+
+    LaunchedEffect(listState.isScrollInProgress) {
+        if (listState.isScrollInProgress) dismissKeyboard()
+    }
 
     // Fud AI's tab bar floats over content (no Scaffold inset like Delts), so the
     // screen paints its own background and the list keeps its tail clear of the
@@ -263,9 +269,7 @@ private fun WorkoutLibraryScreen(
         )
         LazyColumn(
             state = listState,
-            modifier = Modifier
-                .fillMaxSize()
-                .nestedScroll(keyboardDismissConnection),
+            modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(bottom = BottomNavScrollPadding)
         ) {
             if (items.isEmpty()) {
@@ -281,23 +285,6 @@ private fun WorkoutLibraryScreen(
                 }
             }
             item(key = "bottompad") { Spacer(Modifier.size(24.dp)) }
-        }
-    }
-}
-
-@Composable
-internal fun rememberWorkoutKeyboardDismissOnScrollConnection(): NestedScrollConnection {
-    val focusManager = LocalFocusManager.current
-    val keyboard = LocalSoftwareKeyboardController.current
-    return remember(focusManager, keyboard) {
-        object : NestedScrollConnection {
-            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-                if (source == NestedScrollSource.UserInput && available.y != 0f) {
-                    focusManager.clearFocus(force = true)
-                    keyboard?.hide()
-                }
-                return Offset.Zero
-            }
         }
     }
 }

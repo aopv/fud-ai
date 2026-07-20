@@ -4,7 +4,10 @@ package com.apoorvdarshan.calorietracker.ui.workouts
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.rememberScrollableState
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.scrollableArea
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -54,8 +57,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -129,8 +132,24 @@ internal fun WorkoutPickerSheet(
     }
     var filter by remember(request.contextId) { mutableStateOf(initialFilterState) }
     val focus = LocalFocusManager.current
+    val keyboard = LocalSoftwareKeyboardController.current
     val listState = rememberLazyListState()
-    val keyboardDismissConnection = rememberWorkoutKeyboardDismissOnScrollConnection()
+
+    fun dismissKeyboard() {
+        focus.clearFocus(force = true)
+        keyboard?.hide()
+    }
+    // The modal sheet owns the pointer chain before its nested LazyColumn does.
+    // Drive that list from the sheet-level scroll surface so the IME is dismissed
+    // on the same drag without losing the list's normal direction or fling.
+    val pickerScrollState = rememberScrollableState { delta ->
+        dismissKeyboard()
+        listState.dispatchRawDelta(delta)
+    }
+
+    LaunchedEffect(listState.isScrollInProgress) {
+        if (listState.isScrollInProgress) dismissKeyboard()
+    }
 
     fun updateFilter(transform: (WorkoutPickerFilterState) -> WorkoutPickerFilterState) {
         val next = transform(filter)
@@ -302,62 +321,67 @@ internal fun WorkoutPickerSheet(
                 modifier = Modifier.padding(horizontal = 20.dp, vertical = 4.dp)
             )
 
-            LazyColumn(
-                state = listState,
+            Box(
                 modifier = Modifier
+                    .scrollableArea(pickerScrollState, Orientation.Vertical)
                     .fillMaxWidth()
                     .weight(1f)
-                    .nestedScroll(keyboardDismissConnection),
-                contentPadding = androidx.compose.foundation.layout.PaddingValues(bottom = 28.dp)
             ) {
-                if (items.isEmpty()) {
-                    item(key = "empty-picker") {
-                        PickerEmptyState(source = source)
-                    }
-                } else {
-                    items(items.take(120), key = { it.id }) { item ->
-                        ExerciseRow(
-                            item = item,
-                            onClick = { onToggleExercise(item) },
-                            trailingContent = {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(2.dp)
-                                ) {
-                                    IconButton(onClick = { onToggleSaved(item.id) }, modifier = Modifier.size(36.dp)) {
-                                        Icon(
-                                            if (item.id in savedExerciseIds) Icons.Filled.Bookmark else Icons.Filled.BookmarkBorder,
-                                            contentDescription = if (item.id in savedExerciseIds) "Unsave exercise" else "Save exercise",
-                                            tint = if (item.id in savedExerciseIds) AppColors.Calorie else workoutsColors().mutedText,
-                                            modifier = Modifier.size(20.dp)
-                                        )
-                                    }
-                                    Box(
-                                        modifier = Modifier
-                                            .size(34.dp)
-                                            .clip(CircleShape)
-                                            .background(
-                                                if (item.id in selectedExerciseIds) AppColors.Calorie
-                                                else workoutsColors().panel.copy(alpha = 0.52f)
-                                            )
-                                            .clickable { onToggleExercise(item) },
-                                        contentAlignment = Alignment.Center
+                LazyColumn(
+                    state = listState,
+                    userScrollEnabled = false,
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = androidx.compose.foundation.layout.PaddingValues(bottom = 28.dp)
+                ) {
+                    if (items.isEmpty()) {
+                        item(key = "empty-picker") {
+                            PickerEmptyState(source = source)
+                        }
+                    } else {
+                        items(items.take(120), key = { it.id }) { item ->
+                            ExerciseRow(
+                                item = item,
+                                onClick = { onToggleExercise(item) },
+                                trailingContent = {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(2.dp)
                                     ) {
-                                        Icon(
-                                            if (item.id in selectedExerciseIds) Icons.Filled.Check else Icons.Filled.AddCircle,
-                                            contentDescription = if (item.id in selectedExerciseIds) "Remove from day" else "Add to day",
-                                            tint = if (item.id in selectedExerciseIds) androidx.compose.ui.graphics.Color.White else workoutsColors().mutedText,
-                                            modifier = Modifier.size(if (item.id in selectedExerciseIds) 18.dp else 23.dp)
-                                        )
+                                        IconButton(onClick = { onToggleSaved(item.id) }, modifier = Modifier.size(36.dp)) {
+                                            Icon(
+                                                if (item.id in savedExerciseIds) Icons.Filled.Bookmark else Icons.Filled.BookmarkBorder,
+                                                contentDescription = if (item.id in savedExerciseIds) "Unsave exercise" else "Save exercise",
+                                                tint = if (item.id in savedExerciseIds) AppColors.Calorie else workoutsColors().mutedText,
+                                                modifier = Modifier.size(20.dp)
+                                            )
+                                        }
+                                        Box(
+                                            modifier = Modifier
+                                                .size(34.dp)
+                                                .clip(CircleShape)
+                                                .background(
+                                                    if (item.id in selectedExerciseIds) AppColors.Calorie
+                                                    else workoutsColors().panel.copy(alpha = 0.52f)
+                                                )
+                                                .clickable { onToggleExercise(item) },
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            Icon(
+                                                if (item.id in selectedExerciseIds) Icons.Filled.Check else Icons.Filled.AddCircle,
+                                                contentDescription = if (item.id in selectedExerciseIds) "Remove from day" else "Add to day",
+                                                tint = if (item.id in selectedExerciseIds) androidx.compose.ui.graphics.Color.White else workoutsColors().mutedText,
+                                                modifier = Modifier.size(if (item.id in selectedExerciseIds) 18.dp else 23.dp)
+                                            )
+                                        }
                                     }
                                 }
-                            }
-                        )
-                        HorizontalDivider(
-                            color = workoutsColors().hairline.copy(alpha = 0.28f),
-                            thickness = 0.5.dp,
-                            modifier = Modifier.padding(start = 144.dp, end = 20.dp)
-                        )
+                            )
+                            HorizontalDivider(
+                                color = workoutsColors().hairline.copy(alpha = 0.28f),
+                                thickness = 0.5.dp,
+                                modifier = Modifier.padding(start = 144.dp, end = 20.dp)
+                            )
+                        }
                     }
                 }
             }
