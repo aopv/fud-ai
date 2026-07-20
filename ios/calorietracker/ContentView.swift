@@ -1,10 +1,12 @@
 import SwiftUI
+import Photos
 import PhotosUI
 import UIKit
 import HealthKit
 import StoreKit
 import WidgetKit
 import AVFoundation
+import Speech
 
 // MARK: - Camera Mode
 enum CameraMode {
@@ -561,6 +563,8 @@ struct HomeView: View {
     @State private var currentFoodSource: FoodSource = .snapFood
     @State private var showNutritionDetail = false
     @State private var showCustomWaterLog = false
+    @State private var hasPresentedFoodDestination = false
+    @State private var didPrewarmFoodDestinations = false
     // Bumped each time the app is opened (cold launch = 1, then +1 on every
     // return from background). Drives the gauge + macro "fill from zero" reveal.
     // Not bumped on tab switches or data edits, so it only plays on app open.
@@ -641,22 +645,45 @@ struct HomeView: View {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
     }
 
-    /// Lets the native menu finish its selection before presenting the chosen destination,
-    /// then uses a short transaction instead of inheriting the menu's slower dismissal.
+    /// Lets the native menu finish its selection before presenting the chosen destination.
+    /// The first presentation skips animation so cold setup cannot stretch the handoff;
+    /// later selections retain the short transition that already feels responsive.
     private func presentFoodDestination(_ updates: @escaping () -> Void) {
+        let shouldAnimate = hasPresentedFoodDestination
+        hasPresentedFoodDestination = true
+
         DispatchQueue.main.async {
-            var transaction = Transaction(animation: .easeOut(duration: 0.16))
-            transaction.disablesAnimations = false
+            var transaction = Transaction(animation: shouldAnimate ? .easeOut(duration: 0.16) : nil)
+            transaction.disablesAnimations = !shouldAnimate
             withTransaction(transaction) {
                 updates()
             }
         }
     }
 
+    /// Loads the native menu and media authorization code paths while Home is idle.
+    /// Reading authorization status never prompts the user or starts camera/microphone capture.
+    private func prewarmFoodDestinations() {
+        guard !didPrewarmFoodDestinations else { return }
+        didPrewarmFoodDestinations = true
+
+        let placeholderAction = UIAction(title: "") { _ in }
+        let placeholderSubmenu = UIMenu(title: "", children: [placeholderAction])
+        _ = UIMenu(title: "", children: [placeholderSubmenu])
+
+        Task.detached(priority: .utility) {
+            _ = PHPhotoLibrary.authorizationStatus(for: .readWrite)
+            _ = AVCaptureDevice.authorizationStatus(for: .video)
+            _ = SFSpeechRecognizer.authorizationStatus()
+        }
+    }
+
     @ViewBuilder
     private var waterQuickMenuItems: some View {
         Button {
-            showCustomWaterLog = true
+            presentFoodDestination {
+                showCustomWaterLog = true
+            }
         } label: {
             Label("Custom", systemImage: "slider.horizontal.3")
         }
@@ -1274,6 +1301,7 @@ struct HomeView: View {
             }
             .onAppear {
                 checkAndConsumeSharedImage()
+                prewarmFoodDestinations()
             }
             .onChange(of: scenePhase) { _, newPhase in
                 if newPhase == .active {
