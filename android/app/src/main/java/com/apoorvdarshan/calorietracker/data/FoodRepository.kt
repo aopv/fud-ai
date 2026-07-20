@@ -4,6 +4,7 @@ import com.apoorvdarshan.calorietracker.models.FoodEntry
 import com.apoorvdarshan.calorietracker.models.FoodSource
 import com.apoorvdarshan.calorietracker.services.ReviewPrompter
 import com.apoorvdarshan.calorietracker.models.MealType
+import com.apoorvdarshan.calorietracker.services.FoodImageStore
 import com.apoorvdarshan.calorietracker.services.health.HealthConnectManager
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -20,7 +21,8 @@ import kotlin.math.roundToInt
  */
 class FoodRepository(
     private val prefs: PreferencesStore,
-    private val health: HealthConnectManager? = null
+    private val health: HealthConnectManager? = null,
+    private val imageStore: FoodImageStore? = null
 ) {
     val entries: Flow<List<FoodEntry>> = prefs.foodEntries
 
@@ -95,19 +97,25 @@ class FoodRepository(
     }
 
     suspend fun deleteEntry(entryId: UUID) {
+        ensureFavoritesMigrated()
         val current = prefs.foodEntries.first()
         prefs.setFoodEntries(current.filter { it.id != entryId })
+        pruneOrphanedImages()
         // Delete even when sync is off (iOS parity, best-effort) — a surviving
         // fudai-tagged record would resurrect through restoreFromHealthConnect.
         health?.deleteNutrition(entryId)
     }
 
     suspend fun replaceAll(entries: List<FoodEntry>) {
+        ensureFavoritesMigrated()
         prefs.setFoodEntries(entries)
+        pruneOrphanedImages()
     }
 
     suspend fun clear() {
+        ensureFavoritesMigrated()
         prefs.setFoodEntries(emptyList())
+        pruneOrphanedImages()
     }
 
     // -- Favorites --------------------------------------------------------
@@ -137,6 +145,7 @@ class FoodRepository(
         }
         prefs.setFavoriteFoodEntries(current)
         prefs.setFavoriteKeys(current.map { it.favoriteKey }.toSet())
+        pruneOrphanedImages()
     }
 
     /**
@@ -173,6 +182,19 @@ class FoodRepository(
     private suspend fun shouldSyncHealth(): Boolean {
         val manager = health ?: return false
         return prefs.healthConnectEnabled.first() && manager.hasNutritionWrite()
+    }
+
+    /**
+     * Repairs image files orphaned by older Android builds. Food-log entries,
+     * saved meals, and a recoverable in-progress analysis draft are all owners;
+     * only filenames absent from every owner are removed.
+     */
+    suspend fun pruneOrphanedImages() {
+        val store = imageStore ?: return
+        // Preserve legacy saved meals before deciding which files are unused.
+        ensureFavoritesMigrated()
+        val referenced = prefs.foodImageReferenceFilenames() ?: return
+        store.pruneUnreferenced(referenced)
     }
 
     // -- Restore from Health Connect --------------------------------------

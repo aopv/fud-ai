@@ -55,6 +55,10 @@ class FudAIApp : Application() {
         container = AppContainer(this)
         container.notifications.createChannels()
         container.widgetSnapshotWriter.observe().launchIn(appScope)
+        // Older Android builds removed food rows without removing their JPEGs.
+        // Prune only unreferenced files; logged foods, saved meals, and pending
+        // analysis drafts remain untouched.
+        appScope.launch { container.foodRepository.pruneOrphanedImages() }
         container.prefs.mealSchedule
             .onEach { CurrentMealSchedule.value = it }
             .launchIn(appScope)
@@ -161,7 +165,7 @@ class AppContainer(app: FudAIApp) {
     }
 
     val profileRepository = ProfileRepository(prefs)
-    val foodRepository = FoodRepository(prefs, health)
+    val foodRepository = FoodRepository(prefs, health, imageStore)
     val weightRepository = WeightRepository(prefs, profileRepository, health)
     val bodyFatRepository = BodyFatRepository(prefs, profileRepository, health)
     val bodyMeasurementRepository = BodyMeasurementRepository(prefs)

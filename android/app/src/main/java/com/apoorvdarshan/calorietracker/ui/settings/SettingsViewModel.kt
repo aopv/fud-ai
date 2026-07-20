@@ -771,7 +771,6 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
     fun clearFoodLog() {
         viewModelScope.launch {
             container.foodRepository.clear()
-            container.imageStore.clearAll()
         }
     }
 

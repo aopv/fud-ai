@@ -76,6 +76,29 @@ class FoodImageStore(context: Context) {
         thumbnailCache.evictAll()
     }
 
+    /**
+     * Removes only image files that are no longer referenced by persisted app data.
+     * Callers must include food-log, saved-meal, and pending-draft filenames in
+     * [referencedFilenames]. This is safe to run repeatedly, including at startup,
+     * and repairs orphaned files left by older builds without touching user data.
+     */
+    fun pruneUnreferenced(referencedFilenames: Set<String>) {
+        val referenced = referencedFilenames.mapTo(mutableSetOf()) { File(it).name }
+
+        dir.listFiles()
+            ?.filter { it.isFile && it.name !in referenced }
+            ?.forEach { delete(it.name) }
+
+        // A crash can leave a thumbnail without its full-size image. Clean those
+        // independently while preserving every thumbnail still referenced.
+        thumbnailDir.listFiles()
+            ?.filter { it.isFile && it.name !in referenced }
+            ?.forEach { file ->
+                runCatching { file.delete() }
+                evictThumbnails(file.name)
+            }
+    }
+
     private fun writeThumbnail(filename: String, bitmap: Bitmap) {
         val thumb = bitmap.scaledToMaxDimension(THUMBNAIL_MAX_DIMENSION)
         FileOutputStream(File(thumbnailDir, filename)).use { out ->

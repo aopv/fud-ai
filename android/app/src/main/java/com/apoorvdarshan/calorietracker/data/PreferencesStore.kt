@@ -480,6 +480,36 @@ class PreferencesStore(private val context: Context) : WorkoutStateStore {
         ds.edit { it[Keys.FAVORITE_ENTRIES] = json.encodeToString(ListSerializer(FoodEntry.serializer()), entries) }
     }
 
+    /**
+     * Returns an atomic snapshot of every persisted food-image reference. A
+     * decode failure returns null so cleanup never treats unreadable user data
+     * as an empty list and deletes its files.
+     */
+    suspend fun foodImageReferenceFilenames(): Set<String>? {
+        val prefs = ds.data.first()
+        val foods = prefs[Keys.FOOD_ENTRIES]?.let { raw ->
+            runCatching {
+                json.decodeFromString(ListSerializer(FoodEntry.serializer()), raw)
+            }.getOrNull() ?: return null
+        }.orEmpty()
+        val favorites = prefs[Keys.FAVORITE_ENTRIES]?.let { raw ->
+            runCatching {
+                json.decodeFromString(ListSerializer(FoodEntry.serializer()), raw)
+            }.getOrNull() ?: return null
+        }.orEmpty()
+        val draft = prefs[Keys.PENDING_FOOD_ANALYSIS_DRAFT]?.let { raw ->
+            runCatching { json.decodeFromString<PendingFoodAnalysisDraft>(raw) }.getOrNull()
+                ?: return null
+        }
+
+        return buildSet {
+            foods.forEach { addAll(it.allImageFilenames) }
+            favorites.forEach { addAll(it.allImageFilenames) }
+            draft?.imageFilename?.let { add(it) }
+            draft?.additionalImageFilenames?.let { addAll(it) }
+        }
+    }
+
     // -- Pending food analysis draft --------------------------------------
     val pendingFoodAnalysisDraft: Flow<PendingFoodAnalysisDraft?> = ds.data.map { prefs ->
         prefs[Keys.PENDING_FOOD_ANALYSIS_DRAFT]?.let {
