@@ -53,28 +53,28 @@ enum ActivityLevel: String, Codable, CaseIterable {
     var subtitle: String {
         switch self {
         case .sedentary: LocalizedDisplayText.text(
-            "Mostly seated at work and home; little or no planned exercise.",
-            polish: "Głównie siedząco w pracy i domu; mało lub brak planowanych ćwiczeń."
+            "Mostly seated at work and home; little or no planned exercise.\nApprox. step guide: under 5,000 steps/day.",
+            polish: "Głównie siedząco w pracy i domu; mało lub brak planowanych ćwiczeń.\nOrientacyjnie: poniżej 5 000 kroków dziennie."
         )
         case .light: LocalizedDisplayText.text(
-            "Mostly seated; light exercise or casual activity 1–3 days/week.",
-            polish: "Głównie siedząco; lekki trening lub rekreacja 1–3 dni w tygodniu."
+            "Mostly seated; light exercise or casual activity 1–3 days/week.\nApprox. step guide: 5,000–7,499 steps/day.",
+            polish: "Głównie siedząco; lekki trening lub rekreacja 1–3 dni w tygodniu.\nOrientacyjnie: 5 000–7 499 kroków dziennie."
         )
         case .moderate: LocalizedDisplayText.text(
-            "Regular gym, cardio, climbing, cycling, or sport 3–5 days/week.",
-            polish: "Regularna siłownia, cardio, wspinaczka, rower lub sport 3–5 dni w tygodniu."
+            "Regular gym, cardio, climbing, cycling, or sport 3–5 days/week.\nApprox. step guide: 7,500–9,999 steps/day.",
+            polish: "Regularna siłownia, cardio, wspinaczka, rower lub sport 3–5 dni w tygodniu.\nOrientacyjnie: 7 500–9 999 kroków dziennie."
         )
         case .active: LocalizedDisplayText.text(
-            "Training most days, or a job with substantial standing, movement, or lifting.",
-            polish: "Trening przez większość dni lub praca z częstym staniem, ruchem albo dźwiganiem."
+            "Training most days, or a job with substantial standing, movement, or lifting.\nApprox. step guide: 10,000–12,499 steps/day.",
+            polish: "Trening przez większość dni lub praca z częstym staniem, ruchem albo dźwiganiem.\nOrientacyjnie: 10 000–12 499 kroków dziennie."
         )
         case .veryActive: LocalizedDisplayText.text(
-            "Hard training 6–7 days/week, endurance training, or demanding physical work.",
-            polish: "Ciężki trening 6–7 dni w tygodniu, trening wytrzymałościowy lub wymagająca praca fizyczna."
+            "Hard training 6–7 days/week, endurance training, or demanding physical work.\nApprox. step guide: 12,500–14,999 steps/day.",
+            polish: "Ciężki trening 6–7 dni w tygodniu, trening wytrzymałościowy lub wymagająca praca fizyczna.\nOrientacyjnie: 12 500–14 999 kroków dziennie."
         )
         case .extraActive: LocalizedDisplayText.text(
-            "Competitive/high-volume athlete, twice-daily training, or heavy manual work plus frequent training.",
-            polish: "Sportowiec wyczynowy, dwa treningi dziennie lub ciężka praca fizyczna plus częste treningi."
+            "Competitive/high-volume athlete, twice-daily training, or heavy manual work plus frequent training.\nApprox. step guide: 15,000+ steps/day.",
+            polish: "Sportowiec wyczynowy, dwa treningi dziennie lub ciężka praca fizyczna plus częste treningi.\nOrientacyjnie: co najmniej 15 000 kroków dziennie."
         )
         }
     }

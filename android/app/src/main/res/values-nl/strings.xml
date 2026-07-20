@@ -80,12 +80,12 @@
     <string name="activity_active">Actief</string>
     <string name="activity_very_active">Zeer actief</string>
     <string name="activity_extra_active">Extra actief</string>
-    <string name="activity_sedentary_subtitle">Meestal zittend op werk en thuis; weinig of geen geplande training.</string>
-    <string name="activity_light_subtitle">Meestal zittend; lichte training of recreatieve activiteit 1–3 dagen per week.</string>
-    <string name="activity_moderate_subtitle">Regelmatig sportschool, cardio, klimmen, fietsen of sport 3–5 dagen per week.</string>
-    <string name="activity_active_subtitle">Training op de meeste dagen, of werk met veel staan, bewegen of tillen.</string>
-    <string name="activity_very_active_subtitle">Zware training 6–7 dagen per week, duurtraining of veeleisend lichamelijk werk.</string>
-    <string name="activity_extra_active_subtitle">Wedstrijd- of hoogvolume-atleet, tweemaal daags trainen, of zwaar lichamelijk werk plus frequente training.</string>
+    <string name="activity_sedentary_subtitle">Meestal zittend op werk en thuis; weinig of geen geplande training.\nRichtlijn: minder dan 5.000 stappen/dag.</string>
+    <string name="activity_light_subtitle">Meestal zittend; lichte training of recreatieve activiteit 1–3 dagen per week.\nRichtlijn: 5.000–7.499 stappen/dag.</string>
+    <string name="activity_moderate_subtitle">Regelmatig sportschool, cardio, klimmen, fietsen of sport 3–5 dagen per week.\nRichtlijn: 7.500–9.999 stappen/dag.</string>
+    <string name="activity_active_subtitle">Training op de meeste dagen, of werk met veel staan, bewegen of tillen.\nRichtlijn: 10.000–12.499 stappen/dag.</string>
+    <string name="activity_very_active_subtitle">Zware training 6–7 dagen per week, duurtraining of veeleisend lichamelijk werk.\nRichtlijn: 12.500–14.999 stappen/dag.</string>
+    <string name="activity_extra_active_subtitle">Wedstrijd- of hoogvolume-atleet, tweemaal daags trainen, of zwaar lichamelijk werk plus frequente training.\nRichtlijn: 15.000+ stappen/dag.</string>
 
     <!-- Weight Goal -->
     <string name="goal_lose">Afvallen / Cutting</string>

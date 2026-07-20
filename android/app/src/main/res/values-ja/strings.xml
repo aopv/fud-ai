@@ -80,12 +80,12 @@
     <string name="activity_active">活発</string>
     <string name="activity_very_active">とても活発</string>
     <string name="activity_extra_active">非常に活発</string>
-    <string name="activity_sedentary_subtitle">仕事でも家でもほぼ座りっぱなしで、計画的な運動はほとんど、またはまったくしない。</string>
-    <string name="activity_light_subtitle">主に座り仕事で、週1〜3日は軽い運動や気軽な活動をする。</string>
-    <string name="activity_moderate_subtitle">週3〜5日はジム、有酸素運動、クライミング、サイクリング、スポーツなどを定期的に行う。</string>
-    <string name="activity_active_subtitle">ほぼ毎日トレーニングする、または立つ・動く・持ち上げることが多い仕事。</string>
-    <string name="activity_very_active_subtitle">週6〜7日のハードまたは持久系トレーニング、あるいは負荷の高い肉体労働。</string>
-    <string name="activity_extra_active_subtitle">競技・高ボリュームのアスリート、1日2回の練習、または重労働に加えて頻繁にトレーニング。</string>
+    <string name="activity_sedentary_subtitle">仕事でも家でもほぼ座りっぱなしで、計画的な運動はほとんど、またはまったくしない。\n目安：1日5,000歩未満。</string>
+    <string name="activity_light_subtitle">主に座り仕事で、週1〜3日は軽い運動や気軽な活動をする。\n目安：1日5,000〜7,499歩。</string>
+    <string name="activity_moderate_subtitle">週3〜5日はジム、有酸素運動、クライミング、サイクリング、スポーツなどを定期的に行う。\n目安：1日7,500〜9,999歩。</string>
+    <string name="activity_active_subtitle">ほぼ毎日トレーニングする、または立つ・動く・持ち上げることが多い仕事。\n目安：1日10,000〜12,499歩。</string>
+    <string name="activity_very_active_subtitle">週6〜7日のハードまたは持久系トレーニング、あるいは負荷の高い肉体労働。\n目安：1日12,500〜14,999歩。</string>
+    <string name="activity_extra_active_subtitle">競技・高ボリュームのアスリート、1日2回の練習、または重労働に加えて頻繁にトレーニング。\n目安：1日15,000歩以上。</string>
 
     <!-- Weight Goal -->
     <string name="goal_lose">減量 / Cutting</string>

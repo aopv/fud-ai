@@ -80,12 +80,12 @@
     <string name="activity_active">Attivo</string>
     <string name="activity_very_active">Molto attivo</string>
     <string name="activity_extra_active">Estremamente attivo</string>
-    <string name="activity_sedentary_subtitle">Perlopiù seduto al lavoro e a casa; poco o nessun esercizio programmato.</string>
-    <string name="activity_light_subtitle">Perlopiù seduto; esercizio leggero o attività ricreativa 1–3 giorni/settimana.</string>
-    <string name="activity_moderate_subtitle">Palestra, cardio, arrampicata, ciclismo o sport regolare 3–5 giorni/settimana.</string>
-    <string name="activity_active_subtitle">Allenamento quasi tutti i giorni, o lavoro con molto tempo in piedi, movimento o sollevamento.</string>
-    <string name="activity_very_active_subtitle">Allenamento duro 6–7 giorni/settimana, resistenza o lavoro fisico impegnativo.</string>
-    <string name="activity_extra_active_subtitle">Atleta agonista o ad alto volume, due allenamenti al giorno, o lavoro manuale pesante più allenamento frequente.</string>
+    <string name="activity_sedentary_subtitle">Perlopiù seduto al lavoro e a casa; poco o nessun esercizio programmato.\nIndicazione approssimativa: meno di 5.000 passi/giorno.</string>
+    <string name="activity_light_subtitle">Perlopiù seduto; esercizio leggero o attività ricreativa 1–3 giorni/settimana.\nIndicazione approssimativa: 5.000–7.499 passi/giorno.</string>
+    <string name="activity_moderate_subtitle">Palestra, cardio, arrampicata, ciclismo o sport regolare 3–5 giorni/settimana.\nIndicazione approssimativa: 7.500–9.999 passi/giorno.</string>
+    <string name="activity_active_subtitle">Allenamento quasi tutti i giorni, o lavoro con molto tempo in piedi, movimento o sollevamento.\nIndicazione approssimativa: 10.000–12.499 passi/giorno.</string>
+    <string name="activity_very_active_subtitle">Allenamento duro 6–7 giorni/settimana, resistenza o lavoro fisico impegnativo.\nIndicazione approssimativa: 12.500–14.999 passi/giorno.</string>
+    <string name="activity_extra_active_subtitle">Atleta agonista o ad alto volume, due allenamenti al giorno, o lavoro manuale pesante più allenamento frequente.\nIndicazione approssimativa: 15.000+ passi/giorno.</string>
 
     <!-- Weight Goal -->
     <string name="goal_lose">Perdere peso / Cutting</string>

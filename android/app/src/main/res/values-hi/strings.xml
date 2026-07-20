@@ -80,12 +80,12 @@
     <string name="activity_active">सक्रिय</string>
     <string name="activity_very_active">बहुत सक्रिय</string>
     <string name="activity_extra_active">अत्यधिक सक्रिय</string>
-    <string name="activity_sedentary_subtitle">काम और घर पर अधिकतर बैठे रहते हैं; बहुत कम या कोई नियोजित व्यायाम नहीं।</string>
-    <string name="activity_light_subtitle">अधिकतर बैठे रहते हैं; सप्ताह में 1–3 दिन हल्का व्यायाम या सामान्य गतिविधि।</string>
-    <string name="activity_moderate_subtitle">सप्ताह में 3–5 दिन नियमित जिम, कार्डियो, चढ़ाई, साइकिलिंग या खेल।</string>
-    <string name="activity_active_subtitle">अधिकतर दिनों में प्रशिक्षण, या ऐसा काम जिसमें काफी खड़ा रहना, चलना या उठाना हो।</string>
-    <string name="activity_very_active_subtitle">सप्ताह में 6–7 दिन कठिन या सहनशक्ति प्रशिक्षण, या मेहनत वाला शारीरिक काम।</string>
-    <string name="activity_extra_active_subtitle">प्रतिस्पर्धी या उच्च-मात्रा एथलीट, दिन में दो प्रशिक्षण, या भारी शारीरिक काम के साथ नियमित प्रशिक्षण।</string>
+    <string name="activity_sedentary_subtitle">काम और घर पर अधिकतर बैठे रहते हैं; बहुत कम या कोई नियोजित व्यायाम नहीं।\nअनुमानित मार्गदर्शक: प्रतिदिन 5,000 से कम कदम।</string>
+    <string name="activity_light_subtitle">अधिकतर बैठे रहते हैं; सप्ताह में 1–3 दिन हल्का व्यायाम या सामान्य गतिविधि।\nअनुमानित मार्गदर्शक: प्रतिदिन 5,000–7,499 कदम।</string>
+    <string name="activity_moderate_subtitle">सप्ताह में 3–5 दिन नियमित जिम, कार्डियो, चढ़ाई, साइकिलिंग या खेल।\nअनुमानित मार्गदर्शक: प्रतिदिन 7,500–9,999 कदम।</string>
+    <string name="activity_active_subtitle">अधिकतर दिनों में प्रशिक्षण, या ऐसा काम जिसमें काफी खड़ा रहना, चलना या उठाना हो।\nअनुमानित मार्गदर्शक: प्रतिदिन 10,000–12,499 कदम।</string>
+    <string name="activity_very_active_subtitle">सप्ताह में 6–7 दिन कठिन या सहनशक्ति प्रशिक्षण, या मेहनत वाला शारीरिक काम।\nअनुमानित मार्गदर्शक: प्रतिदिन 12,500–14,999 कदम।</string>
+    <string name="activity_extra_active_subtitle">प्रतिस्पर्धी या उच्च-मात्रा एथलीट, दिन में दो प्रशिक्षण, या भारी शारीरिक काम के साथ नियमित प्रशिक्षण।\nअनुमानित मार्गदर्शक: प्रतिदिन 15,000+ कदम।</string>
 
     <!-- Weight Goal -->
     <string name="goal_lose">वज़न घटाएँ / Cutting</string>

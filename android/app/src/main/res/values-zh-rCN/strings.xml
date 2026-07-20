@@ -80,12 +80,12 @@
     <string name="activity_active">活跃</string>
     <string name="activity_very_active">非常活跃</string>
     <string name="activity_extra_active">超级活跃</string>
-    <string name="activity_sedentary_subtitle">工作和居家时大多坐着；很少或没有计划性锻炼。</string>
-    <string name="activity_light_subtitle">大多坐着；每周 1–3 天轻度锻炼或休闲活动。</string>
-    <string name="activity_moderate_subtitle">每周 3–5 天规律进行健身、有氧、攀岩、骑行或运动。</string>
-    <string name="activity_active_subtitle">大多数天训练，或工作中需要大量站立、走动或搬抬。</string>
-    <string name="activity_very_active_subtitle">每周 6–7 天高强度或耐力训练，或从事高强度体力工作。</string>
-    <string name="activity_extra_active_subtitle">竞技或高训练量运动员、每天两练，或重体力工作并频繁训练。</string>
+    <string name="activity_sedentary_subtitle">工作和居家时大多坐着；很少或没有计划性锻炼。\n大致参考：每天少于 5,000 步。</string>
+    <string name="activity_light_subtitle">大多坐着；每周 1–3 天轻度锻炼或休闲活动。\n大致参考：每天 5,000–7,499 步。</string>
+    <string name="activity_moderate_subtitle">每周 3–5 天规律进行健身、有氧、攀岩、骑行或运动。\n大致参考：每天 7,500–9,999 步。</string>
+    <string name="activity_active_subtitle">大多数天训练，或工作中需要大量站立、走动或搬抬。\n大致参考：每天 10,000–12,499 步。</string>
+    <string name="activity_very_active_subtitle">每周 6–7 天高强度或耐力训练，或从事高强度体力工作。\n大致参考：每天 12,500–14,999 步。</string>
+    <string name="activity_extra_active_subtitle">竞技或高训练量运动员、每天两练，或重体力工作并频繁训练。\n大致参考：每天 15,000 步以上。</string>
 
     <!-- Weight Goal -->
     <string name="goal_lose">减重 / Cutting</string>
