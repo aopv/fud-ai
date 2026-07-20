@@ -120,6 +120,7 @@ object DiaryExporter {
         if (source == FoodSource.MANUAL) "manually_edited" else "ai_estimated"
 
     private fun r1(x: Double): Double = (x * 10).roundToInt() / 10.0
+    private fun optionalNumber(x: Double?, missing: String = ""): String = x?.let { r1(it).toString() } ?: missing
     private fun time(entry: FoodEntry): String = timeFmt.format(entry.timestamp.atZone(zone))
 
     // --- JSON ---
@@ -128,6 +129,15 @@ object DiaryExporter {
     @Serializable private data class ItemDto(
         val name: String, val quantity_g: Double? = null, val calories: Int,
         val protein_g: Double, val carbs_g: Double, val fat_g: Double,
+        val sugar_g: Double? = null, val added_sugar_g: Double? = null, val fiber_g: Double? = null,
+        val saturated_fat_g: Double? = null, val monounsaturated_fat_g: Double? = null,
+        val polyunsaturated_fat_g: Double? = null, val cholesterol_mg: Double? = null,
+        val sodium_mg: Double? = null, val potassium_mg: Double? = null, val trans_fat_g: Double? = null,
+        val calcium_mg: Double? = null, val iron_mg: Double? = null, val magnesium_mg: Double? = null,
+        val zinc_mg: Double? = null, val vitamin_a_mcg: Double? = null, val vitamin_c_mg: Double? = null,
+        val vitamin_d_mcg: Double? = null, val vitamin_b12_mcg: Double? = null,
+        val vitamin_e_mg: Double? = null, val vitamin_k_mcg: Double? = null,
+        val folate_mcg: Double? = null, val omega3_g: Double? = null,
         val time: String, val source: String, val note: String? = null,
     )
     @Serializable private data class MealDto(val type: String, val items: List<ItemDto>)
@@ -150,6 +160,18 @@ object DiaryExporter {
                             quantity_g = e.servingSizeGrams?.let { r1(it) },
                             calories = e.calories,
                             protein_g = r1(e.protein), carbs_g = r1(e.carbs), fat_g = r1(e.fat),
+                            sugar_g = e.sugar?.let { r1(it) }, added_sugar_g = e.addedSugar?.let { r1(it) },
+                            fiber_g = e.fiber?.let { r1(it) }, saturated_fat_g = e.saturatedFat?.let { r1(it) },
+                            monounsaturated_fat_g = e.monounsaturatedFat?.let { r1(it) },
+                            polyunsaturated_fat_g = e.polyunsaturatedFat?.let { r1(it) },
+                            cholesterol_mg = e.cholesterol?.let { r1(it) }, sodium_mg = e.sodium?.let { r1(it) },
+                            potassium_mg = e.potassium?.let { r1(it) }, trans_fat_g = e.transFat?.let { r1(it) },
+                            calcium_mg = e.calcium?.let { r1(it) }, iron_mg = e.iron?.let { r1(it) },
+                            magnesium_mg = e.magnesium?.let { r1(it) }, zinc_mg = e.zinc?.let { r1(it) },
+                            vitamin_a_mcg = e.vitaminA?.let { r1(it) }, vitamin_c_mg = e.vitaminC?.let { r1(it) },
+                            vitamin_d_mcg = e.vitaminD?.let { r1(it) }, vitamin_b12_mcg = e.vitaminB12?.let { r1(it) },
+                            vitamin_e_mg = e.vitaminE?.let { r1(it) }, vitamin_k_mcg = e.vitaminK?.let { r1(it) },
+                            folate_mcg = e.folate?.let { r1(it) }, omega3_g = e.omega3?.let { r1(it) },
                             time = time(e), source = sourceLabel(e.source),
                             note = e.customNote?.takeIf { it.isNotBlank() },
                         )
@@ -170,7 +192,7 @@ object DiaryExporter {
             )
         }
         val doc = Doc(
-            export = MetaDto("Fud AI", "1.0", RangeDto(dayFmt.format(lo), dayFmt.format(hi))),
+            export = MetaDto("Fud AI", "1.1", RangeDto(dayFmt.format(lo), dayFmt.format(hi))),
             days = days,
         )
         return jsonPretty.encodeToString(Doc.serializer(), doc)
@@ -197,14 +219,23 @@ object DiaryExporter {
             sb.append("- Fat: ${r1(tot[3])} / ${t.fat.roundToInt()} g\n")
             for ((mt, items) in meals(dayEntries)) {
                 sb.append("### ${mealDisplay(mt)}\n")
-                sb.append("| Time | Food | Weight | Calories | Protein | Carbs | Fat | Source |\n")
-                sb.append("|---|---|---:|---:|---:|---:|---:|---|\n")
+                sb.append("| Time | Food | Weight | Calories | Protein (g) | Carbs (g) | Fat (g) | Sugar (g) | Added sugar (g) | Fiber (g) | Saturated fat (g) | Monounsaturated fat (g) | Polyunsaturated fat (g) | Cholesterol (mg) | Sodium (mg) | Potassium (mg) | Trans fat (g) | Calcium (mg) | Iron (mg) | Magnesium (mg) | Zinc (mg) | Vitamin A (mcg) | Vitamin C (mg) | Vitamin D (mcg) | Vitamin B12 (mcg) | Vitamin E (mg) | Vitamin K (mcg) | Folate (mcg) | Omega-3 (g) | Source |\n")
+                sb.append("|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|\n")
                 for (e in items) {
                     val weight = e.servingSizeGrams?.let { "${it.roundToInt()} g" } ?: "-"
                     val food = e.name.replace("|", "/")
                     val cells = listOf(
                         time(e), food, weight, e.calories.toString(),
-                        "${r1(e.protein)} g", "${r1(e.carbs)} g", "${r1(e.fat)} g", sourceLabel(e.source),
+                        r1(e.protein).toString(), r1(e.carbs).toString(), r1(e.fat).toString(),
+                        optionalNumber(e.sugar, "-"), optionalNumber(e.addedSugar, "-"), optionalNumber(e.fiber, "-"),
+                        optionalNumber(e.saturatedFat, "-"), optionalNumber(e.monounsaturatedFat, "-"),
+                        optionalNumber(e.polyunsaturatedFat, "-"), optionalNumber(e.cholesterol, "-"),
+                        optionalNumber(e.sodium, "-"), optionalNumber(e.potassium, "-"), optionalNumber(e.transFat, "-"),
+                        optionalNumber(e.calcium, "-"), optionalNumber(e.iron, "-"), optionalNumber(e.magnesium, "-"),
+                        optionalNumber(e.zinc, "-"), optionalNumber(e.vitaminA, "-"), optionalNumber(e.vitaminC, "-"),
+                        optionalNumber(e.vitaminD, "-"), optionalNumber(e.vitaminB12, "-"), optionalNumber(e.vitaminE, "-"),
+                        optionalNumber(e.vitaminK, "-"), optionalNumber(e.folate, "-"), optionalNumber(e.omega3, "-"),
+                        sourceLabel(e.source),
                     )
                     sb.append("| ").append(cells.joinToString(" | ")).append(" |\n")
                 }
@@ -217,7 +248,7 @@ object DiaryExporter {
 
     private fun csv(byDay: Map<LocalDate, List<FoodEntry>>): String {
         val sb = StringBuilder()
-        sb.append("date,meal,time,food,weight_g,calories,protein_g,carbs_g,fat_g,source,note\n")
+        sb.append("date,meal,time,food,weight_g,calories,protein_g,carbs_g,fat_g,sugar_g,added_sugar_g,fiber_g,saturated_fat_g,monounsaturated_fat_g,polyunsaturated_fat_g,cholesterol_mg,sodium_mg,potassium_mg,trans_fat_g,calcium_mg,iron_mg,magnesium_mg,zinc_mg,vitamin_a_mcg,vitamin_c_mg,vitamin_d_mcg,vitamin_b12_mcg,vitamin_e_mg,vitamin_k_mcg,folate_mcg,omega3_g,source,note\n")
         for ((date, dayEntries) in byDay) {
             val d = dayFmt.format(date)
             for ((mt, items) in meals(dayEntries)) {
@@ -226,6 +257,14 @@ object DiaryExporter {
                         d, mt.name.lowercase(), time(e), e.name,
                         e.servingSizeGrams?.roundToInt()?.toString() ?: "",
                         e.calories.toString(), r1(e.protein).toString(), r1(e.carbs).toString(), r1(e.fat).toString(),
+                        optionalNumber(e.sugar), optionalNumber(e.addedSugar), optionalNumber(e.fiber),
+                        optionalNumber(e.saturatedFat), optionalNumber(e.monounsaturatedFat),
+                        optionalNumber(e.polyunsaturatedFat), optionalNumber(e.cholesterol), optionalNumber(e.sodium),
+                        optionalNumber(e.potassium), optionalNumber(e.transFat), optionalNumber(e.calcium),
+                        optionalNumber(e.iron), optionalNumber(e.magnesium), optionalNumber(e.zinc),
+                        optionalNumber(e.vitaminA), optionalNumber(e.vitaminC), optionalNumber(e.vitaminD),
+                        optionalNumber(e.vitaminB12), optionalNumber(e.vitaminE), optionalNumber(e.vitaminK),
+                        optionalNumber(e.folate), optionalNumber(e.omega3),
                         sourceLabel(e.source), e.customNote ?: "",
                     )
                     sb.append(cols.joinToString(",") { csvEscape(it) }).append("\n")
