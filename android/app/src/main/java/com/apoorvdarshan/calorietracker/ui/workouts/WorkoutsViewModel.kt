@@ -33,8 +33,13 @@ data class WorkoutCopyDayUi(
 internal data class WorkoutPickerFilterState(
     val search: String = "",
     val primaryMuscle: String? = null,
+    val secondaryMuscle: String? = null,
     val equipment: String? = null,
-    val level: String? = null
+    val level: String? = null,
+    val force: String? = null,
+    val mechanic: String? = null,
+    val category: String? = null,
+    val sort: ExerciseSort = ExerciseSort.NAME
 )
 
 data class WorkoutDiaryUiState(
@@ -168,10 +173,6 @@ class WorkoutsViewModel(app: Application) : AndroidViewModel(app) {
             return
         }
         repositoryJob = viewModelScope.launch {
-            if (!prefs.getBoolean(K_DIARY_DEFAULT_APPLIED, false)) {
-                repository.setMode(WorkoutTabMode.LOG)
-                prefs.edit().putBoolean(K_DIARY_DEFAULT_APPLIED, true).apply()
-            }
             repository.state.collectLatest { persisted ->
                 latestPersistedState = persisted
                 rebuildDiaryState()
@@ -262,8 +263,15 @@ class WorkoutsViewModel(app: Application) : AndroidViewModel(app) {
         return WorkoutPickerFilterState(
             search = prefs.getString("${prefix}search", "").orEmpty(),
             primaryMuscle = prefs.getString("${prefix}primary", null),
+            secondaryMuscle = prefs.getString("${prefix}secondary", null),
             equipment = prefs.getString("${prefix}equipment", null),
-            level = prefs.getString("${prefix}level", null)
+            level = prefs.getString("${prefix}level", null),
+            force = prefs.getString("${prefix}force", null),
+            mechanic = prefs.getString("${prefix}mechanic", null),
+            category = prefs.getString("${prefix}category", null),
+            sort = runCatching {
+                ExerciseSort.valueOf(prefs.getString("${prefix}sort", "") ?: "")
+            }.getOrDefault(ExerciseSort.NAME)
         )
     }
 
@@ -272,8 +280,13 @@ class WorkoutsViewModel(app: Application) : AndroidViewModel(app) {
         prefs.edit().apply {
             putString("${prefix}search", state.search)
             putString("${prefix}primary", state.primaryMuscle)
+            putString("${prefix}secondary", state.secondaryMuscle)
             putString("${prefix}equipment", state.equipment)
             putString("${prefix}level", state.level)
+            putString("${prefix}force", state.force)
+            putString("${prefix}mechanic", state.mechanic)
+            putString("${prefix}category", state.category)
+            putString("${prefix}sort", state.sort.name)
         }.apply()
     }
 
@@ -409,6 +422,5 @@ class WorkoutsViewModel(app: Application) : AndroidViewModel(app) {
         const val K_SORT = "sort"
         const val K_PICKER_SOURCE = "picker.source"
         const val K_PICKER_FILTER_PREFIX = "picker.filter."
-        const val K_DIARY_DEFAULT_APPLIED = "mode.diary_default.v1"
     }
 }

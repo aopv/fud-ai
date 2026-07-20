@@ -148,10 +148,11 @@ fun WorkoutsScreen(container: AppContainer, modifier: Modifier = Modifier) {
 @Composable
 internal fun WorkoutModeToggleButton(
     mode: WorkoutTabMode,
-    onToggle: () -> Unit
+    onToggle: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     FudGlassSurface(
-        modifier = Modifier
+        modifier = modifier
             .size(48.dp)
             .clickable(onClick = onToggle),
         cornerRadius = 18.dp,
@@ -480,7 +481,7 @@ internal fun FilterPill(
 }
 
 @Composable
-private fun ResultsHeader(
+internal fun ResultsHeader(
     count: Int,
     sortTitle: String,
     canReset: Boolean,

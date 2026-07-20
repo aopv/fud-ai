@@ -52,6 +52,9 @@ import com.apoorvdarshan.calorietracker.models.WorkoutTabMode
  */
 val LocalLaunchFillEpoch = compositionLocalOf { 1 }
 
+private const val WORKOUT_UI_PREFS = "fudai_workouts"
+private const val WORKOUT_MODE_V2_DEFAULT_KEY = "mode.diary_default.v2"
+
 @Composable
 fun FudAINavHost(
     container: AppContainer,
@@ -63,12 +66,29 @@ fun FudAINavHost(
     // Hide the bar while a food analysis is in flight so the AnalyzingOverlay
     // is the only thing on screen — matches iOS, where the analyzing sheet
     // covers the tab bar.
-    val analyzing by container.analyzingFood.collectAsState()
-    val workoutMode by container.workoutRepository.mode.collectAsState(initial = WorkoutTabMode.Default)
-    val showTabs = currentRoute in FudAIRoutes.bottomTabs && !analyzing
     val context = LocalContext.current
+    val analyzing by container.analyzingFood.collectAsState()
+    val persistedWorkoutMode by container.workoutRepository.mode.collectAsState(initial = WorkoutTabMode.Default)
+    val workoutUiPrefs = remember(context) {
+        context.getSharedPreferences(WORKOUT_UI_PREFS, android.content.Context.MODE_PRIVATE)
+    }
+    var workoutModeV2Initialized by remember(context) {
+        mutableStateOf(workoutUiPrefs.getBoolean(WORKOUT_MODE_V2_DEFAULT_KEY, false))
+    }
+    // Match iOS's versioned AppStorage key: reset the former library-first
+    // default once, then keep every user switch persistent after that.
+    val workoutMode = if (workoutModeV2Initialized) persistedWorkoutMode else WorkoutTabMode.LOG
+    val showTabs = currentRoute in FudAIRoutes.bottomTabs && !analyzing
     val currentVersion = remember(context) { AndroidUpdateChecker.currentVersion(context) }
     var updateAvailable by remember { mutableStateOf(false) }
+
+    LaunchedEffect(container.workoutRepository, workoutModeV2Initialized) {
+        if (!workoutModeV2Initialized) {
+            container.workoutRepository.setMode(WorkoutTabMode.LOG)
+            workoutUiPrefs.edit().putBoolean(WORKOUT_MODE_V2_DEFAULT_KEY, true).apply()
+            workoutModeV2Initialized = true
+        }
+    }
 
     LaunchedEffect(currentVersion) {
         val state = AndroidUpdateChecker.check(context, currentVersion)

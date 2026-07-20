@@ -27,12 +27,17 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.EventRepeat
 import androidx.compose.material.icons.filled.FilterAltOff
 import androidx.compose.material.icons.filled.FitnessCenter
+import androidx.compose.material.icons.filled.GpsFixed
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Storage
+import androidx.compose.material.icons.filled.SwapHoriz
+import androidx.compose.material.icons.filled.Tag
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -51,6 +56,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -109,6 +115,8 @@ internal fun WorkoutPickerSheet(
     savedExerciseIds: Set<String>,
     initialSource: WorkoutPickerSource,
     initialFilterState: WorkoutPickerFilterState,
+    preferredEquipment: Set<String>,
+    hidePrimaryFilter: Boolean,
     onSourceChange: (WorkoutPickerSource) -> Unit,
     onFilterStateChange: (WorkoutPickerFilterState) -> Unit,
     onToggleExercise: (ExerciseItem) -> Unit,
@@ -141,17 +149,18 @@ internal fun WorkoutPickerSheet(
         repository,
         source,
         filter,
-        savedExerciseIds
+        savedExerciseIds,
+        preferredEquipment
     ) {
         repository.filtered(
             levels = filter.level?.let(::setOf).orEmpty(),
-            equipment = filter.equipment?.let(::setOf).orEmpty(),
+            equipment = filter.equipment?.let(::setOf) ?: preferredEquipment,
             primaryMuscles = filter.primaryMuscle?.let(::setOf).orEmpty(),
-            secondaryMuscles = emptySet(),
-            forces = emptySet(),
-            mechanics = emptySet(),
-            categories = emptySet(),
-            sort = ExerciseSort.NAME,
+            secondaryMuscles = filter.secondaryMuscle?.let(::setOf).orEmpty(),
+            forces = filter.force?.let(::setOf).orEmpty(),
+            mechanics = filter.mechanic?.let(::setOf).orEmpty(),
+            categories = filter.category?.let(::setOf).orEmpty(),
+            sort = filter.sort,
             searchText = filter.search
         ).filter { item ->
             val matchesSource = source == WorkoutPickerSource.DATASET || item.id in savedExerciseIds
@@ -164,6 +173,22 @@ internal fun WorkoutPickerSheet(
     val muscleOptions = remember(repository, request.muscles) {
         if (request.muscles.isEmpty()) repository.availablePrimaryMuscles
         else repository.availablePrimaryMuscles.filter(request.muscles::contains)
+    }
+    val equipmentOptions = remember(repository, preferredEquipment) {
+        if (preferredEquipment.isEmpty()) repository.availableEquipment
+        else repository.availableEquipment.filter(preferredEquipment::contains)
+    }
+    val hasActiveFilters = filter.search.isNotEmpty() || filter.primaryMuscle != null ||
+        filter.secondaryMuscle != null || filter.equipment != null || filter.level != null ||
+        filter.force != null || filter.mechanic != null || filter.category != null ||
+        filter.sort != ExerciseSort.NAME
+
+    LaunchedEffect(request.contextId, hidePrimaryFilter, muscleOptions, equipmentOptions) {
+        val normalized = filter.copy(
+            primaryMuscle = filter.primaryMuscle?.takeIf { !hidePrimaryFilter && it in muscleOptions },
+            equipment = filter.equipment?.takeIf(equipmentOptions::contains)
+        )
+        if (normalized != filter) updateFilter { normalized }
     }
 
     ModalBottomSheet(
@@ -208,51 +233,79 @@ internal fun WorkoutPickerSheet(
                     horizontalArrangement = Arrangement.spacedBy(9.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    if (!hidePrimaryFilter) {
+                        FilterPill(
+                            title = "Primary",
+                            icon = Icons.Filled.GpsFixed,
+                            selected = filter.primaryMuscle?.let(::setOf).orEmpty(),
+                            emptyDisplay = "All ${muscleOptions.size}",
+                            options = muscleOptions,
+                            glyphFor = { muscleGlyphAsset(it) },
+                            onSelect = { selected -> updateFilter { it.copy(primaryMuscle = selected.firstOrNull()) } }
+                        )
+                    }
                     FilterPill(
-                        title = "Muscle",
-                        icon = Icons.Filled.FitnessCenter,
-                        selected = filter.primaryMuscle?.let(::setOf).orEmpty(),
-                        emptyDisplay = "All ${muscleOptions.size}",
-                        options = muscleOptions,
+                        title = "Secondary",
+                        icon = Icons.Filled.GpsFixed,
+                        selected = filter.secondaryMuscle?.let(::setOf).orEmpty(),
+                        emptyDisplay = "All",
+                        options = repository.availableSecondaryMuscles,
                         glyphFor = { muscleGlyphAsset(it) },
-                        onSelect = { selected -> updateFilter { it.copy(primaryMuscle = selected.firstOrNull()) } }
+                        onSelect = { selected -> updateFilter { it.copy(secondaryMuscle = selected.firstOrNull()) } }
                     )
                     FilterPill(
                         title = "Equipment",
                         icon = Icons.Filled.FitnessCenter,
                         selected = filter.equipment?.let(::setOf).orEmpty(),
-                        emptyDisplay = "All ${repository.availableEquipment.size}",
-                        options = repository.availableEquipment,
+                        emptyDisplay = "All ${equipmentOptions.size}",
+                        options = equipmentOptions,
                         onSelect = { selected -> updateFilter { it.copy(equipment = selected.firstOrNull()) } }
                     )
                     FilterPill(
                         title = "Level",
-                        icon = Icons.Filled.Storage,
+                        icon = Icons.Filled.BarChart,
                         selected = filter.level?.let(::setOf).orEmpty(),
                         emptyDisplay = "All",
                         options = repository.availableLevels,
                         onSelect = { selected -> updateFilter { it.copy(level = selected.firstOrNull()) } }
                     )
-                    val hasFilters = filter.search.isNotEmpty() || filter.primaryMuscle != null ||
-                        filter.equipment != null || filter.level != null
-                    if (hasFilters) {
-                        CapsuleButton(
-                            text = "Clear",
-                            icon = Icons.Filled.FilterAltOff,
-                            tint = AppColors.Calorie,
-                            enabled = true,
-                            active = true
-                        ) {
-                            focus.clearFocus()
-                            updateFilter { WorkoutPickerFilterState() }
-                        }
-                    }
+                    FilterPill(
+                        title = "Force",
+                        icon = Icons.Filled.SwapHoriz,
+                        selected = filter.force?.let(::setOf).orEmpty(),
+                        emptyDisplay = "All",
+                        options = repository.availableForces,
+                        onSelect = { selected -> updateFilter { it.copy(force = selected.firstOrNull()) } }
+                    )
+                    FilterPill(
+                        title = "Mechanic",
+                        icon = Icons.Filled.Settings,
+                        selected = filter.mechanic?.let(::setOf).orEmpty(),
+                        emptyDisplay = "All",
+                        options = repository.availableMechanics,
+                        onSelect = { selected -> updateFilter { it.copy(mechanic = selected.firstOrNull()) } }
+                    )
+                    FilterPill(
+                        title = "Category",
+                        icon = Icons.Filled.Tag,
+                        selected = filter.category?.let(::setOf).orEmpty(),
+                        emptyDisplay = "All",
+                        options = repository.availableCategoriesByCount,
+                        onSelect = { selected -> updateFilter { it.copy(category = selected.firstOrNull()) } }
+                    )
                 }
             }
 
-            PickerResultsHeader(
+            ResultsHeader(
                 count = items.size,
-                source = source,
+                sortTitle = stringResource(filter.sort.titleRes),
+                canReset = hasActiveFilters,
+                onReset = {
+                    focus.clearFocus()
+                    updateFilter { WorkoutPickerFilterState() }
+                },
+                selectedSort = filter.sort,
+                onSort = { selected -> updateFilter { it.copy(sort = selected) } },
                 modifier = Modifier.padding(horizontal = 20.dp, vertical = 4.dp)
             )
 
@@ -339,37 +392,6 @@ private fun PickerHeader(title: String, count: Int, onDismiss: () -> Unit) {
             )
         }
         FudGlassTextButton(text = "Done", onClick = onDismiss)
-    }
-}
-
-@Composable
-private fun PickerResultsHeader(
-    count: Int,
-    source: WorkoutPickerSource,
-    modifier: Modifier = Modifier
-) {
-    val colors = workoutsColors()
-    Row(modifier = modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
-        Column(Modifier.weight(1f)) {
-            Text(
-                "$count ${if (count == 1) "exercise" else "exercises"}",
-                color = colors.charcoal,
-                fontSize = 17.sp,
-                fontWeight = FontWeight.SemiBold
-            )
-            Text(
-                if (source == WorkoutPickerSource.SAVED) "Saved" else "Name",
-                color = colors.mutedText,
-                fontSize = 12.sp
-            )
-        }
-        Text(
-            "Tap + to add",
-            color = colors.mutedText,
-            fontSize = 12.sp,
-            fontWeight = FontWeight.SemiBold,
-            modifier = Modifier.padding(top = 3.dp)
-        )
     }
 }
 
