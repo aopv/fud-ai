@@ -324,6 +324,27 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController) {
         }
     }
 
+    // The profile and preferences are loaded as one asynchronous snapshot. Rendering the
+    // section shells before that snapshot arrives produces two thin empty cards that suddenly
+    // expand a moment later. Keep the page atomic so users only ever see its final layout.
+    if (!ui.isLoaded) {
+        Scaffold(containerColor = MaterialTheme.colorScheme.background) { padding ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(24.dp),
+                    color = AppColors.Calorie,
+                    strokeWidth = 2.dp
+                )
+            }
+        }
+        return
+    }
+
     // iOS Settings: bare List, no NavigationBar visible. Match that — no TopAppBar.
     Scaffold(containerColor = MaterialTheme.colorScheme.background) { padding ->
         Column(

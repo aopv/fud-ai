@@ -31,6 +31,8 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 data class SettingsUiState(
+    /** True only after the initial preferences/profile snapshot has been assembled. */
+    val isLoaded: Boolean = false,
     val selectedAI: AIProvider = AIProvider.GEMINI,
     val selectedModel: String = AIProvider.GEMINI.defaultModel,
     val maxResponseTokens: Int = 1024,
@@ -157,6 +159,7 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
                 container.prefs.setLastRecalcGoalSignature(profile.goalInputSignature)
             }
             _ui.value = SettingsUiState(
+                isLoaded = true,
                 selectedAI = provider,
                 selectedModel = model,
                 maxResponseTokens = maxTokens,
