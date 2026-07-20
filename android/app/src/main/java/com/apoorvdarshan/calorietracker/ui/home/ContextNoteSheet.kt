@@ -82,25 +82,12 @@ fun MultiPhotoCaptureSheet(
             Row(
                 Modifier.fillMaxWidth().padding(horizontal = 20.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.Start
             ) {
                 Text(
                     "${imageBytesList.size} of 10 photos",
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                 )
-                if (imageBytesList.size < 10) {
-                    Button(onClick = onAddPhoto) {
-                        Icon(
-                            if (addsFromLibrary) Icons.Filled.PhotoLibrary else Icons.Filled.CameraAlt,
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp)
-                        )
-                        Text(
-                            if (addsFromLibrary) "Add Photos" else "Add Photo",
-                            modifier = Modifier.padding(start = 8.dp)
-                        )
-                    }
-                }
             }
 
             LazyRow(
@@ -139,6 +126,25 @@ fun MultiPhotoCaptureSheet(
                                 .padding(10.dp)
                                 .background(androidx.compose.ui.graphics.Color.Black.copy(alpha = 0.58f), RoundedCornerShape(50))
                                 .padding(horizontal = 10.dp, vertical = 6.dp)
+                        )
+                    }
+                }
+            }
+
+            if (imageBytesList.size < 10) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    Button(onClick = onAddPhoto) {
+                        Icon(
+                            if (addsFromLibrary) Icons.Filled.PhotoLibrary else Icons.Filled.CameraAlt,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Text(
+                            if (addsFromLibrary) "Add Photos" else "Add Photo",
+                            modifier = Modifier.padding(start = 8.dp)
                         )
                     }
                 }

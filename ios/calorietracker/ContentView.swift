@@ -1062,6 +1062,8 @@ struct HomeView: View {
                         contextDescription = ""
                     }
                 )
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
             }
             .sheet(isPresented: $showContextSheet) {
                 ContextDescriptionSheet(
@@ -2052,28 +2054,9 @@ struct MultiPhotoCaptureSheet: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
-                    HStack {
-                        Text("\(images.count) of 10 photos")
-                            .font(.system(.subheadline, design: .rounded, weight: .semibold))
-                            .foregroundStyle(.secondary)
-                        Spacer()
-                        if images.count < 10 {
-                            Button {
-                                if isImportingPhotos {
-                                    showAdditionalPhotoPicker = true
-                                } else {
-                                    onAddPhoto()
-                                }
-                            } label: {
-                                Label(
-                                    isImportingPhotos ? "Add Photos" : "Add Photo",
-                                    systemImage: isImportingPhotos ? "photo.on.rectangle" : "camera.fill"
-                                )
-                            }
-                            .buttonStyle(.bordered)
-                            .tint(AppColors.calorie)
-                        }
-                    }
+                    Text("\(images.count) of 10 photos")
+                        .font(.system(.subheadline, design: .rounded, weight: .semibold))
+                        .foregroundStyle(.secondary)
 
                     ScrollView(.horizontal, showsIndicators: false) {
                         LazyHStack(spacing: 12) {
@@ -2109,6 +2092,26 @@ struct MultiPhotoCaptureSheet: View {
                         .scrollTargetLayout()
                     }
                     .scrollTargetBehavior(.viewAligned)
+
+                    if images.count < 10 {
+                        HStack {
+                            Spacer()
+                            Button {
+                                if isImportingPhotos {
+                                    showAdditionalPhotoPicker = true
+                                } else {
+                                    onAddPhoto()
+                                }
+                            } label: {
+                                Label(
+                                    isImportingPhotos ? "Add Photos" : "Add Photo",
+                                    systemImage: isImportingPhotos ? "photo.on.rectangle" : "camera.fill"
+                                )
+                            }
+                            .buttonStyle(.bordered)
+                            .tint(AppColors.calorie)
+                        }
+                    }
 
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Add a note (optional)")
