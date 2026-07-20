@@ -6,10 +6,10 @@
 import SwiftUI
 import RevenueCat
 
-/// Food-themed tip jar, inlined in the Settings About section as a disclosure row
-/// (same pattern as What's New) — no separate sheet. Tips are consumable IAPs that
-/// fund development; everything in the app is already unlocked, so they grant nothing.
-struct TipJarDisclosureRow: View {
+/// Food-themed tip jar shown as its own always-visible Settings section immediately
+/// before About. Tips are consumable IAPs that fund development; everything in the
+/// app is already unlocked, so they grant nothing.
+struct TipJarSettingsSection: View {
     private struct Tier: Identifiable {
         let productID: String
         let icon: String
@@ -28,18 +28,20 @@ struct TipJarDisclosureRow: View {
              icon: "tip_feast", name: String(localized: "Feast"))
     ]
 
-    @State private var isExpanded = false
     @State private var products: [String: StoreProduct] = [:]
     @State private var isLoading = true
     @State private var purchasingID: String?
     @State private var didTip = false
 
     var body: some View {
-        DisclosureGroup(isExpanded: $isExpanded) {
-            VStack(alignment: .leading, spacing: 10) {
+        Section("Leave a Tip") {
+            HStack(alignment: .top, spacing: 12) {
+                Image(systemName: "heart.fill")
+                    .foregroundStyle(AppColors.calorie)
+                    .frame(width: 22)
+
                 if didTip {
-                    HStack(spacing: 8) {
-                        Text("🩷")
+                    VStack(alignment: .leading, spacing: 3) {
                         Text("Thank you!")
                             .font(.subheadline.weight(.semibold))
                         Text("Your support keeps Fud AI free for everyone.")
@@ -51,27 +53,20 @@ struct TipJarDisclosureRow: View {
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
-
-                ForEach(Self.tiers) { tier in
-                    tierRow(tier)
-                }
-
-                Text("Don't worry — tips have zero calories.")
-                    .font(.caption2)
-                    .foregroundStyle(.tertiary)
             }
-            .padding(.vertical, 4)
-        } label: {
-            Label {
-                Text("Leave a Tip")
-            } icon: {
-                Image(systemName: "heart.fill")
-                    .foregroundStyle(AppColors.calorie)
+            .padding(.vertical, 2)
+
+            ForEach(Self.tiers) { tier in
+                tierRow(tier)
             }
+
+            Text("Don't worry — tips have zero calories.")
+                .font(.caption2)
+                .foregroundStyle(.tertiary)
         }
-        .tint(.primary)
-        .task(id: isExpanded) {
-            if isExpanded && products.isEmpty { await loadProducts() }
+        .listRowBackground(AppColors.appCard)
+        .task {
+            if products.isEmpty { await loadProducts() }
         }
     }
 

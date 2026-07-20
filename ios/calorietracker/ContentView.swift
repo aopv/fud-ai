@@ -246,11 +246,6 @@ private struct AboutSettingsSections: View {
                 }
                 .tint(.primary)
 
-                // Support — native tip jar, expanded inline. App Review
-                // treats "donate to the developer" links as digital payments (guideline
-                // 3.1.1), so no Ko-fi link on iOS; Android keeps Ko-fi.
-                TipJarDisclosureRow()
-
                 // Open Source
                 Link(destination: URL(string: "https://github.com/apoorvdarshan/fud-ai")!) {
                     Label {
@@ -4036,6 +4031,11 @@ struct ProfileView: View {
                     .buttonStyle(.plain)
                 }
                 .listRowBackground(AppColors.appCard)
+
+                // Support stays separate and immediately visible before About. App Review
+                // treats external developer-donation links as digital payments (guideline
+                // 3.1.1), so iOS uses the native consumable purchases here.
+                TipJarSettingsSection()
 
                 // About — folded in from the former About tab so it's the last
                 // section of Settings (Home / Progress / Coach / Settings = 4 tabs).
