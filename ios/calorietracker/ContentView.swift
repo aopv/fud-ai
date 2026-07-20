@@ -641,6 +641,18 @@ struct HomeView: View {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
     }
 
+    /// Lets the native menu finish its selection before presenting the chosen destination,
+    /// then uses a short transaction instead of inheriting the menu's slower dismissal.
+    private func presentFoodDestination(_ updates: @escaping () -> Void) {
+        DispatchQueue.main.async {
+            var transaction = Transaction(animation: .easeOut(duration: 0.16))
+            transaction.disablesAnimations = false
+            withTransaction(transaction) {
+                updates()
+            }
+        }
+    }
+
     @ViewBuilder
     private var waterQuickMenuItems: some View {
         Button {
@@ -841,12 +853,16 @@ struct HomeView: View {
                     }
                     Menu {
                         Button {
-                            showCopyFromDaySheet = true
+                            presentFoodDestination {
+                                showCopyFromDaySheet = true
+                            }
                         } label: {
                             Label("Copy from Day", systemImage: "calendar")
                         }
                         Button {
-                            showRecentSheet = true
+                            presentFoodDestination {
+                                showRecentSheet = true
+                            }
                         } label: {
                             Label("Saved Meals", systemImage: "bookmark.fill")
                         }
@@ -856,22 +872,30 @@ struct HomeView: View {
 
                     Menu {
                         Button {
-                            showManualPopover = true
+                            presentFoodDestination {
+                                showManualPopover = true
+                            }
                         } label: {
                             Label("Manual Entry", systemImage: "square.and.pencil")
                         }
                         Button {
-                            showSiriPhrases = true
+                            presentFoodDestination {
+                                showSiriPhrases = true
+                            }
                         } label: {
                             Label("Siri Phrases", systemImage: "waveform.circle.fill")
                         }
                         Button {
-                            showVoicePopover = true
+                            presentFoodDestination {
+                                showVoicePopover = true
+                            }
                         } label: {
                             Label("Voice", systemImage: "mic.fill")
                         }
                         Button {
-                            showTextPopover = true
+                            presentFoodDestination {
+                                showTextPopover = true
+                            }
                         } label: {
                             Label("Text Input", systemImage: "character.cursor.ibeam")
                         }
@@ -881,26 +905,32 @@ struct HomeView: View {
 
                     Menu {
                         Button {
-                            showBarcodeScanner = true
+                            presentFoodDestination {
+                                showBarcodeScanner = true
+                            }
                         } label: {
                             Label("Barcode", systemImage: "barcode.viewfinder")
                         }
                         Button(action: {
-                            cameraMode = .snapFoodWithContext
-                            isImportingPhotos = true
-                            captureImages = []
-                            contextDescription = ""
-                            selectedPhotoItems = []
-                            showPhotoPicker = true
+                            presentFoodDestination {
+                                cameraMode = .snapFoodWithContext
+                                isImportingPhotos = true
+                                captureImages = []
+                                contextDescription = ""
+                                selectedPhotoItems = []
+                                showPhotoPicker = true
+                            }
                         }) {
                             Label("Photos", systemImage: "photo.on.rectangle")
                         }
                         Button(action: {
-                            cameraMode = .snapFoodWithContext
-                            isImportingPhotos = false
-                            captureImages = []
-                            contextDescription = ""
-                            showCamera = true
+                            presentFoodDestination {
+                                cameraMode = .snapFoodWithContext
+                                isImportingPhotos = false
+                                captureImages = []
+                                contextDescription = ""
+                                showCamera = true
+                            }
                         }) {
                             Label("Camera", systemImage: "camera.fill")
                         }
