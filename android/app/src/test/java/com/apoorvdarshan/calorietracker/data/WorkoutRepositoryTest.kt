@@ -150,6 +150,22 @@ class WorkoutRepositoryTest {
     }
 
     @Test
+    fun newUsersDefaultToDiaryAndLaterLaunchesRestoreTheLastWorkoutView() = runBlocking {
+        val store = FakeWorkoutStateStore()
+        val firstLaunch = WorkoutRepository(store)
+
+        assertEquals(WorkoutTabMode.LOG, firstLaunch.snapshot().mode)
+
+        firstLaunch.setMode(WorkoutTabMode.LIBRARY)
+        val secondLaunch = WorkoutRepository(store)
+        assertEquals(WorkoutTabMode.LIBRARY, secondLaunch.snapshot().mode)
+
+        secondLaunch.setMode(WorkoutTabMode.LOG)
+        val thirdLaunch = WorkoutRepository(store)
+        assertEquals(WorkoutTabMode.LOG, thirdLaunch.snapshot().mode)
+    }
+
+    @Test
     fun modeAndSavedIdsPersistInTheSameState() = runBlocking {
         val repository = WorkoutRepository(FakeWorkoutStateStore())
         repository.setMode(WorkoutTabMode.LIBRARY)
