@@ -168,6 +168,10 @@ class WorkoutsViewModel(app: Application) : AndroidViewModel(app) {
             return
         }
         repositoryJob = viewModelScope.launch {
+            if (!prefs.getBoolean(K_DIARY_DEFAULT_APPLIED, false)) {
+                repository.setMode(WorkoutTabMode.LOG)
+                prefs.edit().putBoolean(K_DIARY_DEFAULT_APPLIED, true).apply()
+            }
             repository.state.collectLatest { persisted ->
                 latestPersistedState = persisted
                 rebuildDiaryState()
@@ -405,5 +409,6 @@ class WorkoutsViewModel(app: Application) : AndroidViewModel(app) {
         const val K_SORT = "sort"
         const val K_PICKER_SOURCE = "picker.source"
         const val K_PICKER_FILTER_PREFIX = "picker.filter."
+        const val K_DIARY_DEFAULT_APPLIED = "mode.diary_default.v1"
     }
 }
