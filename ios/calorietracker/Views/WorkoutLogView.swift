@@ -656,12 +656,12 @@ private struct WorkoutLogBurnHero: View {
                 repCount: repCount,
                 caloriesBurned: caloriesBurned
             )
-            .contentShape(Rectangle())
-            .simultaneousGesture(daySwipeGesture)
         }
         .frame(maxWidth: .infinity)
         .padding(.top, 18)
         .padding(.bottom, 10)
+        .contentShape(Rectangle())
+        .simultaneousGesture(daySwipeGesture)
     }
 
     private var daySwipeGesture: some Gesture {
