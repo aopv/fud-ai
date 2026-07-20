@@ -2703,6 +2703,7 @@ struct ProgressTabView: View {
     @Environment(WeightStore.self) private var weightStore
     @Environment(BodyFatStore.self) private var bodyFatStore
     @Environment(ProfileStore.self) private var profileStore
+    @Environment(StrengthWorkoutStore.self) private var strengthWorkoutStore
     @AppStorage("weightUnit") private var weightUnitRaw = "lbs"
     @State private var timeRange: TimeRange = .week
     @State private var showLogWeight = false
@@ -2710,6 +2711,7 @@ struct ProgressTabView: View {
     @State private var showGoalReached = false
     @State private var showAllWeights = false
     @State private var showAllBodyFat = false
+    @State private var showWorkoutHistory = false
 
     private var userProfile: UserProfile { profileStore.profile }
 
@@ -2721,6 +2723,10 @@ struct ProgressTabView: View {
 
     private var filteredBodyFatEntries: [BodyFatEntry] {
         bodyFatStore.entries(in: dateRange)
+    }
+
+    private var workoutCalorieSessions: [StrengthWorkoutSession] {
+        strengthWorkoutStore.completedSessions.filter { $0.caloriesBurned != nil }
     }
 
     /// Show the Body Fat section to anyone who has either logged a reading,
@@ -2814,6 +2820,15 @@ struct ProgressTabView: View {
                         .padding(.horizontal)
                     }
 
+                    // Workout History — calculated burns with exercise/set detail.
+                    if !workoutCalorieSessions.isEmpty {
+                        WorkoutHistoryLink(
+                            sessions: workoutCalorieSessions,
+                            onTap: { showWorkoutHistory = true }
+                        )
+                        .padding(.horizontal)
+                    }
+
                     // Calorie Trend
                     CalorieChartSection(
                         dailyCalories: dailyCalories,
@@ -2831,9 +2846,6 @@ struct ProgressTabView: View {
                         fatGoal: userProfile.effectiveFat
                     )
                     .padding(.horizontal)
-
-                    TrainingProgressSection(dateRange: dateRange)
-                        .padding(.horizontal)
 
                 }
                 .padding(.vertical)
@@ -2877,6 +2889,16 @@ struct ProgressTabView: View {
                     entries: bodyFatStore.entries.sorted { $0.date > $1.date },
                     onDelete: { entry in bodyFatStore.deleteEntry(entry) }
                 )
+            }
+            .sheet(isPresented: $showWorkoutHistory) {
+                NavigationStack {
+                    WorkoutHistoryView(sessions: workoutCalorieSessions)
+                        .toolbar {
+                            ToolbarItem(placement: .confirmationAction) {
+                                Button("Done") { showWorkoutHistory = false }
+                            }
+                        }
+                }
             }
         }
     }
@@ -4495,6 +4517,12 @@ struct ProfileView: View {
                     healthKitManager.backfillNutritionIfNeeded(
                         entries: foodStore.entries,
                         currentEntryIDs: { Set(foodStore.entries.map(\.id)) }
+                    )
+                    healthKitManager.synchronizeWorkoutBurnsWithHealthKit(
+                        existing: { strengthWorkoutStore.workoutBurnSessions },
+                        mergeBatch: { sessions in
+                            strengthWorkoutStore.importWorkoutBurnSessions(sessions)
+                        }
                     )
                 } else {
                     healthKitEnabled = false

@@ -1,30 +1,15 @@
-import AudioToolbox
 import SwiftUI
 import UIKit
 
 /// Ephemeral logger state owned by the Workouts tab so switching between the
-/// library and logger does not discard the selected day or an in-progress timer.
+/// library and logger does not discard the selected day.
 /// Planned and completed workouts remain persisted by `StrengthWorkoutStore`.
 @Observable
 final class WorkoutLogSessionState {
     var selectedDate = Date.now
-    var activeSessionDate: Date?
-    var activeSessionDateKey: String?
-    var workoutStartedAt: Date?
-    var runningSegmentStartedAt: Date?
-    var accumulatedElapsedSeconds = 0
 
     func reset() {
         selectedDate = .now
-        resetTimer()
-    }
-
-    func resetTimer() {
-        activeSessionDate = nil
-        activeSessionDateKey = nil
-        workoutStartedAt = nil
-        runningSegmentStartedAt = nil
-        accumulatedElapsedSeconds = 0
     }
 
     /// Moves the diary by whole days while keeping forward swipes bounded by today,
@@ -62,6 +47,8 @@ enum WorkoutLogDaySwipeNavigation {
 /// Fud AI's existing workout theme tokens.
 struct WorkoutLogView: View {
     @Environment(StrengthWorkoutStore.self) private var workoutStore
+    @Environment(WeightStore.self) private var weightStore
+    @Environment(ProfileStore.self) private var profileStore
     @AppStorage(WeightUnit.storageKey) private var weightUnitRaw = WeightUnit.lbs.rawValue
     @AppStorage(AppThemeColor.storageKey) private var appThemeColorRaw = AppThemeColor.defaultColor.rawValue
 
@@ -69,8 +56,7 @@ struct WorkoutLogView: View {
     @State private var isCopySheetPresented = false
     @State private var selectedDetailItem: ExerciseLibraryItem?
 
-    @State private var isOtherDateTimerDialogPresented = false
-    @State private var isEmptyWorkoutAlertPresented = false
+    @State private var isNoPerformedSetAlertPresented = false
     @FocusState private var focusedSetField: WorkoutLogSetFocus?
 
     private let library = ExerciseLibraryService.shared
@@ -100,57 +86,8 @@ struct WorkoutLogView: View {
         )
     }
 
-    private var activeSessionDate: Date? {
-        get { session.activeSessionDate }
-        nonmutating set { session.activeSessionDate = newValue }
-    }
-
-    private var activeSessionDateKey: String? {
-        get { session.activeSessionDateKey }
-        nonmutating set { session.activeSessionDateKey = newValue }
-    }
-
-    private var workoutStartedAt: Date? {
-        get { session.workoutStartedAt }
-        nonmutating set { session.workoutStartedAt = newValue }
-    }
-
-    private var runningSegmentStartedAt: Date? {
-        get { session.runningSegmentStartedAt }
-        nonmutating set { session.runningSegmentStartedAt = newValue }
-    }
-
-    private var accumulatedElapsedSeconds: Int {
-        get { session.accumulatedElapsedSeconds }
-        nonmutating set { session.accumulatedElapsedSeconds = newValue }
-    }
-
-    private var selectedDateKey: String {
-        StrengthWorkoutStore.dateKey(for: selectedDate)
-    }
-
     private var selectedExercises: [StrengthPlannedExercise] {
         workoutStore.exercises(for: selectedDate)
-    }
-
-    private var isSelectedSessionDate: Bool {
-        activeSessionDateKey == selectedDateKey
-    }
-
-    private var isTimerRunning: Bool {
-        isSelectedSessionDate && runningSegmentStartedAt != nil
-    }
-
-    private var isTimerPaused: Bool {
-        isSelectedSessionDate && runningSegmentStartedAt == nil && activeSessionDateKey != nil
-    }
-
-    private var selectedTimerStartedAt: Date? {
-        isSelectedSessionDate ? runningSegmentStartedAt : nil
-    }
-
-    private var selectedTimerElapsedSeconds: Int {
-        isSelectedSessionDate ? accumulatedElapsedSeconds : 0
     }
 
     private var weightUnit: WeightUnit {
@@ -167,8 +104,8 @@ struct WorkoutLogView: View {
         selectedExercises.flatMap(\.sets).reduce(0) { $0 + (Int($1.reps) ?? 0) }
     }
 
-    private var selectedCompletedSession: StrengthWorkoutSession? {
-        workoutStore.latestSession(on: selectedDate)
+    private var currentBodyWeightKg: Double {
+        weightStore.latestEntry?.weightKg ?? profileStore.profile.weightKg
     }
 
     private var splitGroups: [StrengthWorkoutSplitGroup] {
@@ -207,8 +144,7 @@ struct WorkoutLogView: View {
             }
         }
         .workoutScreen()
-        // Observe theme changes without re-keying this view; re-keying would
-        // destroy an in-progress session-only timer.
+        // Observe theme changes without re-keying the selected diary day.
         .animation(.easeInOut(duration: 0.2), value: appThemeColorRaw)
     }
 
@@ -226,19 +162,12 @@ struct WorkoutLogView: View {
                     }
 
                     Section {
-                        WorkoutLogTimerHero(
+                        WorkoutLogBurnHero(
                             workoutCount: selectedExercises.count,
                             setCount: completedSetCount,
                             repCount: completedRepCount,
-                            timerStartedAt: selectedTimerStartedAt,
-                            timerElapsedSeconds: selectedTimerElapsedSeconds,
-                            isTimerRunning: isTimerRunning,
-                            isTimerPaused: isTimerPaused,
-                            hasTimerSession: isTimerRunning || isTimerPaused,
-                            completedDurationMinutes: selectedCompletedSession?.durationMinutes,
-                            toggleTimer: handleTimerTap,
-                            stopTimer: stopTimer,
-                            discardTimer: discardTimer,
+                            caloriesBurned: workoutStore.caloriesBurned(on: selectedDate),
+                            calculateBurn: calculateBurn,
                             changeDay: { changeDay(by: $0) }
                         )
                         .listRowBackground(Color.clear)
@@ -260,18 +189,15 @@ struct WorkoutLogView: View {
                                     exercise: exercise,
                                     weightUnit: weightUnit.rawValue,
                                     rpeScale: workoutStore.preferences.rpeScale,
-                                    isLoggingEnabled: isTimerRunning,
                                     focusedField: $focusedSetField,
                                     openDetail: {
                                         guard focusedSetField == nil else { return }
                                         selectedDetailItem = exercise.libraryItem
                                     },
                                     updateSetCount: { count in
-                                        guard isTimerRunning else { return }
                                         workoutStore.setSetCount(count, exerciseID: exercise.id, on: selectedDate)
                                     },
                                     updateWeight: { setID, value in
-                                        guard isTimerRunning else { return }
                                         workoutStore.updateSet(
                                             exerciseID: exercise.id,
                                             setID: setID,
@@ -281,7 +207,6 @@ struct WorkoutLogView: View {
                                         )
                                     },
                                     updateReps: { setID, value in
-                                        guard isTimerRunning else { return }
                                         workoutStore.updateSet(
                                             exerciseID: exercise.id,
                                             setID: setID,
@@ -290,7 +215,6 @@ struct WorkoutLogView: View {
                                         )
                                     },
                                     updateRPE: { setID, value in
-                                        guard isTimerRunning else { return }
                                         workoutStore.updateSet(
                                             exerciseID: exercise.id,
                                             setID: setID,
@@ -358,8 +282,7 @@ struct WorkoutLogView: View {
                         .padding(24)
                 }
             }
-            // Delts' diary deliberately kept the chrome quiet: the tab label
-            // names the feature while the date strip and timer lead the page.
+            // Keep the chrome quiet: the date strip and burn calculator lead.
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar(.visible, for: .navigationBar)
@@ -387,24 +310,10 @@ struct WorkoutLogView: View {
             .navigationDestination(item: $selectedDetailItem) { item in
                 ExerciseLibraryDetailView(item: item)
             }
-            .confirmationDialog(
-                "Timer already running",
-                isPresented: $isOtherDateTimerDialogPresented,
-                titleVisibility: .visible
-            ) {
-                Button("Go to \(activeSessionDateTitle)") {
-                    if let activeSessionDate {
-                        selectedDate = activeSessionDate
-                    }
-                }
-                Button("Cancel", role: .cancel) {}
-            } message: {
-                Text("Stop or discard the \(activeSessionDateTitle) timer before starting another.")
-            }
-            .alert("Add workouts first", isPresented: $isEmptyWorkoutAlertPresented) {
+            .alert("Log reps first", isPresented: $isNoPerformedSetAlertPresented) {
                 Button("OK", role: .cancel) {}
             } message: {
-                Text("Add at least one workout to \(selectedDateTitle) before starting the timer.")
+                Text("Enter reps for at least one set on \(selectedDateTitle) before calculating workout calories.")
             }
             .sheet(item: $pickerRequest) { request in
                 WorkoutLogExercisePickerSheet(
@@ -427,11 +336,6 @@ struct WorkoutLogView: View {
                 )
                 .presentationDetents([.medium, .large])
                 .presentationDragIndicator(.visible)
-            }
-            .onChange(of: isTimerRunning) { _, isRunning in
-                guard !isRunning else { return }
-                focusedSetField = nil
-                dismissKeyboard()
             }
         }
 
@@ -489,14 +393,6 @@ struct WorkoutLogView: View {
         return selectedDate.formatted(.dateTime.weekday(.wide).month(.abbreviated).day())
     }
 
-    private var activeSessionDateTitle: String {
-        guard let activeSessionDate else { return "active day" }
-        if Calendar.current.isDateInToday(activeSessionDate) { return "Today" }
-        if Calendar.current.isDateInTomorrow(activeSessionDate) { return "Tomorrow" }
-        if Calendar.current.isDateInYesterday(activeSessionDate) { return "Yesterday" }
-        return activeSessionDate.formatted(.dateTime.weekday(.wide).month(.abbreviated).day())
-    }
-
     private func changeDay(by delta: Int) {
         guard focusedSetField == nil,
               session.moveSelectedDay(by: delta)
@@ -504,71 +400,28 @@ struct WorkoutLogView: View {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
     }
 
-    private func handleTimerTap() {
-        if isTimerRunning {
-            playTimerClick()
-            pauseTimer()
-        } else if isTimerPaused {
-            playTimerClick()
-            runningSegmentStartedAt = .now
-        } else if activeSessionDateKey != nil {
-            playTimerClick()
-            isOtherDateTimerDialogPresented = true
-        } else if selectedExercises.isEmpty {
-            isEmptyWorkoutAlertPresented = true
-        } else {
-            playTimerClick()
-            startTimer()
+    private func calculateBurn() {
+        focusedSetField = nil
+        dismissKeyboard()
+
+        guard let estimate = StrengthWorkoutBurnEstimator.estimate(
+            exercises: selectedExercises,
+            bodyWeightKg: currentBodyWeightKg,
+            defaultWeightUnit: weightUnit,
+            defaultRPEScale: workoutStore.preferences.rpeScale
+        ) else {
+            isNoPerformedSetAlertPresented = true
+            return
         }
-    }
 
-    private func startTimer() {
-        let now = Date.now
-        activeSessionDate = Calendar.current.startOfDay(for: selectedDate)
-        activeSessionDateKey = selectedDateKey
-        workoutStartedAt = now
-        runningSegmentStartedAt = now
-        accumulatedElapsedSeconds = 0
-    }
-
-    private func pauseTimer() {
-        guard let runningSegmentStartedAt else { return }
-        accumulatedElapsedSeconds += max(0, Int(Date.now.timeIntervalSince(runningSegmentStartedAt)))
-        self.runningSegmentStartedAt = nil
-    }
-
-    private func stopTimer() {
-        playTimerClick()
-        let elapsed = currentElapsedSeconds(at: .now)
-        let startedAt = workoutStartedAt ?? Date.now.addingTimeInterval(TimeInterval(-elapsed))
-
-        _ = workoutStore.completeWorkout(
-            on: selectedDate,
-            startedAt: startedAt,
-            completedAt: .now,
-            elapsedSeconds: elapsed,
-            weightUnit: weightUnit
-        )
-        resetTimerState()
-    }
-
-    private func discardTimer() {
-        playTimerClick()
-        resetTimerState()
-    }
-
-    private func playTimerClick() {
         UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-        AudioServicesPlaySystemSound(1104)
-    }
-
-    private func resetTimerState() {
-        session.resetTimer()
-    }
-
-    private func currentElapsedSeconds(at date: Date) -> Int {
-        guard let runningSegmentStartedAt else { return accumulatedElapsedSeconds }
-        return accumulatedElapsedSeconds + max(0, Int(date.timeIntervalSince(runningSegmentStartedAt)))
+        withAnimation(.snappy(duration: 0.25)) {
+            _ = workoutStore.upsertCalculatedWorkout(
+                on: selectedDate,
+                caloriesBurned: estimate.calories,
+                weightUnit: weightUnit
+            )
+        }
     }
 
     private func dismissKeyboard() {
@@ -704,54 +557,24 @@ private struct WorkoutLogWeekStrip: View {
     }
 }
 
-// MARK: - Signature timer and stats
+// MARK: - Signature burn calculator and stats
 
-private struct WorkoutLogTimerHero: View {
+private struct WorkoutLogBurnHero: View {
     let workoutCount: Int
     let setCount: Int
     let repCount: Int
-    let timerStartedAt: Date?
-    let timerElapsedSeconds: Int
-    let isTimerRunning: Bool
-    let isTimerPaused: Bool
-    let hasTimerSession: Bool
-    let completedDurationMinutes: Int?
-    let toggleTimer: () -> Void
-    let stopTimer: () -> Void
-    let discardTimer: () -> Void
+    let caloriesBurned: Int?
+    let calculateBurn: () -> Void
     let changeDay: (Int) -> Void
 
     var body: some View {
         VStack(spacing: 22) {
-            HStack(spacing: 12) {
-                Spacer(minLength: 0)
-
-                WorkoutLogTimerButton(
-                    startedAt: timerStartedAt,
-                    elapsedSeconds: timerElapsedSeconds,
-                    isRunning: isTimerRunning,
-                    isPaused: isTimerPaused,
-                    hasSession: hasTimerSession,
-                    action: toggleTimer
-                )
-
-                if isTimerPaused {
-                    WorkoutLogTimerSideControls(stopTimer: stopTimer, discardTimer: discardTimer)
-                        .transition(.asymmetric(
-                            insertion: .move(edge: .trailing).combined(with: .opacity),
-                            removal: .move(edge: .trailing).combined(with: .opacity)
-                        ))
-                }
-
-                Spacer(minLength: 0)
-            }
-            .animation(.snappy(duration: 0.28), value: isTimerPaused)
+            WorkoutLogBurnButton(caloriesBurned: caloriesBurned, action: calculateBurn)
 
             WorkoutLogStatsStrip(
                 setCount: setCount,
                 workoutCount: workoutCount,
-                repCount: repCount,
-                durationText: completedDurationMinutes.map { "\($0) min" } ?? "-- min"
+                repCount: repCount
             )
             .contentShape(Rectangle())
             .simultaneousGesture(daySwipeGesture)
@@ -770,199 +593,55 @@ private struct WorkoutLogTimerHero: View {
     }
 }
 
-private struct WorkoutLogTimerButton: View {
-    let startedAt: Date?
-    let elapsedSeconds: Int
-    let isRunning: Bool
-    let isPaused: Bool
-    let hasSession: Bool
-    let action: () -> Void
-
-    var body: some View {
-        TimelineView(.periodic(from: .now, by: 1)) { context in
-            Button(action: action) {
-                VStack(spacing: 10) {
-                    Image(systemName: isRunning ? "pause.fill" : "play.fill")
-                        .font(.system(size: 30, weight: .black))
-                        .foregroundStyle(Color.white)
-                        .shadow(color: Color.black.opacity(0.52), radius: 2, y: 1)
-                        .frame(height: 34)
-
-                    Text(elapsedDisplay(at: context.date))
-                        .font(.system(size: 34, weight: .black, design: .rounded))
-                        .foregroundStyle(Color.white)
-                        .contentTransition(.numericText())
-                        .monospacedDigit()
-                        .lineLimit(1)
-                        .shadow(color: Color.black.opacity(0.62), radius: 2, y: 1)
-                }
-                .frame(width: 156, height: 156)
-                .background {
-                    Image("timer_button_red")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 176, height: 176)
-                        .shadow(color: Color.black.opacity(0.34), radius: 16, y: 8)
-                }
-            }
-            .buttonStyle(WorkoutLogTimerButtonStyle(isRunning: isRunning))
-            .accessibilityLabel(accessibilityLabel)
-        }
-    }
-
-    private var accessibilityLabel: String {
-        if isRunning { return "Pause workout timer" }
-        if isPaused || hasSession { return "Resume workout timer" }
-        return "Start workout timer"
-    }
-
-    private func elapsedDisplay(at date: Date) -> String {
-        let total = totalElapsedSeconds(at: date)
-        let minutes = total / 60
-        let seconds = total % 60
-        return String(format: "%d:%02d", minutes, seconds)
-    }
-
-    private func totalElapsedSeconds(at date: Date) -> Int {
-        guard let startedAt else { return elapsedSeconds }
-        return elapsedSeconds + max(0, Int(date.timeIntervalSince(startedAt)))
-    }
-}
-
-private struct WorkoutLogTimerSideControls: View {
-    let stopTimer: () -> Void
-    let discardTimer: () -> Void
-
-    var body: some View {
-        VStack(spacing: 8) {
-            WorkoutLogTimerSideButton(
-                title: "Stop",
-                systemImage: "stop.fill",
-                role: .stop,
-                action: stopTimer
-            )
-            WorkoutLogTimerSideButton(
-                title: "Discard",
-                systemImage: "trash.fill",
-                role: .discard,
-                action: discardTimer
-            )
-        }
-        .frame(width: 118)
-    }
-}
-
-private struct WorkoutLogTimerSideButton: View {
-    let title: String
-    let systemImage: String
-    let role: WorkoutLogTimerSideButtonStyle.Role
+private struct WorkoutLogBurnButton: View {
+    let caloriesBurned: Int?
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
-            HStack(spacing: 8) {
-                Image(systemName: systemImage)
-                    .font(.system(size: 11, weight: .black))
-                    .foregroundStyle(iconForeground)
-                    .frame(width: 22, height: 22)
-                    .background(iconBackground, in: Circle())
+            VStack(spacing: 7) {
+                Image(systemName: "flame.fill")
+                    .font(.system(size: 29, weight: .black))
+                    .foregroundStyle(Color.white)
+                    .shadow(color: Color.black.opacity(0.52), radius: 2, y: 1)
+                    .frame(height: 34)
 
-                Text(title)
-                    .font(.system(size: 13, weight: .black, design: .rounded))
+                Text(caloriesBurned.map { "\($0) kcal" } ?? "Calculate")
+                    .font(.system(size: caloriesBurned == nil ? 26 : 30, weight: .black, design: .rounded))
+                    .foregroundStyle(Color.white)
+                    .contentTransition(.numericText())
+                    .monospacedDigit()
                     .lineLimit(1)
-                    .minimumScaleFactor(0.74)
+                    .minimumScaleFactor(0.66)
+                    .shadow(color: Color.black.opacity(0.62), radius: 2, y: 1)
 
-                Spacer(minLength: 0)
+                Text(caloriesBurned == nil ? "WORKOUT BURN" : "TAP TO RECALCULATE")
+                    .font(.system(size: 9, weight: .black, design: .rounded))
+                    .tracking(0.5)
+                    .foregroundStyle(Color.white.opacity(0.90))
+                    .lineLimit(1)
             }
-            .padding(.leading, 7)
-            .padding(.trailing, 8)
-            .frame(maxWidth: .infinity)
+            .frame(width: 156, height: 156)
+            .background {
+                Image("timer_button_red")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 176, height: 176)
+                    .shadow(color: Color.black.opacity(0.34), radius: 16, y: 8)
+            }
         }
-        .buttonStyle(WorkoutLogTimerSideButtonStyle(role: role))
-        .accessibilityLabel(title)
-    }
-
-    private var iconForeground: Color {
-        switch role {
-        case .stop: return Color.workoutAccent
-        case .discard: return Color.white
-        }
-    }
-
-    private var iconBackground: Color {
-        switch role {
-        case .stop: return Color.workoutOnAccent.opacity(0.96)
-        case .discard: return Color.red.opacity(0.88)
-        }
+        .buttonStyle(WorkoutLogBurnButtonStyle())
+        .accessibilityLabel(caloriesBurned == nil ? "Calculate workout calories" : "Recalculate workout calories")
+        .accessibilityValue(caloriesBurned.map { "\($0) kilocalories" } ?? "Not calculated")
+        .accessibilityHint("Uses performed sets, repetitions, effort, load, and current body weight")
     }
 }
 
-private struct WorkoutLogTimerSideButtonStyle: ButtonStyle {
-    enum Role { case stop, discard }
-
-    let role: Role
-
+private struct WorkoutLogBurnButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .foregroundStyle(foreground)
-            .frame(height: 46)
-            .background(
-                configuration.isPressed ? pressedBackground : background,
-                in: RoundedRectangle(cornerRadius: 21, style: .continuous)
-            )
-            .overlay {
-                RoundedRectangle(cornerRadius: 21, style: .continuous)
-                    .stroke(border, lineWidth: role == .stop ? 0.8 : 1)
-            }
-            .shadow(color: shadowColor, radius: role == .stop ? 7 : 0, x: 0, y: role == .stop ? 4 : 0)
-            .scaleEffect(configuration.isPressed ? 0.96 : 1)
+            .scaleEffect(configuration.isPressed ? 0.88 : 1)
             .animation(.snappy(duration: 0.12), value: configuration.isPressed)
-    }
-
-    private var foreground: Color {
-        switch role {
-        case .stop: return Color.workoutOnAccent
-        case .discard: return Color.red.opacity(0.92)
-        }
-    }
-
-    private var background: Color {
-        switch role {
-        case .stop: return Color.workoutAccent
-        case .discard: return Color.workoutCard.opacity(0.72)
-        }
-    }
-
-    private var pressedBackground: Color {
-        switch role {
-        case .stop: return Color.workoutAccent.opacity(0.82)
-        case .discard: return Color.red.opacity(0.10)
-        }
-    }
-
-    private var border: Color {
-        switch role {
-        case .stop: return Color.workoutAccent.opacity(0.45)
-        case .discard: return Color.red.opacity(0.42)
-        }
-    }
-
-    private var shadowColor: Color {
-        switch role {
-        case .stop: return Color.workoutAccent.opacity(0.24)
-        case .discard: return Color.clear
-        }
-    }
-}
-
-private struct WorkoutLogTimerButtonStyle: ButtonStyle {
-    let isRunning: Bool
-
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .scaleEffect(configuration.isPressed ? 0.88 : (isRunning ? 0.985 : 1))
-            .animation(.snappy(duration: 0.12), value: configuration.isPressed)
-            .animation(.snappy(duration: 0.18), value: isRunning)
     }
 }
 
@@ -970,7 +649,6 @@ private struct WorkoutLogStatsStrip: View {
     let setCount: Int
     let workoutCount: Int
     let repCount: Int
-    let durationText: String
     @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
@@ -980,10 +658,6 @@ private struct WorkoutLogStatsStrip: View {
             metric(label: "Workouts", value: "\(workoutCount)", systemImage: "dumbbell.fill", active: workoutCount > 0)
             divider
             metric(label: "Reps", value: "\(repCount)", systemImage: "repeat", active: repCount > 0)
-            divider
-            metric(label: "Time", value: durationText, systemImage: "clock.fill", active: durationText != "-- min")
-            divider
-            metric(label: "Burn", value: "-- kcal", systemImage: "flame.fill", active: false)
         }
         .frame(maxWidth: .infinity)
         .padding(.horizontal, 8)
@@ -1034,7 +708,7 @@ private struct WorkoutLogStatsStrip: View {
         .padding(.horizontal, 7)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(label)
-        .accessibilityValue(value.replacingOccurrences(of: "--", with: "not available"))
+        .accessibilityValue(value)
     }
 }
 
@@ -1052,7 +726,6 @@ private struct WorkoutLogExerciseCard: View {
     let exercise: StrengthPlannedExercise
     let weightUnit: String
     let rpeScale: StrengthWorkoutRPEScale
-    let isLoggingEnabled: Bool
     let focusedField: FocusState<WorkoutLogSetFocus?>.Binding
     let openDetail: () -> Void
     let updateSetCount: (Int) -> Void
@@ -1121,13 +794,11 @@ private struct WorkoutLogExerciseCard: View {
                     ) {
                         Text("\(exercise.sets.count) \(exercise.sets.count == 1 ? "set" : "sets")")
                             .font(.caption.weight(.heavy))
-                            .foregroundStyle(isLoggingEnabled ? Color.workoutCharcoal : Color.workoutMutedText.opacity(0.70))
+                            .foregroundStyle(Color.workoutCharcoal)
                             .lineLimit(1)
                     }
                     .fixedSize()
-                    .disabled(!isLoggingEnabled)
-                    .opacity(isLoggingEnabled ? 1 : 0.54)
-                    .accessibilityHint(isLoggingEnabled ? "Adjust from one to twelve sets" : "Start the timer to edit sets")
+                    .accessibilityHint("Adjust from one to twelve sets")
                 }
 
                 VStack(spacing: 0) {
@@ -1138,7 +809,6 @@ private struct WorkoutLogExerciseCard: View {
                             set: set,
                             rpeScale: rpeScale,
                             weightUnit: weightUnit,
-                            isEnabled: isLoggingEnabled,
                             focusedField: focusedField,
                             updateWeight: { updateWeight(set.id, $0) },
                             updateReps: { updateReps(set.id, $0) },
@@ -1153,7 +823,6 @@ private struct WorkoutLogExerciseCard: View {
                     }
                 }
             }
-            .opacity(isLoggingEnabled ? 1 : 0.62)
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -1176,7 +845,6 @@ private struct WorkoutLogSetRow: View {
     let set: StrengthPlannedSet
     let rpeScale: StrengthWorkoutRPEScale
     let weightUnit: String
-    let isEnabled: Bool
     let focusedField: FocusState<WorkoutLogSetFocus?>.Binding
     let updateWeight: (String) -> Void
     let updateReps: (String) -> Void
@@ -1196,7 +864,6 @@ private struct WorkoutLogSetRow: View {
                 text: Binding(get: { set.weight }, set: updateWeight),
                 keyboardType: .decimalPad,
                 focus: WorkoutLogSetFocus(exerciseID: exerciseID, setID: set.id, field: .weight),
-                isEnabled: isEnabled,
                 focusedField: focusedField
             )
             .frame(maxWidth: .infinity)
@@ -1206,7 +873,6 @@ private struct WorkoutLogSetRow: View {
                 text: Binding(get: { set.reps }, set: updateReps),
                 keyboardType: .numberPad,
                 focus: WorkoutLogSetFocus(exerciseID: exerciseID, setID: set.id, field: .reps),
-                isEnabled: isEnabled,
                 focusedField: focusedField
             )
             .frame(maxWidth: .infinity)
@@ -1216,7 +882,6 @@ private struct WorkoutLogSetRow: View {
                 text: Binding(get: { set.rpe }, set: updateRPE),
                 keyboardType: rpeScale.allowsDecimalInput ? .decimalPad : .numberPad,
                 focus: WorkoutLogSetFocus(exerciseID: exerciseID, setID: set.id, field: .rpe),
-                isEnabled: isEnabled,
                 focusedField: focusedField
             )
             .frame(maxWidth: .infinity)
@@ -1232,7 +897,6 @@ private struct WorkoutLogSetValueField: View {
     @Binding var text: String
     let keyboardType: UIKeyboardType
     let focus: WorkoutLogSetFocus
-    let isEnabled: Bool
     let focusedField: FocusState<WorkoutLogSetFocus?>.Binding
 
     var body: some View {
@@ -1243,7 +907,6 @@ private struct WorkoutLogSetValueField: View {
                     text: $text,
                     keyboardType: keyboardType,
                     focus: focus,
-                    isEnabled: isEnabled,
                     focusedField: focusedField
                 )
             } else {
@@ -1252,13 +915,11 @@ private struct WorkoutLogSetValueField: View {
         }
         .padding(.horizontal, 10)
         .frame(height: 36)
-        .background(Color.workoutCard.opacity(isEnabled ? 0.74 : 0.38), in: RoundedRectangle(cornerRadius: 11, style: .continuous))
+        .background(Color.workoutCard.opacity(0.74), in: RoundedRectangle(cornerRadius: 11, style: .continuous))
         .overlay {
             RoundedRectangle(cornerRadius: 11, style: .continuous)
-                .stroke(Color.workoutHairline.opacity(isEnabled ? 0.4 : 0.24), lineWidth: 0.6)
+                .stroke(Color.workoutHairline.opacity(0.4), lineWidth: 0.6)
         }
-        .disabled(!isEnabled)
-        .opacity(isEnabled ? 1 : 0.62)
     }
 
     private var baseTextField: some View {
@@ -1266,7 +927,7 @@ private struct WorkoutLogSetValueField: View {
             .keyboardType(keyboardType)
             .textFieldStyle(.plain)
             .font(.system(.subheadline, design: .rounded, weight: .bold).monospacedDigit())
-            .foregroundStyle(isEnabled ? Color.workoutCharcoal : Color.workoutMutedText.opacity(0.72))
+            .foregroundStyle(Color.workoutCharcoal)
             .multilineTextAlignment(.center)
             .focused(focusedField, equals: focus)
     }
@@ -1278,7 +939,6 @@ private struct WorkoutLogSetSelectionTextField: View {
     @Binding var text: String
     let keyboardType: UIKeyboardType
     let focus: WorkoutLogSetFocus
-    let isEnabled: Bool
     let focusedField: FocusState<WorkoutLogSetFocus?>.Binding
     @State private var selection: TextSelection?
 
@@ -1287,7 +947,7 @@ private struct WorkoutLogSetSelectionTextField: View {
             .keyboardType(keyboardType)
             .textFieldStyle(.plain)
             .font(.system(.subheadline, design: .rounded, weight: .bold).monospacedDigit())
-            .foregroundStyle(isEnabled ? Color.workoutCharcoal : Color.workoutMutedText.opacity(0.72))
+            .foregroundStyle(Color.workoutCharcoal)
             .multilineTextAlignment(.center)
             .focused(focusedField, equals: focus)
             .onTapGesture {

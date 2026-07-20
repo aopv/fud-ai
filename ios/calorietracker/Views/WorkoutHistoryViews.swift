@@ -1,146 +1,47 @@
 import SwiftUI
 
-/// Compact workout summary for the existing Progress screen. Pass the Progress
-/// screen's active date range, or inject an already-filtered session collection.
-struct TrainingProgressSection: View {
-    @Environment(StrengthWorkoutStore.self) private var workoutStore
+/// Compact link beside Weight History and Body Fat History on Progress.
+struct WorkoutHistoryLink: View {
+    let sessions: [StrengthWorkoutSession]
+    let onTap: () -> Void
 
-    private let suppliedSessions: [StrengthWorkoutSession]?
-    private let dateRange: ClosedRange<Date>?
-
-    init(dateRange: ClosedRange<Date>) {
-        suppliedSessions = nil
-        self.dateRange = dateRange
-    }
-
-    init(sessions: [StrengthWorkoutSession]) {
-        suppliedSessions = sessions
-        dateRange = nil
-    }
-
-    init(sessions: [StrengthWorkoutSession], in dateRange: ClosedRange<Date>) {
-        suppliedSessions = sessions
-        self.dateRange = dateRange
-    }
-
-    private var sessions: [StrengthWorkoutSession] {
-        let source = suppliedSessions ?? workoutStore.completedSessions
-        let filtered: [StrengthWorkoutSession]
-
-        if let dateRange {
-            let calendar = Calendar.current
-            let lowerBound = calendar.startOfDay(for: dateRange.lowerBound)
-            let upperBound = calendar.startOfDay(for: dateRange.upperBound)
-            filtered = source.filter { session in
-                let day = calendar.startOfDay(for: session.calendarDiaryDate)
-                return day >= lowerBound && day <= upperBound
-            }
-        } else {
-            filtered = source
-        }
-
-        return filtered.sorted {
-            if $0.stableDiaryDateKey == $1.stableDiaryDateKey {
-                return $0.completedAt > $1.completedAt
-            }
-            return $0.stableDiaryDateKey > $1.stableDiaryDateKey
-        }
-    }
-
-    private var setCount: Int {
-        sessions.reduce(0) { $0 + $1.performedSetCount }
-    }
-
-    private var repCount: Int {
-        sessions.reduce(0) { $0 + $1.repCount }
-    }
-
-    private var durationSeconds: Int {
-        sessions.reduce(0) { $0 + $1.durationSeconds }
+    private var burnRecordCount: Int {
+        sessions.filter { $0.caloriesBurned != nil }.count
     }
 
     var body: some View {
-        NavigationLink {
-            WorkoutHistoryView(sessions: sessions)
-        } label: {
-            VStack(alignment: .leading, spacing: 14) {
-                HStack(spacing: 10) {
-                    Image(systemName: "dumbbell.fill")
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundStyle(AppColors.calorie)
-                        .frame(width: 32, height: 32)
-                        .background(AppColors.calorie.opacity(0.12), in: Circle())
+        Button(action: onTap) {
+            HStack(spacing: 12) {
+                Image(systemName: "flame.fill")
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundStyle(AppColors.calorie)
+                    .frame(width: 28, height: 28)
 
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Training")
-                            .font(.system(.headline, design: .rounded, weight: .semibold))
-                            .foregroundStyle(.primary)
-                        Text(progressSubtitle)
-                            .font(.system(.caption, design: .rounded))
-                            .foregroundStyle(.secondary)
-                    }
-
-                    Spacer(minLength: 8)
-
-                    Image(systemName: "chevron.right")
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(.tertiary)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Workout History")
+                        .font(.system(.body, design: .rounded, weight: .medium))
+                        .foregroundStyle(.primary)
+                    Text("\(burnRecordCount) \(burnRecordCount == 1 ? "entry" : "entries") · tap to view or delete")
+                        .font(.system(.caption, design: .rounded))
+                        .foregroundStyle(.secondary)
                 }
 
-                LazyVGrid(
-                    columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 4),
-                    spacing: 8
-                ) {
-                    TrainingProgressMetric(value: "\(sessions.count)", label: "Sessions")
-                    TrainingProgressMetric(value: "\(setCount)", label: "Sets")
-                    TrainingProgressMetric(value: "\(repCount)", label: "Reps")
-                    TrainingProgressMetric(value: compactDuration(durationSeconds), label: "Time")
-                }
+                Spacer()
+
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(.tertiary)
             }
-            .padding(16)
-            .background(AppColors.appCard, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
-            .overlay {
-                RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .strokeBorder(AppColors.calorie.opacity(0.08), lineWidth: 1)
-            }
+            .padding(.vertical, 12)
+            .padding(.horizontal, 14)
+            .background(AppColors.appCard, in: RoundedRectangle(cornerRadius: 14))
         }
         .buttonStyle(.plain)
-        .accessibilityElement(children: .combine)
-        .accessibilityHint("Opens workout history")
-    }
-
-    private var progressSubtitle: String {
-        guard let latest = sessions.first else {
-            return "No workouts logged in this range"
-        }
-        return "Latest \(latest.calendarDiaryDate.formatted(.dateTime.month(.abbreviated).day())) · tap for history"
+        .accessibilityHint("Opens workout calorie history")
     }
 }
 
-private struct TrainingProgressMetric: View {
-    let value: String
-    let label: String
-
-    var body: some View {
-        VStack(spacing: 3) {
-            Text(value)
-                .font(.system(.subheadline, design: .rounded, weight: .bold))
-                .foregroundStyle(.primary)
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
-            Text(label)
-                .font(.system(size: 10, weight: .medium, design: .rounded))
-                .foregroundStyle(.secondary)
-                .lineLimit(1)
-                .minimumScaleFactor(0.8)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 9)
-        .background(AppColors.calorie.opacity(0.075), in: RoundedRectangle(cornerRadius: 11, style: .continuous))
-    }
-}
-
-/// Full chronological log reached from `TrainingProgressSection`.
+/// Full chronological calorie-burn log reached from Progress.
 struct WorkoutHistoryView: View {
     @Environment(StrengthWorkoutStore.self) private var workoutStore
     let sessions: [StrengthWorkoutSession]
@@ -149,7 +50,7 @@ struct WorkoutHistoryView: View {
 
     private var chronologicalSessions: [StrengthWorkoutSession] {
         sessions
-            .filter { !locallyDeletedSessionIDs.contains($0.id) }
+            .filter { $0.caloriesBurned != nil && !locallyDeletedSessionIDs.contains($0.id) }
             .sorted {
                 if $0.stableDiaryDateKey == $1.stableDiaryDateKey {
                     return $0.completedAt > $1.completedAt
@@ -162,9 +63,9 @@ struct WorkoutHistoryView: View {
         Group {
             if chronologicalSessions.isEmpty {
                 ContentUnavailableView(
-                    "No Workouts Yet",
-                    systemImage: "dumbbell",
-                    description: Text("Completed workouts will appear here with every exercise and set.")
+                    "No Calorie Burns Yet",
+                    systemImage: "flame",
+                    description: Text("Calculated workout calories will appear here with every exercise and set.")
                 )
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(AppColors.appBackground)
@@ -175,7 +76,7 @@ struct WorkoutHistoryView: View {
                     }
                     .listRowBackground(AppColors.appCard)
 
-                    Section("Sessions") {
+                    Section("Calorie Burn Records") {
                         ForEach(chronologicalSessions) { session in
                             NavigationLink {
                                 WorkoutSessionDetailView(session: session)
@@ -201,14 +102,14 @@ struct WorkoutHistoryView: View {
         .navigationTitle("Workout History")
         .navigationBarTitleDisplayMode(.inline)
         .confirmationDialog(
-            "Delete this workout?",
+            "Delete this calorie burn?",
             isPresented: Binding(
                 get: { pendingDeletion != nil },
                 set: { if !$0 { pendingDeletion = nil } }
             ),
             titleVisibility: .visible
         ) {
-            Button("Delete Workout", role: .destructive) {
+            Button("Delete Burn Record", role: .destructive) {
                 guard let session = pendingDeletion else { return }
                 locallyDeletedSessionIDs.insert(session.id)
                 workoutStore.deleteSession(session.id)
@@ -216,7 +117,7 @@ struct WorkoutHistoryView: View {
             }
             Button("Cancel", role: .cancel) { pendingDeletion = nil }
         } message: {
-            Text("This removes the completed session and its logged sets. The dated workout plan stays in your diary.")
+            Text("This deletes the calorie burn record and its matching sample from Apple Health. The dated workout plan stays in your diary.")
         }
     }
 }
@@ -226,21 +127,21 @@ private struct WorkoutHistoryTotals: View {
 
     private var totalSets: Int { sessions.reduce(0) { $0 + $1.performedSetCount } }
     private var totalReps: Int { sessions.reduce(0) { $0 + $1.repCount } }
-    private var totalTime: Int { sessions.reduce(0) { $0 + $1.durationSeconds } }
+    private var totalCalories: Int { sessions.reduce(0) { $0 + ($1.caloriesBurned ?? 0) } }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("All activity in this range")
+            Text("All calculated workout burns")
                 .font(.system(.subheadline, design: .rounded, weight: .semibold))
 
             HStack(spacing: 0) {
-                historyTotal(value: "\(sessions.count)", label: "sessions")
+                historyTotal(value: "\(sessions.count)", label: "records")
+                Divider().frame(height: 32)
+                historyTotal(value: totalCalories.formatted(), label: "kcal")
                 Divider().frame(height: 32)
                 historyTotal(value: "\(totalSets)", label: "sets")
                 Divider().frame(height: 32)
                 historyTotal(value: "\(totalReps)", label: "reps")
-                Divider().frame(height: 32)
-                historyTotal(value: compactDuration(totalTime), label: "total")
             }
         }
         .padding(.vertical, 4)
@@ -288,7 +189,7 @@ private struct WorkoutHistoryRow: View {
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)
 
-                Label(compactDuration(session.durationSeconds), systemImage: "clock")
+                Label("\((session.caloriesBurned ?? 0).formatted()) kcal", systemImage: "flame.fill")
                     .font(.system(.caption2, design: .rounded, weight: .medium))
                     .foregroundStyle(.secondary)
             }
@@ -308,7 +209,7 @@ struct WorkoutSessionDetailView: View {
             Section {
                 VStack(alignment: .leading, spacing: 12) {
                     HStack {
-                        Label(compactDuration(session.durationSeconds), systemImage: "clock.fill")
+                        Label("\((session.caloriesBurned ?? 0).formatted()) kcal", systemImage: "flame.fill")
                         Spacer()
                         Label("\(session.performedSetCount) sets", systemImage: "square.stack.3d.up.fill")
                     }
@@ -411,14 +312,4 @@ private struct WorkoutCompletedSetRow: View {
         guard !set.weight.isEmpty else { return "—" }
         return "\(set.weight) \(set.weightUnit)"
     }
-}
-
-private func compactDuration(_ seconds: Int) -> String {
-    let totalMinutes = max(0, Int((Double(seconds) / 60).rounded()))
-    if totalMinutes < 60 {
-        return "\(totalMinutes)m"
-    }
-    let hours = totalMinutes / 60
-    let minutes = totalMinutes % 60
-    return minutes == 0 ? "\(hours)h" : "\(hours)h \(minutes)m"
 }

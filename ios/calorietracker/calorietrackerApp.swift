@@ -316,6 +316,12 @@ struct calorietrackerApp: App {
             existingIDs: { [foodStore] in Set(foodStore.entries.map(\.id)) },
             importBatch: { [foodStore] entries in foodStore.mergeWithCloudEntries(entries) }
         )
+        healthKitManager.synchronizeWorkoutBurnsWithHealthKit(
+            existing: { [strengthWorkoutStore] in strengthWorkoutStore.workoutBurnSessions },
+            mergeBatch: { [strengthWorkoutStore] sessions in
+                strengthWorkoutStore.importWorkoutBurnSessions(sessions)
+            }
+        )
     }
 
     private func wireUpFoodStoreCallback() {
@@ -333,6 +339,15 @@ struct calorietrackerApp: App {
         waterStore.onEntriesChanged = { [foodStore] in
             guard let profile = UserProfile.load() else { return }
             WidgetSnapshotWriter.publish(foods: foodStore.entries, profile: profile)
+        }
+        // Install workout callbacks even when Health sync is currently off.
+        // Writes honor the toggle, while deletion can still clean up a sample
+        // exported before the user disabled Health sync.
+        strengthWorkoutStore.onWorkoutBurnUpserted = { [healthKitManager] session in
+            healthKitManager.updateWorkoutBurn(for: session)
+        }
+        strengthWorkoutStore.onWorkoutBurnDeleted = { [healthKitManager] sessionID in
+            healthKitManager.deleteWorkoutBurn(sessionID: sessionID)
         }
     }
 

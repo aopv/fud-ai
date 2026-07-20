@@ -17,6 +17,8 @@ final class StrengthWorkoutStore {
     private(set) var completedSessions: [StrengthWorkoutSession] = []
     private(set) var savedExerciseIDs: Set<String> = []
     private(set) var preferences = StrengthWorkoutPreferences()
+    var onWorkoutBurnUpserted: ((StrengthWorkoutSession) -> Void)?
+    var onWorkoutBurnDeleted: ((UUID) -> Void)?
 
     private let defaults: UserDefaults
     private let storageKey: String
@@ -34,6 +36,10 @@ final class StrengthWorkoutStore {
             }
             return $0.stableDiaryDateKey > $1.stableDiaryDateKey
         }
+    }
+
+    var workoutBurnSessions: [StrengthWorkoutSession] {
+        sortedCompletedSessions.filter { $0.caloriesBurned != nil }
     }
 
     static func dateKey(for date: Date, calendar: Calendar = .current) -> String {
@@ -190,6 +196,58 @@ final class StrengthWorkoutStore {
         return session
     }
 
+    /// Snapshots the selected diary and stores one calculated burn record for
+    /// that calendar day. Recalculating replaces the day in place and preserves
+    /// its UUID so Apple Health can update rather than duplicate the sample.
+    @discardableResult
+    func upsertCalculatedWorkout(
+        on date: Date,
+        caloriesBurned: Int,
+        weightUnit: WeightUnit,
+        calculatedAt: Date = .now
+    ) -> StrengthWorkoutSession? {
+        let planned = exercises(for: date)
+        let logs = completedExerciseLogs(from: planned, weightUnit: weightUnit)
+        guard logs.flatMap(\.sets).contains(where: \.isPerformed) else { return nil }
+
+        let key = Self.dateKey(for: date)
+        let existingBurns = sortedCompletedSessions.filter {
+            $0.stableDiaryDateKey == key && $0.caloriesBurned != nil
+        }
+        let existing = existingBurns.first
+        let session = StrengthWorkoutSession(
+            id: existing?.id ?? UUID(),
+            diaryDate: Calendar.current.startOfDay(for: date),
+            diaryDateKey: key,
+            startedAt: calculatedAt,
+            completedAt: calculatedAt,
+            durationSeconds: 0,
+            exercises: logs,
+            caloriesBurned: min(max(caloriesBurned, 1), 5_000),
+            healthSyncVersion: (existing?.healthSyncVersion ?? 0) + 1
+        )
+
+        // Keep timer-era completed sessions intact. The burn calculator owns
+        // only the single daily burn snapshot it previously created.
+        completedSessions.removeAll {
+            $0.stableDiaryDateKey == key && $0.caloriesBurned != nil
+        }
+        completedSessions.append(session)
+        save()
+        for duplicate in existingBurns.dropFirst() where duplicate.id != session.id {
+            onWorkoutBurnDeleted?(duplicate.id)
+        }
+        onWorkoutBurnUpserted?(session)
+        return session
+    }
+
+    func caloriesBurned(on date: Date) -> Int? {
+        let key = Self.dateKey(for: date)
+        return sortedCompletedSessions.first {
+            $0.stableDiaryDateKey == key && $0.caloriesBurned != nil
+        }?.caloriesBurned
+    }
+
     func latestSession(on date: Date) -> StrengthWorkoutSession? {
         let key = Self.dateKey(for: date)
         return sortedCompletedSessions.first { $0.stableDiaryDateKey == key }
@@ -207,8 +265,74 @@ final class StrengthWorkoutStore {
     }
 
     func deleteSession(_ id: UUID) {
+        let deletedBurnID = completedSessions.first {
+            $0.id == id && $0.caloriesBurned != nil
+        }?.id
         completedSessions.removeAll { $0.id == id }
         save()
+        if let deletedBurnID { onWorkoutBurnDeleted?(deletedBurnID) }
+    }
+
+    /// Restores Fud AI-authored burn samples after a reinstall or new phone.
+    /// This merge never fires write callbacks, so imported samples are not
+    /// echoed back to Apple Health.
+    func importWorkoutBurnSessions(_ imported: [StrengthWorkoutSession]) {
+        guard !imported.isEmpty else { return }
+        var changed = false
+
+        for session in imported where session.caloriesBurned != nil {
+            if let index = completedSessions.firstIndex(where: { $0.id == session.id }) {
+                let localVersion = completedSessions[index].healthSyncVersion ?? 0
+                let importedVersion = session.healthSyncVersion ?? 0
+                if importedVersion > localVersion {
+                    completedSessions[index] = mergedBurnSession(
+                        local: completedSessions[index],
+                        imported: session
+                    )
+                    changed = true
+                }
+                continue
+            }
+
+            if let sameDay = completedSessions.firstIndex(where: {
+                $0.stableDiaryDateKey == session.stableDiaryDateKey && $0.caloriesBurned != nil
+            }) {
+                let localVersion = completedSessions[sameDay].healthSyncVersion ?? 0
+                let importedVersion = session.healthSyncVersion ?? 0
+                if importedVersion > localVersion {
+                    completedSessions[sameDay] = mergedBurnSession(
+                        local: completedSessions[sameDay],
+                        imported: session
+                    )
+                    changed = true
+                }
+            } else {
+                completedSessions.append(session)
+                changed = true
+            }
+        }
+
+        if changed { save() }
+    }
+
+    /// Apple Health stores the burn value and stable identity, not the diary's
+    /// exercise snapshot. Preserve local exercise/set detail when a newer
+    /// Health version is merged back into an existing record.
+    private func mergedBurnSession(
+        local: StrengthWorkoutSession,
+        imported: StrengthWorkoutSession
+    ) -> StrengthWorkoutSession {
+        StrengthWorkoutSession(
+            id: imported.id,
+            diaryDate: imported.diaryDate,
+            diaryDateKey: imported.diaryDateKey,
+            startedAt: imported.startedAt,
+            completedAt: imported.completedAt,
+            durationSeconds: imported.durationSeconds,
+            exercises: imported.exercises.isEmpty ? local.exercises : imported.exercises,
+            caloriesBurned: imported.caloriesBurned,
+            healthSyncVersion: imported.healthSyncVersion
+        )
     }
 
     func updatePreferences(_ mutate: (inout StrengthWorkoutPreferences) -> Void) {
@@ -241,6 +365,30 @@ final class StrengthWorkoutStore {
         updatePlan(for: date) { plan in
             guard let index = plan.exercises.firstIndex(where: { $0.id == exerciseID }) else { return }
             mutate(&plan.exercises[index])
+        }
+    }
+
+    private func completedExerciseLogs(
+        from planned: [StrengthPlannedExercise],
+        weightUnit: WeightUnit
+    ) -> [StrengthCompletedExercise] {
+        planned.map { exercise in
+            StrengthCompletedExercise(
+                itemID: exercise.itemID,
+                name: exercise.name,
+                targetMuscles: exercise.primaryMuscles,
+                equipment: exercise.rawEquipment,
+                sets: exercise.sets.enumerated().map { index, set in
+                    StrengthCompletedSet(
+                        setNumber: index + 1,
+                        weight: set.weight.trimmingCharacters(in: .whitespacesAndNewlines),
+                        weightUnit: set.weightUnit ?? weightUnit.rawValue,
+                        reps: set.reps.trimmingCharacters(in: .whitespacesAndNewlines),
+                        rpe: set.rpe.trimmingCharacters(in: .whitespacesAndNewlines),
+                        rpeScale: set.rpeScale ?? preferences.rpeScale
+                    )
+                }
+            )
         }
     }
 

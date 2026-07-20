@@ -29,35 +29,21 @@ struct StrengthWorkoutStoreTests {
         #expect(preferences.customSplit.isEmpty)
     }
 
-    @Test func workoutLogTimerResetPreservesSelectedDay() {
+    @Test func workoutLogStatePreservesSelectedDayUntilFullReset() {
         let selectedDate = WorkoutTestFixture.date(2026, 7, 12)
         let session = WorkoutLogSessionState()
         session.selectedDate = selectedDate
-        session.activeSessionDate = selectedDate
-        session.activeSessionDateKey = StrengthWorkoutStore.dateKey(for: selectedDate)
-        session.workoutStartedAt = selectedDate
-        session.runningSegmentStartedAt = selectedDate
-        session.accumulatedElapsedSeconds = 90
-
-        session.resetTimer()
 
         #expect(session.selectedDate == selectedDate)
-        #expect(session.activeSessionDate == nil)
-        #expect(session.activeSessionDateKey == nil)
-        #expect(session.workoutStartedAt == nil)
-        #expect(session.runningSegmentStartedAt == nil)
-        #expect(session.accumulatedElapsedSeconds == 0)
     }
 
     @Test func workoutLogFullResetReturnsToToday() {
         let session = WorkoutLogSessionState()
         session.selectedDate = WorkoutTestFixture.date(2026, 7, 12)
-        session.activeSessionDate = session.selectedDate
 
         session.reset()
 
         #expect(Calendar.current.isDateInToday(session.selectedDate))
-        #expect(session.activeSessionDate == nil)
     }
 
     @Test func workoutLogDayNavigationMovesOneDayAndStopsAtToday() throws {
@@ -328,6 +314,208 @@ struct StrengthWorkoutStoreTests {
         let expectedIDs: Set<UUID> = [first.id, third.id]
         #expect(remainingIDs == expectedIDs)
         #expect(fixture.makeStore().completedSessions.count == 2)
+    }
+
+    @Test func burnEstimatorRequiresPerformedSetsAndRespondsToEffortAndLoad() throws {
+        let fixture = WorkoutTestFixture()
+        defer { fixture.cleanUp() }
+
+        let date = WorkoutTestFixture.date(2026, 7, 18)
+        let store = fixture.makeStore()
+        store.toggleExercise(
+            WorkoutTestFixture.exercise(id: "curl", name: "Dumbbell Curl", equipment: "dumbbell", muscles: ["biceps"]),
+            on: date
+        )
+
+        var exercise = try #require(store.exercises(for: date).first)
+        var set = try #require(exercise.sets.first)
+        #expect(
+            StrengthWorkoutBurnEstimator.estimate(
+                exercises: [exercise],
+                bodyWeightKg: 75,
+                defaultWeightUnit: .kg,
+                defaultRPEScale: .strength
+            ) == nil
+        )
+
+        store.updateSet(
+            exerciseID: exercise.id,
+            setID: set.id,
+            on: date,
+            weight: "8",
+            weightUnit: .kg,
+            reps: "12",
+            rpe: "3"
+        )
+        exercise = try #require(store.exercises(for: date).first)
+        let easier = try #require(
+            StrengthWorkoutBurnEstimator.estimate(
+                exercises: [exercise],
+                bodyWeightKg: 75,
+                defaultWeightUnit: .kg,
+                defaultRPEScale: .strength
+            )
+        )
+
+        set = try #require(exercise.sets.first)
+        store.updateSet(
+            exerciseID: exercise.id,
+            setID: set.id,
+            on: date,
+            weight: "40",
+            weightUnit: .kg,
+            rpe: "10"
+        )
+        exercise = try #require(store.exercises(for: date).first)
+        let harder = try #require(
+            StrengthWorkoutBurnEstimator.estimate(
+                exercises: [exercise],
+                bodyWeightKg: 75,
+                defaultWeightUnit: .kg,
+                defaultRPEScale: .strength
+            )
+        )
+
+        #expect(easier.performedSetCount == 1)
+        #expect(easier.repCount == 12)
+        #expect(harder.calories > easier.calories)
+        #expect((1...5_000).contains(harder.calories))
+    }
+
+    @Test func calculatedBurnUpsertsOneStableDailyRecordAndDeletesHealthByExactID() throws {
+        let fixture = WorkoutTestFixture()
+        defer { fixture.cleanUp() }
+
+        let date = WorkoutTestFixture.date(2026, 7, 19)
+        let store = fixture.makeStore()
+        store.toggleExercise(WorkoutTestFixture.exercise(id: "squat", name: "Back Squat"), on: date)
+        let exercise = try #require(store.exercises(for: date).first)
+        let set = try #require(exercise.sets.first)
+        store.updateSet(
+            exerciseID: exercise.id,
+            setID: set.id,
+            on: date,
+            weight: "100",
+            weightUnit: .kg,
+            reps: "8",
+            rpe: "8"
+        )
+
+        var exported: [StrengthWorkoutSession] = []
+        var deletedIDs: [UUID] = []
+        store.onWorkoutBurnUpserted = { exported.append($0) }
+        store.onWorkoutBurnDeleted = { deletedIDs.append($0) }
+
+        let first = try #require(store.upsertCalculatedWorkout(on: date, caloriesBurned: 180, weightUnit: .kg))
+        let second = try #require(store.upsertCalculatedWorkout(on: date, caloriesBurned: 225, weightUnit: .kg))
+
+        #expect(first.id == second.id)
+        #expect(first.healthSyncVersion == 1)
+        #expect(second.healthSyncVersion == 2)
+        #expect(second.caloriesBurned == 225)
+        #expect(second.durationSeconds == 0)
+        #expect(second.durationMinutes == 0)
+        #expect(store.workoutBurnSessions.count == 1)
+        #expect(store.caloriesBurned(on: date) == 225)
+        #expect(exported.map(\.id) == [first.id, first.id])
+        #expect(fixture.makeStore().workoutBurnSessions.first?.caloriesBurned == 225)
+
+        store.deleteSession(second.id)
+        #expect(store.workoutBurnSessions.isEmpty)
+        #expect(store.exercises(for: date).count == 1)
+        #expect(deletedIDs == [second.id])
+    }
+
+    @Test func timerEraSessionJSONWithoutBurnFieldsStillDecodes() throws {
+        let fixture = WorkoutTestFixture()
+        defer { fixture.cleanUp() }
+
+        let date = WorkoutTestFixture.date(2026, 7, 17)
+        let store = fixture.makeStore()
+        store.toggleExercise(WorkoutTestFixture.exercise(id: "row", name: "Barbell Row"), on: date)
+        _ = try #require(
+            store.completeWorkout(
+                on: date,
+                startedAt: date,
+                completedAt: date.addingTimeInterval(600),
+                elapsedSeconds: 600,
+                weightUnit: .kg
+            )
+        )
+
+        let encoded = try #require(fixture.defaults.data(forKey: fixture.storageKey))
+        var root = try #require(JSONSerialization.jsonObject(with: encoded) as? [String: Any])
+        var sessions = try #require(root["completedSessions"] as? [[String: Any]])
+        sessions[0].removeValue(forKey: "caloriesBurned")
+        sessions[0].removeValue(forKey: "healthSyncVersion")
+        root["completedSessions"] = sessions
+        fixture.defaults.set(try JSONSerialization.data(withJSONObject: root), forKey: fixture.storageKey)
+
+        let restored = try #require(fixture.makeStore().completedSessions.first)
+        #expect(restored.caloriesBurned == nil)
+        #expect(restored.healthSyncVersion == nil)
+        #expect(restored.durationSeconds == 600)
+    }
+
+    @Test func burnCalculationPreservesLegacySessionsAndHealthMergePreservesSetDetails() throws {
+        let fixture = WorkoutTestFixture()
+        defer { fixture.cleanUp() }
+
+        let date = WorkoutTestFixture.date(2026, 7, 16)
+        let store = fixture.makeStore()
+        store.toggleExercise(WorkoutTestFixture.exercise(id: "press", name: "Shoulder Press"), on: date)
+        let exercise = try #require(store.exercises(for: date).first)
+        let set = try #require(exercise.sets.first)
+        store.updateSet(
+            exerciseID: exercise.id,
+            setID: set.id,
+            on: date,
+            weight: "30",
+            weightUnit: .kg,
+            reps: "10",
+            rpe: "8"
+        )
+
+        let legacy = try #require(
+            store.completeWorkout(
+                on: date,
+                startedAt: date,
+                completedAt: date.addingTimeInterval(600),
+                elapsedSeconds: 600,
+                weightUnit: .kg
+            )
+        )
+        let burn = try #require(
+            store.upsertCalculatedWorkout(
+                on: date,
+                caloriesBurned: 160,
+                weightUnit: .kg,
+                calculatedAt: date.addingTimeInterval(1_200)
+            )
+        )
+
+        #expect(store.completedSessions.contains(where: { $0.id == legacy.id }))
+        #expect(store.completedSessions.count == 2)
+        #expect(store.workoutBurnSessions.map(\.id) == [burn.id])
+
+        let healthVersion = StrengthWorkoutSession(
+            id: burn.id,
+            diaryDate: date,
+            diaryDateKey: burn.stableDiaryDateKey,
+            startedAt: date.addingTimeInterval(1_800),
+            completedAt: date.addingTimeInterval(1_800),
+            durationSeconds: 0,
+            exercises: [],
+            caloriesBurned: 190,
+            healthSyncVersion: 2
+        )
+        store.importWorkoutBurnSessions([healthVersion])
+
+        let merged = try #require(store.workoutBurnSessions.first)
+        #expect(merged.caloriesBurned == 190)
+        #expect(merged.healthSyncVersion == 2)
+        #expect(merged.exercises.first?.name == "Shoulder Press")
+        #expect(merged.performedSetCount == 1)
     }
 
     @Test func clearAllResetsMemoryAndRemovesPersistedWorkoutState() {

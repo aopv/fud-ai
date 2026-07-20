@@ -45,6 +45,26 @@ struct CoachTools {
         Self.nutritionToolNames + (workoutAccessEnabled ? Self.workoutToolNames : [])
     }
 
+    /// Timer-era builds could store several completed sessions for one diary
+    /// day. Once the user calculates a daily burn, that snapshot represents the
+    /// current diary, so prefer it over older same-day snapshots and avoid
+    /// double-counting their sets and reps in Coach.
+    private var effectiveWorkoutSessions: [StrengthWorkoutSession] {
+        Dictionary(grouping: workoutSessions, by: \.stableDiaryDateKey)
+            .values
+            .flatMap { sessions -> [StrengthWorkoutSession] in
+                let burns = sessions.filter { $0.caloriesBurned != nil }
+                guard !burns.isEmpty else { return sessions }
+                let latest = burns.max {
+                    let leftVersion = $0.healthSyncVersion ?? 0
+                    let rightVersion = $1.healthSyncVersion ?? 0
+                    if leftVersion == rightVersion { return $0.completedAt < $1.completedAt }
+                    return leftVersion < rightVersion
+                }
+                return latest.map { [$0] } ?? []
+            }
+    }
+
     /// Per-provider tool descriptions kept in one place so all three formats
     /// see the same human-readable text.
     static let toolDescriptions: [String: String] = [
@@ -53,10 +73,10 @@ struct CoachTools {
         "get_body_fat_history": "Fetch body-fat readings between two dates (inclusive). Returns date + percent. Use when the user asks about body composition trends older than the last 10 readings.",
         "get_calorie_totals": "Daily calorie totals (sum of all logged foods per day) between two dates. Returns date + kcal. Use when the user asks about intake patterns older than the last 14 days.",
         "get_food_entries": "Individual logged food items (name + calories + macros) between two dates. Use when the user asks about specific meals, what they ate on a given date, or wants macro breakdowns rather than just kcal totals.",
-        "get_workout_history": "Fetch completed strength workouts between two dates, including every exercise and logged set with weight, reps, and RPE.",
+        "get_workout_history": "Fetch completed strength workouts between two dates, including calculated calorie burn and every exercise and logged set with weight, reps, and RPE.",
         "get_workout_plans": "Fetch dated workout diary plans and set targets. Optional ISO from/to dates narrow the result; without them it returns recent and upcoming plans around today.",
         "get_workout_preferences": "Fetch workout-only preferences such as target muscles, injuries or issues, equipment, schedule, split, RPE scale, and strength numbers.",
-        "get_training_summary": "Summarize strength training between two dates by exercise: sessions, sets, reps, volume, best load, and average RPE.",
+        "get_training_summary": "Summarize strength training between two dates: calculated calorie burn plus sessions, sets, reps, volume, best load, and average RPE by exercise.",
     ]
 
     /// One schema source is translated to each provider's wrapper by
@@ -148,9 +168,10 @@ struct CoachTools {
         ]
         guard workoutAccessEnabled else { return jsonString(payload) }
         var expanded = payload
-        let workoutDateKeys = workoutSessions.map(\.stableDiaryDateKey).sorted()
+        let visibleWorkoutSessions = effectiveWorkoutSessions
+        let workoutDateKeys = visibleWorkoutSessions.map(\.stableDiaryDateKey).sorted()
         expanded["workouts"] = [
-            "count": workoutSessions.count,
+            "count": visibleWorkoutSessions.count,
             "first_date": workoutDateKeys.first.map { $0 as Any } ?? NSNull(),
             "last_date": workoutDateKeys.last.map { $0 as Any } ?? NSNull(),
         ]
@@ -279,7 +300,7 @@ struct CoachTools {
     private func getWorkoutHistory(arguments: [String: Any]) -> String {
         let (from, to) = parseRange(arguments)
         let limit = (arguments["limit"] as? Int).map { min(max($0, 1), 200) } ?? 100
-        let sessions = workoutSessions
+        let sessions = effectiveWorkoutSessions
             .filter { $0.calendarDiaryDate >= from && $0.calendarDiaryDate <= to }
             .sorted {
                 if $0.stableDiaryDateKey == $1.stableDiaryDateKey {
@@ -374,7 +395,9 @@ struct CoachTools {
 
     private func getTrainingSummary(arguments: [String: Any]) -> String {
         let (from, to) = parseRange(arguments)
-        let sessions = workoutSessions.filter { $0.calendarDiaryDate >= from && $0.calendarDiaryDate <= to }
+        let sessions = effectiveWorkoutSessions.filter {
+            $0.calendarDiaryDate >= from && $0.calendarDiaryDate <= to
+        }
         struct ExerciseAggregate {
             var sessionIDs: Set<UUID> = []
             var sets = 0
@@ -438,13 +461,14 @@ struct CoachTools {
             "sessions": sessions.count,
             "sets": sessions.reduce(0) { $0 + $1.performedSetCount },
             "reps": sessions.reduce(0) { $0 + $1.repCount },
+            "calories_burned": sessions.reduce(0) { $0 + ($1.caloriesBurned ?? 0) },
             "minutes": sessions.reduce(0) { $0 + $1.durationMinutes },
             "by_exercise": exercisePayloads,
         ])
     }
 
     private func workoutSessionPayload(_ session: StrengthWorkoutSession) -> [String: Any] {
-        [
+        var payload: [String: Any] = [
             "id": session.id.uuidString,
             "date": session.stableDiaryDateKey,
             "started_at": Self.isoTimestamp(session.startedAt),
@@ -476,6 +500,10 @@ struct CoachTools {
                 ]
             },
         ]
+        if let caloriesBurned = session.caloriesBurned {
+            payload["calories_burned"] = caloriesBurned
+        }
+        return payload
     }
 
     // MARK: - Helpers

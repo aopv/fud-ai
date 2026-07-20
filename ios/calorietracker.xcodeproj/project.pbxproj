@@ -683,8 +683,8 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "$(APP_DISPLAY_NAME)";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Cal AI needs camera access to scan your food and calculate calories.";
-				INFOPLIST_KEY_NSHealthShareUsageDescription = "Read your weight, height, and body composition to keep your profile accurate.";
-				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Write your nutrition and body measurements so all your health data stays in one place.";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Read your weight, height, body composition, nutrition, and Fud AI workout calories to keep your history in sync.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Write, update, or remove your nutrition, body measurements, and calculated workout calories when you change your logs.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Fud AI needs microphone access so you can log food by voice.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Fud AI uses speech recognition to convert your voice into text for food logging.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -734,8 +734,8 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "$(APP_DISPLAY_NAME)";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Cal AI needs camera access to scan your food and calculate calories.";
-				INFOPLIST_KEY_NSHealthShareUsageDescription = "Read your weight, height, and body composition to keep your profile accurate.";
-				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Write your nutrition and body measurements so all your health data stays in one place.";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Read your weight, height, body composition, nutrition, and Fud AI workout calories to keep your history in sync.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Write, update, or remove your nutrition, body measurements, and calculated workout calories when you change your logs.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Fud AI needs microphone access so you can log food by voice.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Fud AI uses speech recognition to convert your voice into text for food logging.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

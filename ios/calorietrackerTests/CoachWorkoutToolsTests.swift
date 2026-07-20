@@ -48,6 +48,7 @@ struct CoachWorkoutToolsTests {
         )
         let second = WorkoutCoachFixture.session(
             date: secondDate,
+            caloriesBurned: 345,
             exercise: "Back Squat",
             sets: [WorkoutCoachFixture.set(number: 1, weight: "120", reps: "3", rpe: "9")]
         )
@@ -83,6 +84,7 @@ struct CoachWorkoutToolsTests {
         #expect(history["count"] as? Int == 1)
         #expect(workouts.count == 1)
         #expect(workouts[0]["date"] as? String == "2026-07-18")
+        #expect(workouts[0]["calories_burned"] as? Int == 345)
         let exercises = try #require(workouts[0]["exercises"] as? [[String: Any]])
         #expect(exercises[0]["name"] as? String == "Back Squat")
         let sets = try #require(exercises[0]["sets"] as? [[String: Any]])
@@ -179,6 +181,7 @@ struct CoachWorkoutToolsTests {
         let first = WorkoutCoachFixture.session(
             date: WorkoutTestFixture.date(2026, 7, 8),
             durationSeconds: 60,
+            caloriesBurned: 120,
             exercise: "Bench Press",
             sets: [
                 WorkoutCoachFixture.set(number: 1, weight: "100", unit: .kg, reps: "5", rpe: "8"),
@@ -188,6 +191,7 @@ struct CoachWorkoutToolsTests {
         let second = WorkoutCoachFixture.session(
             date: WorkoutTestFixture.date(2026, 7, 9),
             durationSeconds: 61,
+            caloriesBurned: 80,
             exercise: "Bench Press",
             sets: [WorkoutCoachFixture.set(number: 1, weight: "220.462", unit: .lbs, reps: "3", rpe: "9")]
         )
@@ -214,6 +218,7 @@ struct CoachWorkoutToolsTests {
         #expect(summary["sessions"] as? Int == 2)
         #expect(summary["sets"] as? Int == 2)
         #expect(summary["reps"] as? Int == 8)
+        #expect(summary["calories_burned"] as? Int == 200)
         #expect(summary["minutes"] as? Int == 3)
 
         let exercises = try #require(summary["by_exercise"] as? [[String: Any]])
@@ -263,6 +268,39 @@ struct CoachWorkoutToolsTests {
         #expect(squat["average_rpe"] == nil)
     }
 
+    @Test func calculatedDailyBurnSupersedesTimerEraSnapshotForCoach() throws {
+        let date = WorkoutTestFixture.date(2026, 7, 12)
+        let legacy = WorkoutCoachFixture.session(
+            date: date,
+            exercise: "Bench Press",
+            sets: [WorkoutCoachFixture.set(number: 1, weight: "80", reps: "5", rpe: "7")]
+        )
+        let calculated = WorkoutCoachFixture.session(
+            date: date.addingTimeInterval(60),
+            caloriesBurned: 210,
+            exercise: "Bench Press",
+            sets: [WorkoutCoachFixture.set(number: 1, weight: "85", reps: "8", rpe: "8")]
+        )
+        let tools = CoachTools(
+            weights: [],
+            bodyFats: [],
+            foods: [],
+            workoutSessions: [legacy, calculated],
+            workoutAccessEnabled: true
+        )
+
+        let summary = try WorkoutCoachFixture.jsonObject(
+            tools.execute(
+                name: "get_training_summary",
+                arguments: ["from": "2026-07-12", "to": "2026-07-12"]
+            )
+        )
+        #expect(summary["sessions"] as? Int == 1)
+        #expect(summary["sets"] as? Int == 1)
+        #expect(summary["reps"] as? Int == 8)
+        #expect(summary["calories_burned"] as? Int == 210)
+    }
+
     @Test func workoutToolSchemasRequireDatesOnlyForRangeQueries() throws {
         let noArgumentSchemaNames = ["get_data_summary", "get_workout_plans", "get_workout_preferences"]
         for name in noArgumentSchemaNames {
@@ -306,6 +344,7 @@ private enum WorkoutCoachFixture {
     static func session(
         date: Date,
         durationSeconds: Int = 600,
+        caloriesBurned: Int? = nil,
         exercise: String,
         sets: [StrengthCompletedSet]
     ) -> StrengthWorkoutSession {
@@ -322,7 +361,8 @@ private enum WorkoutCoachFixture {
                     equipment: "Barbell",
                     sets: sets
                 )
-            ]
+            ],
+            caloriesBurned: caloriesBurned
         )
     }
 

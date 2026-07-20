@@ -339,8 +339,14 @@ struct StrengthWorkoutSession: Identifiable, Codable, Equatable, Hashable {
     let completedAt: Date
     let durationSeconds: Int
     let exercises: [StrengthCompletedExercise]
+    /// A user-requested estimate for this diary day. Optional so timer-era
+    /// sessions written before calorie calculation was added still decode.
+    var caloriesBurned: Int? = nil
+    /// Monotonically increases when the same daily estimate is recalculated.
+    /// HealthKit uses this to replace the tagged active-energy sample safely.
+    var healthSyncVersion: Int? = nil
 
-    var durationMinutes: Int { max(1, Int(ceil(Double(durationSeconds) / 60))) }
+    var durationMinutes: Int { max(0, Int(ceil(Double(durationSeconds) / 60))) }
     var exerciseCount: Int { exercises.count }
     var performedSetCount: Int { exercises.flatMap(\.sets).filter(\.isPerformed).count }
     var repCount: Int {
@@ -359,6 +365,97 @@ struct StrengthWorkoutSession: Identifiable, Codable, Equatable, Hashable {
         let calendar = Calendar.current
         if calendar.isDateInToday(calendarDiaryDate) { return "Today Workout" }
         return "\(calendarDiaryDate.formatted(.dateTime.weekday(.wide))) Workout"
+    }
+}
+
+struct StrengthWorkoutBurnEstimate: Equatable {
+    let calories: Int
+    let performedSetCount: Int
+    let repCount: Int
+}
+
+/// Offline strength-training burn estimate used by the explicit Calculate
+/// button. Resistance training has no exact set-only calorie equation, so this
+/// models active repetition time, normal between-set recovery, perceived effort,
+/// external load, and body mass. It intentionally ignores unperformed planned
+/// sets and is kept out of nutrition-goal calculations.
+enum StrengthWorkoutBurnEstimator {
+    static func estimate(
+        exercises: [StrengthPlannedExercise],
+        bodyWeightKg: Double,
+        defaultWeightUnit: WeightUnit,
+        defaultRPEScale: StrengthWorkoutRPEScale
+    ) -> StrengthWorkoutBurnEstimate? {
+        let safeBodyWeight = bodyWeightKg.isFinite ? min(max(bodyWeightKg, 35), 300) : 70
+        var performedSetCount = 0
+        var repCount = 0
+        var activeMinutes = 0.0
+        var recoveryMinutes = 0.0
+        var effortTotal = 0.0
+        var relativeLoadTotal = 0.0
+        var exercisesWithWork = 0
+
+        for exercise in exercises {
+            var performedInExercise = 0
+            for set in exercise.sets {
+                guard let rawReps = Int(set.reps), rawReps > 0 else { continue }
+                let reps = min(rawReps, 100)
+                performedSetCount += 1
+                performedInExercise += 1
+                repCount += reps
+
+                // Roughly 2.5–3 seconds per controlled rep, bounded for unusual
+                // logging values. Recovery is modeled separately below.
+                activeMinutes += min(max(Double(reps) * 2.75 / 60, 0.30), 1.50)
+                recoveryMinutes += 1.60
+                effortTotal += normalizedEffort(set.rpe, scale: set.rpeScale ?? defaultRPEScale)
+                relativeLoadTotal += relativeLoad(
+                    set.weight,
+                    unit: WeightUnit(rawValue: set.weightUnit ?? "") ?? defaultWeightUnit,
+                    bodyWeightKg: safeBodyWeight
+                )
+            }
+            if performedInExercise > 0 { exercisesWithWork += 1 }
+        }
+
+        guard performedSetCount > 0 else { return nil }
+
+        // The final set does not need a full recovery block. Add a small,
+        // exercise-level allowance for setup and transitions, then enforce a
+        // realistic minimum for a logged resistance-training bout.
+        recoveryMinutes = max(0, recoveryMinutes - 1.60)
+        let transitionMinutes = Double(exercisesWithWork) * 0.75
+        let estimatedMinutes = max(4, activeMinutes + recoveryMinutes + transitionMinutes)
+        let averageEffort = effortTotal / Double(performedSetCount)
+        let averageRelativeLoad = relativeLoadTotal / Double(performedSetCount)
+        let met = min(max(3.8 + (2.4 * averageEffort) + (0.5 * averageRelativeLoad), 3.5), 8.0)
+        let rawCalories = met * 3.5 * safeBodyWeight / 200 * estimatedMinutes
+
+        return StrengthWorkoutBurnEstimate(
+            calories: min(max(Int(rawCalories.rounded()), 1), 5_000),
+            performedSetCount: performedSetCount,
+            repCount: repCount
+        )
+    }
+
+    private static func normalizedEffort(_ text: String, scale: StrengthWorkoutRPEScale) -> Double {
+        guard let value = Double(text.replacingOccurrences(of: ",", with: ".")) else { return 0.60 }
+        let normalized: Double
+        switch scale {
+        case .strength:
+            normalized = (value - 1) / 9
+        case .cr10:
+            normalized = value / 10
+        case .borg:
+            normalized = (value - 6) / 14
+        }
+        return min(max(normalized, 0), 1)
+    }
+
+    private static func relativeLoad(_ text: String, unit: WeightUnit, bodyWeightKg: Double) -> Double {
+        guard let value = Double(text), value.isFinite, value > 0 else { return 0 }
+        let kilograms = unit == .kg ? value : value / 2.204_622_621_8
+        return min(max(kilograms / bodyWeightKg, 0), 2)
     }
 }
 

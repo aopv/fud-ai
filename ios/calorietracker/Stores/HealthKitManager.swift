@@ -30,8 +30,24 @@ class HealthKitManager {
     /// v5: dietary types joined the read set so the food log can be restored from
     /// our own Health samples after a reinstall or new phone; the bump also re-runs
     /// the weight/body-fat backfills, which now restore own samples too.
-    private let typesVersion = 5
+    /// v6: active energy joined the write set so calculated workout calories can
+    /// stay synchronized with Apple Health.
+    private let typesVersion = 6
     private let typesVersionKey = "healthKitTypesVersion"
+
+    /// Active-energy samples written for the workout diary are deliberately
+    /// app-owned and tagged. The stable session id makes updates/deletes exact,
+    /// while the date key restores the user's chosen diary day after reinstall.
+    private let workoutBurnSessionIDKey = "fudai_workout_session_id"
+    private let workoutBurnDateKey = "fudai_workout_date_key"
+    private let workoutBurnSyncVersionKey = "fudai_workout_sync_version"
+    private let workoutBurnSyncIdentifierPrefix = "fudai.workout-burn"
+    private let workoutBurnDeletionTombstonesKey = "healthKitWorkoutBurnDeletionTombstones"
+    private let defaultWorkoutBurnSyncVersion = 1
+    /// HealthKit indexes saves and deletes asynchronously. Funnel every workout
+    /// burn mutation and reconciliation through one tail so a later delete can
+    /// never be overtaken by an older recalculation save.
+    private var workoutBurnOperationTail: Task<Void, Never>?
 
     private let nutritionTypeIdentifiers: [HKQuantityTypeIdentifier] = [
         // Calories + macronutrients
@@ -85,6 +101,7 @@ class HealthKitManager {
             HKQuantityType(.bodyMass),
             HKQuantityType(.height),
             HKQuantityType(.bodyFatPercentage),
+            HKQuantityType(.activeEnergyBurned),
         ]
         types.formUnion(dietaryShareTypes)
         return types
@@ -102,6 +119,7 @@ class HealthKitManager {
     private let bodyFatBackfillVersionKey = "healthKitBodyFatBackfillVersion"
     private var isBackfillingWeight = false
     private var isBackfillingBodyFat = false
+    private var isBackfillingWorkoutBurn = false
 
     private struct NutritionQuantity {
         var identifier: HKQuantityTypeIdentifier
@@ -244,6 +262,348 @@ class HealthKitManager {
     func deleteBodyFat(entryID: UUID) {
         let predicate = HKQuery.predicateForObjects(withMetadataKey: "fudai_bodyfat_id", operatorType: .equalTo, value: entryID.uuidString)
         healthStore.deleteObjects(of: HKQuantityType(.bodyFatPercentage), predicate: predicate) { _, _, _ in }
+    }
+
+    // MARK: - Workout Burn
+
+    /// Replaces the Apple Health active-energy sample for a calculated diary
+    /// session. Operations are serialized globally because HealthKit can finish
+    /// two rapid saves/deletes out of submission order otherwise.
+    func updateWorkoutBurn(for session: StrengthWorkoutSession) {
+        removeWorkoutBurnDeletionTombstone(session.id)
+        enqueueWorkoutBurnOperation { [weak self] in
+            guard let self else { return }
+            await self.replaceWorkoutBurnSample(with: session)
+        }
+    }
+
+    /// Removes only the active-energy sample tagged with this Fud AI session.
+    /// The sync toggle is intentionally ignored so deleting local history also
+    /// cleans up a sample exported before the user switched Health sync off.
+    func deleteWorkoutBurn(sessionID: UUID) {
+        // Mark synchronously, before the queued Health delete. A foreground
+        // restore that is already in flight will therefore refuse to resurrect
+        // this id even if Health still returns its soon-to-be-deleted sample.
+        addWorkoutBurnDeletionTombstone(sessionID)
+        enqueueWorkoutBurnOperation { [weak self] in
+            guard let self else { return }
+            if await self.deleteWorkoutBurnSamples(sessionID: sessionID) {
+                self.removeWorkoutBurnDeletionTombstone(sessionID)
+            }
+        }
+    }
+
+    /// Returns the valid workout-burn samples written by this app, preserving
+    /// their original session ids and stable diary dates. A nil result means the
+    /// Health query failed; an empty result is a successful query with no data.
+    func fetchOwnedWorkoutBurnSessions() async -> [StrengthWorkoutSession]? {
+        let type = HKQuantityType(.activeEnergyBurned)
+        let taggedPredicate = HKQuery.predicateForObjects(withMetadataKey: workoutBurnSessionIDKey)
+        let ownSourcePredicate = HKQuery.predicateForObjects(from: .default())
+        let predicate = NSCompoundPredicate(
+            andPredicateWithSubpredicates: [taggedPredicate, ownSourcePredicate]
+        )
+        let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)
+
+        return await withCheckedContinuation { continuation in
+            let query = HKSampleQuery(
+                sampleType: type,
+                predicate: predicate,
+                limit: HKObjectQueryNoLimit,
+                sortDescriptors: [sortDescriptor]
+            ) { [workoutBurnSessionIDKey, workoutBurnDateKey, workoutBurnSyncVersionKey] _, results, error in
+                guard error == nil, let samples = results as? [HKQuantitySample] else {
+                    continuation.resume(returning: nil)
+                    return
+                }
+
+                // A duplicate can exist only if an older save raced HealthKit's
+                // indexing. Keep the newest valid sample for each stable id.
+                var sessionsByID: [UUID: StrengthWorkoutSession] = [:]
+                for sample in samples {
+                    guard sample.sourceRevision.source == HKSource.default(),
+                          let metadata = sample.metadata,
+                          let idString = metadata[workoutBurnSessionIDKey] as? String,
+                          let sessionID = UUID(uuidString: idString),
+                          let dateKey = metadata[workoutBurnDateKey] as? String,
+                          let diaryDate = StrengthWorkoutDate.date(for: dateKey),
+                          StrengthWorkoutDate.key(for: diaryDate) == dateKey,
+                          let syncVersionNumber = metadata[workoutBurnSyncVersionKey] as? NSNumber,
+                          syncVersionNumber.intValue > 0
+                    else { continue }
+
+                    let caloriesValue = sample.quantity.doubleValue(for: .kilocalorie())
+                    guard caloriesValue.isFinite, caloriesValue > 0 else { continue }
+                    let calories = Int(caloriesValue.rounded())
+                    guard calories > 0 else { continue }
+
+                    let session = StrengthWorkoutSession(
+                        id: sessionID,
+                        diaryDate: diaryDate,
+                        diaryDateKey: dateKey,
+                        startedAt: sample.startDate,
+                        completedAt: sample.endDate,
+                        durationSeconds: 0,
+                        exercises: [],
+                        caloriesBurned: calories,
+                        healthSyncVersion: syncVersionNumber.intValue
+                    )
+                    if let current = sessionsByID[sessionID] {
+                        let currentVersion = current.healthSyncVersion ?? 0
+                        let candidateVersion = session.healthSyncVersion ?? 0
+                        if currentVersion > candidateVersion
+                            || (currentVersion == candidateVersion && current.completedAt > session.completedAt) {
+                            continue
+                        }
+                    }
+                    sessionsByID[sessionID] = session
+                }
+                continuation.resume(returning: sessionsByID.values.sorted {
+                    if $0.stableDiaryDateKey == $1.stableDiaryDateKey {
+                        return $0.completedAt < $1.completedAt
+                    }
+                    return $0.stableDiaryDateKey < $1.stableDiaryDateKey
+                })
+            }
+            healthStore.execute(query)
+        }
+    }
+
+    /// Reconciles app-owned workout burn samples in both directions. Health-only
+    /// rows restore local history after reinstall, while local rows created or
+    /// recalculated with Health disabled are exported when sync resumes.
+    func synchronizeWorkoutBurnsWithHealthKit(
+        existing: @escaping () -> [StrengthWorkoutSession],
+        mergeBatch: @escaping ([StrengthWorkoutSession]) -> Void
+    ) {
+        guard UserDefaults.standard.bool(forKey: "healthKitEnabled") else { return }
+        guard !isBackfillingWorkoutBurn else { return }
+        isBackfillingWorkoutBurn = true
+        enqueueWorkoutBurnOperation { [weak self] in
+            guard let self else { return }
+            defer { self.isBackfillingWorkoutBurn = false }
+            guard UserDefaults.standard.bool(forKey: "healthKitEnabled") else { return }
+
+            await self.retryPendingWorkoutBurnDeletions()
+
+            let localSessions = self.preferredWorkoutBurnSessionsByDate(existing())
+            guard let fetchedHealthSessions = await self.fetchOwnedWorkoutBurnSessions() else {
+                // Read permission can be unavailable independently of write
+                // permission. Exact-id replace remains safe and still backfills
+                // local calculations without making assumptions about read auth.
+                for session in localSessions.values
+                    where !self.hasWorkoutBurnDeletionTombstone(session.id) {
+                    await self.replaceWorkoutBurnSample(with: session)
+                }
+                return
+            }
+
+            let tombstones = self.workoutBurnDeletionTombstones
+            let healthSessions = fetchedHealthSessions.filter { !tombstones.contains($0.id) }
+            let healthGroups = Dictionary(grouping: healthSessions, by: \.stableDiaryDateKey)
+            var preferredHealthByDate: [String: StrengthWorkoutSession] = [:]
+
+            // Old racing saves or another install can leave more than one owned
+            // id on the same diary day. Retain the newest and remove the rest.
+            for (dateKey, sessions) in healthGroups {
+                guard let preferred = sessions.max(by: { self.shouldPreferWorkoutBurn($1, over: $0) }) else { continue }
+                preferredHealthByDate[dateKey] = preferred
+                for duplicate in sessions where duplicate.id != preferred.id {
+                    _ = await self.deleteWorkoutBurnSamples(sessionID: duplicate.id)
+                }
+            }
+
+            var imports: [StrengthWorkoutSession] = []
+            let allDateKeys = Set(localSessions.keys).union(preferredHealthByDate.keys)
+            for dateKey in allDateKeys {
+                let local = localSessions[dateKey]
+                let health = preferredHealthByDate[dateKey]
+
+                switch (local, health) {
+                case let (local?, nil):
+                    guard !self.hasWorkoutBurnDeletionTombstone(local.id) else { continue }
+                    await self.replaceWorkoutBurnSample(with: local)
+
+                case let (nil, health?):
+                    guard !self.hasWorkoutBurnDeletionTombstone(health.id) else { continue }
+                    imports.append(health)
+
+                case let (local?, health?):
+                    guard !self.hasWorkoutBurnDeletionTombstone(local.id) else { continue }
+
+                    if local.id != health.id {
+                        // Local data has the exercise/set snapshot that a Health
+                        // quantity sample cannot carry, so it wins an id conflict.
+                        _ = await self.deleteWorkoutBurnSamples(sessionID: health.id)
+                        await self.replaceWorkoutBurnSample(with: local)
+                        continue
+                    }
+
+                    let localVersion = local.healthSyncVersion ?? 0
+                    let healthVersion = health.healthSyncVersion ?? 0
+                    if healthVersion > localVersion {
+                        var merged = local
+                        merged.caloriesBurned = health.caloriesBurned
+                        merged.healthSyncVersion = health.healthSyncVersion
+                        imports.append(merged)
+                    } else if localVersion > healthVersion
+                                || local.caloriesBurned != health.caloriesBurned
+                                || local.stableDiaryDateKey != health.stableDiaryDateKey {
+                        await self.replaceWorkoutBurnSample(with: local)
+                    }
+
+                case (nil, nil):
+                    break
+                }
+            }
+
+            // A delete can be requested while one of the Health calls above is
+            // suspended. Re-check tombstones immediately before the synchronous
+            // store merge so an already-fetched row cannot be resurrected.
+            let safeImports = imports.filter {
+                !self.hasWorkoutBurnDeletionTombstone($0.id)
+            }
+            if !safeImports.isEmpty {
+                mergeBatch(safeImports)
+            }
+        }
+    }
+
+    private func enqueueWorkoutBurnOperation(_ operation: @escaping () async -> Void) {
+        let previous = workoutBurnOperationTail
+        workoutBurnOperationTail = Task {
+            _ = await previous?.result
+            await operation()
+        }
+    }
+
+    private func replaceWorkoutBurnSample(with session: StrengthWorkoutSession) async {
+        guard UserDefaults.standard.bool(forKey: "healthKitEnabled"),
+              !hasWorkoutBurnDeletionTombstone(session.id),
+              let calories = session.caloriesBurned,
+              calories > 0
+        else { return }
+
+        let type = HKQuantityType(.activeEnergyBurned)
+        guard healthStore.authorizationStatus(for: type) == .sharingAuthorized else { return }
+        // Do not save after a failed delete: that could leave the old sample and
+        // a replacement both contributing to Health's cumulative energy total.
+        guard await deleteWorkoutBurnSamples(sessionID: session.id) else { return }
+
+        let diaryDate = session.calendarDiaryDate
+        let sampleDate = Calendar.current.date(
+            bySettingHour: 12,
+            minute: 0,
+            second: 0,
+            of: diaryDate
+        ) ?? diaryDate
+        let syncVersion = max(
+            defaultWorkoutBurnSyncVersion,
+            session.healthSyncVersion ?? defaultWorkoutBurnSyncVersion
+        )
+        let metadata: [String: Any] = [
+            workoutBurnSessionIDKey: session.id.uuidString,
+            workoutBurnDateKey: session.stableDiaryDateKey,
+            workoutBurnSyncVersionKey: syncVersion,
+            HKMetadataKeySyncIdentifier: "\(workoutBurnSyncIdentifierPrefix).\(session.id.uuidString)",
+            HKMetadataKeySyncVersion: syncVersion,
+            HKMetadataKeyWasUserEntered: true,
+        ]
+        let quantity = HKQuantity(unit: .kilocalorie(), doubleValue: Double(calories))
+        let sample = HKQuantitySample(
+            type: type,
+            quantity: quantity,
+            start: sampleDate,
+            end: sampleDate,
+            metadata: metadata
+        )
+        _ = await saveWorkoutBurnSample(sample)
+    }
+
+    private func saveWorkoutBurnSample(_ sample: HKQuantitySample) async -> Bool {
+        await withCheckedContinuation { continuation in
+            healthStore.save(sample) { success, _ in continuation.resume(returning: success) }
+        }
+    }
+
+    private func deleteWorkoutBurnSamples(sessionID: UUID) async -> Bool {
+        let idPredicate = HKQuery.predicateForObjects(
+            withMetadataKey: workoutBurnSessionIDKey,
+            operatorType: .equalTo,
+            value: sessionID.uuidString
+        )
+        let ownSourcePredicate = HKQuery.predicateForObjects(from: .default())
+        let predicate = NSCompoundPredicate(
+            andPredicateWithSubpredicates: [idPredicate, ownSourcePredicate]
+        )
+        return await withCheckedContinuation { continuation in
+            healthStore.deleteObjects(of: HKQuantityType(.activeEnergyBurned), predicate: predicate) { success, _, _ in
+                continuation.resume(returning: success)
+            }
+        }
+    }
+
+    private var workoutBurnDeletionTombstones: Set<UUID> {
+        Set(
+            (UserDefaults.standard.stringArray(forKey: workoutBurnDeletionTombstonesKey) ?? [])
+                .compactMap(UUID.init(uuidString:))
+        )
+    }
+
+    private func addWorkoutBurnDeletionTombstone(_ sessionID: UUID) {
+        var ids = workoutBurnDeletionTombstones
+        ids.insert(sessionID)
+        persistWorkoutBurnDeletionTombstones(ids)
+    }
+
+    private func removeWorkoutBurnDeletionTombstone(_ sessionID: UUID) {
+        var ids = workoutBurnDeletionTombstones
+        guard ids.remove(sessionID) != nil else { return }
+        persistWorkoutBurnDeletionTombstones(ids)
+    }
+
+    private func hasWorkoutBurnDeletionTombstone(_ sessionID: UUID) -> Bool {
+        workoutBurnDeletionTombstones.contains(sessionID)
+    }
+
+    private func persistWorkoutBurnDeletionTombstones(_ ids: Set<UUID>) {
+        if ids.isEmpty {
+            UserDefaults.standard.removeObject(forKey: workoutBurnDeletionTombstonesKey)
+        } else {
+            UserDefaults.standard.set(ids.map(\.uuidString).sorted(), forKey: workoutBurnDeletionTombstonesKey)
+        }
+    }
+
+    private func retryPendingWorkoutBurnDeletions() async {
+        for sessionID in workoutBurnDeletionTombstones {
+            if await deleteWorkoutBurnSamples(sessionID: sessionID) {
+                removeWorkoutBurnDeletionTombstone(sessionID)
+            }
+        }
+    }
+
+    private func preferredWorkoutBurnSessionsByDate(
+        _ sessions: [StrengthWorkoutSession]
+    ) -> [String: StrengthWorkoutSession] {
+        var preferred: [String: StrengthWorkoutSession] = [:]
+        for session in sessions where session.caloriesBurned != nil {
+            let key = session.stableDiaryDateKey
+            if let current = preferred[key], !shouldPreferWorkoutBurn(session, over: current) {
+                continue
+            }
+            preferred[key] = session
+        }
+        return preferred
+    }
+
+    private func shouldPreferWorkoutBurn(
+        _ candidate: StrengthWorkoutSession,
+        over current: StrengthWorkoutSession
+    ) -> Bool {
+        let candidateVersion = candidate.healthSyncVersion ?? 0
+        let currentVersion = current.healthSyncVersion ?? 0
+        if candidateVersion != currentVersion { return candidateVersion > currentVersion }
+        return candidate.completedAt > current.completedAt
     }
 
     // MARK: - Write Nutrition
@@ -625,7 +985,22 @@ class HealthKitManager {
         let calendar = Calendar.current
         let end = calendar.startOfDay(for: Date())
         guard let start = calendar.date(byAdding: .day, value: -days, to: end) else { return [:] }
-        let predicate = HKQuery.predicateForSamples(withStart: start, end: end, options: .strictStartDate)
+        let datePredicate = HKQuery.predicateForSamples(withStart: start, end: end, options: .strictStartDate)
+        let predicate: NSPredicate
+        if identifier == .activeEnergyBurned {
+            // Workout calories are estimates calculated by Fud AI. Keep them in
+            // Health for the user's history, but never feed those estimates back
+            // into measured TDEE/adaptive-goal calculations.
+            let taggedWorkoutBurn = HKQuery.predicateForObjects(withMetadataKey: workoutBurnSessionIDKey)
+            predicate = NSCompoundPredicate(
+                andPredicateWithSubpredicates: [
+                    datePredicate,
+                    NSCompoundPredicate(notPredicateWithSubpredicate: taggedWorkoutBurn),
+                ]
+            )
+        } else {
+            predicate = datePredicate
+        }
         var interval = DateComponents()
         interval.day = 1
 
