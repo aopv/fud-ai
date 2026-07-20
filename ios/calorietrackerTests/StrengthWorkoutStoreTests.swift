@@ -1,3 +1,4 @@
+import CoreGraphics
 import Foundation
 import Testing
 @testable import calorietracker
@@ -74,6 +75,34 @@ struct StrengthWorkoutStoreTests {
         #expect(WorkoutLogDaySwipeNavigation.dayDelta(for: CGSize(width: 61, height: -10)) == -1)
         #expect(WorkoutLogDaySwipeNavigation.dayDelta(for: CGSize(width: 60, height: 0)) == nil)
         #expect(WorkoutLogDaySwipeNavigation.dayDelta(for: CGSize(width: 100, height: 70)) == nil)
+    }
+
+    @Test func workoutLogKeyboardDismissesOnlyOutsideWorkoutCards() {
+        let cardFrames = [
+            CGRect(x: 16, y: 300, width: 320, height: 240),
+            CGRect(x: 16, y: 554, width: 320, height: 280)
+        ]
+
+        #expect(!WorkoutLogKeyboardDismissal.shouldDismiss(
+            at: CGPoint(x: 120, y: 420),
+            cardFrames: cardFrames
+        ))
+        #expect(!WorkoutLogKeyboardDismissal.shouldDismiss(
+            at: CGPoint(x: 300, y: 700),
+            cardFrames: cardFrames
+        ))
+        #expect(WorkoutLogKeyboardDismissal.shouldDismiss(
+            at: CGPoint(x: 120, y: 180),
+            cardFrames: cardFrames
+        ))
+        #expect(WorkoutLogKeyboardDismissal.shouldDismiss(
+            at: CGPoint(x: 8, y: 420),
+            cardFrames: cardFrames
+        ))
+        #expect(!WorkoutLogKeyboardDismissal.shouldDismiss(
+            at: CGPoint(x: 120, y: 180),
+            cardFrames: []
+        ))
     }
 
     @Test func persistenceReloadRestoresDiarySavedExercisesAndPreferences() throws {

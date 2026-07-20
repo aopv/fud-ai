@@ -42,6 +42,25 @@ enum WorkoutLogDaySwipeNavigation {
     }
 }
 
+enum WorkoutLogKeyboardDismissal {
+    static func shouldDismiss(at location: CGPoint, cardFrames: [CGRect]) -> Bool {
+        guard !cardFrames.isEmpty else { return false }
+        return !cardFrames.contains { $0.contains(location) }
+    }
+}
+
+private enum WorkoutLogLayout {
+    static let coordinateSpace = "fudai.workout-log.list"
+}
+
+private struct WorkoutLogCardFramePreferenceKey: PreferenceKey {
+    static let defaultValue: [UUID: CGRect] = [:]
+
+    static func reduce(value: inout [UUID: CGRect], nextValue: () -> [UUID: CGRect]) {
+        value.merge(nextValue(), uniquingKeysWith: { _, latest in latest })
+    }
+}
+
 /// The optional strength diary. Its information stays in `StrengthWorkoutStore`,
 /// separate from the food diary, while the visual language is bridged through
 /// Fud AI's existing workout theme tokens.
@@ -58,6 +77,7 @@ struct WorkoutLogView: View {
 
     @State private var isNoPerformedSetAlertPresented = false
     @State private var isCalculatingBurn = false
+    @State private var workoutCardFrames: [UUID: CGRect] = [:]
     @FocusState private var focusedSetField: WorkoutLogSetFocus?
 
     private let library = ExerciseLibraryService.shared
@@ -225,6 +245,20 @@ struct WorkoutLogView: View {
                                         )
                                     }
                                 )
+                                .background {
+                                    GeometryReader { geometry in
+                                        Color.clear
+                                            .allowsHitTesting(false)
+                                            .preference(
+                                                key: WorkoutLogCardFramePreferenceKey.self,
+                                                value: [
+                                                    exercise.id: geometry.frame(
+                                                        in: .named(WorkoutLogLayout.coordinateSpace)
+                                                    )
+                                                ]
+                                            )
+                                    }
+                                }
                                 .id(exercise.id)
                                 .listRowBackground(Color.clear)
                                 .listRowSeparator(.hidden)
@@ -262,12 +296,28 @@ struct WorkoutLogView: View {
                         .simultaneousGesture(daySwipeGesture)
                     }
                 }
+                .coordinateSpace(name: WorkoutLogLayout.coordinateSpace)
                 .scrollContentBackground(.hidden)
                 .background(Color.workoutBackground.ignoresSafeArea())
                 .listSectionSpacing(8)
                 .scrollDismissesKeyboard(.interactively)
                 .contentMargins(.bottom, 96, for: .scrollContent)
                 .animation(.snappy, value: selectedDate)
+                .onPreferenceChange(WorkoutLogCardFramePreferenceKey.self) { frames in
+                    workoutCardFrames = frames
+                }
+                .simultaneousGesture(
+                    SpatialTapGesture(
+                        coordinateSpace: .named(WorkoutLogLayout.coordinateSpace)
+                    )
+                        .onEnded { value in
+                            guard WorkoutLogKeyboardDismissal.shouldDismiss(
+                                at: value.location,
+                                cardFrames: Array(workoutCardFrames.values)
+                            ) else { return }
+                            dismissSetKeyboard()
+                        }
+                )
                 .onChange(of: focusedSetField) { oldValue, newValue in
                     guard let exerciseID = newValue?.exerciseID,
                           exerciseID != oldValue?.exerciseID
@@ -282,6 +332,9 @@ struct WorkoutLogView: View {
                 .overlay(alignment: .bottomTrailing) {
                     addExerciseMenu
                         .padding(24)
+                        .simultaneousGesture(
+                            TapGesture().onEnded(dismissSetKeyboard)
+                        )
                 }
             }
             // Keep the chrome quiet: the date strip and burn calculator lead.
@@ -291,7 +344,13 @@ struct WorkoutLogView: View {
             .toolbar {
                 if let onShowLibrary {
                     ToolbarItem(placement: .topBarTrailing) {
-                        Button(action: onShowLibrary) {
+                        Button {
+                            guard focusedSetField == nil else {
+                                dismissSetKeyboard()
+                                return
+                            }
+                            onShowLibrary()
+                        } label: {
                             Image(systemName: "dumbbell.fill")
                                 .font(.system(size: 18, weight: .bold))
                         }
@@ -304,8 +363,7 @@ struct WorkoutLogView: View {
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
                     Button("Done") {
-                        focusedSetField = nil
-                        dismissKeyboard()
+                        dismissSetKeyboard()
                     }
                 }
             }
@@ -405,8 +463,7 @@ struct WorkoutLogView: View {
     private func calculateBurn() {
         guard !isCalculatingBurn else { return }
 
-        focusedSetField = nil
-        dismissKeyboard()
+        dismissSetKeyboard()
 
         guard let estimate = StrengthWorkoutBurnEstimator.estimate(
             exercises: selectedExercises,
@@ -446,6 +503,12 @@ struct WorkoutLogView: View {
             from: nil,
             for: nil
         )
+    }
+
+    private func dismissSetKeyboard() {
+        guard focusedSetField != nil else { return }
+        focusedSetField = nil
+        dismissKeyboard()
     }
 }
 
