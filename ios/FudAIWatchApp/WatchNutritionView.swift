@@ -28,12 +28,80 @@ struct WatchNutritionView: View {
                         WatchNutrientBar(nutrient: nutrient, gradient: themeGradient)
                     }
                 }
+
+                if receiver.snapshot.waterIsEnabled {
+                    WatchWaterProgress(snapshot: receiver.snapshot, gradient: themeGradient)
+                        .padding(.top, 3)
+                }
             }
             .padding(.horizontal, 4)
         }
         .onAppear {
             receiver.refreshFromDisk()
         }
+    }
+}
+
+/// A compact extension of the existing nutrition dashboard. It only appears
+/// when Water Tracking is enabled on the paired iPhone and uses the same unit,
+/// goal, current total, and theme gradient as the phone.
+private struct WatchWaterProgress: View {
+    let snapshot: WidgetSnapshot
+    let gradient: [Color]
+
+    private var valueText: String {
+        "\(snapshot.waterDisplayValue(snapshot.waterCurrent)) / \(snapshot.waterDisplayValue(snapshot.waterGoal)) \(snapshot.waterUnitSymbol)"
+    }
+
+    var body: some View {
+        VStack(spacing: 5) {
+            HStack(spacing: 5) {
+                Image(systemName: "drop.fill")
+                    .font(.system(size: 10, weight: .bold))
+                    .foregroundStyle(
+                        LinearGradient(colors: gradient, startPoint: .top, endPoint: .bottom)
+                    )
+
+                Text("Water")
+                    .font(.system(size: 10, weight: .semibold, design: .rounded))
+
+                Spacer(minLength: 3)
+
+                Text(valueText)
+                    .font(.system(size: 10, weight: .bold, design: .rounded).monospacedDigit())
+                    .foregroundStyle(
+                        LinearGradient(colors: gradient, startPoint: .leading, endPoint: .trailing)
+                    )
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.65)
+            }
+
+            GeometryReader { proxy in
+                ZStack(alignment: .leading) {
+                    Capsule()
+                        .fill((gradient.first ?? .pink).opacity(0.15))
+
+                    Capsule()
+                        .fill(LinearGradient(colors: gradient, startPoint: .leading, endPoint: .trailing))
+                        .frame(width: proxy.size.width * snapshot.waterProgress)
+                        .shadow(color: (gradient.first ?? .pink).opacity(0.35), radius: 2)
+                }
+            }
+            .frame(height: 6)
+        }
+        .padding(.horizontal, 8)
+        .padding(.vertical, 7)
+        .background(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .fill((gradient.first ?? .pink).opacity(0.08))
+        )
+        .overlay {
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .stroke((gradient.first ?? .pink).opacity(0.14), lineWidth: 0.5)
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Water")
+        .accessibilityValue(valueText)
     }
 }
 

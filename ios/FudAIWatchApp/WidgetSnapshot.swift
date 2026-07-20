@@ -48,6 +48,12 @@ struct WidgetSnapshot: Codable, Equatable {
     /// The user's 4 selected Home nutrients. Optional — snapshots from older
     /// iPhone builds lack it; fall back to the legacy protein/carbs/fat fields.
     var homeNutrients: [WidgetNutrientValue]?
+    /// Optional for backward compatibility with snapshots written before
+    /// water tracking was available on Apple Watch.
+    var waterTrackingEnabled: Bool? = nil
+    var waterCurrentMl: Int? = nil
+    var waterGoalMl: Int? = nil
+    var waterUnitRaw: String? = nil
     /// User's theme gradient as raw hex (e.g. 0xFF375F). Fud Pink when absent.
     var themeStartHex: UInt?
     var themeEndHex: UInt?
@@ -92,6 +98,10 @@ struct WidgetSnapshot: Codable, Equatable {
             carbs: 0, carbsGoal: carbsGoal,
             fat: 0, fatGoal: fatGoal,
             homeNutrients: homeNutrients?.map { $0.zeroedForToday() },
+            waterTrackingEnabled: waterTrackingEnabled,
+            waterCurrentMl: 0,
+            waterGoalMl: waterGoalMl,
+            waterUnitRaw: waterUnitRaw,
             themeStartHex: themeStartHex,
             themeEndHex: themeEndHex
         )
@@ -114,7 +124,11 @@ struct WidgetSnapshot: Codable, Equatable {
             calories: 1247, calorieGoal: 2000,
             protein: 84, proteinGoal: 150,
             carbs: 132, carbsGoal: 220,
-            fat: 42, fatGoal: 70
+            fat: 42, fatGoal: 70,
+            waterTrackingEnabled: true,
+            waterCurrentMl: 1_250,
+            waterGoalMl: 2_000,
+            waterUnitRaw: "ml"
         )
     }
 
@@ -147,6 +161,23 @@ struct WidgetSnapshot: Codable, Equatable {
     var proteinRemaining: Double { max(0, Double(proteinGoal) - protein) }
     var carbsRemaining: Double { max(0, Double(carbsGoal) - carbs) }
     var fatRemaining: Double { max(0, Double(fatGoal) - fat) }
+    var waterIsEnabled: Bool { waterTrackingEnabled ?? false }
+    var waterCurrent: Int { max(0, waterCurrentMl ?? 0) }
+    var waterGoal: Int { max(1, waterGoalMl ?? 2_000) }
+    var waterProgress: Double { min(1, Double(waterCurrent) / Double(waterGoal)) }
+
+    var waterUnitSymbol: String {
+        waterUnitRaw == "floz" ? "fl oz" : "mL"
+    }
+
+    func waterDisplayValue(_ milliliters: Int) -> String {
+        guard waterUnitRaw == "floz" else { return "\(milliliters)" }
+        let ounces = Double(milliliters) / 29.5735295625
+        if abs(ounces.rounded() - ounces) < 0.05 {
+            return "\(Int(ounces.rounded()))"
+        }
+        return String(format: "%.1f", ounces)
+    }
 
     var calorieProgress: Double {
         progress(value: Double(calories), goal: calorieGoal)
