@@ -3,7 +3,6 @@
 package com.apoorvdarshan.calorietracker.ui.workouts
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -20,25 +19,20 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.EventRepeat
 import androidx.compose.material.icons.filled.FilterAltOff
 import androidx.compose.material.icons.filled.FitnessCenter
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Storage
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -47,6 +41,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -54,15 +49,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
 import com.apoorvdarshan.calorietracker.data.ExerciseItem
 import com.apoorvdarshan.calorietracker.data.ExerciseRepository
 import com.apoorvdarshan.calorietracker.data.ExerciseSort
@@ -96,6 +88,11 @@ internal data class WorkoutPickerRequest(
     companion object {
         fun all() = WorkoutPickerRequest("All exercises", emptySet(), WorkoutPickerSource.DATASET)
         fun saved() = WorkoutPickerRequest("Saved exercises", emptySet(), WorkoutPickerSource.SAVED)
+        fun forSplit(title: String, groups: List<WorkoutSplitGroup>) = WorkoutPickerRequest(
+            title = title,
+            muscles = groups.flatMapTo(mutableSetOf()) { it.muscles },
+            initialSource = WorkoutPickerSource.DATASET
+        )
         fun group(group: WorkoutSplitGroup) = WorkoutPickerRequest(
             title = group.title,
             muscles = group.muscles,
@@ -124,6 +121,15 @@ internal fun WorkoutPickerSheet(
     }
     var filter by remember(request.contextId) { mutableStateOf(initialFilterState) }
     val focus = LocalFocusManager.current
+    val keyboard = LocalSoftwareKeyboardController.current
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(listState.isScrollInProgress) {
+        if (listState.isScrollInProgress) {
+            keyboard?.hide()
+            focus.clearFocus()
+        }
+    }
 
     fun updateFilter(transform: (WorkoutPickerFilterState) -> WorkoutPickerFilterState) {
         val next = transform(filter)
@@ -155,6 +161,10 @@ internal fun WorkoutPickerSheet(
             matchesSource && matchesContext
         }
     }
+    val muscleOptions = remember(repository, request.muscles) {
+        if (request.muscles.isEmpty()) repository.availablePrimaryMuscles
+        else repository.availablePrimaryMuscles.filter(request.muscles::contains)
+    }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -164,89 +174,92 @@ internal fun WorkoutPickerSheet(
         dragHandle = null
     ) {
         Column(
-            modifier = Modifier.fillMaxSize().navigationBarsPadding(),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            modifier = Modifier
+                .fillMaxSize()
+                .navigationBarsPadding()
+                .background(workoutsColors().background)
         ) {
             PickerHeader(title = request.title, count = items.size, onDismiss = onDismiss)
 
-            if (!request.isSavedContext) {
-                PickerSourceControl(
-                    source = source,
-                    onSelect = {
-                        focus.clearFocus()
-                        source = it
-                        onSourceChange(it)
-                    },
-                    modifier = Modifier.padding(horizontal = 18.dp)
-                )
-            }
-
-            PickerSearchField(
-                value = filter.search,
-                onValueChange = { value -> updateFilter { it.copy(search = value) } },
-                modifier = Modifier.padding(horizontal = 18.dp)
-            )
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState())
-                    .padding(horizontal = 18.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            Column(
+                modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 14.dp, bottom = 14.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                PickerFilterMenu(
-                    label = "Muscle",
-                    value = filter.primaryMuscle ?: "All",
-                    options = listOf<String?>(null) + repository.availablePrimaryMuscles,
-                    optionLabel = { it ?: "All muscles" },
-                    onSelect = { value -> updateFilter { it.copy(primaryMuscle = value) } }
+                if (!request.isSavedContext) {
+                    PickerSourceControl(
+                        source = source,
+                        onSelect = {
+                            focus.clearFocus()
+                            source = it
+                            onSourceChange(it)
+                        }
+                    )
+                }
+
+                SearchPill(
+                    value = filter.search,
+                    onValueChange = { value -> updateFilter { it.copy(search = value) } }
                 )
-                PickerFilterMenu(
-                    label = "Equipment",
-                    value = filter.equipment ?: "All",
-                    options = listOf<String?>(null) + repository.availableEquipment,
-                    optionLabel = { it ?: "All equipment" },
-                    onSelect = { value -> updateFilter { it.copy(equipment = value) } }
-                )
-                PickerFilterMenu(
-                    label = "Level",
-                    value = filter.level ?: "All",
-                    options = listOf<String?>(null) + repository.availableLevels,
-                    optionLabel = { it ?: "All levels" },
-                    onSelect = { value -> updateFilter { it.copy(level = value) } }
-                )
-                val hasFilters = filter.search.isNotEmpty() || filter.primaryMuscle != null ||
-                    filter.equipment != null || filter.level != null
-                if (hasFilters) {
-                    Row(
-                        modifier = Modifier
-                            .heightIn(min = 44.dp)
-                            .clip(CircleShape)
-                            .background(AppColors.Calorie.copy(alpha = 0.1f))
-                            .clickable {
-                                focus.clearFocus()
-                                updateFilter { WorkoutPickerFilterState() }
-                            }
-                            .padding(horizontal = 12.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(5.dp)
-                    ) {
-                        Icon(Icons.Filled.FilterAltOff, contentDescription = null, tint = AppColors.Calorie, modifier = Modifier.size(16.dp))
-                        Text("Clear", color = AppColors.Calorie, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(9.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    FilterPill(
+                        title = "Muscle",
+                        icon = Icons.Filled.FitnessCenter,
+                        selected = filter.primaryMuscle?.let(::setOf).orEmpty(),
+                        emptyDisplay = "All ${muscleOptions.size}",
+                        options = muscleOptions,
+                        glyphFor = { muscleGlyphAsset(it) },
+                        onSelect = { selected -> updateFilter { it.copy(primaryMuscle = selected.firstOrNull()) } }
+                    )
+                    FilterPill(
+                        title = "Equipment",
+                        icon = Icons.Filled.FitnessCenter,
+                        selected = filter.equipment?.let(::setOf).orEmpty(),
+                        emptyDisplay = "All ${repository.availableEquipment.size}",
+                        options = repository.availableEquipment,
+                        onSelect = { selected -> updateFilter { it.copy(equipment = selected.firstOrNull()) } }
+                    )
+                    FilterPill(
+                        title = "Level",
+                        icon = Icons.Filled.Storage,
+                        selected = filter.level?.let(::setOf).orEmpty(),
+                        emptyDisplay = "All",
+                        options = repository.availableLevels,
+                        onSelect = { selected -> updateFilter { it.copy(level = selected.firstOrNull()) } }
+                    )
+                    val hasFilters = filter.search.isNotEmpty() || filter.primaryMuscle != null ||
+                        filter.equipment != null || filter.level != null
+                    if (hasFilters) {
+                        CapsuleButton(
+                            text = "Clear",
+                            icon = Icons.Filled.FilterAltOff,
+                            tint = AppColors.Calorie,
+                            enabled = true,
+                            active = true
+                        ) {
+                            focus.clearFocus()
+                            updateFilter { WorkoutPickerFilterState() }
+                        }
                     }
                 }
             }
 
-            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.48f))
+            PickerResultsHeader(
+                count = items.size,
+                source = source,
+                modifier = Modifier.padding(horizontal = 20.dp, vertical = 4.dp)
+            )
 
             LazyColumn(
+                state = listState,
                 modifier = Modifier.fillMaxWidth().weight(1f),
-                contentPadding = androidx.compose.foundation.layout.PaddingValues(
-                    start = 18.dp,
-                    end = 18.dp,
-                    bottom = 28.dp
-                ),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(bottom = 28.dp)
             ) {
                 if (items.isEmpty()) {
                     item(key = "empty-picker") {
@@ -254,12 +267,47 @@ internal fun WorkoutPickerSheet(
                     }
                 } else {
                     items(items.take(120), key = { it.id }) { item ->
-                        PickerExerciseRow(
+                        ExerciseRow(
                             item = item,
-                            selected = item.id in selectedExerciseIds,
-                            saved = item.id in savedExerciseIds,
-                            onToggle = { onToggleExercise(item) },
-                            onToggleSaved = { onToggleSaved(item.id) }
+                            onClick = { onToggleExercise(item) },
+                            trailingContent = {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(2.dp)
+                                ) {
+                                    IconButton(onClick = { onToggleSaved(item.id) }, modifier = Modifier.size(36.dp)) {
+                                        Icon(
+                                            if (item.id in savedExerciseIds) Icons.Filled.Bookmark else Icons.Filled.BookmarkBorder,
+                                            contentDescription = if (item.id in savedExerciseIds) "Unsave exercise" else "Save exercise",
+                                            tint = if (item.id in savedExerciseIds) AppColors.Calorie else workoutsColors().mutedText,
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                    }
+                                    Box(
+                                        modifier = Modifier
+                                            .size(34.dp)
+                                            .clip(CircleShape)
+                                            .background(
+                                                if (item.id in selectedExerciseIds) AppColors.Calorie
+                                                else workoutsColors().panel.copy(alpha = 0.52f)
+                                            )
+                                            .clickable { onToggleExercise(item) },
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Icon(
+                                            if (item.id in selectedExerciseIds) Icons.Filled.Check else Icons.Filled.AddCircle,
+                                            contentDescription = if (item.id in selectedExerciseIds) "Remove from day" else "Add to day",
+                                            tint = if (item.id in selectedExerciseIds) androidx.compose.ui.graphics.Color.White else workoutsColors().mutedText,
+                                            modifier = Modifier.size(if (item.id in selectedExerciseIds) 18.dp else 23.dp)
+                                        )
+                                    }
+                                }
+                            }
+                        )
+                        HorizontalDivider(
+                            color = workoutsColors().hairline.copy(alpha = 0.28f),
+                            thickness = 0.5.dp,
+                            modifier = Modifier.padding(start = 144.dp, end = 20.dp)
                         )
                     }
                 }
@@ -291,9 +339,37 @@ private fun PickerHeader(title: String, count: Int, onDismiss: () -> Unit) {
             )
         }
         FudGlassTextButton(text = "Done", onClick = onDismiss)
-        IconButton(onClick = onDismiss) {
-            Icon(Icons.Filled.Close, contentDescription = "Close exercise picker")
+    }
+}
+
+@Composable
+private fun PickerResultsHeader(
+    count: Int,
+    source: WorkoutPickerSource,
+    modifier: Modifier = Modifier
+) {
+    val colors = workoutsColors()
+    Row(modifier = modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
+        Column(Modifier.weight(1f)) {
+            Text(
+                "$count ${if (count == 1) "exercise" else "exercises"}",
+                color = colors.charcoal,
+                fontSize = 17.sp,
+                fontWeight = FontWeight.SemiBold
+            )
+            Text(
+                if (source == WorkoutPickerSource.SAVED) "Saved" else "Name",
+                color = colors.mutedText,
+                fontSize = 12.sp
+            )
         }
+        Text(
+            "Tap + to add",
+            color = colors.mutedText,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.padding(top = 3.dp)
+        )
     }
 }
 
@@ -335,174 +411,6 @@ private fun PickerSourceControl(
                     )
                 }
             }
-        }
-    }
-}
-
-@Composable
-private fun PickerSearchField(
-    value: String,
-    onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val shape = RoundedCornerShape(18.dp)
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .heightIn(min = 48.dp)
-            .clip(shape)
-            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.38f))
-            .border(0.7.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.52f), shape)
-            .padding(horizontal = 14.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(Icons.Filled.Search, contentDescription = null, tint = AppColors.Calorie, modifier = Modifier.size(18.dp))
-        Spacer(Modifier.width(8.dp))
-        BasicTextField(
-            value = value,
-            onValueChange = onValueChange,
-            singleLine = true,
-            textStyle = TextStyle(
-                color = MaterialTheme.colorScheme.onSurface,
-                fontSize = 15.sp,
-                fontWeight = FontWeight.SemiBold
-            ),
-            cursorBrush = SolidColor(AppColors.Calorie),
-            modifier = Modifier.weight(1f),
-            decorationBox = { inner ->
-                Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart) {
-                    if (value.isEmpty()) {
-                        Text(
-                            "Search exercises",
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.Medium
-                        )
-                    }
-                    inner()
-                }
-            }
-        )
-        if (value.isNotEmpty()) {
-            Icon(
-                Icons.Filled.Close,
-                contentDescription = "Clear search",
-                tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-                modifier = Modifier.size(19.dp).clip(CircleShape).clickable { onValueChange("") }
-            )
-        }
-    }
-}
-
-@Composable
-private fun <T> PickerFilterMenu(
-    label: String,
-    value: String,
-    options: List<T>,
-    optionLabel: (T) -> String,
-    onSelect: (T) -> Unit
-) {
-    var expanded by remember { mutableStateOf(false) }
-    Box {
-        Row(
-            modifier = Modifier
-                .heightIn(min = 44.dp)
-                .clip(RoundedCornerShape(16.dp))
-                .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.34f))
-                .border(0.6.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.45f), RoundedCornerShape(16.dp))
-                .clickable { expanded = true }
-                .padding(horizontal = 11.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(7.dp)
-        ) {
-            Column {
-                Text(label.uppercase(), color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.43f), fontSize = 9.sp, fontWeight = FontWeight.Bold)
-                Text(value, color = MaterialTheme.colorScheme.onSurface, fontSize = 12.sp, fontWeight = FontWeight.Bold, maxLines = 1)
-            }
-            Icon(Icons.Filled.KeyboardArrowDown, contentDescription = null, modifier = Modifier.size(16.dp))
-        }
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            modifier = Modifier.heightIn(max = 360.dp),
-            containerColor = workoutsColors().card,
-            shape = RoundedCornerShape(16.dp)
-        ) {
-            options.forEach { option ->
-                val title = optionLabel(option)
-                val selected = title == value ||
-                    (value == "All" && title.startsWith("All ")) ||
-                    (value == "All exercises" && title == "All exercises")
-                DropdownMenuItem(
-                    text = { Text(title, fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal) },
-                    onClick = {
-                        onSelect(option)
-                        expanded = false
-                    },
-                    trailingIcon = if (selected) {
-                        { Icon(Icons.Filled.Check, contentDescription = null, tint = AppColors.Calorie) }
-                    } else null
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun PickerExerciseRow(
-    item: ExerciseItem,
-    selected: Boolean,
-    saved: Boolean,
-    onToggle: () -> Unit,
-    onToggleSaved: () -> Unit
-) {
-    FudGlassSurface(
-        modifier = Modifier.fillMaxWidth().clickable(onClick = onToggle),
-        cornerRadius = 20.dp,
-        padding = 12.dp
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            Box(
-                Modifier
-                    .size(68.dp)
-                    .clip(RoundedCornerShape(15.dp))
-                    .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.38f))
-                    .border(0.6.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.45f), RoundedCornerShape(15.dp))
-            ) {
-                AnimatedExerciseImage(item.imagePaths, Modifier.fillMaxSize())
-            }
-            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(5.dp)) {
-                Text(
-                    item.name,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Bold,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Text(
-                    "${item.primaryMusclesTitle} · ${item.equipment}",
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.52f),
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
-            IconButton(onClick = onToggleSaved, modifier = Modifier.size(38.dp)) {
-                Icon(
-                    if (saved) Icons.Filled.Bookmark else Icons.Filled.BookmarkBorder,
-                    contentDescription = if (saved) "Unsave exercise" else "Save exercise",
-                    tint = if (saved) AppColors.Calorie else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
-                    modifier = Modifier.size(20.dp)
-                )
-            }
-            Icon(
-                if (selected) Icons.Filled.CheckCircle else Icons.Filled.AddCircle,
-                contentDescription = if (selected) "Remove from day" else "Add to day",
-                tint = if (selected) AppColors.Calorie else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.34f),
-                modifier = Modifier.size(25.dp)
-            )
         }
     }
 }

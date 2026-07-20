@@ -127,25 +127,14 @@ fun WorkoutsScreen(container: AppContainer, modifier: Modifier = Modifier) {
     }
 
     if (vm.diaryUiState.mode == WorkoutTabMode.LOG) {
-        Column(
+        WorkoutDiaryScreen(
+            state = vm.diaryUiState,
+            exerciseRepository = repo,
+            viewModel = vm,
+            weekStartsOnMonday = weekStartsOnMonday,
+            onShowLibrary = toggleMode,
             modifier = modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(start = 20.dp, top = 8.dp, end = 18.dp, bottom = 2.dp),
-                horizontalArrangement = Arrangement.End
-            ) {
-                WorkoutModeToggleButton(mode = WorkoutTabMode.LOG, onToggle = toggleMode)
-            }
-            WorkoutDiaryScreen(
-                state = vm.diaryUiState,
-                exerciseRepository = repo,
-                viewModel = vm,
-                weekStartsOnMonday = weekStartsOnMonday,
-                modifier = Modifier.weight(1f)
-            )
-        }
+        )
     } else {
         WorkoutLibraryScreen(
             repo = repo,
@@ -157,7 +146,7 @@ fun WorkoutsScreen(container: AppContainer, modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun WorkoutModeToggleButton(
+internal fun WorkoutModeToggleButton(
     mode: WorkoutTabMode,
     onToggle: () -> Unit
 ) {
@@ -297,7 +286,7 @@ private fun WorkoutLibraryScreen(
 }
 
 @Composable
-private fun SearchPill(value: String, onValueChange: (String) -> Unit, modifier: Modifier = Modifier) {
+internal fun SearchPill(value: String, onValueChange: (String) -> Unit, modifier: Modifier = Modifier) {
     val colors = workoutsColors()
     Row(
         modifier = modifier
@@ -413,7 +402,7 @@ fun muscleGlyphAsset(name: String): String {
 }
 
 @Composable
-private fun FilterPill(
+internal fun FilterPill(
     title: String,
     icon: ImageVector,
     selected: Set<String>,
@@ -545,7 +534,7 @@ private fun ResultsHeader(
 }
 
 @Composable
-private fun CapsuleButton(text: String, icon: ImageVector, tint: Color, enabled: Boolean, active: Boolean = false, onClick: () -> Unit) {
+internal fun CapsuleButton(text: String, icon: ImageVector, tint: Color, enabled: Boolean, active: Boolean = false, onClick: () -> Unit) {
     val colors = workoutsColors()
     val bg = if (active) tint.copy(alpha = 0.12f) else colors.panel.copy(alpha = 0.30f)
     val border = if (active) tint.copy(alpha = 0.32f) else colors.hairline.copy(alpha = 0.30f)
@@ -565,7 +554,18 @@ private fun CapsuleButton(text: String, icon: ImageVector, tint: Color, enabled:
 }
 
 @Composable
-private fun ExerciseRow(item: ExerciseItem, onClick: () -> Unit) {
+internal fun ExerciseRow(
+    item: ExerciseItem,
+    onClick: () -> Unit,
+    trailingContent: @Composable () -> Unit = {
+        Icon(
+            Icons.AutoMirrored.Filled.KeyboardArrowRight,
+            contentDescription = null,
+            tint = workoutsColors().hairline,
+            modifier = Modifier.size(20.dp)
+        )
+    }
+) {
     val colors = workoutsColors()
     Row(
         modifier = Modifier
@@ -599,7 +599,7 @@ private fun ExerciseRow(item: ExerciseItem, onClick: () -> Unit) {
                 Text(item.databaseMetadataSummary, color = colors.secondaryAccent, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
         }
-        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, null, tint = colors.hairline, modifier = Modifier.size(20.dp))
+        trailingContent()
     }
 }
 

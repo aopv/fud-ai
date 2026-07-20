@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -35,6 +36,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Checklist
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ContentCopy
@@ -45,8 +47,6 @@ import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -89,12 +89,13 @@ import androidx.compose.ui.unit.sp
 import com.apoorvdarshan.calorietracker.data.ExerciseRepository
 import com.apoorvdarshan.calorietracker.models.PlannedExercise
 import com.apoorvdarshan.calorietracker.models.PlannedSet
-import com.apoorvdarshan.calorietracker.models.WorkoutSplitGroup
 import com.apoorvdarshan.calorietracker.models.WorkoutWeightUnit
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassDialog
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassPrimaryButton
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassSurface
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassTextButton
+import com.apoorvdarshan.calorietracker.ui.home.SheetGlassDropdownMenu
+import com.apoorvdarshan.calorietracker.ui.home.SheetGlassDropdownMenuItem
 import com.apoorvdarshan.calorietracker.ui.navigation.BottomNavScrollPadding
 import com.apoorvdarshan.calorietracker.ui.theme.AppColors
 import java.time.DayOfWeek
@@ -113,7 +114,8 @@ internal fun WorkoutDiaryScreen(
     exerciseRepository: ExerciseRepository,
     viewModel: WorkoutsViewModel,
     modifier: Modifier = Modifier,
-    weekStartsOnMonday: Boolean = true
+    weekStartsOnMonday: Boolean = true,
+    onShowLibrary: () -> Unit
 ) {
     var pickerRequest by remember { mutableStateOf<WorkoutPickerRequest?>(null) }
     var copySheetVisible by remember { mutableStateOf(false) }
@@ -188,6 +190,7 @@ internal fun WorkoutDiaryScreen(
             item(key = "workout-burn") {
                 WorkoutBurnHero(
                     state = state,
+                    onShowLibrary = onShowLibrary,
                     onCalculate = {
                         dismissKeyboard()
                         viewModel.calculateBurn()
@@ -262,19 +265,14 @@ internal fun WorkoutDiaryScreen(
         Box(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(end = 20.dp, bottom = 92.dp)
+                .navigationBarsPadding()
+                .padding(end = 24.dp, bottom = 100.dp)
         ) {
             Box(
                 modifier = Modifier
                     .size(60.dp)
-                    .shadow(
-                        elevation = 12.dp,
-                        shape = CircleShape,
-                        ambientColor = AppColors.Calorie.copy(alpha = 0.35f),
-                        spotColor = AppColors.Calorie.copy(alpha = 0.35f)
-                    )
                     .clip(CircleShape)
-                    .background(Brush.linearGradient(listOf(AppColors.CalorieStart, AppColors.CalorieEnd)))
+                    .background(AppColors.Calorie)
                     .clickable(role = Role.Button) {
                         dismissKeyboard()
                         addMenuExpanded = true
@@ -285,50 +283,41 @@ internal fun WorkoutDiaryScreen(
                 Icon(Icons.Filled.Add, contentDescription = null, tint = Color.White, modifier = Modifier.size(30.dp))
             }
 
-            DropdownMenu(
+            SheetGlassDropdownMenu(
                 expanded = addMenuExpanded,
                 onDismissRequest = { addMenuExpanded = false },
-                containerColor = workoutsColors().card,
-                shape = RoundedCornerShape(18.dp)
+                menuWidth = 238.dp
             ) {
-                AddMenuItem(
-                    text = "Saved exercises",
-                    icon = Icons.Filled.Bookmark,
+                SheetGlassDropdownMenuItem(
+                    label = "Browse ${state.preferences.split.title}",
+                    leadingIcon = Icons.Filled.FitnessCenter,
+                    trailingIcon = Icons.Filled.ChevronRight,
+                    onClick = {
+                        addMenuExpanded = false
+                        pickerRequest = WorkoutPickerRequest.forSplit(
+                            title = state.preferences.split.title,
+                            groups = state.splitGroups
+                        )
+                    }
+                )
+                SheetGlassDropdownMenuItem(
+                    label = "Saved exercises",
+                    leadingIcon = Icons.Filled.Bookmark,
+                    trailingIcon = Icons.Filled.ChevronRight,
                     onClick = {
                         addMenuExpanded = false
                         pickerRequest = WorkoutPickerRequest.saved()
                     }
                 )
-                AddMenuItem(
-                    text = "Copy from day",
-                    icon = Icons.Filled.ContentCopy,
-                    enabled = state.copyDays.isNotEmpty(),
-                    onClick = {
-                        addMenuExpanded = false
-                        copySheetVisible = true
-                    }
-                )
-                HorizontalDivider(color = workoutsColors().hairline.copy(alpha = 0.45f))
-                if (state.splitGroups.isEmpty()) {
-                    AddMenuItem(
-                        text = "All exercises",
-                        icon = Icons.Filled.FitnessCenter,
+                if (state.copyDays.isNotEmpty()) {
+                    SheetGlassDropdownMenuItem(
+                        label = "Copy from day",
+                        leadingIcon = Icons.Filled.ContentCopy,
                         onClick = {
                             addMenuExpanded = false
-                            pickerRequest = WorkoutPickerRequest.all()
+                            copySheetVisible = true
                         }
                     )
-                } else {
-                    state.splitGroups.forEach { group ->
-                        AddMenuItem(
-                            text = group.title,
-                            icon = Icons.Filled.FitnessCenter,
-                            onClick = {
-                                addMenuExpanded = false
-                                pickerRequest = WorkoutPickerRequest.group(group)
-                            }
-                        )
-                    }
                 }
             }
         }
@@ -384,24 +373,10 @@ internal fun WorkoutDiaryScreen(
 }
 
 @Composable
-private fun AddMenuItem(
-    text: String,
-    icon: ImageVector,
-    enabled: Boolean = true,
-    onClick: () -> Unit
-) {
-    DropdownMenuItem(
-        text = { Text(text, fontWeight = FontWeight.SemiBold) },
-        onClick = onClick,
-        enabled = enabled,
-        leadingIcon = { Icon(icon, contentDescription = null, tint = AppColors.Calorie) }
-    )
-}
-
-@Composable
 private fun WorkoutBurnHero(
     state: WorkoutDiaryUiState,
     onCalculate: () -> Unit,
+    onShowLibrary: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -409,36 +384,44 @@ private fun WorkoutBurnHero(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
-        FudGlassPrimaryButton(
-            text = if (state.isCalculatingBurn) "Calculating…" else "Calculate calorie burn",
-            onClick = onCalculate,
-            enabled = !state.isCalculatingBurn,
-            modifier = Modifier.width(236.dp),
-            height = 54.dp,
-            content = {
-                if (state.isCalculatingBurn) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(22.dp),
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            FudGlassPrimaryButton(
+                text = if (state.isCalculatingBurn) "Calculating…" else "Calculate calorie burn",
+                onClick = onCalculate,
+                enabled = !state.isCalculatingBurn,
+                modifier = Modifier.weight(1f),
+                height = 54.dp,
+                content = {
+                    if (state.isCalculatingBurn) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(22.dp),
+                            color = Color.White,
+                            strokeWidth = 2.5.dp
+                        )
+                    } else {
+                        Icon(
+                            Icons.Filled.LocalFireDepartment,
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(22.dp)
+                        )
+                    }
+                    Spacer(Modifier.width(9.dp))
+                    Text(
+                        if (state.isCalculatingBurn) "Calculating…" else "Calculate calorie burn",
                         color = Color.White,
-                        strokeWidth = 2.5.dp
-                    )
-                } else {
-                    Icon(
-                        Icons.Filled.LocalFireDepartment,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(22.dp)
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1
                     )
                 }
-                Spacer(Modifier.width(9.dp))
-                Text(
-                    if (state.isCalculatingBurn) "Calculating…" else "Calculate calorie burn",
-                    color = Color.White,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-        )
+            )
+            WorkoutModeToggleButton(mode = com.apoorvdarshan.calorietracker.models.WorkoutTabMode.LOG, onToggle = onShowLibrary)
+        }
 
         FudGlassSurface(
             modifier = Modifier.fillMaxWidth(),
