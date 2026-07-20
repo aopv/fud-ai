@@ -1,5 +1,10 @@
 package com.apoorvdarshan.calorietracker.services.ai
 
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -30,40 +35,51 @@ object AnthropicClient {
     ): String {
         val url = "$baseUrl/messages"
 
-        val content = JSONArray().apply {
-            imageBytesList.forEach {
-                put(
-                    JSONObject()
-                        .put("type", "image")
-                        .put(
-                            "source",
-                            JSONObject()
-                                .put("type", "base64")
-                                .put("media_type", "image/jpeg")
-                                .put("data", Base64.getEncoder().encodeToString(it))
-                        )
+        suspend fun request(requestPrompt: String): AnthropicTextResponse {
+            val content = JSONArray().apply {
+                imageBytesList.forEach {
+                    put(
+                        JSONObject()
+                            .put("type", "image")
+                            .put(
+                                "source",
+                                JSONObject()
+                                    .put("type", "base64")
+                                    .put("media_type", "image/jpeg")
+                                    .put("data", Base64.getEncoder().encodeToString(it))
+                            )
+                    )
+                }
+                put(JSONObject().put("type", "text").put("text", requestPrompt))
+            }
+
+            val body = JSONObject()
+                .put("model", model)
+                .put("max_tokens", maxTokens)
+                .put("messages", JSONArray().put(JSONObject().put("role", "user").put("content", content)))
+
+            val bodyStr = RetryPolicy.execute {
+                client.newCall(
+                    Request.Builder()
+                        .url(url)
+                        .addHeader("Content-Type", "application/json")
+                        .addHeader("x-api-key", apiKey)
+                        .addHeader("anthropic-version", API_VERSION)
+                        .post(body.toString().toRequestBody(jsonMedia))
+                        .build()
                 )
             }
-            put(JSONObject().put("type", "text").put("text", prompt))
+            return AnthropicResponseParser.parse(bodyStr)
         }
 
-        val body = JSONObject()
-            .put("model", model)
-            .put("max_tokens", maxTokens)
-            .put("messages", JSONArray().put(JSONObject().put("role", "user").put("content", content)))
-
-        val bodyStr = RetryPolicy.execute {
-            client.newCall(
-                Request.Builder()
-                    .url(url)
-                    .addHeader("Content-Type", "application/json")
-                    .addHeader("x-api-key", apiKey)
-                    .addHeader("anthropic-version", API_VERSION)
-                    .post(body.toString().toRequestBody(jsonMedia))
-                    .build()
-            )
+        var response = request(prompt)
+        if (response.wasTruncated) {
+            response = request(compactRetryPrompt(prompt, maxTokens))
+            if (response.wasTruncated) {
+                throw AiError.Api("The AI response was truncated twice. Try a shorter description or another model.")
+            }
         }
-        return parseText(bodyStr)
+        return response.text ?: throw AiError.InvalidResponse
     }
 
     suspend fun chat(
@@ -101,14 +117,34 @@ object AnthropicClient {
                     .build()
             )
         }
-        return parseText(bodyStr)
+        return AnthropicResponseParser.parse(bodyStr).text ?: throw AiError.InvalidResponse
     }
 
-    private fun parseText(body: String): String {
-        val json = runCatching { JSONObject(body) }.getOrNull() ?: throw AiError.InvalidResponse
-        val contentArr = json.optJSONArray("content") ?: throw AiError.InvalidResponse
-        val text = contentArr.optJSONObject(0)?.optString("text").orEmpty()
-        if (text.isEmpty()) throw AiError.InvalidResponse
-        return text
+    private fun compactRetryPrompt(prompt: String, maxTokens: Int): String =
+        "$prompt\n\nIMPORTANT: The previous response was truncated. Return only the requested compact JSON object, with no reasoning, explanation, or markdown. Keep the complete response under $maxTokens tokens."
+}
+
+internal data class AnthropicTextResponse(
+    val text: String?,
+    val stopReason: String?
+) {
+    val wasTruncated: Boolean get() = stopReason == "max_tokens"
+}
+
+internal object AnthropicResponseParser {
+    fun parse(body: String): AnthropicTextResponse {
+        val json = runCatching { Json.parseToJsonElement(body).jsonObject }.getOrNull()
+            ?: throw AiError.InvalidResponse
+        val content = runCatching { json["content"]?.jsonArray }.getOrNull()
+            ?: throw AiError.InvalidResponse
+        val text = content.mapNotNull { element ->
+            val block = runCatching { element.jsonObject }.getOrNull() ?: return@mapNotNull null
+            if (block["type"]?.jsonPrimitive?.contentOrNull != "text") return@mapNotNull null
+            block["text"]?.jsonPrimitive?.contentOrNull?.trim()?.takeIf { it.isNotEmpty() }
+        }.joinToString("\n").takeIf { it.isNotEmpty() }
+        return AnthropicTextResponse(
+            text = text,
+            stopReason = json["stop_reason"]?.jsonPrimitive?.contentOrNull
+        )
     }
 }

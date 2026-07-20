@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- Ollama commonly runs over HTTP on a user-supplied private-LAN address.
+         All built-in cloud provider endpoints remain hard-coded HTTPS URLs. -->
+    <base-config cleartextTrafficPermitted="true" />
+</network-security-config>

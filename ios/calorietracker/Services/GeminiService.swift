@@ -821,31 +821,41 @@ struct GeminiService {
 
     // MARK: - Anthropic Format
 
+    struct AnthropicTextResponse {
+        let text: String?
+        let stopReason: String?
+
+        var wasTruncated: Bool { stopReason == "max_tokens" }
+    }
+
+    static func parseAnthropicTextResponse(from data: Data) throws -> AnthropicTextResponse {
+        guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let content = json["content"] as? [[String: Any]]
+        else { throw AnalysisError.invalidResponse }
+
+        let text = content
+            .filter { ($0["type"] as? String) == "text" }
+            .compactMap { ($0["text"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
+            .joined(separator: "\n")
+
+        return AnthropicTextResponse(
+            text: text.isEmpty ? nil : text,
+            stopReason: json["stop_reason"] as? String
+        )
+    }
+
+    private static func compactAnthropicRetryPrompt(_ prompt: String) -> String {
+        """
+        \(prompt)
+
+        IMPORTANT: The previous response was truncated. Return only the requested compact JSON object, with no reasoning, explanation, or markdown. Keep the complete response under \(AIProviderSettings.maxResponseTokens) tokens.
+        """
+    }
+
     private static func callAnthropic(baseURL: String, model: String, apiKey: String, prompt: String, imageDataList: [Data]) async throws -> String {
         guard let url = URL(string: "\(baseURL)/messages") else {
             throw AnalysisError.apiError("Invalid API URL. Check your provider settings.")
-        }
-
-        var content: [[String: Any]] = []
-        for imageData in imageDataList {
-            content.append([
-                "type": "image",
-                "source": [
-                    "type": "base64",
-                    "media_type": "image/jpeg",
-                    "data": imageData.base64EncodedString()
-                ]
-            ])
-        }
-        content.append(["type": "text", "text": prompt])
-
-        var body: [String: Any] = [
-            "model": model,
-            "max_tokens": AIProviderSettings.maxResponseTokens,
-            "messages": [["role": "user", "content": content]],
-        ]
-        if let userContext = AIProviderSettings.currentUserContext {
-            body["system"] = userContext
         }
 
         let headers = [
@@ -854,12 +864,39 @@ struct GeminiService {
             "anthropic-version": "2023-06-01",
         ]
 
-        let data = try await makeRequest(url: url, headers: headers, body: body)
+        func request(_ requestPrompt: String) async throws -> AnthropicTextResponse {
+            var content: [[String: Any]] = imageDataList.map { imageData in
+                [
+                    "type": "image",
+                    "source": [
+                        "type": "base64",
+                        "media_type": "image/jpeg",
+                        "data": imageData.base64EncodedString(),
+                    ],
+                ]
+            }
+            content.append(["type": "text", "text": requestPrompt])
 
-        guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-              let contentArray = json["content"] as? [[String: Any]],
-              let text = contentArray.first?["text"] as? String
-        else { throw AnalysisError.invalidResponse }
+            var body: [String: Any] = [
+                "model": model,
+                "max_tokens": AIProviderSettings.maxResponseTokens,
+                "messages": [["role": "user", "content": content]],
+            ]
+            if let userContext = AIProviderSettings.currentUserContext {
+                body["system"] = userContext
+            }
+            let data = try await makeRequest(url: url, headers: headers, body: body)
+            return try parseAnthropicTextResponse(from: data)
+        }
+
+        var response = try await request(prompt)
+        if response.wasTruncated {
+            response = try await request(compactAnthropicRetryPrompt(prompt))
+            if response.wasTruncated {
+                throw AnalysisError.apiError("The AI response was truncated twice. Try a shorter description or another model.")
+            }
+        }
+        guard let text = response.text else { throw AnalysisError.invalidResponse }
         return text
     }
 
