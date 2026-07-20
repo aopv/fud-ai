@@ -65,13 +65,8 @@ private struct ExerciseLibraryBrowserView: View {
         workoutStore.preferences.split
     }
 
-    private var splitFilterTitle: String {
-        switch selectedWorkoutSplit {
-        case .fullBody, .custom:
-            return String(localized: "Body Part")
-        default:
-            return selectedWorkoutSplit.title
-        }
+    private var bodyPartFilterTitle: String {
+        String(localized: "Body Part")
     }
 
     private var usesBodyPartSplitFilter: Bool {
@@ -269,13 +264,13 @@ private struct ExerciseLibraryBrowserView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 9) {
                     filterMenuPill(
-                        title: splitFilterTitle,
+                        title: bodyPartFilterTitle,
                         value: selectionTitle(selectedSplitGroupTitles),
                         systemImage: "square.grid.2x2",
                         isActive: !selectedSplitGroupTitles.isEmpty
                     ) {
                         menuChoice(
-                            String(localized: "All \(splitFilterTitle)"),
+                            String(localized: "All \(bodyPartFilterTitle)"),
                             isSelected: selectedSplitGroupTitles.isEmpty
                         ) {
                             selectedSplitGroupTitles.removeAll()
