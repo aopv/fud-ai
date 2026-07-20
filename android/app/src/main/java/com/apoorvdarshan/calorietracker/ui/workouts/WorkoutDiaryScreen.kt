@@ -294,7 +294,7 @@ internal fun WorkoutDiaryScreen(
                 expanded = addMenuExpanded,
                 onDismissRequest = { addMenuExpanded = false },
                 modifier = Modifier.heightIn(max = 520.dp),
-                menuWidth = 286.dp
+                menuWidth = 246.dp
             ) {
                 if (state.splitGroups.isEmpty()) {
                     SheetGlassDropdownMenuItem(
