@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.map
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
+import java.time.temporal.ChronoUnit
 import java.util.UUID
 import kotlin.math.roundToInt
 
@@ -256,11 +257,16 @@ class FoodRepository(
 
     // -- Recents / Frequent ---------------------------------------------
 
-    suspend fun recent(limit: Int = 50): List<FoodEntry> =
-        prefs.foodEntries.first().sortedByDescending { it.timestamp }.take(limit)
+    suspend fun recent(days: Int = 30, now: Instant = Instant.now()): List<FoodEntry> {
+        val cutoff = now.minus(days.toLong(), ChronoUnit.DAYS)
+        return prefs.foodEntries.first()
+            .filter { !it.timestamp.isBefore(cutoff) }
+            .sortedByDescending { it.timestamp }
+    }
 
-    suspend fun frequent(): List<FrequentFoodGroup> {
-        val all = prefs.foodEntries.first()
+    suspend fun frequent(days: Int = 90, now: Instant = Instant.now()): List<FrequentFoodGroup> {
+        val cutoff = now.minus(days.toLong(), ChronoUnit.DAYS)
+        val all = prefs.foodEntries.first().filter { !it.timestamp.isBefore(cutoff) }
         val aggregates = mutableMapOf<String, Pair<Int, FoodEntry>>()
         for (entry in all) {
             val key = entry.favoriteKey

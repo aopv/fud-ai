@@ -158,8 +158,8 @@ fun SavedMealsSheet(
 
     LaunchedEffect(tab, favKeys) {
         when (tab) {
-            SavedTab.RECENTS -> recents = container.foodRepository.recent(50)
-            SavedTab.FREQUENT -> frequent = container.foodRepository.frequent()
+            SavedTab.RECENTS -> recents = container.foodRepository.recent(days = 30)
+            SavedTab.FREQUENT -> frequent = container.foodRepository.frequent(days = 90)
             SavedTab.FAVORITES -> Unit  // driven by `favorites` Flow above
         }
     }
@@ -229,7 +229,7 @@ fun SavedMealsSheet(
                                   else stringResource(R.string.saved_meals_no_logs)
                         EmptyState(icon = if (isSearching) Icons.Outlined.Search else Icons.Outlined.Schedule, text = msg)
                     } else {
-                        SavedList(items = filteredRecents) { entry ->
+                        SavedList(items = filteredRecents, key = { it.id }) { entry ->
                             SavedMealRow(
                                 entry = entry,
                                 isFavorite = entry.favoriteKey in favKeys,
@@ -246,7 +246,7 @@ fun SavedMealsSheet(
                                   else stringResource(R.string.saved_meals_no_logs)
                         EmptyState(icon = if (isSearching) Icons.Outlined.Search else Icons.Outlined.Refresh, text = msg)
                     } else {
-                        SavedList(items = filteredFrequent) { group ->
+                        SavedList(items = filteredFrequent, key = { it.id }) { group ->
                             SavedMealRow(
                                 entry = group.template,
                                 isFavorite = group.template.favoriteKey in favKeys,
@@ -270,7 +270,7 @@ fun SavedMealsSheet(
                         // filtered indices don't map back to the unfiltered
                         // favorites array — letting reorder run on a filtered
                         // list would silently swap the wrong items.
-                        SavedList(items = filteredFavorites) { entry ->
+                        SavedList(items = filteredFavorites, key = { it.id }) { entry ->
                             SavedMealRow(
                                 entry = entry,
                                 isFavorite = true,
@@ -343,7 +343,11 @@ private fun SegmentedTabs(selected: SavedTab, onSelect: (SavedTab) -> Unit) {
 }
 
 @Composable
-private fun <T> SavedList(items: List<T>, row: @Composable (T) -> Unit) {
+private fun <T> SavedList(
+    items: List<T>,
+    key: (T) -> Any,
+    row: @Composable (T) -> Unit
+) {
     val listState = rememberLazyListState()
     LazyColumn(
         state = listState,
@@ -353,7 +357,7 @@ private fun <T> SavedList(items: List<T>, row: @Composable (T) -> Unit) {
             .blockSheetDragAtLazyListEdges(listState),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(items) { row(it) }
+        items(items = items, key = key) { row(it) }
     }
 }
 

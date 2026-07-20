@@ -267,13 +267,17 @@ class FoodStore {
 
     // MARK: - Recents / Frequent
 
-    func recentEntries(limit: Int = 50) -> [FoodEntry] {
-        Array(entries.sorted { $0.timestamp > $1.timestamp }.prefix(limit))
+    func recentEntries(days: Int = 30, now: Date = .now) -> [FoodEntry] {
+        let cutoff = Calendar.current.date(byAdding: .day, value: -days, to: now) ?? now
+        return entries
+            .filter { $0.timestamp >= cutoff }
+            .sorted { $0.timestamp > $1.timestamp }
     }
 
-    func frequentGroups() -> [FrequentFoodGroup] {
+    func frequentGroups(days: Int = 90, now: Date = .now) -> [FrequentFoodGroup] {
+        let cutoff = Calendar.current.date(byAdding: .day, value: -days, to: now) ?? now
         var aggregates: [String: (count: Int, template: FoodEntry)] = [:]
-        for entry in entries {
+        for entry in entries where entry.timestamp >= cutoff {
             let key = "\(entry.name.lowercased())|\(entry.calories)"
             if let current = aggregates[key] {
                 let newCount = current.count + 1

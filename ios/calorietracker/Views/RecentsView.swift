@@ -19,12 +19,12 @@ struct RecentsView: View {
     }
 
     private var recentItems: [FoodEntry] {
-        let items = foodStore.recentEntries(limit: 50)
+        let items = foodStore.recentEntries(days: 30)
         return filterByName(items) { $0.name }
     }
 
     private var frequentItems: [FrequentFoodGroup] {
-        let items = foodStore.frequentGroups()
+        let items = foodStore.frequentGroups(days: 90)
         return filterByName(items) { $0.template.name }
     }
 
