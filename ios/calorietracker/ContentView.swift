@@ -881,17 +881,10 @@ struct HomeView: View {
                     Menu {
                         Button {
                             presentFoodDestination {
-                                savedMealsMode = .recent
+                                showCopyFromDaySheet = true
                             }
                         } label: {
-                            Label("Recent", systemImage: "clock.fill")
-                        }
-                        Button {
-                            presentFoodDestination {
-                                savedMealsMode = .frequent
-                            }
-                        } label: {
-                            Label("Frequent", systemImage: "repeat")
+                            Label("Copy from Day", systemImage: "calendar")
                         }
                         Button {
                             presentFoodDestination {
@@ -902,10 +895,17 @@ struct HomeView: View {
                         }
                         Button {
                             presentFoodDestination {
-                                showCopyFromDaySheet = true
+                                savedMealsMode = .frequent
                             }
                         } label: {
-                            Label("Copy from Day", systemImage: "calendar")
+                            Label("Frequent", systemImage: "repeat")
+                        }
+                        Button {
+                            presentFoodDestination {
+                                savedMealsMode = .recent
+                            }
+                        } label: {
+                            Label("Recent", systemImage: "clock.fill")
                         }
                     } label: {
                         Label("Reuse Meal", systemImage: "arrow.clockwise")
