@@ -539,7 +539,7 @@ struct HomeView: View {
     @State private var showTextPopover = false
     @State private var showManualPopover = false
     @State private var showSiriPhrases = false
-    @State private var showRecentSheet = false
+    @State private var savedMealsMode: SavedMealsMode?
     @State private var showCopyFromDaySheet = false
     @State private var pendingContextImage: UIImage?
     @State private var captureImages: [UIImage] = []
@@ -881,17 +881,31 @@ struct HomeView: View {
                     Menu {
                         Button {
                             presentFoodDestination {
+                                savedMealsMode = .recent
+                            }
+                        } label: {
+                            Label("Recent", systemImage: "clock.fill")
+                        }
+                        Button {
+                            presentFoodDestination {
+                                savedMealsMode = .frequent
+                            }
+                        } label: {
+                            Label("Frequent", systemImage: "repeat")
+                        }
+                        Button {
+                            presentFoodDestination {
+                                savedMealsMode = .favorites
+                            }
+                        } label: {
+                            Label("Favorites", systemImage: "heart.fill")
+                        }
+                        Button {
+                            presentFoodDestination {
                                 showCopyFromDaySheet = true
                             }
                         } label: {
                             Label("Copy from Day", systemImage: "calendar")
-                        }
-                        Button {
-                            presentFoodDestination {
-                                showRecentSheet = true
-                            }
-                        } label: {
-                            Label("Saved Meals", systemImage: "bookmark.fill")
                         }
                     } label: {
                         Label("Reuse Meal", systemImage: "arrow.clockwise")
@@ -1190,8 +1204,8 @@ struct HomeView: View {
                     }
                 }
             }
-            .sheet(isPresented: $showRecentSheet, content: {
-                RecentsView(logDate: logDateForSelectedDay, onReview: { entry in
+            .sheet(item: $savedMealsMode, content: { mode in
+                RecentsView(mode: mode, logDate: logDateForSelectedDay, onReview: { entry in
                     currentImages = entry.allImageData.compactMap(UIImage.init(data:))
                     currentImage = currentImages.first
                     currentEmoji = entry.emoji

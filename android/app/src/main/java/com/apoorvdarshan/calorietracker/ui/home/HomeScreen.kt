@@ -64,6 +64,8 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ImageSearch
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material.icons.filled.Bedtime
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.WbSunny
@@ -178,7 +180,7 @@ fun HomeScreen(container: AppContainer) {
     var showText by remember { mutableStateOf(false) }
     var showVoice by remember { mutableStateOf(false) }
     var showManual by remember { mutableStateOf(false) }
-    var showSaved by remember { mutableStateOf(false) }
+    var savedMealsTab by remember { mutableStateOf<SavedTab?>(null) }
     var showBarcodeScanner by remember { mutableStateOf(false) }
     var showCopyFromDay by remember { mutableStateOf(false) }
     var showAddMenu by remember { mutableStateOf(false) }
@@ -468,7 +470,9 @@ fun HomeScreen(container: AppContainer) {
                     }
 
                     AddMenuGroup.ReuseMeal -> {
-                        SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_saved_meals), leadingIcon = Icons.Filled.Bookmark) { showAddMenu = false; addMenuGroup = null; showSaved = true }
+                        SheetGlassDropdownMenuItem(label = stringResource(R.string.saved_meals_tab_recents), leadingIcon = Icons.Filled.History) { showAddMenu = false; addMenuGroup = null; savedMealsTab = SavedTab.RECENTS }
+                        SheetGlassDropdownMenuItem(label = stringResource(R.string.saved_meals_tab_frequent), leadingIcon = Icons.Filled.Repeat) { showAddMenu = false; addMenuGroup = null; savedMealsTab = SavedTab.FREQUENT }
+                        SheetGlassDropdownMenuItem(label = stringResource(R.string.saved_meals_tab_favorites), leadingIcon = Icons.Filled.Favorite) { showAddMenu = false; addMenuGroup = null; savedMealsTab = SavedTab.FAVORITES }
                         SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_copy_from_day), leadingIcon = Icons.Filled.CalendarMonth) { showAddMenu = false; addMenuGroup = null; showCopyFromDay = true }
                         SheetGlassDropdownMenuItem(label = "Back", leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
                     }
@@ -518,10 +522,11 @@ fun HomeScreen(container: AppContainer) {
         )
     }
 
-    if (showSaved) {
+    savedMealsTab?.let { tab ->
         SavedMealsSheet(
             container = container,
-            onDismiss = { showSaved = false },
+            tab = tab,
+            onDismiss = { savedMealsTab = null },
             // Tapping a Saved Meals row opens the FoodResultSheet for review
             // instead of logging immediately — same UX as the photo flow.
             onRelogEntry = { vm.reviewSavedMeal(it) }

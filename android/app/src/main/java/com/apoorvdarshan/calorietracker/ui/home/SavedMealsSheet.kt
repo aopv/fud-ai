@@ -89,15 +89,13 @@ import kotlin.math.roundToInt
 enum class SavedTab { RECENTS, FREQUENT, FAVORITES }
 
 /**
- * Verbatim port of `RecentsView` in
- * ios/calorietracker/Views/RecentsView.swift.
+ * Direct Recent, Frequent, or Favorites destination opened from Reuse Meal.
  *
  * Layout:
- *   - "Saved Meals" navigationTitle (Title Case, inline)
- *   - segmented Picker: Recents / Frequent / Favorites (pink-tinted selection)
+ *   - selected destination as the inline title
  *   - per segment: List of `SavedMealRow` (56dp thumb · name + heart · pink kcal +
  *     optional subtitle · 3 macro tag pills · trailing plus.circle.fill log button)
- *   - per-segment empty state: 32sp pink-tinted icon + secondary message text
+ *   - destination-specific empty state: 32sp pink-tinted icon + secondary text
  *
  * Favorites segment additionally supports:
  *   - swipe-left to unfavorite
@@ -110,21 +108,13 @@ enum class SavedTab { RECENTS, FREQUENT, FAVORITES }
 @Composable
 fun SavedMealsSheet(
     container: AppContainer,
+    tab: SavedTab,
     onDismiss: () -> Unit,
     onRelogEntry: (FoodEntry) -> Unit
 ) {
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
 
-    // Restore the last-selected segment from DataStore so reopening the sheet
-    // remembers whether the user was on Recents / Frequent / Favorites — same
-    // as iOS @AppStorage("lastRecentsSegment") in RecentsView.swift.
-    val savedSegment by container.prefs.lastSavedMealsSegment.collectAsState(initial = SavedTab.RECENTS.name)
-    var tab by remember(savedSegment) {
-        mutableStateOf(
-            runCatching { SavedTab.valueOf(savedSegment) }.getOrDefault(SavedTab.RECENTS)
-        )
-    }
     var recents by remember { mutableStateOf<List<FoodEntry>>(emptyList()) }
     var frequent by remember { mutableStateOf<List<FrequentFoodGroup>>(emptyList()) }
 
@@ -133,11 +123,9 @@ fun SavedMealsSheet(
     val favorites by container.foodRepository.favorites.collectAsState(initial = emptyList())
     val favKeys by container.foodRepository.favoriteKeys.collectAsState(initial = emptySet())
 
-    // Per-tab search query — substring + case-insensitive match against
-    // entry.name (or group.template.name for Frequent). Resets when the user
-    // switches segments since the same word almost never matches across all
-    // three contexts and the empty list reads as "your data vanished".
-    var searchQuery by remember(tab) { mutableStateOf("") }
+    // Substring + case-insensitive match against entry.name (or the Frequent
+    // group's template name).
+    var searchQuery by remember { mutableStateOf("") }
     val isSearching = searchQuery.isNotBlank()
     val filteredRecents = remember(recents, searchQuery) {
         if (searchQuery.isBlank()) recents
@@ -180,7 +168,13 @@ fun SavedMealsSheet(
                 .padding(bottom = 16.dp)
         ) {
             Text(
-                stringResource(R.string.saved_meals_title),
+                stringResource(
+                    when (tab) {
+                        SavedTab.RECENTS -> R.string.saved_meals_tab_recents
+                        SavedTab.FREQUENT -> R.string.saved_meals_tab_frequent
+                        SavedTab.FAVORITES -> R.string.saved_meals_tab_favorites
+                    }
+                ),
                 fontSize = 17.sp,
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier
@@ -188,14 +182,7 @@ fun SavedMealsSheet(
                     .padding(top = 4.dp, bottom = 12.dp),
                 textAlign = androidx.compose.ui.text.style.TextAlign.Center
             )
-            SegmentedTabs(selected = tab, onSelect = { newTab ->
-                tab = newTab
-                scope.launch { container.prefs.setLastSavedMealsSegment(newTab.name) }
-            })
-            Spacer(Modifier.height(12.dp))
-
-            // Search field — filters whichever tab is active. Substring match,
-            // case-insensitive. Reset on tab switch via remember(tab) above.
+            // Search only the directly selected Reuse Meal destination.
             androidx.compose.material3.OutlinedTextField(
                 value = searchQuery,
                 onValueChange = { searchQuery = it },
@@ -293,50 +280,6 @@ fun SavedMealsSheet(
                         )
                     }
                 }
-            }
-        }
-    }
-}
-
-@Composable
-private fun SegmentedTabs(selected: SavedTab, onSelect: (SavedTab) -> Unit) {
-    val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
-    val trackColor = if (isDark) {
-        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.10f)
-    } else {
-        Color(0xFFE5DAD3).copy(alpha = 0.88f)
-    }
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(10.dp))
-            .background(trackColor)
-            .padding(2.dp)
-    ) {
-        for (t in SavedTab.values()) {
-            val isSel = t == selected
-            Box(
-                Modifier
-                    .weight(1f)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(
-                        if (isSel) Brush.linearGradient(listOf(AppColors.CalorieStart, AppColors.CalorieEnd))
-                        else Brush.linearGradient(listOf(Color.Transparent, Color.Transparent))
-                    )
-                    .clickable { onSelect(t) }
-                    .padding(vertical = 7.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    when (t) {
-                        SavedTab.RECENTS -> stringResource(R.string.saved_meals_tab_recents)
-                        SavedTab.FREQUENT -> stringResource(R.string.saved_meals_tab_frequent)
-                        SavedTab.FAVORITES -> stringResource(R.string.saved_meals_tab_favorites)
-                    },
-                    color = if (isSel) Color.White else MaterialTheme.colorScheme.onSurface,
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Medium
-                )
             }
         }
     }

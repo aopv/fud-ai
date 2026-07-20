@@ -1,22 +1,22 @@
 import SwiftUI
 
+enum SavedMealsMode: String, Identifiable {
+    case recent = "Recent"
+    case frequent = "Frequent"
+    case favorites = "Favorites"
+
+    var id: String { rawValue }
+}
+
 struct RecentsView: View {
+    let mode: SavedMealsMode
     let logDate: Date
     var onReview: ((FoodEntry) -> Void)? = nil
 
     @Environment(FoodStore.self) private var foodStore
     @Environment(\.dismiss) private var dismiss
 
-    @AppStorage("lastRecentsSegment") private var lastSegment: String = RecentsSegment.recents.rawValue
-
-    @State private var segment: RecentsSegment = .recents
     @State private var searchText: String = ""
-
-    private enum RecentsSegment: String, CaseIterable {
-        case recents = "Recents"
-        case frequent = "Frequent"
-        case favorites = "Favorites"
-    }
 
     private var recentItems: [FoodEntry] {
         let items = foodStore.recentEntries(days: 30)
@@ -49,18 +49,8 @@ struct RecentsView: View {
     var body: some View {
         NavigationStack {
             List {
-                Section {
-                    Picker("View", selection: $segment) {
-                        ForEach(RecentsSegment.allCases, id: \.self) { mode in
-                            Text(mode.rawValue).tag(mode)
-                        }
-                    }
-                    .pickerStyle(.segmented)
-                    .listRowBackground(Color.clear)
-                }
-
-                switch segment {
-                case .recents:
+                switch mode {
+                case .recent:
                     if recentItems.isEmpty {
                         emptySection(
                             icon: isSearching ? "magnifyingglass" : "clock",
@@ -144,7 +134,7 @@ struct RecentsView: View {
             }
             .scrollContentBackground(.hidden)
             .background(AppColors.appBackground)
-            .navigationTitle("Saved Meals")
+            .navigationTitle(mode.rawValue)
             .navigationBarTitleDisplayMode(.inline)
             .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: Text("Search saved foods"))
             .toolbar {
@@ -154,23 +144,11 @@ struct RecentsView: View {
                 // Hide the EditButton while searching — drag-to-reorder writes
                 // back to the unfiltered favorites list using the rendered row
                 // indices, so a filtered list would reorder the wrong items.
-                if segment == .favorites && !foodStore.favorites.isEmpty && !isSearching {
+                if mode == .favorites && !foodStore.favorites.isEmpty && !isSearching {
                     ToolbarItem(placement: .topBarTrailing) {
                         EditButton()
                     }
                 }
-            }
-            .onAppear {
-                if let saved = RecentsSegment(rawValue: lastSegment) {
-                    segment = saved
-                }
-            }
-            .onChange(of: segment) { _, newValue in
-                lastSegment = newValue.rawValue
-                // Stale query confuses users when they tap a tab and the results
-                // collapse to "No matching foods" — reset and let them re-type
-                // if they want to keep searching in the new context.
-                searchText = ""
             }
         }
     }
