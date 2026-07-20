@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -41,6 +42,7 @@ import com.apoorvdarshan.calorietracker.ui.progress.ProgressScreen
 import com.apoorvdarshan.calorietracker.ui.settings.CalculationMethodsScreen
 import com.apoorvdarshan.calorietracker.ui.settings.OptionalNutrientGoalsScreen
 import com.apoorvdarshan.calorietracker.ui.settings.SettingsScreen
+import com.apoorvdarshan.calorietracker.ui.settings.SettingsViewModel
 import com.apoorvdarshan.calorietracker.ui.workouts.WorkoutsScreen
 import com.apoorvdarshan.calorietracker.models.WorkoutTabMode
 
@@ -61,6 +63,12 @@ fun FudAINavHost(
     startOnboarding: Boolean
 ) {
     val nav = rememberNavController()
+    // Warm the app-scoped Settings state while Home is visible. By the time the user changes
+    // tabs, its local profile/preferences are already ready and the page opens like every other
+    // tab instead of constructing empty cards on first entry.
+    val settingsViewModel: SettingsViewModel = viewModel(
+        factory = SettingsViewModel.Factory(container)
+    )
     val backStack by nav.currentBackStackEntryAsState()
     val currentRoute = backStack?.destination?.route
     // Hide the bar while a food analysis is in flight so the AnalyzingOverlay
@@ -168,7 +176,11 @@ fun FudAINavHost(
                 composable(FudAIRoutes.HOME) { TabInset { HomeScreen(container = container) } }
                 composable(FudAIRoutes.PROGRESS) { TabInset { ProgressScreen(container = container) } }
                 composable(FudAIRoutes.COACH) { TabInset { CoachScreen(container = container) } }
-                composable(FudAIRoutes.SETTINGS) { TabInset { SettingsScreen(container = container, nav = nav) } }
+                composable(FudAIRoutes.SETTINGS) {
+                    TabInset {
+                        SettingsScreen(container = container, nav = nav, vm = settingsViewModel)
+                    }
+                }
                 composable(FudAIRoutes.OPTIONAL_NUTRIENT_GOALS) {
                     OptionalNutrientGoalsScreen(container = container, onBack = { nav.popBackStack() })
                 }

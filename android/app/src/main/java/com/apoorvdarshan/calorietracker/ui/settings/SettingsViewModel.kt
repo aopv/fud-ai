@@ -31,8 +31,6 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 data class SettingsUiState(
-    /** True only after the initial preferences/profile snapshot has been assembled. */
-    val isLoaded: Boolean = false,
     val selectedAI: AIProvider = AIProvider.GEMINI,
     val selectedModel: String = AIProvider.GEMINI.defaultModel,
     val maxResponseTokens: Int = 1024,
@@ -114,6 +112,17 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
             }
         }
 
+        // Keep the profile reactive just like Home/Progress. This also primes the two profile
+        // sections immediately from DataStore instead of waiting behind Health Connect work.
+        viewModelScope.launch {
+            container.profileRepository.profile.collect { profile ->
+                _ui.value = _ui.value.copy(
+                    profile = profile,
+                    goalsNeedRecalc = needsRecalc(profile)
+                )
+            }
+        }
+
         viewModelScope.launch {
             val provider = container.prefs.selectedAIProvider.first()
             val model = provider.supportedModelOrDefault(container.prefs.selectedAIModel.first())
@@ -132,11 +141,13 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
             val waterTracking = container.prefs.waterTrackingEnabled.first()
             val waterGoal = container.prefs.waterDailyGoalMl.first()
             val waterReminder = container.prefs.waterReminderEnabled.first()
-            val hc = reconcileHealthConnectState()
-            val workoutHealthWriteGranted = container.health.hasActiveEnergyWrite()
             val workoutPreferences = container.workoutRepository.preferences.first()
             val profile = container.profileRepository.current()
-            val energyGoals = container.prefs.healthEnergyGoalsEnabled.first() && hc
+            val storedHealthConnect = container.prefs.healthConnectEnabled.first()
+            val storedHealthPermissionsVersion = container.prefs.healthPermissionsVersion.first()
+            val workoutHealthWriteGranted = storedHealthConnect &&
+                storedHealthPermissionsVersion >= HealthConnectManager.CURRENT_TYPES_VERSION
+            val energyGoals = container.prefs.healthEnergyGoalsEnabled.first() && storedHealthConnect
             val adaptiveGoals = container.prefs.adaptiveGoalsEnabled.first()
             val masked = maskKey(container.keyStore.apiKey(provider))
             val speechMasked = maskKey(container.keyStore.speechApiKey(speech))
@@ -159,7 +170,6 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
                 container.prefs.setLastRecalcGoalSignature(profile.goalInputSignature)
             }
             _ui.value = SettingsUiState(
-                isLoaded = true,
                 selectedAI = provider,
                 selectedModel = model,
                 maxResponseTokens = maxTokens,
@@ -179,7 +189,7 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
                 waterTrackingEnabled = waterTracking,
                 waterDailyGoalMl = waterGoal,
                 waterReminderEnabled = waterReminder,
-                healthConnectEnabled = hc,
+                healthConnectEnabled = storedHealthConnect,
                 workoutHealthWriteGranted = workoutHealthWriteGranted,
                 healthEnergyGoalsEnabled = energyGoals,
                 adaptiveGoalsEnabled = adaptiveGoals,
@@ -198,6 +208,22 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
                 workoutSplit = workoutPreferences.split,
                 workoutRpeScale = workoutPreferences.rpeScale,
                 goalsNeedRecalc = needsRecalc(profile)
+            )
+
+            // Permission reconciliation may open Health Connect's provider and backfill data, so
+            // it must never sit on the critical path for displaying Settings. Refresh only the
+            // health-dependent fields after the complete local page is already available.
+            val reconciledHealthConnect = reconcileHealthConnectState()
+            val reconciledWorkoutWrite = reconciledHealthConnect &&
+                container.health.hasActiveEnergyWrite()
+            val reconciledProfile = container.profileRepository.current()
+            _ui.value = _ui.value.copy(
+                profile = reconciledProfile ?: _ui.value.profile,
+                healthConnectEnabled = reconciledHealthConnect,
+                workoutHealthWriteGranted = reconciledWorkoutWrite,
+                healthEnergyGoalsEnabled = container.prefs.healthEnergyGoalsEnabled.first() &&
+                    reconciledHealthConnect,
+                goalsNeedRecalc = needsRecalc(reconciledProfile ?: _ui.value.profile)
             )
         }
     }

@@ -197,8 +197,7 @@ private enum class HealthConnectPermissionAction {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(container: AppContainer, nav: NavHostController) {
-    val vm: SettingsViewModel = viewModel(factory = SettingsViewModel.Factory(container))
+fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: SettingsViewModel) {
     val ui by vm.ui.collectAsState()
     val profile = ui.profile
     val latestMeasurement by container.bodyMeasurementRepository.latest.collectAsState(initial = null)
@@ -322,27 +321,6 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController) {
         for (intent in intents) {
             if (runCatching { activityContext.startActivity(intent) }.isSuccess) return
         }
-    }
-
-    // The profile and preferences are loaded as one asynchronous snapshot. Rendering the
-    // section shells before that snapshot arrives produces two thin empty cards that suddenly
-    // expand a moment later. Keep the page atomic so users only ever see its final layout.
-    if (!ui.isLoaded) {
-        Scaffold(containerColor = MaterialTheme.colorScheme.background) { padding ->
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(24.dp),
-                    color = AppColors.Calorie,
-                    strokeWidth = 2.dp
-                )
-            }
-        }
-        return
     }
 
     // iOS Settings: bare List, no NavigationBar visible. Match that — no TopAppBar.
