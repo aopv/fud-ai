@@ -23,6 +23,7 @@ import com.apoorvdarshan.calorietracker.models.UserProfile
 import com.apoorvdarshan.calorietracker.models.WeightEntry
 import com.apoorvdarshan.calorietracker.models.WidgetSnapshot
 import com.apoorvdarshan.calorietracker.models.WaterEntry
+import com.apoorvdarshan.calorietracker.models.WaterUnit
 import com.apoorvdarshan.calorietracker.models.WorkoutPersistedState
 import com.apoorvdarshan.calorietracker.ui.theme.AppThemeColor
 import kotlinx.coroutines.flow.Flow
@@ -111,6 +112,9 @@ class PreferencesStore(private val context: Context) : WorkoutStateStore {
 
     val waterDailyGoalMl: Flow<Int> = ds.data.map { it[Keys.WATER_DAILY_GOAL_ML] ?: 2_000 }
     suspend fun setWaterDailyGoalMl(v: Int) { ds.edit { it[Keys.WATER_DAILY_GOAL_ML] = v.coerceAtLeast(1) } }
+
+    val waterUnit: Flow<WaterUnit> = ds.data.map { WaterUnit.fromStorage(it[Keys.WATER_UNIT]) }
+    suspend fun setWaterUnit(v: WaterUnit) { ds.edit { it[Keys.WATER_UNIT] = v.storageValue } }
 
     val waterReminderEnabled: Flow<Boolean> = ds.data.map { it[Keys.WATER_REMINDER_ENABLED] ?: false }
     suspend fun setWaterReminderEnabled(v: Boolean) { ds.edit { it[Keys.WATER_REMINDER_ENABLED] = v } }
@@ -617,6 +621,7 @@ class PreferencesStore(private val context: Context) : WorkoutStateStore {
         val APP_UPDATE_NOTIFICATIONS_ENABLED = booleanPreferencesKey("appUpdateNotificationsEnabled")
         val WATER_TRACKING_ENABLED = booleanPreferencesKey("waterTrackingEnabled")
         val WATER_DAILY_GOAL_ML = intPreferencesKey("waterDailyGoalMl")
+        val WATER_UNIT = stringPreferencesKey("waterUnit")
         val WATER_REMINDER_ENABLED = booleanPreferencesKey("waterReminderEnabled")
         val WATER_REMINDER_HOUR = intPreferencesKey("waterReminderHour")
         val WATER_REMINDER_MINUTE = intPreferencesKey("waterReminderMinute")

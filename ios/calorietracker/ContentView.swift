@@ -576,6 +576,7 @@ struct HomeView: View {
     @AppStorage(OptionalNutrientGoals.storageKey) private var optionalNutrientGoalsData = Data()
     @AppStorage(WaterSettings.enabledKey) private var waterTrackingEnabled = false
     @AppStorage(WaterSettings.dailyGoalKey) private var waterDailyGoal = WaterSettings.defaultDailyGoalMl
+    @AppStorage(WaterSettings.unitKey) private var waterUnitRaw = WaterUnit.defaultUnit.rawValue
     @Environment(ProfileStore.self) private var profileStore
 
     /// Force a body re-evaluation whenever profileStore.profile changes by reading it
@@ -591,6 +592,7 @@ struct HomeView: View {
     private var foodLogSortOrder: FoodLogSortOrder { FoodLogSortOrder.order(for: foodLogSortOrderRaw) }
     private var homeTopNutrients: [HomeTopNutrient] { HomeTopNutrient.selection(from: homeTopNutrientsRaw) }
     private var optionalNutrientGoals: OptionalNutrientGoals { OptionalNutrientGoals.decoded(from: optionalNutrientGoalsData) }
+    private var waterUnit: WaterUnit { WaterUnit(rawValue: waterUnitRaw) ?? .defaultUnit }
     private var logDateForSelectedDay: Date { logDate(on: selectedDate) }
 
     private var navigationTitle: String {
@@ -690,17 +692,17 @@ struct HomeView: View {
         Button {
             logWater(750)
         } label: {
-            Label("3 Glasses (~750 ml)", systemImage: "drop.fill")
+            Label("3 Glasses (~\(waterUnit.formatted(milliliters: 750)))", systemImage: "drop.fill")
         }
         Button {
             logWater(500)
         } label: {
-            Label("2 Glasses (~500 ml)", systemImage: "drop.fill")
+            Label("2 Glasses (~\(waterUnit.formatted(milliliters: 500)))", systemImage: "drop.fill")
         }
         Button {
             logWater(250)
         } label: {
-            Label("1 Glass (~250 ml)", systemImage: "drop.fill")
+            Label("1 Glass (~\(waterUnit.formatted(milliliters: 250)))", systemImage: "drop.fill")
         }
     }
 
@@ -757,7 +759,8 @@ struct HomeView: View {
                     if waterTrackingEnabled {
                         WaterProgressRow(
                             current: waterStore.total(on: selectedDate),
-                            goal: waterDailyGoal
+                            goal: waterDailyGoal,
+                            unit: waterUnit
                         )
                         .listRowBackground(Color.clear)
                         .listRowSeparator(.hidden)
@@ -1297,7 +1300,7 @@ struct HomeView: View {
                 NutritionDetailView(date: selectedDate, homeTopNutrientsRaw: $homeTopNutrientsRaw)
             }
             .sheet(isPresented: $showCustomWaterLog) {
-                WaterCustomAmountSheet(onAdd: logWater)
+                WaterCustomAmountSheet(unit: waterUnit, onAdd: logWater)
             }
             .onOpenURL { url in
                 if url.scheme == "fudai", url.host == "import-share-image" {
@@ -3003,6 +3006,9 @@ struct ProfileView: View {
     @AppStorage(AppThemeColor.storageKey) private var appThemeColorRaw = AppThemeColor.defaultColor.rawValue
     @AppStorage(WaterSettings.enabledKey) private var waterTrackingEnabled = false
     @AppStorage(WaterSettings.dailyGoalKey) private var waterDailyGoal = WaterSettings.defaultDailyGoalMl
+    @AppStorage(WaterSettings.unitKey) private var waterUnitRaw = WaterUnit.defaultUnit.rawValue
+
+    private var waterUnit: WaterUnit { WaterUnit(rawValue: waterUnitRaw) ?? .defaultUnit }
 
     // App-update state is owned by ContentView (it also drives the one-shot update
     // notification). It's forwarded here so the About section — now the last section
@@ -3532,7 +3538,7 @@ struct ProfileView: View {
                                 }
                                 .foregroundStyle(.primary)
                                 Spacer()
-                                Text("\(waterDailyGoal.formatted()) ml")
+                                Text(waterUnit.formatted(milliliters: waterDailyGoal))
                                     .foregroundStyle(.secondary)
                                 Image(systemName: "chevron.right")
                                     .font(.caption)
@@ -3540,6 +3546,24 @@ struct ProfileView: View {
                             }
                         }
                         .buttonStyle(.plain)
+
+                        Picker(selection: $waterUnitRaw) {
+                            ForEach(WaterUnit.allCases) { unit in
+                                Text("\(unit.title) (\(unit.symbol))").tag(unit.rawValue)
+                            }
+                        } label: {
+                            Label {
+                                Text("Water Unit")
+                            } icon: {
+                                Image(systemName: "ruler")
+                                    .foregroundStyle(AppColors.calorie)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                        .tint(.secondary)
+                        .onChange(of: waterUnitRaw) { _, _ in
+                            WidgetSnapshotWriter.publish(foods: foodStore.entries, profile: profile)
+                        }
                     }
 
                 }
@@ -4303,7 +4327,7 @@ struct ProfileView: View {
                 CalculationMethodsView()
             }
             .sheet(isPresented: $showWaterGoalPicker) {
-                WaterGoalPickerSheet(currentGoal: waterDailyGoal) {
+                WaterGoalPickerSheet(currentGoal: waterDailyGoal, unit: waterUnit) {
                     waterDailyGoal = $0
                     WidgetSnapshotWriter.publish(foods: foodStore.entries, profile: profile)
                 }

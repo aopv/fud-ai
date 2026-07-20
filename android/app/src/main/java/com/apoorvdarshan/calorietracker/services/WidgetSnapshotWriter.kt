@@ -13,6 +13,7 @@ import com.apoorvdarshan.calorietracker.models.UserProfile
 import com.apoorvdarshan.calorietracker.models.WidgetNutrient
 import com.apoorvdarshan.calorietracker.models.WidgetSnapshot
 import com.apoorvdarshan.calorietracker.models.WaterEntry
+import com.apoorvdarshan.calorietracker.models.WaterUnit
 import com.apoorvdarshan.calorietracker.ui.theme.AppThemeColor
 import com.apoorvdarshan.calorietracker.widget.AllMetricsAppWidget
 import com.apoorvdarshan.calorietracker.widget.CalorieAppWidget
@@ -55,9 +56,10 @@ class WidgetSnapshotWriter(
         combine(
             prefs.waterTrackingEnabled,
             prefs.waterDailyGoalMl,
+            prefs.waterUnit,
             prefs.waterEntries
-        ) { enabled, goalMl, entries ->
-            WaterWidgetState(enabled, goalMl, entries)
+        ) { enabled, goalMl, unit, entries ->
+            WaterWidgetState(enabled, goalMl, unit, entries)
         }
     ) { core, water -> WidgetInputs(core, water) }
         .distinctUntilChanged()
@@ -101,7 +103,8 @@ class WidgetSnapshotWriter(
                 themeEndHex = theme.end.toArgb() and 0xFFFFFF,
                 waterTrackingEnabled = water.enabled,
                 waterCurrentMl = waterTodayMl,
-                waterGoalMl = water.goalMl.coerceAtLeast(1)
+                waterGoalMl = water.goalMl.coerceAtLeast(1),
+                waterUnitRaw = water.unit.storageValue
             )
             prefs.setWidgetSnapshot(snapshot)
         }
@@ -128,6 +131,7 @@ private data class CoreWidgetState(
 private data class WaterWidgetState(
     val enabled: Boolean,
     val goalMl: Int,
+    val unit: WaterUnit,
     val entries: List<WaterEntry>
 )
 

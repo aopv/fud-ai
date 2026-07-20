@@ -45,7 +45,8 @@ data class WidgetSnapshot(
     /** Defaults preserve decoding of snapshots written before the Water widget. */
     val waterTrackingEnabled: Boolean = false,
     val waterCurrentMl: Int = 0,
-    val waterGoalMl: Int = 2_000
+    val waterGoalMl: Int = 2_000,
+    val waterUnitRaw: String = WaterUnit.Default.storageValue
 ) {
     val caloriesRemaining: Int get() = maxOf(0, calorieGoal - calories)
     val proteinRemaining: Double get() = maxOf(0.0, proteinGoal.toDouble() - protein)
@@ -57,6 +58,7 @@ data class WidgetSnapshot(
     val fatProgress: Double get() = if (fatGoal > 0) minOf(1.0, fat / fatGoal) else 0.0
     val waterRemaining: Int get() = maxOf(0, waterGoalMl - waterCurrentMl)
     val waterProgress: Double get() = if (waterGoalMl > 0) minOf(1.0, waterCurrentMl.toDouble() / waterGoalMl) else 0.0
+    val waterUnit: WaterUnit get() = WaterUnit.fromStorage(waterUnitRaw)
 
     val isStale: Boolean get() {
         val snapshotDay = dayStart.atZone(ZoneId.systemDefault()).toLocalDate()

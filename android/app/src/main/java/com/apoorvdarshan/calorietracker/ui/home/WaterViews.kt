@@ -37,10 +37,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.apoorvdarshan.calorietracker.R
 import com.apoorvdarshan.calorietracker.ui.theme.AppColors
+import com.apoorvdarshan.calorietracker.models.WaterUnit
 import androidx.compose.ui.res.stringResource
 
 @Composable
-fun WaterProgressRow(current: Int, goal: Int, modifier: Modifier = Modifier) {
+fun WaterProgressRow(current: Int, goal: Int, unit: WaterUnit, modifier: Modifier = Modifier) {
     val progress = if (goal > 0) (current.toFloat() / goal).coerceIn(0f, 1f) else 0f
     Column(
         modifier = modifier
@@ -63,7 +64,7 @@ fun WaterProgressRow(current: Int, goal: Int, modifier: Modifier = Modifier) {
             )
             Spacer(Modifier.weight(1f))
             Text(
-                stringResource(R.string.water_progress, current, goal),
+                "${unit.displayValue(current)} / ${unit.format(goal)}",
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.62f),
                 fontSize = 12.sp
             )
@@ -79,10 +80,12 @@ fun WaterProgressRow(current: Int, goal: Int, modifier: Modifier = Modifier) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WaterCustomAmountSheet(onDismiss: () -> Unit, onAdd: (Int) -> Unit) {
+fun WaterCustomAmountSheet(unit: WaterUnit, onDismiss: () -> Unit, onAdd: (Int) -> Unit) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var customAmount by remember { mutableStateOf("") }
-    val amount = customAmount.toIntOrNull()?.takeIf { it > 0 }
+    val amountMl = customAmount.replace(',', '.').toDoubleOrNull()
+        ?.takeIf { it > 0 }
+        ?.let(unit::toMilliliters)
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -105,20 +108,27 @@ fun WaterCustomAmountSheet(onDismiss: () -> Unit, onAdd: (Int) -> Unit) {
 
             OutlinedTextField(
                 value = customAmount,
-                onValueChange = { customAmount = it.filter(Char::isDigit).take(4) },
+                onValueChange = { value ->
+                    val filtered = value.filter { it.isDigit() || (unit == WaterUnit.FLUID_OUNCES && (it == '.' || it == ',')) }
+                    val normalized = filtered.replace(',', '.')
+                    val pieces = normalized.split('.', limit = 3)
+                    customAmount = if (pieces.size > 1) "${pieces[0]}.${pieces[1].take(1)}".take(6) else normalized.take(5)
+                },
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text(stringResource(R.string.water_custom_amount)) },
-                suffix = { Text("ml") },
+                suffix = { Text(unit.symbol) },
                 singleLine = true,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = if (unit == WaterUnit.MILLILITERS) KeyboardType.Number else KeyboardType.Decimal
+                )
             )
 
             Button(
                 onClick = {
-                    amount?.let(onAdd)
+                    amountMl?.let(onAdd)
                     onDismiss()
                 },
-                enabled = amount != null,
+                enabled = amountMl != null,
                 modifier = Modifier.fillMaxWidth().height(54.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = AppColors.Calorie)
             ) {

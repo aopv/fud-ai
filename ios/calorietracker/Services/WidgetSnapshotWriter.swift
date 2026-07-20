@@ -51,6 +51,7 @@ enum WidgetSnapshotWriter {
             waterTrackingEnabled: UserDefaults.standard.bool(forKey: WaterSettings.enabledKey),
             waterCurrentMl: waterCurrentMl,
             waterGoalMl: waterGoalMl,
+            waterUnitRaw: UserDefaults.standard.string(forKey: WaterSettings.unitKey) ?? WaterUnit.defaultUnit.rawValue,
             themeStartHex: theme.startHex,
             themeEndHex: theme.endHex
         )

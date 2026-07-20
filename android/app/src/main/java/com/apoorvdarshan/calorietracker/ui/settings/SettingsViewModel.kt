@@ -15,6 +15,7 @@ import com.apoorvdarshan.calorietracker.models.SpeechProvider
 import com.apoorvdarshan.calorietracker.models.UserProfile
 import com.apoorvdarshan.calorietracker.models.WeightEntry
 import com.apoorvdarshan.calorietracker.models.WeightGoal
+import com.apoorvdarshan.calorietracker.models.WaterUnit
 import com.apoorvdarshan.calorietracker.models.WorkoutRpeScale
 import com.apoorvdarshan.calorietracker.models.WorkoutSplit
 import com.apoorvdarshan.calorietracker.services.AndroidAppIconManager
@@ -51,6 +52,7 @@ data class SettingsUiState(
     val appUpdateNotificationsEnabled: Boolean = true,
     val waterTrackingEnabled: Boolean = false,
     val waterDailyGoalMl: Int = 2_000,
+    val waterUnit: WaterUnit = WaterUnit.Default,
     val waterReminderEnabled: Boolean = false,
     val healthConnectEnabled: Boolean = false,
     val workoutHealthWriteGranted: Boolean = false,
@@ -140,6 +142,7 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
             val appUpdateNotifications = container.prefs.appUpdateNotificationsEnabled.first()
             val waterTracking = container.prefs.waterTrackingEnabled.first()
             val waterGoal = container.prefs.waterDailyGoalMl.first()
+            val waterUnit = container.prefs.waterUnit.first()
             val waterReminder = container.prefs.waterReminderEnabled.first()
             val workoutPreferences = container.workoutRepository.preferences.first()
             val profile = container.profileRepository.current()
@@ -188,6 +191,7 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
                 appUpdateNotificationsEnabled = appUpdateNotifications,
                 waterTrackingEnabled = waterTracking,
                 waterDailyGoalMl = waterGoal,
+                waterUnit = waterUnit,
                 waterReminderEnabled = waterReminder,
                 healthConnectEnabled = storedHealthConnect,
                 workoutHealthWriteGranted = workoutHealthWriteGranted,
@@ -477,6 +481,13 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
         viewModelScope.launch {
             container.prefs.setWaterDailyGoalMl(v)
             _ui.value = _ui.value.copy(waterDailyGoalMl = v)
+        }
+    }
+
+    fun setWaterUnit(v: WaterUnit) {
+        viewModelScope.launch {
+            container.prefs.setWaterUnit(v)
+            _ui.value = _ui.value.copy(waterUnit = v)
         }
     }
 

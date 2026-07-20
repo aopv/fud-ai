@@ -3,6 +3,7 @@ import Foundation
 enum WaterSettings {
     static let enabledKey = "waterTrackingEnabled"
     static let dailyGoalKey = "waterDailyGoalMl"
+    static let unitKey = "waterUnit"
     static let reminderEnabledKey = "waterReminderEnabled"
     static let reminderHourKey = "waterReminderHour"
     static let reminderMinuteKey = "waterReminderMinute"
@@ -10,6 +11,35 @@ enum WaterSettings {
 
     static let defaultDailyGoalMl = 2_000
     static let dailyGoalOptions = [1_500, 2_000, 2_500, 3_000, 3_500, 4_000]
+}
+
+enum WaterUnit: String, CaseIterable, Identifiable {
+    case milliliters = "ml"
+    case fluidOunces = "floz"
+
+    static let defaultUnit = WaterUnit.milliliters
+    static let millilitersPerFluidOunce = 29.5735295625
+
+    var id: String { rawValue }
+    var title: String { self == .milliliters ? "Milliliters" : "Fluid Ounces" }
+    var symbol: String { self == .milliliters ? "ml" : "fl oz" }
+    var accessibilityName: String { self == .milliliters ? "milliliters" : "fluid ounces" }
+
+    func displayValue(forMilliliters milliliters: Int) -> String {
+        if self == .milliliters { return milliliters.formatted() }
+        let ounces = Double(milliliters) / Self.millilitersPerFluidOunce
+        if abs(ounces.rounded() - ounces) < 0.05 { return Int(ounces.rounded()).formatted() }
+        return ounces.formatted(.number.precision(.fractionLength(1)))
+    }
+
+    func formatted(milliliters: Int) -> String {
+        "\(displayValue(forMilliliters: milliliters)) \(symbol)"
+    }
+
+    func milliliters(fromDisplayedValue value: Double) -> Int {
+        let converted = self == .milliliters ? value : value * Self.millilitersPerFluidOunce
+        return max(1, Int(converted.rounded()))
+    }
 }
 
 struct WaterEntry: Codable, Identifiable, Equatable {

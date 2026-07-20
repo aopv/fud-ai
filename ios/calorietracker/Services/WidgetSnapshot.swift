@@ -64,6 +64,7 @@ struct WidgetSnapshot: Codable, Equatable {
     var waterTrackingEnabled: Bool? = nil
     var waterCurrentMl: Int? = nil
     var waterGoalMl: Int? = nil
+    var waterUnitRaw: String? = nil
     /// User's theme gradient as raw hex (e.g. 0xFF375F). Optional so snapshots
     /// written by older builds still decode; consumers fall back to Fud Pink.
     var themeStartHex: UInt?
@@ -225,6 +226,7 @@ struct WidgetSnapshot: Codable, Equatable {
             waterTrackingEnabled: waterTrackingEnabled,
             waterCurrentMl: 0,
             waterGoalMl: waterGoalMl,
+            waterUnitRaw: waterUnitRaw,
             themeStartHex: themeStartHex,
             themeEndHex: themeEndHex
         )

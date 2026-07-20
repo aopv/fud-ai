@@ -152,6 +152,7 @@ import com.apoorvdarshan.calorietracker.models.SpeechProvider
 import com.apoorvdarshan.calorietracker.models.UserProfile
 import com.apoorvdarshan.calorietracker.models.WeightDisplayFormatter
 import com.apoorvdarshan.calorietracker.models.WeightGoal
+import com.apoorvdarshan.calorietracker.models.WaterUnit
 import com.apoorvdarshan.calorietracker.models.WorkoutRpeScale
 import com.apoorvdarshan.calorietracker.models.WorkoutSplit
 import java.time.Instant
@@ -182,13 +183,14 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import java.util.Locale
 import java.time.LocalTime
+import kotlin.math.roundToInt
 
 private enum class SettingsSheet {
     AI_PROVIDER, AI_MODEL, MAX_TOKENS, API_KEY, CUSTOM_BASE_URL, SPEECH_PROVIDER, SPEECH_LANGUAGE, SPEECH_KEY,
     FALLBACK_PROVIDER, FALLBACK_MODEL, FALLBACK_KEY, FALLBACK_BASE_URL,
     GENDER, BIRTHDAY, HEIGHT, WEIGHT, BODY_FAT, GOAL_BODY_FAT, ACTIVITY, GOAL, GOAL_WEIGHT, GOAL_SPEED,
     CALORIES, PROTEIN, CARBS, FAT, OPTIONAL_NUTRIENTS,
-    APPEARANCE, WEEK_START, MEAL_TIMES, WATER_GOAL, WORKOUT_SPLIT, WORKOUT_RPE
+    APPEARANCE, WEEK_START, MEAL_TIMES, WATER_GOAL, WATER_UNIT, WORKOUT_SPLIT, WORKOUT_RPE
 }
 
 private enum class HealthConnectPermissionAction {
@@ -594,9 +596,19 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                     HorizontalDivider()
                     SettingRow(
                         stringResource(R.string.settings_water_goal),
-                        stringResource(R.string.settings_water_goal_summary, ui.waterDailyGoalMl),
+                        ui.waterUnit.format(ui.waterDailyGoalMl),
                         icon = Icons.Filled.WaterDrop
                     ) { sheet = SettingsSheet.WATER_GOAL }
+                    HorizontalDivider()
+                    SettingRow(
+                        stringResource(R.string.settings_water_unit),
+                        if (ui.waterUnit == WaterUnit.MILLILITERS) {
+                            stringResource(R.string.settings_water_unit_ml)
+                        } else {
+                            stringResource(R.string.settings_water_unit_fl_oz)
+                        },
+                        icon = Icons.Outlined.Straighten
+                    ) { sheet = SettingsSheet.WATER_UNIT }
                 }
                 HorizontalDivider()
                 SettingRow(
@@ -1802,10 +1814,24 @@ private fun SettingsSheets(
                 )
                 SettingsSheet.WATER_GOAL -> WaterGoalSheet(
                     current = ui.waterDailyGoalMl,
+                    unit = ui.waterUnit,
                     onSave = {
                         vm.setWaterDailyGoalMl(it)
                         onDismiss()
                     }
+                )
+                SettingsSheet.WATER_UNIT -> ListSheet(
+                    title = stringResource(R.string.settings_water_unit),
+                    items = WaterUnit.entries,
+                    label = {
+                        if (it == WaterUnit.MILLILITERS) {
+                            stringResource(R.string.settings_water_unit_ml)
+                        } else {
+                            stringResource(R.string.settings_water_unit_fl_oz)
+                        }
+                    },
+                    selected = { it == ui.waterUnit },
+                    onSelect = { vm.setWaterUnit(it); onDismiss() }
                 )
                 SettingsSheet.CALORIES -> NutritionPickerSheet(
                     label = stringResource(R.string.macro_calories), unit = stringResource(R.string.unit_kcal),
@@ -2295,27 +2321,32 @@ private fun MealBoundary.updatedSchedule(schedule: MealSchedule, minutes: Int): 
 }
 
 @Composable
-private fun WaterGoalSheet(current: Int, onSave: (Int) -> Unit) {
-    val initialGoal = (((current.coerceIn(50, 10_000) + 25) / 50) * 50).coerceIn(50, 10_000)
+private fun WaterGoalSheet(current: Int, unit: WaterUnit, onSave: (Int) -> Unit) {
+    val initialGoal = if (unit == WaterUnit.MILLILITERS) {
+        (((current.coerceIn(50, 10_000) + 25) / 50) * 50).coerceIn(50, 10_000)
+    } else {
+        (current / WaterUnit.MILLILITERS_PER_FLUID_OUNCE).roundToInt().coerceIn(2, 338)
+    }
     var goal by remember(current) { mutableIntStateOf(initialGoal) }
     Text(stringResource(R.string.settings_water_goal), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
     Spacer(Modifier.height(20.dp))
     NumericWheelPicker(
         value = goal,
         onValueChange = { goal = it },
-        min = 50,
-        max = 10_000,
-        unit = stringResource(R.string.unit_ml),
-        step = 50
+        min = if (unit == WaterUnit.MILLILITERS) 50 else 2,
+        max = if (unit == WaterUnit.MILLILITERS) 10_000 else 338,
+        unit = unit.symbol,
+        step = if (unit == WaterUnit.MILLILITERS) 50 else 1
     )
     Spacer(Modifier.height(8.dp))
     Text(
-        stringResource(R.string.settings_water_goal_wheel_help),
+        if (unit == WaterUnit.MILLILITERS) stringResource(R.string.settings_water_goal_wheel_help)
+        else stringResource(R.string.settings_water_goal_wheel_help_fl_oz),
         style = MaterialTheme.typography.bodySmall,
         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
     )
     Spacer(Modifier.height(16.dp))
-    GradientSaveButton { onSave(goal) }
+    GradientSaveButton { onSave(unit.toMilliliters(goal.toDouble())) }
     Spacer(Modifier.height(8.dp))
 }
 

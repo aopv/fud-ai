@@ -99,12 +99,12 @@ private fun WaterProgressContent(snapshot: WidgetSnapshot) {
                 gaugeWidthDp = gaugeW,
                 startHex = snapshot.themeStartHex,
                 endHex = snapshot.themeEndHex,
-                centerLarge = snapshot.waterCurrentMl.toString(),
-                centerSmall = "/ ${snapshot.waterGoalMl} ml"
+                centerLarge = snapshot.waterUnit.displayValue(snapshot.waterCurrentMl),
+                centerSmall = "/ ${snapshot.waterUnit.format(snapshot.waterGoalMl)}"
             )
         }
         Text(
-            text = "${snapshot.waterRemaining} ml left",
+            text = "${snapshot.waterUnit.format(snapshot.waterRemaining)} left",
             style = TextStyle(
                 color = WidgetTheme.themeTextProvider(snapshot.themeStartHex),
                 fontWeight = FontWeight.Medium,

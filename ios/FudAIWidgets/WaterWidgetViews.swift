@@ -46,13 +46,13 @@ private struct SmallWaterView: View {
                     lineWidth: 9
                 ) {
                     VStack(spacing: 0) {
-                        Text("\(snapshot.waterCurrent.formatted()) ml")
+                        Text("\(snapshot.waterDisplayValue(snapshot.waterCurrent)) \(snapshot.waterUnitSymbol)")
                             .font(.system(.title3, design: .rounded, weight: .bold).monospacedDigit())
                             .foregroundStyle(snapshot.themeGradient)
                             .minimumScaleFactor(0.5)
                             .lineLimit(1)
                             .padding(.horizontal, 12)
-                        Text("/ \(snapshot.waterGoal.formatted()) ml")
+                        Text("/ \(snapshot.waterDisplayValue(snapshot.waterGoal)) \(snapshot.waterUnitSymbol)")
                             .font(.system(.caption2, design: .rounded))
                             .foregroundStyle(.secondary)
                             .minimumScaleFactor(0.7)
@@ -63,7 +63,7 @@ private struct SmallWaterView: View {
 
                 Spacer(minLength: 2)
 
-                Text("\(snapshot.waterRemaining.formatted()) ml left")
+                Text("\(snapshot.waterDisplayValue(snapshot.waterRemaining)) \(snapshot.waterUnitSymbol) left")
                     .font(.system(.caption2, design: .rounded, weight: .semibold))
                     .foregroundStyle(snapshot.themeColor)
                     .lineLimit(1)
@@ -124,14 +124,14 @@ private struct RectangularWaterView: View {
                     Text("Water")
                         .font(.system(.headline, design: .rounded, weight: .semibold))
                     Spacer(minLength: 4)
-                    Text("\(snapshot.waterCurrent.formatted()) / \(snapshot.waterGoal.formatted()) ml")
+                    Text("\(snapshot.waterDisplayValue(snapshot.waterCurrent)) / \(snapshot.waterDisplayValue(snapshot.waterGoal)) \(snapshot.waterUnitSymbol)")
                         .font(.system(.caption, design: .rounded, weight: .bold).monospacedDigit())
                         .minimumScaleFactor(0.65)
                         .lineLimit(1)
                 }
                 ProgressView(value: snapshot.waterProgress)
                     .widgetAccentable()
-                Text("\(snapshot.waterRemaining.formatted()) ml left")
+                Text("\(snapshot.waterDisplayValue(snapshot.waterRemaining)) \(snapshot.waterUnitSymbol) left")
                     .font(.system(.caption2, design: .rounded, weight: .medium))
                     .foregroundStyle(.secondary)
             }
@@ -153,7 +153,7 @@ private struct InlineWaterView: View {
 
     var body: some View {
         if snapshot.waterIsEnabled {
-            Text("Water \(snapshot.waterCurrent.formatted()) / \(snapshot.waterGoal.formatted()) ml")
+            Text("Water \(snapshot.waterDisplayValue(snapshot.waterCurrent)) / \(snapshot.waterDisplayValue(snapshot.waterGoal)) \(snapshot.waterUnitSymbol)")
         } else {
             Text("Enable Water Tracking in Fud AI")
         }

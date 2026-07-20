@@ -13,6 +13,7 @@ import com.apoorvdarshan.calorietracker.models.OptionalNutrientGoals
 import com.apoorvdarshan.calorietracker.models.PendingFoodAnalysisDraft
 import com.apoorvdarshan.calorietracker.models.UserProfile
 import com.apoorvdarshan.calorietracker.models.WaterEntry
+import com.apoorvdarshan.calorietracker.models.WaterUnit
 import com.apoorvdarshan.calorietracker.services.OpenFoodFactsService
 import com.apoorvdarshan.calorietracker.services.ai.AiError
 import com.apoorvdarshan.calorietracker.services.ai.FoodAnalysis
@@ -52,6 +53,7 @@ data class HomeUiState(
     val favoriteKeys: Set<String> = emptySet(),
     val waterTrackingEnabled: Boolean = false,
     val waterDailyGoalMl: Int = 2_000,
+    val waterUnit: WaterUnit = WaterUnit.Default,
     val waterTodayMl: Int = 0,
     val pendingAnalysis: FoodAnalysis? = null,
     val pendingImageBytes: ByteArray? = null,
@@ -139,6 +141,10 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
 
         container.prefs.waterDailyGoalMl
             .onEach { goal -> _ui.value = _ui.value.copy(waterDailyGoalMl = goal) }
+            .launchIn(viewModelScope)
+
+        container.prefs.waterUnit
+            .onEach { unit -> _ui.value = _ui.value.copy(waterUnit = unit) }
             .launchIn(viewModelScope)
 
         combine(container.waterRepository.entries, _selectedDate) { entries, day ->

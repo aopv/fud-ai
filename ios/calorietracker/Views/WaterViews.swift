@@ -3,6 +3,7 @@ import SwiftUI
 struct WaterProgressRow: View {
     let current: Int
     let goal: Int
+    let unit: WaterUnit
 
     private var progress: Double {
         guard goal > 0 else { return 0 }
@@ -16,7 +17,7 @@ struct WaterProgressRow: View {
                     .font(.system(.subheadline, design: .rounded, weight: .semibold))
                     .foregroundStyle(AppColors.calorie)
                 Spacer()
-                Text("\(current.formatted()) / \(goal.formatted()) ml")
+                Text("\(unit.displayValue(forMilliliters: current)) / \(unit.formatted(milliliters: goal))")
                     .font(.system(.caption, design: .rounded, weight: .medium))
                     .foregroundStyle(.secondary)
             }
@@ -33,19 +34,21 @@ struct WaterProgressRow: View {
         }
         .padding(.vertical, 2)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("Water, \(current) of \(goal) milliliters")
+        .accessibilityLabel("Water, \(unit.displayValue(forMilliliters: current)) of \(unit.displayValue(forMilliliters: goal)) \(unit.accessibilityName)")
     }
 }
 
 struct WaterCustomAmountSheet: View {
+    let unit: WaterUnit
     let onAdd: (Int) -> Void
 
     @Environment(\.dismiss) private var dismiss
     @State private var customAmount = ""
     @FocusState private var customFocused: Bool
 
-    private var selectedAmount: Int? {
-        Int(customAmount).flatMap { $0 > 0 ? $0 : nil }
+    private var selectedAmountMl: Int? {
+        Double(customAmount.replacingOccurrences(of: ",", with: "."))
+            .flatMap { $0 > 0 ? unit.milliliters(fromDisplayedValue: $0) : nil }
     }
 
     var body: some View {
@@ -56,12 +59,15 @@ struct WaterCustomAmountSheet: View {
 
                 HStack {
                     TextField("Custom amount", text: $customAmount)
-                        .keyboardType(.numberPad)
+                        .keyboardType(unit == .milliliters ? .numberPad : .decimalPad)
                         .focused($customFocused)
                         .onChange(of: customAmount) { _, value in
-                            customAmount = String(value.filter(\.isNumber).prefix(4))
+                            let filtered = value.filter { $0.isNumber || (unit == .fluidOunces && ($0 == "." || $0 == ",")) }
+                            let normalized = filtered.replacingOccurrences(of: ",", with: ".")
+                            let pieces = normalized.split(separator: ".", omittingEmptySubsequences: false)
+                            customAmount = String((pieces.count > 1 ? "\(pieces[0]).\(pieces[1].prefix(1))" : normalized).prefix(6))
                         }
-                    Text("ml")
+                    Text(unit.symbol)
                         .foregroundStyle(.secondary)
                 }
                 .padding()
@@ -69,8 +75,8 @@ struct WaterCustomAmountSheet: View {
                 .clipShape(RoundedRectangle(cornerRadius: 14))
 
                 Button {
-                    guard let selectedAmount else { return }
-                    onAdd(selectedAmount)
+                    guard let selectedAmountMl else { return }
+                    onAdd(selectedAmountMl)
                     dismiss()
                 } label: {
                     Label("Add Water", systemImage: "drop.fill")
@@ -80,7 +86,7 @@ struct WaterCustomAmountSheet: View {
                         .foregroundStyle(.white)
                         .background(AppColors.calorie, in: RoundedRectangle(cornerRadius: 14))
                 }
-                .disabled(selectedAmount == nil)
+                .disabled(selectedAmountMl == nil)
 
                 Spacer()
             }
@@ -102,13 +108,19 @@ struct WaterCustomAmountSheet: View {
 struct WaterGoalPickerSheet: View {
     @Environment(\.dismiss) private var dismiss
     let onSave: (Int) -> Void
-    @State private var selectedGoal: Int
+    let unit: WaterUnit
+    @State private var selectedGoalDisplay: Int
 
-    init(currentGoal: Int, onSave: @escaping (Int) -> Void) {
+    init(currentGoal: Int, unit: WaterUnit, onSave: @escaping (Int) -> Void) {
         self.onSave = onSave
-        let clamped = min(10_000, max(50, currentGoal))
-        let snapped = min(10_000, max(50, ((clamped + 25) / 50) * 50))
-        _selectedGoal = State(initialValue: snapped)
+        self.unit = unit
+        if unit == .milliliters {
+            let clamped = min(10_000, max(50, currentGoal))
+            _selectedGoalDisplay = State(initialValue: min(10_000, max(50, ((clamped + 25) / 50) * 50)))
+        } else {
+            let ounces = Int((Double(currentGoal) / WaterUnit.millilitersPerFluidOunce).rounded())
+            _selectedGoalDisplay = State(initialValue: min(338, max(2, ounces)))
+        }
     }
 
     var body: some View {
@@ -118,8 +130,8 @@ struct WaterGoalPickerSheet: View {
                     .font(.system(.title2, design: .rounded, weight: .bold))
 
                 HStack(spacing: 4) {
-                    Picker("Milliliters", selection: $selectedGoal) {
-                        ForEach(Array(stride(from: 50, through: 10_000, by: 50)), id: \.self) { amount in
+                    Picker(unit.title, selection: $selectedGoalDisplay) {
+                        ForEach(unit == .milliliters ? Array(stride(from: 50, through: 10_000, by: 50)) : Array(2...338), id: \.self) { amount in
                             Text(amount.formatted())
                                 .tag(amount)
                                 .font(.system(.title2, design: .rounded, weight: .medium))
@@ -129,13 +141,13 @@ struct WaterGoalPickerSheet: View {
                     .frame(width: 180, height: 190)
                     .clipped()
 
-                    Text("ml")
+                    Text(unit.symbol)
                         .font(.system(.title3, design: .rounded))
                         .foregroundStyle(.secondary)
                 }
 
                 Button {
-                    onSave(selectedGoal)
+                    onSave(unit.milliliters(fromDisplayedValue: Double(selectedGoalDisplay)))
                     dismiss()
                 } label: {
                     Text("Save")

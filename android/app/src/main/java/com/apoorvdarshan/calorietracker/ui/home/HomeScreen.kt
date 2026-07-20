@@ -323,6 +323,7 @@ fun HomeScreen(container: AppContainer) {
                         WaterProgressRow(
                             current = ui.waterTodayMl,
                             goal = ui.waterDailyGoalMl,
+                            unit = ui.waterUnit,
                             modifier = Modifier.padding(horizontal = 20.dp)
                         )
                     }
@@ -478,9 +479,9 @@ fun HomeScreen(container: AppContainer) {
                     }
 
                     AddMenuGroup.Water -> {
-                        SheetGlassDropdownMenuItem(label = stringResource(R.string.water_one_glass_amount), leadingIcon = Icons.Filled.WaterDrop) { showAddMenu = false; addMenuGroup = null; vm.addWater(250) }
-                        SheetGlassDropdownMenuItem(label = stringResource(R.string.water_two_glasses_amount), leadingIcon = Icons.Filled.WaterDrop) { showAddMenu = false; addMenuGroup = null; vm.addWater(500) }
-                        SheetGlassDropdownMenuItem(label = stringResource(R.string.water_three_glasses_amount), leadingIcon = Icons.Filled.WaterDrop) { showAddMenu = false; addMenuGroup = null; vm.addWater(750) }
+                        SheetGlassDropdownMenuItem(label = stringResource(R.string.water_one_glass_dynamic, ui.waterUnit.format(250)), leadingIcon = Icons.Filled.WaterDrop) { showAddMenu = false; addMenuGroup = null; vm.addWater(250) }
+                        SheetGlassDropdownMenuItem(label = stringResource(R.string.water_two_glasses_dynamic, ui.waterUnit.format(500)), leadingIcon = Icons.Filled.WaterDrop) { showAddMenu = false; addMenuGroup = null; vm.addWater(500) }
+                        SheetGlassDropdownMenuItem(label = stringResource(R.string.water_three_glasses_dynamic, ui.waterUnit.format(750)), leadingIcon = Icons.Filled.WaterDrop) { showAddMenu = false; addMenuGroup = null; vm.addWater(750) }
                         SheetGlassDropdownMenuItem(label = stringResource(R.string.water_custom_amount), leadingIcon = Icons.Filled.DriveFileRenameOutline) { showAddMenu = false; addMenuGroup = null; showCustomWaterLog = true }
                         SheetGlassDropdownMenuItem(label = "Back", leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
                     }
@@ -499,6 +500,7 @@ fun HomeScreen(container: AppContainer) {
 
     if (showCustomWaterLog) {
         WaterCustomAmountSheet(
+            unit = ui.waterUnit,
             onDismiss = { showCustomWaterLog = false },
             onAdd = vm::addWater
         )

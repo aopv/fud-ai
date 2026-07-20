@@ -58,6 +58,7 @@ struct WidgetSnapshot: Codable, Equatable {
     var waterTrackingEnabled: Bool? = nil
     var waterCurrentMl: Int? = nil
     var waterGoalMl: Int? = nil
+    var waterUnitRaw: String? = nil
     /// User's theme gradient as raw hex (e.g. 0xFF375F). Optional so snapshots
     /// written by older builds still decode; consumers fall back to Fud Pink.
     var themeStartHex: UInt?
@@ -192,6 +193,7 @@ struct WidgetSnapshot: Codable, Equatable {
             waterTrackingEnabled: waterTrackingEnabled,
             waterCurrentMl: 0,
             waterGoalMl: waterGoalMl,
+            waterUnitRaw: waterUnitRaw,
             themeStartHex: themeStartHex,
             themeEndHex: themeEndHex
         )
@@ -206,6 +208,14 @@ struct WidgetSnapshot: Codable, Equatable {
     var waterGoal: Int { max(1, waterGoalMl ?? 2_000) }
     var waterRemaining: Int { max(0, waterGoal - waterCurrent) }
     var waterProgress: Double { min(1, Double(waterCurrent) / Double(waterGoal)) }
+    var waterUsesFluidOunces: Bool { waterUnitRaw == "floz" }
+    var waterUnitSymbol: String { waterUsesFluidOunces ? "fl oz" : "ml" }
+    func waterDisplayValue(_ milliliters: Int) -> String {
+        guard waterUsesFluidOunces else { return milliliters.formatted() }
+        let ounces = Double(milliliters) / 29.5735295625
+        if abs(ounces.rounded() - ounces) < 0.05 { return Int(ounces.rounded()).formatted() }
+        return ounces.formatted(.number.precision(.fractionLength(1)))
+    }
     var calorieProgress: Double {
         guard calorieGoal > 0 else { return 0 }
         return min(1.0, Double(calories) / Double(calorieGoal))
