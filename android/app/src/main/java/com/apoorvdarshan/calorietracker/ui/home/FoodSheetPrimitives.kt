@@ -511,6 +511,7 @@ internal fun SheetGlassDropdownMenuItem(
     label: String,
     selected: Boolean = false,
     leadingIcon: ImageVector? = null,
+    leadingContent: (@Composable () -> Unit)? = null,
     trailingIcon: ImageVector? = null,
     reserveSelectionSlot: Boolean = false,
     onClick: () -> Unit
@@ -529,6 +530,12 @@ internal fun SheetGlassDropdownMenuItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         when {
+            leadingContent != null -> {
+                Box(Modifier.size(20.dp), contentAlignment = Alignment.Center) {
+                    leadingContent()
+                }
+                Spacer(Modifier.width(10.dp))
+            }
             leadingIcon != null -> {
                 Icon(
                     leadingIcon,

@@ -40,8 +40,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.ChevronLeft
-import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Checklist
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ContentCopy
@@ -72,6 +70,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -105,6 +104,7 @@ import com.apoorvdarshan.calorietracker.ui.home.SheetGlassDropdownMenu
 import com.apoorvdarshan.calorietracker.ui.home.SheetGlassDropdownMenuItem
 import com.apoorvdarshan.calorietracker.ui.navigation.BottomNavScrollPadding
 import com.apoorvdarshan.calorietracker.ui.theme.AppColors
+import coil.compose.AsyncImage
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -114,11 +114,6 @@ import java.util.UUID
 
 private const val WORKOUT_WEEKS = 53
 private const val CURRENT_WORKOUT_WEEK = WORKOUT_WEEKS - 1
-
-private enum class WorkoutAddMenuPage {
-    ROOT,
-    GROUPS
-}
 
 @Composable
 internal fun WorkoutDiaryScreen(
@@ -132,7 +127,6 @@ internal fun WorkoutDiaryScreen(
     var pickerRequest by remember { mutableStateOf<WorkoutPickerRequest?>(null) }
     var copySheetVisible by remember { mutableStateOf(false) }
     var addMenuExpanded by remember { mutableStateOf(false) }
-    var addMenuPage by remember { mutableStateOf(WorkoutAddMenuPage.ROOT) }
     val listState = rememberLazyListState()
     val focusManager = LocalFocusManager.current
     val keyboard = LocalSoftwareKeyboardController.current
@@ -288,7 +282,6 @@ internal fun WorkoutDiaryScreen(
                     .background(AppColors.Calorie)
                     .clickable(role = Role.Button) {
                         dismissKeyboard()
-                        addMenuPage = WorkoutAddMenuPage.ROOT
                         addMenuExpanded = true
                     }
                     .semantics { contentDescription = "Add workout" },
@@ -299,82 +292,50 @@ internal fun WorkoutDiaryScreen(
 
             SheetGlassDropdownMenu(
                 expanded = addMenuExpanded,
-                onDismissRequest = {
-                    addMenuExpanded = false
-                    addMenuPage = WorkoutAddMenuPage.ROOT
-                },
-                menuWidth = 238.dp
+                onDismissRequest = { addMenuExpanded = false },
+                modifier = Modifier.heightIn(max = 520.dp),
+                menuWidth = 286.dp
             ) {
-                when (addMenuPage) {
-                    WorkoutAddMenuPage.ROOT -> {
+                if (state.splitGroups.isEmpty()) {
+                    SheetGlassDropdownMenuItem(
+                        label = "All exercises",
+                        leadingContent = { WorkoutMenuGlyph(workoutMenuGlyphAsset("All exercises", emptySet())) },
+                        onClick = {
+                            addMenuExpanded = false
+                            pickerRequest = WorkoutPickerRequest.all()
+                        }
+                    )
+                } else {
+                    state.splitGroups.forEach { group ->
                         SheetGlassDropdownMenuItem(
-                            label = "Saved exercises",
-                            leadingIcon = Icons.Filled.Bookmark,
-                            trailingIcon = Icons.Filled.ChevronRight,
+                            label = group.title,
+                            leadingContent = {
+                                WorkoutMenuGlyph(workoutMenuGlyphAsset(group.title, group.muscles))
+                            },
                             onClick = {
                                 addMenuExpanded = false
-                                pickerRequest = WorkoutPickerRequest.saved()
+                                pickerRequest = WorkoutPickerRequest.group(group)
                             }
-                        )
-                        SheetGlassDropdownMenuItem(
-                            label = "Copy from day",
-                            leadingIcon = Icons.Filled.ContentCopy,
-                            onClick = {
-                                addMenuExpanded = false
-                                copySheetVisible = true
-                            }
-                        )
-                        HorizontalDivider(color = workoutsColors().hairline.copy(alpha = 0.45f))
-                        if (state.splitGroups.isEmpty()) {
-                            SheetGlassDropdownMenuItem(
-                                label = "All exercises",
-                                leadingIcon = Icons.Filled.FitnessCenter,
-                                onClick = {
-                                    addMenuExpanded = false
-                                    pickerRequest = WorkoutPickerRequest.all()
-                                }
-                            )
-                        } else if (state.splitGroups.size <= 5) {
-                            state.splitGroups.forEach { group ->
-                                SheetGlassDropdownMenuItem(
-                                    label = group.title,
-                                    leadingIcon = Icons.Filled.FitnessCenter,
-                                    onClick = {
-                                        addMenuExpanded = false
-                                        pickerRequest = WorkoutPickerRequest.group(group)
-                                    }
-                                )
-                            }
-                        } else {
-                            SheetGlassDropdownMenuItem(
-                                label = "Choose body part",
-                                leadingIcon = Icons.Filled.FitnessCenter,
-                                trailingIcon = Icons.Filled.ChevronRight,
-                                onClick = { addMenuPage = WorkoutAddMenuPage.GROUPS }
-                            )
-                        }
-                    }
-
-                    WorkoutAddMenuPage.GROUPS -> {
-                        state.splitGroups.forEach { group ->
-                            SheetGlassDropdownMenuItem(
-                                label = group.title,
-                                leadingIcon = Icons.Filled.FitnessCenter,
-                                onClick = {
-                                    addMenuExpanded = false
-                                    addMenuPage = WorkoutAddMenuPage.ROOT
-                                    pickerRequest = WorkoutPickerRequest.group(group)
-                                }
-                            )
-                        }
-                        HorizontalDivider(color = workoutsColors().hairline.copy(alpha = 0.45f))
-                        SheetGlassDropdownMenuItem(
-                            label = "Back",
-                            leadingIcon = Icons.Filled.ChevronLeft,
-                            onClick = { addMenuPage = WorkoutAddMenuPage.ROOT }
                         )
                     }
                 }
+                HorizontalDivider(color = workoutsColors().hairline.copy(alpha = 0.45f))
+                SheetGlassDropdownMenuItem(
+                    label = "Copy from day",
+                    leadingIcon = Icons.Filled.ContentCopy,
+                    onClick = {
+                        addMenuExpanded = false
+                        copySheetVisible = true
+                    }
+                )
+                SheetGlassDropdownMenuItem(
+                    label = "Saved",
+                    leadingIcon = Icons.Filled.Bookmark,
+                    onClick = {
+                        addMenuExpanded = false
+                        pickerRequest = WorkoutPickerRequest.saved()
+                    }
+                )
             }
         }
     }
@@ -432,6 +393,40 @@ internal fun WorkoutDiaryScreen(
             }
         }
     }
+}
+
+@Composable
+private fun WorkoutMenuGlyph(asset: String) {
+    AsyncImage(
+        model = asset,
+        contentDescription = null,
+        colorFilter = ColorFilter.tint(AppColors.Calorie),
+        modifier = Modifier.size(20.dp)
+    )
+}
+
+private fun workoutMenuGlyphAsset(title: String, muscles: Set<String>): String {
+    if (muscles.size == 1) return muscleGlyphAsset(muscles.first())
+    val key = when {
+        title.contains("push", ignoreCase = true) -> "group_push"
+        title.contains("pull", ignoreCase = true) -> "group_pull"
+        title.contains("upper", ignoreCase = true) -> "group_upper"
+        title.contains("lower", ignoreCase = true) ||
+            title.contains("leg", ignoreCase = true) ||
+            title.contains("quad", ignoreCase = true) ||
+            title.contains("hamstring", ignoreCase = true) -> "group_lower"
+        title.contains("core", ignoreCase = true) || title.contains("ab", ignoreCase = true) -> "abs"
+        title.contains("arm", ignoreCase = true) ||
+            title.contains("bicep", ignoreCase = true) ||
+            title.contains("tricep", ignoreCase = true) -> "group_arms"
+        title.contains("back", ignoreCase = true) ||
+            title.contains("lat", ignoreCase = true) ||
+            title.contains("trap", ignoreCase = true) -> "group_back"
+        title.contains("chest", ignoreCase = true) -> "chest"
+        title.contains("shoulder", ignoreCase = true) -> "shoulders"
+        else -> "generic"
+    }
+    return "file:///android_asset/muscle/muscle_icon_$key.png"
 }
 
 @Composable
