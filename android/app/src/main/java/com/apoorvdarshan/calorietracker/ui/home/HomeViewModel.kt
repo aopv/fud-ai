@@ -479,10 +479,7 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
         viewModelScope.launch {
             entries.forEach { entry ->
                 container.foodRepository.addEntry(
-                    entry.duplicatedForLogging(
-                        logDate = copiedTimestamp,
-                        mealType = entry.mealType
-                    )
+                    entry.duplicatedForLogging(logDate = copiedTimestamp)
                 )
             }
         }

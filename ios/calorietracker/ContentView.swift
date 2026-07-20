@@ -1609,7 +1609,7 @@ private struct CopyFromDaySheet: View {
         guard !entries.isEmpty else { return }
         let copiedTimestamp = timestamp(on: targetDate, usingTimeFrom: .now)
         for entry in entries {
-            let copiedEntry = entry.duplicatedForLogging(at: copiedTimestamp, mealType: entry.mealType)
+            let copiedEntry = entry.duplicatedForLogging(at: copiedTimestamp)
             foodStore.addEntry(copiedEntry)
         }
         dismiss()
