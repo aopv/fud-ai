@@ -10,6 +10,8 @@ import com.apoorvdarshan.calorietracker.data.PreferencesStore
 import com.apoorvdarshan.calorietracker.data.ProfileRepository
 import com.apoorvdarshan.calorietracker.data.WeightRepository
 import com.apoorvdarshan.calorietracker.data.WaterRepository
+import com.apoorvdarshan.calorietracker.data.WorkoutHealthSync
+import com.apoorvdarshan.calorietracker.data.WorkoutRepository
 import com.apoorvdarshan.calorietracker.services.FoodImageStore
 import com.apoorvdarshan.calorietracker.services.NotificationService
 import com.apoorvdarshan.calorietracker.services.TestDataSeeder
@@ -18,6 +20,7 @@ import com.apoorvdarshan.calorietracker.services.AdaptiveGoalResult
 import com.apoorvdarshan.calorietracker.services.WeightAnalysisService
 import com.apoorvdarshan.calorietracker.models.UserProfile
 import com.apoorvdarshan.calorietracker.models.CurrentMealSchedule
+import com.apoorvdarshan.calorietracker.models.WorkoutSession
 import com.apoorvdarshan.calorietracker.services.ai.ChatService
 import com.apoorvdarshan.calorietracker.services.ai.FoodAnalysisService
 import com.apoorvdarshan.calorietracker.services.health.HealthConnectManager
@@ -34,6 +37,7 @@ import kotlinx.coroutines.launch
 import java.time.Duration
 import java.time.Instant
 import java.time.LocalDate
+import java.util.UUID
 
 /**
  * Application-scoped singleton wiring. Manual DI (no Hilt) — repositories and
@@ -117,6 +121,45 @@ class AppContainer(app: FudAIApp) {
     val notifications = NotificationService(app)
     val health = HealthConnectManager(app)
 
+    private val workoutHealthSync = object : WorkoutHealthSync {
+        override suspend fun upsertBurn(session: WorkoutSession): Boolean {
+            if (!prefs.healthConnectEnabled.first() || !health.hasActiveEnergyWrite()) return false
+            val calories = session.caloriesBurned ?: return false
+            val version = session.healthSyncVersion ?: return false
+            return health.upsertWorkoutBurn(
+                sessionId = session.id,
+                diaryDateKey = session.diaryDateKey,
+                caloriesBurned = calories,
+                healthSyncVersion = version
+            )
+        }
+
+        override suspend fun deleteBurn(sessionId: UUID, diaryDateKey: String): Boolean {
+            // Keep deletion best-effort even after the user disables syncing so
+            // an old Fud AI record cannot be restored on the next connection.
+            if (!health.isAvailable() || !health.hasActiveEnergyWrite()) return false
+            return health.deleteWorkoutBurn(sessionId, diaryDateKey)
+        }
+
+        override suspend fun readOwnedBurns(): List<WorkoutSession>? {
+            if (!prefs.healthConnectEnabled.first() || !health.hasActiveEnergyRead()) return null
+            val now = Instant.now()
+            return health.readOwnedWorkoutBurns(now.minus(Duration.ofDays(7_300)), now.plus(Duration.ofDays(2)))
+                ?.map { burn ->
+                    WorkoutSession(
+                        id = burn.sessionId,
+                        diaryDateKey = burn.diaryDateKey,
+                        startedAt = burn.startTime,
+                        completedAt = burn.endTime,
+                        durationSeconds = 0,
+                        exercises = emptyList(),
+                        caloriesBurned = burn.caloriesBurned,
+                        healthSyncVersion = burn.healthSyncVersion
+                    )
+                }
+        }
+    }
+
     val profileRepository = ProfileRepository(prefs)
     val foodRepository = FoodRepository(prefs, health)
     val weightRepository = WeightRepository(prefs, profileRepository, health)
@@ -124,6 +167,7 @@ class AppContainer(app: FudAIApp) {
     val bodyMeasurementRepository = BodyMeasurementRepository(prefs)
     val chatRepository = ChatRepository(prefs)
     val waterRepository = WaterRepository(prefs)
+    val workoutRepository = WorkoutRepository(prefs, workoutHealthSync)
 
     val foodAnalysis = FoodAnalysisService(prefs, keyStore)
     val chatService = ChatService(prefs, keyStore)
@@ -158,7 +202,10 @@ class AppContainer(app: FudAIApp) {
         if (!prefs.healthConnectEnabled.first()) return
         if (!health.isAvailable()) return
         val caps = health.capabilities()
-        if (!caps.weightRead && !caps.bodyFatRead && !caps.nutritionRead) return
+        val workoutBurnRead = health.hasActiveEnergyRead()
+        if (!caps.weightRead && !caps.bodyFatRead && !caps.nutritionRead &&
+            !workoutBurnRead && !caps.activeEnergyWrite
+        ) return
 
         healthReadSyncInFlight = true
         try {
@@ -176,6 +223,14 @@ class AppContainer(app: FudAIApp) {
                     prefs.setHealthFoodRestoreDone(true)
                 }
             }
+
+            // Reconcile app-owned calculated workout burns independently from
+            // nutrition and weigh-ins. Local calculation remains available even
+            // without Health permission; deferred writes/deletes retry here.
+            if (workoutBurnRead || caps.activeEnergyWrite) {
+                workoutRepository.synchronizeWithHealth()
+            }
+
             if (!caps.weightRead && !caps.bodyFatRead) return
 
             val desiredTypes = buildSet {

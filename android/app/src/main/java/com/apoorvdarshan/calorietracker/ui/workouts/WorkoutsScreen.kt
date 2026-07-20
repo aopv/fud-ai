@@ -35,6 +35,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.FilterListOff
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.GpsFixed
+import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
@@ -43,13 +44,16 @@ import androidx.compose.material.icons.filled.Storage
 import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material.icons.filled.SwapVert
 import androidx.compose.material.icons.filled.Tag
+import androidx.compose.material.icons.filled.SportsGymnastics
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -75,8 +79,13 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import com.apoorvdarshan.calorietracker.AppContainer
 import com.apoorvdarshan.calorietracker.R
+import com.apoorvdarshan.calorietracker.models.WorkoutTabMode
+import com.apoorvdarshan.calorietracker.models.WorkoutWeightUnit
+import com.apoorvdarshan.calorietracker.ui.components.FudGlassSurface
 import com.apoorvdarshan.calorietracker.ui.navigation.BottomNavScrollPadding
+import com.apoorvdarshan.calorietracker.ui.theme.AppColors
 import com.apoorvdarshan.calorietracker.ui.workouts.AnimatedExerciseImage
 import com.apoorvdarshan.calorietracker.data.ExerciseItem
 import com.apoorvdarshan.calorietracker.data.ExerciseRepository
@@ -84,23 +93,133 @@ import com.apoorvdarshan.calorietracker.data.ExerciseSort
 import com.apoorvdarshan.calorietracker.ui.workouts.WorkoutsViewModel
 
 @Composable
-fun WorkoutsScreen(modifier: Modifier = Modifier) {
+fun WorkoutsScreen(container: AppContainer, modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val repo = remember { ExerciseRepository.get(context) }
     val vm: WorkoutsViewModel = viewModel()
+    val profile by container.profileRepository.profile.collectAsState(initial = null)
+    val latestWeight by container.weightRepository.latest.collectAsState(initial = null)
+    val weightUnitRaw by container.prefs.weightUnit.collectAsState(initial = "kg")
+    val weekStartsOnMonday by container.prefs.weekStartsOnMonday.collectAsState(initial = true)
+    val weightUnit = WorkoutWeightUnit.fromStorage(weightUnitRaw)
+    val bodyWeightKg = latestWeight?.weightKg ?: profile?.weightKg ?: 70.0
 
-    val openItem = vm.openExerciseId?.let { id -> repo.exercises.firstOrNull { it.id == id } }
+    LaunchedEffect(container.workoutRepository, bodyWeightKg, weightUnit) {
+        vm.bindWorkoutRepository(
+            repository = container.workoutRepository,
+            currentBodyWeightKg = bodyWeightKg,
+            weightUnit = weightUnit
+        )
+    }
+
+    val openItem = vm.openExerciseSnapshot
+        ?: vm.openExerciseId?.let { id -> repo.exercises.firstOrNull { it.id == id } }
     if (openItem != null) {
-        BackHandler { vm.openExerciseId = null }
-        ExerciseDetailScreen(item = openItem, onBack = { vm.openExerciseId = null }, modifier = modifier)
+        BackHandler(onBack = vm::closeExerciseDetail)
+        ExerciseDetailScreen(item = openItem, onBack = vm::closeExerciseDetail, modifier = modifier)
         return
     }
 
+    val toggleMode = {
+        vm.setMode(
+            if (vm.diaryUiState.mode == WorkoutTabMode.LOG) WorkoutTabMode.LIBRARY else WorkoutTabMode.LOG
+        )
+    }
+
+    if (vm.diaryUiState.mode == WorkoutTabMode.LOG) {
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(start = 20.dp, top = 8.dp, end = 18.dp, bottom = 2.dp),
+                horizontalArrangement = Arrangement.End
+            ) {
+                WorkoutModeToggleButton(mode = WorkoutTabMode.LOG, onToggle = toggleMode)
+            }
+            WorkoutDiaryScreen(
+                state = vm.diaryUiState,
+                exerciseRepository = repo,
+                viewModel = vm,
+                weekStartsOnMonday = weekStartsOnMonday,
+                modifier = Modifier.weight(1f)
+            )
+        }
+    } else {
+        WorkoutLibraryScreen(
+            repo = repo,
+            vm = vm,
+            onShowLog = toggleMode,
+            modifier = modifier
+        )
+    }
+}
+
+@Composable
+private fun WorkoutModeToggleButton(
+    mode: WorkoutTabMode,
+    onToggle: () -> Unit
+) {
+    FudGlassSurface(
+        modifier = Modifier
+            .size(48.dp)
+            .clickable(onClick = onToggle),
+        cornerRadius = 18.dp,
+        padding = 0.dp,
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            imageVector = if (mode == WorkoutTabMode.LOG) Icons.Filled.FitnessCenter else Icons.Filled.SportsGymnastics,
+            contentDescription = if (mode == WorkoutTabMode.LOG) "Show exercise library" else "Show workout log",
+            tint = AppColors.Calorie,
+            modifier = Modifier.size(24.dp)
+        )
+    }
+}
+
+@Composable
+private fun WorkoutLibrarySearchRow(
+    value: String,
+    onValueChange: (String) -> Unit,
+    onShowLog: () -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        SearchPill(value = value, onValueChange = onValueChange, modifier = Modifier.weight(1f))
+        WorkoutModeToggleButton(mode = WorkoutTabMode.LIBRARY, onToggle = onShowLog)
+    }
+}
+
+private fun selectedSplitMuscles(vm: WorkoutsViewModel): Set<String> = vm.diaryUiState.splitGroups
+    .filter { it.title in vm.splitGroupTitles }
+    .flatMapTo(mutableSetOf()) { it.muscles }
+
+private fun filterByWorkoutSplit(items: List<ExerciseItem>, vm: WorkoutsViewModel): List<ExerciseItem> {
+    val muscles = selectedSplitMuscles(vm)
+    if (muscles.isEmpty()) return items
+    return items.filter { item ->
+        item.primaryMuscles.any(muscles::contains) || item.secondaryMuscles.any(muscles::contains)
+    }
+}
+
+@Composable
+private fun WorkoutLibraryScreen(
+    repo: ExerciseRepository,
+    vm: WorkoutsViewModel,
+    onShowLog: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+
     val items = remember(
         vm.search, vm.levels, vm.equipment, vm.primaryMuscles, vm.secondaryMuscles,
-        vm.forces, vm.mechanics, vm.categories, vm.sort
+        vm.forces, vm.mechanics, vm.categories, vm.sort, vm.splitGroupTitles,
+        vm.diaryUiState.splitGroups
     ) {
-        repo.filtered(
+        filterByWorkoutSplit(repo.filtered(
             levels = vm.levels,
             equipment = vm.equipment,
             primaryMuscles = vm.primaryMuscles,
@@ -110,7 +229,7 @@ fun WorkoutsScreen(modifier: Modifier = Modifier) {
             categories = vm.categories,
             sort = vm.sort,
             searchText = vm.search
-        )
+        ), vm)
     }
 
     // Dismiss the search keyboard as soon as the list starts scrolling — matches
@@ -139,7 +258,11 @@ fun WorkoutsScreen(modifier: Modifier = Modifier) {
             Modifier.padding(start = 20.dp, end = 20.dp, top = 14.dp, bottom = 18.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            SearchPill(value = vm.search, onValueChange = { vm.search = it })
+            WorkoutLibrarySearchRow(
+                value = vm.search,
+                onValueChange = { vm.search = it },
+                onShowLog = onShowLog
+            )
             FilterRow(repo, vm)
         }
         ResultsHeader(
@@ -174,10 +297,10 @@ fun WorkoutsScreen(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun SearchPill(value: String, onValueChange: (String) -> Unit) {
+private fun SearchPill(value: String, onValueChange: (String) -> Unit, modifier: Modifier = Modifier) {
     val colors = workoutsColors()
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .heightIn(min = 50.dp)
             .clip(RoundedCornerShape(22.dp))
@@ -231,9 +354,27 @@ private fun FilterRow(repo: ExerciseRepository, vm: WorkoutsViewModel) {
         horizontalArrangement = Arrangement.spacedBy(9.dp)
     ) {
         val allLabel = stringResource(R.string.filter_all)
+        FilterPill(
+            title = "Body Part",
+            icon = Icons.Filled.GridView,
+            selected = vm.splitGroupTitles,
+            emptyDisplay = allLabel,
+            options = vm.diaryUiState.splitGroups.map { it.title },
+            onSelect = { vm.splitGroupTitles = it }
+        )
+        val hidePrimary = vm.diaryUiState.preferences.split == com.apoorvdarshan.calorietracker.models.WorkoutSplit.FULL_BODY &&
+            vm.splitGroupTitles.isNotEmpty()
+        if (!hidePrimary) {
+        val selectedMuscles = selectedSplitMuscles(vm)
+        val primaryOptions = if (selectedMuscles.isEmpty()) {
+            repo.availablePrimaryMuscles
+        } else {
+            repo.availablePrimaryMuscles.filter(selectedMuscles::contains)
+        }
         FilterPill(stringResource(R.string.label_primary), Icons.Filled.GpsFixed, vm.primaryMuscles,
-            stringResource(R.string.filter_all_count, repo.availablePrimaryMuscles.size),
-            repo.availablePrimaryMuscles, glyphFor = { muscleGlyphAsset(it) }) { vm.primaryMuscles = it }
+            stringResource(R.string.filter_all_count, primaryOptions.size),
+            primaryOptions, glyphFor = { muscleGlyphAsset(it) }) { vm.primaryMuscles = it }
+        }
         FilterPill(stringResource(R.string.label_secondary), Icons.Filled.GpsFixed, vm.secondaryMuscles, allLabel,
             repo.availableSecondaryMuscles, glyphFor = { muscleGlyphAsset(it) }) { vm.secondaryMuscles = it }
         FilterPill(stringResource(R.string.label_equipment), Icons.Filled.FitnessCenter, vm.equipment,

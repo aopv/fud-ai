@@ -42,6 +42,7 @@ import com.apoorvdarshan.calorietracker.ui.settings.CalculationMethodsScreen
 import com.apoorvdarshan.calorietracker.ui.settings.OptionalNutrientGoalsScreen
 import com.apoorvdarshan.calorietracker.ui.settings.SettingsScreen
 import com.apoorvdarshan.calorietracker.ui.workouts.WorkoutsScreen
+import com.apoorvdarshan.calorietracker.models.WorkoutTabMode
 
 /**
  * Increments each time the app is opened: 1 on cold launch, then +1 on every
@@ -63,6 +64,7 @@ fun FudAINavHost(
     // is the only thing on screen — matches iOS, where the analyzing sheet
     // covers the tab bar.
     val analyzing by container.analyzingFood.collectAsState()
+    val workoutMode by container.workoutRepository.mode.collectAsState(initial = WorkoutTabMode.Default)
     val showTabs = currentRoute in FudAIRoutes.bottomTabs && !analyzing
     val context = LocalContext.current
     val currentVersion = remember(context) { AndroidUpdateChecker.currentVersion(context) }
@@ -108,6 +110,7 @@ fun FudAINavHost(
                 FudAIBottomNavBar(
                     currentRoute = currentRoute,
                     showAboutBadge = updateAvailable,
+                    workoutMode = workoutMode,
                     onTap = { target ->
                         if (target == currentRoute) return@FudAIBottomNavBar
                         // Tapping HOME (the start destination) needs popBackStack
@@ -155,7 +158,7 @@ fun FudAINavHost(
                 composable(FudAIRoutes.BODY_MEASUREMENTS) {
                     BodyMeasurementsScreen(container = container, onBack = { nav.popBackStack() })
                 }
-                composable(FudAIRoutes.WORKOUTS) { TabInset { WorkoutsScreen() } }
+                composable(FudAIRoutes.WORKOUTS) { TabInset { WorkoutsScreen(container = container) } }
             }
         }
     }
@@ -178,4 +181,3 @@ private fun TabInset(content: @Composable () -> Unit) {
 }
 
 internal fun NavHostController.current(): String? = currentBackStackEntry?.destination?.route
-

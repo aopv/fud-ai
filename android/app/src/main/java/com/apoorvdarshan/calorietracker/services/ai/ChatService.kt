@@ -10,6 +10,10 @@ import com.apoorvdarshan.calorietracker.models.ChatMessage
 import com.apoorvdarshan.calorietracker.models.WeightGoal
 import com.apoorvdarshan.calorietracker.models.FoodEntry
 import com.apoorvdarshan.calorietracker.models.UserProfile
+import com.apoorvdarshan.calorietracker.models.WorkoutDayPlan
+import com.apoorvdarshan.calorietracker.models.WorkoutPreferences
+import com.apoorvdarshan.calorietracker.models.WorkoutSession
+import com.apoorvdarshan.calorietracker.models.WorkoutWeightUnit
 import com.apoorvdarshan.calorietracker.models.WeightEntry
 import com.apoorvdarshan.calorietracker.services.WeightAnalysisService
 import com.apoorvdarshan.calorietracker.services.WeightForecast
@@ -53,14 +57,36 @@ class ChatService(
         foods: List<FoodEntry>,
         heightMetric: Boolean,
         weightMetric: Boolean,
-        imageBytes: ByteArray? = null
+        imageBytes: ByteArray? = null,
+        workoutSessions: List<WorkoutSession> = emptyList(),
+        workoutPlans: List<WorkoutDayPlan> = emptyList(),
+        workoutPreferences: WorkoutPreferences = WorkoutPreferences(),
+        workoutPlanWeightUnit: WorkoutWeightUnit = WorkoutWeightUnit.LBS
     ): String {
-        val baseSystemPrompt = buildSystemPrompt(profile, weights, bodyFats, measurements, foods, heightMetric, weightMetric)
+        val baseSystemPrompt = buildSystemPrompt(
+            profile = profile,
+            weights = weights,
+            bodyFats = bodyFats,
+            measurements = measurements,
+            foods = foods,
+            heightMetric = heightMetric,
+            weightMetric = weightMetric,
+            workoutSessions = workoutSessions,
+            workoutPlans = workoutPlans
+        )
         val userContext = prefs.userContext.first()
         val systemPrompt = if (userContext.isNotBlank())
             "$baseSystemPrompt\n\n## User-provided context\n$userContext"
         else baseSystemPrompt
-        val tools = CoachTools(weights = weights, bodyFats = bodyFats, foods = foods)
+        val tools = CoachTools(
+            weights = weights,
+            bodyFats = bodyFats,
+            foods = foods,
+            workoutSessions = workoutSessions,
+            workoutPlans = workoutPlans,
+            workoutPreferences = workoutPreferences,
+            workoutPlanWeightUnit = workoutPlanWeightUnit
+        )
 
         val provider = prefs.selectedAIProvider.first()
         val model = provider.supportedModelOrDefault(prefs.selectedAIModel.first())
@@ -87,7 +113,9 @@ class ChatService(
         measurements: List<BodyMeasurement> = emptyList(),
         foods: List<FoodEntry>,
         heightMetric: Boolean,
-        weightMetric: Boolean
+        weightMetric: Boolean,
+        workoutSessions: List<WorkoutSession> = emptyList(),
+        workoutPlans: List<WorkoutDayPlan> = emptyList()
     ): String {
         val forecast: WeightForecast = WeightAnalysisService.compute(weights, foods, profile)
         val zone = ZoneId.systemDefault()
@@ -109,7 +137,7 @@ class ChatService(
         }
 
         val lines = mutableListOf<String>()
-        lines.add("You are Coach, an AI nutrition and weight-change assistant inside a calorie tracking app. Answer in plain English, be specific and factual, and ground your recommendations in the user's own data. Avoid medical advice; when relevant, suggest consulting a doctor. Be concise — 2–5 sentences per response unless the user asks for detail.")
+        lines.add("You are Coach, an AI nutrition, weight-change, and strength-training assistant inside a calorie tracking app. Answer in plain English, be specific and factual, and ground your recommendations in the user's own data. Avoid medical advice; when relevant, suggest consulting a doctor. Be concise — 2–5 sentences per response unless the user asks for detail.")
         lines.add("")
         lines.add("## Current date")
         lines.add("- Today: $currentDate ($currentTimeZone)")
@@ -120,6 +148,9 @@ class ChatService(
         lines.add("- \"How was my weight in March?\" → call get_weight_history(from, to)")
         lines.add("- \"What did I eat last Tuesday?\" → call get_food_entries(from, to)")
         lines.add("- \"What's my data range?\" → call get_data_summary")
+        lines.add("- \"How is my training progressing?\" → call get_training_summary(from, to), then get_workout_history only if individual sets are needed")
+        lines.add("- \"What workout do I have planned?\" → call get_workout_plans")
+        lines.add("- Use get_workout_preferences when injuries, available equipment, split, schedule, RPE scale, or strength baselines affect the answer.")
         lines.add("Do NOT call tools for questions you can answer from the profile/forecast below.")
         lines.add("")
         lines.add("## User profile")
@@ -163,6 +194,8 @@ class ChatService(
         lines.add("")
         lines.add("## Data available")
         lines.add("- ${weights.size} weight entries, ${bodyFats.size} body-fat readings, ${foods.size} food entries logged total. Use get_data_summary to see exact date ranges.")
+        lines.add("- ${workoutSessions.size} completed strength workouts and ${workoutPlans.size} dated workout plans are available through the workout tools.")
+        lines.add("- Workout logs may guide training, recovery, exercise selection, and progressive-overload advice. Never use estimated workout burn or workout volume to recalculate calorie/macro targets, alter the nutrition forecast, or invent energy expenditure.")
         measurements.maxByOrNull { it.date }?.promptSummary(profile.gender, profile.heightCm)?.let { summary ->
             lines.add("")
             lines.add("## Body measurements (latest)")
@@ -197,7 +230,7 @@ class ChatService(
                 put("function", JSONObject().apply {
                     put("name", name)
                     put("description", CoachTools.TOOL_DESCRIPTIONS[name] ?: "")
-                    put("parameters", parametersSchemaFor(name))
+                    put("parameters", JSONObject(CoachTools.parameterSchemaFor(name)))
                 })
             })
         }
@@ -280,7 +313,7 @@ class ChatService(
             toolsArr.put(JSONObject().apply {
                 put("name", name)
                 put("description", CoachTools.TOOL_DESCRIPTIONS[name] ?: "")
-                put("input_schema", parametersSchemaFor(name))
+                put("input_schema", JSONObject(CoachTools.parameterSchemaFor(name)))
             })
         }
         // History as plain text role:content; tool_use / tool_result blocks
@@ -370,7 +403,7 @@ class ChatService(
             declarations.put(JSONObject().apply {
                 put("name", name)
                 put("description", CoachTools.TOOL_DESCRIPTIONS[name] ?: "")
-                put("parameters", parametersSchemaFor(name))
+                put("parameters", JSONObject(CoachTools.parameterSchemaFor(name)))
             })
         }
         val toolsObj = JSONObject().put("functionDeclarations", declarations)
@@ -441,25 +474,6 @@ class ChatService(
             throw AiError.InvalidResponse
         }
         throw AiError.Api("Coach exceeded the tool-call round limit. Try rephrasing your question.")
-    }
-
-    // MARK: - Tool parameter schemas
-
-    /** Schema is the same shape across all three formats — JSON Schema-ish dict
-     *  with type/properties/required. The wrapping is what differs per format. */
-    private fun parametersSchemaFor(toolName: String): JSONObject {
-        if (toolName == "get_data_summary") {
-            return JSONObject().put("type", "object").put("properties", JSONObject())
-        }
-        return JSONObject().apply {
-            put("type", "object")
-            put("properties", JSONObject().apply {
-                put("from", JSONObject().put("type", "string").put("description", "ISO date yyyy-MM-dd, inclusive start"))
-                put("to", JSONObject().put("type", "string").put("description", "ISO date yyyy-MM-dd, inclusive end"))
-                put("limit", JSONObject().put("type", "integer").put("description", "Optional max entries to return"))
-            })
-            put("required", JSONArray().put("from").put("to"))
-        }
     }
 
     private fun openAIUserContent(text: String, imageBytes: ByteArray?): Any {

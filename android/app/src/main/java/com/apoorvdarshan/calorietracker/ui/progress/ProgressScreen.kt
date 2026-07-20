@@ -96,6 +96,7 @@ import com.apoorvdarshan.calorietracker.models.BodyFatEntry
 import com.apoorvdarshan.calorietracker.models.FoodEntry
 import com.apoorvdarshan.calorietracker.models.MacroValueFormatter
 import com.apoorvdarshan.calorietracker.models.WeightEntry
+import com.apoorvdarshan.calorietracker.models.WorkoutSession
 import com.apoorvdarshan.calorietracker.ui.navigation.BottomNavScrollPadding
 import com.apoorvdarshan.calorietracker.ui.theme.AppColors
 import java.time.Instant
@@ -149,6 +150,8 @@ fun ProgressScreen(container: AppContainer) {
     var showAddBodyFatDialog by remember { mutableStateOf(false) }
     var showAllWeights by remember { mutableStateOf(false) }
     var showAllBodyFats by remember { mutableStateOf(false) }
+    var showAllWorkouts by remember { mutableStateOf(false) }
+    var workoutPendingDelete by remember { mutableStateOf<WorkoutSession?>(null) }
     var bodyMetric by remember { mutableStateOf(BodyMetric.WEIGHT) }
 
     // Filter weights + body fats to range
@@ -260,6 +263,16 @@ fun ProgressScreen(container: AppContainer) {
                 }
             }
 
+            // Calculated workout burns use the same compact history affordance
+            // as weight and body fat. Plans remain in the diary after deletion.
+            if (ui.workoutBurnSessions.isNotEmpty()) {
+                item {
+                    WorkoutHistoryLink(count = ui.workoutBurnSessions.size) {
+                        showAllWorkouts = true
+                    }
+                }
+            }
+
             // 4. Calorie chart section
             item {
                 CardSection {
@@ -330,6 +343,32 @@ fun ProgressScreen(container: AppContainer) {
             onDelete = vm::deleteBodyFat,
             onDismiss = { showAllBodyFats = false }
         )
+    }
+    if (showAllWorkouts) {
+        AllWorkoutHistorySheet(
+            entries = ui.workoutBurnSessions,
+            onRequestDelete = { workoutPendingDelete = it },
+            onDismiss = { showAllWorkouts = false }
+        )
+    }
+    workoutPendingDelete?.let { session ->
+        FudGlassDialog(onDismissRequest = { workoutPendingDelete = null }) {
+            Text(stringResource(R.string.progress_workout_delete_title), fontSize = 21.sp, fontWeight = FontWeight.Bold)
+            Text(
+                stringResource(R.string.progress_workout_delete_message),
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.68f)
+            )
+            FudGlassDialogActions(
+                primaryText = stringResource(R.string.action_delete),
+                onPrimary = {
+                    vm.deleteWorkoutBurn(session.id)
+                    workoutPendingDelete = null
+                },
+                dismissText = stringResource(R.string.action_cancel),
+                onDismiss = { workoutPendingDelete = null },
+                destructive = true
+            )
+        }
     }
     if (ui.goalReached) {
         FudGlassDialog(onDismissRequest = { vm.dismissGoalReached() }) {
@@ -799,6 +838,42 @@ private fun BodyFatHistoryLink(count: Int, onClick: () -> Unit) {
 }
 
 @Composable
+private fun WorkoutHistoryLink(count: Int, onClick: () -> Unit) {
+    FudGlassSurface(
+        modifier = Modifier.fillMaxWidth().clickable(onClick = onClick),
+        cornerRadius = 16.dp,
+        padding = 14.dp
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            FudIconBubble(
+                icon = Icons.AutoMirrored.Filled.ListAlt,
+                size = 28.dp,
+                iconSize = 16.dp
+            )
+            Spacer(Modifier.width(12.dp))
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                Text(
+                    stringResource(R.string.progress_workout_history),
+                    fontSize = 17.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Text(
+                    stringResource(R.string.progress_workout_history_count_format, count),
+                    fontSize = 13.sp,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                )
+            }
+            Icon(
+                Icons.Filled.ChevronRight,
+                null,
+                tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                modifier = Modifier.size(18.dp)
+            )
+        }
+    }
+}
+
+@Composable
 private fun CalorieSection(dailyCalories: List<Pair<LocalDate, Int>>, calorieGoal: Int) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -1131,6 +1206,87 @@ private fun AllBodyFatHistorySheet(
                             }
                         }
                         Box(Modifier.padding(start = 16.dp).fillMaxWidth().height(0.5.dp).background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f)))
+                    }
+                }
+            }
+            Spacer(Modifier.height(16.dp))
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun AllWorkoutHistorySheet(
+    entries: List<WorkoutSession>,
+    onRequestDelete: (WorkoutSession) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val displayDate = DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.US)
+    val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
+    val sheetSurface = if (isDark) MaterialTheme.colorScheme.surface else Color(0xFFFAF3EE)
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = state,
+        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
+        containerColor = sheetSurface
+    ) {
+        Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 10.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    stringResource(R.string.progress_workout_history),
+                    fontSize = 17.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Spacer(Modifier.weight(1f))
+                TextButton(onClick = onDismiss) {
+                    Text(stringResource(R.string.action_done), color = AppColors.Calorie)
+                }
+            }
+            Spacer(Modifier.height(12.dp))
+            FudGlassSurface(
+                modifier = Modifier.fillMaxWidth(),
+                cornerRadius = 22.dp,
+                padding = 0.dp
+            ) {
+                LazyColumn(
+                    modifier = Modifier.fillMaxWidth().heightIn(max = 560.dp).padding(vertical = 4.dp)
+                ) {
+                    items(entries.sortedWith(
+                        compareByDescending<WorkoutSession> { it.diaryDateKey }
+                            .thenByDescending { it.completedAt }
+                    ), key = { it.id }) { entry ->
+                        Row(
+                            Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column(Modifier.weight(1f)) {
+                                Text(
+                                    "${entry.caloriesBurned ?: 0} kcal",
+                                    fontSize = 17.sp,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                                Spacer(Modifier.height(2.dp))
+                                Text(
+                                    runCatching { LocalDate.parse(entry.diaryDateKey).format(displayDate) }
+                                        .getOrDefault(entry.diaryDateKey),
+                                    fontSize = 13.sp,
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
+                                )
+                            }
+                            IconButton(onClick = { onRequestDelete(entry) }) {
+                                Icon(
+                                    Icons.Filled.Delete,
+                                    contentDescription = stringResource(R.string.action_delete),
+                                    tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.42f),
+                                    modifier = Modifier.size(18.dp)
+                                )
+                            }
+                        }
+                        Box(
+                            Modifier.padding(start = 16.dp).fillMaxWidth().height(0.5.dp)
+                                .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f))
+                        )
                     }
                 }
             }

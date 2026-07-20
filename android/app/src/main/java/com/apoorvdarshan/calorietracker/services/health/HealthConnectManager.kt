@@ -13,6 +13,7 @@ import androidx.health.connect.client.records.MealType as HCMealType
 import androidx.health.connect.client.records.NutritionRecord
 import androidx.health.connect.client.records.TotalCaloriesBurnedRecord
 import androidx.health.connect.client.records.WeightRecord
+import androidx.health.connect.client.records.metadata.DataOrigin
 import androidx.health.connect.client.records.metadata.Metadata
 import androidx.health.connect.client.request.AggregateRequest
 import androidx.health.connect.client.request.ReadRecordsRequest
@@ -34,8 +35,13 @@ import kotlin.math.roundToInt
  * Single boundary for Health Connect I/O. Port of iOS HealthKitManager.
  *
  * Conventions:
- * - Each sample carries [Metadata.clientRecordId] = "fudai_<uuid>" so we can
- *   dedup in-app vs external writes and delete our own records cleanly.
+ * - Weight, body-fat, and nutrition samples carry [Metadata.clientRecordId] =
+ *   "fudai_<uuid>" so we can dedup in-app vs external writes and delete our own
+ *   records cleanly.
+ * - Workout-burn samples use a distinct client id containing both the stable
+ *   diary date and session UUID. Health Connect has no arbitrary metadata map,
+ *   so encoding the date keeps a selected diary day stable across time zones and
+ *   after a reinstall.
  * - Nutrition records include macros plus every optional nutrient Health Connect
  *   can represent from Fud AI's food model.
  * - The "typesVersion" integer bumps when we add new record types so existing
@@ -60,11 +66,12 @@ class HealthConnectManager(private val context: Context) {
     private val nutritionRead = HealthPermission.getReadPermission(NutritionRecord::class)
     private val nutritionWrite = HealthPermission.getWritePermission(NutritionRecord::class)
     private val activeEnergyRead = HealthPermission.getReadPermission(ActiveCaloriesBurnedRecord::class)
+    private val activeEnergyWrite = HealthPermission.getWritePermission(ActiveCaloriesBurnedRecord::class)
     private val totalEnergyRead = HealthPermission.getReadPermission(TotalCaloriesBurnedRecord::class)
 
     val permissions: Set<String> = setOf(
         weightRead, weightWrite, nutritionRead, nutritionWrite,
-        bodyFatRead, bodyFatWrite, activeEnergyRead, totalEnergyRead
+        bodyFatRead, bodyFatWrite, activeEnergyRead, activeEnergyWrite, totalEnergyRead
     )
 
     private suspend fun granted(): Set<String> =
@@ -80,6 +87,8 @@ class HealthConnectManager(private val context: Context) {
     suspend fun hasBodyFatWrite(): Boolean = bodyFatWrite in granted()
     suspend fun hasNutritionRead(): Boolean = nutritionRead in granted()
     suspend fun hasNutritionWrite(): Boolean = nutritionWrite in granted()
+    suspend fun hasActiveEnergyRead(): Boolean = activeEnergyRead in granted()
+    suspend fun hasActiveEnergyWrite(): Boolean = activeEnergyWrite in granted()
     suspend fun hasEnergyRead(): Boolean = granted().let { activeEnergyRead in it && totalEnergyRead in it }
 
     /** One permission read snapshotting every capability — used by the read-sync coordinator. */
@@ -92,7 +101,8 @@ class HealthConnectManager(private val context: Context) {
             bodyFatWrite = bodyFatWrite in g,
             nutritionRead = nutritionRead in g,
             nutritionWrite = nutritionWrite in g,
-            energyRead = activeEnergyRead in g && totalEnergyRead in g
+            energyRead = activeEnergyRead in g && totalEnergyRead in g,
+            activeEnergyWrite = activeEnergyWrite in g
         )
     }
 
@@ -360,6 +370,119 @@ class HealthConnectManager(private val context: Context) {
         return out
     }
 
+    // -- Workout burn ------------------------------------------------------
+
+    /**
+     * Inserts or replaces the active-energy estimate for one calculated diary
+     * session. [Metadata.clientRecordVersion] makes this an atomic upsert: Health
+     * Connect keeps only the highest version for this app, record type, and stable
+     * client id even when rapid recalculations finish out of order.
+     *
+     * The diary date is represented at local noon for a non-zero one-minute
+     * interval. Its canonical identity still comes from the encoded
+     * [diaryDateKey], so a later time-zone change cannot move the restored day.
+     */
+    suspend fun upsertWorkoutBurn(
+        sessionId: UUID,
+        diaryDateKey: String,
+        caloriesBurned: Int,
+        healthSyncVersion: Int
+    ): Boolean {
+        val c = client ?: return false
+        if (caloriesBurned !in 1..MAX_WORKOUT_BURN_CALORIES || healthSyncVersion < 1) return false
+        val diaryDate = parseDiaryDateKey(diaryDateKey) ?: return false
+        val clientRecordId = workoutBurnClientRecordId(diaryDateKey, sessionId) ?: return false
+        val zone = ZoneId.systemDefault()
+        val start = diaryDate.atTime(12, 0).atZone(zone)
+        val end = start.plusMinutes(1)
+        val record = ActiveCaloriesBurnedRecord(
+            startTime = start.toInstant(),
+            startZoneOffset = start.offset,
+            endTime = end.toInstant(),
+            endZoneOffset = end.offset,
+            energy = Energy.kilocalories(caloriesBurned.toDouble()),
+            metadata = Metadata.manualEntry(
+                clientRecordId = clientRecordId,
+                clientRecordVersion = healthSyncVersion.toLong()
+            )
+        )
+        return runCatching { c.insertRecords(listOf(record)) }.isSuccess
+    }
+
+    /** Deletes exactly the app-owned burn sample for this stable diary session. */
+    suspend fun deleteWorkoutBurn(sessionId: UUID, diaryDateKey: String): Boolean {
+        val clientRecordId = workoutBurnClientRecordId(diaryDateKey, sessionId) ?: return false
+        return deleteWorkoutBurn(clientRecordId)
+    }
+
+    /**
+     * Exact-id deletion variant for repositories that persist the Health client
+     * id alongside a tombstone. Invalid or non-workout ids are never forwarded to
+     * Health Connect.
+     */
+    suspend fun deleteWorkoutBurn(clientRecordId: String): Boolean {
+        val c = client ?: return false
+        if (parseWorkoutBurnClientRecordId(clientRecordId) == null) return false
+        return runCatching {
+            c.deleteRecords(
+                recordType = ActiveCaloriesBurnedRecord::class,
+                recordIdsList = emptyList(),
+                clientRecordIdsList = listOf(clientRecordId)
+            )
+        }.isSuccess
+    }
+
+    /**
+     * Reads only active-energy records authored by this installed package and
+     * returns only well-formed Fud AI workout-burn samples. Null means the query
+     * failed; an empty list is a successful query with no owned burns.
+     */
+    suspend fun readOwnedWorkoutBurns(from: Instant, to: Instant): List<HealthWorkoutBurn>? {
+        val c = client ?: return null
+        if (!from.isBefore(to)) return emptyList()
+        val out = mutableListOf<HealthWorkoutBurn>()
+        val ownOrigin = setOf(DataOrigin(context.packageName))
+        var pageToken: String? = null
+        do {
+            val response = runCatching {
+                c.readRecords(
+                    ReadRecordsRequest(
+                        recordType = ActiveCaloriesBurnedRecord::class,
+                        timeRangeFilter = TimeRangeFilter.between(from, to),
+                        dataOriginFilter = ownOrigin,
+                        pageToken = pageToken
+                    )
+                )
+            }.getOrNull() ?: return null
+            response.records.forEach { record ->
+                val clientRecordId = record.metadata.clientRecordId ?: return@forEach
+                val identity = parseWorkoutBurnClientRecordId(clientRecordId) ?: return@forEach
+                val version = record.metadata.clientRecordVersion
+                    .takeIf { it in 1..Int.MAX_VALUE.toLong() }
+                    ?.toInt()
+                    ?: return@forEach
+                val rawCalories = record.energy.inKilocalories
+                if (!rawCalories.isFinite() || rawCalories <= 0.0) return@forEach
+                val calories = rawCalories.roundToInt()
+                if (calories !in 1..MAX_WORKOUT_BURN_CALORIES) return@forEach
+                out.add(
+                    HealthWorkoutBurn(
+                        sessionId = identity.sessionId,
+                        diaryDateKey = identity.diaryDateKey,
+                        caloriesBurned = calories,
+                        healthSyncVersion = version,
+                        startTime = record.startTime,
+                        endTime = record.endTime,
+                        clientRecordId = clientRecordId,
+                        recordId = record.metadata.id
+                    )
+                )
+            }
+            pageToken = response.pageToken
+        } while (pageToken != null)
+        return out.sortedWith(compareBy<HealthWorkoutBurn> { it.diaryDateKey }.thenBy { it.healthSyncVersion })
+    }
+
     // -- Energy burn summary --------------------------------------------
 
     suspend fun readRecentEnergySummary(days: Int = 14): HealthEnergySummary? {
@@ -385,7 +508,24 @@ class HealthConnectManager(private val context: Context) {
                 )
             }.getOrNull() ?: continue
 
-            val active = result[ActiveCaloriesBurnedRecord.ACTIVE_CALORIES_TOTAL]?.inKilocalories ?: 0.0
+            // Fud AI's workout burns are explicitly requested estimates. Keep
+            // them in Health Connect history, but do not feed them back into the
+            // measured-TDEE/adaptive-goal anchor. Active energy is the only type
+            // this app writes, so subtracting this package's origin cleanly
+            // excludes all of our estimates without affecting external sources.
+            val ownActiveResult = runCatching {
+                c.aggregate(
+                    AggregateRequest(
+                        metrics = setOf(ActiveCaloriesBurnedRecord.ACTIVE_CALORIES_TOTAL),
+                        timeRangeFilter = TimeRangeFilter.between(start, end),
+                        dataOriginFilter = setOf(DataOrigin(context.packageName))
+                    )
+                )
+            }.getOrNull() ?: continue
+
+            val allActive = result[ActiveCaloriesBurnedRecord.ACTIVE_CALORIES_TOTAL]?.inKilocalories ?: 0.0
+            val ownActive = ownActiveResult[ActiveCaloriesBurnedRecord.ACTIVE_CALORIES_TOTAL]?.inKilocalories ?: 0.0
+            val active = externalActiveCalories(allActive, ownActive)
             val total = result[TotalCaloriesBurnedRecord.ENERGY_TOTAL]?.inKilocalories?.takeIf { it > 0.0 }
             if (active + (total ?: 0.0) <= 0.0) continue
             daily.add(DailyEnergy(active = active, total = total))
@@ -506,14 +646,42 @@ class HealthConnectManager(private val context: Context) {
         private const val ACTION_MANAGE_HEALTH_PERMISSIONS =
             "android.health.connect.action.MANAGE_HEALTH_PERMISSIONS"
         private const val CLIENT_PREFIX = "fudai_"
+        private const val WORKOUT_BURN_CLIENT_PREFIX = "fudai_workout_burn|"
+        private const val WORKOUT_BURN_SEPARATOR = '|'
+        private const val MAX_WORKOUT_BURN_CALORIES = 5_000
+
+        /** Stable Health Connect identity containing the selected diary day. */
+        fun workoutBurnClientRecordId(diaryDateKey: String, sessionId: UUID): String? {
+            val canonicalDate = parseDiaryDateKey(diaryDateKey) ?: return null
+            return "$WORKOUT_BURN_CLIENT_PREFIX$canonicalDate$WORKOUT_BURN_SEPARATOR$sessionId"
+        }
+
+        /** Parses and strictly validates an app-owned workout-burn client id. */
+        fun parseWorkoutBurnClientRecordId(clientRecordId: String?): WorkoutBurnIdentity? {
+            if (clientRecordId == null || !clientRecordId.startsWith(WORKOUT_BURN_CLIENT_PREFIX)) return null
+            val components = clientRecordId
+                .removePrefix(WORKOUT_BURN_CLIENT_PREFIX)
+                .split(WORKOUT_BURN_SEPARATOR)
+            if (components.size != 2) return null
+            val date = parseDiaryDateKey(components[0]) ?: return null
+            val sessionId = runCatching { UUID.fromString(components[1]) }.getOrNull() ?: return null
+            return WorkoutBurnIdentity(sessionId = sessionId, diaryDateKey = date.toString())
+        }
+
+        private fun parseDiaryDateKey(value: String): LocalDate? =
+            runCatching { LocalDate.parse(value) }.getOrNull()?.takeIf { it.toString() == value }
 
         /** Bump this when we add a new record type so users re-auth.
          *  v2 = added BodyFatRecord read+write permissions.
          *  v3 = added energy burn read permissions.
-         *  v4 = added NutritionRecord read permission (food-log restore). */
-        const val CURRENT_TYPES_VERSION = 4
+         *  v4 = added NutritionRecord read permission (food-log restore).
+         *  v5 = added ActiveCaloriesBurnedRecord write permission (workout burn sync). */
+        const val CURRENT_TYPES_VERSION = 5
     }
 }
+
+internal fun externalActiveCalories(allActive: Double, ownActive: Double): Double =
+    maxOf(0.0, allActive - ownActive)
 
 private data class DailyEnergy(
     val active: Double,
@@ -527,7 +695,25 @@ data class HealthCapabilities(
     val bodyFatWrite: Boolean,
     val nutritionRead: Boolean,
     val nutritionWrite: Boolean,
-    val energyRead: Boolean
+    val energyRead: Boolean,
+    val activeEnergyWrite: Boolean
+)
+
+data class WorkoutBurnIdentity(
+    val sessionId: UUID,
+    val diaryDateKey: String
+)
+
+/** A validated active-energy estimate authored by this Fud AI package. */
+data class HealthWorkoutBurn(
+    val sessionId: UUID,
+    val diaryDateKey: String,
+    val caloriesBurned: Int,
+    val healthSyncVersion: Int,
+    val startTime: Instant,
+    val endTime: Instant,
+    val clientRecordId: String,
+    val recordId: String
 )
 
 /** A NutritionRecord read back from Health Connect in Fud AI's own units —

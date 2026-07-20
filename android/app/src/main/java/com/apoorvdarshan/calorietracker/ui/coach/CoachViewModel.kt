@@ -7,10 +7,12 @@ import com.apoorvdarshan.calorietracker.AppContainer
 import com.apoorvdarshan.calorietracker.R
 import com.apoorvdarshan.calorietracker.models.ChatMessage
 import com.apoorvdarshan.calorietracker.models.WeightGoal
+import com.apoorvdarshan.calorietracker.models.WorkoutWeightUnit
 import com.apoorvdarshan.calorietracker.services.ai.AiError
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -44,36 +46,44 @@ class CoachViewModel(private val container: AppContainer) : ViewModel() {
             .onEach { _ui.value = _ui.value.copy(messages = it) }
             .launchIn(viewModelScope)
 
-        // Live-subscribe to profile so chips update when the user changes goal in Settings.
-        container.profileRepository.profile
-            .onEach { p -> _ui.value = _ui.value.copy(suggestions = chipsFor(p?.goal)) }
+        // Keep chips current when either the user's goal or their workout history changes.
+        combine(
+            container.profileRepository.profile,
+            container.workoutRepository.completedSessions
+        ) { profile, sessions ->
+            chipsFor(profile?.goal, hasWorkoutSessions = sessions.isNotEmpty())
+        }
+            .onEach { suggestions -> _ui.value = _ui.value.copy(suggestions = suggestions) }
             .launchIn(viewModelScope)
     }
 
-    private fun chipsFor(goal: WeightGoal?): List<Int> = when (goal) {
-        WeightGoal.LOSE -> listOf(
-            R.string.coach_chip_predict_30_days,
-            R.string.coach_chip_lose_faster,
-            R.string.coach_chip_eating_too_much,
-            R.string.coach_chip_what_dinner
-        )
-        WeightGoal.GAIN -> listOf(
-            R.string.coach_chip_predict_30_days,
-            R.string.coach_chip_gain_healthy,
-            R.string.coach_chip_eating_enough,
-            R.string.coach_chip_high_protein
-        )
-        WeightGoal.MAINTAIN -> listOf(
-            R.string.coach_chip_holding_weight,
-            R.string.coach_chip_average_intake,
-            R.string.coach_chip_macro_suggestions,
-            R.string.coach_chip_trend
-        )
-        else -> listOf(
-            R.string.coach_chip_doing_this_week,
-            R.string.coach_chip_predict_30_days,
-            R.string.coach_chip_log_advice
-        )
+    private fun chipsFor(goal: WeightGoal?, hasWorkoutSessions: Boolean): List<Int> {
+        val goalChips = when (goal) {
+            WeightGoal.LOSE -> listOf(
+                R.string.coach_chip_predict_30_days,
+                R.string.coach_chip_lose_faster,
+                R.string.coach_chip_eating_too_much,
+                R.string.coach_chip_what_dinner
+            )
+            WeightGoal.GAIN -> listOf(
+                R.string.coach_chip_predict_30_days,
+                R.string.coach_chip_gain_healthy,
+                R.string.coach_chip_eating_enough,
+                R.string.coach_chip_high_protein
+            )
+            WeightGoal.MAINTAIN -> listOf(
+                R.string.coach_chip_holding_weight,
+                R.string.coach_chip_average_intake,
+                R.string.coach_chip_macro_suggestions,
+                R.string.coach_chip_trend
+            )
+            else -> listOf(
+                R.string.coach_chip_doing_this_week,
+                R.string.coach_chip_predict_30_days,
+                R.string.coach_chip_log_advice
+            )
+        }
+        return if (hasWorkoutSessions) listOf(R.string.coach_chip_training) + goalChips else goalChips
     }
 
     fun send(userText: String, imageBytes: ByteArray? = null, thumbnailBytes: ByteArray? = null) {
@@ -103,6 +113,7 @@ class CoachViewModel(private val container: AppContainer) : ViewModel() {
                 val foods = container.foodRepository.entries.first()
                 val heightMetric = container.prefs.heightUnit.first() == "cm"
                 val weightMetric = container.prefs.weightUnit.first() == "kg"
+                val workoutState = container.workoutRepository.snapshot()
 
                 val reply = container.chatService.sendMessage(
                     history = history,
@@ -114,7 +125,11 @@ class CoachViewModel(private val container: AppContainer) : ViewModel() {
                     foods = foods,
                     heightMetric = heightMetric,
                     weightMetric = weightMetric,
-                    imageBytes = imageBytes
+                    imageBytes = imageBytes,
+                    workoutSessions = workoutState.completedSessions,
+                    workoutPlans = workoutState.dayPlans.values.toList(),
+                    workoutPreferences = workoutState.preferences,
+                    workoutPlanWeightUnit = if (weightMetric) WorkoutWeightUnit.KG else WorkoutWeightUnit.LBS
                 )
                 container.chatRepository.append(ChatMessage(role = ChatMessage.Role.ASSISTANT, content = reply.trim()))
                 _ui.value = _ui.value.copy(sending = false)

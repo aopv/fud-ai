@@ -31,6 +31,7 @@ import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.Forum
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.SportsGymnastics
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -65,6 +66,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.apoorvdarshan.calorietracker.ui.theme.AppColors
+import com.apoorvdarshan.calorietracker.models.WorkoutTabMode
 import kotlinx.coroutines.launch
 
 data class BottomTab(val route: String, val icon: ImageVector, @get:StringRes val labelRes: Int)
@@ -101,9 +103,21 @@ val BottomNavDockedControlPadding = 82.dp
 fun FudAIBottomNavBar(
     currentRoute: String?,
     showAboutBadge: Boolean = false,
+    workoutMode: WorkoutTabMode = WorkoutTabMode.Default,
     onTap: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val tabs = remember(workoutMode) {
+        BottomTabs.map { tab ->
+            if (tab.route != FudAIRoutes.WORKOUTS) tab else tab.copy(
+                icon = if (workoutMode == WorkoutTabMode.LOG) {
+                    Icons.Filled.SportsGymnastics
+                } else {
+                    Icons.Filled.FitnessCenter
+                }
+            )
+        }
+    }
     val isDark = MaterialTheme.colorScheme.background.let {
         (it.red + it.green + it.blue) / 3f < 0.5f
     }
@@ -167,12 +181,12 @@ fun FudAIBottomNavBar(
             val scope = rememberCoroutineScope()
 
             val barWidthDp = maxWidth
-            val tabCount = BottomTabs.size
+            val tabCount = tabs.size
             val tabWidthDp = barWidthDp / tabCount
             val tabWidthPx = with(density) { tabWidthDp.toPx() }
             val maxOffsetPx = tabWidthPx * (tabCount - 1)
 
-            val selectedIndex = BottomTabs.indexOfFirst { it.route == currentRoute }
+            val selectedIndex = tabs.indexOfFirst { it.route == currentRoute }
                 .coerceAtLeast(0)
 
             // Spring animator drives the pill when it's NOT being dragged
@@ -251,8 +265,8 @@ fun FudAIBottomNavBar(
                         )
                     )
                 }
-                if (BottomTabs[landed].route != currentRoute) {
-                    onTap(BottomTabs[landed].route)
+                if (tabs[landed].route != currentRoute) {
+                    onTap(tabs[landed].route)
                 }
             }
             fun onDragDelta(delta: Float) {
@@ -270,7 +284,7 @@ fun FudAIBottomNavBar(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                for (tab in BottomTabs) {
+                for (tab in tabs) {
                     val selected = tab.route == currentRoute
                     TabItem(
                         tab = tab,

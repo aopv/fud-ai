@@ -8,6 +8,7 @@ import com.apoorvdarshan.calorietracker.models.BodyFatEntry
 import com.apoorvdarshan.calorietracker.models.BodyMeasurement
 import com.apoorvdarshan.calorietracker.models.UserProfile
 import com.apoorvdarshan.calorietracker.models.WeightEntry
+import com.apoorvdarshan.calorietracker.models.WorkoutSession
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,6 +23,7 @@ data class ProgressUiState(
     val entries: List<WeightEntry> = emptyList(),
     val bodyFatEntries: List<BodyFatEntry> = emptyList(),
     val bodyMeasurements: List<BodyMeasurement> = emptyList(),
+    val workoutBurnSessions: List<WorkoutSession> = emptyList(),
     val profile: UserProfile? = null,
     val goalReached: Boolean = false
 )
@@ -35,9 +37,16 @@ class ProgressViewModel(private val container: AppContainer) : ViewModel() {
             container.profileRepository.profile,
             container.weightRepository.entries,
             container.bodyFatRepository.entries,
-            container.bodyMeasurementRepository.entries
-        ) { p, weights, bodyFats, measurements ->
-            _ui.value.copy(profile = p, entries = weights, bodyFatEntries = bodyFats, bodyMeasurements = measurements)
+            container.bodyMeasurementRepository.entries,
+            container.workoutRepository.burnSessions
+        ) { p, weights, bodyFats, measurements, workouts ->
+            _ui.value.copy(
+                profile = p,
+                entries = weights,
+                bodyFatEntries = bodyFats,
+                bodyMeasurements = measurements,
+                workoutBurnSessions = workouts
+            )
         }.onEach { _ui.value = it }.launchIn(viewModelScope)
     }
 
@@ -75,6 +84,10 @@ class ProgressViewModel(private val container: AppContainer) : ViewModel() {
 
     fun deleteBodyMeasurement(id: UUID) {
         viewModelScope.launch { container.bodyMeasurementRepository.deleteEntry(id) }
+    }
+
+    fun deleteWorkoutBurn(id: UUID) {
+        viewModelScope.launch { container.workoutRepository.deleteSession(id) }
     }
 
     fun dismissGoalReached() {

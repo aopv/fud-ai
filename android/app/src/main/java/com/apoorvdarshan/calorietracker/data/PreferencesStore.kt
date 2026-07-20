@@ -23,6 +23,7 @@ import com.apoorvdarshan.calorietracker.models.UserProfile
 import com.apoorvdarshan.calorietracker.models.WeightEntry
 import com.apoorvdarshan.calorietracker.models.WidgetSnapshot
 import com.apoorvdarshan.calorietracker.models.WaterEntry
+import com.apoorvdarshan.calorietracker.models.WorkoutPersistedState
 import com.apoorvdarshan.calorietracker.ui.theme.AppThemeColor
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -50,7 +51,7 @@ private data class HealthEnergyGoalTargetSnapshot(
  * functions for writes. Complex values (profile, entries, history) are stored
  * as JSON strings via kotlinx.serialization.
  */
-class PreferencesStore(private val context: Context) {
+class PreferencesStore(private val context: Context) : WorkoutStateStore {
 
     private val json = Json { ignoreUnknownKeys = true }
     private val ds get() = context.fudaiDataStore
@@ -289,6 +290,26 @@ class PreferencesStore(private val context: Context) {
     /** false = Sunday, true = Monday (default). Mirrors iOS @AppStorage("weekStartsOnMonday"). */
     val weekStartsOnMonday: Flow<Boolean> = ds.data.map { it[Keys.WEEK_STARTS_MONDAY] ?: true }
     suspend fun setWeekStartsOnMonday(v: Boolean) { ds.edit { it[Keys.WEEK_STARTS_MONDAY] = v } }
+
+    // -- Workout diary ---------------------------------------------------
+    override val workoutState: Flow<WorkoutPersistedState> = ds.data.map { prefs ->
+        prefs[Keys.WORKOUT_STATE]?.let {
+            runCatching { json.decodeFromString<WorkoutPersistedState>(it) }.getOrNull()
+        }?.sanitized() ?: WorkoutPersistedState()
+    }
+
+    override suspend fun setWorkoutState(state: WorkoutPersistedState) {
+        ds.edit {
+            it[Keys.WORKOUT_STATE] = json.encodeToString(
+                WorkoutPersistedState.serializer(),
+                state.sanitized()
+            )
+        }
+    }
+
+    override suspend fun clearWorkoutState() {
+        ds.edit { it.remove(Keys.WORKOUT_STATE) }
+    }
 
     val mealSchedule: Flow<MealSchedule> = ds.data.map { prefs ->
         MealSchedule(
@@ -590,6 +611,7 @@ class PreferencesStore(private val context: Context) {
         val APPEARANCE_MODE = stringPreferencesKey("appearanceMode")
         val APP_THEME_COLOR = stringPreferencesKey("appThemeColor")
         val WEEK_STARTS_MONDAY = booleanPreferencesKey("weekStartsOnMonday")
+        val WORKOUT_STATE = stringPreferencesKey("workoutDiaryStateV1")
         val MEAL_BREAKFAST_START = intPreferencesKey("mealBreakfastStartMinutes")
         val MEAL_LUNCH_START = intPreferencesKey("mealLunchStartMinutes")
         val MEAL_DINNER_START = intPreferencesKey("mealDinnerStartMinutes")

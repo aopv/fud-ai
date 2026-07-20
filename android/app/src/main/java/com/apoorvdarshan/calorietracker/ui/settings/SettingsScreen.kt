@@ -152,6 +152,8 @@ import com.apoorvdarshan.calorietracker.models.SpeechProvider
 import com.apoorvdarshan.calorietracker.models.UserProfile
 import com.apoorvdarshan.calorietracker.models.WeightDisplayFormatter
 import com.apoorvdarshan.calorietracker.models.WeightGoal
+import com.apoorvdarshan.calorietracker.models.WorkoutRpeScale
+import com.apoorvdarshan.calorietracker.models.WorkoutSplit
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -186,7 +188,7 @@ private enum class SettingsSheet {
     FALLBACK_PROVIDER, FALLBACK_MODEL, FALLBACK_KEY, FALLBACK_BASE_URL,
     GENDER, BIRTHDAY, HEIGHT, WEIGHT, BODY_FAT, GOAL_BODY_FAT, ACTIVITY, GOAL, GOAL_WEIGHT, GOAL_SPEED,
     CALORIES, PROTEIN, CARBS, FAT, OPTIONAL_NUTRIENTS,
-    APPEARANCE, WEEK_START, MEAL_TIMES, WATER_GOAL
+    APPEARANCE, WEEK_START, MEAL_TIMES, WATER_GOAL, WORKOUT_SPLIT, WORKOUT_RPE
 }
 
 private enum class HealthConnectPermissionAction {
@@ -733,9 +735,46 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController) {
                 }
             }
 
+            // Workout is permanently available. Keep its only two live
+            // preferences in the same compact Fud AI settings card.
+            SectionCard(title = stringResource(R.string.settings_section_workout)) {
+                SettingRow(
+                    stringResource(R.string.settings_training_split),
+                    ui.workoutSplit.title,
+                    icon = Icons.Outlined.FitnessCenter,
+                    inlineMenu = true
+                ) { sheet = SettingsSheet.WORKOUT_SPLIT }
+                HorizontalDivider()
+                SettingRow(
+                    stringResource(R.string.settings_rpe_scale),
+                    ui.workoutRpeScale.title,
+                    icon = Icons.Outlined.Speed,
+                    inlineMenu = true
+                ) { sheet = SettingsSheet.WORKOUT_RPE }
+                HorizontalDivider()
+                Text(
+                    stringResource(R.string.settings_rpe_guide),
+                    fontSize = 12.sp,
+                    lineHeight = 18.sp,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
+                )
+            }
+
             // Section 6 — Health & Data (matches iOS Section "Health & Data")
             SectionCard(title = stringResource(R.string.settings_section_health)) {
                 ToggleRow(stringResource(R.string.settings_health_connect), ui.healthConnectEnabled, icon = Icons.Outlined.Favorite, onChange = ::onHealthConnectToggle)
+                if (ui.healthConnectEnabled && !ui.workoutHealthWriteGranted) {
+                    HorizontalDivider()
+                    SettingRow(
+                        stringResource(R.string.settings_workout_health_access),
+                        stringResource(R.string.settings_grant_permission),
+                        icon = Icons.Outlined.LocalFireDepartment
+                    ) {
+                        pendingHealthPermissionAction = HealthConnectPermissionAction.SYNC
+                        healthConnectLauncher.launch(container.health.permissions)
+                    }
+                }
                 HorizontalDivider()
                 SettingRow(
                     stringResource(R.string.settings_manage_health_access),
@@ -1541,6 +1580,21 @@ private fun SettingsSheets(
                         vm.setSpeechApiKey(it)
                         onDismiss()
                     }
+                )
+                SettingsSheet.WORKOUT_SPLIT -> ListSheet(
+                    title = stringResource(R.string.settings_training_split),
+                    items = WorkoutSplit.SelectableValues,
+                    label = { it.title },
+                    selected = { it == ui.workoutSplit },
+                    onSelect = { vm.selectWorkoutSplit(it); onDismiss() }
+                )
+                SettingsSheet.WORKOUT_RPE -> ListSheet(
+                    title = stringResource(R.string.settings_rpe_scale),
+                    items = WorkoutRpeScale.entries,
+                    label = { it.title },
+                    selected = { it == ui.workoutRpeScale },
+                    onSelect = { vm.selectWorkoutRpeScale(it); onDismiss() },
+                    subtitle = { it.inputPlaceholder }
                 )
                 SettingsSheet.FALLBACK_PROVIDER -> ListSheet(
                     title = stringResource(R.string.sheet_ai_provider),

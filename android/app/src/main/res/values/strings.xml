@@ -456,6 +456,7 @@
     <string name="coach_chip_trend">How\'s my trend?</string>
     <string name="coach_chip_doing_this_week">How am I doing this week?</string>
     <string name="coach_chip_log_advice">Any advice based on my log?</string>
+    <string name="coach_chip_training" translatable="false">How is my recent training?</string>
 
     <!-- Progress -->
     <string name="progress_range_week">1W</string>
@@ -475,6 +476,10 @@
 
     <string name="progress_weight_history">Weight History</string>
     <string name="progress_body_fat_history">Body Fat History</string>
+    <string name="progress_workout_history" translatable="false">Workout History</string>
+    <string name="progress_workout_history_count_format" translatable="false">%1$d calculated burns · tap to view or delete</string>
+    <string name="progress_workout_delete_title" translatable="false">Delete workout burn?</string>
+    <string name="progress_workout_delete_message" translatable="false">This removes the calculated burn from Fud AI and Health Connect. Your workout diary plan stays saved.</string>
     <string name="progress_history_count_format">%1$d entries · tap to view or delete</string>
 
     <string name="progress_calories_section">Calories</string>
@@ -495,6 +500,12 @@
     <string name="settings_section_app">App Settings</string>
     <string name="settings_section_ai">AI Provider</string>
     <string name="settings_section_speech">Speech-to-Text</string>
+    <string name="settings_section_workout" translatable="false">Workout</string>
+    <string name="settings_training_split" translatable="false">Training Split</string>
+    <string name="settings_rpe_scale" translatable="false">RPE Scale</string>
+    <string name="settings_rpe_guide" translatable="false">Strength 1–10: 1 is very easy and 10 is maximum effort.\nCR10 0–10: perceived exertion with decimals allowed.\nBorg 6–20: classic whole-number exertion scale.</string>
+    <string name="settings_workout_health_access" translatable="false">Workout Burn Sync</string>
+    <string name="settings_grant_permission" translatable="false">Grant permission</string>
     <string name="settings_section_health">Health &amp; Data</string>
 
     <string name="settings_gender">Gender</string>

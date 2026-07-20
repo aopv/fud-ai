@@ -15,6 +15,8 @@ import com.apoorvdarshan.calorietracker.models.SpeechProvider
 import com.apoorvdarshan.calorietracker.models.UserProfile
 import com.apoorvdarshan.calorietracker.models.WeightEntry
 import com.apoorvdarshan.calorietracker.models.WeightGoal
+import com.apoorvdarshan.calorietracker.models.WorkoutRpeScale
+import com.apoorvdarshan.calorietracker.models.WorkoutSplit
 import com.apoorvdarshan.calorietracker.services.AndroidAppIconManager
 import com.apoorvdarshan.calorietracker.services.WeightAnalysisService
 import com.apoorvdarshan.calorietracker.services.health.HealthConnectManager
@@ -51,6 +53,7 @@ data class SettingsUiState(
     val waterDailyGoalMl: Int = 2_000,
     val waterReminderEnabled: Boolean = false,
     val healthConnectEnabled: Boolean = false,
+    val workoutHealthWriteGranted: Boolean = false,
     val healthEnergyGoalsEnabled: Boolean = false,
     val adaptiveGoalsEnabled: Boolean = false,
     val applyingHealthEnergyGoals: Boolean = false,
@@ -66,6 +69,8 @@ data class SettingsUiState(
     val appThemeColor: AppThemeColor = AppThemeColor.FUD_PINK,
     val weekStartsOnMonday: Boolean = true,
     val mealSchedule: MealSchedule = MealSchedule.Default,
+    val workoutSplit: WorkoutSplit = WorkoutSplit.FULL_BODY,
+    val workoutRpeScale: WorkoutRpeScale = WorkoutRpeScale.STRENGTH,
     val userContext: String = "",
     val fallbackEnabled: Boolean = false,
     val fallbackProvider: AIProvider = AIProvider.GEMINI,
@@ -93,6 +98,15 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
 
     init {
         viewModelScope.launch {
+            container.workoutRepository.preferences.collect { preferences ->
+                _ui.value = _ui.value.copy(
+                    workoutSplit = preferences.split,
+                    workoutRpeScale = preferences.rpeScale
+                )
+            }
+        }
+
+        viewModelScope.launch {
             container.prefs.optionalNutrientGoals.collect { goals ->
                 _ui.value = _ui.value.copy(optionalNutrientGoals = goals)
             }
@@ -117,6 +131,8 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
             val waterGoal = container.prefs.waterDailyGoalMl.first()
             val waterReminder = container.prefs.waterReminderEnabled.first()
             val hc = reconcileHealthConnectState()
+            val workoutHealthWriteGranted = container.health.hasActiveEnergyWrite()
+            val workoutPreferences = container.workoutRepository.preferences.first()
             val profile = container.profileRepository.current()
             val energyGoals = container.prefs.healthEnergyGoalsEnabled.first() && hc
             val adaptiveGoals = container.prefs.adaptiveGoalsEnabled.first()
@@ -161,6 +177,7 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
                 waterDailyGoalMl = waterGoal,
                 waterReminderEnabled = waterReminder,
                 healthConnectEnabled = hc,
+                workoutHealthWriteGranted = workoutHealthWriteGranted,
                 healthEnergyGoalsEnabled = energyGoals,
                 adaptiveGoalsEnabled = adaptiveGoals,
                 apiKeyMasked = masked,
@@ -175,8 +192,22 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
                 fallbackModel = fbModel,
                 fallbackApiKeyMasked = fbMasked,
                 optionalNutrientGoals = optionalGoals,
+                workoutSplit = workoutPreferences.split,
+                workoutRpeScale = workoutPreferences.rpeScale,
                 goalsNeedRecalc = needsRecalc(profile)
             )
+        }
+    }
+
+    fun selectWorkoutSplit(split: WorkoutSplit) {
+        viewModelScope.launch {
+            container.workoutRepository.updatePreferences { it.copy(split = split) }
+        }
+    }
+
+    fun selectWorkoutRpeScale(scale: WorkoutRpeScale) {
+        viewModelScope.launch {
+            container.workoutRepository.updatePreferences { it.copy(rpeScale = scale) }
         }
     }
 
@@ -498,6 +529,7 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
                 _ui.value = _ui.value.copy(
                     profile = restored ?: _ui.value.profile,
                     healthConnectEnabled = false,
+                    workoutHealthWriteGranted = false,
                     healthEnergyGoalsEnabled = false
                 )
                 return@launch
@@ -508,11 +540,14 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
             if (enabled) {
                 backfillHealthConnect()
                 container.syncHealthConnectReads()
-                container.prefs.setHealthPermissionsVersion(HealthConnectManager.CURRENT_TYPES_VERSION)
+                if (container.health.hasActiveEnergyWrite()) {
+                    container.prefs.setHealthPermissionsVersion(HealthConnectManager.CURRENT_TYPES_VERSION)
+                }
             }
             if (!enabled) container.prefs.setHealthEnergyGoalsEnabled(false)
             _ui.value = _ui.value.copy(
                 healthConnectEnabled = enabled,
+                workoutHealthWriteGranted = enabled && container.health.hasActiveEnergyWrite(),
                 healthEnergyGoalsEnabled = if (enabled) _ui.value.healthEnergyGoalsEnabled else false
             )
         }
@@ -551,9 +586,14 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
             container.prefs.setHealthEnergyGoalsEnabled(false)
         }
 
+        val workoutWriteGranted = container.health.hasActiveEnergyWrite()
         if (granted && (!stored || version < HealthConnectManager.CURRENT_TYPES_VERSION)) {
             backfillHealthConnect()
-            container.prefs.setHealthPermissionsVersion(HealthConnectManager.CURRENT_TYPES_VERSION)
+            // v5 adds workout Active Energy write. Do not mark v5 complete for
+            // an existing user until that newly added permission is granted.
+            if (workoutWriteGranted) {
+                container.prefs.setHealthPermissionsVersion(HealthConnectManager.CURRENT_TYPES_VERSION)
+            }
         }
 
         // Pull external weigh-ins / body-fat readings whenever Settings reloads while connected.
@@ -580,7 +620,9 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
                     return@launch
                 }
                 container.prefs.setHealthConnectEnabled(true)
-                container.prefs.setHealthPermissionsVersion(HealthConnectManager.CURRENT_TYPES_VERSION)
+                if (container.health.hasActiveEnergyWrite()) {
+                    container.prefs.setHealthPermissionsVersion(HealthConnectManager.CURRENT_TYPES_VERSION)
+                }
                 if (container.health.readRecentEnergySummary(days = 14) == null) {
                     showHealthEnergyGoalAlert(
                         title = container.appContext.getString(R.string.vm_not_enough_energy),
@@ -682,6 +724,9 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
                 container.health.deleteBodyFat(entry.id)
                 container.health.writeBodyFat(entry)
             }
+        }
+        if (caps.activeEnergyWrite || container.health.hasActiveEnergyRead()) {
+            container.workoutRepository.synchronizeWithHealth()
         }
     }
 
