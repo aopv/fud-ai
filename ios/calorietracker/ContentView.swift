@@ -1607,18 +1607,18 @@ private struct CopyFromDaySheet: View {
 
     private func copy(_ entries: [FoodEntry]) {
         guard !entries.isEmpty else { return }
+        let copiedTimestamp = timestamp(on: targetDate, usingTimeFrom: .now)
         for entry in entries {
-            let copiedTimestamp = timestamp(on: targetDate, preservingTimeFrom: entry.timestamp)
             let copiedEntry = entry.duplicatedForLogging(at: copiedTimestamp, mealType: entry.mealType)
             foodStore.addEntry(copiedEntry)
         }
         dismiss()
     }
 
-    private func timestamp(on day: Date, preservingTimeFrom sourceTimestamp: Date) -> Date {
+    private func timestamp(on day: Date, usingTimeFrom timeSource: Date) -> Date {
         let calendar = Calendar.current
         let dayComponents = calendar.dateComponents([.year, .month, .day], from: day)
-        let timeComponents = calendar.dateComponents([.hour, .minute, .second, .nanosecond], from: sourceTimestamp)
+        let timeComponents = calendar.dateComponents([.hour, .minute, .second, .nanosecond], from: timeSource)
         var components = DateComponents()
         components.year = dayComponents.year
         components.month = dayComponents.month

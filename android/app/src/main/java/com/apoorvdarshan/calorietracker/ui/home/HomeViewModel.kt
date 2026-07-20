@@ -475,11 +475,12 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
 
     fun copyEntriesToSelectedDay(entries: List<FoodEntry>) {
         if (entries.isEmpty()) return
+        val copiedTimestamp = timestampForSelectedDay()
         viewModelScope.launch {
             entries.forEach { entry ->
                 container.foodRepository.addEntry(
                     entry.duplicatedForLogging(
-                        logDate = timestampForSelectedDayPreservingTime(entry.timestamp),
+                        logDate = copiedTimestamp,
                         mealType = entry.mealType
                     )
                 )
@@ -524,12 +525,6 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
         val zone = ZoneId.systemDefault()
         val nowTime = java.time.LocalTime.now()
         return day.atTime(nowTime).atZone(zone).toInstant()
-    }
-
-    private fun timestampForSelectedDayPreservingTime(sourceTimestamp: Instant): Instant {
-        val zone = ZoneId.systemDefault()
-        val sourceTime = sourceTimestamp.atZone(zone).toLocalTime()
-        return _selectedDate.value.atTime(sourceTime).atZone(zone).toInstant()
     }
 
     private suspend fun savePendingDraft(
