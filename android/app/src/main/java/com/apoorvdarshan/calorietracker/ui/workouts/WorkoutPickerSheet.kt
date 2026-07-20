@@ -54,8 +54,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -129,15 +129,8 @@ internal fun WorkoutPickerSheet(
     }
     var filter by remember(request.contextId) { mutableStateOf(initialFilterState) }
     val focus = LocalFocusManager.current
-    val keyboard = LocalSoftwareKeyboardController.current
     val listState = rememberLazyListState()
-
-    LaunchedEffect(listState.isScrollInProgress) {
-        if (listState.isScrollInProgress) {
-            keyboard?.hide()
-            focus.clearFocus()
-        }
-    }
+    val keyboardDismissConnection = rememberWorkoutKeyboardDismissOnScrollConnection()
 
     fun updateFilter(transform: (WorkoutPickerFilterState) -> WorkoutPickerFilterState) {
         val next = transform(filter)
@@ -311,7 +304,10 @@ internal fun WorkoutPickerSheet(
 
             LazyColumn(
                 state = listState,
-                modifier = Modifier.fillMaxWidth().weight(1f),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .nestedScroll(keyboardDismissConnection),
                 contentPadding = androidx.compose.foundation.layout.PaddingValues(bottom = 28.dp)
             ) {
                 if (items.isEmpty()) {
