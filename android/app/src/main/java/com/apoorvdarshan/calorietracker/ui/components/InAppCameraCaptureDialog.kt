@@ -53,6 +53,9 @@ fun InAppCameraCaptureDialog(
     onDismiss: () -> Unit
 ) {
     val context = LocalContext.current
+    val cameraOpenError = stringResource(R.string.camera_error_open)
+    val cameraSaveError = stringResource(R.string.camera_error_save)
+    val cameraCaptureError = stringResource(R.string.camera_error_capture)
     val lifecycleOwner = LocalLifecycleOwner.current
     val mainExecutor = ContextCompat.getMainExecutor(context)
     val previewView = remember {
@@ -91,7 +94,7 @@ fun InAppCameraCaptureDialog(
                 imageCapture = capture
                 hasFlashUnit = camera.cameraInfo.hasFlashUnit()
             }.onFailure {
-                error = context.getString(R.string.camera_error_open)
+                error = cameraOpenError
             }
         }
         cameraProviderFuture.addListener(listener, mainExecutor)
@@ -191,14 +194,14 @@ fun InAppCameraCaptureDialog(
                                 if (bytes != null && bytes.isNotEmpty()) {
                                     onCapture(bytes)
                                 } else {
-                                    error = context.getString(R.string.camera_error_save)
+                                    error = cameraSaveError
                                 }
                             }
 
                             override fun onError(exception: ImageCaptureException) {
                                 runCatching { file.delete() }
                                 isCapturing = false
-                                error = context.getString(R.string.camera_error_capture)
+                                error = cameraCaptureError
                             }
                         }
                     )

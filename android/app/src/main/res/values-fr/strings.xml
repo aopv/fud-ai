@@ -213,7 +213,7 @@
 
     <string name="onboarding_desired_weight_title">Quel est votre\npoids souhaité ?</string>
 
-    <string name="onboarding_body_fat_title">Connaissez-vous votre\n% de graisse corporelle ?</string>
+    <string name="onboarding_body_fat_title" formatted="false">Connaissez-vous votre\n% de graisse corporelle ?</string>
     <string name="onboarding_body_fat_subtitle">Nous aide à calculer votre métabolisme plus précisément</string>
     <string name="onboarding_yes">Oui</string>
     <string name="onboarding_no">Non</string>
@@ -557,7 +557,7 @@
     <string name="sheet_appearance">Apparence</string>
     <string name="sheet_week_starts">La semaine commence le</string>
     <string name="sheet_height">Taille</string>
-    <string name="sheet_body_fat_percent">% de graisse corporelle</string>
+    <string name="sheet_body_fat_percent" formatted="false">% de graisse corporelle</string>
     <string name="sheet_weekly_change">Variation hebdomadaire</string>
     <string name="sheet_weekly_change_format">%1$.1f %2$s/semaine %3$s</string>
     <string name="sheet_weekly_change_loss">perte</string>

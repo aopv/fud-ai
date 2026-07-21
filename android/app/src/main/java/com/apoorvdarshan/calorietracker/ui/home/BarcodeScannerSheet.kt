@@ -49,7 +49,7 @@ import com.google.mlkit.vision.common.InputImage
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
 
-@OptIn(ExperimentalGetImage::class)
+@androidx.annotation.OptIn(markerClass = [ExperimentalGetImage::class])
 @Composable
 fun BarcodeScannerSheet(
     onBarcode: (String) -> Unit,

@@ -12,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -85,12 +86,13 @@ private fun UnitSegment(
         else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
         label = "segFg"
     )
+    val interactionSource = remember { MutableInteractionSource() }
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(18.dp))
             .background(bg)
             .clickable(
-                interactionSource = MutableInteractionSource(),
+                interactionSource = interactionSource,
                 indication = null,
                 onClick = onClick
             )

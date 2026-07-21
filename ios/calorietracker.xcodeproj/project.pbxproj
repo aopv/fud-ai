@@ -682,7 +682,7 @@
 				INFOPLIST_KEY_AppGroupIdentifier = "$(APP_GROUP_IDENTIFIER)";
 				INFOPLIST_KEY_CFBundleDisplayName = "$(APP_DISPLAY_NAME)";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
-				INFOPLIST_KEY_NSCameraUsageDescription = "Cal AI needs camera access to scan your food and calculate calories.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Fud AI needs camera access to scan your food and calculate calories.";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "Read your weight, height, body composition, nutrition, and Fud AI workout calories to keep your history in sync.";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Write, update, or remove your nutrition, body measurements, and calculated workout calories when you change your logs.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Fud AI needs microphone access so you can log food by voice.";
@@ -733,7 +733,7 @@
 				INFOPLIST_KEY_AppGroupIdentifier = "$(APP_GROUP_IDENTIFIER)";
 				INFOPLIST_KEY_CFBundleDisplayName = "$(APP_DISPLAY_NAME)";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
-				INFOPLIST_KEY_NSCameraUsageDescription = "Cal AI needs camera access to scan your food and calculate calories.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Fud AI needs camera access to scan your food and calculate calories.";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "Read your weight, height, body composition, nutrition, and Fud AI workout calories to keep your history in sync.";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Write, update, or remove your nutrition, body measurements, and calculated workout calories when you change your logs.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Fud AI needs microphone access so you can log food by voice.";

@@ -2,8 +2,8 @@
 
 Thanks for your interest in contributing! Fud AI is an open-source, "bring-your-own-key" calorie tracker. The repo is a monorepo:
 
-- `ios/` — SwiftUI iOS app (next release: v5.1 build 31)
-- `android/` — Kotlin + Jetpack Compose app (next release: v3.1 / versionCode 32)
+- `ios/` — SwiftUI iOS app (current release candidate: v6.0 build 33)
+- `android/` — Kotlin + Jetpack Compose app (current release candidate: v6.0 / versionCode 33)
 - `web/` — marketing site at [fud-ai.app](https://fud-ai.app) (plain HTML/CSS, Cloudflare Workers Static Assets)
 
 PRs, bug reports, and feature ideas for any of these are welcome.
@@ -62,7 +62,7 @@ For a codebase overview, start with the Architecture and Source Layout sections 
 - Main actor isolation is default (`SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor`) — no manual `@MainActor` annotations needed
 - Services are stateless structs with static methods (`GeminiService`, `ChatService`, `SpeechService`, etc.)
 - Xcode auto-discovers files via `PBXFileSystemSynchronizedRootGroup` — **do not** edit `project.pbxproj` to register source files
-- Every user-facing string must be localized in `ios/calorietracker/Localizable.xcstrings` across all 16 supported iOS languages before commit
+- Every user-facing string must be added to `ios/calorietracker/Localizable.xcstrings`; English is required, and touched translations should be updated wherever practical
 - All data persistence is local (`UserDefaults` + iOS Keychain). No Core Data, no iCloud, no CloudKit
 - Siri/App Intents live under `ios/calorietracker/AppIntents/`; phrase-help UI is opened from + → Describe Meal → Siri Phrases on iOS
 
@@ -71,7 +71,7 @@ For a codebase overview, start with the Architecture and Source Layout sections 
 - **Jetpack Compose** with manual DI via `FudAIApp.container` (`AppContainer`) — no Hilt
 - Each screen has a `*ViewModel` exposing `StateFlow<UiState>`; UI collects via `collectAsState()`
 - Repositories expose `Flow<T>` from DataStore; ViewModels `combine()` them into screen state
-- Every user-facing string lives in `app/src/main/res/values/strings.xml` and **must** be translated into all 14 non-English locale files (`values-{ar,az,de,es,fr,hi,it,ja,ko,nl,pt-rBR,ro,ru,zh-rCN}/strings.xml`) before commit
+- Every user-facing string lives in `app/src/main/res/values/strings.xml`; English is required, and touched translations should be updated in the 14 non-English locale files (`values-{ar,az,de,es,fr,hi,it,ja,ko,nl,pt-rBR,ro,ru,zh-rCN}/strings.xml`) wherever practical
 - Model enums (`Gender`, `MealType`, `AIProvider`, etc.) expose `@get:StringRes val displayNameRes: Int` — no hardcoded `displayName: String` strings
 - All data persistence is local (DataStore Preferences + EncryptedSharedPreferences). No Room, no Firebase, no cloud
 - When touching the release build path: keep R8 keep rules in `app/proguard-rules.pro` for kotlinx.serialization, Glance, WorkManager+Room, Health Connect — these all crash production-only without explicit keeps
@@ -117,13 +117,13 @@ Include vision-capable model IDs since the app needs vision for food photo analy
 
 ## Localization
 
-iOS ships in 16 languages; Android ships in 15. Any new user-facing string must be translated before the PR lands.
+iOS ships 16 locale resources; Android ships 15. English is the complete fallback on both platforms, so a missing translation must never block rendering or produce an empty label. Update every affected locale when practical and call out intentional fallback copy in the PR.
 
-**iOS:** Add to `ios/calorietracker/Localizable.xcstrings` (String Catalog) — Xcode auto-extracts new English strings on build with `SWIFT_EMIT_LOC_STRINGS = YES`, but leaves the other 15 columns empty. Fill them in.
+**iOS:** Add to `ios/calorietracker/Localizable.xcstrings` (String Catalog) — Xcode auto-extracts new English strings on build with `SWIFT_EMIT_LOC_STRINGS = YES`, but leaves the other 15 columns empty. Fill the translations you are changing and verify fallback behavior for the rest.
 
-**Android:** Add the key to `app/src/main/res/values/strings.xml`, then add the translated value to all 14 non-English `values-*/strings.xml` files. For batches of 10+ strings, spawn a translation agent per locale (the existing translations were sourced from the iOS catalog where keys matched, plus fresh translations for Android-specific strings — same workflow applies). Enums use `displayNameRes: Int` instead of `displayName: String` — see the existing `MealType` / `WeightGoal` for the pattern.
+**Android:** Add the key to `app/src/main/res/values/strings.xml`, then update the relevant non-English `values-*/strings.xml` files. Android intentionally falls back to the default English resource while locale updates are completed; release lint disables only `MissingTranslation` for that reason. Enums use `displayNameRes: Int` instead of `displayName: String` — see the existing `MealType` / `WeightGoal` for the pattern.
 
-Before committing, verify that every locale still contains the same user-facing key set and build both platform resources so missing or malformed translations fail locally.
+Before committing, build both platform resources so malformed translations and format-argument mismatches fail locally, then spot-check any locale files you touched.
 
 ## Contact
 

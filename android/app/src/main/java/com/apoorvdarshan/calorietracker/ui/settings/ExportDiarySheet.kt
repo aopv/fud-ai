@@ -65,6 +65,9 @@ fun ExportDiarySheet(
     onDismiss: () -> Unit,
 ) {
     val context = LocalContext.current
+    val noMealsMessage = stringResource(R.string.export_no_meals)
+    val exportTitle = stringResource(R.string.export_diary_title)
+    val exportFailedMessage = stringResource(R.string.export_failed)
     val scope = rememberCoroutineScope()
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val isDark = MaterialTheme.colorScheme.background.let { (it.red + it.green + it.blue) / 3f < 0.5f }
@@ -147,7 +150,7 @@ fun ExportDiarySheet(
                                 profile = profile, mealDisplay = { mealNames[it] ?: it.name },
                             )
                             if (result == null) {
-                                status = context.getString(R.string.export_no_meals)
+                                status = noMealsMessage
                                 return@launch
                             }
                             val (name, content) = result
@@ -161,10 +164,10 @@ fun ExportDiarySheet(
                                     putExtra(Intent.EXTRA_STREAM, uri)
                                     addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                                 }
-                                context.startActivity(Intent.createChooser(send, context.getString(R.string.export_diary_title)))
+                                context.startActivity(Intent.createChooser(send, exportTitle))
                                 onDismiss()
                             } catch (e: Exception) {
-                                status = e.localizedMessage ?: context.getString(R.string.export_failed)
+                                status = e.localizedMessage ?: exportFailedMessage
                             }
                         }
                     }

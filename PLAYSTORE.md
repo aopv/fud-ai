@@ -1,6 +1,6 @@
 # Play Store Listing
 
-Google Play Console listing copy for Fud AI Android v3.1 / versionCode 32. Each field is in a code block for easy copy-paste. Char counts are tracked because Play Console enforces hard caps and silently truncates anything over.
+Google Play Console listing copy for Fud AI Android v6.0 / versionCode 33. Each field is in a code block for easy copy-paste. Char counts are tracked because Play Console enforces hard caps and silently truncates anything over.
 
 **Where to paste each field in Play Console:**
 - App name / Short description / Full description → Grow → Store presence → **Main store listing** (default English) and Grow → Store presence → **Custom store listings** → Manage translations (per-language overrides)
@@ -38,7 +38,9 @@ Snap, speak, or type a meal. AI logs the calories. Open source.
 ```
 Fud AI makes calorie tracking effortless with AI-powered food recognition. Snap a photo, scan a barcode, speak it, or type it — get instant nutrition: calories, protein, carbs, fats, vitamins, minerals, and more.
 
-NEW in v3.1: analyze up to 10 camera or library photos together with an optional note and retry failed AI requests. Enable local water tracking if you want it, choose any practical goal, quick-log glasses or a custom amount, see progress below calories, schedule a local reminder, and add a dedicated Water widget. Six clearer activity levels, customizable Breakfast/Lunch/Dinner/Snack boundaries, complete image previews, unit-aware weekly-change controls, and easier Health Connect permission management are also included.
+NEW in v6.0: plan and log strength workouts with sets, reps, weight, and RPE. Estimate daily workout burn, review it in Progress, and optionally sync it with Health Connect. Switch between the diary and 873-exercise library; Fud AI remembers your view.
+
+Meal reuse is faster, copied foods use the current time, and exports include every stored nutrient. Water tracking adds selectable units. AI presets use current models, with configurable Ollama/custom timeouts.
 
 Open source, privacy-first. Bring your own API key.
 
@@ -52,23 +54,23 @@ WAYS TO LOG A MEAL
 • Saved Meals — recents, frequent, favorites
 • Copy from Day — copy meals from another date
 
-13 AI PROVIDERS
-Gemini, OpenAI, Claude, Grok, Groq, OpenRouter, Together, Hugging Face, Fireworks, DeepInfra, Mistral, Ollama, or any OpenAI-compatible endpoint. Keys are stored encrypted.
+AI PROVIDERS
+Use Gemini, OpenAI, Claude, Grok, Groq, OpenRouter, Together, Hugging Face, Fireworks, DeepInfra, Mistral, Ollama, or an OpenAI-compatible endpoint. Keys are encrypted.
 
 6 SPEECH-TO-TEXT ENGINES
-Native Android, Gemini, OpenAI Whisper, Groq, Deepgram, AssemblyAI. Choose Provider Auto, Use Device Language, or a fixed language.
+Native Android, Gemini, OpenAI Whisper, Groq, Deepgram, or AssemblyAI, with automatic or fixed language handling.
 
 COACH
-Multi-turn chat sees your profile, weight, body fat, and food log. Ask "what was my weight in March?" — Coach pulls the date range it needs. You can attach an image.
+Multi-turn chat can access your profile, goals, food log, progress, and workouts when requested. Images are supported.
 
 REVIEW BEFORE LOGGING
 Unlock Nutrition to correct calories, macros, and detailed nutrients before saving; serving changes then scale from your edits. What if? previews today's macro impact and can ask AI for a suggestion.
 
 WORKOUTS
-Browse 873 exercises with photos. Filter by primary/secondary muscle and equipment, search, sort, and open per-exercise detail pages.
+Plan by day and log sets, reps, weight, and RPE without a timer. Swipe weeks, estimate calorie burn, and review history in Progress. The 873-exercise photo library includes muscle/equipment filters, search, sorting, and details.
 
 PERSONALIZED GOALS
-BMR via Katch-McArdle or Mifflin-St Jeor. TDEE with six work-and-training based activity levels. Auto-calculated calorie + protein + carbs + fat targets — fully customizable. Set the times when Breakfast, Lunch, Dinner, and Snack begin.
+BMR and TDEE calculators, six activity levels, automatic or editable macro targets, and customizable meal-time boundaries.
 
 OPTIONAL NUTRIENT GOALS
 Set expanded nutrient goals separately from the macro calculator — fiber, sugar, fats, sodium, vitamins, minerals, and more. Use AI Estimate or set them manually. Home cards can show macros or selected nutrients.
@@ -83,10 +85,10 @@ Off by default. Set your own daily goal, quick-log one to three glasses or a cus
 Auto-selected by phone language: English, Spanish, French, German, Italian, Portuguese (BR), Dutch, Russian, Japanese, Korean, Chinese, Hindi, Arabic, Romanian, Azerbaijani.
 
 PRIVACY FIRST
-No account, sign-in, Fud AI-operated cloud sync, analytics, behavioral tracking, or ads. Android backup/device transfer may still apply under your system settings. API keys are encrypted on-device. AI/STT requests go directly to your chosen provider. Shared meal links contain the meal data you choose to share. MIT licensed.
+No account, Fud AI cloud, analytics, behavioral tracking, or ads. Android backup may apply under system settings. Keys are encrypted; AI/STT requests go directly to your provider. MIT licensed.
 
 HEALTH CONNECT
-Optional sync for nutrition, weight, body fat, and energy data, with backfill support. Reinstalled or switched phones? Your food log, weight, and body fat can restore from Health Connect. Review or revoke permissions through Manage Access.
+Optional sync for nutrition, weight, body fat, and calculated workout calories, plus energy reads for goal estimates. Records can restore from Health Connect after reinstall.
 
 NOTE: Not medical advice. Estimates are AI-generated; consult a healthcare professional before significant diet changes.
 
@@ -97,118 +99,118 @@ Source: https://github.com/apoorvdarshan/fud-ai
 ```
 
 ### Other 14 languages
-English-only on Play Console — non-English Play Store browsers (ar, az-AZ, de-DE, es-ES, fr-FR, hi-IN, it-IT, ja-JP, ko-KR, nl-NL, pt-BR, ro, ru-RU, zh-CN) see the English source as fallback. The in-app UI itself is fully translated into all 14 locales via per-locale `values-{lang}/strings.xml`, so the localization gap is only on the Play Store listing surface, not inside the app.
+English-only on Play Console — non-English Play Store browsers (ar, az-AZ, de-DE, es-ES, fr-FR, hi-IN, it-IT, ja-JP, ko-KR, nl-NL, pt-BR, ro, ru-RU, zh-CN) see the English source as fallback. The app includes 14 localized interfaces; newer strings may temporarily use the English fallback.
 
 ---
 
-## 4. What's New (v3.1 / versionCode 32)
+## 4. What's New (v6.0 / versionCode 33)
 
 **500 char hard cap per language.** Paste the entire block below into Play Console's "Release notes" field — it auto-routes each `<lang-tag>` block to the matching locale.
 
 ```
 <en-US>
-• Analyze up to 10 camera or library photos together, add an optional note, and retry failed requests.
-• Optional local water tracking: custom goal, glass shortcuts, reminder, progress, and a separate Water widget.
-• Six clearer activity levels and customizable Breakfast, Lunch, Dinner, and Snack times.
-• Complete image previews, corrected weekly-change units, configurable meal defaults, and easier Health Connect access.
+• New workout diary/logger: plan exercises, enter sets, reps, weight and RPE, estimate daily calorie burn, and review workout history.
+• Switch between the logger and 873-exercise library; your last view stays selected.
+• Faster meal reuse, complete nutrient export, and selectable water units.
+• Updated AI model presets, configurable local/custom timeouts, Health Connect workout sync, and reliability fixes.
 </en-US>
 
 <ar>
-• حلّل حتى 10 صور من الكاميرا أو المكتبة معًا، وأضف ملاحظة اختيارية، وأعد المحاولة عند الفشل.
-• تتبع ماء محلي اختياري: هدف مخصص، اختصارات للأكواب، تذكير، تقدم وودجت ماء مستقل.
-• ستة مستويات نشاط أوضح وأوقات قابلة للتخصيص للفطور والغداء والعشاء والوجبات الخفيفة.
-• معاينات صور كاملة ووحدات أسبوعية مصححة ووصول أسهل إلى Health Connect.
+• يوميات ومسجل تمارين جديد: خطط للتمارين وسجل المجموعات والتكرارات والوزن وRPE والسعرات.
+• بدّل بين المسجل ومكتبة تضم 873 تمرينًا، مع حفظ آخر عرض.
+• إعادة استخدام أسرع للوجبات، وتصدير كامل للمغذيات، ووحدات ماء قابلة للاختيار.
+• نماذج AI محدثة ومزامنة التمارين مع Health Connect وتحسينات للموثوقية.
 </ar>
 
 <az-AZ>
-• Kamera və ya qalereyadan 10-a qədər şəkli birlikdə analiz edin, qeyd əlavə edin və uğursuz sorğunu təkrarlayın.
-• İstəyə bağlı yerli su izləmə: fərdi hədəf, stəkan qısayolları, xatırlatma, irəliləyiş və ayrıca vidcet.
-• Altı daha aydın fəaliyyət səviyyəsi və fərdiləşdirilən yemək vaxtları.
-• Tam şəkil önbaxışı, düzəldilmiş həftəlik vahidlər və Health Connect girişinin rahat idarəsi.
+• Yeni məşq gündəliyi: hərəkətləri planlayın, set, təkrar, çəki, RPE və kalori sərfini qeyd edin.
+• Gündəliklə 873 hərəkətlik kitabxana arasında keçin; son görünüş yadda qalır.
+• Yeməkləri daha sürətli təkrar istifadə edin, bütün qidaları ixrac edin və su vahidini seçin.
+• Yenilənmiş AI modelləri, Health Connect məşq sinxronu və etibarlılıq düzəlişləri.
 </az-AZ>
 
 <de-DE>
-• Bis zu 10 Kamera- oder Bibliotheksfotos gemeinsam analysieren, optional notieren und Fehler erneut versuchen.
-• Optionale lokale Wassererfassung: eigenes Ziel, Glas-Kürzel, Erinnerung, Fortschritt und eigenes Widget.
-• Sechs klarere Aktivitätsstufen und anpassbare Essenszeiten.
-• Vollständige Bildvorschau, korrigierte Wochen-Einheiten und einfacherer Health-Connect-Zugriff.
+• Neues Trainingstagebuch: Übungen planen und Sätze, Wiederholungen, Gewicht, RPE und Kalorien erfassen.
+• Zwischen Logger und Bibliothek mit 873 Übungen wechseln; die letzte Ansicht bleibt gewählt.
+• Mahlzeiten schneller wiederverwenden, alle Nährstoffe exportieren und Wassereinheit wählen.
+• Aktualisierte KI-Modelle, Health-Connect-Trainingssync und Zuverlässigkeitskorrekturen.
 </de-DE>
 
 <es-ES>
-• Analiza juntas hasta 10 fotos de cámara o galería, añade una nota opcional y reintenta si falla.
-• Agua local opcional: objetivo propio, atajos por vasos, recordatorio, progreso y widget independiente.
-• Seis niveles de actividad más claros y horarios personalizables para cada comida.
-• Vista previa completa, unidades semanales corregidas y acceso más fácil a Health Connect.
+• Nuevo diario de entrenamiento: planifica ejercicios y registra series, repeticiones, peso, RPE y calorías.
+• Cambia entre el registro y la biblioteca de 873 ejercicios; se conserva la última vista.
+• Reutiliza comidas más rápido, exporta todos los nutrientes y elige la unidad de agua.
+• Modelos de IA actualizados, sincronización de entrenos con Health Connect y mejoras de fiabilidad.
 </es-ES>
 
 <fr-FR>
-• Analysez ensemble jusqu'à 10 photos, ajoutez une note facultative et réessayez après un échec.
-• Suivi d'eau local facultatif : objectif, raccourcis par verre, rappel, progression et widget dédié.
-• Six niveaux d'activité plus clairs et horaires de repas personnalisables.
-• Aperçus complets, unités hebdomadaires corrigées et accès Health Connect simplifié.
+• Nouveau journal d'entraînement : planifiez puis notez séries, répétitions, poids, RPE et calories.
+• Basculez entre le journal et la bibliothèque de 873 exercices ; la dernière vue est mémorisée.
+• Réutilisation des repas accélérée, export de tous les nutriments et unité d'eau au choix.
+• Modèles IA actualisés, synchronisation Health Connect et correctifs de fiabilité.
 </fr-FR>
 
 <hi-IN>
-• कैमरा या गैलरी की 10 फ़ोटो साथ विश्लेषित करें, वैकल्पिक नोट जोड़ें और विफल अनुरोध फिर चलाएँ।
-• वैकल्पिक स्थानीय पानी ट्रैकिंग: अपना लक्ष्य, ग्लास शॉर्टकट, रिमाइंडर, प्रगति और अलग विजेट।
-• छह स्पष्ट गतिविधि स्तर और हर भोजन का बदलने योग्य समय।
-• पूरी इमेज प्रीव्यू, सही साप्ताहिक इकाइयाँ और आसान Health Connect एक्सेस।
+• नया वर्कआउट लॉगर: व्यायाम प्लान करें और सेट, रेप, वजन, RPE व कैलोरी बर्न दर्ज करें।
+• लॉगर और 873 व्यायामों की लाइब्रेरी के बीच बदलें; पिछला दृश्य याद रहता है।
+• भोजन जल्दी दोबारा उपयोग करें, सभी पोषक तत्व निर्यात करें और पानी की इकाई चुनें।
+• नए AI मॉडल, Health Connect वर्कआउट सिंक और विश्वसनीयता सुधार।
 </hi-IN>
 
 <it-IT>
-• Analizza insieme fino a 10 foto da fotocamera o galleria, aggiungi una nota e riprova in caso di errore.
-• Acqua locale opzionale: obiettivo personale, scorciatoie per bicchieri, promemoria, progresso e widget dedicato.
-• Sei livelli di attività più chiari e orari dei pasti personalizzabili.
-• Anteprime complete, unità settimanali corrette e accesso Health Connect più semplice.
+• Nuovo diario allenamenti: pianifica esercizi e registra serie, ripetizioni, peso, RPE e calorie.
+• Passa tra diario e libreria di 873 esercizi; l'ultima vista resta selezionata.
+• Riutilizzo pasti più rapido, esportazione di tutti i nutrienti e unità dell'acqua selezionabile.
+• Modelli IA aggiornati, sincronizzazione allenamenti Health Connect e correzioni di affidabilità.
 </it-IT>
 
 <ja-JP>
-• カメラまたはライブラリの写真を最大10枚まとめて解析。任意のメモ追加と失敗時の再試行に対応。
-• 任意のローカル水分記録：自由な目標、コップ単位の追加、リマインダー、進捗、専用ウィジェット。
-• より分かりやすい6段階の活動レベルと、食事時間のカスタマイズ。
-• 画像全体のプレビュー、週間変化の単位修正、Health Connect権限管理を改善。
+• 新しいワークアウト日記：種目を計画し、セット、回数、重量、RPE、消費カロリーを記録。
+• ロガーと873種目のライブラリを切替。最後に開いた表示を保持します。
+• 食事の再利用を高速化し、全栄養素の書き出しと水分単位の選択に対応。
+• AIモデルを更新し、Health Connectの運動同期と信頼性を改善。
 </ja-JP>
 
 <ko-KR>
-• 카메라 또는 사진 앱에서 최대 10장을 함께 분석하고 선택적 메모를 추가하며 실패 시 다시 시도할 수 있습니다.
-• 선택형 로컬 물 기록: 자유 목표, 잔 단위 바로 추가, 알림, 진행률, 전용 위젯.
-• 더 명확한 6단계 활동 수준과 사용자 지정 식사 시간.
-• 전체 이미지 미리보기, 주간 변화 단위 수정, 더 쉬운 Health Connect 권한 관리.
+• 새 운동 일지: 운동을 계획하고 세트, 횟수, 무게, RPE와 칼로리 소모를 기록하세요.
+• 로거와 873개 운동 라이브러리를 전환하며 마지막 화면이 유지됩니다.
+• 식사 재사용 속도 향상, 모든 영양소 내보내기, 물 단위 선택 기능.
+• 최신 AI 모델, Health Connect 운동 동기화 및 안정성 개선.
 </ko-KR>
 
 <nl-NL>
-• Analyseer samen maximaal 10 camera- of bibliotheekfoto's, voeg een notitie toe en probeer fouten opnieuw.
-• Optionele lokale waterregistratie: eigen doel, glas-snelkoppelingen, herinnering, voortgang en aparte widget.
-• Zes duidelijkere activiteitsniveaus en instelbare maaltijdtijden.
-• Volledige beeldvoorbeelden, juiste weekeenheden en eenvoudiger Health Connect-toegang.
+• Nieuw trainingsdagboek: plan oefeningen en log sets, herhalingen, gewicht, RPE en calorieën.
+• Wissel tussen logger en bibliotheek met 873 oefeningen; de laatste weergave blijft gekozen.
+• Maaltijden sneller hergebruiken, alle voedingsstoffen exporteren en watereenheid kiezen.
+• Bijgewerkte AI-modellen, Health Connect-trainingssync en betrouwbaarheidsfixes.
 </nl-NL>
 
 <pt-BR>
-• Analise até 10 fotos da câmera ou galeria juntas, adicione nota opcional e tente novamente em caso de falha.
-• Água local opcional: meta própria, atalhos por copos, lembrete, progresso e widget separado.
-• Seis níveis de atividade mais claros e horários de refeições personalizáveis.
-• Prévia completa, unidades semanais corrigidas e acesso mais fácil ao Health Connect.
+• Novo diário de treino: planeje exercícios e registre séries, repetições, peso, RPE e calorias.
+• Alterne entre o registro e a biblioteca de 873 exercícios; a última tela fica salva.
+• Reutilize refeições mais rápido, exporte todos os nutrientes e escolha a unidade de água.
+• Modelos de IA atualizados, sincronização de treinos com Health Connect e correções de estabilidade.
 </pt-BR>
 
 <ro>
-• Analizează împreună până la 10 fotografii, adaugă o notă opțională și reîncearcă după erori.
-• Urmărire locală opțională a apei: obiectiv propriu, scurtături pentru pahare, memento, progres și widget separat.
-• Șase niveluri de activitate mai clare și ore de masă personalizabile.
-• Previzualizări complete, unități săptămânale corectate și acces Health Connect mai simplu.
+• Jurnal nou de antrenament: planifică exerciții și notează seturi, repetări, greutate, RPE și calorii.
+• Comută între jurnal și biblioteca cu 873 de exerciții; ultima vizualizare rămâne selectată.
+• Refolosește mesele mai rapid, exportă toți nutrienții și alege unitatea pentru apă.
+• Modele AI actualizate, sincronizare Health Connect și remedieri de fiabilitate.
 </ro>
 
 <ru-RU>
-• Анализируйте вместе до 10 фото с камеры или из галереи, добавляйте заметку и повторяйте запрос после ошибки.
-• Необязательный локальный учёт воды: своя цель, быстрые порции, напоминание, прогресс и отдельный виджет.
-• Шесть понятных уровней активности и настраиваемое время приёмов пищи.
-• Полные превью, исправленные недельные единицы и удобнее доступ к Health Connect.
+• Новый дневник тренировок: планируйте упражнения и записывайте подходы, повторы, вес, RPE и калории.
+• Переключайтесь между дневником и библиотекой из 873 упражнений; последний экран сохраняется.
+• Быстрее используйте блюда повторно, экспортируйте все нутриенты и выбирайте единицу воды.
+• Обновлены модели ИИ, синхронизация тренировок Health Connect и надёжность.
 </ru-RU>
 
 <zh-CN>
-• 可同时分析最多 10 张相机或相册照片，添加可选备注，并在失败后重试。
-• 可选本地饮水记录：自定义目标、杯数快捷项、提醒、进度和独立小组件。
-• 六档更清晰的活动水平，并可自定义早餐、午餐、晚餐和加餐时间。
-• 完整图片预览、修正每周变化单位，并简化 Health Connect 权限管理。
+• 新增训练日记：规划动作并记录组数、次数、重量、RPE 和消耗热量。
+• 可在记录器与 873 个动作库之间切换，并保留上次视图。
+• 更快复用餐食、导出全部营养素，并可选择饮水单位。
+• 更新 AI 模型、Health Connect 训练同步及多项稳定性修复。
 </zh-CN>
 ```
 
@@ -244,4 +246,4 @@ These are one-time setup in Play Console → Policy → App content. Don't drift
 - **Data safety**: The developer operates no Fud AI account, analytics, advertising, or app-data backend. Do not declare Advertising ID. Most app data is local, and API keys are stored in EncryptedSharedPreferences. User-initiated AI/STT requests send the selected photos/text/audio directly to the provider the user configures; barcode lookup sends the barcode to Open Food Facts; optional shared-meal links place selected meal data in the URL; optional Health Connect sync reads/writes the declared health types. Complete the Play form according to Google's current definitions for these direct user-initiated transfers rather than broadly claiming that no data is processed. Network requests use HTTPS except a user-configured local/custom endpoint may use the URL the user supplies. Delete All Data removes local app data but not Health Connect records.
 - **Government app**: No
 - **Financial features**: No
-- **Health features**: Yes — nutrition, body measurements, energy-based goals, and optional local water tracking. Health Connect permissions are READ/WRITE nutrition, weight, and body fat plus READ active and total calories burned. Water history is local and is not written to Health Connect. Explain restore/backfill and Energy Burn use in the permissions declaration, and keep the in-app rationale/Manage Access flow aligned with the privacy policy.
+- **Health features**: Yes — nutrition, body measurements, energy-based goals, calculated workout calories, and optional local water tracking. Health Connect permissions are READ/WRITE nutrition, weight, body fat, and active calories burned, plus READ total calories burned. Water history is local and is not written to Health Connect. Explain restore/backfill, Energy Burn Goals, and calculated workout-burn sync in the permissions declaration, and keep the in-app rationale/Manage Access flow aligned with the privacy policy.

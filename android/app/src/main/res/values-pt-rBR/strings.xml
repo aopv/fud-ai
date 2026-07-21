@@ -213,7 +213,7 @@
 
     <string name="onboarding_desired_weight_title">Qual é o seu\npeso desejado?</string>
 
-    <string name="onboarding_body_fat_title">Você sabe sua\n% de gordura corporal?</string>
+    <string name="onboarding_body_fat_title" formatted="false">Você sabe sua\n% de gordura corporal?</string>
     <string name="onboarding_body_fat_subtitle">Ajuda a calcular seu metabolismo com mais precisão</string>
     <string name="onboarding_yes">Sim</string>
     <string name="onboarding_no">Não</string>

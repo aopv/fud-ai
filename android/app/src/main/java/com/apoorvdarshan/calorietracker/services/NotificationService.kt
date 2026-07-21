@@ -109,7 +109,7 @@ class NotificationService(private val context: Context) {
             .setAutoCancel(true)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .build()
-        NotificationManagerCompat.from(context).notifySafely(GOAL_NOTIFICATION_ID, notif)
+        NotificationManagerCompat.from(context).notifySafely(context, GOAL_NOTIFICATION_ID, notif)
     }
 
     /** Post a "new version available" notification. Tapping it opens the Play Store listing
@@ -135,7 +135,7 @@ class NotificationService(private val context: Context) {
             .setAutoCancel(true)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .build()
-        NotificationManagerCompat.from(context).notifySafely(APP_UPDATE_NOTIFICATION_ID, notif)
+        NotificationManagerCompat.from(context).notifySafely(context, APP_UPDATE_NOTIFICATION_ID, notif)
     }
 
     // -- Scheduling ------------------------------------------------------
@@ -260,7 +260,7 @@ class ReminderReceiver : BroadcastReceiver() {
             .setContentIntent(open)
             .setAutoCancel(true)
             .build()
-        NotificationManagerCompat.from(context).notifySafely(request, notif)
+        NotificationManagerCompat.from(context).notifySafely(context, request, notif)
 
         // Re-arm for +24h so the reminder fires daily.
         val am = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -274,6 +274,19 @@ class ReminderReceiver : BroadcastReceiver() {
     }
 }
 
-private fun NotificationManagerCompat.notifySafely(id: Int, notif: android.app.Notification) {
-    runCatching { notify(id, notif) } // swallow SecurityException if permission revoked.
+private fun NotificationManagerCompat.notifySafely(
+    context: Context,
+    id: Int,
+    notif: android.app.Notification
+) {
+    val canNotify = Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
+        ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) ==
+        PackageManager.PERMISSION_GRANTED
+    if (!canNotify) return
+
+    try {
+        notify(id, notif)
+    } catch (_: SecurityException) {
+        // Permission can still be revoked between the explicit check and notify().
+    }
 }

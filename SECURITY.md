@@ -29,14 +29,14 @@ Only the latest released version on each store (App Store for iOS, Play Store fo
 
 **In scope (iOS):**
 
-- The iOS app source in `ios/` (SwiftUI codebase, widget extension, tests targets)
+- The iOS app source in `ios/` (SwiftUI app, Share extension, widgets, Watch app, and test targets)
 - API-key handling and iOS Keychain storage (`KeychainHelper`, `AIProviderSettings`, `SpeechSettings`)
 - Network requests to AI and speech-to-text providers (`GeminiService`, `ChatService`, `SpeechService`), including multi-image food analysis and expanded nutrient payloads
 - Siri/App Intent logging (`AppIntents`, `SiriLoggingService`), including automatic food/weight logging and HealthKit writes triggered from Siri
 - Barcode lookup behavior against Open Food Facts, including the "missing product / missing nutrition" fallback path
-- HealthKit read/write paths (`HealthKitManager`) and UUID-tagged sample conventions
+- HealthKit read/write paths (`HealthKitManager`) and UUID-tagged nutrition, body-measurement, and calculated-workout-burn samples
 - Widget App Group container (`group.com.apoorvdarshan.calorietracker`) and the calorie, nutrient, and optional water snapshot written into it
-- Local persistence layer (`UserDefaults`, Keychain) including Coach history and food/weight/body-fat/water logs
+- Local persistence layer (`UserDefaults`, Keychain) including Coach history and food/weight/body-fat/water/workout logs
 - User-initiated diary exports and shared-meal URL payload handling in the app and `web/add-meal.html`
 
 **In scope (Android):**
@@ -45,9 +45,9 @@ Only the latest released version on each store (App Store for iOS, Play Store fo
 - API-key handling via `EncryptedSharedPreferences` (AES-256, AndroidKeystore-backed) in `data/KeyStore.kt` — including the AEAD recovery path that wipes a corrupted master-key alias on reinstall
 - Network requests to AI and speech-to-text providers (`services/ai/*`, `services/speech/*`), including multi-image food analysis, Coach image attachments, and expanded nutrient payloads
 - Barcode lookup behavior against Open Food Facts, including the "missing product / missing nutrition" fallback path
-- Health Connect read/write (`services/health/HealthConnectManager.kt`) and the `fudai_<uuid>` `clientRecordId` convention used for dedup + safe deletion
+- Health Connect read/write (`services/health/HealthConnectManager.kt`) and the `fudai_<uuid>` `clientRecordId` convention used for dedup + safe deletion, including calculated workout calories
 - Glance widget snapshot (`models/WidgetSnapshot.kt`) shared via the app's DataStore for Calorie, Protein, Today, and Water widgets, plus `ImageProvider(bitmap)` rendering and local thumbnail caching
-- Local persistence (DataStore Preferences for everything, EncryptedSharedPreferences for keys, no Room/cloud)
+- Local persistence (DataStore Preferences for food, body, water, workout, Coach, and settings data; EncryptedSharedPreferences for keys; no Room/cloud)
 - User-initiated diary exports and shared-meal URL payload handling
 - Release signing material handling — `keystore.properties` and `*.jks` are gitignored; ProGuard/R8 keep rules in `app/proguard-rules.pro` (relevant if a missing keep introduces a release-only crash that has security implications)
 

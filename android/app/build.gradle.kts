@@ -86,6 +86,13 @@ android {
         buildConfig = true
     }
 
+    lint {
+        // The default resources intentionally provide English fallback copy while
+        // translated locales are updated incrementally. Keep all other release
+        // checks enabled; only the fallback-policy warning is excluded.
+        disable += "MissingTranslation"
+    }
+
     // Workouts (exercise library ported from Delts): mirror the iOS app's exercise
     // dataset + images without duplicating ~98MB in git — pull them straight from
     // the iOS resources at build time. The JSON (exercises.json) and the 1,746

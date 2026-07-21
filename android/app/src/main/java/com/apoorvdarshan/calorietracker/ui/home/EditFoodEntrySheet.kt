@@ -146,6 +146,7 @@ fun EditFoodEntrySheet(
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
     val sheetSurface = if (isDark) MaterialTheme.colorScheme.surface else Color(0xFFFAF3EE)
     val context = LocalContext.current
+    val reprocessingFailed = stringResource(R.string.edit_reprocessing_failed)
     val dateFormatter = remember { DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.US) }
     val timeFormatter = remember(context) { DateTimeFormatter.ofPattern(clockTimePattern(context), Locale.US) }
     val focusManager = LocalFocusManager.current
@@ -240,7 +241,7 @@ fun EditFoodEntrySheet(
                     emoji = newAnalysis.emoji
                 )
             } catch (e: Exception) {
-                errorText = e.localizedMessage ?: context.getString(R.string.edit_reprocessing_failed)
+                errorText = e.localizedMessage ?: reprocessingFailed
             } finally {
                 isReprocessing = false
             }

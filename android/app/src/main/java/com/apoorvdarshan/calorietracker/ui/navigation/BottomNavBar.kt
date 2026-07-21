@@ -374,9 +374,10 @@ private fun TabItem(
     )
 
     val label = stringResource(tab.labelRes)
+    val interactionSource = remember { MutableInteractionSource() }
     Column(
         modifier = modifier.clickable(
-            interactionSource = MutableInteractionSource(),
+            interactionSource = interactionSource,
             indication = null,
             onClick = onClick
         ),

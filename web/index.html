@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fud AI App - Free AI Calorie Tracker &amp; Food Scanner</title>
-<meta name="description" content="Fud AI is a free open-source AI calorie tracker for iPhone and Android. Analyze multiple food photos, log by barcode, voice, Siri, or text, track water optionally, and sync with Health only when enabled.">
+<meta name="description" content="Fud AI is a free open-source AI calorie and workout tracker for iPhone and Android. Log food by photo, barcode, voice or text; track strength workouts; and optionally sync Health data.">
 <meta name="keywords" content="Fud AI, Fud app, Fud AI app, AI Fud, calorie tracker, AI calorie tracker, AI food scanner, multi photo food scanner, barcode calorie tracker, Open Food Facts, photo calorie tracker, water tracker, hydration widget, nutrition tracker, macro tracker, protein target calculator, body fat tracker, body composition, activity level, custom meal times, adaptive goals, energy burn goals, Siri Shortcuts, App Intents, iOS Share Extension, Apple Watch calorie tracker, optional nutrient goals, custom nutrient cards, open source, iPhone, iOS, Android, privacy, BYOK, Gemini, OpenAI, Claude, Grok, Groq, Deepgram, Hugging Face, Fireworks AI, DeepInfra, Mistral, Ollama, widgets, AI coach, Apple Health, Health Connect, weight tracker, TDEE calculator">
 <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
 <link rel="canonical" href="https://www.fud-ai.app/">
@@ -18,7 +18,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:url" content="https://www.fud-ai.app/">
 <meta property="og:title" content="Fud AI App — AI Calorie Tracker &amp; Food Scanner">
-<meta property="og:description" content="Log meals by photo, iOS Share Extension, notes, voice, Siri Shortcuts, text, or manual entry. Edit nutrition before logging, preview meal what-if impact, and track macros, body fat, Apple Watch, and Health sync without a Fud AI account.">
+<meta property="og:description" content="Log meals by photo, voice, barcode or text; review nutrition; track strength workouts, macros and body data; and optionally sync with Apple Health or Health Connect.">
 <meta property="og:image" content="https://www.fud-ai.app/assets/opengraph.jpg?v=20260707">
 <meta property="og:image:secure_url" content="https://www.fud-ai.app/assets/opengraph.jpg?v=20260707">
 <meta property="og:image:type" content="image/jpeg">
@@ -31,7 +31,7 @@
 <meta name="twitter:creator" content="@apoorvdarshan">
 <meta name="twitter:url" content="https://www.fud-ai.app/">
 <meta name="twitter:title" content="Fud AI App — AI Calorie Tracker &amp; Food Scanner">
-<meta name="twitter:description" content="Log meals by photo, iOS Share Extension, notes, voice, Siri Shortcuts, text, or manual entry. Edit nutrition before logging, preview meal what-if impact, and track macros, body fat, Apple Watch, and Health sync without a Fud AI account.">
+<meta name="twitter:description" content="Log meals by photo, voice, barcode or text; review nutrition; track strength workouts, macros and body data; and optionally sync with Apple Health or Health Connect.">
 <meta name="twitter:image" content="https://www.fud-ai.app/assets/opengraph.jpg?v=20260707">
 <meta name="twitter:image:alt" content="Fud AI — AI calorie tracker for iOS and Android. Snap, speak, or type your meal.">
 <link rel="icon" href="assets/calorie logo transparent.png">
@@ -53,7 +53,7 @@
   "applicationSubCategory": "AI calorie tracker",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
   "isAccessibleForFree": true,
-  "description": "Free, open-source AI calorie and nutrition tracker for iOS and Android. Camera and Photos can analyze up to 10 separate food images together with an optional note, while barcode lookup, voice, text, manual entry, Saved Meals, iOS Share Extension, and iOS Siri Shortcuts cover other logging paths. Review Food lets users correct nutrition and preview What if? impact before logging. Fud AI supports 13 Bring Your Own Key AI providers, six speech-to-text options, and Apple Intelligence on supported iPhones as a final on-device fallback for eligible food descriptions. Tracking includes calories, macros, detailed nutrients, weight, body fat, six work-and-training based activity levels, customizable meal-time boundaries, optional nutrient goals, Adaptive Goals, Energy Burn Goals, and optional local water tracking that is off by default. Water supports a user-chosen goal, glass shortcuts, custom amounts, local reminders, progress below calories, and dedicated iOS and Android widgets. iOS also includes Apple Watch, Home Screen and Lock Screen widgets; Android provides separate Calorie, Protein, Today, and Water Glance widgets. Apple Health and Health Connect integration is optional, permission-controlled, and can restore Fud AI records after a reinstall. The app has no Fud AI account, Fud AI-operated cloud sync, ads, or in-app analytics; eligible local data can still participate in operating-system backup or device transfer. API keys are protected in iOS Keychain or Android EncryptedSharedPreferences. AI/STT requests go directly to the provider the user configures; barcode values go to Open Food Facts; shared meal links contain the meal details the user chooses to share. Delete All Data clears local app storage but never deletes Apple Health or Health Connect samples. MIT licensed. Built with SwiftUI and Jetpack Compose.",
+  "description": "Free, open-source AI calorie, nutrition, and workout tracker for iOS and Android. Camera and Photos can analyze up to 10 separate food images together with an optional note, while barcode lookup, voice, text, manual entry, Saved Meals, iOS Share Extension, and iOS Siri Shortcuts cover other logging paths. Review Food lets users correct nutrition and preview What if? impact before logging. Fud AI supports 13 Bring Your Own Key AI providers, six speech-to-text options, and Apple Intelligence on supported iPhones as a final on-device fallback for eligible food descriptions. Tracking includes calories, macros, detailed nutrients, weight, body fat, water, and strength workouts with daily plans, sets, reps, weight, RPE, calculated burn history, Coach context, and an 873-exercise library. Water supports a user-chosen goal, units, shortcuts, reminders, progress, and dedicated widgets. iOS also includes Apple Watch, Home Screen and Lock Screen widgets; Android provides separate Calorie, Protein, Today, and Water Glance widgets. Apple Health and Health Connect integration is optional and permission-controlled for supported nutrition, body, and calculated workout-burn records. The app has no Fud AI account, Fud AI-operated cloud sync, ads, or in-app analytics; eligible local data can still participate in operating-system backup or device transfer. API keys are protected in iOS Keychain or Android EncryptedSharedPreferences. AI/STT requests go directly to the provider the user configures; barcode values go to Open Food Facts; shared meal links contain the meal details the user chooses to share. Delete All Data clears local app storage but never deletes Apple Health or Health Connect samples. MIT licensed. Built with SwiftUI and Jetpack Compose.",
   "keywords": "Fud AI, Fud app, AI calorie tracker, AI food scanner, photo calorie tracker, macro tracker, nutrition tracker, body fat tracker, iPhone calorie tracker, Android calorie tracker",
   "featureList": [
     "Multi-photo AI food scanner from camera or photo library",
@@ -75,13 +75,13 @@
     "Apple Watch app and complications",
     "Apple Health and Health Connect sync",
     "Bring Your Own Key AI providers",
-    "Workouts tab with an 873-exercise library",
+    "Workout diary and logger with an 873-exercise library",
     "Open source and privacy-first local storage"
   ],
   "author": { "@type": "Person", "name": "Apoorv Darshan" },
   "publisher": { "@type": "Person", "name": "Apoorv Darshan", "url": "https://apoorvdarshan.com/" },
   "license": "https://github.com/apoorvdarshan/fud-ai/blob/main/LICENSE",
-  "dateModified": "2026-07-14",
+  "dateModified": "2026-07-22",
   "url": "https://www.fud-ai.app/",
   "image": "https://www.fud-ai.app/assets/opengraph.jpg",
   "releaseNotes": "https://github.com/apoorvdarshan/fud-ai/releases",
@@ -103,7 +103,7 @@
     "https://play.google.com/store/apps/details?id=com.apoorvdarshan.calorietracker"
   ],
   "screenshot": "https://www.fud-ai.app/assets/screenshots/home.png",
-  "softwareVersion": "iOS 5.1 build 31 / Android 3.1 versionCode 32",
+  "softwareVersion": "iOS 6.0 build 33 / Android 6.0 versionCode 33",
   "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.6", "ratingCount": "16" }
 }
 </script>
@@ -133,9 +133,9 @@
   "@id": "https://www.fud-ai.app/#webpage",
   "url": "https://www.fud-ai.app/",
   "name": "Fud AI App - Free AI Calorie Tracker & Food Scanner",
-  "description": "Fud AI is a free open-source AI calorie tracker for iPhone and Android. Log meals by photo, barcode, voice, Siri, or text; bring your own AI key with Apple Intelligence fallback; track macros, body fat, widgets, and Health sync.",
+  "description": "Fud AI is a free open-source AI calorie and workout tracker for iPhone and Android. Log meals by photo, barcode, voice, Siri, or text; bring your own AI key; track strength workouts, macros and body data; and optionally sync with Health.",
   "inLanguage": "en",
-  "dateModified": "2026-07-14",
+  "dateModified": "2026-07-22",
   "isPartOf": { "@id": "https://www.fud-ai.app/#website" },
   "about": { "@id": "https://www.fud-ai.app/#software" },
   "primaryImageOfPage": {
@@ -212,7 +212,7 @@
       "name": "Does Fud AI sync with Apple Health or Health Connect?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Yes. Fud AI supports Apple Health on iPhone and Health Connect on Android for body measurements and meal nutrition when you explicitly enable sync. Energy Burn Goals can also use active/total energy for calorie target estimates."
+        "text": "Yes. Fud AI supports Apple Health on iPhone and Health Connect on Android for body measurements, meal nutrition, and calculated workout calories when you explicitly enable sync. Energy Burn Goals can also use active/total energy for calorie target estimates."
       }
     },
     {
@@ -274,7 +274,7 @@
         <h1 class="hero-title">Fud AI<br><em class="hero-title-line">AI calorie tracker</em>.</h1>
 
         <p class="hero-lede">
-          The Fud app is a free, open-source AI calorie tracker and food scanner for iPhone and Android. Snap a photo, scan a barcode, speak, or type a meal — AI logs the calories, macros, and nutrients, with your own AI key kept on device. Goals adapt to your logged intake and weight trend, an 873-exercise workout library is built in, and Apple Watch shows your macros at a glance.
+          The Fud app is a free, open-source AI calorie and workout tracker for iPhone and Android. Snap a photo, scan a barcode, speak, or type a meal — AI logs the calories, macros, and nutrients with your own key. Plan and log strength workouts with sets, reps, weight and RPE, calculate workout burn, switch to the 873-exercise library, and optionally sync with Health.
         </p>
 
         <div class="cta-group">
@@ -351,7 +351,7 @@
     <span class="ticker-item"><span class="ast">✦</span> iOS + Android</span>
     <span class="ticker-item"><span class="ast">✦</span> Open Source · MIT</span>
     <span class="ticker-item"><span class="ast">✦</span> Bring Your Own Key</span>
-    <span class="ticker-item"><span class="ast">✦</span> 873-Exercise Workout Library</span>
+    <span class="ticker-item"><span class="ast">✦</span> Workout Diary · 873 Exercises</span>
     <!-- Duplicate set for seamless scroll -->
     <span class="ticker-item"><span class="ast">✦</span> AI Food Recognition</span>
     <span class="ticker-item"><span class="ast">✦</span> Expanded Nutrients</span>
@@ -368,7 +368,7 @@
     <span class="ticker-item"><span class="ast">✦</span> iOS + Android</span>
     <span class="ticker-item"><span class="ast">✦</span> Open Source · MIT</span>
     <span class="ticker-item"><span class="ast">✦</span> Bring Your Own Key</span>
-    <span class="ticker-item"><span class="ast">✦</span> 873-Exercise Workout Library</span>
+    <span class="ticker-item"><span class="ast">✦</span> Workout Diary · 873 Exercises</span>
   </div>
 </div>
 
@@ -437,9 +437,9 @@
           <span class="chapter-tag">13 LLM providers</span>
         </header>
         <div class="chapter-body">
-          <p>Bring your own key and choose from Gemini including Gemini 3.5 Flash, OpenAI, Anthropic Claude, Grok, OpenRouter, Together AI, Groq, Hugging Face, Fireworks, DeepInfra, Mistral, Ollama (local), or any custom OpenAI-compatible endpoint. On supported iPhones, Apple Intelligence can handle food-description analysis for text, voice-transcribed, and Siri food logs on-device as the final fallback after BYOK provider/fallback attempts fail. On Android, Coach can also include camera or photo-library image attachments.</p>
+          <p>Bring your own key and choose from current vision presets including Gemini 3.5 Flash-Lite and 3.6 Flash, GPT-5.4 Mini, Claude Sonnet 5, Grok 4.3, or models through OpenRouter, Together AI, Groq, Hugging Face, Fireworks, DeepInfra, Mistral, Ollama (local), and custom OpenAI-compatible endpoints. On supported iPhones, Apple Intelligence can handle eligible food descriptions on-device as the final fallback. Android Coach also supports camera or photo-library attachments.</p>
           <ul>
-            <li>Open-weight vision models out of the box: Gemma, Llama Vision, Qwen VL, Pixtral</li>
+            <li>Open-weight vision models out of the box: Gemma, Qwen VL, Llama Vision, and other current provider presets</li>
             <li>OpenRouter testable on $0 credits — the <code>openrouter/free</code> default routes to a free vision model so you can try the integration without funding the account</li>
             <li><strong>Custom AI Instructions</strong> — optional Settings text appended to every AI request. Drop your region, diet, or brand context once instead of repeating it per meal ("I live in Germany, prefer ALDI/REWE brands" or "I'm on a bodybuilding cut")</li>
             <li><strong>Fallback Provider</strong> — opt-in second provider that auto-retries when your primary fails on overload, rate limit, or network error. Pair a paid model with a free fallback for cheap reliability</li>
@@ -513,10 +513,11 @@
           <span class="chapter-tag">Bidirectional · iOS + Android</span>
         </header>
         <div class="chapter-body">
-          <p>iOS writes meal nutrition plus body measurements to Apple Health, reads authorized profile/body metrics back, and can optionally estimate calorie targets from active/total energy burn. Android syncs nutrition, weight, and body fat through Health Connect with permission reconciliation and backfill support, and can use recent energy data for Energy Burn Goals. Integration is optional on both platforms.</p>
+          <p>iOS writes meal nutrition, body measurements, and calculated workout calories to Apple Health, and reads authorized metrics back. Android syncs nutrition, weight, body fat, and calculated workout calories through Health Connect. Both can optionally use active/total energy for Energy Burn Goals. Integration is permission-controlled and optional.</p>
           <ul>
             <li>Background observers for real-time bi-sync</li>
             <li>Energy-burn goal estimates keep protein, carbs, and fat editable</li>
+            <li>Calculated workout burns sync as active-energy summaries; workout plans and individual sets stay in Fud AI</li>
             <li>UUID-tagged samples for safe per-entry deletion (no orphans)</li>
             <li>Delete All Data is local-only — Apple Health / Health Connect data is never touched</li>
             <li>Manage Access opens the platform permission controls so you can review or revoke health permissions</li>
@@ -586,7 +587,7 @@
           <div class="process-num">Step 04</div>
           <div class="process-text">
             <h3><em>Log</em></h3>
-            <p>Saved locally on your device. Synced to Apple Health or Health Connect if enabled. Widgets and Apple Watch snapshots update instantly.</p>
+            <p>Saved locally on your device. Nutrition, body metrics, and calculated workout burns sync to Apple Health or Health Connect only if enabled. Widgets and Apple Watch snapshots update from local data.</p>
           </div>
         </div>
         <div class="process-step">
@@ -713,7 +714,7 @@
       </article>
       <article class="faq-item">
         <h3>Does it sync with Health apps?</h3>
-        <p>Yes, only when you enable it. Fud AI supports Apple Health on iPhone and Health Connect on Android for authorized body measurements and meal nutrition. Energy Burn Goals can use active/total energy for optional calorie-goal estimates, and Manage Access opens the platform permission controls.</p>
+        <p>Yes, only when you enable it. Fud AI supports Apple Health on iPhone and Health Connect on Android for authorized body measurements, meal nutrition, and calculated workout calories. Energy Burn Goals can use active/total energy for optional calorie-goal estimates, and Manage Access opens the platform permission controls.</p>
       </article>
       <article class="faq-item">
         <h3>Can I log food with Siri on iPhone?</h3>
