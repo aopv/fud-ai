@@ -13,6 +13,7 @@ datastore = "1.1.1"
 securityCrypto = "1.1.0-alpha06"
 healthConnect = "1.1.0"
 glance = "1.1.1"
+work = "2.11.2"
 okhttp = "4.12.0"
 kotlinxSerialization = "1.7.3"
 kotlinxCoroutines = "1.9.0"
@@ -51,6 +52,7 @@ androidx-security-crypto = { group = "androidx.security", name = "security-crypt
 androidx-health-connect = { group = "androidx.health.connect", name = "connect-client", version.ref = "healthConnect" }
 androidx-glance-appwidget = { group = "androidx.glance", name = "glance-appwidget", version.ref = "glance" }
 androidx-glance-material3 = { group = "androidx.glance", name = "glance-material3", version.ref = "glance" }
+androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "work" }
 androidx-camera-core = { group = "androidx.camera", name = "camera-core", version.ref = "cameraX" }
 androidx-camera-camera2 = { group = "androidx.camera", name = "camera-camera2", version.ref = "cameraX" }
 androidx-camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycle", version.ref = "cameraX" }

@@ -1,9 +1,7 @@
 package com.apoorvdarshan.calorietracker.services
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.ui.graphics.toArgb
-import androidx.glance.appwidget.updateAll
 import com.apoorvdarshan.calorietracker.data.FoodRepository
 import com.apoorvdarshan.calorietracker.data.PreferencesStore
 import com.apoorvdarshan.calorietracker.data.ProfileRepository
@@ -15,10 +13,8 @@ import com.apoorvdarshan.calorietracker.models.WidgetSnapshot
 import com.apoorvdarshan.calorietracker.models.WaterEntry
 import com.apoorvdarshan.calorietracker.models.WaterUnit
 import com.apoorvdarshan.calorietracker.ui.theme.AppThemeColor
-import com.apoorvdarshan.calorietracker.widget.AllMetricsAppWidget
-import com.apoorvdarshan.calorietracker.widget.CalorieAppWidget
-import com.apoorvdarshan.calorietracker.widget.ProteinAppWidget
-import com.apoorvdarshan.calorietracker.widget.WaterAppWidget
+import com.apoorvdarshan.calorietracker.widget.WidgetRefreshScheduler
+import com.apoorvdarshan.calorietracker.widget.WidgetUpdateCoordinator
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
@@ -108,18 +104,9 @@ class WidgetSnapshotWriter(
             )
             prefs.setWidgetSnapshot(snapshot)
         }
-        runCatching { CalorieAppWidget().updateAll(context) }
-            .onFailure { Log.e(TAG, "CalorieAppWidget.updateAll failed", it) }
-        runCatching { ProteinAppWidget().updateAll(context) }
-            .onFailure { Log.e(TAG, "ProteinAppWidget.updateAll failed", it) }
-        runCatching { AllMetricsAppWidget().updateAll(context) }
-            .onFailure { Log.e(TAG, "AllMetricsAppWidget.updateAll failed", it) }
-        runCatching { WaterAppWidget().updateAll(context) }
-            .onFailure { Log.e(TAG, "WaterAppWidget.updateAll failed", it) }
-    }
-
-    private companion object {
-        const val TAG = "FudAIWidget"
+        if (!WidgetUpdateCoordinator.updateAll(context)) {
+            WidgetRefreshScheduler.enqueueImmediate(context, "snapshot_update_failed")
+        }
     }
 }
 

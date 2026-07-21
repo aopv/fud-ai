@@ -11,8 +11,6 @@ import androidx.glance.GlanceTheme
 import androidx.glance.LocalSize
 import androidx.glance.action.actionStartActivity
 import androidx.glance.action.clickable
-import androidx.glance.appwidget.GlanceAppWidget
-import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.provideContent
@@ -42,7 +40,7 @@ import kotlinx.coroutines.flow.first
  * can see everything at a glance from one widget instead of adding the separate Calorie and Protein
  * widgets. Reuses the shared building blocks (RingWithCenter, CapsuleMacroRow, WidgetHeader).
  */
-class AllMetricsAppWidget : GlanceAppWidget() {
+class AllMetricsAppWidget : FudGlanceAppWidget() {
 
     // Exact so LocalSize reports the real widget dimensions (see CalorieAppWidget).
     override val sizeMode: SizeMode = SizeMode.Exact
@@ -66,8 +64,8 @@ class AllMetricsAppWidget : GlanceAppWidget() {
     }
 }
 
-class AllMetricsWidgetReceiver : GlanceAppWidgetReceiver() {
-    override val glanceAppWidget: GlanceAppWidget = AllMetricsAppWidget()
+class AllMetricsWidgetReceiver : FudGlanceAppWidgetReceiver() {
+    override val glanceAppWidget = AllMetricsAppWidget()
 }
 
 @Composable

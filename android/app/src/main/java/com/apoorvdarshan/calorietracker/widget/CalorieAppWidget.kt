@@ -14,8 +14,6 @@ import androidx.glance.ImageProvider
 import androidx.glance.LocalSize
 import androidx.glance.action.actionStartActivity
 import androidx.glance.action.clickable
-import androidx.glance.appwidget.GlanceAppWidget
-import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.provideContent
@@ -43,7 +41,7 @@ import com.apoorvdarshan.calorietracker.models.WidgetNutrient
 import com.apoorvdarshan.calorietracker.models.WidgetSnapshot
 import kotlinx.coroutines.flow.first
 
-class CalorieAppWidget : GlanceAppWidget() {
+class CalorieAppWidget : FudGlanceAppWidget() {
 
     // Exact so LocalSize reports the real widget dimensions — the gauge and
     // bars scale to fill instead of floating at bucket-minimum size.
@@ -69,8 +67,8 @@ class CalorieAppWidget : GlanceAppWidget() {
     }
 }
 
-class CalorieWidgetReceiver : GlanceAppWidgetReceiver() {
-    override val glanceAppWidget: GlanceAppWidget = CalorieAppWidget()
+class CalorieWidgetReceiver : FudGlanceAppWidgetReceiver() {
+    override val glanceAppWidget = CalorieAppWidget()
 }
 
 @Composable

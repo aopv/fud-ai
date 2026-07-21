@@ -13,8 +13,6 @@ import androidx.glance.ImageProvider
 import androidx.glance.LocalSize
 import androidx.glance.action.actionStartActivity
 import androidx.glance.action.clickable
-import androidx.glance.appwidget.GlanceAppWidget
-import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.provideContent
@@ -37,7 +35,7 @@ import com.apoorvdarshan.calorietracker.data.PreferencesStore
 import com.apoorvdarshan.calorietracker.models.WidgetSnapshot
 import kotlinx.coroutines.flow.first
 
-class WaterAppWidget : GlanceAppWidget() {
+class WaterAppWidget : FudGlanceAppWidget() {
     override val sizeMode: SizeMode = SizeMode.Exact
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
@@ -59,8 +57,8 @@ class WaterAppWidget : GlanceAppWidget() {
     }
 }
 
-class WaterWidgetReceiver : GlanceAppWidgetReceiver() {
-    override val glanceAppWidget: GlanceAppWidget = WaterAppWidget()
+class WaterWidgetReceiver : FudGlanceAppWidgetReceiver() {
+    override val glanceAppWidget = WaterAppWidget()
 }
 
 @Composable

@@ -25,6 +25,7 @@ import com.apoorvdarshan.calorietracker.services.ai.ChatService
 import com.apoorvdarshan.calorietracker.services.ai.FoodAnalysisService
 import com.apoorvdarshan.calorietracker.services.health.HealthConnectManager
 import com.apoorvdarshan.calorietracker.services.speech.SpeechService
+import com.apoorvdarshan.calorietracker.widget.WidgetRefreshScheduler
 import kotlin.math.roundToInt
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -54,6 +55,7 @@ class FudAIApp : Application() {
         super.onCreate()
         container = AppContainer(this)
         container.notifications.createChannels()
+        WidgetRefreshScheduler.onAppStarted(this)
         container.widgetSnapshotWriter.observe().launchIn(appScope)
         // Older Android builds removed food rows without removing their JPEGs.
         // Prune only unreferenced files; logged foods, saved meals, and pending

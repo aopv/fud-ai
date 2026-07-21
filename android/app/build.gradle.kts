@@ -127,6 +127,7 @@ dependencies {
     implementation(libs.androidx.health.connect)
     implementation(libs.androidx.glance.appwidget)
     implementation(libs.androidx.glance.material3)
+    implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.camera.core)
     implementation(libs.androidx.camera.camera2)
     implementation(libs.androidx.camera.lifecycle)
