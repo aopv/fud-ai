@@ -159,8 +159,8 @@ fun FudAINavHost(
                 )
             }
         }
-    ) { innerPadding ->
-        Box(Modifier.fillMaxSize().consumeWindowInsets(innerPadding)) {
+    ) { _ ->
+        Box(Modifier.fillMaxSize()) {
             NavHost(
                 navController = nav,
                 startDestination = if (startOnboarding) FudAIRoutes.ONBOARDING else FudAIRoutes.HOME
