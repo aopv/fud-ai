@@ -2186,10 +2186,12 @@ struct MultiPhotoCaptureSheet: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel", action: onCancel)
+                        .buttonStyle(.bordered)
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Analyze", action: onAnalyze)
                         .fontWeight(.semibold)
+                        .buttonStyle(.bordered)
                         .tint(AppColors.calorie)
                         .disabled(images.isEmpty)
                 }
@@ -2263,12 +2265,14 @@ struct ContextDescriptionSheet: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { onCancel() }
+                        .buttonStyle(.bordered)
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Analyze") {
                         onAnalyze()
                     }
                     .fontWeight(.semibold)
+                    .buttonStyle(.bordered)
                     .tint(AppColors.calorie)
                 }
             }
