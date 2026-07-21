@@ -145,6 +145,7 @@ enum class AIProvider {
     val requiresApiKey: Boolean get() = this != OLLAMA
     val requiresCustomEndpoint: Boolean get() = this == CUSTOM_OPENAI
     val requiresCustomModelName: Boolean get() = this == CUSTOM_OPENAI
+    val usesConfigurableRequestTimeout: Boolean get() = this == OLLAMA || this == CUSTOM_OPENAI
     val supportsCustomModelName: Boolean
         get() = this == OPENROUTER || this == HUGGING_FACE || this == CUSTOM_OPENAI
 
@@ -175,6 +176,10 @@ enum class AIProvider {
     enum class ApiFormat { GEMINI, OPENAI_COMPATIBLE, ANTHROPIC }
 
     companion object {
+        const val DEFAULT_REQUEST_TIMEOUT_SECONDS = 180
+
+        fun normalizedRequestTimeoutSeconds(value: Int): Int = value.coerceIn(30, 600)
+
         fun normalizeModelId(model: String): String =
             when (model.trim()) {
                 "gemini-3.1-flash-lite-preview" -> "gemini-3.1-flash-lite"

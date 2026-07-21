@@ -186,7 +186,7 @@ import java.time.LocalTime
 import kotlin.math.roundToInt
 
 private enum class SettingsSheet {
-    AI_PROVIDER, AI_MODEL, MAX_TOKENS, API_KEY, CUSTOM_BASE_URL, SPEECH_PROVIDER, SPEECH_LANGUAGE, SPEECH_KEY,
+    AI_PROVIDER, AI_MODEL, MAX_TOKENS, REQUEST_TIMEOUT, API_KEY, CUSTOM_BASE_URL, SPEECH_PROVIDER, SPEECH_LANGUAGE, SPEECH_KEY,
     FALLBACK_PROVIDER, FALLBACK_MODEL, FALLBACK_KEY, FALLBACK_BASE_URL,
     GENDER, BIRTHDAY, HEIGHT, WEIGHT, BODY_FAT, GOAL_BODY_FAT, ACTIVITY, GOAL, GOAL_WEIGHT, GOAL_SPEED,
     CALORIES, PROTEIN, CARBS, FAT, OPTIONAL_NUTRIENTS,
@@ -646,6 +646,12 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                         stringResource(R.string.settings_tap_to_edit),
                         icon = Icons.Outlined.Link
                     ) { sheet = SettingsSheet.CUSTOM_BASE_URL }
+                    HorizontalDivider()
+                    SettingRow(
+                        stringResource(R.string.settings_request_timeout),
+                        stringResource(R.string.settings_seconds_format, ui.aiRequestTimeoutSeconds),
+                        icon = Icons.Outlined.Schedule
+                    ) { sheet = SettingsSheet.REQUEST_TIMEOUT }
                 }
                 // Only OpenAI-compatible + Anthropic send a token cap; Gemini is left
                 // uncapped, so hide this for Gemini.
@@ -710,6 +716,14 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                             stringResource(R.string.settings_tap_to_edit),
                             icon = Icons.Outlined.Link
                         ) { sheet = SettingsSheet.FALLBACK_BASE_URL }
+                        if (!ui.selectedAI.usesConfigurableRequestTimeout) {
+                            HorizontalDivider()
+                            SettingRow(
+                                stringResource(R.string.settings_request_timeout),
+                                stringResource(R.string.settings_seconds_format, ui.aiRequestTimeoutSeconds),
+                                icon = Icons.Outlined.Schedule
+                            ) { sheet = SettingsSheet.REQUEST_TIMEOUT }
+                        }
                     }
                     Text(
                         stringResource(R.string.settings_fallback_footer),
@@ -1557,6 +1571,18 @@ private fun SettingsSheets(
                         placeholder = "1024",
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         onSave = { it.trim().toIntOrNull()?.let(vm::setMaxResponseTokens); onDismiss() }
+                    )
+                }
+                SettingsSheet.REQUEST_TIMEOUT -> {
+                    TextFieldSheet(
+                        title = stringResource(R.string.settings_request_timeout),
+                        initial = ui.aiRequestTimeoutSeconds.toString(),
+                        placeholder = AIProvider.DEFAULT_REQUEST_TIMEOUT_SECONDS.toString(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        onSave = {
+                            it.trim().toIntOrNull()?.let(vm::setAiRequestTimeoutSeconds)
+                            onDismiss()
+                        }
                     )
                 }
                 SettingsSheet.SPEECH_PROVIDER -> ListSheet(

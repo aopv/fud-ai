@@ -35,6 +35,7 @@ data class SettingsUiState(
     val selectedAI: AIProvider = AIProvider.GEMINI,
     val selectedModel: String = AIProvider.GEMINI.defaultModel,
     val maxResponseTokens: Int = 1024,
+    val aiRequestTimeoutSeconds: Int = AIProvider.DEFAULT_REQUEST_TIMEOUT_SECONDS,
     val selectedSpeech: SpeechProvider = SpeechProvider.NATIVE,
     val selectedSpeechLanguage: SpeechLanguage = SpeechLanguage.defaultFor(SpeechProvider.NATIVE),
     /** "cm" | "ftin" — governs all length display/input. */
@@ -160,6 +161,7 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
             val mealSchedule = container.prefs.mealSchedule.first()
             val userContext = container.prefs.userContext.first()
             val maxTokens = container.prefs.maxResponseTokens.first()
+            val requestTimeoutSeconds = container.prefs.aiRequestTimeoutSeconds.first()
             val fbEnabled = container.prefs.fallbackEnabled.first()
             val fbProvider = container.prefs.selectedFallbackProvider.first()
             val fbModel = fbProvider.supportedModelOrDefault(container.prefs.selectedFallbackModel.first())
@@ -176,6 +178,7 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
                 selectedAI = provider,
                 selectedModel = model,
                 maxResponseTokens = maxTokens,
+                aiRequestTimeoutSeconds = requestTimeoutSeconds,
                 selectedSpeech = speech,
                 selectedSpeechLanguage = speechLanguage,
                 heightUnit = heightUnit,
@@ -263,6 +266,14 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
         viewModelScope.launch {
             container.prefs.setMaxResponseTokens(clamped)
             _ui.value = _ui.value.copy(maxResponseTokens = clamped)
+        }
+    }
+
+    fun setAiRequestTimeoutSeconds(value: Int) {
+        val clamped = AIProvider.normalizedRequestTimeoutSeconds(value)
+        viewModelScope.launch {
+            container.prefs.setAiRequestTimeoutSeconds(clamped)
+            _ui.value = _ui.value.copy(aiRequestTimeoutSeconds = clamped)
         }
     }
 

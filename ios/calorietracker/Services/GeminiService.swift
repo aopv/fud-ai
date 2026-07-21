@@ -710,8 +710,27 @@ struct GeminiService {
         }
     }
 
-    private static func encodedJPEGData(for image: UIImage) throws -> Data {
-        guard let data = image.jpegData(compressionQuality: 0.8) else {
+    static func encodedJPEGData(for image: UIImage, maxDimension: CGFloat = 1_600) throws -> Data {
+        let pixelWidth = image.size.width * image.scale
+        let pixelHeight = image.size.height * image.scale
+        guard pixelWidth > 0, pixelHeight > 0 else {
+            throw AnalysisError.imageConversionFailed
+        }
+
+        let longestSide = max(pixelWidth, pixelHeight)
+        let scale = min(1, maxDimension / longestSide)
+        let targetSize = CGSize(
+            width: max(1, (pixelWidth * scale).rounded()),
+            height: max(1, (pixelHeight * scale).rounded())
+        )
+        let format = UIGraphicsImageRendererFormat.default()
+        format.scale = 1
+        format.opaque = true
+        let uploadImage = UIGraphicsImageRenderer(size: targetSize, format: format).image { _ in
+            image.draw(in: CGRect(origin: .zero, size: targetSize))
+        }
+
+        guard let data = uploadImage.jpegData(compressionQuality: 0.8) else {
             throw AnalysisError.imageConversionFailed
         }
         return data
@@ -760,7 +779,8 @@ struct GeminiService {
         let data = try await makeRequest(
             url: url,
             headers: ["Content-Type": "application/json", "X-goog-api-key": apiKey],
-            body: body
+            body: body,
+            provider: .gemini
         )
 
         guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
@@ -867,7 +887,7 @@ struct GeminiService {
                 if compactRetry { reasoning["effort"] = "low" }
                 body["reasoning"] = reasoning
             }
-            let data = try await makeRequest(url: url, headers: headers, body: body)
+            let data = try await makeRequest(url: url, headers: headers, body: body, provider: provider)
             return try parseOpenAITextResponse(from: data)
         }
 
@@ -948,7 +968,7 @@ struct GeminiService {
             if let userContext = AIProviderSettings.currentUserContext {
                 body["system"] = userContext
             }
-            let data = try await makeRequest(url: url, headers: headers, body: body)
+            let data = try await makeRequest(url: url, headers: headers, body: body, provider: .anthropic)
             return try parseAnthropicTextResponse(from: data)
         }
 
@@ -965,9 +985,17 @@ struct GeminiService {
 
     // MARK: - Network
 
-    private static func makeRequest(url: URL, headers: [String: String], body: [String: Any]) async throws -> Data {
+    private static func makeRequest(
+        url: URL,
+        headers: [String: String],
+        body: [String: Any],
+        provider: AIProvider
+    ) async throws -> Data {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
+        if let timeout = AIProviderSettings.requestTimeout(for: provider) {
+            request.timeoutInterval = timeout
+        }
         for (key, value) in headers {
             request.setValue(value, forHTTPHeaderField: key)
         }

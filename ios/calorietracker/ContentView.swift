@@ -3049,6 +3049,7 @@ struct ProfileView: View {
     @State private var apiKeyText: String = AIProviderSettings.apiKey(for: AIProviderSettings.selectedProvider) ?? ""
     @State private var customBaseURL: String = AIProviderSettings.customBaseURL(for: AIProviderSettings.selectedProvider) ?? ""
     @State private var maxResponseTokensText: String = String(AIProviderSettings.maxResponseTokens)
+    @State private var requestTimeoutSecondsText: String = String(AIProviderSettings.requestTimeoutSeconds)
     @State private var showAPIKey = false
     @State private var customAIInstructions: String = AIProviderSettings.userContext
     @State private var savedAIInstructions: String = AIProviderSettings.userContext
@@ -3718,6 +3719,30 @@ struct ProfileView: View {
                                         AIProviderSettings.setCustomBaseURL(t.isEmpty ? nil : t, for: selectedProvider)
                                     }
                             }
+
+                            HStack {
+                                Label {
+                                    Text("Request Timeout")
+                                } icon: {
+                                    Image(systemName: "timer")
+                                        .foregroundStyle(AppColors.calorie)
+                                }
+                                Spacer()
+                                TextField("180", text: $requestTimeoutSecondsText)
+                                    .textFieldStyle(.plain)
+                                    .multilineTextAlignment(.trailing)
+                                    .keyboardType(.numberPad)
+                                    .frame(maxWidth: 70)
+                                    .onChange(of: requestTimeoutSecondsText) { _, newValue in
+                                        let digits = newValue.filter(\.isNumber)
+                                        if digits != newValue { requestTimeoutSecondsText = digits }
+                                        if let seconds = Int(digits), seconds > 0 {
+                                            AIProviderSettings.requestTimeoutSeconds = seconds
+                                        }
+                                    }
+                                Text("sec")
+                                    .foregroundStyle(.secondary)
+                            }
                         }
 
                         // Only OpenAI-compatible + Anthropic send a token cap; Gemini is
@@ -3973,6 +3998,32 @@ struct ProfileView: View {
                                     .keyboardType(.URL)
                                     .onChange(of: fallbackBaseURL) { _, newValue in
                                         AIProviderSettings.setCustomBaseURL(newValue.isEmpty ? nil : newValue, for: selectedFallbackProvider)
+                                    }
+                                }
+
+                                if !selectedProvider.usesConfigurableRequestTimeout {
+                                    HStack {
+                                        Label {
+                                            Text("Request Timeout")
+                                        } icon: {
+                                            Image(systemName: "timer")
+                                                .foregroundStyle(AppColors.calorie)
+                                        }
+                                        Spacer()
+                                        TextField("180", text: $requestTimeoutSecondsText)
+                                            .textFieldStyle(.plain)
+                                            .multilineTextAlignment(.trailing)
+                                            .keyboardType(.numberPad)
+                                            .frame(maxWidth: 70)
+                                            .onChange(of: requestTimeoutSecondsText) { _, newValue in
+                                                let digits = newValue.filter(\.isNumber)
+                                                if digits != newValue { requestTimeoutSecondsText = digits }
+                                                if let seconds = Int(digits), seconds > 0 {
+                                                    AIProviderSettings.requestTimeoutSeconds = seconds
+                                                }
+                                            }
+                                        Text("sec")
+                                            .foregroundStyle(.secondary)
                                     }
                                 }
                             }

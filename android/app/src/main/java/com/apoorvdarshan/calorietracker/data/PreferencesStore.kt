@@ -393,6 +393,18 @@ class PreferencesStore(private val context: Context) : WorkoutStateStore {
     val maxResponseTokens: Flow<Int> = ds.data.map { it[Keys.MAX_RESPONSE_TOKENS] ?: 1024 }
     suspend fun setMaxResponseTokens(v: Int) { ds.edit { it[Keys.MAX_RESPONSE_TOKENS] = v.coerceAtLeast(1) } }
 
+    /** Timeout for local/custom AI endpoints. Cloud providers retain the standard client timeout. */
+    val aiRequestTimeoutSeconds: Flow<Int> = ds.data.map {
+        AIProvider.normalizedRequestTimeoutSeconds(
+            it[Keys.AI_REQUEST_TIMEOUT_SECONDS] ?: AIProvider.DEFAULT_REQUEST_TIMEOUT_SECONDS
+        )
+    }
+    suspend fun setAiRequestTimeoutSeconds(value: Int) {
+        ds.edit {
+            it[Keys.AI_REQUEST_TIMEOUT_SECONDS] = AIProvider.normalizedRequestTimeoutSeconds(value)
+        }
+    }
+
     // -- Custom AI Instructions ------------------------------------------
     /** Free-form text appended to every AI request. Empty = disabled. */
     val userContext: Flow<String> = ds.data.map { it[Keys.USER_CONTEXT].orEmpty() }
@@ -658,6 +670,7 @@ class PreferencesStore(private val context: Context) : WorkoutStateStore {
         val SELECTED_AI_PROVIDER = stringPreferencesKey("selectedAIProvider")
         val SELECTED_AI_MODEL = stringPreferencesKey("selectedAIModel")
         val MAX_RESPONSE_TOKENS = intPreferencesKey("maxResponseTokens")
+        val AI_REQUEST_TIMEOUT_SECONDS = intPreferencesKey("aiRequestTimeoutSeconds")
         val USER_CONTEXT = stringPreferencesKey("userContext")
         val FALLBACK_ENABLED = booleanPreferencesKey("aiFallbackEnabled")
         val FALLBACK_PROVIDER = stringPreferencesKey("selectedFallbackAIProvider")

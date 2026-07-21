@@ -96,11 +96,16 @@ class ChatService(
         if (provider.requiresApiKey && apiKey.isNullOrEmpty()) throw AiError.NoApiKey
         if (baseUrl.isEmpty()) throw AiError.InvalidUrl(baseUrl)
         val maxTokens = prefs.maxResponseTokens.first()
+        val requestClient = FoodAnalysisService.clientForProvider(
+            okHttp,
+            provider,
+            prefs.aiRequestTimeoutSeconds.first()
+        )
 
         return when (provider.apiFormat) {
-            AIProvider.ApiFormat.GEMINI -> runGeminiToolLoop(baseUrl, model, apiKey!!, systemPrompt, history, newUserMessage, tools, imageBytes)
-            AIProvider.ApiFormat.ANTHROPIC -> runAnthropicToolLoop(baseUrl, model, apiKey!!, systemPrompt, history, newUserMessage, tools, imageBytes, maxTokens)
-            AIProvider.ApiFormat.OPENAI_COMPATIBLE -> runOpenAIToolLoop(baseUrl, model, apiKey, systemPrompt, history, newUserMessage, provider, tools, imageBytes, maxTokens)
+            AIProvider.ApiFormat.GEMINI -> runGeminiToolLoop(requestClient, baseUrl, model, apiKey!!, systemPrompt, history, newUserMessage, tools, imageBytes)
+            AIProvider.ApiFormat.ANTHROPIC -> runAnthropicToolLoop(requestClient, baseUrl, model, apiKey!!, systemPrompt, history, newUserMessage, tools, imageBytes, maxTokens)
+            AIProvider.ApiFormat.OPENAI_COMPATIBLE -> runOpenAIToolLoop(requestClient, baseUrl, model, apiKey, systemPrompt, history, newUserMessage, provider, tools, imageBytes, maxTokens)
         }
     }
 
@@ -210,6 +215,7 @@ class ChatService(
     // MARK: - OpenAI-compatible tool loop (10 of 13 providers)
 
     private suspend fun runOpenAIToolLoop(
+        requestClient: OkHttpClient,
         baseUrl: String,
         model: String,
         apiKey: String?,
@@ -265,7 +271,7 @@ class ChatService(
                     builder.addHeader("HTTP-Referer", "https://github.com/apoorvdarshan/fud-ai")
                     builder.addHeader("X-Title", "Fud AI")
                 }
-                val raw = RetryPolicy.execute { okHttp.newCall(builder.build()) }
+                val raw = RetryPolicy.execute { requestClient.newCall(builder.build()) }
                 val json = runCatching { JSONObject(raw) }.getOrNull() ?: throw AiError.InvalidResponse
                 val error = json.optJSONObject("error")?.optString("message")?.takeIf { it.isNotBlank() }
                 val choice = json.optJSONArray("choices")?.optJSONObject(0)
@@ -322,6 +328,7 @@ class ChatService(
     // MARK: - Anthropic tool loop
 
     private suspend fun runAnthropicToolLoop(
+        requestClient: OkHttpClient,
         baseUrl: String,
         model: String,
         apiKey: String,
@@ -360,7 +367,7 @@ class ChatService(
                 put("messages", messages)
             }
             val raw = RetryPolicy.execute {
-                okHttp.newCall(
+                requestClient.newCall(
                     Request.Builder()
                         .url(url)
                         .addHeader("Content-Type", "application/json")
@@ -413,6 +420,7 @@ class ChatService(
     // MARK: - Gemini tool loop
 
     private suspend fun runGeminiToolLoop(
+        requestClient: OkHttpClient,
         baseUrl: String,
         model: String,
         apiKey: String,
@@ -456,7 +464,7 @@ class ChatService(
                 put("tools", JSONArray().put(toolsObj))
             }
             val raw = RetryPolicy.execute {
-                okHttp.newCall(
+                requestClient.newCall(
                     Request.Builder()
                         .url(url)
                         .addHeader("Content-Type", "application/json")

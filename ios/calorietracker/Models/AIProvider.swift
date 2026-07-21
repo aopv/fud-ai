@@ -166,6 +166,12 @@ enum AIProvider: String, CaseIterable, Codable, Identifiable {
         self == .customOpenAI
     }
 
+    /// Local and user-hosted endpoints often need substantially longer than the
+    /// platform's default 60-second request timeout, especially for vision models.
+    var usesConfigurableRequestTimeout: Bool {
+        self == .ollama || self == .customOpenAI
+    }
+
     /// True for providers where free-form input is allowed in addition to the preset list
     /// (e.g., OpenRouter / Hugging Face — user can pick a preset OR type any model ID).
     var supportsCustomModelName: Bool {
@@ -241,6 +247,7 @@ struct AIProviderSettings {
     private static let fallbackProviderKey = "selectedFallbackAIProvider"
     private static let fallbackModelKey = "selectedFallbackAIModel"
     private static let maxResponseTokensKey = "aiMaxResponseTokens"
+    private static let requestTimeoutSecondsKey = "aiRequestTimeoutSeconds"
 
     /// The AI output-token cap sent with every request (`max_tokens` /
     /// `max_completion_tokens` / Gemini `maxOutputTokens`). Default 1024; raise it for
@@ -251,6 +258,22 @@ struct AIProviderSettings {
             return v > 0 ? v : 1024 // 0 == unset -> default
         }
         set { UserDefaults.standard.set(max(1, newValue), forKey: maxResponseTokensKey) }
+    }
+
+    /// Timeout used by local/custom AI endpoints. Cloud providers retain the
+    /// standard URLSession timeout. Default 180 seconds; configurable in Settings.
+    static var requestTimeoutSeconds: Int {
+        get {
+            let value = UserDefaults.standard.integer(forKey: requestTimeoutSecondsKey)
+            return value > 0 ? min(max(value, 30), 600) : 180
+        }
+        set {
+            UserDefaults.standard.set(min(max(newValue, 30), 600), forKey: requestTimeoutSecondsKey)
+        }
+    }
+
+    static func requestTimeout(for provider: AIProvider) -> TimeInterval? {
+        provider.usesConfigurableRequestTimeout ? TimeInterval(requestTimeoutSeconds) : nil
     }
 
     static var selectedProvider: AIProvider {
@@ -405,5 +428,6 @@ struct AIProviderSettings {
         UserDefaults.standard.removeObject(forKey: fallbackEnabledKey)
         UserDefaults.standard.removeObject(forKey: fallbackProviderKey)
         UserDefaults.standard.removeObject(forKey: fallbackModelKey)
+        UserDefaults.standard.removeObject(forKey: requestTimeoutSecondsKey)
     }
 }

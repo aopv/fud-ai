@@ -393,12 +393,14 @@ class FoodAnalysisService(
         val primaryKey = keyStore.apiKey(primary)
         if (primary.requiresApiKey && primaryKey.isNullOrEmpty()) throw AiError.NoApiKey
         val maxTokens = prefs.maxResponseTokens.first()
+        val requestTimeoutSeconds = prefs.aiRequestTimeoutSeconds.first()
+        val uploadImages = imageBytesList.map(FoodImagePreprocessor::prepareForUpload)
 
         return try {
-            dispatch(primary, primaryModel, primaryBaseUrl, primaryKey, finalPrompt, imageBytesList, maxTokens)
+            dispatch(primary, primaryModel, primaryBaseUrl, primaryKey, finalPrompt, uploadImages, maxTokens, requestTimeoutSeconds)
         } catch (primaryError: Throwable) {
             val fallback = currentFallbackConfig(primary, primaryModel) ?: throw primaryError
-            dispatch(fallback.provider, fallback.model, fallback.baseUrl, fallback.apiKey, finalPrompt, imageBytesList, maxTokens)
+            dispatch(fallback.provider, fallback.model, fallback.baseUrl, fallback.apiKey, finalPrompt, uploadImages, maxTokens, requestTimeoutSeconds)
         }
     }
 
@@ -486,17 +488,19 @@ class FoodAnalysisService(
         apiKey: String?,
         prompt: String,
         imageBytesList: List<ByteArray>,
-        maxTokens: Int
+        maxTokens: Int,
+        requestTimeoutSeconds: Int
     ): String {
         if (baseUrl.isEmpty()) throw AiError.InvalidUrl(baseUrl)
         if (provider.requiresApiKey && apiKey.isNullOrEmpty()) throw AiError.NoApiKey
+        val requestClient = clientForProvider(okHttp, provider, requestTimeoutSeconds)
         return when (provider.apiFormat) {
             AIProvider.ApiFormat.GEMINI ->
-                GeminiClient.analyze(okHttp, baseUrl, model, apiKey!!, prompt, imageBytesList)
+                GeminiClient.analyze(requestClient, baseUrl, model, apiKey!!, prompt, imageBytesList)
             AIProvider.ApiFormat.ANTHROPIC ->
-                AnthropicClient.analyze(okHttp, baseUrl, model, apiKey!!, prompt, imageBytesList, maxTokens)
+                AnthropicClient.analyze(requestClient, baseUrl, model, apiKey!!, prompt, imageBytesList, maxTokens)
             AIProvider.ApiFormat.OPENAI_COMPATIBLE ->
-                OpenAICompatibleClient.analyze(okHttp, baseUrl, model, apiKey, prompt, imageBytesList, provider, maxTokens)
+                OpenAICompatibleClient.analyze(requestClient, baseUrl, model, apiKey, prompt, imageBytesList, provider, maxTokens)
         }
     }
 
@@ -524,6 +528,19 @@ class FoodAnalysisService(
     )
 
     companion object {
+        internal fun clientForProvider(
+            client: OkHttpClient,
+            provider: AIProvider,
+            requestTimeoutSeconds: Int
+        ): OkHttpClient {
+            if (!provider.usesConfigurableRequestTimeout) return client
+            val seconds = AIProvider.normalizedRequestTimeoutSeconds(requestTimeoutSeconds).toLong()
+            return client.newBuilder()
+                .readTimeout(seconds, java.util.concurrent.TimeUnit.SECONDS)
+                .writeTimeout(seconds, java.util.concurrent.TimeUnit.SECONDS)
+                .build()
+        }
+
         internal val defaultClient: OkHttpClient by lazy {
             OkHttpClient.Builder()
                 .connectTimeout(20, java.util.concurrent.TimeUnit.SECONDS)

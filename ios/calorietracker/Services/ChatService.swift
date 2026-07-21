@@ -280,7 +280,7 @@ struct ChatService {
                 if provider == .openrouter, compactRetry {
                     body["reasoning"] = ["effort": "low", "exclude": true]
                 }
-                let data = try await send(url: url, headers: headers, body: body)
+                let data = try await send(url: url, headers: headers, body: body, provider: provider)
                 guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
                 else { throw ChatError.invalidResponse }
                 let errorMessage = (json["error"] as? [String: Any])?["message"] as? String
@@ -393,7 +393,7 @@ struct ChatService {
                 "tools": toolsArray,
                 "messages": messages,
             ]
-            let data = try await send(url: url, headers: headers, body: body)
+            let data = try await send(url: url, headers: headers, body: body, provider: .anthropic)
             guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
                   let contentArray = json["content"] as? [[String: Any]]
             else {
@@ -489,7 +489,8 @@ struct ChatService {
             let data = try await send(
                 url: url,
                 headers: ["Content-Type": "application/json", "X-goog-api-key": apiKey ?? ""],
-                body: body
+                body: body,
+                provider: .gemini
             )
             guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
                   let candidates = json["candidates"] as? [[String: Any]],
@@ -549,9 +550,17 @@ struct ChatService {
 
     // MARK: - Shared HTTP
 
-    private static func send(url: URL, headers: [String: String], body: [String: Any]) async throws -> Data {
+    private static func send(
+        url: URL,
+        headers: [String: String],
+        body: [String: Any],
+        provider: AIProvider
+    ) async throws -> Data {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
+        if let timeout = AIProviderSettings.requestTimeout(for: provider) {
+            request.timeoutInterval = timeout
+        }
         for (k, v) in headers { request.setValue(v, forHTTPHeaderField: k) }
         request.httpBody = try? JSONSerialization.data(withJSONObject: body)
 
