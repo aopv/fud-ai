@@ -2102,9 +2102,9 @@ private struct NativeSheetToolbarButton: View {
         Button(action: action) {
             Text(title)
                 .fixedSize()
+                .foregroundStyle(AppColors.calorie)
         }
         .fontWeight(isEmphasized ? .semibold : .regular)
-        .tint(AppColors.calorie)
         .disabled(isDisabled)
     }
 }
