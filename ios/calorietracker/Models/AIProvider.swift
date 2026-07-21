@@ -76,16 +76,16 @@ enum AIProvider: String, CaseIterable, Codable, Identifiable {
     }
 
     /// Only models that are currently in service AND accept image input + return structured text.
-    /// Text-only and deprecated/preview models are excluded since this app needs vision for food photos.
-    /// Lineups verified against provider docs on 2026-07-02.
+    /// Text-only and deprecated models are excluded since this app needs vision for food photos.
+    /// Lineups verified against provider docs on 2026-07-21.
     var models: [String] {
         switch self {
         case .gemini: [
-            "gemini-3.5-flash",              // vision, current fast default (GA 2026-05)
-            "gemini-3.1-flash-lite",         // vision, cheapest
-            "gemini-3.1-pro-preview",        // vision, current flagship (still preview-only)
-            "gemini-2.5-flash",              // vision, deprecated — shutdown Oct 2026
-            "gemini-2.5-pro",                // vision, deprecated — shutdown Oct 2026
+            "gemini-3.5-flash-lite",         // vision, cheapest current stable model (default)
+            "gemini-3.6-flash",              // vision, latest stable Flash model
+            "gemini-3.5-flash",              // vision, stable Flash model
+            "gemini-3.1-flash-lite",         // vision, supported Flash-Lite model
+            "gemini-3.1-pro-preview",        // vision, current flagship (preview)
         ]
         case .openai: [
             "gpt-5.4-mini",              // vision, best price/perf
@@ -292,7 +292,11 @@ struct AIProviderSettings {
             let saved = UserDefaults.standard.string(forKey: modelKey)
             // Validate against the provider's supported list and fall back to default
             // if the saved one was removed (e.g., a deprecated model we no longer expose).
-            return selectedProvider.supportedModelOrDefault(saved)
+            let resolved = selectedProvider.supportedModelOrDefault(saved)
+            if let saved, AIProvider.normalizedModelID(saved) != resolved {
+                UserDefaults.standard.set(resolved, forKey: modelKey)
+            }
+            return resolved
         }
         set {
             UserDefaults.standard.set(AIProvider.normalizedModelID(newValue), forKey: modelKey)
@@ -376,7 +380,11 @@ struct AIProviderSettings {
         get {
             let provider = selectedFallbackProvider
             let saved = UserDefaults.standard.string(forKey: fallbackModelKey)
-            return provider.supportedModelOrDefault(saved)
+            let resolved = provider.supportedModelOrDefault(saved)
+            if let saved, AIProvider.normalizedModelID(saved) != resolved {
+                UserDefaults.standard.set(resolved, forKey: fallbackModelKey)
+            }
+            return resolved
         }
         set { UserDefaults.standard.set(AIProvider.normalizedModelID(newValue), forKey: fallbackModelKey) }
     }

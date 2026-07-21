@@ -3,6 +3,15 @@ import UIKit
 @testable import calorietracker
 
 struct AIRequestConfigurationTests {
+    @Test func geminiUsesCurrentModelsAndFallsBackFromRetiredChoices() {
+        #expect(AIProvider.gemini.defaultModel == "gemini-3.5-flash-lite")
+        #expect(AIProvider.gemini.models.contains("gemini-3.6-flash"))
+        #expect(AIProvider.gemini.models.contains("gemini-3.5-flash"))
+        #expect(!AIProvider.gemini.models.contains("gemini-2.5-flash"))
+        #expect(!AIProvider.gemini.models.contains("gemini-2.5-pro"))
+        #expect(AIProvider.gemini.supportedModelOrDefault("gemini-2.5-pro") == "gemini-3.5-flash-lite")
+    }
+
     @Test func localRequestTimeoutDefaultsAndClamps() {
         let original = AIProviderSettings.requestTimeoutSeconds
         defer { AIProviderSettings.requestTimeoutSeconds = original }

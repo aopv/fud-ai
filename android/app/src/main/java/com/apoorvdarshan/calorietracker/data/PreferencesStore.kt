@@ -377,6 +377,26 @@ class PreferencesStore(private val context: Context) : WorkoutStateStore {
         ds.edit { it[Keys.SELECTED_AI_MODEL] = AIProvider.normalizeModelId(model) }
     }
 
+    /** Replace retired Gemini presets without changing any still-supported user choice. */
+    suspend fun migrateRetiredGeminiModels() {
+        val retired = setOf("gemini-2.5-flash", "gemini-2.5-pro")
+        ds.edit { prefs ->
+            val primaryProvider = AIProvider.values().firstOrNull {
+                it.name == prefs[Keys.SELECTED_AI_PROVIDER]
+            } ?: AIProvider.GEMINI
+            if (primaryProvider == AIProvider.GEMINI && prefs[Keys.SELECTED_AI_MODEL] in retired) {
+                prefs[Keys.SELECTED_AI_MODEL] = AIProvider.GEMINI.defaultModel
+            }
+
+            val fallbackProvider = AIProvider.values().firstOrNull {
+                it.name == prefs[Keys.FALLBACK_PROVIDER]
+            } ?: AIProvider.GEMINI
+            if (fallbackProvider == AIProvider.GEMINI && prefs[Keys.FALLBACK_MODEL] in retired) {
+                prefs[Keys.FALLBACK_MODEL] = AIProvider.GEMINI.defaultModel
+            }
+        }
+    }
+
     fun customBaseUrl(provider: AIProvider): Flow<String?> = ds.data.map {
         it[stringPreferencesKey(CUSTOM_BASE_URL_PREFIX + provider.name)]
     }

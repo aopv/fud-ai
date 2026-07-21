@@ -4,10 +4,25 @@ import com.apoorvdarshan.calorietracker.models.AIProvider
 import java.util.concurrent.TimeUnit
 import okhttp3.OkHttpClient
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertSame
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class AIRequestConfigurationTest {
+    @Test
+    fun geminiUsesCurrentModelsAndFallsBackFromRetiredChoices() {
+        assertEquals("gemini-3.5-flash-lite", AIProvider.GEMINI.defaultModel)
+        assertTrue(AIProvider.GEMINI.models.contains("gemini-3.6-flash"))
+        assertTrue(AIProvider.GEMINI.models.contains("gemini-3.5-flash"))
+        assertFalse(AIProvider.GEMINI.models.contains("gemini-2.5-flash"))
+        assertFalse(AIProvider.GEMINI.models.contains("gemini-2.5-pro"))
+        assertEquals(
+            "gemini-3.5-flash-lite",
+            AIProvider.GEMINI.supportedModelOrDefault("gemini-2.5-pro")
+        )
+    }
+
     @Test
     fun timeoutConfigurationClampsToSupportedRange() {
         assertEquals(30, AIProvider.normalizedRequestTimeoutSeconds(1))

@@ -56,15 +56,15 @@ enum class AIProvider {
 
     /**
      * Only models that are currently in service AND accept image input + return structured text.
-     * Lineups verified against provider docs on 2026-07-02. Mirrors iOS AIProvider.swift.
+     * Lineups verified against provider docs on 2026-07-21. Mirrors iOS AIProvider.swift.
      */
     val models: List<String> get() = when (this) {
         GEMINI -> listOf(
+            "gemini-3.5-flash-lite",
+            "gemini-3.6-flash",
             "gemini-3.5-flash",
             "gemini-3.1-flash-lite",
-            "gemini-3.1-pro-preview",
-            "gemini-2.5-flash",
-            "gemini-2.5-pro"
+            "gemini-3.1-pro-preview"
         )
         OPENAI -> listOf(
             "gpt-5.4-mini",
