@@ -2083,6 +2083,32 @@ struct NutritionDetailRow: View {
     }
 }
 
+private struct NativeSheetToolbarButton: View {
+    let title: LocalizedStringKey
+    var isEmphasized = false
+    var isDisabled = false
+    let action: () -> Void
+
+    var body: some View {
+        if #available(iOS 26.0, *) {
+            button
+                .buttonStyle(.glass)
+        } else {
+            button
+        }
+    }
+
+    private var button: some View {
+        Button(action: action) {
+            Text(title)
+                .fixedSize()
+        }
+        .fontWeight(isEmphasized ? .semibold : .regular)
+        .tint(AppColors.calorie)
+        .disabled(isDisabled)
+    }
+}
+
 // MARK: - Multi-photo Capture Review
 struct MultiPhotoCaptureSheet: View {
     @Binding var images: [UIImage]
@@ -2185,19 +2211,15 @@ struct MultiPhotoCaptureSheet: View {
             )
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button(action: onCancel) {
-                        Text("Cancel")
-                            .fixedSize()
-                    }
+                    NativeSheetToolbarButton(title: "Cancel", action: onCancel)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: onAnalyze) {
-                        Text("Analyze")
-                            .fixedSize()
-                    }
-                        .fontWeight(.semibold)
-                        .tint(AppColors.calorie)
-                        .disabled(images.isEmpty)
+                    NativeSheetToolbarButton(
+                        title: "Analyze",
+                        isEmphasized: true,
+                        isDisabled: images.isEmpty,
+                        action: onAnalyze
+                    )
                 }
             }
         }
@@ -2268,18 +2290,14 @@ struct ContextDescriptionSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button(action: onCancel) {
-                        Text("Cancel")
-                            .fixedSize()
-                    }
+                    NativeSheetToolbarButton(title: "Cancel", action: onCancel)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: onAnalyze) {
-                        Text("Analyze")
-                            .fixedSize()
-                    }
-                    .fontWeight(.semibold)
-                    .tint(AppColors.calorie)
+                    NativeSheetToolbarButton(
+                        title: "Analyze",
+                        isEmphasized: true,
+                        action: onAnalyze
+                    )
                 }
             }
             .onAppear { isFocused = true }
