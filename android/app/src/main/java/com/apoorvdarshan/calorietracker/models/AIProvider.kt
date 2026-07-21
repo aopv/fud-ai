@@ -185,5 +185,17 @@ enum class AIProvider {
                 "gemini-3.1-flash-lite-preview" -> "gemini-3.1-flash-lite"
                 else -> model
             }
+
+        /**
+         * One-time upgrade path for older Gemini presets. Kept separate from
+         * normalization so users may still manually select supported older models.
+         */
+        fun upgradedLegacyGeminiModel(model: String?): String? =
+            when (model?.let(::normalizeModelId)) {
+                "gemini-2.5-flash", "gemini-2.5-pro", "gemini-3.1-flash-lite" ->
+                    "gemini-3.5-flash-lite"
+                "gemini-3.1-pro-preview", "gemini-3.5-flash" -> "gemini-3.6-flash"
+                else -> null
+            }
     }
 }

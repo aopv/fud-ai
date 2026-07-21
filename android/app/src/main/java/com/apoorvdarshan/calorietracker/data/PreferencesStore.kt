@@ -377,23 +377,32 @@ class PreferencesStore(private val context: Context) : WorkoutStateStore {
         ds.edit { it[Keys.SELECTED_AI_MODEL] = AIProvider.normalizeModelId(model) }
     }
 
-    /** Replace retired Gemini presets without changing any still-supported user choice. */
-    suspend fun migrateRetiredGeminiModels() {
-        val retired = setOf("gemini-2.5-flash", "gemini-2.5-pro")
+    /** Upgrade legacy Gemini choices exactly once, including the fallback model. */
+    suspend fun migrateLegacyGeminiModels() {
         ds.edit { prefs ->
+            if ((prefs[Keys.GEMINI_MODEL_MIGRATION_VERSION] ?: 0) >= 1) return@edit
+
             val primaryProvider = AIProvider.values().firstOrNull {
                 it.name == prefs[Keys.SELECTED_AI_PROVIDER]
             } ?: AIProvider.GEMINI
-            if (primaryProvider == AIProvider.GEMINI && prefs[Keys.SELECTED_AI_MODEL] in retired) {
-                prefs[Keys.SELECTED_AI_MODEL] = AIProvider.GEMINI.defaultModel
+            if (primaryProvider == AIProvider.GEMINI) {
+                AIProvider.upgradedLegacyGeminiModel(prefs[Keys.SELECTED_AI_MODEL])?.let {
+                    prefs[Keys.SELECTED_AI_MODEL] = it
+                }
             }
 
             val fallbackProvider = AIProvider.values().firstOrNull {
                 it.name == prefs[Keys.FALLBACK_PROVIDER]
             } ?: AIProvider.GEMINI
-            if (fallbackProvider == AIProvider.GEMINI && prefs[Keys.FALLBACK_MODEL] in retired) {
-                prefs[Keys.FALLBACK_MODEL] = AIProvider.GEMINI.defaultModel
+            if (fallbackProvider == AIProvider.GEMINI) {
+                AIProvider.upgradedLegacyGeminiModel(prefs[Keys.FALLBACK_MODEL])?.let {
+                    prefs[Keys.FALLBACK_MODEL] = it
+                }
             }
+
+            // Prevent a later manual choice of a still-supported older model from
+            // being overwritten on every app launch.
+            prefs[Keys.GEMINI_MODEL_MIGRATION_VERSION] = 1
         }
     }
 
@@ -689,6 +698,7 @@ class PreferencesStore(private val context: Context) : WorkoutStateStore {
         val OPTIONAL_NUTRIENT_GOALS = stringPreferencesKey("optionalNutrientGoals")
         val SELECTED_AI_PROVIDER = stringPreferencesKey("selectedAIProvider")
         val SELECTED_AI_MODEL = stringPreferencesKey("selectedAIModel")
+        val GEMINI_MODEL_MIGRATION_VERSION = intPreferencesKey("geminiModelMigrationVersion")
         val MAX_RESPONSE_TOKENS = intPreferencesKey("maxResponseTokens")
         val AI_REQUEST_TIMEOUT_SECONDS = intPreferencesKey("aiRequestTimeoutSeconds")
         val USER_CONTEXT = stringPreferencesKey("userContext")

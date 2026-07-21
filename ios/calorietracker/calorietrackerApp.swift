@@ -45,6 +45,7 @@ struct calorietrackerApp: App {
         // Derive the split height/weight unit prefs from the legacy useMetric flag
         // before any view reads them.
         UnitPreferenceMigration.runIfNeeded()
+        AIProviderSettings.migrateLegacyGeminiModelsIfNeeded()
         if CommandLine.arguments.contains("--reset-onboarding") {
             UserDefaults.standard.removeObject(forKey: "hasCompletedOnboarding")
             UserDefaults.standard.removeObject(forKey: "userProfile")

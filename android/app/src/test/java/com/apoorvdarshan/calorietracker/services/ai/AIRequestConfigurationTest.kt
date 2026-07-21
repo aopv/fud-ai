@@ -21,6 +21,19 @@ class AIRequestConfigurationTest {
             "gemini-3.5-flash-lite",
             AIProvider.GEMINI.supportedModelOrDefault("gemini-2.5-pro")
         )
+        assertEquals(
+            "gemini-3.5-flash-lite",
+            AIProvider.upgradedLegacyGeminiModel("gemini-3.1-flash-lite")
+        )
+        assertEquals(
+            "gemini-3.6-flash",
+            AIProvider.upgradedLegacyGeminiModel("gemini-3.1-pro-preview")
+        )
+        assertEquals(
+            "gemini-3.6-flash",
+            AIProvider.upgradedLegacyGeminiModel("gemini-3.5-flash")
+        )
+        assertEquals(null, AIProvider.upgradedLegacyGeminiModel("gemini-3.6-flash"))
     }
 
     @Test

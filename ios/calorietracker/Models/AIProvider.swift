@@ -66,6 +66,21 @@ enum AIProvider: String, CaseIterable, Codable, Identifiable {
         }
     }
 
+    /// One-time upgrade path for older Gemini presets. This intentionally stays
+    /// separate from normalization so users may still select supported older
+    /// models after the migration has run.
+    static func upgradedLegacyGeminiModel(_ model: String?) -> String? {
+        guard let model else { return nil }
+        switch normalizedModelID(model) {
+        case "gemini-2.5-flash", "gemini-2.5-pro", "gemini-3.1-flash-lite":
+            return "gemini-3.5-flash-lite"
+        case "gemini-3.1-pro-preview", "gemini-3.5-flash":
+            return "gemini-3.6-flash"
+        default:
+            return nil
+        }
+    }
+
     func supportedModelOrDefault(_ model: String?) -> String {
         guard let model else { return defaultModel }
         let normalized = Self.normalizedModelID(model)
@@ -246,6 +261,7 @@ struct AIProviderSettings {
     private static let fallbackEnabledKey = "aiFallbackEnabled"
     private static let fallbackProviderKey = "selectedFallbackAIProvider"
     private static let fallbackModelKey = "selectedFallbackAIModel"
+    private static let geminiModelMigrationVersionKey = "geminiModelMigrationVersion"
     private static let maxResponseTokensKey = "aiMaxResponseTokens"
     private static let requestTimeoutSecondsKey = "aiRequestTimeoutSeconds"
 
@@ -285,6 +301,26 @@ struct AIProviderSettings {
         set {
             UserDefaults.standard.set(newValue.rawValue, forKey: providerKey)
         }
+    }
+
+    /// Upgrades legacy Gemini choices exactly once, including the fallback.
+    /// A marker prevents a later manual choice of a still-supported older model
+    /// from being overwritten on every launch.
+    static func migrateLegacyGeminiModelsIfNeeded() {
+        let defaults = UserDefaults.standard
+        guard defaults.integer(forKey: geminiModelMigrationVersionKey) < 1 else { return }
+
+        if selectedProvider == .gemini,
+           let upgraded = AIProvider.upgradedLegacyGeminiModel(defaults.string(forKey: modelKey)) {
+            defaults.set(upgraded, forKey: modelKey)
+        }
+
+        if selectedFallbackProvider == .gemini,
+           let upgraded = AIProvider.upgradedLegacyGeminiModel(defaults.string(forKey: fallbackModelKey)) {
+            defaults.set(upgraded, forKey: fallbackModelKey)
+        }
+
+        defaults.set(1, forKey: geminiModelMigrationVersionKey)
     }
 
     static var selectedModel: String {

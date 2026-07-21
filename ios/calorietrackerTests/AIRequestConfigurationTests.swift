@@ -10,6 +10,10 @@ struct AIRequestConfigurationTests {
         #expect(!AIProvider.gemini.models.contains("gemini-2.5-flash"))
         #expect(!AIProvider.gemini.models.contains("gemini-2.5-pro"))
         #expect(AIProvider.gemini.supportedModelOrDefault("gemini-2.5-pro") == "gemini-3.5-flash-lite")
+        #expect(AIProvider.upgradedLegacyGeminiModel("gemini-3.1-flash-lite") == "gemini-3.5-flash-lite")
+        #expect(AIProvider.upgradedLegacyGeminiModel("gemini-3.1-pro-preview") == "gemini-3.6-flash")
+        #expect(AIProvider.upgradedLegacyGeminiModel("gemini-3.5-flash") == "gemini-3.6-flash")
+        #expect(AIProvider.upgradedLegacyGeminiModel("gemini-3.6-flash") == nil)
     }
 
     @Test func localRequestTimeoutDefaultsAndClamps() {
