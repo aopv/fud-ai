@@ -21,3 +21,33 @@ struct AnthropicResponseParsingTests {
         #expect(response.wasTruncated)
     }
 }
+
+struct OpenAIResponseParsingTests {
+    @Test func readsContentWithoutTreatingReasoningAsTheAnswer() throws {
+        let data = Data(#"{"choices":[{"finish_reason":"stop","message":{"reasoning":"private analysis","content":"  {\"calories\":100}  "}}]}"#.utf8)
+
+        let response = try GeminiService.parseOpenAITextResponse(from: data)
+
+        #expect(response.text == #"{"calories":100}"#)
+        #expect(response.hasReasoning)
+        #expect(!response.wasTruncated)
+    }
+
+    @Test func requestsCompactRetryWhenReasoningUsesTheWholeResponse() throws {
+        let data = Data(#"{"choices":[{"finish_reason":"stop","message":{"reasoning_details":[{"type":"reasoning.text","text":"working"}],"content":null}}]}"#.utf8)
+
+        let response = try GeminiService.parseOpenAITextResponse(from: data)
+
+        #expect(response.text == nil)
+        #expect(response.needsCompactRetry)
+    }
+
+    @Test func reportsLengthFinishAsTruncationEvenWithPartialContent() throws {
+        let data = Data(#"{"choices":[{"finish_reason":"length","message":{"content":"{\"calories\":"}}]}"#.utf8)
+
+        let response = try GeminiService.parseOpenAITextResponse(from: data)
+
+        #expect(response.wasTruncated)
+        #expect(response.needsCompactRetry)
+    }
+}

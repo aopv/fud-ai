@@ -269,19 +269,44 @@ struct ChatService {
         let toolsArray = openAIToolsArray(for: tools)
 
         for _ in 0..<maxToolRounds {
-            var body: [String: Any] = [
-                "model": model,
-                "messages": messages,
-                "tools": toolsArray,
-                "tool_choice": "auto",
-            ]
-            body[provider.openAICompatibleTokenLimitKey(for: model)] = AIProviderSettings.maxResponseTokens
-            let data = try await send(url: url, headers: headers, body: body)
-            guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-                  let choices = json["choices"] as? [[String: Any]],
-                  let message = choices.first?["message"] as? [String: Any]
-            else {
-                throw ChatError.invalidResponse
+            func request(compactRetry: Bool) async throws -> ([String: Any], [String: Any]) {
+                var body: [String: Any] = [
+                    "model": model,
+                    "messages": messages,
+                    "tools": toolsArray,
+                    "tool_choice": "auto",
+                ]
+                body[provider.openAICompatibleTokenLimitKey(for: model)] = AIProviderSettings.maxResponseTokens
+                if provider == .openrouter, compactRetry {
+                    body["reasoning"] = ["effort": "low", "exclude": true]
+                }
+                let data = try await send(url: url, headers: headers, body: body)
+                guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
+                else { throw ChatError.invalidResponse }
+                let errorMessage = (json["error"] as? [String: Any])?["message"] as? String
+                guard let choice = (json["choices"] as? [[String: Any]])?.first else {
+                    if let errorMessage, !errorMessage.isEmpty { throw ChatError.apiError(errorMessage) }
+                    throw ChatError.invalidResponse
+                }
+                if (choice["finish_reason"] as? String) == "error" {
+                    throw ChatError.apiError(errorMessage ?? "The AI provider returned an error.")
+                }
+                guard let message = choice["message"] as? [String: Any]
+                else { throw ChatError.invalidResponse }
+                return (choice, message)
+            }
+
+            var (choice, message) = try await request(compactRetry: false)
+            let hasToolCalls = !((message["tool_calls"] as? [[String: Any]]) ?? []).isEmpty
+            let hasContent = !((message["content"] as? String) ?? "").trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            let hasReasoning = !((message["reasoning"] as? String) ?? "").isEmpty
+                || !((message["reasoning_content"] as? String) ?? "").isEmpty
+                || !((message["reasoning_details"] as? [[String: Any]]) ?? []).isEmpty
+            if (choice["finish_reason"] as? String) == "length" || (!hasToolCalls && !hasContent && hasReasoning) {
+                (choice, message) = try await request(compactRetry: true)
+                if (choice["finish_reason"] as? String) == "length" {
+                    throw ChatError.apiError("The AI response was truncated twice. Try a shorter question or another model.")
+                }
             }
 
             // Tool calls take precedence — if present, run them and loop.

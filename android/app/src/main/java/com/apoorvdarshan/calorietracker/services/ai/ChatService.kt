@@ -245,26 +245,52 @@ class ChatService(
         messages.put(JSONObject().put("role", "user").put("content", openAIUserContent(newUserMessage, imageBytes)))
 
         repeat(MAX_TOOL_ROUNDS) {
-            val body = JSONObject().apply {
-                put("model", model)
-                put("messages", messages)
-                put("tools", toolsArr)
-                put("tool_choice", "auto")
-                put(OpenAICompatibleClient.tokenLimitParameter(provider, model), maxTokens)
+            suspend fun request(compactRetry: Boolean): Pair<JSONObject, JSONObject> {
+                val body = JSONObject().apply {
+                    put("model", model)
+                    put("messages", messages)
+                    put("tools", toolsArr)
+                    put("tool_choice", "auto")
+                    put(OpenAICompatibleClient.tokenLimitParameter(provider, model), maxTokens)
+                    if (provider == AIProvider.OPENROUTER && compactRetry) {
+                        put("reasoning", JSONObject().put("effort", "low").put("exclude", true))
+                    }
+                }
+                val builder = Request.Builder()
+                    .url(url)
+                    .addHeader("Content-Type", "application/json")
+                    .post(body.toString().toRequestBody(JSON_MEDIA))
+                if (!apiKey.isNullOrEmpty()) builder.addHeader("Authorization", "Bearer $apiKey")
+                if (provider == AIProvider.OPENROUTER) {
+                    builder.addHeader("HTTP-Referer", "https://github.com/apoorvdarshan/fud-ai")
+                    builder.addHeader("X-Title", "Fud AI")
+                }
+                val raw = RetryPolicy.execute { okHttp.newCall(builder.build()) }
+                val json = runCatching { JSONObject(raw) }.getOrNull() ?: throw AiError.InvalidResponse
+                val error = json.optJSONObject("error")?.optString("message")?.takeIf { it.isNotBlank() }
+                val choice = json.optJSONArray("choices")?.optJSONObject(0)
+                    ?: throw if (error != null) AiError.Api(error) else AiError.InvalidResponse
+                if (choice.optString("finish_reason") == "error") {
+                    throw AiError.Api(error ?: "The AI provider returned an error.")
+                }
+                val message = choice.optJSONObject("message") ?: throw AiError.InvalidResponse
+                return choice to message
             }
-            val builder = Request.Builder()
-                .url(url)
-                .addHeader("Content-Type", "application/json")
-                .post(body.toString().toRequestBody(JSON_MEDIA))
-            if (!apiKey.isNullOrEmpty()) builder.addHeader("Authorization", "Bearer $apiKey")
-            if (provider == AIProvider.OPENROUTER) {
-                builder.addHeader("HTTP-Referer", "https://github.com/apoorvdarshan/fud-ai")
-                builder.addHeader("X-Title", "Fud AI")
+
+            var (choice, message) = request(compactRetry = false)
+            val hasToolCalls = (message.optJSONArray("tool_calls")?.length() ?: 0) > 0
+            val hasContent = message.optString("content").isNotBlank()
+            val hasReasoning = message.optString("reasoning").isNotBlank() ||
+                message.optString("reasoning_content").isNotBlank() ||
+                (message.optJSONArray("reasoning_details")?.length() ?: 0) > 0
+            if (choice.optString("finish_reason") == "length" || (!hasToolCalls && !hasContent && hasReasoning)) {
+                val retry = request(compactRetry = true)
+                choice = retry.first
+                message = retry.second
+                if (choice.optString("finish_reason") == "length") {
+                    throw AiError.Api("The AI response was truncated twice. Try a shorter question or another model.")
+                }
             }
-            val raw = RetryPolicy.execute { okHttp.newCall(builder.build()) }
-            val json = runCatching { JSONObject(raw) }.getOrNull() ?: throw AiError.InvalidResponse
-            val message = json.optJSONArray("choices")?.optJSONObject(0)?.optJSONObject("message")
-                ?: throw AiError.InvalidResponse
 
             // Tool calls take precedence; loop until the model returns plain content.
             val toolCalls = message.optJSONArray("tool_calls")

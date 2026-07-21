@@ -774,31 +774,64 @@ struct GeminiService {
 
     // MARK: - OpenAI-Compatible Format (OpenAI, xAI, OpenRouter, Together, Groq, Ollama)
 
+    struct OpenAITextResponse {
+        let text: String?
+        let finishReason: String?
+        let hasReasoning: Bool
+
+        var wasTruncated: Bool { finishReason == "length" }
+        var needsCompactRetry: Bool { wasTruncated || (text == nil && hasReasoning) }
+    }
+
+    static func parseOpenAITextResponse(from data: Data) throws -> OpenAITextResponse {
+        guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
+        else { throw AnalysisError.invalidResponse }
+
+        let errorMessage = (json["error"] as? [String: Any])?["message"] as? String
+        guard let choice = (json["choices"] as? [[String: Any]])?.first else {
+            if let errorMessage, !errorMessage.isEmpty { throw AnalysisError.apiError(errorMessage) }
+            throw AnalysisError.invalidResponse
+        }
+        let finishReason = choice["finish_reason"] as? String
+        if finishReason == "error" {
+            throw AnalysisError.apiError(errorMessage ?? "The AI provider returned an error.")
+        }
+        guard let message = choice["message"] as? [String: Any] else {
+            throw AnalysisError.invalidResponse
+        }
+
+        let text: String?
+        if let string = message["content"] as? String {
+            let trimmed = string.trimmingCharacters(in: .whitespacesAndNewlines)
+            text = trimmed.isEmpty ? nil : trimmed
+        } else if let blocks = message["content"] as? [[String: Any]] {
+            let joined = blocks
+                .compactMap { ($0["text"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines) }
+                .filter { !$0.isEmpty }
+                .joined(separator: "\n")
+            text = joined.isEmpty ? nil : joined
+        } else {
+            text = nil
+        }
+
+        let hasReasoning = !(message["reasoning"] as? String ?? "").isEmpty
+            || !(message["reasoning_content"] as? String ?? "").isEmpty
+            || !((message["reasoning_details"] as? [[String: Any]]) ?? []).isEmpty
+        return OpenAITextResponse(text: text, finishReason: finishReason, hasReasoning: hasReasoning)
+    }
+
+    private static func compactOpenAIRetryPrompt(_ prompt: String) -> String {
+        """
+        \(prompt)
+
+        IMPORTANT: The previous response did not contain a complete answer. Return only the requested compact JSON object, with no reasoning, explanation, or markdown. Keep the complete response under \(AIProviderSettings.maxResponseTokens) tokens.
+        """
+    }
+
     private static func callOpenAICompatible(baseURL: String, model: String, apiKey: String?, provider: AIProvider, prompt: String, imageDataList: [Data]) async throws -> String {
         guard let url = URL(string: "\(baseURL)/chat/completions") else {
             throw AnalysisError.apiError("Invalid API URL. Check your provider settings.")
         }
-
-        var content: [[String: Any]] = []
-        for imageData in imageDataList {
-            content.append([
-                "type": "image_url",
-                "image_url": ["url": "data:image/jpeg;base64,\(imageData.base64EncodedString())"]
-            ])
-        }
-        content.append(["type": "text", "text": prompt])
-
-        var messages: [[String: Any]] = []
-        if let userContext = AIProviderSettings.currentUserContext {
-            messages.append(["role": "system", "content": userContext])
-        }
-        messages.append(["role": "user", "content": content])
-
-        var body: [String: Any] = [
-            "model": model,
-            "messages": messages,
-        ]
-        body[provider.openAICompatibleTokenLimitKey(for: model)] = AIProviderSettings.maxResponseTokens
 
         var headers = ["Content-Type": "application/json"]
         if let apiKey {
@@ -809,13 +842,43 @@ struct GeminiService {
             headers["X-Title"] = "Fud AI"
         }
 
-        let data = try await makeRequest(url: url, headers: headers, body: body)
+        func request(_ requestPrompt: String, compactRetry: Bool) async throws -> OpenAITextResponse {
+            var content: [[String: Any]] = imageDataList.map { imageData in
+                [
+                    "type": "image_url",
+                    "image_url": ["url": "data:image/jpeg;base64,\(imageData.base64EncodedString())"],
+                ]
+            }
+            content.append(["type": "text", "text": requestPrompt])
 
-        guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-              let choices = json["choices"] as? [[String: Any]],
-              let message = choices.first?["message"] as? [String: Any],
-              let text = message["content"] as? String
-        else { throw AnalysisError.invalidResponse }
+            var messages: [[String: Any]] = []
+            if let userContext = AIProviderSettings.currentUserContext {
+                messages.append(["role": "system", "content": userContext])
+            }
+            messages.append(["role": "user", "content": content])
+
+            var body: [String: Any] = [
+                "model": model,
+                "messages": messages,
+            ]
+            body[provider.openAICompatibleTokenLimitKey(for: model)] = AIProviderSettings.maxResponseTokens
+            if provider == .openrouter {
+                var reasoning: [String: Any] = ["exclude": true]
+                if compactRetry { reasoning["effort"] = "low" }
+                body["reasoning"] = reasoning
+            }
+            let data = try await makeRequest(url: url, headers: headers, body: body)
+            return try parseOpenAITextResponse(from: data)
+        }
+
+        var response = try await request(prompt, compactRetry: false)
+        if response.needsCompactRetry {
+            response = try await request(compactOpenAIRetryPrompt(prompt), compactRetry: true)
+            if response.wasTruncated {
+                throw AnalysisError.apiError("The AI response was truncated twice. Try a shorter description or another model.")
+            }
+        }
+        guard let text = response.text else { throw AnalysisError.invalidResponse }
         return text
     }
 
