@@ -2184,14 +2184,18 @@ struct MultiPhotoCaptureSheet: View {
                 matching: .images
             )
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel", action: onCancel)
-                        .buttonStyle(.bordered)
+                ToolbarItem(placement: .topBarLeading) {
+                    Button(action: onCancel) {
+                        Text("Cancel")
+                            .fixedSize()
+                    }
                 }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Analyze", action: onAnalyze)
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: onAnalyze) {
+                        Text("Analyze")
+                            .fixedSize()
+                    }
                         .fontWeight(.semibold)
-                        .buttonStyle(.bordered)
                         .tint(AppColors.calorie)
                         .disabled(images.isEmpty)
                 }
@@ -2263,16 +2267,18 @@ struct ContextDescriptionSheet: View {
             .navigationTitle("Add Description")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { onCancel() }
-                        .buttonStyle(.bordered)
+                ToolbarItem(placement: .topBarLeading) {
+                    Button(action: onCancel) {
+                        Text("Cancel")
+                            .fixedSize()
+                    }
                 }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Analyze") {
-                        onAnalyze()
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: onAnalyze) {
+                        Text("Analyze")
+                            .fixedSize()
                     }
                     .fontWeight(.semibold)
-                    .buttonStyle(.bordered)
                     .tint(AppColors.calorie)
                 }
             }
