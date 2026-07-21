@@ -125,6 +125,12 @@ struct WidgetSnapshot: Codable, Equatable {
             protein: 84, proteinGoal: 150,
             carbs: 132, carbsGoal: 220,
             fat: 42, fatGoal: 70,
+            homeNutrients: [
+                WidgetNutrientValue(id: "protein", label: "Protein", shortLabel: "P", unit: "g", iconName: "fork.knife", value: 84, goal: 150),
+                WidgetNutrientValue(id: "carbs", label: "Carbs", shortLabel: "C", unit: "g", iconName: "leaf", value: 132, goal: 220),
+                WidgetNutrientValue(id: "fat", label: "Fat", shortLabel: "F", unit: "g", iconName: "drop.fill", value: 42, goal: 70),
+                WidgetNutrientValue(id: "fiber", label: "Fiber", shortLabel: "Fi", unit: "g", iconName: "leaf.fill", value: 18.2, goal: 34),
+            ],
             waterTrackingEnabled: true,
             waterCurrentMl: 1_250,
             waterGoalMl: 2_000,
@@ -140,12 +146,18 @@ struct WidgetSnapshot: Codable, Equatable {
             calories: 0, calorieGoal: 2000,
             protein: 0, proteinGoal: 150,
             carbs: 0, carbsGoal: 220,
-            fat: 0, fatGoal: 70
+            fat: 0, fatGoal: 70,
+            homeNutrients: [
+                WidgetNutrientValue(id: "protein", label: "Protein", shortLabel: "P", unit: "g", iconName: "fork.knife", value: 0, goal: 150),
+                WidgetNutrientValue(id: "carbs", label: "Carbs", shortLabel: "C", unit: "g", iconName: "leaf", value: 0, goal: 220),
+                WidgetNutrientValue(id: "fat", label: "Fat", shortLabel: "F", unit: "g", iconName: "drop.fill", value: 0, goal: 70),
+                WidgetNutrientValue(id: "fiber", label: "Fiber", shortLabel: "Fi", unit: "g", iconName: "leaf.fill", value: 0, goal: 34),
+            ]
         )
     }
 
     /// The 4 nutrient cards to render, matching the iPhone Home selection.
-    /// Legacy snapshots (no homeNutrients) yield the classic protein/carbs/fat.
+    /// Legacy snapshots (no homeNutrients) yield the four default nutrients.
     var displayedHomeNutrients: [WidgetNutrientValue] {
         if let homeNutrients, !homeNutrients.isEmpty {
             return Array(homeNutrients.prefix(4))
@@ -154,6 +166,7 @@ struct WidgetSnapshot: Codable, Equatable {
             WidgetNutrientValue(id: "protein", label: "Protein", shortLabel: "P", unit: "g", iconName: "fork.knife", value: protein, goal: Double(proteinGoal)),
             WidgetNutrientValue(id: "carbs", label: "Carbs", shortLabel: "C", unit: "g", iconName: "leaf", value: carbs, goal: Double(carbsGoal)),
             WidgetNutrientValue(id: "fat", label: "Fat", shortLabel: "F", unit: "g", iconName: "drop.fill", value: fat, goal: Double(fatGoal)),
+            WidgetNutrientValue(id: "fiber", label: "Fiber", shortLabel: "Fi", unit: "g", iconName: "leaf.fill", value: 0, goal: 34),
         ]
     }
 

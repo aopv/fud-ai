@@ -13,29 +13,37 @@ struct WatchNutritionView: View {
         ]
     }
 
+    private var showsWater: Bool {
+        receiver.snapshot.waterIsEnabled
+    }
+
     var body: some View {
-        ScrollView {
-            VStack(spacing: 6) {
-                WatchCalorieGauge(
-                    eaten: receiver.snapshot.calories,
-                    remaining: receiver.snapshot.caloriesRemaining,
-                    progress: receiver.snapshot.calorieProgress,
-                    gradient: themeGradient
-                )
+        VStack(spacing: showsWater ? 3 : 6) {
+            WatchCalorieGauge(
+                eaten: receiver.snapshot.calories,
+                remaining: receiver.snapshot.caloriesRemaining,
+                progress: receiver.snapshot.calorieProgress,
+                gradient: themeGradient,
+                compact: showsWater
+            )
 
-                HStack(alignment: .top, spacing: 6) {
-                    ForEach(receiver.snapshot.displayedHomeNutrients) { nutrient in
-                        WatchNutrientBar(nutrient: nutrient, gradient: themeGradient)
-                    }
-                }
-
-                if receiver.snapshot.waterIsEnabled {
-                    WatchWaterProgress(snapshot: receiver.snapshot, gradient: themeGradient)
-                        .padding(.top, 3)
+            HStack(alignment: .top, spacing: showsWater ? 4 : 6) {
+                ForEach(receiver.snapshot.displayedHomeNutrients) { nutrient in
+                    WatchNutrientBar(
+                        nutrient: nutrient,
+                        gradient: themeGradient,
+                        compact: showsWater
+                    )
                 }
             }
-            .padding(.horizontal, 4)
+
+            if showsWater {
+                WatchWaterProgress(snapshot: receiver.snapshot, gradient: themeGradient)
+                    .padding(.top, 2)
+            }
         }
+        .padding(.horizontal, 4)
+        .frame(maxHeight: .infinity, alignment: .top)
         .onAppear {
             receiver.refreshFromDisk()
         }
@@ -54,27 +62,15 @@ private struct WatchWaterProgress: View {
     }
 
     var body: some View {
-        VStack(spacing: 5) {
-            HStack(spacing: 5) {
-                Image(systemName: "drop.fill")
-                    .font(.system(size: 10, weight: .bold))
-                    .foregroundStyle(
-                        LinearGradient(colors: gradient, startPoint: .top, endPoint: .bottom)
-                    )
+        HStack(spacing: 5) {
+            Image(systemName: "drop.fill")
+                .font(.system(size: 10, weight: .bold))
+                .foregroundStyle(
+                    LinearGradient(colors: gradient, startPoint: .top, endPoint: .bottom)
+                )
 
-                Text("Water")
-                    .font(.system(size: 10, weight: .semibold, design: .rounded))
-
-                Spacer(minLength: 3)
-
-                Text(valueText)
-                    .font(.system(size: 10, weight: .bold, design: .rounded).monospacedDigit())
-                    .foregroundStyle(
-                        LinearGradient(colors: gradient, startPoint: .leading, endPoint: .trailing)
-                    )
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.65)
-            }
+            Text("Water")
+                .font(.system(size: 10, weight: .semibold, design: .rounded))
 
             GeometryReader { proxy in
                 ZStack(alignment: .leading) {
@@ -87,10 +83,18 @@ private struct WatchWaterProgress: View {
                         .shadow(color: (gradient.first ?? .pink).opacity(0.35), radius: 2)
                 }
             }
-            .frame(height: 6)
+            .frame(height: 5)
+
+            Text(valueText)
+                .font(.system(size: 9, weight: .bold, design: .rounded).monospacedDigit())
+                .foregroundStyle(
+                    LinearGradient(colors: gradient, startPoint: .leading, endPoint: .trailing)
+                )
+                .lineLimit(1)
+                .minimumScaleFactor(0.65)
         }
-        .padding(.horizontal, 8)
-        .padding(.vertical, 7)
+        .padding(.horizontal, 7)
+        .frame(height: 28)
         .background(
             RoundedRectangle(cornerRadius: 12, style: .continuous)
                 .fill((gradient.first ?? .pink).opacity(0.08))
@@ -112,9 +116,10 @@ private struct WatchCalorieGauge: View {
     let remaining: Int
     let progress: Double
     let gradient: [Color]
+    let compact: Bool
 
-    private let diameter: CGFloat = 132
-    private let lineWidth: CGFloat = 9
+    private var diameter: CGFloat { compact ? 112 : 132 }
+    private var lineWidth: CGFloat { compact ? 8 : 9 }
 
     private var dashedStroke: StrokeStyle {
         StrokeStyle(lineWidth: lineWidth, lineCap: .butt, dash: [2.5, 3.8])
@@ -138,7 +143,7 @@ private struct WatchCalorieGauge: View {
 
             VStack(spacing: 0) {
                 Text("\(eaten)")
-                    .font(.system(size: 30, weight: .bold, design: .rounded))
+                    .font(.system(size: compact ? 27 : 30, weight: .bold, design: .rounded))
                     .foregroundStyle(
                         LinearGradient(colors: gradient, startPoint: .topLeading, endPoint: .bottomTrailing)
                     )
@@ -150,7 +155,7 @@ private struct WatchCalorieGauge: View {
                     Image(systemName: "flame.fill")
                         .font(.system(size: 9, weight: .semibold))
                     Text("\(remaining) left")
-                        .font(.system(size: 12, weight: .semibold, design: .rounded))
+                        .font(.system(size: compact ? 11 : 12, weight: .semibold, design: .rounded))
                 }
                 .foregroundStyle(gradient.first ?? .pink)
                 .lineLimit(1)
@@ -169,14 +174,15 @@ private struct WatchCalorieGauge: View {
 private struct WatchNutrientBar: View {
     let nutrient: WidgetNutrientValue
     let gradient: [Color]
+    let compact: Bool
 
     private let barWidth: CGFloat = 10
-    private let barHeight: CGFloat = 42
+    private var barHeight: CGFloat { compact ? 30 : 42 }
 
     var body: some View {
-        VStack(spacing: 4) {
+        VStack(spacing: compact ? 3 : 4) {
             Text(nutrient.displayValue)
-                .font(.system(size: 13, weight: .bold, design: .rounded).monospacedDigit())
+                .font(.system(size: compact ? 12 : 13, weight: .bold, design: .rounded).monospacedDigit())
                 .foregroundStyle(
                     LinearGradient(colors: gradient, startPoint: .top, endPoint: .bottom)
                 )
