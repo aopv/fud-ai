@@ -385,11 +385,11 @@ You can also help by [voting on Product Hunt](https://www.producthunt.com/produc
 
 ## Star History
 
-<a href="https://www.star-history.com/?type=date&repos=apoorvdarshan%2Ffud-ai">
+<a href="https://github.com/apoorvdarshan/fud-ai/stargazers">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=apoorvdarshan/fud-ai&type=date&theme=dark&legend=top-left&sealed_token=26KkxrkUOXIbh-qbZkWnLZcniMwJBnGUHZjfZWE-0iyandO7xSyYfdlx9mJAKSwxOTXgIbH3Lo5s44y5aE2P73Znaf4bUtFO5KS5i2zKujXAlWnhYorpTfq8Hg4GOJTdgZtmsZHkknr-EGNkBOvZfm5Ve13V3nqDjjofXhRe4gKs6-ad2NM2hXAxQYJJ" />
-    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=apoorvdarshan/fud-ai&type=date&legend=top-left&sealed_token=26KkxrkUOXIbh-qbZkWnLZcniMwJBnGUHZjfZWE-0iyandO7xSyYfdlx9mJAKSwxOTXgIbH3Lo5s44y5aE2P73Znaf4bUtFO5KS5i2zKujXAlWnhYorpTfq8Hg4GOJTdgZtmsZHkknr-EGNkBOvZfm5Ve13V3nqDjjofXhRe4gKs6-ad2NM2hXAxQYJJ" />
-    <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=apoorvdarshan/fud-ai&type=date&legend=top-left&sealed_token=26KkxrkUOXIbh-qbZkWnLZcniMwJBnGUHZjfZWE-0iyandO7xSyYfdlx9mJAKSwxOTXgIbH3Lo5s44y5aE2P73Znaf4bUtFO5KS5i2zKujXAlWnhYorpTfq8Hg4GOJTdgZtmsZHkknr-EGNkBOvZfm5Ve13V3nqDjjofXhRe4gKs6-ad2NM2hXAxQYJJ" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://fud-ai.app/star-history.svg?theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://fud-ai.app/star-history.svg" />
+    <img alt="Fud AI GitHub star history chart" src="https://fud-ai.app/star-history.svg" />
   </picture>
 </a>
 

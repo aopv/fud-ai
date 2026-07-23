@@ -3,8 +3,10 @@
 .github/
 .DS_Store
 **/.DS_Store
-node_modules/
+**/node_modules
+**/.wrangler
 package.json
 package-lock.json
 wrangler.toml
+worker.ts
 scripts/
