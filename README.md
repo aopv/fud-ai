@@ -387,9 +387,9 @@ You can also help by [voting on Product Hunt](https://www.producthunt.com/produc
 
 <a href="https://github.com/apoorvdarshan/fud-ai/stargazers">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://fud-ai.app/star-history.svg?theme=dark" />
-    <source media="(prefers-color-scheme: light)" srcset="https://fud-ai.app/star-history.svg" />
-    <img alt="Fud AI GitHub star history chart" src="https://fud-ai.app/star-history.svg" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://fud-ai.app/star-history.svg?theme=dark&amp;v=doodle-20260724" />
+    <source media="(prefers-color-scheme: light)" srcset="https://fud-ai.app/star-history.svg?v=doodle-20260724" />
+    <img alt="Fud AI GitHub star history chart" src="https://fud-ai.app/star-history.svg?v=doodle-20260724" />
   </picture>
 </a>
 
