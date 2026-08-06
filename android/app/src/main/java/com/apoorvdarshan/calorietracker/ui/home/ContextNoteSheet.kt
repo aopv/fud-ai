@@ -19,7 +19,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.PhotoLibrary
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -27,7 +29,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -52,11 +56,13 @@ fun MultiPhotoCaptureSheet(
     addsFromLibrary: Boolean,
     onAddPhoto: () -> Unit,
     onRemove: (Int) -> Unit,
-    onAnalyze: (String?) -> Unit,
+    onAnalyze: (String?, Boolean) -> Unit,
     onDismiss: () -> Unit
 ) {
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var note by remember { mutableStateOf("") }
+    var progressiveMeal by remember { mutableStateOf(false) }
+    var showProgressiveInfo by remember { mutableStateOf(false) }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -68,7 +74,12 @@ fun MultiPhotoCaptureSheet(
             title = "Meal Photos",
             primaryLabel = stringResource(R.string.action_analyze),
             onCancel = onDismiss,
-            onPrimary = { onAnalyze(note.takeIf { it.isNotBlank() }) }
+            onPrimary = {
+                onAnalyze(
+                    note.takeIf { it.isNotBlank() },
+                    progressiveMeal && imageBytesList.size > 1
+                )
+            }
         )
 
         Column(
@@ -150,6 +161,51 @@ fun MultiPhotoCaptureSheet(
                 }
             }
 
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp)
+                    .background(
+                        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.55f),
+                        RoundedCornerShape(20.dp)
+                    )
+                    .padding(horizontal = 16.dp, vertical = 14.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(14.dp)
+            ) {
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            stringResource(R.string.progressive_meal_title),
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                        IconButton(
+                            onClick = { showProgressiveInfo = true },
+                            modifier = Modifier.size(32.dp)
+                        ) {
+                            Icon(
+                                Icons.Filled.Info,
+                                contentDescription = stringResource(R.string.progressive_meal_info_title),
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    }
+                    Text(
+                        stringResource(R.string.progressive_meal_description),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.62f)
+                    )
+                }
+                Switch(
+                    checked = progressiveMeal,
+                    onCheckedChange = { progressiveMeal = it },
+                    enabled = imageBytesList.size > 1
+                )
+            }
+
             Column(
                 Modifier.fillMaxWidth().padding(horizontal = 20.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -164,6 +220,19 @@ fun MultiPhotoCaptureSheet(
                 )
             }
         }
+    }
+
+    if (showProgressiveInfo) {
+        AlertDialog(
+            onDismissRequest = { showProgressiveInfo = false },
+            title = { Text(stringResource(R.string.progressive_meal_info_title)) },
+            text = { Text(stringResource(R.string.progressive_meal_info_body)) },
+            confirmButton = {
+                TextButton(onClick = { showProgressiveInfo = false }) {
+                    Text(stringResource(R.string.action_done))
+                }
+            }
+        )
     }
 }
 

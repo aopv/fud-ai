@@ -4,8 +4,10 @@ import com.apoorvdarshan.calorietracker.models.FoodEntry
 import com.apoorvdarshan.calorietracker.models.FoodSource
 import com.apoorvdarshan.calorietracker.models.MealIngredient
 import com.apoorvdarshan.calorietracker.models.totals
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -31,5 +33,45 @@ class MealIngredientTest {
         assertTrue(entry.ingredients.isEmpty())
         assertEquals("Apple", entry.name)
         assertEquals(FoodSource.MANUAL, entry.source)
+        assertFalse(entry.progressiveMeal)
+    }
+
+    @Test
+    fun progressiveMealModeSurvivesFoodEntryRoundTrip() {
+        val format = Json { ignoreUnknownKeys = true }
+        val original = FoodEntry(
+            name = "Progressive bowl",
+            calories = 400,
+            protein = 30.0,
+            carbs = 45.0,
+            fat = 12.0,
+            source = FoodSource.SNAP_FOOD,
+            progressiveMeal = true
+        )
+
+        val decoded = format.decodeFromString<FoodEntry>(format.encodeToString(original))
+
+        assertTrue(decoded.progressiveMeal)
+    }
+
+    @Test
+    fun progressiveMealPromptUsesChronologicalScaleDifferences() {
+        val prompt = multiPhotoAnalysisPrompt(
+            progressiveMeal = true,
+            description = "The plate stays on the scale"
+        )
+
+        assertTrue(prompt.contains("chronological progressive-meal sequence"))
+        assertTrue(prompt.contains("current scale total minus the previous scale total"))
+        assertTrue(prompt.contains("The plate stays on the scale"))
+        assertFalse(prompt.contains("Treat the photos as multiple views"))
+    }
+
+    @Test
+    fun standardMultiPhotoPromptKeepsMultipleViewBehavior() {
+        val prompt = multiPhotoAnalysisPrompt(progressiveMeal = false)
+
+        assertTrue(prompt.contains("Treat the photos as multiple views"))
+        assertFalse(prompt.contains("chronological progressive-meal sequence"))
     }
 }

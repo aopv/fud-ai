@@ -50,6 +50,7 @@ data class FoodEntry(
     val selectedServingUnit: String? = null,
     val selectedServingQuantity: Double? = null,
     val customNote: String? = null,
+    val progressiveMeal: Boolean = false,
     val ingredients: List<MealIngredient> = emptyList()
 ) {
     /** Unique key for favorite deduplication (name + calorie combo). */
@@ -99,6 +100,7 @@ data class FoodEntry(
         selectedServingUnit = selectedServingUnit,
         selectedServingQuantity = selectedServingQuantity,
         customNote = customNote,
+        progressiveMeal = progressiveMeal,
         ingredients = ingredients
     )
 

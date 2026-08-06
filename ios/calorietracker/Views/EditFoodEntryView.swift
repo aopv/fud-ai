@@ -530,6 +530,7 @@ struct EditFoodEntryView: View {
             selectedServingUnit: servingUnitOptions.isEmpty ? nil : selectedServingOption.unit,
             selectedServingQuantity: servingUnitOptions.isEmpty ? nil : selectedServingQuantity,
             customNote: customNote.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? nil : customNote,
+            progressiveMeal: entry.progressiveMeal,
             ingredients: scaledIngredients
         )
         foodStore.updateEntry(updated)

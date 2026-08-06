@@ -87,6 +87,7 @@ object MealShare {
         e.selectedServingUnit?.let { d.put("selectedServingUnit", it) }
         put("selectedServingQuantity", e.selectedServingQuantity)
         e.customNote?.let { d.put("customNote", it) }
+        if (e.progressiveMeal) d.put("progressiveMeal", true)
         if (e.ingredients.isNotEmpty()) {
             d.put("ingredients", JSONArray().apply {
                 e.ingredients.forEach { ingredient ->
@@ -174,6 +175,7 @@ object MealShare {
             selectedServingUnit = if (d.has("selectedServingUnit")) d.optString("selectedServingUnit") else null,
             selectedServingQuantity = dbl("selectedServingQuantity"),
             customNote = if (d.has("customNote")) d.optString("customNote") else null,
+            progressiveMeal = d.optBoolean("progressiveMeal", false),
             ingredients = ingredients
         )
     }

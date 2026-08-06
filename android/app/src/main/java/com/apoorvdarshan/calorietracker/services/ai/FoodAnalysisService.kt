@@ -14,6 +14,50 @@ import kotlin.math.roundToInt
 import okhttp3.OkHttpClient
 import java.util.Locale
 
+internal fun multiPhotoAnalysisPrompt(
+    progressiveMeal: Boolean,
+    description: String? = null
+): String {
+    val interpretation = if (progressiveMeal) {
+        """
+            These images are a chronological progressive-meal sequence in the exact order the user captured or selected them.
+            - Photo 1 shows the first ingredient on the plate. Each later photo shows the same plate after one or more new ingredients were added.
+            - Compare each photo with the previous photo. Return foods already present only once, and add each newly visible food as its own ingredient.
+            - When the photos show reliable cumulative scale totals with the same plate and tare, the first ingredient weight is the first reading. Each later added weight is the current scale total minus the previous scale total.
+            - If the scale was visibly tared or reset before a photo, use that photo's reading directly for the newly added ingredient.
+            - Never subtract unreadable, incompatible, or decreasing readings. In that case estimate only the newly added food from the visual change and user context.
+            - The final meal weight should match the latest reliable cumulative reading, and ingredient weights and macros should add up approximately to the meal totals.
+        """.trimIndent()
+    } else {
+        """
+            Use every image once. Do not double-count the same food shown from multiple angles. When separate ingredients are shown, combine their nutrition into one meal total. Read visible scale weights and nutrition labels when available; prefer those measurements over visual portion estimates.
+            Treat the photos as multiple views of the same item unless there are clearly separate foods.
+        """.trimIndent()
+    }
+
+    return buildString {
+        append(
+            """
+                Analyze these food images together as one meal logging request. They may show different angles of the same food, separate ingredients, kitchen-scale readings, packaging, or nutrition labels.
+                $interpretation
+                Respond ONLY with JSON:
+                {"name":"...","calories":0,"protein":0.0,"carbs":0.0,"fat":0.0,"serving_size_grams":0.0,"sugar":0.0,"added_sugar":0.0,"fiber":0.0,"saturated_fat":0.0,"monounsaturated_fat":0.0,"polyunsaturated_fat":0.0,"cholesterol":0.0,"sodium":0.0,"potassium":0.0,"trans_fat":0.0,"calcium":0.0,"iron":0.0,"magnesium":0.0,"zinc":0.0,"vitamin_a":0.0,"vitamin_c":0.0,"vitamin_d":0.0,"vitamin_b12":0.0,"vitamin_e":0.0,"vitamin_k":0.0,"folate":0.0,"omega_3":0.0,"ingredients":[],"unit_options":[]}
+                Calories are integers. Protein/carbs/fat are decimal gram values when needed. serving_size_grams is the estimated weight in grams of the serving shown. Nutrients are numbers: sugar/fiber/sat fat/mono fat/poly fat/trans fat/omega-3 in grams; cholesterol/sodium/potassium/calcium/iron/magnesium/zinc/vitamin C/vitamin E in milligrams; vitamin A/vitamin D/vitamin B12/vitamin K/folate in micrograms.
+                unit_options is required. It must be [] or a JSON array of complete objects, never an array of strings.
+                Every unit_options object must have this exact shape (the values are schema examples only; never copy them): {"unit":"slice","quantity":2.0,"grams_per_unit":60.0}. unit is a non-gram unit name, quantity is the positive number of those units in the whole analyzed amount, and grams_per_unit is the positive gram weight of one unit. All three fields are required.
+                For every option, quantity * grams_per_unit must approximately equal serving_size_grams.
+                ingredients is required. Return each clearly separate food once using {"name":"...","grams":0.0,"calories":0,"protein":0.0,"carbs":0.0,"fat":0.0}. Ingredient grams and macros must describe the full meal and add up approximately to the meal totals. Return [] only when a reliable breakdown is not possible.
+                Only return a count when it is visible in the images, stated in the user context, or strongly implied by an unambiguous single-item portion. Never invent a count from the food name or serving_size_grams alone.
+                Use slice/piece for visibly counted foods; use ml/cup/fl oz for visible or labeled liquid volumes; use tbsp/tsp for visible or labeled spoon measures; use can/packet only when visible or labeled. Use [] when no reliable non-gram unit exists. Do not include g/gram/grams in unit_options.
+                Use null for any nutrient you cannot estimate.
+            """.trimIndent()
+        )
+        if (!description.isNullOrBlank()) {
+            append("\n\nAdditional context from the user about this complete meal: $description\nApply this note to the full image set.")
+        }
+    }
+}
+
 /**
  * Single-shot food / text / nutrition-label analysis. Port of iOS GeminiService.
  * Routes the call to the right per-format client based on the user's selected provider.
@@ -371,25 +415,12 @@ class FoodAnalysisService(
         )
     }
 
-    suspend fun analyzeFood(imageBytesList: List<ByteArray>, description: String? = null): FoodAnalysis {
-        var prompt = """
-            Analyze these food images together as one meal logging request. They may show different angles of the same food, separate ingredients, kitchen-scale readings, packaging, or nutrition labels.
-            Use every image once. Do not double-count the same food shown from multiple angles. When separate ingredients are shown, combine their nutrition into one meal total. Read visible scale weights and nutrition labels when available; prefer those measurements over visual portion estimates.
-            Respond ONLY with JSON:
-            {"name":"...","calories":0,"protein":0.0,"carbs":0.0,"fat":0.0,"serving_size_grams":0.0,"sugar":0.0,"added_sugar":0.0,"fiber":0.0,"saturated_fat":0.0,"monounsaturated_fat":0.0,"polyunsaturated_fat":0.0,"cholesterol":0.0,"sodium":0.0,"potassium":0.0,"trans_fat":0.0,"calcium":0.0,"iron":0.0,"magnesium":0.0,"zinc":0.0,"vitamin_a":0.0,"vitamin_c":0.0,"vitamin_d":0.0,"vitamin_b12":0.0,"vitamin_e":0.0,"vitamin_k":0.0,"folate":0.0,"omega_3":0.0,"ingredients":[],"unit_options":[]}
-            Calories are integers. Protein/carbs/fat are decimal gram values when needed. serving_size_grams is the estimated weight in grams of the serving shown. Nutrients are numbers: sugar/fiber/sat fat/mono fat/poly fat/trans fat/omega-3 in grams; cholesterol/sodium/potassium/calcium/iron/magnesium/zinc/vitamin C/vitamin E in milligrams; vitamin A/vitamin D/vitamin B12/vitamin K/folate in micrograms.
-            unit_options is required. It must be [] or a JSON array of complete objects, never an array of strings.
-            Every unit_options object must have this exact shape (the values are schema examples only; never copy them): {"unit":"slice","quantity":2.0,"grams_per_unit":60.0}. unit is a non-gram unit name, quantity is the positive number of those units in the whole analyzed amount, and grams_per_unit is the positive gram weight of one unit. All three fields are required.
-            For every option, quantity * grams_per_unit must approximately equal serving_size_grams.
-            ingredients is required. Return each clearly separate food once using {"name":"...","grams":0.0,"calories":0,"protein":0.0,"carbs":0.0,"fat":0.0}. Ingredient grams and macros must describe the full meal and add up approximately to the meal totals. Return [] only when a reliable breakdown is not possible.
-            Only return a count when it is visible in the images, stated in the user context, or strongly implied by an unambiguous single-item portion. Never invent a count from the food name or serving_size_grams alone.
-            Use slice/piece for visibly counted foods; use ml/cup/fl oz for visible or labeled liquid volumes; use tbsp/tsp for visible or labeled spoon measures; use can/packet only when visible or labeled. Use [] when no reliable non-gram unit exists. Do not include g/gram/grams in unit_options.
-            Do not double-count the meal across images. Treat the photos as multiple views of the same item unless there are clearly separate foods.
-            Use null for any nutrient you cannot estimate.
-        """.trimIndent()
-        if (!description.isNullOrBlank()) {
-            prompt += "\n\nAdditional context from the user about this complete meal: $description\nApply this note to the full image set."
-        }
+    suspend fun analyzeFood(
+        imageBytesList: List<ByteArray>,
+        description: String? = null,
+        progressiveMeal: Boolean = false
+    ): FoodAnalysis {
+        val prompt = multiPhotoAnalysisPrompt(progressiveMeal, description)
         val images = imageBytesList.filter { it.isNotEmpty() }
         if (images.isEmpty()) throw AiError.InvalidResponse
         val parsed = FoodJsonParser.parseFoodResponse(callAi(prompt, images))
@@ -398,7 +429,7 @@ class FoodAnalysisService(
             imageBytes = images.first(),
             description = description,
             shouldRequestFallback = parsed.shouldRequestServingUnitFallback
-        )
+        ).copy(progressiveMeal = progressiveMeal)
     }
 
     suspend fun analyzeNutritionLabel(imageBytes: ByteArray, servingGrams: Double): FoodAnalysis {

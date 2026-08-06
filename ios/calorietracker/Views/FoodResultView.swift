@@ -8,6 +8,7 @@ struct FoodResultView: View {
     let images: [UIImage]
     let emoji: String?
     let source: FoodSource
+    let progressiveMeal: Bool
 
     @State private var baseServingSizeGrams: Double
     let servingUnitOptions: [ServingUnitOption]
@@ -107,6 +108,7 @@ struct FoodResultView: View {
         carbs: Double,
         fat: Double,
         ingredients: [MealIngredient] = [],
+        progressiveMeal: Bool = false,
         servingSizeGrams: Double = 100,
         sugar: Double? = nil,
         addedSugar: Double? = nil,
@@ -149,6 +151,7 @@ struct FoodResultView: View {
         self.images = images
         self.emoji = emoji
         self.source = source
+        self.progressiveMeal = progressiveMeal
         self._baseServingSizeGrams = State(initialValue: servingSizeGrams)
         self.servingUnitOptions = normalizedServingUnitOptions
         self._name = State(initialValue: name)
@@ -557,6 +560,7 @@ struct FoodResultView: View {
             servingUnitOptions: servingUnitOptions,
             selectedServingUnit: servingUnitOptions.isEmpty ? nil : selectedServingOption.unit,
             selectedServingQuantity: servingUnitOptions.isEmpty ? nil : selectedServingQuantity,
+            progressiveMeal: progressiveMeal,
             ingredients: scaledIngredients
         )
     }

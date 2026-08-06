@@ -70,6 +70,7 @@ enum MealShare {
         if let unit = e.selectedServingUnit { d["selectedServingUnit"] = unit }
         put("selectedServingQuantity", e.selectedServingQuantity)
         if let note = e.customNote { d["customNote"] = note }
+        if e.progressiveMeal { d["progressiveMeal"] = true }
         if !e.ingredients.isEmpty {
             d["ingredients"] = e.ingredients.map { ingredient in
                 [
@@ -152,6 +153,7 @@ enum MealShare {
             selectedServingUnit: d["selectedServingUnit"] as? String,
             selectedServingQuantity: dbl("selectedServingQuantity"),
             customNote: d["customNote"] as? String,
+            progressiveMeal: (d["progressiveMeal"] as? Bool) ?? false,
             ingredients: ingredients
         )
     }

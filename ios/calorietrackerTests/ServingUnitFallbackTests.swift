@@ -165,6 +165,43 @@ struct ServingUnitFallbackTests {
 
         #expect(decoded.ingredients.isEmpty)
         #expect(decoded.name == "Apple")
+        #expect(decoded.progressiveMeal == false)
+    }
+
+    @Test func progressiveMealPromptUsesChronologicalScaleDifferences() {
+        let prompt = GeminiService.multiPhotoAnalysisPrompt(
+            progressiveMeal: true,
+            description: "The plate stays on the scale"
+        )
+
+        #expect(prompt.contains("chronological progressive-meal sequence"))
+        #expect(prompt.contains("current scale total minus the previous scale total"))
+        #expect(prompt.contains("The plate stays on the scale"))
+        #expect(!prompt.contains("Treat the photos as multiple views"))
+    }
+
+    @Test func progressiveMealModeSurvivesFoodEntryRoundTrip() throws {
+        let original = FoodEntry(
+            name: "Progressive bowl",
+            calories: 400,
+            protein: 30,
+            carbs: 45,
+            fat: 12,
+            source: .snapFood,
+            progressiveMeal: true
+        )
+
+        let data = try JSONEncoder().encode(original)
+        let decoded = try JSONDecoder().decode(FoodEntry.self, from: data)
+
+        #expect(decoded.progressiveMeal)
+    }
+
+    @Test func standardMultiPhotoPromptKeepsMultipleViewBehavior() {
+        let prompt = GeminiService.multiPhotoAnalysisPrompt(progressiveMeal: false)
+
+        #expect(prompt.contains("Treat the photos as multiple views"))
+        #expect(!prompt.contains("chronological progressive-meal sequence"))
     }
 
     private func foodJSON(unitOptions: String?, fieldName: String = "unit_options") -> String {

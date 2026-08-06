@@ -417,7 +417,11 @@ class FoodStore {
         let description = Self.reprocessDescription(for: entry, note: note)
         let result: GeminiService.FoodAnalysis
         if !images.isEmpty {
-            result = try await GeminiService.analyzeFood(images: images, description: description)
+            result = try await GeminiService.analyzeFood(
+                images: images,
+                description: description,
+                progressiveMeal: entry.progressiveMeal
+            )
         } else {
             result = try await GeminiService.analyzeTextInput(description: description)
         }

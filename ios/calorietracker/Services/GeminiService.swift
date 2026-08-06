@@ -37,6 +37,7 @@ struct GeminiService {
         var selectedServingUnit: String?
         var selectedServingQuantity: Double?
         var requiresServingUnitFallback = false
+        var progressiveMeal = false
         var ingredients: [MealIngredient] = []
     }
 
@@ -323,13 +324,29 @@ struct GeminiService {
         return await addingFallbackServingUnits(to: analysis, image: image, description: description)
     }
 
-    static func analyzeFood(images: [UIImage], description: String? = nil) async throws -> FoodAnalysis {
-        guard !images.isEmpty else { throw AnalysisError.imageConversionFailed }
+    static func multiPhotoAnalysisPrompt(progressiveMeal: Bool, description: String? = nil) -> String {
+        let interpretation: String
+        if progressiveMeal {
+            interpretation = """
+            These images are a chronological progressive-meal sequence in the exact order the user captured or selected them.
+            - Photo 1 shows the first ingredient on the plate. Each later photo shows the same plate after one or more new ingredients were added.
+            - Compare each photo with the previous photo. Return foods already present only once, and add each newly visible food as its own ingredient.
+            - When the photos show reliable cumulative scale totals with the same plate and tare, the first ingredient weight is the first reading. Each later added weight is the current scale total minus the previous scale total.
+            - If the scale was visibly tared or reset before a photo, use that photo's reading directly for the newly added ingredient.
+            - Never subtract unreadable, incompatible, or decreasing readings. In that case estimate only the newly added food from the visual change and user context.
+            - The final meal weight should match the latest reliable cumulative reading, and ingredient weights and macros should add up approximately to the meal totals.
+            """
+        } else {
+            interpretation = """
+            Use every image once. Do not double-count the same food shown from multiple angles. When separate ingredients are shown, combine their nutrition into one meal total. Read visible scale weights and nutrition labels when available; prefer those measurements over visual portion estimates.
+            Treat the photos as multiple views of the same item unless there are clearly separate foods.
+            """
+        }
 
         var prompt = """
         Analyze these food-related images together as one meal logging request. They may show different angles of the same food, separate ingredients, kitchen-scale readings, packaging, or nutrition labels.
 
-        Use every image once. Do not double-count the same food shown from multiple angles. When separate ingredients are shown, combine their nutrition into one meal total. Read visible scale weights and nutrition labels when available; prefer those measurements over visual portion estimates.
+        \(interpretation)
 
         Respond ONLY with a JSON object in this exact format, no other text:
         \(Self.foodAnalysisJSONShapeWithoutEmoji)
@@ -344,10 +361,23 @@ struct GeminiService {
         if let description, !description.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             prompt += "\n\nAdditional context from the user about this complete meal: \(description)\nApply this note to the full image set."
         }
+        return prompt
+    }
+
+    static func analyzeFood(
+        images: [UIImage],
+        description: String? = nil,
+        progressiveMeal: Bool = false
+    ) async throws -> FoodAnalysis {
+        guard !images.isEmpty else { throw AnalysisError.imageConversionFailed }
+
+        let prompt = multiPhotoAnalysisPrompt(progressiveMeal: progressiveMeal, description: description)
 
         let text = try await callAI(prompt: prompt, images: images)
         let analysis = try parseFoodAnalysis(from: text)
-        return await addingFallbackServingUnits(to: analysis, image: images[0], description: description)
+        var result = await addingFallbackServingUnits(to: analysis, image: images[0], description: description)
+        result.progressiveMeal = progressiveMeal
+        return result
     }
 
     static func analyzeNutritionLabel(image: UIImage) async throws -> NutritionLabelAnalysis {

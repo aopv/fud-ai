@@ -529,7 +529,7 @@ struct HomeView: View {
     @State private var showError = false
     @State private var errorMessage = ""
     private enum RetryRequest {
-        case analysis(images: [UIImage], mode: CameraMode, description: String?)
+        case analysis(images: [UIImage], mode: CameraMode, description: String?, progressiveMeal: Bool)
         case text(String)
         case barcode(String)
     }
@@ -1089,7 +1089,7 @@ struct HomeView: View {
                             showMultiPhotoCaptureSheet = false
                         }
                     },
-                    onAnalyze: {
+                    onAnalyze: { progressiveMeal in
                         let images = captureImages
                         let description = cameraMode == .snapFoodWithContext ? contextDescription : nil
                         showMultiPhotoCaptureSheet = false
@@ -1097,7 +1097,12 @@ struct HomeView: View {
                         currentImages = images
                         currentImage = images.first
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                            startAnalysis(images: images, mode: cameraMode, description: description)
+                            startAnalysis(
+                                images: images,
+                                mode: cameraMode,
+                                description: description,
+                                progressiveMeal: progressiveMeal
+                            )
                         }
                     },
                     onCancel: {
@@ -1157,6 +1162,7 @@ struct HomeView: View {
                             carbs: result.carbs,
                             fat: result.fat,
                             ingredients: result.ingredients,
+                            progressiveMeal: result.progressiveMeal,
                             servingSizeGrams: result.servingSizeGrams,
                             sugar: result.sugar,
                             addedSugar: result.addedSugar,
@@ -1247,6 +1253,7 @@ struct HomeView: View {
                         servingUnitOptions: entry.servingUnitOptions,
                         selectedServingUnit: entry.selectedServingUnit,
                         selectedServingQuantity: entry.selectedServingQuantity,
+                        progressiveMeal: entry.progressiveMeal,
                         ingredients: entry.ingredients
                     )
                     activeSheet = .foodResult
@@ -1268,7 +1275,13 @@ struct HomeView: View {
                 }
             }
             .interactiveDismissDisabled(activeSheet == .analyzing || activeSheet == .analyzingText || activeSheet == .lookingUpBarcode)
-            .photosPicker(isPresented: $showPhotoPicker, selection: $selectedPhotoItems, maxSelectionCount: 10, matching: .images)
+            .photosPicker(
+                isPresented: $showPhotoPicker,
+                selection: $selectedPhotoItems,
+                maxSelectionCount: 10,
+                selectionBehavior: .ordered,
+                matching: .images
+            )
             .onChange(of: selectedPhotoItems) { oldValue, newValue in
                 guard !newValue.isEmpty else { return }
                 selectedPhotoItems = []
@@ -1359,25 +1372,42 @@ struct HomeView: View {
     }
 
     private func startAnalysis(image: UIImage, mode: CameraMode, description: String? = nil) {
-        startAnalysis(images: [image], mode: mode, description: description)
+        startAnalysis(images: [image], mode: mode, description: description, progressiveMeal: false)
     }
 
-    private func startAnalysis(images: [UIImage], mode: CameraMode, description: String? = nil) {
-        retryRequest = .analysis(images: images, mode: mode, description: description)
+    private func startAnalysis(
+        images: [UIImage],
+        mode: CameraMode,
+        description: String? = nil,
+        progressiveMeal: Bool = false
+    ) {
+        retryRequest = .analysis(
+            images: images,
+            mode: mode,
+            description: description,
+            progressiveMeal: progressiveMeal
+        )
         activeSheet = .analyzing
 
         Task {
             do {
                 switch mode {
                 case .snapFood:
-                    let result = try await GeminiService.analyzeFood(images: images)
+                    let result = try await GeminiService.analyzeFood(
+                        images: images,
+                        progressiveMeal: progressiveMeal
+                    )
                     currentFoodResult = result
                     currentFoodSource = .snapFood
                     retryRequest = nil
                     activeSheet = .foodResult
 
                 case .snapFoodWithContext:
-                    let result = try await GeminiService.analyzeFood(images: images, description: description)
+                    let result = try await GeminiService.analyzeFood(
+                        images: images,
+                        description: description,
+                        progressiveMeal: progressiveMeal
+                    )
                     currentFoodResult = result
                     currentFoodSource = .snapFood
                     retryRequest = nil
@@ -1439,8 +1469,13 @@ struct HomeView: View {
     private func retryLastRequest() {
         guard let retryRequest else { return }
         switch retryRequest {
-        case let .analysis(images, mode, description):
-            startAnalysis(images: images, mode: mode, description: description)
+        case let .analysis(images, mode, description, progressiveMeal):
+            startAnalysis(
+                images: images,
+                mode: mode,
+                description: description,
+                progressiveMeal: progressiveMeal
+            )
         case let .text(description):
             startTextAnalysis(description)
         case let .barcode(barcode):
@@ -2119,9 +2154,11 @@ struct MultiPhotoCaptureSheet: View {
     @Binding var description: String
     let onAddPhoto: () -> Void
     let onRemove: (Int) -> Void
-    let onAnalyze: () -> Void
+    let onAnalyze: (Bool) -> Void
     let onCancel: () -> Void
     @State private var showAdditionalPhotoPicker = false
+    @State private var progressiveMeal = false
+    @State private var showProgressiveInfo = false
 
     var body: some View {
         NavigationStack {
@@ -2186,6 +2223,37 @@ struct MultiPhotoCaptureSheet: View {
                         }
                     }
 
+                    HStack(spacing: 12) {
+                        VStack(alignment: .leading, spacing: 5) {
+                            HStack(spacing: 6) {
+                                Text("Progressive Meal")
+                                    .font(.system(.body, design: .rounded, weight: .semibold))
+                                Button {
+                                    showProgressiveInfo = true
+                                } label: {
+                                    Image(systemName: "info.circle.fill")
+                                        .foregroundStyle(AppColors.calorie)
+                                }
+                                .buttonStyle(.plain)
+                                .accessibilityLabel("How Progressive Meal works")
+                            }
+                            Text("Photo 1 → 2 → 3 follows each ingredient added to the same plate. Visible scale differences become ingredient weights.")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                        Spacer(minLength: 8)
+                        Toggle("", isOn: $progressiveMeal)
+                            .labelsHidden()
+                            .tint(AppColors.calorie)
+                            .disabled(images.count < 2)
+                    }
+                    .padding(14)
+                    .background(
+                        Color(.secondarySystemGroupedBackground),
+                        in: RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    )
+
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Add a note (optional)")
                             .font(.system(.subheadline, design: .rounded, weight: .semibold))
@@ -2209,6 +2277,7 @@ struct MultiPhotoCaptureSheet: View {
                 isPresented: $showAdditionalPhotoPicker,
                 selection: $selectedPhotoItems,
                 maxSelectionCount: max(1, 10 - images.count),
+                selectionBehavior: .ordered,
                 matching: .images
             )
             .toolbar {
@@ -2220,9 +2289,17 @@ struct MultiPhotoCaptureSheet: View {
                         title: "Analyze",
                         isEmphasized: true,
                         isDisabled: images.isEmpty,
-                        action: onAnalyze
+                        action: { onAnalyze(progressiveMeal && images.count > 1) }
                     )
                 }
+            }
+            .onChange(of: images.count) { _, count in
+                if count < 2 { progressiveMeal = false }
+            }
+            .alert("How Progressive Meal works", isPresented: $showProgressiveInfo) {
+                Button("Done", role: .cancel) {}
+            } message: {
+                Text("Use this when every photo shows the same plate after another ingredient is added. Keep the photos in order and make the scale display visible. Fud AI uses the difference between consecutive scale totals to estimate each new ingredient. Leave this off when the photos are only different angles of the same meal.")
             }
         }
     }

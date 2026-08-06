@@ -591,11 +591,11 @@ fun HomeScreen(container: AppContainer) {
                 pendingCaptureImageBytes = pendingCaptureImageBytes.filterIndexed { itemIndex, _ -> itemIndex != index }
                 if (pendingCaptureImageBytes.isEmpty()) showMultiPhotoCapture = false
             },
-            onAnalyze = { note ->
+            onAnalyze = { note, progressiveMeal ->
                 val images = pendingCaptureImageBytes
                 pendingCaptureImageBytes = emptyList()
                 showMultiPhotoCapture = false
-                vm.analyzePhotos(images, note)
+                vm.analyzePhotos(images, note, progressiveMeal)
             },
             onDismiss = {
                 showMultiPhotoCapture = false

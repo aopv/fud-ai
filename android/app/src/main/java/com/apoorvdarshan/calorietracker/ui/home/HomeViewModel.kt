@@ -246,9 +246,13 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
         }
     }
 
-    fun analyzePhotos(imageBytesList: List<ByteArray>, note: String? = null) {
+    fun analyzePhotos(
+        imageBytesList: List<ByteArray>,
+        note: String? = null,
+        progressiveMeal: Boolean = false
+    ) {
         val retryImages = imageBytesList.toList()
-        retryAction = { analyzePhotos(retryImages, note) }
+        retryAction = { analyzePhotos(retryImages, note, progressiveMeal) }
         viewModelScope.launch {
             val images = imageBytesList.filter { it.isNotEmpty() }.take(10)
             if (images.isEmpty()) return@launch
@@ -267,8 +271,11 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
             )
             discardPendingDraft(previousDraftImages)
             try {
-                val analysis = container.foodAnalysis.analyzeFood(images, note?.takeIf { it.isNotBlank() })
-                    .copy(customNote = note?.takeIf { it.isNotBlank() })
+                val analysis = container.foodAnalysis.analyzeFood(
+                    images,
+                    note?.takeIf { it.isNotBlank() },
+                    progressiveMeal
+                ).copy(customNote = note?.takeIf { it.isNotBlank() })
                 savePendingDraft(analysis, imageBytesList = images, source = FoodSource.SNAP_FOOD)
             } catch (e: AiError) {
                 _ui.value = _ui.value.copy(analyzing = false, error = e.message)
@@ -380,6 +387,7 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
                 selectedServingUnit = if (analysis.servingUnitOptions.isEmpty()) null else selectedServingUnit,
                 selectedServingQuantity = if (analysis.servingUnitOptions.isEmpty()) null else selectedServingQuantity,
                 customNote = analysis.customNote,
+                progressiveMeal = analysis.progressiveMeal,
                 ingredients = analysis.ingredients.map { it.scaled(scale) }
             )
             container.foodRepository.addEntry(entry)
@@ -605,7 +613,11 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
         // gets the name/note as extra grounding on top of the image.
         val description = reprocessDescription(entry, updatedNote)
         val result = if (imageBytesList.isNotEmpty()) {
-            container.foodAnalysis.analyzeFood(imageBytesList, description.takeIf { it.isNotBlank() })
+            container.foodAnalysis.analyzeFood(
+                imageBytesList,
+                description.takeIf { it.isNotBlank() },
+                entry.progressiveMeal
+            )
         } else {
             container.foodAnalysis.analyzeText(description)
         }
@@ -673,5 +685,6 @@ private fun FoodEntry.toAnalysis(): FoodAnalysis = FoodAnalysis(
     selectedServingUnit = selectedServingUnit,
     selectedServingQuantity = selectedServingQuantity,
     customNote = customNote,
+    progressiveMeal = progressiveMeal,
     ingredients = ingredients
 )

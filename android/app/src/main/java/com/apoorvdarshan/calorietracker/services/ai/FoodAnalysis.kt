@@ -51,6 +51,7 @@ data class FoodAnalysis(
     val selectedServingUnit: String? = null,
     val selectedServingQuantity: Double? = null,
     val customNote: String? = null,
+    val progressiveMeal: Boolean = false,
     val ingredients: List<MealIngredient> = emptyList()
 )
 

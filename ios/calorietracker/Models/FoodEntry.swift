@@ -350,6 +350,7 @@ struct FoodEntry: Identifiable, Codable {
     var selectedServingUnit: String?
     var selectedServingQuantity: Double?
     var customNote: String?
+    var progressiveMeal: Bool
     var ingredients: [MealIngredient]
 
     nonisolated init(
@@ -394,6 +395,7 @@ struct FoodEntry: Identifiable, Codable {
         selectedServingUnit: String? = nil,
         selectedServingQuantity: Double? = nil,
         customNote: String? = nil,
+        progressiveMeal: Bool = false,
         ingredients: [MealIngredient] = []
     ) {
         self.id = id
@@ -437,6 +439,7 @@ struct FoodEntry: Identifiable, Codable {
         self.selectedServingUnit = selectedServingUnit
         self.selectedServingQuantity = selectedServingQuantity
         self.customNote = customNote
+        self.progressiveMeal = progressiveMeal
         self.ingredients = ingredients
     }
 
@@ -452,7 +455,7 @@ struct FoodEntry: Identifiable, Codable {
         case transFat, calcium, iron, magnesium, zinc
         case vitaminA, vitaminC, vitaminD, vitaminB12, vitaminE, vitaminK, folate, omega3
         case servingSizeGrams
-        case servingUnitOptions, selectedServingUnit, selectedServingQuantity, customNote, ingredients
+        case servingUnitOptions, selectedServingUnit, selectedServingQuantity, customNote, progressiveMeal, ingredients
     }
 
     private static func decodeDouble(
@@ -523,6 +526,7 @@ struct FoodEntry: Identifiable, Codable {
         selectedServingUnit = try container.decodeIfPresent(String.self, forKey: .selectedServingUnit)
         selectedServingQuantity = try container.decodeIfPresent(Double.self, forKey: .selectedServingQuantity)
         customNote = try container.decodeIfPresent(String.self, forKey: .customNote)
+        progressiveMeal = try container.decodeIfPresent(Bool.self, forKey: .progressiveMeal) ?? false
         ingredients = try container.decodeIfPresent([MealIngredient].self, forKey: .ingredients) ?? []
     }
 
@@ -573,6 +577,9 @@ struct FoodEntry: Identifiable, Codable {
         try container.encodeIfPresent(selectedServingUnit, forKey: .selectedServingUnit)
         try container.encodeIfPresent(selectedServingQuantity, forKey: .selectedServingQuantity)
         try container.encodeIfPresent(customNote, forKey: .customNote)
+        if progressiveMeal {
+            try container.encode(true, forKey: .progressiveMeal)
+        }
         if !ingredients.isEmpty {
             try container.encode(ingredients, forKey: .ingredients)
         }
@@ -640,6 +647,7 @@ struct FoodEntry: Identifiable, Codable {
             selectedServingUnit: selectedServingUnit,
             selectedServingQuantity: selectedServingQuantity,
             customNote: customNote,
+            progressiveMeal: progressiveMeal,
             ingredients: ingredients
         )
     }
