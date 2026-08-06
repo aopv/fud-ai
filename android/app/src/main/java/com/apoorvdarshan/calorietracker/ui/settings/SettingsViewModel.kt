@@ -235,6 +235,26 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
         }
     }
 
+    /**
+     * Reloads the AI configuration that may be written outside Settings.
+     *
+     * The app-scoped Settings ViewModel is warmed while onboarding is still visible. Onboarding
+     * then persists the selected provider, model, and API key independently, so the one-shot
+     * values loaded in [init] can otherwise remain stale until the process restarts (issue #170).
+     */
+    fun refreshAiConfiguration() {
+        viewModelScope.launch {
+            val provider = container.prefs.selectedAIProvider.first()
+            val model = provider.supportedModelOrDefault(container.prefs.selectedAIModel.first())
+            val maskedKey = maskKey(container.keyStore.apiKey(provider))
+            _ui.value = _ui.value.copy(
+                selectedAI = provider,
+                selectedModel = model,
+                apiKeyMasked = maskedKey
+            )
+        }
+    }
+
     fun selectWorkoutSplit(split: WorkoutSplit) {
         viewModelScope.launch {
             container.workoutRepository.updatePreferences { it.copy(split = split) }
