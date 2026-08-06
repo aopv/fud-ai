@@ -3005,6 +3005,28 @@ struct ProgressTabView: View {
 }
 
 
+private struct AINumericKeyboardDismissalModifier: ViewModifier {
+    let focus: FocusState<Bool>.Binding
+
+    func body(content: Content) -> some View {
+        content
+            .scrollDismissesKeyboard(.interactively)
+            .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    if focus.wrappedValue {
+                        Spacer()
+                        Button("Done") {
+                            focus.wrappedValue = false
+                        }
+                    }
+                }
+            }
+            .onDisappear {
+                focus.wrappedValue = false
+            }
+    }
+}
+
 struct ProfileView: View {
     @Environment(ProfileStore.self) private var profileStore
     @Environment(ChatStore.self) private var chatStore
@@ -3082,6 +3104,7 @@ struct ProfileView: View {
     @State private var customAIInstructions: String = AIProviderSettings.userContext
     @State private var savedAIInstructions: String = AIProviderSettings.userContext
     @FocusState private var customInstructionsFocused: Bool
+    @FocusState private var aiNumericFieldFocused: Bool
     @State private var fallbackEnabled: Bool = AIProviderSettings.fallbackEnabled
     @State private var selectedFallbackProvider: AIProvider = AIProviderSettings.selectedFallbackProvider
     @State private var selectedFallbackModel: String = AIProviderSettings.selectedFallbackModel
@@ -3635,9 +3658,7 @@ struct ProfileView: View {
                                 }
                                 Spacer()
                                 TextField(
-                                    selectedProvider == .openrouter
-                                        ? "e.g. anthropic/claude-sonnet-4"
-                                        : "e.g. gpt-4o-mini",
+                                    primaryModelPlaceholder,
                                     text: $selectedModel
                                 )
                                     .textFieldStyle(.plain)
@@ -3756,18 +3777,7 @@ struct ProfileView: View {
                                         .foregroundStyle(AppColors.calorie)
                                 }
                                 Spacer()
-                                TextField("180", text: $requestTimeoutSecondsText)
-                                    .textFieldStyle(.plain)
-                                    .multilineTextAlignment(.trailing)
-                                    .keyboardType(.numberPad)
-                                    .frame(maxWidth: 70)
-                                    .onChange(of: requestTimeoutSecondsText) { _, newValue in
-                                        let digits = newValue.filter(\.isNumber)
-                                        if digits != newValue { requestTimeoutSecondsText = digits }
-                                        if let seconds = Int(digits), seconds > 0 {
-                                            AIProviderSettings.requestTimeoutSeconds = seconds
-                                        }
-                                    }
+                                requestTimeoutInput
                                 Text("sec")
                                     .foregroundStyle(.secondary)
                             }
@@ -3784,18 +3794,7 @@ struct ProfileView: View {
                                         .foregroundStyle(AppColors.calorie)
                                 }
                                 Spacer()
-                                TextField("1024", text: $maxResponseTokensText)
-                                    .textFieldStyle(.plain)
-                                    .multilineTextAlignment(.trailing)
-                                    .keyboardType(.numberPad)
-                                    .frame(maxWidth: 90)
-                                    .onChange(of: maxResponseTokensText) { _, newValue in
-                                        let digits = newValue.filter(\.isNumber)
-                                        if digits != newValue { maxResponseTokensText = digits }
-                                        if let n = Int(digits), n > 0 {
-                                            AIProviderSettings.maxResponseTokens = n
-                                        }
-                                    }
+                                maxResponseTokensInput
                             }
                         }
                     }
@@ -3872,32 +3871,12 @@ struct ProfileView: View {
                             .pickerStyle(.menu)
                             .tint(.secondary)
                             .onChange(of: selectedFallbackProvider) { _, newProvider in
-                                AIProviderSettings.selectedFallbackProvider = newProvider
-                                if !newProvider.supportsCustomModelName,
-                                   !newProvider.models.contains(selectedFallbackModel) {
-                                    selectedFallbackModel = newProvider.defaultModel
-                                    AIProviderSettings.selectedFallbackModel = selectedFallbackModel
-                                }
-                                // If switching fallback to same provider as primary AND model collides,
-                                // bump to first non-primary model so picker doesn't show identical config.
-                                if newProvider == selectedProvider, selectedFallbackModel == selectedModel,
-                                   let alt = newProvider.models.first(where: { $0 != selectedModel }) {
-                                    selectedFallbackModel = alt
-                                    AIProviderSettings.selectedFallbackModel = alt
-                                }
-                                fallbackApiKeyText = AIProviderSettings.apiKey(for: newProvider) ?? ""
-                                fallbackBaseURL = AIProviderSettings.customBaseURL(for: newProvider) ?? ""
+                                selectFallbackProvider(newProvider)
                             }
 
                             if selectedFallbackProvider.supportsCustomModelName {
                                 // Free-form TextField + preset Menu, mirrors primary AI Provider section.
                                 // When fallback provider == primary, the preset menu hides the primary's model.
-                                let presetOptions: [String] = {
-                                    if selectedFallbackProvider == selectedProvider {
-                                        return selectedFallbackProvider.models.filter { $0 != selectedModel }
-                                    }
-                                    return selectedFallbackProvider.models
-                                }()
                                 HStack {
                                     Label {
                                         Text("Model")
@@ -3907,9 +3886,7 @@ struct ProfileView: View {
                                     }
                                     Spacer()
                                     TextField(
-                                        selectedFallbackProvider == .openrouter
-                                            ? "e.g. anthropic/claude-sonnet-4"
-                                            : "e.g. gpt-4o-mini",
+                                        fallbackModelPlaceholder,
                                         text: $selectedFallbackModel
                                     )
                                     .textFieldStyle(.plain)
@@ -3919,9 +3896,9 @@ struct ProfileView: View {
                                     .onChange(of: selectedFallbackModel) { _, newModel in
                                         AIProviderSettings.selectedFallbackModel = newModel
                                     }
-                                    if !presetOptions.isEmpty {
+                                    if !fallbackModelPresetOptions.isEmpty {
                                         Menu {
-                                            ForEach(presetOptions, id: \.self) { model in
+                                            ForEach(fallbackModelPresetOptions, id: \.self) { model in
                                                 Button(model) {
                                                     selectedFallbackModel = model
                                                     AIProviderSettings.selectedFallbackModel = model
@@ -4038,18 +4015,7 @@ struct ProfileView: View {
                                                 .foregroundStyle(AppColors.calorie)
                                         }
                                         Spacer()
-                                        TextField("180", text: $requestTimeoutSecondsText)
-                                            .textFieldStyle(.plain)
-                                            .multilineTextAlignment(.trailing)
-                                            .keyboardType(.numberPad)
-                                            .frame(maxWidth: 70)
-                                            .onChange(of: requestTimeoutSecondsText) { _, newValue in
-                                                let digits = newValue.filter(\.isNumber)
-                                                if digits != newValue { requestTimeoutSecondsText = digits }
-                                                if let seconds = Int(digits), seconds > 0 {
-                                                    AIProviderSettings.requestTimeoutSeconds = seconds
-                                                }
-                                            }
+                                        requestTimeoutInput
                                         Text("sec")
                                             .foregroundStyle(.secondary)
                                     }
@@ -4223,6 +4189,7 @@ struct ProfileView: View {
                 )
             }
             .scrollContentBackground(.hidden)
+            .modifier(AINumericKeyboardDismissalModifier(focus: $aiNumericFieldFocused))
             .background(AppColors.appBackground)
             .navigationBarHidden(true)
             .sheet(isPresented: $showExportDiary) {
@@ -4471,8 +4438,78 @@ struct ProfileView: View {
         }
     }
 
+    private var requestTimeoutInput: some View {
+        TextField("180", text: $requestTimeoutSecondsText)
+            .textFieldStyle(.plain)
+            .multilineTextAlignment(.trailing)
+            .keyboardType(.numberPad)
+            .focused($aiNumericFieldFocused)
+            .frame(maxWidth: 70)
+            .onChange(of: requestTimeoutSecondsText) { _, newValue in
+                let digits = newValue.filter(\.isNumber)
+                if digits != newValue { requestTimeoutSecondsText = digits }
+                if let seconds = Int(digits), seconds > 0 {
+                    AIProviderSettings.requestTimeoutSeconds = seconds
+                }
+            }
+    }
+
+    private var maxResponseTokensInput: some View {
+        TextField("1024", text: $maxResponseTokensText)
+            .textFieldStyle(.plain)
+            .multilineTextAlignment(.trailing)
+            .keyboardType(.numberPad)
+            .focused($aiNumericFieldFocused)
+            .frame(maxWidth: 90)
+            .onChange(of: maxResponseTokensText) { _, newValue in
+                let digits = newValue.filter(\.isNumber)
+                if digits != newValue { maxResponseTokensText = digits }
+                if let tokens = Int(digits), tokens > 0 {
+                    AIProviderSettings.maxResponseTokens = tokens
+                }
+            }
+    }
+
+    private var fallbackModelPresetOptions: [String] {
+        guard selectedFallbackProvider == selectedProvider else {
+            return selectedFallbackProvider.models
+        }
+        return selectedFallbackProvider.models.filter { $0 != selectedModel }
+    }
+
+    private var primaryModelPlaceholder: String {
+        selectedProvider == .openrouter
+            ? "e.g. anthropic/claude-sonnet-4"
+            : "e.g. gpt-4o-mini"
+    }
+
+    private var fallbackModelPlaceholder: String {
+        selectedFallbackProvider == .openrouter
+            ? "e.g. anthropic/claude-sonnet-4"
+            : "e.g. gpt-4o-mini"
+    }
+
     private func saveProfile() {
         profile.save()
+    }
+
+    private func selectFallbackProvider(_ newProvider: AIProvider) {
+        AIProviderSettings.selectedFallbackProvider = newProvider
+        if !newProvider.supportsCustomModelName,
+           !newProvider.models.contains(selectedFallbackModel) {
+            selectedFallbackModel = newProvider.defaultModel
+            AIProviderSettings.selectedFallbackModel = selectedFallbackModel
+        }
+        // If switching fallback to the primary provider with the same model, select the first
+        // alternate model so the two configurations still provide capacity diversity.
+        if newProvider == selectedProvider,
+           selectedFallbackModel == selectedModel,
+           let alternateModel = newProvider.models.first(where: { $0 != selectedModel }) {
+            selectedFallbackModel = alternateModel
+            AIProviderSettings.selectedFallbackModel = alternateModel
+        }
+        fallbackApiKeyText = AIProviderSettings.apiKey(for: newProvider) ?? ""
+        fallbackBaseURL = AIProviderSettings.customBaseURL(for: newProvider) ?? ""
     }
 
     private static let lastRecalcGoalSignatureKey = "lastRecalcGoalSignature"
