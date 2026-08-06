@@ -90,6 +90,16 @@ fun FudAINavHost(
     val currentVersion = remember(context) { AndroidUpdateChecker.currentVersion(context) }
     var updateAvailable by remember { mutableStateOf(false) }
 
+    // Settings is intentionally warmed before onboarding finishes. Reload the values that
+    // onboarding can change outside Settings so the first visit never shows the pre-onboarding
+    // provider/model/API-key snapshot (issue #170). Re-running this on later visits also keeps
+    // the app-scoped ViewModel honest if another flow updates the stored AI configuration.
+    LaunchedEffect(currentRoute) {
+        if (currentRoute == FudAIRoutes.SETTINGS) {
+            settingsViewModel.refreshAiConfiguration()
+        }
+    }
+
     LaunchedEffect(container.workoutRepository, workoutModeV2Initialized) {
         if (!workoutModeV2Initialized) {
             container.workoutRepository.setMode(WorkoutTabMode.LOG)
@@ -167,6 +177,7 @@ fun FudAINavHost(
             ) {
                 composable(FudAIRoutes.ONBOARDING) {
                     OnboardingScreen(container = container, onComplete = {
+                        settingsViewModel.refreshAiConfiguration()
                         nav.navigate(FudAIRoutes.HOME) {
                             popUpTo(FudAIRoutes.ONBOARDING) { inclusive = true }
                             launchSingleTop = true
