@@ -6,6 +6,7 @@ import android.net.Uri
 import com.apoorvdarshan.calorietracker.models.FoodEntry
 import com.apoorvdarshan.calorietracker.models.FoodSource
 import com.apoorvdarshan.calorietracker.models.MealType
+import com.apoorvdarshan.calorietracker.models.MealIngredient
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.Base64
@@ -86,6 +87,19 @@ object MealShare {
         e.selectedServingUnit?.let { d.put("selectedServingUnit", it) }
         put("selectedServingQuantity", e.selectedServingQuantity)
         e.customNote?.let { d.put("customNote", it) }
+        if (e.ingredients.isNotEmpty()) {
+            d.put("ingredients", JSONArray().apply {
+                e.ingredients.forEach { ingredient ->
+                    put(JSONObject()
+                        .put("name", ingredient.name)
+                        .put("grams", ingredient.grams)
+                        .put("calories", ingredient.calories)
+                        .put("protein", ingredient.protein)
+                        .put("carbs", ingredient.carbs)
+                        .put("fat", ingredient.fat))
+                }
+            })
+        }
         return d
     }
 
@@ -123,6 +137,22 @@ object MealShare {
         fun dbl(k: String): Double? = if (d.has(k) && !d.isNull(k)) d.optDouble(k) else null
         val meal = runCatching { MealType.valueOf(d.optString("mealType").uppercase()) }
             .getOrDefault(MealType.currentMeal)
+        val ingredients = d.optJSONArray("ingredients")?.let { array ->
+            (0 until array.length()).mapNotNull { index ->
+                val item = array.optJSONObject(index) ?: return@mapNotNull null
+                val itemName = item.optString("name").trim()
+                val grams = dblFrom(item, "grams") ?: return@mapNotNull null
+                if (itemName.isEmpty() || grams <= 0) return@mapNotNull null
+                MealIngredient(
+                    name = itemName,
+                    grams = grams,
+                    calories = item.optInt("calories"),
+                    protein = dblFrom(item, "protein") ?: 0.0,
+                    carbs = dblFrom(item, "carbs") ?: 0.0,
+                    fat = dblFrom(item, "fat") ?: 0.0
+                )
+            }
+        }.orEmpty()
         return FoodEntry(
             name = name,
             calories = d.optInt("calories"),
@@ -143,7 +173,11 @@ object MealShare {
             servingSizeGrams = dbl("servingSizeGrams"),
             selectedServingUnit = if (d.has("selectedServingUnit")) d.optString("selectedServingUnit") else null,
             selectedServingQuantity = dbl("selectedServingQuantity"),
-            customNote = if (d.has("customNote")) d.optString("customNote") else null
+            customNote = if (d.has("customNote")) d.optString("customNote") else null,
+            ingredients = ingredients
         )
     }
+
+    private fun dblFrom(json: JSONObject, key: String): Double? =
+        if (json.has(key) && !json.isNull(key)) json.optDouble(key) else null
 }

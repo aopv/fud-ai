@@ -64,7 +64,9 @@ import com.apoorvdarshan.calorietracker.models.FoodEntry
 import com.apoorvdarshan.calorietracker.services.MealShare
 import com.apoorvdarshan.calorietracker.models.MacroValueFormatter
 import com.apoorvdarshan.calorietracker.models.MealType
+import com.apoorvdarshan.calorietracker.models.MealIngredient
 import com.apoorvdarshan.calorietracker.models.ServingUnitOption
+import com.apoorvdarshan.calorietracker.models.totals
 import com.apoorvdarshan.calorietracker.ui.components.DateWheelPicker
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassDialog
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassDialogActions
@@ -104,6 +106,7 @@ fun EditFoodEntrySheet(
     var noteText by remember(entry) { mutableStateOf(entry.customNote ?: "") }
     var isReprocessing by remember { mutableStateOf(false) }
     var errorText by remember { mutableStateOf<String?>(null) }
+    var ingredientEditor by remember { mutableStateOf<IngredientEditorTarget?>(null) }
     val scope = rememberCoroutineScope()
 
     val baseServing = currentBaseEntry.servingSizeGrams ?: 100.0
@@ -159,6 +162,21 @@ fun EditFoodEntrySheet(
     fun scaledInt(v: Int) = (v * scale).roundToInt()
     fun scaledMacro(v: Double) = v * scale
     fun scaledD(v: Double?) = v?.let { ((it * scale) * 10).roundToInt() / 10.0 }
+    fun scaledIngredients() = currentBaseEntry.ingredients.map { it.scaled(scale) }
+    fun applyIngredientChanges(displayedIngredients: List<MealIngredient>) {
+        val totals = displayedIngredients.totals()
+        currentBaseEntry = currentBaseEntry.copy(
+            calories = totals.calories,
+            protein = totals.protein,
+            carbs = totals.carbs,
+            fat = totals.fat,
+            servingSizeGrams = totals.grams.takeIf { it > 0 } ?: currentBaseEntry.servingSizeGrams,
+            servingUnitOptions = emptyList(),
+            selectedServingUnit = null,
+            selectedServingQuantity = null,
+            ingredients = displayedIngredients
+        )
+    }
 
     fun buildUpdated(): FoodEntry = currentBaseEntry.copy(
         name = name.trim().ifEmpty { currentBaseEntry.name },
@@ -194,7 +212,8 @@ fun EditFoodEntrySheet(
         servingSizeGrams = servingGrams,
         servingUnitOptions = servingUnitOptions,
         selectedServingUnit = if (servingUnitOptions.isEmpty()) null else selectedServingOption.unit,
-        selectedServingQuantity = if (servingUnitOptions.isEmpty()) null else selectedServingQuantity
+        selectedServingQuantity = if (servingUnitOptions.isEmpty()) null else selectedServingQuantity,
+        ingredients = scaledIngredients()
     )
 
     // Re-run the AI on this entry with the edited note and overwrite the fields in
@@ -238,7 +257,8 @@ fun EditFoodEntrySheet(
                     selectedServingUnit = newAnalysis.selectedServingUnit,
                     selectedServingQuantity = newAnalysis.selectedServingQuantity,
                     customNote = noteText.trim().takeIf { it.isNotEmpty() },
-                    emoji = newAnalysis.emoji
+                    emoji = newAnalysis.emoji,
+                    ingredients = newAnalysis.ingredients
                 )
             } catch (e: Exception) {
                 errorText = e.localizedMessage ?: reprocessingFailed
@@ -415,6 +435,22 @@ fun EditFoodEntrySheet(
                     SheetHairline()
                     SheetNutritionRow(stringResource(R.string.nutrition_label_fat), MacroValueFormatter.string(scaledMacro(currentBaseEntry.fat)), stringResource(R.string.unit_g))
                 }
+            }
+
+            item { SheetSectionHeader(stringResource(R.string.ingredients_title)) }
+            item {
+                MealIngredientsCard(
+                    ingredients = scaledIngredients(),
+                    onEdit = { index ->
+                        ingredientEditor = IngredientEditorTarget(index, scaledIngredients()[index])
+                    },
+                    onAdd = {
+                        ingredientEditor = IngredientEditorTarget(
+                            null,
+                            MealIngredient("", 100.0, 0, 0.0, 0.0, 0.0)
+                        )
+                    }
+                )
             }
 
             // "More Nutrition" — own pill row with chevron-right that flips to
@@ -629,6 +665,25 @@ fun EditFoodEntrySheet(
                 showTimePicker = false
             },
             onDismiss = { showTimePicker = false }
+        )
+    }
+    ingredientEditor?.let { target ->
+        MealIngredientEditorDialog(
+            target = target,
+            onSave = { ingredient ->
+                val next = scaledIngredients().toMutableList()
+                val index = target.index
+                if (index != null && index in next.indices) next[index] = ingredient else next.add(ingredient)
+                applyIngredientChanges(next)
+            },
+            onDelete = target.index?.let { index ->
+                {
+                    val next = scaledIngredients().toMutableList()
+                    if (index in next.indices) next.removeAt(index)
+                    applyIngredientChanges(next)
+                }
+            },
+            onDismiss = { ingredientEditor = null }
         )
     }
 }

@@ -37,6 +37,7 @@ struct GeminiService {
         var selectedServingUnit: String?
         var selectedServingQuantity: Double?
         var requiresServingUnitFallback = false
+        var ingredients: [MealIngredient] = []
     }
 
     struct NutritionLabelAnalysis {
@@ -161,11 +162,11 @@ struct GeminiService {
     }
 
     private static let foodAnalysisJSONShape = """
-    {"name":"...","calories":0,"protein":0.0,"carbs":0.0,"fat":0.0,"serving_size_grams":0.0,"emoji":"🍽️","sugar":0.0,"added_sugar":0.0,"fiber":0.0,"saturated_fat":0.0,"monounsaturated_fat":0.0,"polyunsaturated_fat":0.0,"trans_fat":0.0,"cholesterol":0.0,"sodium":0.0,"potassium":0.0,"calcium":0.0,"iron":0.0,"magnesium":0.0,"zinc":0.0,"vitamin_a":0.0,"vitamin_c":0.0,"vitamin_d":0.0,"vitamin_b12":0.0,"vitamin_e":0.0,"vitamin_k":0.0,"folate":0.0,"omega_3":0.0,"unit_options":[]}
+    {"name":"...","calories":0,"protein":0.0,"carbs":0.0,"fat":0.0,"serving_size_grams":0.0,"emoji":"🍽️","sugar":0.0,"added_sugar":0.0,"fiber":0.0,"saturated_fat":0.0,"monounsaturated_fat":0.0,"polyunsaturated_fat":0.0,"trans_fat":0.0,"cholesterol":0.0,"sodium":0.0,"potassium":0.0,"calcium":0.0,"iron":0.0,"magnesium":0.0,"zinc":0.0,"vitamin_a":0.0,"vitamin_c":0.0,"vitamin_d":0.0,"vitamin_b12":0.0,"vitamin_e":0.0,"vitamin_k":0.0,"folate":0.0,"omega_3":0.0,"ingredients":[],"unit_options":[]}
     """
 
     private static let foodAnalysisJSONShapeWithoutEmoji = """
-    {"name":"...","calories":0,"protein":0.0,"carbs":0.0,"fat":0.0,"serving_size_grams":0.0,"sugar":0.0,"added_sugar":0.0,"fiber":0.0,"saturated_fat":0.0,"monounsaturated_fat":0.0,"polyunsaturated_fat":0.0,"trans_fat":0.0,"cholesterol":0.0,"sodium":0.0,"potassium":0.0,"calcium":0.0,"iron":0.0,"magnesium":0.0,"zinc":0.0,"vitamin_a":0.0,"vitamin_c":0.0,"vitamin_d":0.0,"vitamin_b12":0.0,"vitamin_e":0.0,"vitamin_k":0.0,"folate":0.0,"omega_3":0.0,"unit_options":[]}
+    {"name":"...","calories":0,"protein":0.0,"carbs":0.0,"fat":0.0,"serving_size_grams":0.0,"sugar":0.0,"added_sugar":0.0,"fiber":0.0,"saturated_fat":0.0,"monounsaturated_fat":0.0,"polyunsaturated_fat":0.0,"trans_fat":0.0,"cholesterol":0.0,"sodium":0.0,"potassium":0.0,"calcium":0.0,"iron":0.0,"magnesium":0.0,"zinc":0.0,"vitamin_a":0.0,"vitamin_c":0.0,"vitamin_d":0.0,"vitamin_b12":0.0,"vitamin_e":0.0,"vitamin_k":0.0,"folate":0.0,"omega_3":0.0,"ingredients":[],"unit_options":[]}
     """
 
     private static let nutritionLabelJSONShape = """
@@ -180,6 +181,10 @@ struct GeminiService {
     quantity is the number of units in the whole analyzed amount, and grams_per_unit is the grams in one unit. For every item, quantity * grams_per_unit must approximately equal serving_size_grams. Do not include g/gram/grams as an option.
     Return [] when there is no reliable non-gram unit. An empty array is a complete, valid answer.
     Never invent a count from the food name or total grams. Only return a countable unit when its quantity is stated in the user's text, visible in the image or label, or strongly implied by the described or visible analyzed portion. Do not assume quantity is 1 merely because the food is commonly sold or served as one piece.
+    """
+
+    private static let ingredientBreakdownInstruction = """
+    ingredients is required. For a meal with multiple meaningful foods, return each food once using this exact object shape: {"name":"...","grams":0.0,"calories":0,"protein":0.0,"carbs":0.0,"fat":0.0}. Ingredient grams and macros must describe the analyzed amount and add up approximately to the meal totals. Return [] for a nutrition label, a single simple food, or when a reliable breakdown is not possible.
     """
 
     // MARK: - Public API (unchanged interface)
@@ -260,6 +265,7 @@ struct GeminiService {
         \(Self.foodAnalysisJSONShape)
         \(Self.nutrientUnitsInstruction)
         \(Self.servingUnitOptionsInstruction)
+        \(Self.ingredientBreakdownInstruction)
         When supported by the text, use slice/piece for discrete foods, ml/cup/fl oz for liquids, tbsp/tsp for spooned foods, and can/packet for packaged foods.
         Include a single food emoji that best represents the food. Use null for any nutrient you cannot estimate.
         """
@@ -285,6 +291,7 @@ struct GeminiService {
         \(Self.foodAnalysisJSONShapeWithoutEmoji)
         \(Self.nutrientUnitsInstruction)
         \(Self.servingUnitOptionsInstruction)
+        \(Self.ingredientBreakdownInstruction)
         When supported by the image or label, use slice/piece for discrete foods, ml/cup/fl oz for liquids, tbsp/tsp for spooned foods, and can/packet for packaged foods. For a whole or mostly-whole divisible food, count only clearly visible pieces or slices and derive grams_per_unit from serving_size_grams / quantity.
         Use null for any nutrient you cannot estimate.
         """
@@ -302,6 +309,7 @@ struct GeminiService {
 
         \(Self.nutrientUnitsInstruction)
         \(Self.servingUnitOptionsInstruction)
+        \(Self.ingredientBreakdownInstruction)
         When supported by the image, use slice/piece for discrete foods, ml/cup/fl oz for liquids, tbsp/tsp for spooned foods, and can/packet for packaged foods. For a whole or mostly-whole divisible food, count only clearly visible pieces or slices and derive grams_per_unit from serving_size_grams / quantity.
         Give your best estimate for the visible food amount shown in the image. For whole/mostly-whole cakes, pizzas, pies, loaves, or similar foods, estimate the total visible item/remaining item weight rather than defaulting to one slice. Use null for any nutrient you cannot estimate.
         """
@@ -328,6 +336,7 @@ struct GeminiService {
 
         \(Self.nutrientUnitsInstruction)
         \(Self.servingUnitOptionsInstruction)
+        \(Self.ingredientBreakdownInstruction)
         When supported by the images or label, use slice/piece for discrete foods, ml/cup/fl oz for liquids, tbsp/tsp for spooned foods, and can/packet/bar for packaged foods.
         Give your best estimate for the actual amount shown or implied across the images. Use null for any nutrient you cannot estimate.
         """
@@ -1145,6 +1154,28 @@ struct GeminiService {
         func double(_ key: String) -> Double? {
             (json[key] as? NSNumber)?.doubleValue
         }
+        let ingredients = (json["ingredients"] as? [[String: Any]] ?? [])
+            .prefix(20)
+            .compactMap { item -> MealIngredient? in
+                guard let name = (item["name"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines),
+                      !name.isEmpty,
+                      let grams = (item["grams"] as? NSNumber)?.doubleValue,
+                      grams > 0,
+                      let calories = (item["calories"] as? NSNumber)?.doubleValue,
+                      let protein = (item["protein"] as? NSNumber)?.doubleValue,
+                      let carbs = (item["carbs"] as? NSNumber)?.doubleValue,
+                      let fat = (item["fat"] as? NSNumber)?.doubleValue,
+                      [calories, protein, carbs, fat].allSatisfy({ $0 >= 0 })
+                else { return nil }
+                return MealIngredient(
+                    name: name,
+                    grams: grams,
+                    calories: Int(round(calories)),
+                    protein: protein,
+                    carbs: carbs,
+                    fat: fat
+                )
+            }
         return FoodAnalysis(
             name: name, calories: calories, protein: protein, carbs: carbs, fat: fat,
             servingSizeGrams: servingSizeGrams,
@@ -1174,7 +1205,8 @@ struct GeminiService {
             servingUnitOptions: parsedUnitOptions.options,
             selectedServingUnit: selectedOption?.unit,
             selectedServingQuantity: selectedOption?.quantity(for: servingSizeGrams),
-            requiresServingUnitFallback: parsedUnitOptions.requiresFallback
+            requiresServingUnitFallback: parsedUnitOptions.requiresFallback,
+            ingredients: ingredients
         )
     }
 

@@ -379,7 +379,8 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
                 servingUnitOptions = analysis.servingUnitOptions,
                 selectedServingUnit = if (analysis.servingUnitOptions.isEmpty()) null else selectedServingUnit,
                 selectedServingQuantity = if (analysis.servingUnitOptions.isEmpty()) null else selectedServingQuantity,
-                customNote = analysis.customNote
+                customNote = analysis.customNote,
+                ingredients = analysis.ingredients.map { it.scaled(scale) }
             )
             container.foodRepository.addEntry(entry)
             container.prefs.setPendingFoodAnalysisDraft(null)
@@ -671,5 +672,6 @@ private fun FoodEntry.toAnalysis(): FoodAnalysis = FoodAnalysis(
     servingUnitOptions = servingUnitOptions,
     selectedServingUnit = selectedServingUnit,
     selectedServingQuantity = selectedServingQuantity,
-    customNote = customNote
+    customNote = customNote,
+    ingredients = ingredients
 )

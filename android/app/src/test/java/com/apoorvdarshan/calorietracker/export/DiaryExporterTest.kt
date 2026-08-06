@@ -3,6 +3,7 @@ package com.apoorvdarshan.calorietracker.export
 import com.apoorvdarshan.calorietracker.models.FoodEntry
 import com.apoorvdarshan.calorietracker.models.FoodSource
 import com.apoorvdarshan.calorietracker.models.MealType
+import com.apoorvdarshan.calorietracker.models.MealIngredient
 import com.apoorvdarshan.calorietracker.models.UserProfile
 import com.google.gson.JsonParser
 import org.junit.Assert.assertEquals
@@ -28,7 +29,7 @@ class DiaryExporterTest {
         val date = entry.timestamp.atZone(ZoneId.systemDefault()).toLocalDate()
         val (_, json) = requireNotNull(build(entry, date, DiaryFormat.JSON))
         val root = JsonParser.parseString(json).asJsonObject
-        assertEquals("1.1", root["export"].asJsonObject["format_version"].asString)
+        assertEquals("1.2", root["export"].asJsonObject["format_version"].asString)
         val item = root["days"].asJsonArray[0].asJsonObject["meals"].asJsonArray[0]
             .asJsonObject["items"].asJsonArray[0].asJsonObject
 
@@ -36,6 +37,7 @@ class DiaryExporterTest {
         assertEquals(3.3, item["fiber_g"].asDouble, 0.0001)
         assertEquals(8.8, item["sodium_mg"].asDouble, 0.0001)
         assertEquals(18.8, item["vitamin_b12_mcg"].asDouble, 0.0001)
+        assertEquals("Rice", item["ingredients"].asJsonArray[0].asJsonObject["name"].asString)
     }
 
     @Test
@@ -49,10 +51,12 @@ class DiaryExporterTest {
         assertEquals(headers.size, values.size)
         nutrientFields.forEach { field -> assertTrue("Missing CSV nutrient column: $field", headers.contains(field)) }
         assertEquals("3.3", values[headers.indexOf("fiber_g")])
+        assertTrue(csv.contains("Rice"))
 
         val (_, markdown) = requireNotNull(build(entry, date, DiaryFormat.MARKDOWN))
         listOf("Fiber (g)", "Sodium (mg)", "Vitamin A (mcg)", "Vitamin B12 (mcg)", "Omega-3 (g)")
             .forEach { heading -> assertTrue("Missing Markdown nutrient heading: $heading", markdown.contains(heading)) }
+        assertTrue(markdown.contains("Rice"))
     }
 
     private fun build(entry: FoodEntry, date: LocalDate, format: DiaryFormat) = DiaryExporter.build(
@@ -96,5 +100,6 @@ class DiaryExporterTest {
         folate = 21.2,
         omega3 = 22.3,
         servingSizeGrams = 100.0,
+        ingredients = listOf(MealIngredient("Rice", 100.0, 120, 4.4, 5.5, 6.6)),
     )
 }

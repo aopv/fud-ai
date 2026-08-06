@@ -1156,6 +1156,7 @@ struct HomeView: View {
                             protein: result.protein,
                             carbs: result.carbs,
                             fat: result.fat,
+                            ingredients: result.ingredients,
                             servingSizeGrams: result.servingSizeGrams,
                             sugar: result.sugar,
                             addedSugar: result.addedSugar,
@@ -1245,7 +1246,8 @@ struct HomeView: View {
                         omega3: entry.omega3,
                         servingUnitOptions: entry.servingUnitOptions,
                         selectedServingUnit: entry.selectedServingUnit,
-                        selectedServingQuantity: entry.selectedServingQuantity
+                        selectedServingQuantity: entry.selectedServingQuantity,
+                        ingredients: entry.ingredients
                     )
                     activeSheet = .foodResult
                 })

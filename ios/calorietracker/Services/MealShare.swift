@@ -70,6 +70,18 @@ enum MealShare {
         if let unit = e.selectedServingUnit { d["selectedServingUnit"] = unit }
         put("selectedServingQuantity", e.selectedServingQuantity)
         if let note = e.customNote { d["customNote"] = note }
+        if !e.ingredients.isEmpty {
+            d["ingredients"] = e.ingredients.map { ingredient in
+                [
+                    "name": ingredient.name,
+                    "grams": ingredient.grams,
+                    "calories": ingredient.calories,
+                    "protein": ingredient.protein,
+                    "carbs": ingredient.carbs,
+                    "fat": ingredient.fat,
+                ] as [String: Any]
+            }
+        }
         return d
     }
 
@@ -103,6 +115,21 @@ enum MealShare {
               let calories = (d["calories"] as? NSNumber)?.intValue else { return nil }
         func dbl(_ k: String) -> Double? { (d[k] as? NSNumber)?.doubleValue }
         let meal = MealType(rawValue: (d["mealType"] as? String) ?? "") ?? .currentMeal
+        let ingredients = (d["ingredients"] as? [[String: Any]] ?? []).compactMap { item -> MealIngredient? in
+            guard let itemName = (item["name"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines),
+                  !itemName.isEmpty,
+                  let grams = (item["grams"] as? NSNumber)?.doubleValue,
+                  grams > 0
+            else { return nil }
+            return MealIngredient(
+                name: itemName,
+                grams: grams,
+                calories: (item["calories"] as? NSNumber)?.intValue ?? 0,
+                protein: (item["protein"] as? NSNumber)?.doubleValue ?? 0,
+                carbs: (item["carbs"] as? NSNumber)?.doubleValue ?? 0,
+                fat: (item["fat"] as? NSNumber)?.doubleValue ?? 0
+            )
+        }
         return FoodEntry(
             name: name,
             calories: calories,
@@ -124,7 +151,8 @@ enum MealShare {
             servingUnitOptions: [],
             selectedServingUnit: d["selectedServingUnit"] as? String,
             selectedServingQuantity: dbl("selectedServingQuantity"),
-            customNote: d["customNote"] as? String
+            customNote: d["customNote"] as? String,
+            ingredients: ingredients
         )
     }
 

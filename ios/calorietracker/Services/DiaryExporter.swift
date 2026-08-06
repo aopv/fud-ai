@@ -163,6 +163,10 @@ enum DiaryExporter {
 
     private static func json(_ days: [DayBundle], start: Date, end: Date, targets: Targets) -> String {
         struct Macro: Encodable { let calories: Int; let protein_g: Double; let carbs_g: Double; let fat_g: Double }
+        struct Ingredient: Encodable {
+            let name: String; let quantity_g: Double; let calories: Int
+            let protein_g: Double; let carbs_g: Double; let fat_g: Double
+        }
         struct Item: Encodable {
             let name: String; let quantity_g: Double?; let calories: Int
             let protein_g: Double; let carbs_g: Double; let fat_g: Double
@@ -174,7 +178,7 @@ enum DiaryExporter {
             let vitamin_a_mcg: Double?; let vitamin_c_mg: Double?; let vitamin_d_mcg: Double?
             let vitamin_b12_mcg: Double?; let vitamin_e_mg: Double?; let vitamin_k_mcg: Double?
             let folate_mcg: Double?; let omega3_g: Double?
-            let time: String; let source: String; let note: String?
+            let time: String; let source: String; let note: String?; let ingredients: [Ingredient]
         }
         struct Meal: Encodable { let type: String; let items: [Item] }
         struct Day: Encodable { let date: String; let totals: Macro; let targets: Macro; let remaining: Macro; let meals: [Meal] }
@@ -201,7 +205,13 @@ enum DiaryExporter {
                          vitamin_e_mg: e.vitaminE.map(r1), vitamin_k_mcg: e.vitaminK.map(r1),
                          folate_mcg: e.folate.map(r1), omega3_g: e.omega3.map(r1),
                          time: timeFmt.string(from: e.timestamp), source: sourceLabel(e.source),
-                         note: (e.customNote?.isEmpty == false) ? e.customNote : nil)
+                         note: (e.customNote?.isEmpty == false) ? e.customNote : nil,
+                         ingredients: e.ingredients.map { ingredient in
+                             Ingredient(
+                                name: ingredient.name, quantity_g: r1(ingredient.grams), calories: ingredient.calories,
+                                protein_g: r1(ingredient.protein), carbs_g: r1(ingredient.carbs), fat_g: r1(ingredient.fat)
+                             )
+                         })
                 })
             }
             return Day(
@@ -215,7 +225,7 @@ enum DiaryExporter {
                 meals: meals
             )
         }
-        let doc = Doc(export: Meta(app: "Fud AI", format_version: "1.1",
+        let doc = Doc(export: Meta(app: "Fud AI", format_version: "1.2",
                                    date_range: Meta.Range(start: dayFmt.string(from: start), end: dayFmt.string(from: end))),
                       days: dayDocs)
         let enc = JSONEncoder()
@@ -239,8 +249,8 @@ enum DiaryExporter {
             s += "- Fat: \(r1(t.f)) / \(Int(targets.fat)) g\n"
             for g in bundle.groups {
                 s += "### \(g.meal.displayName)\n"
-                s += "| Time | Food | Weight | Calories | Protein (g) | Carbs (g) | Fat (g) | Sugar (g) | Added sugar (g) | Fiber (g) | Saturated fat (g) | Monounsaturated fat (g) | Polyunsaturated fat (g) | Cholesterol (mg) | Sodium (mg) | Potassium (mg) | Trans fat (g) | Calcium (mg) | Iron (mg) | Magnesium (mg) | Zinc (mg) | Vitamin A (mcg) | Vitamin C (mg) | Vitamin D (mcg) | Vitamin B12 (mcg) | Vitamin E (mg) | Vitamin K (mcg) | Folate (mcg) | Omega-3 (g) | Source |\n"
-                s += "|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|\n"
+                s += "| Time | Food | Weight | Calories | Protein (g) | Carbs (g) | Fat (g) | Sugar (g) | Added sugar (g) | Fiber (g) | Saturated fat (g) | Monounsaturated fat (g) | Polyunsaturated fat (g) | Cholesterol (mg) | Sodium (mg) | Potassium (mg) | Trans fat (g) | Calcium (mg) | Iron (mg) | Magnesium (mg) | Zinc (mg) | Vitamin A (mcg) | Vitamin C (mg) | Vitamin D (mcg) | Vitamin B12 (mcg) | Vitamin E (mg) | Vitamin K (mcg) | Folate (mcg) | Omega-3 (g) | Source | Ingredients |\n"
+                s += "|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|---|\n"
                 for e in g.entries {
                     let weight = e.servingSizeGrams.map { "\(Int($0)) g" } ?? "-"
                     let food = e.name.replacingOccurrences(of: "|", with: "/")
@@ -258,7 +268,7 @@ enum DiaryExporter {
                         optionalNumber(e.vitaminD, missing: "-"), optionalNumber(e.vitaminB12, missing: "-"),
                         optionalNumber(e.vitaminE, missing: "-"), optionalNumber(e.vitaminK, missing: "-"),
                         optionalNumber(e.folate, missing: "-"), optionalNumber(e.omega3, missing: "-"),
-                        sourceLabel(e.source)
+                        sourceLabel(e.source), ingredientsText(e)
                     ]
                     s += "| " + cells.joined(separator: " | ") + " |\n"
                 }
@@ -270,7 +280,7 @@ enum DiaryExporter {
     // MARK: - CSV
 
     private static func csv(_ days: [DayBundle]) -> String {
-        var s = "date,meal,time,food,weight_g,calories,protein_g,carbs_g,fat_g,sugar_g,added_sugar_g,fiber_g,saturated_fat_g,monounsaturated_fat_g,polyunsaturated_fat_g,cholesterol_mg,sodium_mg,potassium_mg,trans_fat_g,calcium_mg,iron_mg,magnesium_mg,zinc_mg,vitamin_a_mcg,vitamin_c_mg,vitamin_d_mcg,vitamin_b12_mcg,vitamin_e_mg,vitamin_k_mcg,folate_mcg,omega3_g,source,note\n"
+        var s = "date,meal,time,food,weight_g,calories,protein_g,carbs_g,fat_g,sugar_g,added_sugar_g,fiber_g,saturated_fat_g,monounsaturated_fat_g,polyunsaturated_fat_g,cholesterol_mg,sodium_mg,potassium_mg,trans_fat_g,calcium_mg,iron_mg,magnesium_mg,zinc_mg,vitamin_a_mcg,vitamin_c_mg,vitamin_d_mcg,vitamin_b12_mcg,vitamin_e_mg,vitamin_k_mcg,folate_mcg,omega3_g,source,note,ingredients\n"
         for bundle in days {
             let date = dayFmt.string(from: bundle.date)
             for g in bundle.groups {
@@ -287,7 +297,7 @@ enum DiaryExporter {
                         optionalNumber(e.zinc), optionalNumber(e.vitaminA), optionalNumber(e.vitaminC),
                         optionalNumber(e.vitaminD), optionalNumber(e.vitaminB12), optionalNumber(e.vitaminE),
                         optionalNumber(e.vitaminK), optionalNumber(e.folate), optionalNumber(e.omega3),
-                        sourceLabel(e.source), e.customNote ?? ""
+                        sourceLabel(e.source), e.customNote ?? "", ingredientsText(e)
                     ]
                     s += cols.map(csvEscape).joined(separator: ",") + "\n"
                 }
@@ -301,5 +311,11 @@ enum DiaryExporter {
             return "\"" + field.replacingOccurrences(of: "\"", with: "\"\"") + "\""
         }
         return field
+    }
+
+    private nonisolated static func ingredientsText(_ entry: FoodEntry) -> String {
+        entry.ingredients.map { ingredient in
+            "\(ingredient.name) (\(r1(ingredient.grams))g · \(ingredient.calories) kcal · P \(r1(ingredient.protein))g · C \(r1(ingredient.carbs))g · F \(r1(ingredient.fat))g)"
+        }.joined(separator: "; ").replacingOccurrences(of: "|", with: "/")
     }
 }

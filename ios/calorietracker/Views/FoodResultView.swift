@@ -9,7 +9,7 @@ struct FoodResultView: View {
     let emoji: String?
     let source: FoodSource
 
-    let baseServingSizeGrams: Double
+    @State private var baseServingSizeGrams: Double
     let servingUnitOptions: [ServingUnitOption]
 
     @State var name: String
@@ -45,6 +45,8 @@ struct FoodResultView: View {
     @State private var editableVitaminK: Double?
     @State private var editableFolate: Double?
     @State private var editableOmega3: Double?
+    @State private var editableIngredients: [MealIngredient]
+    @State private var ingredientEditor: IngredientEditorTarget?
     @State private var showWhatIfSheet = false
     @State var mealType: MealType = .currentMeal
 
@@ -104,6 +106,7 @@ struct FoodResultView: View {
         protein: Double,
         carbs: Double,
         fat: Double,
+        ingredients: [MealIngredient] = [],
         servingSizeGrams: Double = 100,
         sugar: Double? = nil,
         addedSugar: Double? = nil,
@@ -146,7 +149,7 @@ struct FoodResultView: View {
         self.images = images
         self.emoji = emoji
         self.source = source
-        self.baseServingSizeGrams = servingSizeGrams
+        self._baseServingSizeGrams = State(initialValue: servingSizeGrams)
         self.servingUnitOptions = normalizedServingUnitOptions
         self._name = State(initialValue: name)
         self._servingSizeGrams = State(initialValue: servingSizeGrams)
@@ -183,6 +186,7 @@ struct FoodResultView: View {
         self._editableVitaminK = State(initialValue: vitaminK)
         self._editableFolate = State(initialValue: folate)
         self._editableOmega3 = State(initialValue: omega3)
+        self._editableIngredients = State(initialValue: ingredients)
         self.logDate = logDate
         self.profile = profile
         self.dayEntries = dayEntries
@@ -236,6 +240,24 @@ struct FoodResultView: View {
         if !nutritionUnlocked {
             UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
         }
+    }
+
+    private var scaledIngredients: [MealIngredient] {
+        editableIngredients.map { $0.scaled(by: scale) }
+    }
+
+    private func applyIngredientChanges(_ displayedIngredients: [MealIngredient]) {
+        editableIngredients = displayedIngredients
+        let totals = displayedIngredients.ingredientTotals
+        editableCalories = totals.calories
+        editableProtein = totals.protein
+        editableCarbs = totals.carbs
+        editableFat = totals.fat
+        guard totals.grams > 0 else { return }
+        baseServingSizeGrams = totals.grams
+        servingSizeGrams = totals.grams
+        servingSizeText = Self.formatGrams(totals.grams)
+        selectedServingUnitID = ServingUnitOption.grams.unit
     }
 
     var body: some View {
@@ -367,6 +389,19 @@ struct FoodResultView: View {
                         }
                     }
 
+                    MealIngredientsSection(
+                        ingredients: scaledIngredients,
+                        onEdit: { index in
+                            ingredientEditor = IngredientEditorTarget(index: index, ingredient: scaledIngredients[index])
+                        },
+                        onAdd: {
+                            ingredientEditor = IngredientEditorTarget(
+                                index: nil,
+                                ingredient: MealIngredient(name: "", grams: 100, calories: 0, protein: 0, carbs: 0, fat: 0)
+                            )
+                        }
+                    )
+
                     Section {
                         DisclosureGroup("More Nutrition") {
                             ReviewNutritionValueRow(label: "Sugar", displayValue: displayText(scaledSugar), editValue: editText(scaledSugar), unit: "g", isUnlocked: nutritionUnlocked, dim: true, onEdit: { updateOptionalBaseDouble(from: $0) { editableSugar = $0 } })
@@ -443,6 +478,28 @@ struct FoodResultView: View {
                         weightMetric: weightMetric
                     )
                 }
+                .sheet(item: $ingredientEditor) { target in
+                    IngredientEditorSheet(
+                        target: target,
+                        onSave: { ingredient in
+                            var next = scaledIngredients
+                            if let index = target.index, next.indices.contains(index) {
+                                next[index] = ingredient
+                            } else {
+                                next.append(ingredient)
+                            }
+                            applyIngredientChanges(next)
+                        },
+                        onDelete: target.index.map { index in
+                            {
+                                var next = scaledIngredients
+                                guard next.indices.contains(index) else { return }
+                                next.remove(at: index)
+                                applyIngredientChanges(next)
+                            }
+                        }
+                    )
+                }
             }
         }
     }
@@ -499,10 +556,186 @@ struct FoodResultView: View {
             servingSizeGrams: servingSizeGrams,
             servingUnitOptions: servingUnitOptions,
             selectedServingUnit: servingUnitOptions.isEmpty ? nil : selectedServingOption.unit,
-            selectedServingQuantity: servingUnitOptions.isEmpty ? nil : selectedServingQuantity
+            selectedServingQuantity: servingUnitOptions.isEmpty ? nil : selectedServingQuantity,
+            ingredients: scaledIngredients
         )
     }
 
+}
+
+struct IngredientEditorTarget: Identifiable {
+    let id = UUID()
+    let index: Int?
+    let ingredient: MealIngredient
+}
+
+struct MealIngredientsSection: View {
+    let ingredients: [MealIngredient]
+    let onEdit: (Int) -> Void
+    let onAdd: () -> Void
+
+    var body: some View {
+        Section {
+            if ingredients.isEmpty {
+                Text("No ingredient breakdown yet")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            } else {
+                ForEach(Array(ingredients.enumerated()), id: \.element.id) { index, ingredient in
+                    Button {
+                        onEdit(index)
+                    } label: {
+                        VStack(alignment: .leading, spacing: 6) {
+                            HStack {
+                                Text(ingredient.name)
+                                    .font(.system(.body, design: .rounded, weight: .semibold))
+                                    .foregroundStyle(.primary)
+                                Spacer()
+                                Text("\(MacroValueFormatter.string(ingredient.grams))g · \(ingredient.calories) kcal")
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
+                                Image(systemName: "chevron.right")
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(.tertiary)
+                            }
+                            HStack(spacing: 14) {
+                                macro("P", ingredient.protein, AppColors.protein)
+                                macro("C", ingredient.carbs, AppColors.carbs)
+                                macro("F", ingredient.fat, AppColors.fat)
+                            }
+                        }
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+
+            Button(action: onAdd) {
+                Label("Add Ingredient", systemImage: "plus.circle.fill")
+                    .font(.system(.body, design: .rounded, weight: .semibold))
+            }
+            .tint(AppColors.calorie)
+        } header: {
+            Text("Ingredients")
+        } footer: {
+            Text("Ingredient changes update the meal's calorie and macro totals automatically.")
+        }
+    }
+
+    private func macro(_ label: String, _ value: Double, _ color: Color) -> some View {
+        Text("\(label) \(MacroValueFormatter.string(value))g")
+            .font(.caption.weight(.semibold))
+            .foregroundStyle(color)
+    }
+}
+
+struct IngredientEditorSheet: View {
+    let target: IngredientEditorTarget
+    let onSave: (MealIngredient) -> Void
+    let onDelete: (() -> Void)?
+
+    @Environment(\.dismiss) private var dismiss
+    @State private var name: String
+    @State private var grams: String
+    @State private var calories: String
+    @State private var protein: String
+    @State private var carbs: String
+    @State private var fat: String
+
+    init(target: IngredientEditorTarget, onSave: @escaping (MealIngredient) -> Void, onDelete: (() -> Void)?) {
+        self.target = target
+        self.onSave = onSave
+        self.onDelete = onDelete
+        _name = State(initialValue: target.ingredient.name)
+        _grams = State(initialValue: MacroValueFormatter.string(target.ingredient.grams))
+        _calories = State(initialValue: String(target.ingredient.calories))
+        _protein = State(initialValue: MacroValueFormatter.string(target.ingredient.protein))
+        _carbs = State(initialValue: MacroValueFormatter.string(target.ingredient.carbs))
+        _fat = State(initialValue: MacroValueFormatter.string(target.ingredient.fat))
+    }
+
+    private var parsedIngredient: MealIngredient? {
+        let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedName.isEmpty,
+              let grams = decimal(grams), grams > 0,
+              let calories = decimal(calories),
+              let protein = decimal(protein),
+              let carbs = decimal(carbs),
+              let fat = decimal(fat)
+        else { return nil }
+        return MealIngredient(
+            id: target.ingredient.id,
+            name: trimmedName,
+            grams: grams,
+            calories: Int(round(calories)),
+            protein: protein,
+            carbs: carbs,
+            fat: fat
+        )
+    }
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section("Ingredient") {
+                    TextField("Name", text: $name)
+                    valueRow("Weight", text: $grams, unit: "g")
+                    valueRow("Calories", text: $calories, unit: "kcal")
+                }
+                Section("Macros") {
+                    valueRow("Protein", text: $protein, unit: "g")
+                    valueRow("Carbs", text: $carbs, unit: "g")
+                    valueRow("Fat", text: $fat, unit: "g")
+                }
+                if let onDelete {
+                    Section {
+                        Button("Remove Ingredient", role: .destructive) {
+                            onDelete()
+                            dismiss()
+                        }
+                    }
+                }
+            }
+            .scrollContentBackground(.hidden)
+            .background(AppColors.appBackground)
+            .navigationTitle(target.index == nil ? "Add Ingredient" : "Edit Ingredient")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save") {
+                        guard let ingredient = parsedIngredient else { return }
+                        onSave(ingredient)
+                        dismiss()
+                    }
+                    .disabled(parsedIngredient == nil)
+                    .font(.system(.body, design: .rounded, weight: .semibold))
+                    .tint(AppColors.calorie)
+                }
+            }
+        }
+    }
+
+    private func valueRow(_ label: String, text: Binding<String>, unit: String) -> some View {
+        HStack {
+            Text(label)
+            Spacer()
+            TextField("0", text: text)
+                .keyboardType(.decimalPad)
+                .multilineTextAlignment(.trailing)
+                .frame(maxWidth: 110)
+            Text(unit)
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    private func decimal(_ value: String) -> Double? {
+        let normalized = value.trimmingCharacters(in: .whitespacesAndNewlines).replacingOccurrences(of: ",", with: ".")
+        guard let number = Double(normalized), number >= 0 else { return nil }
+        return number
+    }
 }
 
 private struct WhatIfMealImpactSheet: View {

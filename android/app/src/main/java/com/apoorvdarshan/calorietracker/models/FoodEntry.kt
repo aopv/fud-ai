@@ -49,7 +49,8 @@ data class FoodEntry(
     val servingUnitOptions: List<ServingUnitOption> = emptyList(),
     val selectedServingUnit: String? = null,
     val selectedServingQuantity: Double? = null,
-    val customNote: String? = null
+    val customNote: String? = null,
+    val ingredients: List<MealIngredient> = emptyList()
 ) {
     /** Unique key for favorite deduplication (name + calorie combo). */
     val favoriteKey: String get() = "${name.lowercase()}|$calories"
@@ -97,7 +98,8 @@ data class FoodEntry(
         servingUnitOptions = servingUnitOptions,
         selectedServingUnit = selectedServingUnit,
         selectedServingQuantity = selectedServingQuantity,
-        customNote = customNote
+        customNote = customNote,
+        ingredients = ingredients
     )
 
     val allImageFilenames: List<String>

@@ -37,7 +37,9 @@ struct EditFoodEntryView: View {
     @State private var baseVitaminK: Double?
     @State private var baseFolate: Double?
     @State private var baseOmega3: Double?
+    @State private var baseIngredients: [MealIngredient]
     @State private var servingUnitOptions: [ServingUnitOption]
+    @State private var ingredientEditor: IngredientEditorTarget?
 
     @State private var emoji: String?
     @State private var customNote: String
@@ -85,6 +87,7 @@ struct EditFoodEntryView: View {
     private var scaledVitaminK: Double? { baseVitaminK.map { round($0 * scale * 10) / 10 } }
     private var scaledFolate: Double? { baseFolate.map { round($0 * scale * 10) / 10 } }
     private var scaledOmega3: Double? { baseOmega3.map { round($0 * scale * 10) / 10 } }
+    private var scaledIngredients: [MealIngredient] { baseIngredients.map { $0.scaled(by: scale) } }
     private var selectedServingOption: ServingUnitOption {
         ServingUnitOption.option(matching: selectedServingUnitID, in: servingUnitOptions)
     }
@@ -128,6 +131,7 @@ struct EditFoodEntryView: View {
         self._baseVitaminK = State(initialValue: entry.vitaminK)
         self._baseFolate = State(initialValue: entry.folate)
         self._baseOmega3 = State(initialValue: entry.omega3)
+        self._baseIngredients = State(initialValue: entry.ingredients)
         self._servingUnitOptions = State(initialValue: normalizedServingUnitOptions)
         self._emoji = State(initialValue: entry.emoji)
         self._customNote = State(initialValue: entry.customNote ?? "")
@@ -150,6 +154,20 @@ struct EditFoodEntryView: View {
             return String(Int(value))
         }
         return String(format: "%.1f", value)
+    }
+
+    private func applyIngredientChanges(_ displayedIngredients: [MealIngredient]) {
+        baseIngredients = displayedIngredients
+        let totals = displayedIngredients.ingredientTotals
+        baseCalories = totals.calories
+        baseProtein = totals.protein
+        baseCarbs = totals.carbs
+        baseFat = totals.fat
+        guard totals.grams > 0 else { return }
+        baseServingSizeGrams = totals.grams
+        servingSizeGrams = totals.grams
+        servingSizeText = Self.formatGrams(totals.grams)
+        selectedServingUnitID = ServingUnitOption.grams.unit
     }
 
     var body: some View {
@@ -241,6 +259,19 @@ struct EditFoodEntryView: View {
                         NutritionDisplayRow(label: "Carbs", value: MacroValueFormatter.string(scaledCarbs), unit: "g")
                         NutritionDisplayRow(label: "Fat", value: MacroValueFormatter.string(scaledFat), unit: "g")
                     }
+
+                    MealIngredientsSection(
+                        ingredients: scaledIngredients,
+                        onEdit: { index in
+                            ingredientEditor = IngredientEditorTarget(index: index, ingredient: scaledIngredients[index])
+                        },
+                        onAdd: {
+                            ingredientEditor = IngredientEditorTarget(
+                                index: nil,
+                                ingredient: MealIngredient(name: "", grams: 100, calories: 0, protein: 0, carbs: 0, fat: 0)
+                            )
+                        }
+                    )
 
                     Section {
                         DisclosureGroup("More Nutrition") {
@@ -355,6 +386,28 @@ struct EditFoodEntryView: View {
                         }
                     }
                 }
+                .sheet(item: $ingredientEditor) { target in
+                    IngredientEditorSheet(
+                        target: target,
+                        onSave: { ingredient in
+                            var next = scaledIngredients
+                            if let index = target.index, next.indices.contains(index) {
+                                next[index] = ingredient
+                            } else {
+                                next.append(ingredient)
+                            }
+                            applyIngredientChanges(next)
+                        },
+                        onDelete: target.index.map { index in
+                            {
+                                var next = scaledIngredients
+                                guard next.indices.contains(index) else { return }
+                                next.remove(at: index)
+                                applyIngredientChanges(next)
+                            }
+                        }
+                    )
+                }
             }
         }
     }
@@ -408,6 +461,7 @@ struct EditFoodEntryView: View {
                 baseVitaminK = newAnalysis.vitaminK
                 baseFolate = newAnalysis.folate
                 baseOmega3 = newAnalysis.omega3
+                baseIngredients = newAnalysis.ingredients
                 emoji = newAnalysis.emoji
 
                 servingUnitOptions = ServingUnitOption.normalizedOptions(newAnalysis.servingUnitOptions, totalGrams: newAnalysis.servingSizeGrams)
@@ -475,7 +529,8 @@ struct EditFoodEntryView: View {
             servingUnitOptions: servingUnitOptions,
             selectedServingUnit: servingUnitOptions.isEmpty ? nil : selectedServingOption.unit,
             selectedServingQuantity: servingUnitOptions.isEmpty ? nil : selectedServingQuantity,
-            customNote: customNote.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? nil : customNote
+            customNote: customNote.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? nil : customNote,
+            ingredients: scaledIngredients
         )
         foodStore.updateEntry(updated)
         dismiss()

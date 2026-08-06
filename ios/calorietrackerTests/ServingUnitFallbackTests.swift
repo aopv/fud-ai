@@ -1,4 +1,5 @@
 import Testing
+import Foundation
 @testable import calorietracker
 
 struct ServingUnitFallbackTests {
@@ -128,6 +129,42 @@ struct ServingUnitFallbackTests {
 
         #expect(analysis.requiresServingUnitFallback)
         #expect(analysis.servingUnitOptions.isEmpty)
+    }
+
+    @Test func parsesValidIngredientsAndSkipsMalformedItems() throws {
+        let analysis = try GeminiService.parseFoodAnalysis(from: """
+        {"name":"Yogurt Bowl","calories":300,"protein":25,"carbs":35,"fat":7,"serving_size_grams":350,"unit_options":[],
+         "ingredients":[
+           {"name":"Greek yogurt","grams":200,"calories":150,"protein":20,"carbs":8,"fat":2},
+           {"name":"Berries","grams":100,"calories":50,"protein":1,"carbs":12,"fat":0},
+           {"name":"Broken","grams":0,"calories":10,"protein":0,"carbs":0,"fat":0}
+         ]}
+        """)
+
+        #expect(analysis.ingredients.count == 2)
+        #expect(analysis.ingredients.first?.name == "Greek yogurt")
+        #expect(analysis.ingredients.first?.grams == 200)
+    }
+
+    @Test func ingredientScalingAndTotalsRecalculateMacros() {
+        let ingredients = [
+            MealIngredient(name: "Rice", grams: 150, calories: 195, protein: 4, carbs: 42, fat: 0.5),
+            MealIngredient(name: "Chicken", grams: 100, calories: 165, protein: 31, carbs: 0, fat: 3.6),
+        ].map { $0.scaled(by: 0.5) }
+        let totals = ingredients.ingredientTotals
+
+        #expect(totals.grams == 125)
+        #expect(totals.calories == 181)
+        #expect(totals.protein == 17.5)
+    }
+
+    @Test func oldFoodEntryWithoutIngredientsStillDecodes() throws {
+        let entry = FoodEntry(name: "Apple", calories: 95, protein: 0.5, carbs: 25, fat: 0.3, source: .manual)
+        let data = try JSONEncoder().encode(entry)
+        let decoded = try JSONDecoder().decode(FoodEntry.self, from: data)
+
+        #expect(decoded.ingredients.isEmpty)
+        #expect(decoded.name == "Apple")
     }
 
     private func foodJSON(unitOptions: String?, fieldName: String = "unit_options") -> String {

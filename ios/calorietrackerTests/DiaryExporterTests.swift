@@ -24,7 +24,7 @@ struct DiaryExporterTests {
 
         let root = try #require(JSONSerialization.jsonObject(with: export.data) as? [String: Any])
         let metadata = try #require(root["export"] as? [String: Any])
-        #expect(metadata["format_version"] as? String == "1.1")
+        #expect(metadata["format_version"] as? String == "1.2")
         let days = try #require(root["days"] as? [[String: Any]])
         let meals = try #require(days.first?["meals"] as? [[String: Any]])
         let items = try #require(meals.first?["items"] as? [[String: Any]])
@@ -36,6 +36,8 @@ struct DiaryExporterTests {
         #expect(item["fiber_g"] as? Double == 3.3)
         #expect(item["sodium_mg"] as? Double == 8.8)
         #expect(item["vitamin_b12_mcg"] as? Double == 18.8)
+        let ingredients = try #require(item["ingredients"] as? [[String: Any]])
+        #expect(ingredients.first?["name"] as? String == "Rice")
     }
 
     @Test func csvAndMarkdownIncludeEveryStoredNutrient() throws {
@@ -57,6 +59,7 @@ struct DiaryExporterTests {
         }
         let fiberIndex = try #require(headers.firstIndex(of: "fiber_g"))
         #expect(values[fiberIndex] == "3.3")
+        #expect(csv.contains("Rice"))
 
         let markdownExport = try #require(DiaryExporter.build(
             from: fixture.date,
@@ -69,6 +72,7 @@ struct DiaryExporterTests {
         for heading in ["Fiber (g)", "Sodium (mg)", "Vitamin A (mcg)", "Vitamin B12 (mcg)", "Omega-3 (g)"] {
             #expect(markdown.contains(heading), "Missing Markdown nutrient heading: \(heading)")
         }
+        #expect(markdown.contains("Rice"))
     }
 
     private func makeFixture() -> (date: Date, entry: FoodEntry) {
@@ -104,7 +108,8 @@ struct DiaryExporterTests {
             vitaminK: 20.1,
             folate: 21.2,
             omega3: 22.3,
-            servingSizeGrams: 100
+            servingSizeGrams: 100,
+            ingredients: [MealIngredient(name: "Rice", grams: 100, calories: 120, protein: 4.4, carbs: 5.5, fat: 6.6)]
         )
         return (date, entry)
     }

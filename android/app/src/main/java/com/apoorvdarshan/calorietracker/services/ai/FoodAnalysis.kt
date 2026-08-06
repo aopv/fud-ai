@@ -2,6 +2,7 @@ package com.apoorvdarshan.calorietracker.services.ai
 
 import com.apoorvdarshan.calorietracker.models.ServingUnitOption
 import com.apoorvdarshan.calorietracker.models.OptionalNutrientGoals
+import com.apoorvdarshan.calorietracker.models.MealIngredient
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
@@ -49,7 +50,8 @@ data class FoodAnalysis(
     val servingUnitOptions: List<ServingUnitOption> = emptyList(),
     val selectedServingUnit: String? = null,
     val selectedServingQuantity: Double? = null,
-    val customNote: String? = null
+    val customNote: String? = null,
+    val ingredients: List<MealIngredient> = emptyList()
 )
 
 /** Per-100g nutrition-label reading. Scaled to a real serving via [scaled]. */
@@ -234,6 +236,7 @@ internal object FoodJsonParser {
             vitaminK = optDouble("vitamin_k"),
             folate = optDouble("folate"),
             omega3 = optDouble("omega_3"),
+            ingredients = parseIngredients(json),
             servingUnitOptions = unitOptions,
             selectedServingUnit = selectedOption?.unit,
             selectedServingQuantity = selectedOption?.quantityFor(servingSizeGrams)
@@ -242,6 +245,32 @@ internal object FoodJsonParser {
             analysis = analysis,
             shouldRequestServingUnitFallback = unitOptionsResult.shouldRequestFallback
         )
+    }
+
+    private fun parseIngredients(json: JSONObject): List<MealIngredient> {
+        val array = json.optJSONArray("ingredients") ?: return emptyList()
+        return buildList {
+            for (index in 0 until minOf(array.length(), 20)) {
+                val item = array.optJSONObject(index) ?: continue
+                val name = item.optString("name").trim()
+                val grams = optDouble(item, "grams") ?: continue
+                val calories = optDouble(item, "calories") ?: continue
+                val protein = optDouble(item, "protein") ?: continue
+                val carbs = optDouble(item, "carbs") ?: continue
+                val fat = optDouble(item, "fat") ?: continue
+                if (name.isEmpty() || grams <= 0 || listOf(calories, protein, carbs, fat).any { it < 0 }) continue
+                add(
+                    MealIngredient(
+                        name = name,
+                        grams = grams,
+                        calories = calories.roundToInt(),
+                        protein = protein,
+                        carbs = carbs,
+                        fat = fat
+                    )
+                )
+            }
+        }
     }
 
     fun parseLabel(text: String): NutritionLabelAnalysis = parseLabelResponse(text).analysis

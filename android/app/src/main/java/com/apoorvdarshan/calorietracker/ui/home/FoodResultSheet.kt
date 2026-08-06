@@ -61,7 +61,9 @@ import com.apoorvdarshan.calorietracker.models.FoodEntry
 import com.apoorvdarshan.calorietracker.models.FoodSource
 import com.apoorvdarshan.calorietracker.models.MacroValueFormatter
 import com.apoorvdarshan.calorietracker.models.MealType
+import com.apoorvdarshan.calorietracker.models.MealIngredient
 import com.apoorvdarshan.calorietracker.models.ServingUnitOption
+import com.apoorvdarshan.calorietracker.models.totals
 import com.apoorvdarshan.calorietracker.models.UserProfile
 import com.apoorvdarshan.calorietracker.services.ai.FoodAnalysis
 import com.apoorvdarshan.calorietracker.ui.theme.AppColors
@@ -114,6 +116,7 @@ fun FoodResultSheet(
     var selectedServingUnitId by remember(analysis, servingUnitOptions, preferGramsByDefault) {
         mutableStateOf(ServingUnitOption.initialUnitId(initialServingUnit, servingUnitOptions))
     }
+    var baseServingGrams by remember(analysis) { mutableStateOf(analysis.servingSizeGrams) }
     var servingGrams by remember(analysis) { mutableStateOf(analysis.servingSizeGrams) }
     var servingQuantityText by remember(analysis, servingUnitOptions, preferGramsByDefault) {
         mutableStateOf(
@@ -127,7 +130,7 @@ fun FoodResultSheet(
     }
     val selectedServingOption = ServingUnitOption.optionMatching(selectedServingUnitId, servingUnitOptions)
     val selectedServingQuantity = ServingUnitOption.parseQuantity(servingQuantityText)?.takeIf { it > 0 }
-    val scale = if (analysis.servingSizeGrams > 0) servingGrams / analysis.servingSizeGrams else 1.0
+    val scale = if (baseServingGrams > 0) servingGrams / baseServingGrams else 1.0
     var mealType by remember { mutableStateOf(MealType.currentMeal) }
     var moreNutritionExpanded by remember { mutableStateOf(false) }
     var nutritionUnlocked by remember { mutableStateOf(false) }
@@ -157,6 +160,8 @@ fun FoodResultSheet(
     var editableVitaminK by remember(analysis) { mutableStateOf(analysis.vitaminK) }
     var editableFolate by remember(analysis) { mutableStateOf(analysis.folate) }
     var editableOmega3 by remember(analysis) { mutableStateOf(analysis.omega3) }
+    var editableIngredients by remember(analysis) { mutableStateOf(analysis.ingredients) }
+    var ingredientEditor by remember { mutableStateOf<IngredientEditorTarget?>(null) }
     var mealMenuExpanded by remember { mutableStateOf(false) }
     var servingMenuExpanded by remember { mutableStateOf(false) }
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
@@ -178,6 +183,21 @@ fun FoodResultSheet(
         text.trim().replace(',', '.').toDoubleOrNull()?.takeIf { it >= 0.0 }
     fun baseDoubleFromText(text: String): Double = (decimalValue(text) ?: 0.0) / scale.coerceAtLeast(0.0001)
     fun baseOptionalFromText(text: String): Double? = decimalValue(text)?.let { it / scale.coerceAtLeast(0.0001) }
+    fun scaledIngredients() = editableIngredients.map { it.scaled(scale) }
+    fun applyIngredientChanges(displayedIngredients: List<MealIngredient>) {
+        editableIngredients = displayedIngredients
+        val totals = displayedIngredients.totals()
+        editableCalories = totals.calories
+        editableProtein = totals.protein
+        editableCarbs = totals.carbs
+        editableFat = totals.fat
+        if (totals.grams > 0) {
+            baseServingGrams = totals.grams
+            servingGrams = totals.grams
+            servingQuantityText = ServingUnitOption.formatQuantity(totals.grams)
+            selectedServingUnitId = ServingUnitOption.grams.unit
+        }
+    }
     fun editedAnalysis() = analysis.copy(
         name = name.trim().ifEmpty { analysis.name },
         calories = editableCalories,
@@ -205,7 +225,9 @@ fun FoodResultSheet(
         vitaminE = editableVitaminE,
         vitaminK = editableVitaminK,
         folate = editableFolate,
-        omega3 = editableOmega3
+        omega3 = editableOmega3,
+        servingSizeGrams = baseServingGrams,
+        ingredients = editableIngredients
     )
     fun previewEntry() = FoodEntry(
         name = name.trim().ifEmpty { analysis.name },
@@ -243,7 +265,8 @@ fun FoodResultSheet(
         servingSizeGrams = servingGrams,
         servingUnitOptions = analysis.servingUnitOptions,
         selectedServingUnit = if (servingUnitOptions.isEmpty()) null else selectedServingOption.unit,
-        selectedServingQuantity = if (servingUnitOptions.isEmpty()) null else selectedServingQuantity
+        selectedServingQuantity = if (servingUnitOptions.isEmpty()) null else selectedServingQuantity,
+        ingredients = scaledIngredients()
     )
     var whatIfEntry by remember { mutableStateOf<FoodEntry?>(null) }
 
@@ -420,6 +443,22 @@ fun FoodResultSheet(
                 }
             }
 
+            item { SheetSectionHeader(stringResource(R.string.ingredients_title)) }
+            item {
+                MealIngredientsCard(
+                    ingredients = scaledIngredients(),
+                    onEdit = { index ->
+                        ingredientEditor = IngredientEditorTarget(index, scaledIngredients()[index])
+                    },
+                    onAdd = {
+                        ingredientEditor = IngredientEditorTarget(
+                            null,
+                            MealIngredient("", 100.0, 0, 0.0, 0.0, 0.0)
+                        )
+                    }
+                )
+            }
+
             // "More Nutrition" — own pill row with chevron-right that flips to
             // chevron-down when expanded; matches iOS DisclosureGroup.
             item {
@@ -539,6 +578,25 @@ fun FoodResultSheet(
             profile = profile,
             onDismiss = { whatIfEntry = null },
             onSuggest = onWhatIfSuggestion
+        )
+    }
+    ingredientEditor?.let { target ->
+        MealIngredientEditorDialog(
+            target = target,
+            onSave = { ingredient ->
+                val next = scaledIngredients().toMutableList()
+                val index = target.index
+                if (index != null && index in next.indices) next[index] = ingredient else next.add(ingredient)
+                applyIngredientChanges(next)
+            },
+            onDelete = target.index?.let { index ->
+                {
+                    val next = scaledIngredients().toMutableList()
+                    if (index in next.indices) next.removeAt(index)
+                    applyIngredientChanges(next)
+                }
+            },
+            onDismiss = { ingredientEditor = null }
         )
     }
 }

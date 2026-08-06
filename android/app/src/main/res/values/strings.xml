@@ -1015,4 +1015,11 @@
     <string name="sort_standard">Breakfast → Lunch → Dinner</string>
     <string name="sort_latest_first">Latest Meals First</string>
     <string name="copy_meal_format">Copy %1$s</string>
+    <string name="ingredients_title">Ingredients</string>
+    <string name="ingredients_empty">No ingredient breakdown yet</string>
+    <string name="ingredients_add">Add Ingredient</string>
+    <string name="ingredients_edit">Edit Ingredient</string>
+    <string name="ingredients_remove">Remove</string>
+    <string name="ingredients_weight">Weight</string>
+    <string name="ingredients_footer">Ingredient changes update the meal’s calorie and macro totals automatically.</string>
 </resources>

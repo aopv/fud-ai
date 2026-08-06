@@ -238,6 +238,66 @@ enum MacroValueFormatter {
     }
 }
 
+struct MealIngredient: Identifiable, Codable, Equatable, Sendable {
+    var id: UUID
+    var name: String
+    var grams: Double
+    var calories: Int
+    var protein: Double
+    var carbs: Double
+    var fat: Double
+
+    nonisolated init(
+        id: UUID = UUID(),
+        name: String,
+        grams: Double,
+        calories: Int,
+        protein: Double,
+        carbs: Double,
+        fat: Double
+    ) {
+        self.id = id
+        self.name = name
+        self.grams = grams
+        self.calories = calories
+        self.protein = protein
+        self.carbs = carbs
+        self.fat = fat
+    }
+
+    nonisolated func scaled(by factor: Double) -> MealIngredient {
+        var result = self
+        result.grams *= factor
+        result.calories = Int(round(Double(calories) * factor))
+        result.protein *= factor
+        result.carbs *= factor
+        result.fat *= factor
+        return result
+    }
+}
+
+struct MealIngredientTotals: Equatable, Sendable {
+    var grams: Double
+    var calories: Int
+    var protein: Double
+    var carbs: Double
+    var fat: Double
+}
+
+extension Collection where Element == MealIngredient {
+    nonisolated var ingredientTotals: MealIngredientTotals {
+        reduce(MealIngredientTotals(grams: 0, calories: 0, protein: 0, carbs: 0, fat: 0)) { total, item in
+            MealIngredientTotals(
+                grams: total.grams + item.grams,
+                calories: total.calories + item.calories,
+                protein: total.protein + item.protein,
+                carbs: total.carbs + item.carbs,
+                fat: total.fat + item.fat
+            )
+        }
+    }
+}
+
 struct FoodEntry: Identifiable, Codable {
     let id: UUID
     var name: String
@@ -290,6 +350,7 @@ struct FoodEntry: Identifiable, Codable {
     var selectedServingUnit: String?
     var selectedServingQuantity: Double?
     var customNote: String?
+    var ingredients: [MealIngredient]
 
     nonisolated init(
         id: UUID = UUID(),
@@ -332,7 +393,8 @@ struct FoodEntry: Identifiable, Codable {
         servingUnitOptions: [ServingUnitOption] = [],
         selectedServingUnit: String? = nil,
         selectedServingQuantity: Double? = nil,
-        customNote: String? = nil
+        customNote: String? = nil,
+        ingredients: [MealIngredient] = []
     ) {
         self.id = id
         self.name = name
@@ -375,6 +437,7 @@ struct FoodEntry: Identifiable, Codable {
         self.selectedServingUnit = selectedServingUnit
         self.selectedServingQuantity = selectedServingQuantity
         self.customNote = customNote
+        self.ingredients = ingredients
     }
 
     private enum CodingKeys: String, CodingKey {
@@ -389,7 +452,7 @@ struct FoodEntry: Identifiable, Codable {
         case transFat, calcium, iron, magnesium, zinc
         case vitaminA, vitaminC, vitaminD, vitaminB12, vitaminE, vitaminK, folate, omega3
         case servingSizeGrams
-        case servingUnitOptions, selectedServingUnit, selectedServingQuantity, customNote
+        case servingUnitOptions, selectedServingUnit, selectedServingQuantity, customNote, ingredients
     }
 
     private static func decodeDouble(
@@ -460,6 +523,7 @@ struct FoodEntry: Identifiable, Codable {
         selectedServingUnit = try container.decodeIfPresent(String.self, forKey: .selectedServingUnit)
         selectedServingQuantity = try container.decodeIfPresent(Double.self, forKey: .selectedServingQuantity)
         customNote = try container.decodeIfPresent(String.self, forKey: .customNote)
+        ingredients = try container.decodeIfPresent([MealIngredient].self, forKey: .ingredients) ?? []
     }
 
     func encode(to encoder: Encoder) throws {
@@ -509,6 +573,9 @@ struct FoodEntry: Identifiable, Codable {
         try container.encodeIfPresent(selectedServingUnit, forKey: .selectedServingUnit)
         try container.encodeIfPresent(selectedServingQuantity, forKey: .selectedServingQuantity)
         try container.encodeIfPresent(customNote, forKey: .customNote)
+        if !ingredients.isEmpty {
+            try container.encode(ingredients, forKey: .ingredients)
+        }
     }
 
     var timeString: String {
@@ -572,7 +639,8 @@ struct FoodEntry: Identifiable, Codable {
             servingUnitOptions: servingUnitOptions,
             selectedServingUnit: selectedServingUnit,
             selectedServingQuantity: selectedServingQuantity,
-            customNote: customNote
+            customNote: customNote,
+            ingredients: ingredients
         )
     }
 }
