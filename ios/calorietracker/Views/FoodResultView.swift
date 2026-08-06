@@ -813,13 +813,17 @@ struct EndEditingDecimalTextField: UIViewRepresentable {
     @Binding var text: String
     let focusRequest: Int
     var onEditingChanged: (Bool) -> Void
+    var keyboardType: UIKeyboardType = .decimalPad
+    var placeholder: String = "0"
+    var accessibilityLabel: String? = nil
 
     func makeUIView(context: Context) -> UITextField {
         let textField = UITextField()
         textField.delegate = context.coordinator
-        textField.keyboardType = .decimalPad
+        textField.keyboardType = keyboardType
         textField.textAlignment = .right
-        textField.placeholder = "0"
+        textField.placeholder = placeholder
+        textField.accessibilityLabel = accessibilityLabel
         textField.font = .preferredFont(forTextStyle: .body)
         textField.adjustsFontForContentSizeCategory = true
         textField.inputAccessoryView = context.coordinator.makeToolbar()
@@ -831,6 +835,9 @@ struct EndEditingDecimalTextField: UIViewRepresentable {
         if textField.text != text {
             textField.text = text
         }
+        textField.keyboardType = keyboardType
+        textField.placeholder = placeholder
+        textField.accessibilityLabel = accessibilityLabel
         if context.coordinator.lastFocusRequest != focusRequest {
             context.coordinator.lastFocusRequest = focusRequest
             DispatchQueue.main.async {

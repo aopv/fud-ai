@@ -3005,27 +3005,16 @@ struct ProgressTabView: View {
 }
 
 
-private struct AINumericKeyboardDismissalModifier: ViewModifier {
-    let focus: FocusState<Bool>.Binding
-
+private struct SettingsKeyboardDismissalModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .scrollDismissesKeyboard(.interactively)
-            .toolbar {
-                ToolbarItemGroup(placement: .keyboard) {
-                    Spacer()
-                    Button("Done") {
-                        dismissKeyboard()
-                    }
-                }
-            }
             .onDisappear {
                 dismissKeyboard()
             }
     }
 
     private func dismissKeyboard() {
-        focus.wrappedValue = false
         UIApplication.shared.sendAction(
             #selector(UIResponder.resignFirstResponder),
             to: nil,
@@ -3112,7 +3101,6 @@ struct ProfileView: View {
     @State private var customAIInstructions: String = AIProviderSettings.userContext
     @State private var savedAIInstructions: String = AIProviderSettings.userContext
     @FocusState private var customInstructionsFocused: Bool
-    @FocusState private var aiNumericFieldFocused: Bool
     @State private var fallbackEnabled: Bool = AIProviderSettings.fallbackEnabled
     @State private var selectedFallbackProvider: AIProvider = AIProviderSettings.selectedFallbackProvider
     @State private var selectedFallbackModel: String = AIProviderSettings.selectedFallbackModel
@@ -4197,7 +4185,7 @@ struct ProfileView: View {
                 )
             }
             .scrollContentBackground(.hidden)
-            .modifier(AINumericKeyboardDismissalModifier(focus: $aiNumericFieldFocused))
+            .modifier(SettingsKeyboardDismissalModifier())
             .background(AppColors.appBackground)
             .navigationBarHidden(true)
             .sheet(isPresented: $showExportDiary) {
@@ -4447,12 +4435,15 @@ struct ProfileView: View {
     }
 
     private var requestTimeoutInput: some View {
-        TextField("180", text: $requestTimeoutSecondsText)
-            .textFieldStyle(.plain)
-            .multilineTextAlignment(.trailing)
-            .keyboardType(.numberPad)
-            .focused($aiNumericFieldFocused)
-            .frame(maxWidth: 70)
+        EndEditingDecimalTextField(
+            text: $requestTimeoutSecondsText,
+            focusRequest: 0,
+            onEditingChanged: { _ in },
+            keyboardType: .numberPad,
+            placeholder: "180",
+            accessibilityLabel: "Request Timeout"
+        )
+            .frame(width: 70)
             .onChange(of: requestTimeoutSecondsText) { _, newValue in
                 let digits = newValue.filter(\.isNumber)
                 if digits != newValue { requestTimeoutSecondsText = digits }
@@ -4463,12 +4454,15 @@ struct ProfileView: View {
     }
 
     private var maxResponseTokensInput: some View {
-        TextField("1024", text: $maxResponseTokensText)
-            .textFieldStyle(.plain)
-            .multilineTextAlignment(.trailing)
-            .keyboardType(.numberPad)
-            .focused($aiNumericFieldFocused)
-            .frame(maxWidth: 90)
+        EndEditingDecimalTextField(
+            text: $maxResponseTokensText,
+            focusRequest: 0,
+            onEditingChanged: { _ in },
+            keyboardType: .numberPad,
+            placeholder: "1024",
+            accessibilityLabel: "Max Response Tokens"
+        )
+            .frame(width: 90)
             .onChange(of: maxResponseTokensText) { _, newValue in
                 let digits = newValue.filter(\.isNumber)
                 if digits != newValue { maxResponseTokensText = digits }
