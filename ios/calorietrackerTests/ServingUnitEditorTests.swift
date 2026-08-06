@@ -81,4 +81,20 @@ struct ServingUnitEditorTests {
         #expect(ServingUnitEditor.parseDecimal("1,2,3", locale: Locale(identifier: "de_DE")) == nil)
     }
 
+    // MARK: - Optional manual nutrition
+
+    @Test func manualNutrition_blankRemainsUnknown() {
+        #expect(ManualEntryInput.optionalNutritionValue("", locale: Locale(identifier: "en_US")) == nil)
+    }
+
+    @Test func manualNutrition_acceptsLocalizedDecimal() {
+        #expect(ManualEntryInput.optionalNutritionValue("7.5", locale: Locale(identifier: "en_US")) == 7.5)
+        #expect(ManualEntryInput.optionalNutritionValue("7,5", locale: Locale(identifier: "de_DE")) == 7.5)
+    }
+
+    @Test func manualNutrition_rejectsNegativeAndInvalidValues() {
+        #expect(ManualEntryInput.optionalNutritionValue("-1", locale: Locale(identifier: "en_US")) == nil)
+        #expect(ManualEntryInput.optionalNutritionValue("fiber", locale: Locale(identifier: "en_US")) == nil)
+    }
+
 }

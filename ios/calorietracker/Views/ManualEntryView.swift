@@ -1,11 +1,21 @@
 import SwiftUI
 
+enum ManualEntryInput {
+    static func optionalNutritionValue(_ text: String, locale: Locale = .current) -> Double? {
+        guard let value = ServingUnitEditor.parseDecimal(text, locale: locale), value >= 0 else {
+            return nil
+        }
+        return value
+    }
+}
+
 struct ManualEntryView: View {
     @State private var name = ""
     @State private var calories = ""
     @State private var protein = ""
     @State private var carbs = ""
     @State private var fat = ""
+    @State private var fiber = ""
     @State private var mealType: MealType = .currentMeal
     @FocusState private var focused: Field?
 
@@ -13,7 +23,7 @@ struct ManualEntryView: View {
     var onCancel: () -> Void
     var onSave: (FoodEntry) -> Void
 
-    private enum Field { case name, calories, protein, carbs, fat }
+    private enum Field { case name, calories, protein, carbs, fat, fiber }
 
     private var canSave: Bool {
         !name.trimmingCharacters(in: .whitespaces).isEmpty &&
@@ -37,6 +47,12 @@ struct ManualEntryView: View {
                 numberField(label: "Carbs (g)", text: $carbs, focus: .carbs)
                 numberField(label: "Fat (g)", text: $fat, focus: .fat)
             }
+
+            numberField(
+                label: "\(LocalizedDisplayText.text("Fiber", polish: "Błonnik")) (g)",
+                text: $fiber,
+                focus: .fiber
+            )
 
             // Meal Type — same .menu picker style used by FoodResultView /
             // EditFoodEntryView so manual logging assigns to a specific meal
@@ -70,7 +86,8 @@ struct ManualEntryView: View {
                     fat: ServingUnitEditor.parseDecimal(fat) ?? 0,
                     timestamp: logDate,
                     source: .manual,
-                    mealType: mealType
+                    mealType: mealType,
+                    fiber: ManualEntryInput.optionalNutritionValue(fiber)
                 )
                 onSave(entry)
             } label: {

@@ -517,9 +517,9 @@ fun HomeScreen(container: AppContainer) {
     if (showManual) {
         ManualEntryDialog(
             onDismiss = { showManual = false },
-            onSave = { name, kcal, p, c, f, meal ->
+            onSave = { name, kcal, p, c, f, fiber, meal ->
                 showManual = false
-                vm.saveManualEntry(name, kcal, p, c, f, meal)
+                vm.saveManualEntry(name, kcal, p, c, f, fiber, meal)
             }
         )
     }
@@ -1786,13 +1786,14 @@ private fun TextInputDialog(onDismiss: () -> Unit, onSubmit: (String) -> Unit) {
 @Composable
 private fun ManualEntryDialog(
     onDismiss: () -> Unit,
-    onSave: (name: String, calories: Int, protein: Double, carbs: Double, fat: Double, mealType: MealType) -> Unit
+    onSave: (name: String, calories: Int, protein: Double, carbs: Double, fat: Double, fiber: Double?, mealType: MealType) -> Unit
 ) {
     var name by remember { mutableStateOf("") }
     var calories by remember { mutableStateOf("") }
     var protein by remember { mutableStateOf("") }
     var carbs by remember { mutableStateOf("") }
     var fat by remember { mutableStateOf("") }
+    var fiber by remember { mutableStateOf("") }
     var mealType by remember { mutableStateOf(MealType.currentMeal) }
     var mealMenuExpanded by remember { mutableStateOf(false) }
 
@@ -1817,6 +1818,13 @@ private fun ManualEntryDialog(
                     NumberField(stringResource(R.string.manual_carbs), carbs, { carbs = filterDecimalInput(it) }, Modifier.weight(1f), decimal = true)
                     NumberField(stringResource(R.string.manual_fat), fat, { fat = filterDecimalInput(it) }, Modifier.weight(1f), decimal = true)
                 }
+                NumberField(
+                    "${stringResource(R.string.sheet_micro_fiber)} (${stringResource(R.string.unit_g)})",
+                    fiber,
+                    { fiber = filterDecimalInput(it) },
+                    Modifier.fillMaxWidth(),
+                    decimal = true
+                )
 
                 // Meal Type — DropdownMenu styled to match the FoodResultSheet /
                 // EditFoodEntrySheet meal pickers (icon + label, pink, anchored
@@ -1876,6 +1884,7 @@ private fun ManualEntryDialog(
                             ServingUnitOption.parseQuantity(protein) ?: 0.0,
                             ServingUnitOption.parseQuantity(carbs) ?: 0.0,
                             ServingUnitOption.parseQuantity(fat) ?: 0.0,
+                            parseOptionalManualNutritionValue(fiber),
                             mealType
                         )
                     },
@@ -1904,3 +1913,6 @@ private fun NumberField(label: String, value: String, onValueChange: (String) ->
 
 private fun filterDecimalInput(value: String): String =
     value.filter { it.isDigit() || it == '.' || it == ',' }
+
+internal fun parseOptionalManualNutritionValue(value: String): Double? =
+    ServingUnitOption.parseQuantity(value)?.takeIf { it >= 0 }
