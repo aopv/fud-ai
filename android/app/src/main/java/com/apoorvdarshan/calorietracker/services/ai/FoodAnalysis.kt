@@ -3,8 +3,14 @@ package com.apoorvdarshan.calorietracker.services.ai
 import com.apoorvdarshan.calorietracker.models.ServingUnitOption
 import com.apoorvdarshan.calorietracker.models.OptionalNutrientGoals
 import kotlinx.serialization.Serializable
-import org.json.JSONArray
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 import org.json.JSONObject
+import kotlin.math.abs
+import kotlin.math.max
 import kotlin.math.round
 import kotlin.math.roundToInt
 
@@ -132,6 +138,21 @@ data class GoalCalculation(
     val reason: String? = null
 )
 
+internal data class ParsedFoodResponse(
+    val analysis: FoodAnalysis,
+    val shouldRequestServingUnitFallback: Boolean
+)
+
+internal data class ParsedNutritionLabelResponse(
+    val analysis: NutritionLabelAnalysis,
+    val shouldRequestServingUnitFallback: Boolean
+)
+
+internal data class ServingUnitOptionsParseResult(
+    val options: List<ServingUnitOption>,
+    val shouldRequestFallback: Boolean
+)
+
 internal object FoodJsonParser {
 
     fun extractJson(text: String): String {
@@ -169,16 +190,21 @@ internal object FoodJsonParser {
         return if (endIndex > firstBrace) cleaned.substring(firstBrace, endIndex) else cleaned
     }
 
-    fun parseFood(text: String): FoodAnalysis {
-        val json = runCatching { JSONObject(extractJson(text)) }.getOrNull()
+    fun parseFood(text: String): FoodAnalysis = parseFoodResponse(text).analysis
+
+    fun parseFoodResponse(text: String): ParsedFoodResponse {
+        val extractedJson = extractJson(text)
+        val json = runCatching { JSONObject(extractedJson) }.getOrNull()
             ?: throw AiError.InvalidResponse
         val name = json.optString("name").takeIf { it.isNotEmpty() } ?: throw AiError.InvalidResponse
-        val servingSizeGrams = optDouble(json, "serving_size_grams") ?: 100.0
-        val unitOptions = parseServingUnitOptions(json, servingSizeGrams)
+        val responseServingSizeGrams = optDouble(json, "serving_size_grams")
+        val servingSizeGrams = responseServingSizeGrams ?: 100.0
+        val unitOptionsResult = parseServingUnitOptionsResult(extractedJson, responseServingSizeGrams)
+        val unitOptions = unitOptionsResult.options
         val selectedOption = unitOptions.firstOrNull()
         fun optDouble(key: String): Double? =
             optDouble(json, key)
-        return FoodAnalysis(
+        val analysis = FoodAnalysis(
             name = name,
             calories = json.optInt("calories"),
             protein = optDouble("protein") ?: 0.0,
@@ -212,16 +238,24 @@ internal object FoodJsonParser {
             selectedServingUnit = selectedOption?.unit,
             selectedServingQuantity = selectedOption?.quantityFor(servingSizeGrams)
         )
+        return ParsedFoodResponse(
+            analysis = analysis,
+            shouldRequestServingUnitFallback = unitOptionsResult.shouldRequestFallback
+        )
     }
 
-    fun parseLabel(text: String): NutritionLabelAnalysis {
-        val json = runCatching { JSONObject(extractJson(text)) }.getOrNull()
+    fun parseLabel(text: String): NutritionLabelAnalysis = parseLabelResponse(text).analysis
+
+    fun parseLabelResponse(text: String): ParsedNutritionLabelResponse {
+        val extractedJson = extractJson(text)
+        val json = runCatching { JSONObject(extractedJson) }.getOrNull()
             ?: throw AiError.InvalidResponse
         val name = json.optString("name").takeIf { it.isNotEmpty() } ?: throw AiError.InvalidResponse
         fun optDouble(key: String): Double? =
             optDouble(json, key)
         val servingSizeGrams = optDouble("serving_size_grams")
-        return NutritionLabelAnalysis(
+        val unitOptionsResult = parseServingUnitOptionsResult(extractedJson, servingSizeGrams)
+        val analysis = NutritionLabelAnalysis(
             name = name,
             caloriesPer100g = optDouble("calories_per_100g") ?: throw AiError.InvalidResponse,
             proteinPer100g = optDouble("protein_per_100g") ?: throw AiError.InvalidResponse,
@@ -250,14 +284,55 @@ internal object FoodJsonParser {
             vitaminKPer100g = optDouble("vitamin_k_per_100g"),
             folatePer100g = optDouble("folate_per_100g"),
             omega3Per100g = optDouble("omega_3_per_100g"),
-            servingUnitOptions = parseServingUnitOptions(json, servingSizeGrams)
+            servingUnitOptions = unitOptionsResult.options
+        )
+        return ParsedNutritionLabelResponse(
+            analysis = analysis,
+            shouldRequestServingUnitFallback = unitOptionsResult.shouldRequestFallback
         )
     }
 
     fun parseServingUnitOptions(text: String, servingSizeGrams: Double?): List<ServingUnitOption> {
-        val json = runCatching { JSONObject(extractJson(text)) }.getOrNull()
+        return parseServingUnitOptionsResult(text, servingSizeGrams).options
+    }
+
+    fun parseServingUnitOptionsResult(
+        text: String,
+        servingSizeGrams: Double?
+    ): ServingUnitOptionsParseResult {
+        val json = runCatching {
+            Json.parseToJsonElement(extractJson(text)) as? JsonObject
+        }.getOrNull()
             ?: throw AiError.InvalidResponse
-        return parseServingUnitOptions(json, servingSizeGrams)
+
+        val rawOptions = when {
+            "unit_options" in json -> json["unit_options"]
+            "serving_unit_options" in json -> json["serving_unit_options"]
+            else -> null
+        } ?: return ServingUnitOptionsParseResult(
+            options = emptyList(),
+            shouldRequestFallback = true
+        )
+        val optionsArray = rawOptions as? JsonArray
+            ?: return ServingUnitOptionsParseResult(
+                options = emptyList(),
+                shouldRequestFallback = true
+            )
+
+        val seen = mutableSetOf<String>()
+        val options = mutableListOf<ServingUnitOption>()
+        for (element in optionsArray) {
+            val option = parseServingUnitOption(element, servingSizeGrams)
+                ?: return ServingUnitOptionsParseResult(
+                    options = emptyList(),
+                    shouldRequestFallback = true
+                )
+            if (seen.add(option.id)) options.add(option)
+        }
+        return ServingUnitOptionsParseResult(
+            options = options.take(4),
+            shouldRequestFallback = false
+        )
     }
 
     fun parseOptionalNutrientGoals(text: String): OptionalNutrientGoals {
@@ -329,34 +404,47 @@ internal object FoodJsonParser {
         )
     }
 
-    private fun parseServingUnitOptions(
-        json: JSONObject,
+    private fun parseServingUnitOption(
+        element: JsonElement,
         servingSizeGrams: Double?
-    ): List<ServingUnitOption> {
-        val rawOptions = json.optJSONArray("unit_options")
-            ?: json.optJSONArray("serving_unit_options")
-            ?: JSONArray()
-        val seen = mutableSetOf<String>()
-        val options = mutableListOf<ServingUnitOption>()
-        for (i in 0 until rawOptions.length()) {
-            val raw = rawOptions.optJSONObject(i) ?: continue
-            val unit = raw.optString("unit").takeIf { it.isNotBlank() } ?: continue
-            val gramsPerUnit = optDouble(raw, "grams_per_unit")
-                ?: optDouble(raw, "gramsPerUnit")
-                ?: continue
-            val quantity = optDouble(raw, "quantity")
-            val option = ServingUnitOption(
-                unit = unit,
-                gramsPerUnit = gramsPerUnit,
-                quantity = quantity ?: servingSizeGrams
-                    ?.takeIf { gramsPerUnit > 0 }
-                    ?.let { it / gramsPerUnit }
-            )
-            if (!option.isValid || option.isGramUnit || option.id in seen) continue
-            seen.add(option.id)
-            options.add(option)
-        }
-        return options.take(4)
+    ): ServingUnitOption? {
+        val raw = element as? JsonObject ?: return null
+        val unitValue = raw["unit"] as? JsonPrimitive ?: return null
+        val unit = unitValue.takeIf { it.isString }
+            ?.content
+            ?.trim()
+            ?.takeIf { it.isNotEmpty() }
+            ?: return null
+        val quantity = positiveJsonNumber(raw["quantity"]) ?: return null
+        val gramsPerUnit = positiveJsonNumber(
+            raw["grams_per_unit"] ?: raw["gramsPerUnit"]
+        ) ?: return null
+        val option = ServingUnitOption(
+            unit = unit,
+            gramsPerUnit = gramsPerUnit,
+            quantity = quantity
+        )
+        if (!option.isValid || option.isGramUnit) return null
+        if (!approximatelyRepresentsServing(quantity, gramsPerUnit, servingSizeGrams)) return null
+        return option
+    }
+
+    private fun positiveJsonNumber(value: JsonElement?): Double? {
+        val primitive = value as? JsonPrimitive ?: return null
+        if (primitive.isString) return null
+        return primitive.content.toDoubleOrNull()
+            ?.takeIf { it > 0 && !it.isNaN() && !it.isInfinite() }
+    }
+
+    private fun approximatelyRepresentsServing(
+        quantity: Double,
+        gramsPerUnit: Double,
+        servingSizeGrams: Double?
+    ): Boolean {
+        val servingGrams = servingSizeGrams?.takeIf { it > 0 } ?: return true
+        val representedGrams = quantity * gramsPerUnit
+        val toleranceGrams = max(5.0, servingGrams * 0.15)
+        return abs(representedGrams - servingGrams) <= toleranceGrams
     }
 
     private fun optDouble(json: JSONObject, key: String): Double? {

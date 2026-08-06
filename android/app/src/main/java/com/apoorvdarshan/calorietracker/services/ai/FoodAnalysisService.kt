@@ -301,12 +301,20 @@ class FoodAnalysisService(
             Respond ONLY with JSON:
             {"name":"...","calories":0,"protein":0.0,"carbs":0.0,"fat":0.0,"serving_size_grams":0.0,"emoji":"<single specific food emoji>","sugar":0.0,"added_sugar":0.0,"fiber":0.0,"saturated_fat":0.0,"monounsaturated_fat":0.0,"polyunsaturated_fat":0.0,"cholesterol":0.0,"sodium":0.0,"potassium":0.0,"trans_fat":0.0,"calcium":0.0,"iron":0.0,"magnesium":0.0,"zinc":0.0,"vitamin_a":0.0,"vitamin_c":0.0,"vitamin_d":0.0,"vitamin_b12":0.0,"vitamin_e":0.0,"vitamin_k":0.0,"folate":0.0,"omega_3":0.0,"unit_options":[]}
             Calories are integers. Protein/carbs/fat are decimal gram values when needed. serving_size_grams is the estimated total weight in grams. Nutrients are numbers: sugar/fiber/sat fat/mono fat/poly fat/trans fat/omega-3 in grams; cholesterol/sodium/potassium/calcium/iron/magnesium/zinc/vitamin C/vitamin E in milligrams; vitamin A/vitamin D/vitamin B12/vitamin K/folate in micrograms.
-            The [] in unit_options above is only a JSON shape placeholder; replace it with options when a non-gram unit is obvious.
-            unit_options is required when the text names an obvious non-gram serving unit, and optional otherwise. Use slice/piece for pizza, cake, bread, cookies, fruit pieces, etc.; use ml/cup/fl oz for drinks, milk, soup, smoothies, sauces, etc.; use tbsp/tsp for spooned foods; use can/packet when packaged. Its quantity must describe the whole analyzed amount, not always 1. Do not copy any sample number; use the quantity stated or clearly implied by the meal. Use [] only when no non-gram unit is apparent. Do not include g/grams in unit_options.
+            unit_options is required. It must be [] or a JSON array of complete objects, never an array of strings.
+            Every unit_options object must have this exact shape (the values are schema examples only; never copy them): {"unit":"slice","quantity":2.0,"grams_per_unit":60.0}. unit is a non-gram unit name, quantity is the positive number of those units in the whole analyzed amount, and grams_per_unit is the positive gram weight of one unit. All three fields are required.
+            For every option, quantity * grams_per_unit must approximately equal serving_size_grams.
+            Only return a count when it is stated in the text or user context, or strongly implied by an unambiguous described portion. Never invent a count from the food name or serving_size_grams alone.
+            Use slice/piece for explicitly counted pizza, cake, bread, cookies, fruit pieces, etc.; use ml/cup/fl oz for stated liquid volumes; use tbsp/tsp for stated spoon measures; use can/packet only when stated or strongly implied. Use [] when no reliable non-gram unit exists. Do not include g/gram/grams in unit_options.
             For "emoji" pick the single most specific food emoji that depicts this dish — e.g. 🥚 for eggs, 🍕 for pizza, 🍎 for an apple, 🥗 for a salad, 🍔 for a burger, 🍜 for ramen, 🍰 for cake, 🥑 for avocado, ☕ for coffee, 🍣 for sushi. Only fall back to 🍽️ when the food truly cannot be represented by any specific emoji. Use null for any nutrient you cannot estimate.
         """.trimIndent()
-        val analysis = FoodJsonParser.parseFood(callAi(prompt, null))
-        return addingFallbackServingUnits(analysis, imageBytes = null, description = description)
+        val parsed = FoodJsonParser.parseFoodResponse(callAi(prompt, null))
+        return addingFallbackServingUnits(
+            analysis = parsed.analysis,
+            imageBytes = null,
+            description = description,
+            shouldRequestFallback = parsed.shouldRequestServingUnitFallback
+        )
     }
 
     suspend fun analyzeAuto(imageBytes: ByteArray): FoodAnalysis {
@@ -319,12 +327,20 @@ class FoodAnalysisService(
             Respond ONLY with JSON:
             {"name":"...","calories":0,"protein":0.0,"carbs":0.0,"fat":0.0,"serving_size_grams":0.0,"sugar":0.0,"added_sugar":0.0,"fiber":0.0,"saturated_fat":0.0,"monounsaturated_fat":0.0,"polyunsaturated_fat":0.0,"cholesterol":0.0,"sodium":0.0,"potassium":0.0,"trans_fat":0.0,"calcium":0.0,"iron":0.0,"magnesium":0.0,"zinc":0.0,"vitamin_a":0.0,"vitamin_c":0.0,"vitamin_d":0.0,"vitamin_b12":0.0,"vitamin_e":0.0,"vitamin_k":0.0,"folate":0.0,"omega_3":0.0,"unit_options":[]}
             Calories are integers. Protein/carbs/fat are decimal gram values when needed. serving_size_grams is the estimated weight in grams of the serving. Nutrients are numbers: sugar/fiber/sat fat/mono fat/poly fat/trans fat/omega-3 in grams; cholesterol/sodium/potassium/calcium/iron/magnesium/zinc/vitamin C/vitamin E in milligrams; vitamin A/vitamin D/vitamin B12/vitamin K/folate in micrograms.
-            The [] in unit_options above is only a JSON shape placeholder; replace it with options when a non-gram unit is obvious.
-            unit_options is required for obvious non-gram units visible in the image or label. Use slice/piece for pizza, cake, bread, cookies, fruit pieces, etc.; use ml/cup/fl oz for drinks, milk, soup, smoothies, sauces, etc.; use tbsp/tsp for spooned foods; use can/packet when packaged. Its quantity must describe the whole analyzed amount, not always 1. For a whole or mostly-whole divisible food like cake, pie, or pizza, count the visible pieces/slices and derive grams_per_unit from serving_size_grams / quantity. If N slices are visible, return quantity N. Use quantity 1 only when a single piece/slice is actually the analyzed portion. Use [] only when no non-gram unit is apparent. Do not include g/grams in unit_options.
+            unit_options is required. It must be [] or a JSON array of complete objects, never an array of strings.
+            Every unit_options object must have this exact shape (the values are schema examples only; never copy them): {"unit":"slice","quantity":2.0,"grams_per_unit":60.0}. unit is a non-gram unit name, quantity is the positive number of those units in the whole analyzed amount, and grams_per_unit is the positive gram weight of one unit. All three fields are required.
+            For every option, quantity * grams_per_unit must approximately equal serving_size_grams.
+            Only return a count when it is visible in the image or label, stated in visible text, or strongly implied by an unambiguous single-item portion. Never invent a count from the food name or serving_size_grams alone.
+            Use slice/piece for visibly counted pizza, cake, bread, cookies, fruit pieces, etc.; use ml/cup/fl oz for visible or labeled liquid volumes; use tbsp/tsp for visible or labeled spoon measures; use can/packet only when visible or labeled. Use [] when no reliable non-gram unit exists. Do not include g/gram/grams in unit_options.
             Use null for any nutrient you cannot estimate.
         """.trimIndent()
-        val analysis = FoodJsonParser.parseFood(callAi(prompt, imageBytes))
-        return addingFallbackServingUnits(analysis, imageBytes = imageBytes, description = null)
+        val parsed = FoodJsonParser.parseFoodResponse(callAi(prompt, imageBytes))
+        return addingFallbackServingUnits(
+            analysis = parsed.analysis,
+            imageBytes = imageBytes,
+            description = null,
+            shouldRequestFallback = parsed.shouldRequestServingUnitFallback
+        )
     }
 
     suspend fun analyzeFood(imageBytes: ByteArray, description: String? = null): FoodAnalysis {
@@ -333,15 +349,23 @@ class FoodAnalysisService(
             Respond ONLY with JSON:
             {"name":"...","calories":0,"protein":0.0,"carbs":0.0,"fat":0.0,"serving_size_grams":0.0,"sugar":0.0,"added_sugar":0.0,"fiber":0.0,"saturated_fat":0.0,"monounsaturated_fat":0.0,"polyunsaturated_fat":0.0,"cholesterol":0.0,"sodium":0.0,"potassium":0.0,"trans_fat":0.0,"calcium":0.0,"iron":0.0,"magnesium":0.0,"zinc":0.0,"vitamin_a":0.0,"vitamin_c":0.0,"vitamin_d":0.0,"vitamin_b12":0.0,"vitamin_e":0.0,"vitamin_k":0.0,"folate":0.0,"omega_3":0.0,"unit_options":[]}
             Calories are integers. Protein/carbs/fat are decimal gram values when needed. serving_size_grams is the estimated weight in grams of the serving shown. Nutrients are numbers: sugar/fiber/sat fat/mono fat/poly fat/trans fat/omega-3 in grams; cholesterol/sodium/potassium/calcium/iron/magnesium/zinc/vitamin C/vitamin E in milligrams; vitamin A/vitamin D/vitamin B12/vitamin K/folate in micrograms.
-            The [] in unit_options above is only a JSON shape placeholder; replace it with options when a non-gram unit is obvious.
-            unit_options is required for obvious non-gram units visible in the food. Use slice/piece for pizza, cake, bread, cookies, fruit pieces, etc.; use ml/cup/fl oz for drinks, milk, soup, smoothies, sauces, etc.; use tbsp/tsp for spooned foods; use can/packet when packaged. Its quantity must describe the whole analyzed amount, not always 1. For a whole or mostly-whole divisible food like cake, pie, or pizza, count the visible pieces/slices and derive grams_per_unit from serving_size_grams / quantity. If N slices are visible, return quantity N. Use quantity 1 only when a single piece/slice is actually the analyzed portion. Use [] only when no non-gram unit is apparent. Do not include g/grams in unit_options.
+            unit_options is required. It must be [] or a JSON array of complete objects, never an array of strings.
+            Every unit_options object must have this exact shape (the values are schema examples only; never copy them): {"unit":"slice","quantity":2.0,"grams_per_unit":60.0}. unit is a non-gram unit name, quantity is the positive number of those units in the whole analyzed amount, and grams_per_unit is the positive gram weight of one unit. All three fields are required.
+            For every option, quantity * grams_per_unit must approximately equal serving_size_grams.
+            Only return a count when it is visible in the image, stated in the user context, or strongly implied by an unambiguous single-item portion. Never invent a count from the food name or serving_size_grams alone.
+            Use slice/piece for visibly counted pizza, cake, bread, cookies, fruit pieces, etc.; use ml/cup/fl oz for visible liquid volumes; use tbsp/tsp for visible spoon measures; use can/packet only when visible or strongly implied by packaging. Use [] when no reliable non-gram unit exists. Do not include g/gram/grams in unit_options.
             Give your best estimate for the visible food amount shown in the image. For whole/mostly-whole cakes, pizzas, pies, loaves, or similar foods, estimate the total visible item/remaining item weight rather than defaulting to one slice. Use null for any nutrient you cannot estimate.
         """.trimIndent()
         if (!description.isNullOrBlank()) {
             prompt += "\n\nAdditional context from the user about this meal: $description\nUse this context to improve accuracy of identification, portion size, and nutrition estimates."
         }
-        val analysis = FoodJsonParser.parseFood(callAi(prompt, imageBytes))
-        return addingFallbackServingUnits(analysis, imageBytes = imageBytes, description = description)
+        val parsed = FoodJsonParser.parseFoodResponse(callAi(prompt, imageBytes))
+        return addingFallbackServingUnits(
+            analysis = parsed.analysis,
+            imageBytes = imageBytes,
+            description = description,
+            shouldRequestFallback = parsed.shouldRequestServingUnitFallback
+        )
     }
 
     suspend fun analyzeFood(imageBytesList: List<ByteArray>, description: String? = null): FoodAnalysis {
@@ -351,8 +375,11 @@ class FoodAnalysisService(
             Respond ONLY with JSON:
             {"name":"...","calories":0,"protein":0.0,"carbs":0.0,"fat":0.0,"serving_size_grams":0.0,"sugar":0.0,"added_sugar":0.0,"fiber":0.0,"saturated_fat":0.0,"monounsaturated_fat":0.0,"polyunsaturated_fat":0.0,"cholesterol":0.0,"sodium":0.0,"potassium":0.0,"trans_fat":0.0,"calcium":0.0,"iron":0.0,"magnesium":0.0,"zinc":0.0,"vitamin_a":0.0,"vitamin_c":0.0,"vitamin_d":0.0,"vitamin_b12":0.0,"vitamin_e":0.0,"vitamin_k":0.0,"folate":0.0,"omega_3":0.0,"unit_options":[]}
             Calories are integers. Protein/carbs/fat are decimal gram values when needed. serving_size_grams is the estimated weight in grams of the serving shown. Nutrients are numbers: sugar/fiber/sat fat/mono fat/poly fat/trans fat/omega-3 in grams; cholesterol/sodium/potassium/calcium/iron/magnesium/zinc/vitamin C/vitamin E in milligrams; vitamin A/vitamin D/vitamin B12/vitamin K/folate in micrograms.
-            The [] in unit_options above is only a JSON shape placeholder; replace it with options when a non-gram unit is obvious.
-            unit_options is required for obvious non-gram units visible in the food. Use slice/piece for pizza, cake, bread, cookies, fruit pieces, etc.; use ml/cup/fl oz for drinks, milk, soup, smoothies, sauces, etc.; use tbsp/tsp for spooned foods; use can/packet when packaged. Its quantity must describe the whole analyzed amount, not always 1. Use [] only when no non-gram unit is apparent. Do not include g/grams in unit_options.
+            unit_options is required. It must be [] or a JSON array of complete objects, never an array of strings.
+            Every unit_options object must have this exact shape (the values are schema examples only; never copy them): {"unit":"slice","quantity":2.0,"grams_per_unit":60.0}. unit is a non-gram unit name, quantity is the positive number of those units in the whole analyzed amount, and grams_per_unit is the positive gram weight of one unit. All three fields are required.
+            For every option, quantity * grams_per_unit must approximately equal serving_size_grams.
+            Only return a count when it is visible in the images, stated in the user context, or strongly implied by an unambiguous single-item portion. Never invent a count from the food name or serving_size_grams alone.
+            Use slice/piece for visibly counted foods; use ml/cup/fl oz for visible or labeled liquid volumes; use tbsp/tsp for visible or labeled spoon measures; use can/packet only when visible or labeled. Use [] when no reliable non-gram unit exists. Do not include g/gram/grams in unit_options.
             Do not double-count the meal across images. Treat the photos as multiple views of the same item unless there are clearly separate foods.
             Use null for any nutrient you cannot estimate.
         """.trimIndent()
@@ -361,8 +388,13 @@ class FoodAnalysisService(
         }
         val images = imageBytesList.filter { it.isNotEmpty() }
         if (images.isEmpty()) throw AiError.InvalidResponse
-        val analysis = FoodJsonParser.parseFood(callAi(prompt, images))
-        return addingFallbackServingUnits(analysis, imageBytes = images.first(), description = description)
+        val parsed = FoodJsonParser.parseFoodResponse(callAi(prompt, images))
+        return addingFallbackServingUnits(
+            analysis = parsed.analysis,
+            imageBytes = images.first(),
+            description = description,
+            shouldRequestFallback = parsed.shouldRequestServingUnitFallback
+        )
     }
 
     suspend fun analyzeNutritionLabel(imageBytes: ByteArray, servingGrams: Double): FoodAnalysis {
@@ -370,11 +402,19 @@ class FoodAnalysisService(
             Read this nutrition facts label and extract per-100g values. If the label only shows per-serving, normalize using the serving size listed on the label.
             Respond ONLY with JSON:
             {"name":"...","calories_per_100g":0.0,"protein_per_100g":0.0,"carbs_per_100g":0.0,"fat_per_100g":0.0,"serving_size_grams":0.0,"sugar_per_100g":0.0,"added_sugar_per_100g":0.0,"fiber_per_100g":0.0,"saturated_fat_per_100g":0.0,"monounsaturated_fat_per_100g":0.0,"polyunsaturated_fat_per_100g":0.0,"cholesterol_per_100g":0.0,"sodium_per_100g":0.0,"potassium_per_100g":0.0,"trans_fat_per_100g":0.0,"calcium_per_100g":0.0,"iron_per_100g":0.0,"magnesium_per_100g":0.0,"zinc_per_100g":0.0,"vitamin_a_per_100g":0.0,"vitamin_c_per_100g":0.0,"vitamin_d_per_100g":0.0,"vitamin_b12_per_100g":0.0,"vitamin_e_per_100g":0.0,"vitamin_k_per_100g":0.0,"folate_per_100g":0.0,"omega_3_per_100g":0.0,"unit_options":[]}
-            The [] in unit_options above is only a JSON shape placeholder; replace it with options when a non-gram unit is visible.
-            All values should be numbers. If serving size or any nutrient is not available, use null. unit_options is required when a non-gram label serving unit is visible, such as slice, piece, tbsp, cup, ml, fl oz, can, or packet. Do not copy any sample number; use the quantity shown on the label. Use [] only when no non-gram unit is visible. Do not include g/grams in unit_options.
+            All nutrient and serving values should be numbers. If serving size or any nutrient is not available, use null.
+            unit_options is required. It must be [] or a JSON array of complete objects, never an array of strings.
+            Every unit_options object must have this exact shape (the values are schema examples only; never copy them): {"unit":"slice","quantity":2.0,"grams_per_unit":60.0}. unit is a non-gram unit name, quantity is the positive number of those units in the whole analyzed amount, and grams_per_unit is the positive gram weight of one unit. All three fields are required.
+            For every option, quantity * grams_per_unit must approximately equal serving_size_grams.
+            Only return a count or volume when it is printed on the label, visible in the image, or strongly implied by an unambiguous labeled single-item serving. Never invent a count from the product name or serving_size_grams alone.
+            Use [] when no reliable non-gram label unit is visible. Do not include g/gram/grams in unit_options.
         """.trimIndent()
-        val analysis = FoodJsonParser.parseLabel(callAi(prompt, imageBytes))
-        return addingFallbackServingUnits(analysis, imageBytes).scaled(servingGrams)
+        val parsed = FoodJsonParser.parseLabelResponse(callAi(prompt, imageBytes))
+        return addingFallbackServingUnits(
+            analysis = parsed.analysis,
+            imageBytes = imageBytes,
+            shouldRequestFallback = parsed.shouldRequestServingUnitFallback
+        ).scaled(servingGrams)
     }
 
     // -- Internal dispatch ------------------------------------------------
@@ -407,9 +447,10 @@ class FoodAnalysisService(
     private suspend fun addingFallbackServingUnits(
         analysis: FoodAnalysis,
         imageBytes: ByteArray?,
-        description: String?
+        description: String?,
+        shouldRequestFallback: Boolean
     ): FoodAnalysis {
-        if (analysis.servingUnitOptions.isNotEmpty()) return analysis
+        if (!shouldRequestFallback) return analysis
         val options = runCatching {
             inferServingUnitOptions(
                 name = analysis.name,
@@ -429,9 +470,10 @@ class FoodAnalysisService(
 
     private suspend fun addingFallbackServingUnits(
         analysis: NutritionLabelAnalysis,
-        imageBytes: ByteArray
+        imageBytes: ByteArray,
+        shouldRequestFallback: Boolean
     ): NutritionLabelAnalysis {
-        if (analysis.servingUnitOptions.isNotEmpty()) return analysis
+        if (!shouldRequestFallback) return analysis
         val servingSizeGrams = analysis.servingSizeGrams ?: return analysis
         val options = runCatching {
             inferServingUnitOptions(
@@ -454,29 +496,22 @@ class FoodAnalysisService(
         val context = description?.trim()?.takeIf { it.isNotEmpty() }
         val contextLine = context?.let { "\nUser context: $it" }.orEmpty()
         val prompt = """
-            The previous food analysis returned grams only. Infer non-gram serving unit options for the same food and amount.
+            The previous food analysis omitted unit_options or returned it in a malformed format. Repair only that field for the same food and analyzed amount.
 
             Food: $name
             Total grams for the analyzed amount: ${String.format(java.util.Locale.US, "%.1f", servingSizeGrams)}$contextLine
 
             Return ONLY JSON:
-            {"unit_options":[{"unit":"slice","quantity":8.0,"grams_per_unit":45.0}]}
+            {"unit_options":[]}
 
             Rules:
-            - Replace the sample numbers with the actual best estimate. Do not copy 8 or 45 unless they fit the food.
-            - If the image shows countable portions, count visible pieces/slices. For pizza, cake, pie, bread, cookies, fruit pieces, nuggets, or sweets, use slice or piece.
-            - For liquids or pourable foods like milk, juice, soup, smoothies, dal, sauces, or yogurt, use ml when the volume is clearer than a count.
-            - For spooned foods like peanut butter, honey, oil, chutney, or ghee, use tbsp or tsp.
-            - For packaged foods/drinks, use can, packet, bar, scoop, or bowl only when that unit is visible or strongly implied.
-            - grams_per_unit is grams for one unit. For countable units, use total grams / visible quantity. For ml, use grams per ml.
-            - Return [] only if no non-gram unit is apparent.
-
-            Good outputs:
-            {"unit_options":[{"unit":"slice","quantity":8.0,"grams_per_unit":45.0}]}
-            {"unit_options":[{"unit":"ml","quantity":250.0,"grams_per_unit":1.03},{"unit":"cup","quantity":1.0,"grams_per_unit":250.0}]}
-            {"unit_options":[{"unit":"tbsp","quantity":2.0,"grams_per_unit":16.0}]}
-            {"unit_options":[{"unit":"can","quantity":1.0,"grams_per_unit":330.0}]}
-            {"unit_options":[{"unit":"piece","quantity":5.0,"grams_per_unit":18.0}]}
+            - unit_options must be [] or an array of complete objects, never strings.
+            - Every object requires unit, quantity, and grams_per_unit. quantity and grams_per_unit must be positive numbers.
+            - For every option, quantity * grams_per_unit must approximately equal the total grams above.
+            - Return a count only when it is stated in User context, visible in the attached image or label, or strongly implied by an unambiguous single-item portion.
+            - Never invent a count from the food name or total grams alone.
+            - Return {"unit_options":[]} when no reliable non-gram unit exists.
+            - Do not include g, gram, or grams as an option.
         """.trimIndent()
         return FoodJsonParser.parseServingUnitOptions(callAi(prompt, imageBytes), servingSizeGrams)
     }

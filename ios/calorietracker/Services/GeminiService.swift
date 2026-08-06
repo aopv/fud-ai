@@ -1,4 +1,5 @@
 import Foundation
+import CoreFoundation
 import UIKit
 
 struct GeminiService {
@@ -35,6 +36,7 @@ struct GeminiService {
         var servingUnitOptions: [ServingUnitOption] = []
         var selectedServingUnit: String?
         var selectedServingQuantity: Double?
+        var requiresServingUnitFallback = false
     }
 
     struct NutritionLabelAnalysis {
@@ -67,6 +69,7 @@ struct GeminiService {
         var folatePer100g: Double?
         var omega3Per100g: Double?
         var servingUnitOptions: [ServingUnitOption] = []
+        var requiresServingUnitFallback = false
 
         func scaled(to grams: Double) -> FoodAnalysis {
             let selectedOption = servingUnitOptions.first
@@ -171,6 +174,14 @@ struct GeminiService {
 
     private static let nutrientUnitsInstruction = "Calories are integers. Protein/carbs/fat are decimal gram values when needed. serving_size_grams is the estimated weight in grams. Nutrients are numbers: sugar/fiber/fats/omega_3 in grams; cholesterol/sodium/potassium/calcium/iron/magnesium/zinc/vitamin_c/vitamin_e in milligrams; vitamin_a/vitamin_d/vitamin_b12/vitamin_k/folate in micrograms."
 
+    private static let servingUnitOptionsInstruction = """
+    unit_options is required and must always be a JSON array. Each item must be a complete object with this exact schema (the values are schema examples only; never copy them):
+    {"unit":"slice","quantity":2.0,"grams_per_unit":60.0}
+    quantity is the number of units in the whole analyzed amount, and grams_per_unit is the grams in one unit. For every item, quantity * grams_per_unit must approximately equal serving_size_grams. Do not include g/gram/grams as an option.
+    Return [] when there is no reliable non-gram unit. An empty array is a complete, valid answer.
+    Never invent a count from the food name or total grams. Only return a countable unit when its quantity is stated in the user's text, visible in the image or label, or strongly implied by the described or visible analyzed portion. Do not assume quantity is 1 merely because the food is commonly sold or served as one piece.
+    """
+
     // MARK: - Public API (unchanged interface)
 
     static func suggestMealWhatIf(
@@ -248,8 +259,8 @@ struct GeminiService {
         Respond ONLY with JSON:
         \(Self.foodAnalysisJSONShape)
         \(Self.nutrientUnitsInstruction)
-        The [] in unit_options above is only a JSON shape placeholder; replace it with options when a non-gram unit is obvious.
-        unit_options is required when the text names an obvious non-gram serving unit, and optional otherwise. Use slice/piece for pizza, cake, bread, cookies, fruit pieces, etc.; use ml/cup/fl oz for drinks, milk, soup, smoothies, sauces, etc.; use tbsp/tsp for spooned foods; use can/packet when packaged. Its quantity must describe the whole analyzed amount, not always 1. Do not copy any sample number; use the quantity stated or clearly implied by the meal. Use [] only when no non-gram unit is apparent. Do not include g/grams in unit_options.
+        \(Self.servingUnitOptionsInstruction)
+        When supported by the text, use slice/piece for discrete foods, ml/cup/fl oz for liquids, tbsp/tsp for spooned foods, and can/packet for packaged foods.
         Include a single food emoji that best represents the food. Use null for any nutrient you cannot estimate.
         """
         do {
@@ -273,8 +284,8 @@ struct GeminiService {
         Respond ONLY with JSON:
         \(Self.foodAnalysisJSONShapeWithoutEmoji)
         \(Self.nutrientUnitsInstruction)
-        The [] in unit_options above is only a JSON shape placeholder; replace it with options when a non-gram unit is obvious.
-        unit_options is required for obvious non-gram units visible in the image or label. Use slice/piece for pizza, cake, bread, cookies, fruit pieces, etc.; use ml/cup/fl oz for drinks, milk, soup, smoothies, sauces, etc.; use tbsp/tsp for spooned foods; use can/packet when packaged. Its quantity must describe the whole analyzed amount, not always 1. For a whole or mostly-whole divisible food like cake, pie, or pizza, count the visible pieces/slices and derive grams_per_unit from serving_size_grams / quantity. If N slices are visible, return quantity N. Use quantity 1 only when a single piece/slice is actually the analyzed portion. Use [] only when no non-gram unit is apparent. Do not include g/grams in unit_options.
+        \(Self.servingUnitOptionsInstruction)
+        When supported by the image or label, use slice/piece for discrete foods, ml/cup/fl oz for liquids, tbsp/tsp for spooned foods, and can/packet for packaged foods. For a whole or mostly-whole divisible food, count only clearly visible pieces or slices and derive grams_per_unit from serving_size_grams / quantity.
         Use null for any nutrient you cannot estimate.
         """
         let text = try await callAI(prompt: prompt, image: image)
@@ -290,8 +301,8 @@ struct GeminiService {
         \(Self.foodAnalysisJSONShapeWithoutEmoji)
 
         \(Self.nutrientUnitsInstruction)
-        The [] in unit_options above is only a JSON shape placeholder; replace it with options when a non-gram unit is obvious.
-        unit_options is required for obvious non-gram units visible in the food. Use slice/piece for pizza, cake, bread, cookies, fruit pieces, etc.; use ml/cup/fl oz for drinks, milk, soup, smoothies, sauces, etc.; use tbsp/tsp for spooned foods; use can/packet when packaged. Its quantity must describe the whole analyzed amount, not always 1. For a whole or mostly-whole divisible food like cake, pie, or pizza, count the visible pieces/slices and derive grams_per_unit from serving_size_grams / quantity. If N slices are visible, return quantity N. Use quantity 1 only when a single piece/slice is actually the analyzed portion. Use [] only when no non-gram unit is apparent. Do not include g/grams in unit_options.
+        \(Self.servingUnitOptionsInstruction)
+        When supported by the image, use slice/piece for discrete foods, ml/cup/fl oz for liquids, tbsp/tsp for spooned foods, and can/packet for packaged foods. For a whole or mostly-whole divisible food, count only clearly visible pieces or slices and derive grams_per_unit from serving_size_grams / quantity.
         Give your best estimate for the visible food amount shown in the image. For whole/mostly-whole cakes, pizzas, pies, loaves, or similar foods, estimate the total visible item/remaining item weight rather than defaulting to one slice. Use null for any nutrient you cannot estimate.
         """
 
@@ -316,8 +327,8 @@ struct GeminiService {
         \(Self.foodAnalysisJSONShapeWithoutEmoji)
 
         \(Self.nutrientUnitsInstruction)
-        The [] in unit_options above is only a JSON shape placeholder; replace it with options when a non-gram unit is obvious.
-        unit_options is required for obvious non-gram units visible in the food or label. Use slice/piece for pizza, cake, bread, cookies, fruit pieces, etc.; use ml/cup/fl oz for drinks, milk, soup, smoothies, sauces, etc.; use tbsp/tsp for spooned foods; use can/packet/bar when packaged. Its quantity must describe the whole analyzed amount, not always 1. Use [] only when no non-gram unit is apparent. Do not include g/grams in unit_options.
+        \(Self.servingUnitOptionsInstruction)
+        When supported by the images or label, use slice/piece for discrete foods, ml/cup/fl oz for liquids, tbsp/tsp for spooned foods, and can/packet/bar for packaged foods.
         Give your best estimate for the actual amount shown or implied across the images. Use null for any nutrient you cannot estimate.
         """
 
@@ -341,8 +352,8 @@ struct GeminiService {
         Respond ONLY with JSON:
         \(Self.nutritionLabelJSONShape)
 
-        The [] in unit_options above is only a JSON shape placeholder; replace it with options when a non-gram unit is visible.
-        All values should be numbers. If serving size or any nutrient is not available, use null. unit_options is required when a non-gram label serving unit is visible, such as slice, piece, tbsp, cup, ml, fl oz, can, or packet. Do not copy any sample number; use the quantity shown on the label. Use [] only when no non-gram unit is visible. Do not include g/grams in unit_options.
+        \(Self.servingUnitOptionsInstruction)
+        All nutrient and serving-size values should be numbers. If serving size or any nutrient is not available, use null. Only include a label serving unit such as slice, piece, tbsp, cup, ml, fl oz, can, or packet when its quantity is actually printed or otherwise visible on the label.
         """
         let text = try await callAI(prompt: prompt, image: image)
         let analysis = try parseNutritionLabel(from: text)
@@ -1114,7 +1125,7 @@ struct GeminiService {
         return cleaned
     }
 
-    private static func parseFoodAnalysis(from text: String) throws -> FoodAnalysis {
+    static func parseFoodAnalysis(from text: String) throws -> FoodAnalysis {
         let jsonString = extractJSON(from: text)
         guard let data = jsonString.data(using: .utf8),
               let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
@@ -1124,9 +1135,13 @@ struct GeminiService {
               let carbs = (json["carbs"] as? NSNumber)?.doubleValue,
               let fat = (json["fat"] as? NSNumber)?.doubleValue
         else { throw AnalysisError.invalidResponse }
-        let servingSizeGrams = (json["serving_size_grams"] as? NSNumber)?.doubleValue ?? 100
-        let unitOptions = parseServingUnitOptions(from: json, servingSizeGrams: servingSizeGrams)
-        let selectedOption = unitOptions.first
+        let responseServingSizeGrams = (json["serving_size_grams"] as? NSNumber)?.doubleValue
+        let servingSizeGrams = responseServingSizeGrams ?? 100
+        let parsedUnitOptions = parseInitialServingUnitOptions(
+            from: json,
+            servingSizeGrams: responseServingSizeGrams
+        )
+        let selectedOption = parsedUnitOptions.options.first
         func double(_ key: String) -> Double? {
             (json[key] as? NSNumber)?.doubleValue
         }
@@ -1156,13 +1171,14 @@ struct GeminiService {
             vitaminK: double("vitamin_k"),
             folate: double("folate"),
             omega3: double("omega_3"),
-            servingUnitOptions: unitOptions,
+            servingUnitOptions: parsedUnitOptions.options,
             selectedServingUnit: selectedOption?.unit,
-            selectedServingQuantity: selectedOption?.quantity(for: servingSizeGrams)
+            selectedServingQuantity: selectedOption?.quantity(for: servingSizeGrams),
+            requiresServingUnitFallback: parsedUnitOptions.requiresFallback
         )
     }
 
-    private static func parseNutritionLabel(from text: String) throws -> NutritionLabelAnalysis {
+    static func parseNutritionLabel(from text: String) throws -> NutritionLabelAnalysis {
         let jsonString = extractJSON(from: text)
         guard let data = jsonString.data(using: .utf8),
               let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
@@ -1173,6 +1189,10 @@ struct GeminiService {
               let fatPer100g = (json["fat_per_100g"] as? NSNumber)?.doubleValue
         else { throw AnalysisError.invalidResponse }
         let servingSizeGrams = (json["serving_size_grams"] as? NSNumber)?.doubleValue
+        let parsedUnitOptions = parseInitialServingUnitOptions(
+            from: json,
+            servingSizeGrams: servingSizeGrams
+        )
         func double(_ key: String) -> Double? {
             (json[key] as? NSNumber)?.doubleValue
         }
@@ -1202,7 +1222,8 @@ struct GeminiService {
             vitaminKPer100g: double("vitamin_k_per_100g"),
             folatePer100g: double("folate_per_100g"),
             omega3Per100g: double("omega_3_per_100g"),
-            servingUnitOptions: parseServingUnitOptions(from: json, servingSizeGrams: servingSizeGrams)
+            servingUnitOptions: parsedUnitOptions.options,
+            requiresServingUnitFallback: parsedUnitOptions.requiresFallback
         )
     }
 
@@ -1257,17 +1278,18 @@ struct GeminiService {
         image: UIImage?,
         description: String?
     ) async -> FoodAnalysis {
-        guard analysis.servingUnitOptions.isEmpty else { return analysis }
+        guard analysis.requiresServingUnitFallback else { return analysis }
+        var updated = analysis
+        updated.requiresServingUnitFallback = false
         guard let options = try? await inferServingUnitOptions(
             name: analysis.name,
             servingSizeGrams: analysis.servingSizeGrams,
             image: image,
             description: description
         ), !options.isEmpty else {
-            return analysis
+            return updated
         }
 
-        var updated = analysis
         updated.servingUnitOptions = options
         updated.selectedServingUnit = options.first?.unit
         updated.selectedServingQuantity = options.first?.quantity(for: analysis.servingSizeGrams)
@@ -1278,7 +1300,9 @@ struct GeminiService {
         to analysis: NutritionLabelAnalysis,
         image: UIImage
     ) async -> NutritionLabelAnalysis {
-        guard analysis.servingUnitOptions.isEmpty else { return analysis }
+        guard analysis.requiresServingUnitFallback else { return analysis }
+        var updated = analysis
+        updated.requiresServingUnitFallback = false
         guard let servingSizeGrams = analysis.servingSizeGrams,
               let options = try? await inferServingUnitOptions(
                 name: analysis.name,
@@ -1286,10 +1310,9 @@ struct GeminiService {
                 image: image,
                 description: nil
               ), !options.isEmpty else {
-            return analysis
+            return updated
         }
 
-        var updated = analysis
         updated.servingUnitOptions = options
         return updated
     }
@@ -1303,33 +1326,107 @@ struct GeminiService {
         let context = description?.trimmingCharacters(in: .whitespacesAndNewlines)
         let contextLine = context.map { "\nUser context: \($0)" } ?? ""
         let prompt = """
-        The previous food analysis returned grams only. Infer non-gram serving unit options for the same food and amount.
+        The previous food analysis omitted unit_options or returned it in a malformed format. Recover non-gram serving unit options for the same food and amount only when the source provides enough evidence.
 
         Food: \(name)
         Total grams for the analyzed amount: \(String(format: "%.1f", servingSizeGrams))\(contextLine)
 
         Return ONLY JSON:
-        {"unit_options":[{"unit":"slice","quantity":8.0,"grams_per_unit":45.0}]}
+        {"unit_options":[]}
+
+        \(Self.servingUnitOptionsInstruction)
 
         Rules:
-        - Replace the sample numbers with the actual best estimate. Do not copy 8 or 45 unless they fit the food.
-        - If the image shows countable portions, count visible pieces/slices. For pizza, cake, pie, bread, cookies, fruit pieces, nuggets, or sweets, use slice or piece.
+        - For countable portions, use slice or piece only when the count is stated in the user context, clearly visible in the image, or strongly implied by wording such as "a slice" or "one bar".
+        - A food name, typical package, or total gram value alone is not evidence of a count. Never assume the whole analyzed amount is one unit.
         - For liquids or pourable foods like milk, juice, soup, smoothies, dal, sauces, or yogurt, use ml when the volume is clearer than a count.
         - For spooned foods like peanut butter, honey, oil, chutney, or ghee, use tbsp or tsp.
         - For packaged foods/drinks, use can, packet, bar, scoop, or bowl only when that unit is visible or strongly implied.
         - grams_per_unit is grams for one unit. For countable units, use total grams / visible quantity. For ml, use grams per ml.
-        - Return [] only if no non-gram unit is apparent.
-
-        Good outputs:
-        {"unit_options":[{"unit":"slice","quantity":8.0,"grams_per_unit":45.0}]}
-        {"unit_options":[{"unit":"ml","quantity":250.0,"grams_per_unit":1.03},{"unit":"cup","quantity":1.0,"grams_per_unit":250.0}]}
-        {"unit_options":[{"unit":"tbsp","quantity":2.0,"grams_per_unit":16.0}]}
-        {"unit_options":[{"unit":"can","quantity":1.0,"grams_per_unit":330.0}]}
-        {"unit_options":[{"unit":"piece","quantity":5.0,"grams_per_unit":18.0}]}
+        - Return [] when the evidence does not support a reliable non-gram option.
         """
 
         let text = try await callAI(prompt: prompt, image: image)
         return try parseServingUnitOptions(from: text, servingSizeGrams: servingSizeGrams)
+    }
+
+    private struct ParsedInitialServingUnitOptions {
+        var options: [ServingUnitOption]
+        var requiresFallback: Bool
+    }
+
+    private static func parseInitialServingUnitOptions(
+        from json: [String: Any],
+        servingSizeGrams: Double?
+    ) -> ParsedInitialServingUnitOptions {
+        guard let rawValue = json["unit_options"] ?? json["serving_unit_options"] else {
+            return ParsedInitialServingUnitOptions(options: [], requiresFallback: true)
+        }
+        guard let rawOptions = rawValue as? [Any] else {
+            return ParsedInitialServingUnitOptions(options: [], requiresFallback: true)
+        }
+        guard !rawOptions.isEmpty else {
+            return ParsedInitialServingUnitOptions(options: [], requiresFallback: false)
+        }
+
+        var seen = Set<String>()
+        var options: [ServingUnitOption] = []
+        for rawValue in rawOptions {
+            guard let raw = rawValue as? [String: Any],
+                  let unit = raw["unit"] as? String,
+                  let quantity = strictJSONNumber(raw["quantity"]),
+                  let gramsPerUnit = strictJSONNumber(raw["grams_per_unit"] ?? raw["gramsPerUnit"]),
+                  quantity > 0,
+                  gramsPerUnit > 0
+            else {
+                return ParsedInitialServingUnitOptions(options: [], requiresFallback: true)
+            }
+
+            let option = ServingUnitOption(
+                unit: unit,
+                gramsPerUnit: gramsPerUnit,
+                quantity: quantity
+            )
+            guard option.isValid,
+                  !option.isGramUnit,
+                  servingUnitTotalIsConsistent(
+                    quantity: quantity,
+                    gramsPerUnit: gramsPerUnit,
+                    servingSizeGrams: servingSizeGrams
+                  )
+            else {
+                return ParsedInitialServingUnitOptions(options: [], requiresFallback: true)
+            }
+
+            if !seen.contains(option.id) {
+                seen.insert(option.id)
+                options.append(option)
+            }
+        }
+
+        return ParsedInitialServingUnitOptions(
+            options: Array(options.prefix(4)),
+            requiresFallback: false
+        )
+    }
+
+    private static func strictJSONNumber(_ value: Any?) -> Double? {
+        guard let number = value as? NSNumber,
+              CFGetTypeID(number) != CFBooleanGetTypeID()
+        else { return nil }
+        let result = number.doubleValue
+        return result.isFinite ? result : nil
+    }
+
+    private static func servingUnitTotalIsConsistent(
+        quantity: Double,
+        gramsPerUnit: Double,
+        servingSizeGrams: Double?
+    ) -> Bool {
+        guard let servingSizeGrams, servingSizeGrams > 0 else { return true }
+        let representedGrams = quantity * gramsPerUnit
+        let tolerance = max(5, servingSizeGrams * 0.15)
+        return abs(representedGrams - servingSizeGrams) <= tolerance
     }
 
     private static func parseServingUnitOptions(from text: String, servingSizeGrams: Double?) throws -> [ServingUnitOption] {
@@ -1337,44 +1434,10 @@ struct GeminiService {
         guard let data = jsonString.data(using: .utf8),
               let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
         else { throw AnalysisError.invalidResponse }
-        return parseServingUnitOptions(from: json, servingSizeGrams: servingSizeGrams)
-    }
-
-    private static func parseServingUnitOptions(from json: [String: Any], servingSizeGrams: Double?) -> [ServingUnitOption] {
-        let rawOptions = json["unit_options"] as? [[String: Any]]
-            ?? json["serving_unit_options"] as? [[String: Any]]
-            ?? []
-
-        var seen = Set<String>()
-        var options: [ServingUnitOption] = []
-        for raw in rawOptions {
-            guard let unit = raw["unit"] as? String,
-                  let gramsPerUnit = doubleValue(raw["grams_per_unit"] ?? raw["gramsPerUnit"])
-            else { continue }
-
-            var option = ServingUnitOption(
-                unit: unit,
-                gramsPerUnit: gramsPerUnit,
-                quantity: doubleValue(raw["quantity"])
-            )
-            if option.quantity == nil, let servingSizeGrams, gramsPerUnit > 0 {
-                option.quantity = servingSizeGrams / gramsPerUnit
-            }
-
-            guard option.isValid, !option.isGramUnit, !seen.contains(option.id) else { continue }
-            seen.insert(option.id)
-            options.append(option)
-        }
-        return Array(options.prefix(4))
-    }
-
-    private static func doubleValue(_ value: Any?) -> Double? {
-        if let number = value as? NSNumber {
-            return number.doubleValue
-        }
-        if let string = value as? String {
-            return Double(string)
-        }
-        return nil
+        let parsed = parseInitialServingUnitOptions(
+            from: json,
+            servingSizeGrams: servingSizeGrams
+        )
+        return parsed.requiresFallback ? [] : parsed.options
     }
 }
