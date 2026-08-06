@@ -1111,7 +1111,7 @@ struct HomeView: View {
                         contextDescription = ""
                     }
                 )
-                .presentationDetents([.fraction(0.68), .large])
+                .presentationDetents([.large])
                 .presentationDragIndicator(.visible)
             }
             .sheet(isPresented: $showContextSheet) {
