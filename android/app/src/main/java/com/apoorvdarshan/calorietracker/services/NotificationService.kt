@@ -10,6 +10,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.util.Log
+import com.apoorvdarshan.calorietracker.FudAIApp
 import com.apoorvdarshan.calorietracker.services.update.AndroidUpdateChecker
 import android.os.Build
 import androidx.core.app.NotificationCompat
@@ -17,6 +19,11 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.apoorvdarshan.calorietracker.MainActivity
 import com.apoorvdarshan.calorietracker.R
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import java.time.LocalDate
 import java.util.Calendar
 
 /**
@@ -237,7 +244,7 @@ class NotificationService(private val context: Context) {
     }
 }
 
-/** Fired by the alarm. Posts the notification and re-schedules the same alarm +24h. */
+/** Fired by the alarm. Posts the notification when eligible and re-schedules it +24h. */
 class ReminderReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val channel = intent.getStringExtra(NotificationService.EXTRA_CHANNEL) ?: return
@@ -245,6 +252,51 @@ class ReminderReceiver : BroadcastReceiver() {
         val text = intent.getStringExtra(NotificationService.EXTRA_TEXT) ?: return
         val request = intent.getIntExtra(NotificationService.EXTRA_REQUEST, -1)
 
+        // Re-arm first so suppressing today's streak nudge (or a transient storage failure)
+        // never disables tomorrow's explicitly enabled reminder.
+        rearm(context, intent, request)
+
+        if (channel != NotificationService.CHANNEL_STREAK) {
+            postNotification(context, channel, title, text, request)
+            return
+        }
+
+        val pendingResult = goAsync()
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val hasLoggedToday = try {
+                    val app = context.applicationContext as FudAIApp
+                    app.container.foodRepository
+                        .entriesForDate(LocalDate.now())
+                        .first()
+                        .isNotEmpty()
+                } catch (error: Exception) {
+                    // Fail open: a temporary DataStore read problem should not silently drop a
+                    // reminder the user explicitly enabled. Tomorrow is already re-armed above.
+                    Log.w(TAG, "Unable to check today's food entries", error)
+                    false
+                }
+
+                if (ReminderDispatchPolicy.shouldPost(
+                        isStreakReminder = true,
+                        hasLoggedToday = hasLoggedToday
+                    )
+                ) {
+                    postNotification(context, channel, title, text, request)
+                }
+            } finally {
+                pendingResult.finish()
+            }
+        }
+    }
+
+    private fun postNotification(
+        context: Context,
+        channel: String,
+        title: String,
+        text: String,
+        request: Int
+    ) {
         val open = PendingIntent.getActivity(
             context, 0,
             Intent(context, MainActivity::class.java).apply {
@@ -261,8 +313,9 @@ class ReminderReceiver : BroadcastReceiver() {
             .setAutoCancel(true)
             .build()
         NotificationManagerCompat.from(context).notifySafely(context, request, notif)
+    }
 
-        // Re-arm for +24h so the reminder fires daily.
+    private fun rearm(context: Context, intent: Intent, request: Int) {
         val am = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val nextFire = System.currentTimeMillis() + 24L * 60 * 60 * 1000
         val reIntent = Intent(context, ReminderReceiver::class.java).apply { putExtras(intent) }
@@ -271,6 +324,10 @@ class ReminderReceiver : BroadcastReceiver() {
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
         am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextFire, pi)
+    }
+
+    private companion object {
+        const val TAG = "ReminderReceiver"
     }
 }
 
