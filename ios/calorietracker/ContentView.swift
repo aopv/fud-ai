@@ -3013,17 +3013,25 @@ private struct AINumericKeyboardDismissalModifier: ViewModifier {
             .scrollDismissesKeyboard(.interactively)
             .toolbar {
                 ToolbarItemGroup(placement: .keyboard) {
-                    if focus.wrappedValue {
-                        Spacer()
-                        Button("Done") {
-                            focus.wrappedValue = false
-                        }
+                    Spacer()
+                    Button("Done") {
+                        dismissKeyboard()
                     }
                 }
             }
             .onDisappear {
-                focus.wrappedValue = false
+                dismissKeyboard()
             }
+    }
+
+    private func dismissKeyboard() {
+        focus.wrappedValue = false
+        UIApplication.shared.sendAction(
+            #selector(UIResponder.resignFirstResponder),
+            to: nil,
+            from: nil,
+            for: nil
+        )
     }
 }
 
