@@ -155,6 +155,7 @@ import com.apoorvdarshan.calorietracker.models.WeightGoal
 import com.apoorvdarshan.calorietracker.models.WaterUnit
 import com.apoorvdarshan.calorietracker.models.WorkoutRpeScale
 import com.apoorvdarshan.calorietracker.models.WorkoutSplit
+import com.apoorvdarshan.calorietracker.services.health.HealthConnectAvailability
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -226,6 +227,15 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
     val notifDeniedMsg = stringResource(R.string.settings_notifications_denied)
     val healthDeniedMsg = stringResource(R.string.settings_health_denied)
     val healthUnavailableMsg = stringResource(R.string.settings_health_unavailable)
+    val healthProfileUnsupportedMsg = stringResource(R.string.settings_health_profile_unsupported)
+    val healthSystemUnavailableMsg = stringResource(R.string.settings_health_system_unavailable)
+
+    fun healthAvailabilityMessage(): String = when (container.health.availability()) {
+        HealthConnectAvailability.PROFILE_UNSUPPORTED -> healthProfileUnsupportedMsg
+        HealthConnectAvailability.PROVIDER_UPDATE_REQUIRED -> healthUnavailableMsg
+        HealthConnectAvailability.UNAVAILABLE,
+        HealthConnectAvailability.AVAILABLE -> healthSystemUnavailableMsg
+    }
 
     val notificationLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
@@ -254,7 +264,7 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
 
     fun openHealthConnectAccess() {
         runCatching { activityContext.startActivity(container.health.manageAccessIntent()) }
-            .onFailure { permissionDeniedMessage = healthUnavailableMsg }
+            .onFailure { permissionDeniedMessage = healthAvailabilityMessage() }
     }
 
     fun onNotificationsToggle(enabled: Boolean) {
@@ -279,7 +289,7 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
             return
         }
         if (!container.health.isAvailable()) {
-            permissionDeniedMessage = healthUnavailableMsg
+            permissionDeniedMessage = healthAvailabilityMessage()
             return
         }
         // Don't pre-check granted state — Health Connect's contract handles the
@@ -294,7 +304,7 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
             return
         }
         if (!container.health.isAvailable()) {
-            permissionDeniedMessage = healthUnavailableMsg
+            permissionDeniedMessage = healthAvailabilityMessage()
             return
         }
         pendingHealthPermissionAction = HealthConnectPermissionAction.ENERGY_GOALS

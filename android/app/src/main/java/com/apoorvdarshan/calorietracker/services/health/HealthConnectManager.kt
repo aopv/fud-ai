@@ -3,6 +3,7 @@ package com.apoorvdarshan.calorietracker.services.health
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.os.UserManager
 import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.PermissionController
 import androidx.health.connect.client.changes.UpsertionChange
@@ -47,14 +48,50 @@ import kotlin.math.roundToInt
  * - The "typesVersion" integer bumps when we add new record types so existing
  *   users get a re-authorization prompt.
  */
+enum class HealthConnectAvailability {
+    AVAILABLE,
+    PROFILE_UNSUPPORTED,
+    PROVIDER_UPDATE_REQUIRED,
+    UNAVAILABLE
+}
+
+internal fun resolveHealthConnectAvailability(
+    isProfile: Boolean,
+    sdkAvailable: Boolean,
+    providerUpdateRequired: Boolean
+): HealthConnectAvailability = when {
+    isProfile -> HealthConnectAvailability.PROFILE_UNSUPPORTED
+    sdkAvailable -> HealthConnectAvailability.AVAILABLE
+    providerUpdateRequired -> HealthConnectAvailability.PROVIDER_UPDATE_REQUIRED
+    else -> HealthConnectAvailability.UNAVAILABLE
+}
+
 class HealthConnectManager(private val context: Context) {
 
     private val client: HealthConnectClient? by lazy {
         runCatching { HealthConnectClient.getOrCreate(context) }.getOrNull()
     }
 
-    fun isAvailable(): Boolean =
-        HealthConnectClient.getSdkStatus(context) == HealthConnectClient.SDK_AVAILABLE
+    /**
+     * Health Connect rejects every secondary Android profile on Android 14+, including Work
+     * Profile and Private Space. The system permission screen can still show Fud AI as approved,
+     * so preserve that reason instead of misreporting the framework service as uninstalled.
+     */
+    fun availability(): HealthConnectAvailability {
+        val isProfile = Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE &&
+            runCatching {
+                (context.getSystemService(Context.USER_SERVICE) as? UserManager)?.isProfile == true
+            }.getOrDefault(false)
+        val sdkStatus = HealthConnectClient.getSdkStatus(context)
+        return resolveHealthConnectAvailability(
+            isProfile = isProfile,
+            sdkAvailable = sdkStatus == HealthConnectClient.SDK_AVAILABLE,
+            providerUpdateRequired =
+                sdkStatus == HealthConnectClient.SDK_UNAVAILABLE_PROVIDER_UPDATE_REQUIRED
+        )
+    }
+
+    fun isAvailable(): Boolean = availability() == HealthConnectAvailability.AVAILABLE
 
     // Individual permission strings so each direction can be gated independently.
     // The old all-or-nothing gate meant a user who granted only READ (e.g. to pull

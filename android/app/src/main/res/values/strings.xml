@@ -653,7 +653,9 @@
     <string name="notif_body_fat_log_title">Body fat check-in</string>
     <string name="notif_body_fat_log_text">Log today\'s body fat % to track your composition trend.</string>
     <string name="settings_health_denied">Health Connect did not grant access. Open Health Connect and allow the data types you want Fud AI to sync. Energy-based goals require both Active and Total Calories.</string>
-    <string name="settings_health_unavailable">Health Connect isn\'t available on this device. Install it from the Play Store, then re-tap the toggle.</string>
+    <string name="settings_health_unavailable">Install or update Health Connect from the Play Store, then re-tap the toggle.</string>
+    <string name="settings_health_profile_unsupported">Health Connect can show Fud AI as approved, but Android does not allow Health Connect from a Work Profile, Private Space, or cloned app profile. Install and open Fud AI in your phone\'s main profile.</string>
+    <string name="settings_health_system_unavailable">Health Connect\'s system service is unavailable. It requires Android 9 or newer; on a newer phone, install Android and Google Play system updates, restart, then try again.</string>
 
     <!-- Settings sheets / pickers -->
     <string name="sheet_ai_provider">AI Provider</string>
