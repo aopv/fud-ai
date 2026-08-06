@@ -59,7 +59,7 @@ fun MultiPhotoCaptureSheet(
     onAnalyze: (String?, Boolean) -> Unit,
     onDismiss: () -> Unit
 ) {
-    val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val state = rememberModalBottomSheetState(skipPartiallyExpanded = false)
     var note by remember { mutableStateOf("") }
     var progressiveMeal by remember { mutableStateOf(false) }
     var showProgressiveInfo by remember { mutableStateOf(false) }
