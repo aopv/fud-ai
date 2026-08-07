@@ -2,6 +2,15 @@
 
 Open Public Domain Exercise Dataset in `JSON` format, 800+ exercises with a browsable public searchable frontend
 
+### Fud AI local additions
+
+The following exercise records and images are project-local additions and are not part of the upstream Free Exercise DB dataset:
+
+* `Behind_The_Back_Cable_Wrist_Curl`
+* `Cable_Reverse_Wrist_Curl_Palms_Down`
+
+Their paired JPEG assets were generated with OpenAI image generation, visually reviewed for exercise continuity, and normalized to the existing `850x567` exercise-image format.
+
 ### Why?
 
 I started building another fitness related app and was looking for free/open source exercise lists and imagery I stumbled upon

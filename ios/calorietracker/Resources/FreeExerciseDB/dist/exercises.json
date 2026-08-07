@@ -1796,6 +1796,31 @@
     "id": "Bear_Crawl_Sled_Drags"
   },
   {
+    "name": "Behind-the-Back Cable Wrist Curl",
+    "force": "pull",
+    "level": "beginner",
+    "mechanic": "isolation",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "forearms"
+    ],
+    "secondaryMuscles": [],
+    "instructions": [
+      "Attach a straight bar to a low cable pulley and select a light, controllable weight.",
+      "Stand facing away from the machine and hold the bar behind your upper thighs with a shoulder-width grip, palms facing backward. Keep your torso upright and your arms straight.",
+      "Allow your wrists to extend so the bar lowers slightly while the cable remains taut. This is the starting position.",
+      "Keeping your elbows, shoulders, and torso still, curl the bar upward by flexing only your wrists.",
+      "Pause briefly at the top and squeeze your forearms.",
+      "Lower the bar under control by extending your wrists, then repeat for the recommended number of repetitions."
+    ],
+    "category": "strength",
+    "images": [
+      "Behind_The_Back_Cable_Wrist_Curl_0.jpg",
+      "Behind_The_Back_Cable_Wrist_Curl_1.jpg"
+    ],
+    "id": "Behind_The_Back_Cable_Wrist_Curl"
+  },
+  {
     "name": "Behind Head Chest Stretch",
     "force": "static",
     "level": "expert",
@@ -3261,6 +3286,31 @@
       "Cable_Reverse_Crunch_1.jpg"
     ],
     "id": "Cable_Reverse_Crunch"
+  },
+  {
+    "name": "Cable Reverse Wrist Curl (Palms Down)",
+    "force": "pull",
+    "level": "beginner",
+    "mechanic": "isolation",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "forearms"
+    ],
+    "secondaryMuscles": [],
+    "instructions": [
+      "Place a bench in front of a low cable pulley fitted with a straight bar and select a light, controllable weight.",
+      "Sit facing the pulley and hold the bar with a shoulder-width pronated grip, palms facing down.",
+      "Rest your forearms on your thighs with your wrists just beyond your knees, then allow your wrists to flex downward while keeping the cable taut. This is the starting position.",
+      "Keeping your forearms and elbows stationary, extend your wrists to raise the backs of your hands and lift the bar.",
+      "Pause briefly at the top and squeeze the muscles along the top of your forearms.",
+      "Lower the bar slowly to the starting position, then repeat for the recommended number of repetitions."
+    ],
+    "category": "strength",
+    "images": [
+      "Cable_Reverse_Wrist_Curl_Palms_Down_0.jpg",
+      "Cable_Reverse_Wrist_Curl_Palms_Down_1.jpg"
+    ],
+    "id": "Cable_Reverse_Wrist_Curl_Palms_Down"
   },
   {
     "name": "Cable Rope Overhead Triceps Extension",
