@@ -9,7 +9,7 @@ Fud AI - Calorie Tracker
 
 ## Subtitle (30 chars max)
 ```
-Macros, Fasting & Workouts
+Macros, AI Coach & Workouts
 ```
 
 ## Promotional Text (170 chars max)
