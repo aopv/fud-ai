@@ -93,6 +93,14 @@ enum QuickActionCoordinator {
 
     static func shortcutType(for slot: Int) -> String { shortcutPrefix + String(slot + 1) }
 
+    static func slot(forShortcutType type: String) -> Int? {
+        guard type.hasPrefix(shortcutPrefix),
+              let slotNumber = Int(type.dropFirst(shortcutPrefix.count)),
+              (1...3).contains(slotNumber)
+        else { return nil }
+        return slotNumber - 1
+    }
+
     @MainActor
     static func request(_ action: QuickAction) {
         UserDefaults.standard.set(action.rawValue, forKey: pendingKey)
@@ -107,11 +115,8 @@ enum QuickActionCoordinator {
 
     @MainActor
     static func handle(_ shortcutItem: UIApplicationShortcutItem) -> Bool {
-        guard shortcutItem.type.hasPrefix(shortcutPrefix),
-              let slotNumber = Int(shortcutItem.type.dropFirst(shortcutPrefix.count)),
-              (1...3).contains(slotNumber)
-        else { return false }
-        request(QuickActionSettings.action(for: slotNumber - 1))
+        guard let slot = slot(forShortcutType: shortcutItem.type) else { return false }
+        request(QuickActionSettings.action(for: slot))
         return true
     }
 }

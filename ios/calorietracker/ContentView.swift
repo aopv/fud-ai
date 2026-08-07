@@ -111,6 +111,7 @@ private enum AppUpdateChecker {
 // MARK: - Main Content View
 struct ContentView: View {
     @Environment(NotificationManager.self) private var notificationManager
+    @Environment(\.scenePhase) private var scenePhase
     @AppStorage(AppThemeColor.storageKey) private var appThemeColorRaw = AppThemeColor.defaultColor.rawValue
     @AppStorage(WorkoutTabMode.storageKey) private var workoutTabModeRaw = WorkoutTabMode.defaultMode.rawValue
     @State private var appUpdateState: AppUpdateState = .idle
@@ -130,6 +131,11 @@ struct ContentView: View {
             }
             .onReceive(NotificationCenter.default.publisher(for: .quickActionRequested)) { _ in
                 consumePendingQuickAction()
+            }
+            .onChange(of: scenePhase) { _, newPhase in
+                if newPhase == .active {
+                    consumePendingQuickAction()
+                }
             }
     }
 

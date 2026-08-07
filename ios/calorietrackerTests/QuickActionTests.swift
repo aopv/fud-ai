@@ -24,4 +24,11 @@ struct QuickActionTests {
         #expect(QuickActionSettings.action(for: 0, store: store) == .favorites)
         #expect(QuickActionSettings.action(for: 1, store: store) == .voice)
     }
+
+    @Test func shortcutTypesMapOnlyToTheThreeSupportedSlots() {
+        #expect(QuickActionCoordinator.slot(forShortcutType: QuickActionCoordinator.shortcutType(for: 0)) == 0)
+        #expect(QuickActionCoordinator.slot(forShortcutType: QuickActionCoordinator.shortcutType(for: 2)) == 2)
+        #expect(QuickActionCoordinator.slot(forShortcutType: "com.apoorvdarshan.calorietracker.quickAction.4") == nil)
+        #expect(QuickActionCoordinator.slot(forShortcutType: "unrelated") == nil)
+    }
 }
