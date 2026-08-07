@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.util.Calendar
+import kotlin.math.roundToInt
 
 /**
  * Schedules + fires the local reminders the app supports:
@@ -256,6 +257,11 @@ class ReminderReceiver : BroadcastReceiver() {
         // never disables tomorrow's explicitly enabled reminder.
         rearm(context, intent, request)
 
+        if (channel == NotificationService.CHANNEL_DAILY) {
+            postDailySummary(context, title, text, request)
+            return
+        }
+
         if (channel != NotificationService.CHANNEL_STREAK) {
             postNotification(context, channel, title, text, request)
             return
@@ -290,6 +296,69 @@ class ReminderReceiver : BroadcastReceiver() {
         }
     }
 
+    private fun postDailySummary(
+        context: Context,
+        title: String,
+        fallbackText: String,
+        request: Int
+    ) {
+        val pendingResult = goAsync()
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val dynamicText = runCatching { dailySummaryText(context) }
+                    .onFailure { Log.w(TAG, "Unable to build measured daily summary", it) }
+                    .getOrNull()
+                postNotification(
+                    context = context,
+                    channel = NotificationService.CHANNEL_DAILY,
+                    title = title,
+                    text = dynamicText ?: fallbackText,
+                    request = request
+                )
+            } finally {
+                pendingResult.finish()
+            }
+        }
+    }
+
+    private suspend fun dailySummaryText(context: Context): String? {
+        val app = context.applicationContext as? FudAIApp ?: return null
+        val container = app.container
+        if (!container.prefs.healthConnectEnabled.first()) return null
+        if (!container.health.hasEnergyRead() || !container.health.hasBackgroundRead()) return null
+
+        val today = LocalDate.now()
+        val energy = container.health.readEnergyForDay(today) ?: return null
+        val profileBmr = container.profileRepository.current()?.bmr?.roundToInt()
+        val burned = DailySummaryPolicy.resolveBurnedCalories(
+            measuredTotalCalories = energy.totalCalories,
+            externalActiveCalories = energy.activeCalories,
+            profileBmrCalories = profileBmr
+        ) ?: return null
+        val eaten = container.foodRepository.entriesForDate(today).first().sumOf { it.calories }
+        val balance = DailySummaryPolicy.balance(eatenCalories = eaten, burnedCalories = burned)
+
+        return when (balance.direction) {
+            CalorieBalanceDirection.DEFICIT -> context.getString(
+                R.string.notif_summary_deficit,
+                balance.eatenCalories,
+                balance.burnedCalories,
+                balance.differenceCalories
+            )
+            CalorieBalanceDirection.SURPLUS -> context.getString(
+                R.string.notif_summary_surplus,
+                balance.eatenCalories,
+                balance.burnedCalories,
+                balance.differenceCalories
+            )
+            CalorieBalanceDirection.BALANCED -> context.getString(
+                R.string.notif_summary_balanced,
+                balance.eatenCalories,
+                balance.burnedCalories
+            )
+        }
+    }
+
     private fun postNotification(
         context: Context,
         channel: String,
@@ -309,6 +378,7 @@ class ReminderReceiver : BroadcastReceiver() {
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle(title)
             .setContentText(text)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(text))
             .setContentIntent(open)
             .setAutoCancel(true)
             .build()

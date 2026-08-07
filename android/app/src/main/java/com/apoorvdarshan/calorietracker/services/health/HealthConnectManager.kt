@@ -105,11 +105,16 @@ class HealthConnectManager(private val context: Context) {
     private val activeEnergyRead = HealthPermission.getReadPermission(ActiveCaloriesBurnedRecord::class)
     private val activeEnergyWrite = HealthPermission.getWritePermission(ActiveCaloriesBurnedRecord::class)
     private val totalEnergyRead = HealthPermission.getReadPermission(TotalCaloriesBurnedRecord::class)
+    private val backgroundRead = HealthPermission.PERMISSION_READ_HEALTH_DATA_IN_BACKGROUND
 
     val permissions: Set<String> = setOf(
         weightRead, weightWrite, nutritionRead, nutritionWrite,
         bodyFatRead, bodyFatWrite, activeEnergyRead, activeEnergyWrite, totalEnergyRead
     )
+
+    /** Requested only when Daily Summary is enabled. Keeping it out of [permissions]
+     *  avoids asking every Health Connect user for background access. */
+    val dailySummaryPermissions: Set<String> = permissions + backgroundRead
 
     private suspend fun granted(): Set<String> =
         runCatching { client?.permissionController?.getGrantedPermissions() }.getOrNull() ?: emptySet()
@@ -127,6 +132,7 @@ class HealthConnectManager(private val context: Context) {
     suspend fun hasActiveEnergyRead(): Boolean = activeEnergyRead in granted()
     suspend fun hasActiveEnergyWrite(): Boolean = activeEnergyWrite in granted()
     suspend fun hasEnergyRead(): Boolean = granted().let { activeEnergyRead in it && totalEnergyRead in it }
+    suspend fun hasBackgroundRead(): Boolean = backgroundRead in granted()
 
     /** One permission read snapshotting every capability — used by the read-sync coordinator. */
     suspend fun capabilities(): HealthCapabilities {
@@ -525,7 +531,6 @@ class HealthConnectManager(private val context: Context) {
     // -- Energy burn summary --------------------------------------------
 
     suspend fun readRecentEnergySummary(days: Int = 14): HealthEnergySummary? {
-        val c = client ?: return null
         val requestedDays = maxOf(3, days)
         val zone = ZoneId.systemDefault()
         val today = LocalDate.now(zone)
@@ -535,39 +540,7 @@ class HealthConnectManager(private val context: Context) {
             val date = today.minusDays(offset.toLong())
             val start = date.atStartOfDay(zone).toInstant()
             val end = date.plusDays(1).atStartOfDay(zone).toInstant()
-            val result = runCatching {
-                c.aggregate(
-                    AggregateRequest(
-                        metrics = setOf(
-                            ActiveCaloriesBurnedRecord.ACTIVE_CALORIES_TOTAL,
-                            TotalCaloriesBurnedRecord.ENERGY_TOTAL
-                        ),
-                        timeRangeFilter = TimeRangeFilter.between(start, end)
-                    )
-                )
-            }.getOrNull() ?: continue
-
-            // Fud AI's workout burns are explicitly requested estimates. Keep
-            // them in Health Connect history, but do not feed them back into the
-            // measured-TDEE/adaptive-goal anchor. Active energy is the only type
-            // this app writes, so subtracting this package's origin cleanly
-            // excludes all of our estimates without affecting external sources.
-            val ownActiveResult = runCatching {
-                c.aggregate(
-                    AggregateRequest(
-                        metrics = setOf(ActiveCaloriesBurnedRecord.ACTIVE_CALORIES_TOTAL),
-                        timeRangeFilter = TimeRangeFilter.between(start, end),
-                        dataOriginFilter = setOf(DataOrigin(context.packageName))
-                    )
-                )
-            }.getOrNull() ?: continue
-
-            val allActive = result[ActiveCaloriesBurnedRecord.ACTIVE_CALORIES_TOTAL]?.inKilocalories ?: 0.0
-            val ownActive = ownActiveResult[ActiveCaloriesBurnedRecord.ACTIVE_CALORIES_TOTAL]?.inKilocalories ?: 0.0
-            val active = externalActiveCalories(allActive, ownActive)
-            val total = result[TotalCaloriesBurnedRecord.ENERGY_TOTAL]?.inKilocalories?.takeIf { it > 0.0 }
-            if (active + (total ?: 0.0) <= 0.0) continue
-            daily.add(DailyEnergy(active = active, total = total))
+            readDailyEnergy(start, end)?.let(daily::add)
         }
 
         if (daily.size < 3) return null
@@ -583,6 +556,56 @@ class HealthConnectManager(private val context: Context) {
             daysUsed = daily.size,
             requestedDays = requestedDays
         )
+    }
+
+    /** Measured burn for one local calendar day. Used by the existing nightly
+     *  notification; callers fall back to its current static text when Health
+     *  Connect cannot be read in the background. */
+    suspend fun readEnergyForDay(date: LocalDate): HealthDailyEnergy? {
+        val zone = ZoneId.systemDefault()
+        val start = date.atStartOfDay(zone).toInstant()
+        val end = minOf(date.plusDays(1).atStartOfDay(zone).toInstant(), Instant.now())
+        if (!end.isAfter(start)) return null
+        val daily = readDailyEnergy(start, end) ?: return null
+        return HealthDailyEnergy(
+            activeCalories = daily.active.roundToInt(),
+            totalCalories = daily.total?.roundToInt()
+        )
+    }
+
+    private suspend fun readDailyEnergy(start: Instant, end: Instant): DailyEnergy? {
+        val c = client ?: return null
+        val result = runCatching {
+            c.aggregate(
+                AggregateRequest(
+                    metrics = setOf(
+                        ActiveCaloriesBurnedRecord.ACTIVE_CALORIES_TOTAL,
+                        TotalCaloriesBurnedRecord.ENERGY_TOTAL
+                    ),
+                    timeRangeFilter = TimeRangeFilter.between(start, end)
+                )
+            )
+        }.getOrNull() ?: return null
+
+        // Fud AI's workout burns are estimates. Keep them in Health Connect,
+        // but subtract this app's origin so the nightly balance cannot count
+        // the same workout once as measured burn and again as an app estimate.
+        val ownActiveResult = runCatching {
+            c.aggregate(
+                AggregateRequest(
+                    metrics = setOf(ActiveCaloriesBurnedRecord.ACTIVE_CALORIES_TOTAL),
+                    timeRangeFilter = TimeRangeFilter.between(start, end),
+                    dataOriginFilter = setOf(DataOrigin(context.packageName))
+                )
+            )
+        }.getOrNull() ?: return null
+
+        val allActive = result[ActiveCaloriesBurnedRecord.ACTIVE_CALORIES_TOTAL]?.inKilocalories ?: 0.0
+        val ownActive = ownActiveResult[ActiveCaloriesBurnedRecord.ACTIVE_CALORIES_TOTAL]?.inKilocalories ?: 0.0
+        val active = externalActiveCalories(allActive, ownActive)
+        val total = result[TotalCaloriesBurnedRecord.ENERGY_TOTAL]?.inKilocalories?.takeIf { it > 0.0 }
+        if (active + (total ?: 0.0) <= 0.0) return null
+        return DailyEnergy(active = active, total = total)
     }
 
     // -- Change observation (external weight imports) --------------------
@@ -817,4 +840,9 @@ data class HealthEnergySummary(
     val totalAverageCalories: Int?,
     val daysUsed: Int,
     val requestedDays: Int
+)
+
+data class HealthDailyEnergy(
+    val activeCalories: Int,
+    val totalCalories: Int?
 )

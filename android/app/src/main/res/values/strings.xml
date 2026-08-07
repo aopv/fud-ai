@@ -760,6 +760,9 @@
     <string name="notif_streak_text">Keep your streak going — log something from today.</string>
     <string name="notif_summary_title">Today\'s summary is ready</string>
     <string name="notif_summary_text">Tap to see how today\'s macros lined up.</string>
+    <string name="notif_summary_deficit">%1$d kcal eaten · %2$d burned · %3$d kcal estimated deficit</string>
+    <string name="notif_summary_surplus">%1$d kcal eaten · %2$d burned · %3$d kcal estimated surplus</string>
+    <string name="notif_summary_balanced">%1$d kcal eaten · %2$d burned · estimated balance</string>
 
     <string name="widget_all_metrics_label">Fud AI Today</string>
     <string name="widget_all_metrics_description">See today\'s calories, protein, carbs, and fat in one widget.</string>

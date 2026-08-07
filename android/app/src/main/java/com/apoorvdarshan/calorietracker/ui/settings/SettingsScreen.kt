@@ -205,7 +205,7 @@ private enum class SettingsSheet {
 }
 
 private enum class HealthConnectPermissionAction {
-    SYNC, ENERGY_GOALS
+    SYNC, ENERGY_GOALS, DAILY_SUMMARY
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -293,6 +293,7 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
             when (action) {
                 HealthConnectPermissionAction.SYNC -> vm.setHealthConnectEnabled(true)
                 HealthConnectPermissionAction.ENERGY_GOALS -> vm.setHealthEnergyGoalsEnabled(true)
+                HealthConnectPermissionAction.DAILY_SUMMARY -> vm.setDailySummaryEnabled(true)
             }
         } else {
             showHealthPermissionHelp = true
@@ -320,6 +321,22 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
         }
     }
 
+    fun onDailySummaryToggle(enabled: Boolean) {
+        if (!enabled) {
+            vm.setDailySummaryEnabled(false)
+            return
+        }
+        // The existing notification remains available without Health Connect.
+        // When Health is connected, request background read only for this opt-in
+        // so its scheduled alarm can replace the static text with measured burn.
+        if (!ui.healthConnectEnabled || !container.health.isAvailable()) {
+            vm.setDailySummaryEnabled(true)
+            return
+        }
+        pendingHealthPermissionAction = HealthConnectPermissionAction.DAILY_SUMMARY
+        healthConnectLauncher.launch(container.health.dailySummaryPermissions)
+    }
+
     fun onHealthConnectToggle(enabled: Boolean) {
         if (!enabled) {
             vm.setHealthConnectEnabled(false)
@@ -332,7 +349,10 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
         // Don't pre-check granted state — Health Connect's contract handles the
         // already-granted case by returning the full set immediately.
         pendingHealthPermissionAction = HealthConnectPermissionAction.SYNC
-        healthConnectLauncher.launch(container.health.permissions)
+        healthConnectLauncher.launch(
+            if (ui.dailySummaryEnabled) container.health.dailySummaryPermissions
+            else container.health.permissions
+        )
     }
 
     fun onHealthEnergyGoalsToggle(enabled: Boolean) {
@@ -662,7 +682,11 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                 ToggleRow(stringResource(R.string.settings_notifications), ui.notificationsEnabled, icon = Icons.Outlined.Notifications, onChange = ::onNotificationsToggle)
                 if (ui.notificationsEnabled) {
                     HorizontalDivider()
-                    NotificationTypeRows(ui = ui, vm = vm)
+                    NotificationTypeRows(
+                        ui = ui,
+                        vm = vm,
+                        onDailySummaryChange = ::onDailySummaryToggle
+                    )
                     HorizontalDivider()
                     SettingRow(
                         stringResource(R.string.settings_battery_opt),
@@ -1184,7 +1208,11 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
 }
 
 @Composable
-private fun NotificationTypeRows(ui: SettingsUiState, vm: SettingsViewModel) {
+private fun NotificationTypeRows(
+    ui: SettingsUiState,
+    vm: SettingsViewModel,
+    onDailySummaryChange: (Boolean) -> Unit
+) {
     Text(
         stringResource(R.string.settings_notification_types),
         style = MaterialTheme.typography.labelMedium,
@@ -1202,7 +1230,7 @@ private fun NotificationTypeRows(ui: SettingsUiState, vm: SettingsViewModel) {
         stringResource(R.string.settings_notif_daily_summary),
         ui.dailySummaryEnabled,
         icon = Icons.Outlined.GraphicEq,
-        onChange = vm::setDailySummaryEnabled
+        onChange = onDailySummaryChange
     )
     HorizontalDivider()
     ToggleRow(
