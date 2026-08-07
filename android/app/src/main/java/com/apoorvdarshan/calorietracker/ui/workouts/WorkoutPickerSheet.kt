@@ -225,6 +225,7 @@ internal fun WorkoutPickerSheet(
             if (previewItem != null) previewItem = null else onDismiss()
         },
         sheetState = sheetState,
+        sheetGesturesEnabled = previewItem == null,
         shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
         containerColor = MaterialTheme.colorScheme.background,
         dragHandle = null
