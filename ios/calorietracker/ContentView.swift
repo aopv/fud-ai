@@ -2250,7 +2250,7 @@ struct MultiPhotoCaptureSheet: View {
                     )
 
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Add a note (optional)")
+                        Text("Note for food analysis (optional)")
                             .font(.system(.subheadline, design: .rounded, weight: .semibold))
                             .foregroundStyle(.secondary)
                         TextField(
@@ -2328,7 +2328,7 @@ struct ContextDescriptionSheet: View {
                     }
 
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Add context (optional)")
+                        Text("Note for food analysis (optional)")
                             .font(.system(.subheadline, design: .rounded, weight: .semibold))
                             .foregroundStyle(.secondary)
 

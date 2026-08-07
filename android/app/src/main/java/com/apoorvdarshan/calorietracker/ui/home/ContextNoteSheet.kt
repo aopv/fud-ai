@@ -210,7 +210,7 @@ fun MultiPhotoCaptureSheet(
                 Modifier.fillMaxWidth().padding(horizontal = 20.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                SheetSectionHeader("Add a note (optional)")
+                SheetSectionHeader("Note for food analysis (optional)")
                 OutlinedTextField(
                     value = note,
                     onValueChange = { note = it },
