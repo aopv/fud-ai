@@ -2127,12 +2127,7 @@ private struct NativeSheetToolbarButton: View {
     let action: () -> Void
 
     var body: some View {
-        if #available(iOS 26.0, *) {
-            button
-                .buttonStyle(.glass)
-        } else {
-            button
-        }
+        button
     }
 
     private var button: some View {
