@@ -4,6 +4,7 @@ package com.apoorvdarshan.calorietracker.ui.workouts
 
 import android.content.Context
 import android.view.inputmethod.InputMethodManager
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
@@ -50,6 +51,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -228,9 +230,14 @@ internal fun WorkoutPickerSheet(
         sheetGesturesEnabled = previewItem == null,
         shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
         containerColor = MaterialTheme.colorScheme.background,
-        dragHandle = null
+        dragHandle = null,
+        properties = ModalBottomSheetProperties(
+            shouldDismissOnBackPress = previewItem == null,
+            shouldDismissOnClickOutside = previewItem == null
+        )
     ) {
         val preview = previewItem
+        BackHandler(enabled = preview != null) { previewItem = null }
         if (preview != null) {
             ExercisePickerPreview(
                 item = preview,
