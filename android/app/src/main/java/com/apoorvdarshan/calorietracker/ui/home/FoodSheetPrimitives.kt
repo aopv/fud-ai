@@ -423,16 +423,6 @@ internal fun ServingQuantityCard(
             val liveResult = ServingAmountExpression.evaluate(quantityFieldValue.text)
                 ?.takeIf { it > 0 && ServingAmountExpression.containsOperation(quantityFieldValue.text) }
             SheetHairline()
-            if (liveResult != null) {
-                Text(
-                    "= ${ServingUnitOption.formatQuantity(liveResult)} $selectedUnitLabel",
-                    color = AppColors.Calorie,
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    textAlign = TextAlign.End,
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 6.dp)
-                )
-            }
             Row(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
@@ -449,7 +439,10 @@ internal fun ServingQuantityCard(
                         focusRequester.requestFocus()
                     }
                 }
-                SheetCalculatorKey("=", emphasized = true) {
+                val equalsLabel = liveResult
+                    ?.let { "= ${ServingUnitOption.formatQuantity(it)}" }
+                    ?: "="
+                SheetCalculatorKey(equalsLabel, emphasized = true) {
                     ServingAmountExpression.evaluate(quantityFieldValue.text)
                         ?.takeIf { it > 0 }
                         ?.let { updateQuantity(ServingUnitOption.formatQuantity(it)) }
@@ -497,8 +490,14 @@ private fun RowScope.SheetCalculatorKey(
         Text(
             label,
             color = if (emphasized) Color.White else MaterialTheme.colorScheme.onSurface,
-            fontSize = 17.sp,
-            fontWeight = FontWeight.SemiBold
+            fontSize = when {
+                label.length > 7 -> 12.sp
+                label.length > 4 -> 14.sp
+                else -> 17.sp
+            },
+            fontWeight = FontWeight.SemiBold,
+            maxLines = 1,
+            softWrap = false
         )
     }
 }
