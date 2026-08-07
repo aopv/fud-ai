@@ -14,7 +14,6 @@ import com.apoorvdarshan.calorietracker.data.WorkoutHealthSync
 import com.apoorvdarshan.calorietracker.data.WorkoutRepository
 import com.apoorvdarshan.calorietracker.services.FoodImageStore
 import com.apoorvdarshan.calorietracker.services.NotificationService
-import com.apoorvdarshan.calorietracker.services.TestDataSeeder
 import com.apoorvdarshan.calorietracker.services.WidgetSnapshotWriter
 import com.apoorvdarshan.calorietracker.services.AdaptiveGoalResult
 import com.apoorvdarshan.calorietracker.services.WeightAnalysisService
@@ -181,8 +180,6 @@ class AppContainer(app: FudAIApp) {
     val speechService = SpeechService(prefs, keyStore)
 
     val widgetSnapshotWriter = WidgetSnapshotWriter(app, prefs, foodRepository, profileRepository)
-    val testDataSeeder = TestDataSeeder(this)
-
     /**
      * App-scoped flag set by [HomeViewModel] while a food analysis request is
      * in flight. The bottom nav reads this so the bar can hide during the

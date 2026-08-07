@@ -103,33 +103,6 @@ open class MainActivity : ComponentActivity() {
         }
 
         val container = (application as FudAIApp).container
-        // Dev-only seeders for verifying the Progress tab UI without polluting Health Connect.
-        // adb shell am start -n com.apoorvdarshan.calorietracker/.MainActivity --ez seed_test_data true
-        // adb shell am start -n com.apoorvdarshan.calorietracker/.MainActivity --ez restore_real_data true
-        // Extras are removed after handling so Activity.recreate() (used by Delete All
-        // Data) doesn't re-fire the same flag on the next onCreate.
-        if (intent?.getBooleanExtra("seed_test_data", false) == true) {
-            runBlocking { container.testDataSeeder.seedYear() }
-            intent.removeExtra("seed_test_data")
-        }
-        // Focused 30-day weight + body-fat seeder for verifying the v3.2 Body
-        // Fat chart + segmented Progress toggle without polluting food data.
-        // adb shell am start -n com.apoorvdarshan.calorietracker.debug/com.apoorvdarshan.calorietracker.MainActivity --ez seed_body_metrics true
-        if (intent?.getBooleanExtra("seed_body_metrics", false) == true) {
-            runBlocking { container.testDataSeeder.seedBodyMetrics() }
-            intent.removeExtra("seed_body_metrics")
-        }
-        // Long-range variant: 2 years of weight + body-fat for the 1Y / All
-        // ranges and the history lists.
-        // adb shell am start -n com.apoorvdarshan.calorietracker.debug/com.apoorvdarshan.calorietracker.MainActivity --ez seed_body_metrics_2y true
-        if (intent?.getBooleanExtra("seed_body_metrics_2y", false) == true) {
-            runBlocking { container.testDataSeeder.seedTwoYearsBodyMetrics() }
-            intent.removeExtra("seed_body_metrics_2y")
-        }
-        if (intent?.getBooleanExtra("restore_real_data", false) == true) {
-            runBlocking { container.testDataSeeder.restore() }
-            intent.removeExtra("restore_real_data")
-        }
         // A fudai://add-meal link may have cold-launched us.
         handleShareIntent(intent)
         handleQuickActionIntent(intent)
