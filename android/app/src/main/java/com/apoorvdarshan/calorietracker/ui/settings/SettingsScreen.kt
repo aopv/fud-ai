@@ -3192,6 +3192,14 @@ private fun OptionalNutrient.pickerRange(): IntRange = when (this) {
     OptionalNutrient.SATURATED_FAT -> 0..80
     OptionalNutrient.CHOLESTEROL -> 0..1000
     OptionalNutrient.CAFFEINE -> 0..1000
+    OptionalNutrient.CREATINE,
+    OptionalNutrient.BETA_ALANINE,
+    OptionalNutrient.L_CITRULLINE,
+    OptionalNutrient.L_CARNITINE,
+    OptionalNutrient.L_ARGININE,
+    OptionalNutrient.TAURINE,
+    OptionalNutrient.BETAINE,
+    OptionalNutrient.HMB -> 0..50
     OptionalNutrient.SODIUM -> 0..5000
     OptionalNutrient.POTASSIUM -> 0..7000
     OptionalNutrient.TRANS_FAT -> 0..10
@@ -3218,7 +3226,15 @@ private fun OptionalNutrient.pickerStep(): Int = when (this) {
     OptionalNutrient.VITAMIN_D,
     OptionalNutrient.VITAMIN_B12,
     OptionalNutrient.VITAMIN_E,
-    OptionalNutrient.OMEGA3 -> 1
+    OptionalNutrient.OMEGA3,
+    OptionalNutrient.CREATINE,
+    OptionalNutrient.BETA_ALANINE,
+    OptionalNutrient.L_CITRULLINE,
+    OptionalNutrient.L_CARNITINE,
+    OptionalNutrient.L_ARGININE,
+    OptionalNutrient.TAURINE,
+    OptionalNutrient.BETAINE,
+    OptionalNutrient.HMB -> 1
     OptionalNutrient.CHOLESTEROL,
     OptionalNutrient.CAFFEINE -> 25
     OptionalNutrient.SODIUM,

@@ -19,6 +19,7 @@ struct GeminiService {
         var polyunsaturatedFat: Double?
         var cholesterol: Double?
         var caffeine: Double?
+        var supplementalNutrients: [String: Double] = [:]
         var sodium: Double?
         var potassium: Double?
         var transFat: Double?
@@ -57,6 +58,7 @@ struct GeminiService {
         var polyunsaturatedFatPer100g: Double?
         var cholesterolPer100g: Double?
         var caffeinePer100g: Double?
+        var supplementalNutrientsPer100g: [String: Double] = [:]
         var sodiumPer100g: Double?
         var potassiumPer100g: Double?
         var transFatPer100g: Double?
@@ -93,6 +95,7 @@ struct GeminiService {
                 polyunsaturatedFat: polyunsaturatedFatPer100g.map { round($0 * scale * 10) / 10 },
                 cholesterol: cholesterolPer100g.map { round($0 * scale * 10) / 10 },
                 caffeine: caffeinePer100g.map { round($0 * scale * 10) / 10 },
+                supplementalNutrients: supplementalNutrientsPer100g.mapValues { round($0 * scale * 10) / 10 },
                 sodium: sodiumPer100g.map { round($0 * scale * 10) / 10 },
                 potassium: potassiumPer100g.map { round($0 * scale * 10) / 10 },
                 transFat: transFatPer100g.map { round($0 * scale * 10) / 10 },
@@ -166,18 +169,18 @@ struct GeminiService {
     }
 
     private static let foodAnalysisJSONShape = """
-    {"name":"...","calories":0,"protein":0.0,"carbs":0.0,"fat":0.0,"serving_size_grams":0.0,"emoji":"🍽️","sugar":0.0,"added_sugar":0.0,"fiber":0.0,"saturated_fat":0.0,"monounsaturated_fat":0.0,"polyunsaturated_fat":0.0,"trans_fat":0.0,"cholesterol":0.0,"caffeine":0.0,"sodium":0.0,"potassium":0.0,"calcium":0.0,"iron":0.0,"magnesium":0.0,"zinc":0.0,"vitamin_a":0.0,"vitamin_c":0.0,"vitamin_d":0.0,"vitamin_b12":0.0,"vitamin_e":0.0,"vitamin_k":0.0,"folate":0.0,"omega_3":0.0,"ingredients":[],"unit_options":[]}
+    {"name":"...","calories":0,"protein":0.0,"carbs":0.0,"fat":0.0,"serving_size_grams":0.0,"emoji":"🍽️","sugar":0.0,"added_sugar":0.0,"fiber":0.0,"saturated_fat":0.0,"monounsaturated_fat":0.0,"polyunsaturated_fat":0.0,"trans_fat":0.0,"cholesterol":0.0,"caffeine":0.0,"creatine":0.0,"beta_alanine":0.0,"l_citrulline":0.0,"l_carnitine":0.0,"l_arginine":0.0,"taurine":0.0,"betaine":0.0,"hmb":0.0,"sodium":0.0,"potassium":0.0,"calcium":0.0,"iron":0.0,"magnesium":0.0,"zinc":0.0,"vitamin_a":0.0,"vitamin_c":0.0,"vitamin_d":0.0,"vitamin_b12":0.0,"vitamin_e":0.0,"vitamin_k":0.0,"folate":0.0,"omega_3":0.0,"ingredients":[],"unit_options":[]}
     """
 
     private static let foodAnalysisJSONShapeWithoutEmoji = """
-    {"name":"...","calories":0,"protein":0.0,"carbs":0.0,"fat":0.0,"serving_size_grams":0.0,"sugar":0.0,"added_sugar":0.0,"fiber":0.0,"saturated_fat":0.0,"monounsaturated_fat":0.0,"polyunsaturated_fat":0.0,"trans_fat":0.0,"cholesterol":0.0,"caffeine":0.0,"sodium":0.0,"potassium":0.0,"calcium":0.0,"iron":0.0,"magnesium":0.0,"zinc":0.0,"vitamin_a":0.0,"vitamin_c":0.0,"vitamin_d":0.0,"vitamin_b12":0.0,"vitamin_e":0.0,"vitamin_k":0.0,"folate":0.0,"omega_3":0.0,"ingredients":[],"unit_options":[]}
+    {"name":"...","calories":0,"protein":0.0,"carbs":0.0,"fat":0.0,"serving_size_grams":0.0,"sugar":0.0,"added_sugar":0.0,"fiber":0.0,"saturated_fat":0.0,"monounsaturated_fat":0.0,"polyunsaturated_fat":0.0,"trans_fat":0.0,"cholesterol":0.0,"caffeine":0.0,"creatine":0.0,"beta_alanine":0.0,"l_citrulline":0.0,"l_carnitine":0.0,"l_arginine":0.0,"taurine":0.0,"betaine":0.0,"hmb":0.0,"sodium":0.0,"potassium":0.0,"calcium":0.0,"iron":0.0,"magnesium":0.0,"zinc":0.0,"vitamin_a":0.0,"vitamin_c":0.0,"vitamin_d":0.0,"vitamin_b12":0.0,"vitamin_e":0.0,"vitamin_k":0.0,"folate":0.0,"omega_3":0.0,"ingredients":[],"unit_options":[]}
     """
 
     private static let nutritionLabelJSONShape = """
-    {"name":"Product Name","calories_per_100g":0.0,"protein_per_100g":0.0,"carbs_per_100g":0.0,"fat_per_100g":0.0,"serving_size_grams":0.0,"sugar_per_100g":0.0,"added_sugar_per_100g":0.0,"fiber_per_100g":0.0,"saturated_fat_per_100g":0.0,"monounsaturated_fat_per_100g":0.0,"polyunsaturated_fat_per_100g":0.0,"trans_fat_per_100g":0.0,"cholesterol_per_100g":0.0,"caffeine_per_100g":0.0,"sodium_per_100g":0.0,"potassium_per_100g":0.0,"calcium_per_100g":0.0,"iron_per_100g":0.0,"magnesium_per_100g":0.0,"zinc_per_100g":0.0,"vitamin_a_per_100g":0.0,"vitamin_c_per_100g":0.0,"vitamin_d_per_100g":0.0,"vitamin_b12_per_100g":0.0,"vitamin_e_per_100g":0.0,"vitamin_k_per_100g":0.0,"folate_per_100g":0.0,"omega_3_per_100g":0.0,"unit_options":[]}
+    {"name":"Product Name","calories_per_100g":0.0,"protein_per_100g":0.0,"carbs_per_100g":0.0,"fat_per_100g":0.0,"serving_size_grams":0.0,"sugar_per_100g":0.0,"added_sugar_per_100g":0.0,"fiber_per_100g":0.0,"saturated_fat_per_100g":0.0,"monounsaturated_fat_per_100g":0.0,"polyunsaturated_fat_per_100g":0.0,"trans_fat_per_100g":0.0,"cholesterol_per_100g":0.0,"caffeine_per_100g":0.0,"creatine_per_100g":0.0,"beta_alanine_per_100g":0.0,"l_citrulline_per_100g":0.0,"l_carnitine_per_100g":0.0,"l_arginine_per_100g":0.0,"taurine_per_100g":0.0,"betaine_per_100g":0.0,"hmb_per_100g":0.0,"sodium_per_100g":0.0,"potassium_per_100g":0.0,"calcium_per_100g":0.0,"iron_per_100g":0.0,"magnesium_per_100g":0.0,"zinc_per_100g":0.0,"vitamin_a_per_100g":0.0,"vitamin_c_per_100g":0.0,"vitamin_d_per_100g":0.0,"vitamin_b12_per_100g":0.0,"vitamin_e_per_100g":0.0,"vitamin_k_per_100g":0.0,"folate_per_100g":0.0,"omega_3_per_100g":0.0,"unit_options":[]}
     """
 
-    private static let nutrientUnitsInstruction = "Calories are integers. Protein/carbs/fat are decimal gram values when needed. serving_size_grams is the estimated weight in grams. Nutrients are numbers: sugar/fiber/fats/omega_3 in grams; cholesterol/caffeine/sodium/potassium/calcium/iron/magnesium/zinc/vitamin_c/vitamin_e in milligrams; vitamin_a/vitamin_d/vitamin_b12/vitamin_k/folate in micrograms."
+    private static let nutrientUnitsInstruction = "Calories are integers. Protein/carbs/fat are decimal gram values when needed. serving_size_grams is the estimated weight in grams. Nutrients are numbers: sugar/fiber/fats/omega_3/creatine/beta_alanine/l_citrulline/l_carnitine/l_arginine/taurine/betaine/hmb in grams; cholesterol/caffeine/sodium/potassium/calcium/iron/magnesium/zinc/vitamin_c/vitamin_e in milligrams; vitamin_a/vitamin_d/vitamin_b12/vitamin_k/folate in micrograms. Only report sports-nutrition compounds when explicitly present in a label or description; otherwise use 0."
 
     private static let servingUnitOptionsInstruction = """
     unit_options is required and must always be a JSON array. Each item must be a complete object with this exact schema (the values are schema examples only; never copy them):
@@ -425,11 +428,12 @@ struct GeminiService {
         let prompt = """
         You are setting daily non-macro nutrient goals for a food tracking app.
         Return ONLY valid JSON with these exact numeric keys:
-        {"fiber":30,"sugar":50,"added_sugar":25,"saturated_fat":20,"cholesterol":300,"caffeine":400,"sodium":2300,"potassium":3500,"trans_fat":0,"calcium":1000,"iron":18,"magnesium":400,"zinc":11,"vitamin_a":900,"vitamin_c":90,"vitamin_d":20,"vitamin_b12":3,"vitamin_e":15,"vitamin_k":120,"folate":400,"omega_3":2}
+        {"fiber":30,"sugar":50,"added_sugar":25,"saturated_fat":20,"cholesterol":300,"caffeine":400,"creatine":0,"beta_alanine":0,"l_citrulline":0,"l_carnitine":0,"l_arginine":0,"taurine":0,"betaine":0,"hmb":0,"sodium":2300,"potassium":3500,"trans_fat":0,"calcium":1000,"iron":18,"magnesium":400,"zinc":11,"vitamin_a":900,"vitamin_c":90,"vitamin_d":20,"vitamin_b12":3,"vitamin_e":15,"vitamin_k":120,"folate":400,"omega_3":2}
 
         Do not include calories, protein, carbs, or fat. Do not change calorie or macro targets.
         Use reasonable general-adult nutrition targets unless the user's profile strongly suggests a small adjustment.
         Treat fiber, potassium, calcium, iron, magnesium, zinc, vitamins, folate, and omega-3 as target/minimum style goals. Treat sugar, added sugar, saturated fat, trans fat, cholesterol, caffeine, and sodium as daily limit-style goals.
+        Keep creatine, beta-alanine, L-citrulline, L-carnitine, L-arginine, taurine, betaine, and HMB at 0 unless the profile explicitly requests a custom target.
         Units: sugar, added_sugar, fiber, saturated_fat, trans_fat, and omega_3 are grams; cholesterol, caffeine, sodium, potassium, calcium, iron, magnesium, zinc, vitamin_c, and vitamin_e are milligrams; vitamin_a, vitamin_d, vitamin_b12, vitamin_k, and folate are micrograms.
         Keep values in normal consumer-tracker ranges and round to practical app-friendly numbers.
         Use integers only.
@@ -1187,6 +1191,9 @@ struct GeminiService {
         func double(_ key: String) -> Double? {
             (json[key] as? NSNumber)?.doubleValue
         }
+        let supplementalNutrients = Dictionary(uniqueKeysWithValues: SupplementalNutrient.allCases.compactMap { nutrient in
+            double(nutrient.jsonKey).map { (nutrient.rawValue, $0) }
+        })
         let ingredients = (json["ingredients"] as? [[String: Any]] ?? [])
             .prefix(20)
             .compactMap { item -> MealIngredient? in
@@ -1221,6 +1228,7 @@ struct GeminiService {
             polyunsaturatedFat: double("polyunsaturated_fat"),
             cholesterol: double("cholesterol"),
             caffeine: double("caffeine"),
+            supplementalNutrients: supplementalNutrients,
             sodium: double("sodium"),
             potassium: double("potassium"),
             transFat: double("trans_fat"),
@@ -1262,6 +1270,9 @@ struct GeminiService {
         func double(_ key: String) -> Double? {
             (json[key] as? NSNumber)?.doubleValue
         }
+        let supplementalNutrientsPer100g = Dictionary(uniqueKeysWithValues: SupplementalNutrient.allCases.compactMap { nutrient in
+            double("\(nutrient.jsonKey)_per_100g").map { (nutrient.rawValue, $0) }
+        })
         return NutritionLabelAnalysis(
             name: name, caloriesPer100g: caloriesPer100g, proteinPer100g: proteinPer100g,
             carbsPer100g: carbsPer100g, fatPer100g: fatPer100g,
@@ -1274,6 +1285,7 @@ struct GeminiService {
             polyunsaturatedFatPer100g: double("polyunsaturated_fat_per_100g"),
             cholesterolPer100g: double("cholesterol_per_100g"),
             caffeinePer100g: double("caffeine_per_100g"),
+            supplementalNutrientsPer100g: supplementalNutrientsPer100g,
             sodiumPer100g: double("sodium_per_100g"),
             potassiumPer100g: double("potassium_per_100g"),
             transFatPer100g: double("trans_fat_per_100g"),

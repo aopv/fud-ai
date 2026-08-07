@@ -144,6 +144,14 @@ enum HomeTopNutrient: String, CaseIterable, Identifiable {
     case saturatedFat
     case cholesterol
     case caffeine
+    case creatine
+    case betaAlanine
+    case lCitrulline
+    case lCarnitine
+    case lArginine
+    case taurine
+    case betaine
+    case hmb
     case sodium
     case potassium
     case transFat
@@ -173,6 +181,14 @@ enum HomeTopNutrient: String, CaseIterable, Identifiable {
         case .saturatedFat: .saturatedFat
         case .cholesterol: .cholesterol
         case .caffeine: .caffeine
+        case .creatine: .creatine
+        case .betaAlanine: .betaAlanine
+        case .lCitrulline: .lCitrulline
+        case .lCarnitine: .lCarnitine
+        case .lArginine: .lArginine
+        case .taurine: .taurine
+        case .betaine: .betaine
+        case .hmb: .hmb
         case .sodium: .sodium
         case .potassium: .potassium
         case .transFat: .transFat
@@ -203,7 +219,8 @@ enum HomeTopNutrient: String, CaseIterable, Identifiable {
         case .fat: return LocalizedDisplayText.text("Fat", polish: "Tłuszcz")
         case .fiber, .sugar, .addedSugar, .saturatedFat, .cholesterol, .caffeine, .sodium, .potassium,
              .transFat, .calcium, .iron, .magnesium, .zinc, .vitaminA, .vitaminC, .vitaminD,
-             .vitaminB12, .vitaminE, .vitaminK, .folate, .omega3:
+             .vitaminB12, .vitaminE, .vitaminK, .folate, .omega3, .creatine, .betaAlanine,
+             .lCitrulline, .lCarnitine, .lArginine, .taurine, .betaine, .hmb:
             return optionalNutrient?.shortDisplayName ?? rawValue
         }
     }
@@ -217,7 +234,8 @@ enum HomeTopNutrient: String, CaseIterable, Identifiable {
         case .protein, .carbs, .fat: return "g"
         case .fiber, .sugar, .addedSugar, .saturatedFat, .cholesterol, .caffeine, .sodium, .potassium,
              .transFat, .calcium, .iron, .magnesium, .zinc, .vitaminA, .vitaminC, .vitaminD,
-             .vitaminB12, .vitaminE, .vitaminK, .folate, .omega3:
+             .vitaminB12, .vitaminE, .vitaminK, .folate, .omega3, .creatine, .betaAlanine,
+             .lCitrulline, .lCarnitine, .lArginine, .taurine, .betaine, .hmb:
             return optionalNutrient?.unit ?? "g"
         }
     }
@@ -233,7 +251,8 @@ enum HomeTopNutrient: String, CaseIterable, Identifiable {
         case .fat: return "drop.fill"
         case .fiber, .sugar, .addedSugar, .saturatedFat, .cholesterol, .caffeine, .sodium, .potassium,
              .transFat, .calcium, .iron, .magnesium, .zinc, .vitaminA, .vitaminC, .vitaminD,
-             .vitaminB12, .vitaminE, .vitaminK, .folate, .omega3:
+             .vitaminB12, .vitaminE, .vitaminK, .folate, .omega3, .creatine, .betaAlanine,
+             .lCitrulline, .lCarnitine, .lArginine, .taurine, .betaine, .hmb:
             return optionalNutrient?.iconName ?? "circle"
         }
     }
@@ -262,6 +281,14 @@ enum HomeTopNutrient: String, CaseIterable, Identifiable {
         case .saturatedFat: foodStore.saturatedFat(for: date)
         case .cholesterol: foodStore.cholesterol(for: date)
         case .caffeine: foodStore.caffeine(for: date)
+        case .creatine: foodStore.supplementalNutrient(.creatine, for: date)
+        case .betaAlanine: foodStore.supplementalNutrient(.betaAlanine, for: date)
+        case .lCitrulline: foodStore.supplementalNutrient(.lCitrulline, for: date)
+        case .lCarnitine: foodStore.supplementalNutrient(.lCarnitine, for: date)
+        case .lArginine: foodStore.supplementalNutrient(.lArginine, for: date)
+        case .taurine: foodStore.supplementalNutrient(.taurine, for: date)
+        case .betaine: foodStore.supplementalNutrient(.betaine, for: date)
+        case .hmb: foodStore.supplementalNutrient(.hmb, for: date)
         case .sodium: foodStore.sodium(for: date)
         case .potassium: foodStore.potassium(for: date)
         case .transFat: foodStore.transFat(for: date)
@@ -287,7 +314,8 @@ enum HomeTopNutrient: String, CaseIterable, Identifiable {
         case .fat: return Double(profile.effectiveFat)
         case .fiber, .sugar, .addedSugar, .saturatedFat, .cholesterol, .caffeine, .sodium, .potassium,
              .transFat, .calcium, .iron, .magnesium, .zinc, .vitaminA, .vitaminC, .vitaminD,
-             .vitaminB12, .vitaminE, .vitaminK, .folate, .omega3:
+             .vitaminB12, .vitaminE, .vitaminK, .folate, .omega3, .creatine, .betaAlanine,
+             .lCitrulline, .lCarnitine, .lArginine, .taurine, .betaine, .hmb:
             guard let optionalNutrient else { return 0 }
             return Double(optionalGoals.goal(for: optionalNutrient))
         }

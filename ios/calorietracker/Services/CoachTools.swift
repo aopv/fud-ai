@@ -273,6 +273,9 @@ struct CoachTools {
             add("polyunsaturated_fat_g", entry.polyunsaturatedFat)
             add("cholesterol_mg", entry.cholesterol)
             add("caffeine_mg", entry.caffeine)
+            for (key, value) in entry.supplementalNutrients {
+                payload["\(key)_g"] = value
+            }
             add("sodium_mg", entry.sodium)
             add("potassium_mg", entry.potassium)
             add("trans_fat_g", entry.transFat)

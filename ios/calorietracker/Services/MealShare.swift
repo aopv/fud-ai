@@ -62,6 +62,7 @@ enum MealShare {
         put("saturatedFat", e.saturatedFat); put("monounsaturatedFat", e.monounsaturatedFat)
         put("polyunsaturatedFat", e.polyunsaturatedFat); put("cholesterol", e.cholesterol)
         put("caffeine", e.caffeine); put("sodium", e.sodium); put("potassium", e.potassium); put("transFat", e.transFat)
+        if !e.supplementalNutrients.isEmpty { d["supplementalNutrients"] = e.supplementalNutrients }
         put("calcium", e.calcium); put("iron", e.iron); put("magnesium", e.magnesium); put("zinc", e.zinc)
         put("vitaminA", e.vitaminA); put("vitaminC", e.vitaminC); put("vitaminD", e.vitaminD)
         put("vitaminB12", e.vitaminB12); put("vitaminE", e.vitaminE); put("vitaminK", e.vitaminK)
@@ -143,7 +144,11 @@ enum MealShare {
             sugar: dbl("sugar"), addedSugar: dbl("addedSugar"), fiber: dbl("fiber"),
             saturatedFat: dbl("saturatedFat"), monounsaturatedFat: dbl("monounsaturatedFat"),
             polyunsaturatedFat: dbl("polyunsaturatedFat"), cholesterol: dbl("cholesterol"),
-            caffeine: dbl("caffeine"), sodium: dbl("sodium"), potassium: dbl("potassium"), transFat: dbl("transFat"),
+            caffeine: dbl("caffeine"),
+            supplementalNutrients: (d["supplementalNutrients"] as? [String: Any])?.compactMapValues { value in
+                (value as? NSNumber)?.doubleValue
+            } ?? [:],
+            sodium: dbl("sodium"), potassium: dbl("potassium"), transFat: dbl("transFat"),
             calcium: dbl("calcium"), iron: dbl("iron"), magnesium: dbl("magnesium"), zinc: dbl("zinc"),
             vitaminA: dbl("vitaminA"), vitaminC: dbl("vitaminC"), vitaminD: dbl("vitaminD"),
             vitaminB12: dbl("vitaminB12"), vitaminE: dbl("vitaminE"), vitaminK: dbl("vitaminK"),

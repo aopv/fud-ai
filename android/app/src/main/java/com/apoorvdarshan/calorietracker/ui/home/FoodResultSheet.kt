@@ -64,6 +64,7 @@ import com.apoorvdarshan.calorietracker.models.MealType
 import com.apoorvdarshan.calorietracker.models.MealIngredient
 import com.apoorvdarshan.calorietracker.models.ServingUnitOption
 import com.apoorvdarshan.calorietracker.models.ServingAmountExpression
+import com.apoorvdarshan.calorietracker.models.SupplementalNutrient
 import com.apoorvdarshan.calorietracker.models.totals
 import com.apoorvdarshan.calorietracker.models.UserProfile
 import com.apoorvdarshan.calorietracker.services.ai.FoodAnalysis
@@ -147,6 +148,7 @@ fun FoodResultSheet(
     var editablePolyunsaturatedFat by remember(analysis) { mutableStateOf(analysis.polyunsaturatedFat) }
     var editableCholesterol by remember(analysis) { mutableStateOf(analysis.cholesterol) }
     var editableCaffeine by remember(analysis) { mutableStateOf(analysis.caffeine) }
+    var editableSupplementalNutrients by remember(analysis) { mutableStateOf(analysis.supplementalNutrients) }
     var editableSodium by remember(analysis) { mutableStateOf(analysis.sodium) }
     var editablePotassium by remember(analysis) { mutableStateOf(analysis.potassium) }
     var editableTransFat by remember(analysis) { mutableStateOf(analysis.transFat) }
@@ -214,6 +216,7 @@ fun FoodResultSheet(
         polyunsaturatedFat = editablePolyunsaturatedFat,
         cholesterol = editableCholesterol,
         caffeine = editableCaffeine,
+        supplementalNutrients = editableSupplementalNutrients,
         sodium = editableSodium,
         potassium = editablePotassium,
         transFat = editableTransFat,
@@ -251,6 +254,7 @@ fun FoodResultSheet(
         polyunsaturatedFat = scaledD(editablePolyunsaturatedFat),
         cholesterol = scaledD(editableCholesterol),
         caffeine = scaledD(editableCaffeine),
+        supplementalNutrients = editableSupplementalNutrients.mapValues { (_, value) -> scaledD(value) ?: 0.0 },
         sodium = scaledD(editableSodium),
         potassium = scaledD(editablePotassium),
         transFat = scaledD(editableTransFat),
@@ -506,7 +510,21 @@ fun FoodResultSheet(
                             ReviewNutrientEditSpec(stringResource(R.string.nutrition_label_vitamin_k), scaledD(editableVitaminK), mcgUnit, { editableVitaminK = baseOptionalFromText(it) }),
                             ReviewNutrientEditSpec(stringResource(R.string.nutrition_label_folate), scaledD(editableFolate), mcgUnit, { editableFolate = baseOptionalFromText(it) }),
                             ReviewNutrientEditSpec(stringResource(R.string.nutrition_label_omega3), scaledD(editableOmega3), gUnit, { editableOmega3 = baseOptionalFromText(it) })
-                        )
+                        ) + SupplementalNutrient.values().map { nutrient ->
+                            ReviewNutrientEditSpec(
+                                label = stringResource(nutrient.displayNameRes),
+                                value = scaledD(editableSupplementalNutrients[nutrient.storageKey]),
+                                unit = gUnit,
+                                onEdit = { text ->
+                                    val value = baseOptionalFromText(text)
+                                    editableSupplementalNutrients = if (value == null) {
+                                        editableSupplementalNutrients - nutrient.storageKey
+                                    } else {
+                                        editableSupplementalNutrients + (nutrient.storageKey to value)
+                                    }
+                                }
+                            )
+                        }
                         micros.forEachIndexed { idx, spec ->
                             if (idx > 0) SheetHairline()
                             ReviewNutritionValueRow(

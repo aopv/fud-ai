@@ -31,6 +31,8 @@ data class FoodEntry(
     val polyunsaturatedFat: Double? = null,
     val cholesterol: Double? = null,
     val caffeine: Double? = null,
+    /** Optional sports-nutrition compounds, stored in grams by SupplementalNutrient.storageKey. */
+    val supplementalNutrients: Map<String, Double> = emptyMap(),
     val sodium: Double? = null,
     val potassium: Double? = null,
     val transFat: Double? = null,
@@ -82,6 +84,7 @@ data class FoodEntry(
         polyunsaturatedFat = polyunsaturatedFat,
         cholesterol = cholesterol,
         caffeine = caffeine,
+        supplementalNutrients = supplementalNutrients,
         sodium = sodium,
         potassium = potassium,
         transFat = transFat,

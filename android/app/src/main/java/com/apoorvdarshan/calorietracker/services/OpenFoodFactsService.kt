@@ -1,6 +1,7 @@
 package com.apoorvdarshan.calorietracker.services
 
 import com.apoorvdarshan.calorietracker.models.ServingUnitOption
+import com.apoorvdarshan.calorietracker.models.SupplementalNutrient
 import com.apoorvdarshan.calorietracker.services.ai.FoodAnalysis
 import com.apoorvdarshan.calorietracker.services.ai.FoodAnalysisService
 import kotlinx.coroutines.Dispatchers
@@ -95,6 +96,11 @@ object OpenFoodFactsService {
             polyunsaturatedFat = rounded(servingValue("polyunsaturated-fat")),
             cholesterol = milligrams(servingValue("cholesterol")),
             caffeine = milligrams(servingValue("caffeine")),
+            supplementalNutrients = SupplementalNutrient.values().mapNotNull { nutrient ->
+                servingValue(nutrient.apiKey.replace('_', '-'))?.let { value ->
+                    rounded(value)?.let { nutrient.storageKey to it }
+                }
+            }.toMap(),
             sodium = milligrams(servingValue("sodium")),
             potassium = milligrams(servingValue("potassium")),
             transFat = rounded(servingValue("trans-fat")),

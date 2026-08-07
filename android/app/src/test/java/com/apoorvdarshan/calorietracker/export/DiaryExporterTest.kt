@@ -17,7 +17,7 @@ class DiaryExporterTest {
     private val nutrientFields = listOf(
         "sugar_g", "added_sugar_g", "fiber_g", "saturated_fat_g",
         "monounsaturated_fat_g", "polyunsaturated_fat_g", "cholesterol_mg",
-        "sodium_mg", "potassium_mg", "trans_fat_g", "calcium_mg", "iron_mg",
+        "caffeine_mg", "sodium_mg", "potassium_mg", "trans_fat_g", "calcium_mg", "iron_mg",
         "magnesium_mg", "zinc_mg", "vitamin_a_mcg", "vitamin_c_mg",
         "vitamin_d_mcg", "vitamin_b12_mcg", "vitamin_e_mg", "vitamin_k_mcg",
         "folate_mcg", "omega3_g",
@@ -29,7 +29,7 @@ class DiaryExporterTest {
         val date = entry.timestamp.atZone(ZoneId.systemDefault()).toLocalDate()
         val (_, json) = requireNotNull(build(entry, date, DiaryFormat.JSON))
         val root = JsonParser.parseString(json).asJsonObject
-        assertEquals("1.2", root["export"].asJsonObject["format_version"].asString)
+        assertEquals("1.3", root["export"].asJsonObject["format_version"].asString)
         val item = root["days"].asJsonArray[0].asJsonObject["meals"].asJsonArray[0]
             .asJsonObject["items"].asJsonArray[0].asJsonObject
 
@@ -37,6 +37,7 @@ class DiaryExporterTest {
         assertEquals(3.3, item["fiber_g"].asDouble, 0.0001)
         assertEquals(8.8, item["sodium_mg"].asDouble, 0.0001)
         assertEquals(18.8, item["vitamin_b12_mcg"].asDouble, 0.0001)
+        assertEquals(5.0, item["supplemental_nutrients_g"].asJsonObject["creatine"].asDouble, 0.0001)
         assertEquals("Rice", item["ingredients"].asJsonArray[0].asJsonObject["name"].asString)
     }
 
@@ -84,6 +85,8 @@ class DiaryExporterTest {
         monounsaturatedFat = 5.5,
         polyunsaturatedFat = 6.6,
         cholesterol = 7.7,
+        caffeine = 7.8,
+        supplementalNutrients = mapOf("creatine" to 5.0),
         sodium = 8.8,
         potassium = 9.9,
         transFat = 10.1,

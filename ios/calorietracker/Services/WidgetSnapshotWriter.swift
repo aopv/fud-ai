@@ -100,6 +100,10 @@ enum WidgetSnapshotWriter {
             return sum(foods, \.cholesterol)
         case .caffeine:
             return sum(foods, \.caffeine)
+        case .creatine, .betaAlanine, .lCitrulline, .lCarnitine, .lArginine, .taurine, .betaine, .hmb:
+            return foods.reduce(0) { total, food in
+                total + (food.supplementalNutrients[nutrient.rawValue] ?? 0)
+            }
         case .sodium:
             return sum(foods, \.sodium)
         case .potassium:

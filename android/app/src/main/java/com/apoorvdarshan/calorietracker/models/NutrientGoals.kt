@@ -20,6 +20,14 @@ enum class HomeTopNutrient(
     SATURATED_FAT("saturatedFat", "Sat Fat", "g", R.string.nutrient_short_sat_fat, R.string.unit_g),
     CHOLESTEROL("cholesterol", "Cholesterol", "mg", R.string.nutrition_label_cholesterol, R.string.unit_mg),
     CAFFEINE("caffeine", "Caffeine", "mg", R.string.nutrition_label_caffeine, R.string.unit_mg),
+    CREATINE("creatine", "Creatine", "g", R.string.nutrition_label_creatine, R.string.unit_g),
+    BETA_ALANINE("betaAlanine", "Beta-Alanine", "g", R.string.nutrition_label_beta_alanine, R.string.unit_g),
+    L_CITRULLINE("lCitrulline", "L-Citrulline", "g", R.string.nutrition_label_l_citrulline, R.string.unit_g),
+    L_CARNITINE("lCarnitine", "L-Carnitine", "g", R.string.nutrition_label_l_carnitine, R.string.unit_g),
+    L_ARGININE("lArginine", "L-Arginine", "g", R.string.nutrition_label_l_arginine, R.string.unit_g),
+    TAURINE("taurine", "Taurine", "g", R.string.nutrition_label_taurine, R.string.unit_g),
+    BETAINE("betaine", "Betaine", "g", R.string.nutrition_label_betaine, R.string.unit_g),
+    HMB("hmb", "HMB", "g", R.string.nutrition_label_hmb, R.string.unit_g),
     SODIUM("sodium", "Sodium", "mg", R.string.nutrition_label_sodium, R.string.unit_mg),
     POTASSIUM("potassium", "Potassium", "mg", R.string.nutrition_label_potassium, R.string.unit_mg),
     TRANS_FAT("transFat", "Trans Fat", "g", R.string.nutrition_label_trans_fat, R.string.unit_g),
@@ -46,6 +54,14 @@ enum class HomeTopNutrient(
         SATURATED_FAT -> entries.sumOf { it.saturatedFat ?: 0.0 }
         CHOLESTEROL -> entries.sumOf { it.cholesterol ?: 0.0 }
         CAFFEINE -> entries.sumOf { it.caffeine ?: 0.0 }
+        CREATINE -> entries.sumOf { it.supplementalNutrients[SupplementalNutrient.CREATINE.storageKey] ?: 0.0 }
+        BETA_ALANINE -> entries.sumOf { it.supplementalNutrients[SupplementalNutrient.BETA_ALANINE.storageKey] ?: 0.0 }
+        L_CITRULLINE -> entries.sumOf { it.supplementalNutrients[SupplementalNutrient.L_CITRULLINE.storageKey] ?: 0.0 }
+        L_CARNITINE -> entries.sumOf { it.supplementalNutrients[SupplementalNutrient.L_CARNITINE.storageKey] ?: 0.0 }
+        L_ARGININE -> entries.sumOf { it.supplementalNutrients[SupplementalNutrient.L_ARGININE.storageKey] ?: 0.0 }
+        TAURINE -> entries.sumOf { it.supplementalNutrients[SupplementalNutrient.TAURINE.storageKey] ?: 0.0 }
+        BETAINE -> entries.sumOf { it.supplementalNutrients[SupplementalNutrient.BETAINE.storageKey] ?: 0.0 }
+        HMB -> entries.sumOf { it.supplementalNutrients[SupplementalNutrient.HMB.storageKey] ?: 0.0 }
         SODIUM -> entries.sumOf { it.sodium ?: 0.0 }
         POTASSIUM -> entries.sumOf { it.potassium ?: 0.0 }
         TRANS_FAT -> entries.sumOf { it.transFat ?: 0.0 }
@@ -73,6 +89,14 @@ enum class HomeTopNutrient(
         SATURATED_FAT -> optionalGoals.saturatedFat
         CHOLESTEROL -> optionalGoals.cholesterol
         CAFFEINE -> optionalGoals.caffeine
+        CREATINE -> optionalGoals.valueFor(OptionalNutrient.CREATINE)
+        BETA_ALANINE -> optionalGoals.valueFor(OptionalNutrient.BETA_ALANINE)
+        L_CITRULLINE -> optionalGoals.valueFor(OptionalNutrient.L_CITRULLINE)
+        L_CARNITINE -> optionalGoals.valueFor(OptionalNutrient.L_CARNITINE)
+        L_ARGININE -> optionalGoals.valueFor(OptionalNutrient.L_ARGININE)
+        TAURINE -> optionalGoals.valueFor(OptionalNutrient.TAURINE)
+        BETAINE -> optionalGoals.valueFor(OptionalNutrient.BETAINE)
+        HMB -> optionalGoals.valueFor(OptionalNutrient.HMB)
         SODIUM -> optionalGoals.sodium
         POTASSIUM -> optionalGoals.potassium
         TRANS_FAT -> optionalGoals.transFat
@@ -128,6 +152,14 @@ enum class OptionalNutrient(
     SATURATED_FAT("Saturated Fat", "g", 20, R.string.nutrition_label_saturated_fat, R.string.unit_g),
     CHOLESTEROL("Cholesterol", "mg", 300, R.string.nutrition_label_cholesterol, R.string.unit_mg),
     CAFFEINE("Caffeine", "mg", 400, R.string.nutrition_label_caffeine, R.string.unit_mg),
+    CREATINE("Creatine", "g", 0, R.string.nutrition_label_creatine, R.string.unit_g),
+    BETA_ALANINE("Beta-Alanine", "g", 0, R.string.nutrition_label_beta_alanine, R.string.unit_g),
+    L_CITRULLINE("L-Citrulline", "g", 0, R.string.nutrition_label_l_citrulline, R.string.unit_g),
+    L_CARNITINE("L-Carnitine", "g", 0, R.string.nutrition_label_l_carnitine, R.string.unit_g),
+    L_ARGININE("L-Arginine", "g", 0, R.string.nutrition_label_l_arginine, R.string.unit_g),
+    TAURINE("Taurine", "g", 0, R.string.nutrition_label_taurine, R.string.unit_g),
+    BETAINE("Betaine", "g", 0, R.string.nutrition_label_betaine, R.string.unit_g),
+    HMB("HMB", "g", 0, R.string.nutrition_label_hmb, R.string.unit_g),
     SODIUM("Sodium", "mg", 2300, R.string.nutrition_label_sodium, R.string.unit_mg),
     POTASSIUM("Potassium", "mg", 3500, R.string.nutrition_label_potassium, R.string.unit_mg),
     TRANS_FAT("Trans Fat", "g", 0, R.string.nutrition_label_trans_fat, R.string.unit_g),
@@ -167,7 +199,8 @@ data class OptionalNutrientGoals(
     val vitaminE: Int = OptionalNutrient.VITAMIN_E.defaultGoal,
     val vitaminK: Int = OptionalNutrient.VITAMIN_K.defaultGoal,
     val folate: Int = OptionalNutrient.FOLATE.defaultGoal,
-    val omega3: Int = OptionalNutrient.OMEGA3.defaultGoal
+    val omega3: Int = OptionalNutrient.OMEGA3.defaultGoal,
+    val supplementalNutrients: Map<String, Int> = emptyMap()
 ) {
     fun valueFor(nutrient: OptionalNutrient): Int = when (nutrient) {
         OptionalNutrient.SUGAR -> sugar
@@ -176,6 +209,14 @@ data class OptionalNutrientGoals(
         OptionalNutrient.SATURATED_FAT -> saturatedFat
         OptionalNutrient.CHOLESTEROL -> cholesterol
         OptionalNutrient.CAFFEINE -> caffeine
+        OptionalNutrient.CREATINE -> supplementalNutrients[SupplementalNutrient.CREATINE.storageKey] ?: nutrient.defaultGoal
+        OptionalNutrient.BETA_ALANINE -> supplementalNutrients[SupplementalNutrient.BETA_ALANINE.storageKey] ?: nutrient.defaultGoal
+        OptionalNutrient.L_CITRULLINE -> supplementalNutrients[SupplementalNutrient.L_CITRULLINE.storageKey] ?: nutrient.defaultGoal
+        OptionalNutrient.L_CARNITINE -> supplementalNutrients[SupplementalNutrient.L_CARNITINE.storageKey] ?: nutrient.defaultGoal
+        OptionalNutrient.L_ARGININE -> supplementalNutrients[SupplementalNutrient.L_ARGININE.storageKey] ?: nutrient.defaultGoal
+        OptionalNutrient.TAURINE -> supplementalNutrients[SupplementalNutrient.TAURINE.storageKey] ?: nutrient.defaultGoal
+        OptionalNutrient.BETAINE -> supplementalNutrients[SupplementalNutrient.BETAINE.storageKey] ?: nutrient.defaultGoal
+        OptionalNutrient.HMB -> supplementalNutrients[SupplementalNutrient.HMB.storageKey] ?: nutrient.defaultGoal
         OptionalNutrient.SODIUM -> sodium
         OptionalNutrient.POTASSIUM -> potassium
         OptionalNutrient.TRANS_FAT -> transFat
@@ -202,6 +243,14 @@ data class OptionalNutrientGoals(
             OptionalNutrient.SATURATED_FAT -> copy(saturatedFat = safe)
             OptionalNutrient.CHOLESTEROL -> copy(cholesterol = safe)
             OptionalNutrient.CAFFEINE -> copy(caffeine = safe)
+            OptionalNutrient.CREATINE -> copy(supplementalNutrients = supplementalNutrients + (SupplementalNutrient.CREATINE.storageKey to safe))
+            OptionalNutrient.BETA_ALANINE -> copy(supplementalNutrients = supplementalNutrients + (SupplementalNutrient.BETA_ALANINE.storageKey to safe))
+            OptionalNutrient.L_CITRULLINE -> copy(supplementalNutrients = supplementalNutrients + (SupplementalNutrient.L_CITRULLINE.storageKey to safe))
+            OptionalNutrient.L_CARNITINE -> copy(supplementalNutrients = supplementalNutrients + (SupplementalNutrient.L_CARNITINE.storageKey to safe))
+            OptionalNutrient.L_ARGININE -> copy(supplementalNutrients = supplementalNutrients + (SupplementalNutrient.L_ARGININE.storageKey to safe))
+            OptionalNutrient.TAURINE -> copy(supplementalNutrients = supplementalNutrients + (SupplementalNutrient.TAURINE.storageKey to safe))
+            OptionalNutrient.BETAINE -> copy(supplementalNutrients = supplementalNutrients + (SupplementalNutrient.BETAINE.storageKey to safe))
+            OptionalNutrient.HMB -> copy(supplementalNutrients = supplementalNutrients + (SupplementalNutrient.HMB.storageKey to safe))
             OptionalNutrient.SODIUM -> copy(sodium = safe)
             OptionalNutrient.POTASSIUM -> copy(potassium = safe)
             OptionalNutrient.TRANS_FAT -> copy(transFat = safe)

@@ -7,6 +7,14 @@ enum OptionalNutrient: String, CaseIterable, Identifiable, Codable {
     case saturatedFat
     case cholesterol
     case caffeine
+    case creatine
+    case betaAlanine
+    case lCitrulline
+    case lCarnitine
+    case lArginine
+    case taurine
+    case betaine
+    case hmb
     case sodium
     case potassium
     case transFat
@@ -33,6 +41,14 @@ enum OptionalNutrient: String, CaseIterable, Identifiable, Codable {
         case .saturatedFat: "saturated_fat"
         case .cholesterol: "cholesterol"
         case .caffeine: "caffeine"
+        case .creatine: "creatine"
+        case .betaAlanine: "beta_alanine"
+        case .lCitrulline: "l_citrulline"
+        case .lCarnitine: "l_carnitine"
+        case .lArginine: "l_arginine"
+        case .taurine: "taurine"
+        case .betaine: "betaine"
+        case .hmb: "hmb"
         case .sodium: "sodium"
         case .potassium: "potassium"
         case .transFat: "trans_fat"
@@ -59,6 +75,14 @@ enum OptionalNutrient: String, CaseIterable, Identifiable, Codable {
         case "saturated_fat": self = .saturatedFat
         case "cholesterol": self = .cholesterol
         case "caffeine": self = .caffeine
+        case "creatine": self = .creatine
+        case "beta_alanine": self = .betaAlanine
+        case "l_citrulline": self = .lCitrulline
+        case "l_carnitine": self = .lCarnitine
+        case "l_arginine": self = .lArginine
+        case "taurine": self = .taurine
+        case "betaine": self = .betaine
+        case "hmb": self = .hmb
         case "sodium": self = .sodium
         case "potassium": self = .potassium
         case "trans_fat": self = .transFat
@@ -86,6 +110,14 @@ enum OptionalNutrient: String, CaseIterable, Identifiable, Codable {
         case .saturatedFat: LocalizedDisplayText.text("Saturated Fat", polish: "Tłuszcze nasycone")
         case .cholesterol: LocalizedDisplayText.text("Cholesterol", polish: "Cholesterol")
         case .caffeine: LocalizedDisplayText.text("Caffeine", polish: "Kofeina")
+        case .creatine: LocalizedDisplayText.text("Creatine", polish: "Kreatyna")
+        case .betaAlanine: LocalizedDisplayText.text("Beta-Alanine", polish: "Beta-alanina")
+        case .lCitrulline: LocalizedDisplayText.text("L-Citrulline", polish: "L-cytrulina")
+        case .lCarnitine: LocalizedDisplayText.text("L-Carnitine", polish: "L-karnityna")
+        case .lArginine: LocalizedDisplayText.text("L-Arginine", polish: "L-arginina")
+        case .taurine: LocalizedDisplayText.text("Taurine", polish: "Tauryna")
+        case .betaine: LocalizedDisplayText.text("Betaine", polish: "Betaina")
+        case .hmb: "HMB"
         case .sodium: LocalizedDisplayText.text("Sodium", polish: "Sód")
         case .potassium: LocalizedDisplayText.text("Potassium", polish: "Potas")
         case .transFat: LocalizedDisplayText.text("Trans Fat", polish: "Tłuszcze trans")
@@ -117,13 +149,14 @@ enum OptionalNutrient: String, CaseIterable, Identifiable, Codable {
         case .vitaminE: LocalizedDisplayText.text("Vit E", polish: "Wit. E")
         case .vitaminK: LocalizedDisplayText.text("Vit K", polish: "Wit. K")
         case .omega3: LocalizedDisplayText.text("Omega", polish: "Omega")
+        case .creatine, .betaAlanine, .lCitrulline, .lCarnitine, .lArginine, .taurine, .betaine, .hmb: displayName
         default: displayName
         }
     }
 
     var localizedGoalStyle: String {
         switch self {
-        case .fiber, .potassium, .calcium, .iron, .magnesium, .zinc, .vitaminA, .vitaminC, .vitaminD, .vitaminB12, .vitaminE, .vitaminK, .folate, .omega3:
+        case .fiber, .potassium, .calcium, .iron, .magnesium, .zinc, .vitaminA, .vitaminC, .vitaminD, .vitaminB12, .vitaminE, .vitaminK, .folate, .omega3, .creatine, .betaAlanine, .lCitrulline, .lCarnitine, .lArginine, .taurine, .betaine, .hmb:
             LocalizedDisplayText.text("Target", polish: "Cel")
         case .sugar, .addedSugar, .saturatedFat, .cholesterol, .caffeine, .sodium, .transFat:
             LocalizedDisplayText.text("Limit", polish: "Limit")
@@ -138,6 +171,7 @@ enum OptionalNutrient: String, CaseIterable, Identifiable, Codable {
         case .saturatedFat: "circle.lefthalf.filled"
         case .cholesterol: "heart.fill"
         case .caffeine: "cup.and.saucer.fill"
+        case .creatine, .betaAlanine, .lCitrulline, .lCarnitine, .lArginine, .taurine, .betaine, .hmb: "figure.strengthtraining.traditional"
         case .sodium: "circle.grid.2x2.fill"
         case .potassium: "bolt.fill"
         case .transFat: "drop.fill"
@@ -187,6 +221,7 @@ enum OptionalNutrient: String, CaseIterable, Identifiable, Codable {
         case .vitaminK: 120
         case .folate: 400
         case .omega3: 2
+        case .creatine, .betaAlanine, .lCitrulline, .lCarnitine, .lArginine, .taurine, .betaine, .hmb: 0
         }
     }
 
@@ -213,6 +248,7 @@ enum OptionalNutrient: String, CaseIterable, Identifiable, Codable {
         case .vitaminK: 30...300
         case .folate: 100...1_000
         case .omega3: 0...10
+        case .creatine, .betaAlanine, .lCitrulline, .lCarnitine, .lArginine, .taurine, .betaine, .hmb: 0...50
         }
     }
 
@@ -223,14 +259,14 @@ enum OptionalNutrient: String, CaseIterable, Identifiable, Codable {
         case .vitaminC, .vitaminK: 10
         case .cholesterol: 50
         case .caffeine: 25
-        case .iron, .zinc, .vitaminD, .vitaminB12, .vitaminE, .transFat, .omega3: 1
+        case .iron, .zinc, .vitaminD, .vitaminB12, .vitaminE, .transFat, .omega3, .creatine, .betaAlanine, .lCitrulline, .lCarnitine, .lArginine, .taurine, .betaine, .hmb: 1
         default: 5
         }
     }
 
     var goalStyle: String {
         switch self {
-        case .fiber, .potassium, .calcium, .iron, .magnesium, .zinc, .vitaminA, .vitaminC, .vitaminD, .vitaminB12, .vitaminE, .vitaminK, .folate, .omega3:
+        case .fiber, .potassium, .calcium, .iron, .magnesium, .zinc, .vitaminA, .vitaminC, .vitaminD, .vitaminB12, .vitaminE, .vitaminK, .folate, .omega3, .creatine, .betaAlanine, .lCitrulline, .lCarnitine, .lArginine, .taurine, .betaine, .hmb:
             "target"
         case .sugar, .addedSugar, .saturatedFat, .cholesterol, .caffeine, .sodium, .transFat:
             "limit"

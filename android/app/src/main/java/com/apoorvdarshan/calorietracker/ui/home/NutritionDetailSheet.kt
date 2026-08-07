@@ -53,6 +53,7 @@ import com.apoorvdarshan.calorietracker.models.FoodEntry
 import com.apoorvdarshan.calorietracker.models.HomeTopNutrient
 import com.apoorvdarshan.calorietracker.models.MacroValueFormatter
 import com.apoorvdarshan.calorietracker.models.OptionalNutrientGoals
+import com.apoorvdarshan.calorietracker.models.SupplementalNutrient
 import com.apoorvdarshan.calorietracker.models.UserProfile
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassDialog
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassDialogActions
@@ -96,6 +97,9 @@ fun NutritionDetailSheet(
     val polyFat = entries.sumOf { it.polyunsaturatedFat ?: 0.0 }
     val cholesterol = entries.sumOf { it.cholesterol ?: 0.0 }
     val caffeine = entries.sumOf { it.caffeine ?: 0.0 }
+    val supplementalNutrients = SupplementalNutrient.values().associateWith { nutrient ->
+        entries.sumOf { it.supplementalNutrients[nutrient.storageKey] ?: 0.0 }
+    }
     val sodium = entries.sumOf { it.sodium ?: 0.0 }
     val potassium = entries.sumOf { it.potassium ?: 0.0 }
     val transFat = entries.sumOf { it.transFat ?: 0.0 }
@@ -175,6 +179,16 @@ fun NutritionDetailSheet(
                     DetailRow(Icons.Filled.Favorite, stringResource(R.string.nutrition_label_cholesterol), fmt(cholesterol), stringResource(R.string.unit_mg), goal = "${optionalGoals.cholesterol}")
                     Hairline()
                     DetailRow(Icons.Filled.Bolt, stringResource(R.string.nutrition_label_caffeine), fmt(caffeine), stringResource(R.string.unit_mg), goal = "${optionalGoals.caffeine}")
+                    SupplementalNutrient.values().forEach { nutrient ->
+                        Hairline()
+                        DetailRow(
+                            Icons.Filled.Bolt,
+                            stringResource(nutrient.displayNameRes),
+                            fmt(supplementalNutrients[nutrient] ?: 0.0),
+                            stringResource(R.string.unit_g),
+                            goal = "${optionalGoals.valueFor(nutrient.optionalNutrient)}"
+                        )
+                    }
                     Hairline()
                     DetailRow(Icons.Filled.Bolt, stringResource(R.string.nutrition_label_sodium), fmt(sodium), stringResource(R.string.unit_mg), goal = "${optionalGoals.sodium}")
                     Hairline()

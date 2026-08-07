@@ -3,6 +3,7 @@ package com.apoorvdarshan.calorietracker.services.ai
 import com.apoorvdarshan.calorietracker.models.ServingUnitOption
 import com.apoorvdarshan.calorietracker.models.OptionalNutrientGoals
 import com.apoorvdarshan.calorietracker.models.MealIngredient
+import com.apoorvdarshan.calorietracker.models.SupplementalNutrient
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
@@ -33,6 +34,7 @@ data class FoodAnalysis(
     val polyunsaturatedFat: Double? = null,
     val cholesterol: Double? = null,
     val caffeine: Double? = null,
+    val supplementalNutrients: Map<String, Double> = emptyMap(),
     val sodium: Double? = null,
     val potassium: Double? = null,
     val transFat: Double? = null,
@@ -72,6 +74,7 @@ data class NutritionLabelAnalysis(
     val polyunsaturatedFatPer100g: Double? = null,
     val cholesterolPer100g: Double? = null,
     val caffeinePer100g: Double? = null,
+    val supplementalNutrientsPer100g: Map<String, Double> = emptyMap(),
     val sodiumPer100g: Double? = null,
     val potassiumPer100g: Double? = null,
     val transFatPer100g: Double? = null,
@@ -108,6 +111,9 @@ data class NutritionLabelAnalysis(
             polyunsaturatedFat = s(polyunsaturatedFatPer100g),
             cholesterol = s(cholesterolPer100g),
             caffeine = s(caffeinePer100g),
+            supplementalNutrients = supplementalNutrientsPer100g.mapValues { (_, value) ->
+                round(value * scale * 10) / 10
+            },
             sodium = s(sodiumPer100g),
             potassium = s(potassiumPer100g),
             transFat = s(transFatPer100g),
@@ -226,6 +232,9 @@ internal object FoodJsonParser {
             polyunsaturatedFat = optDouble("polyunsaturated_fat"),
             cholesterol = optDouble("cholesterol"),
             caffeine = optDouble("caffeine"),
+            supplementalNutrients = SupplementalNutrient.values().mapNotNull { nutrient ->
+                optDouble(nutrient.apiKey)?.let { nutrient.storageKey to it }
+            }.toMap(),
             sodium = optDouble("sodium"),
             potassium = optDouble("potassium"),
             transFat = optDouble("trans_fat"),
@@ -304,6 +313,9 @@ internal object FoodJsonParser {
             polyunsaturatedFatPer100g = optDouble("polyunsaturated_fat_per_100g"),
             cholesterolPer100g = optDouble("cholesterol_per_100g"),
             caffeinePer100g = optDouble("caffeine_per_100g"),
+            supplementalNutrientsPer100g = SupplementalNutrient.values().mapNotNull { nutrient ->
+                optDouble("${nutrient.apiKey}_per_100g")?.let { nutrient.storageKey to it }
+            }.toMap(),
             sodiumPer100g = optDouble("sodium_per_100g"),
             potassiumPer100g = optDouble("potassium_per_100g"),
             transFatPer100g = optDouble("trans_fat_per_100g"),
@@ -403,7 +415,10 @@ internal object FoodJsonParser {
             vitaminE = optInt("vitamin_e", "vitaminE", "vitamin_e_mg", fallback = OptionalNutrientGoals.Default.vitaminE),
             vitaminK = optInt("vitamin_k", "vitaminK", "vitamin_k_mcg", fallback = OptionalNutrientGoals.Default.vitaminK),
             folate = optInt("folate", "folate_mcg", fallback = OptionalNutrientGoals.Default.folate),
-            omega3 = optInt("omega_3", "omega3", "omega_3_g", fallback = OptionalNutrientGoals.Default.omega3)
+            omega3 = optInt("omega_3", "omega3", "omega_3_g", fallback = OptionalNutrientGoals.Default.omega3),
+            supplementalNutrients = SupplementalNutrient.values().associate { nutrient ->
+                nutrient.storageKey to optInt(nutrient.apiKey, "${nutrient.apiKey}_g", fallback = 0)
+            }
         )
     }
 

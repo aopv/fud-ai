@@ -67,6 +67,7 @@ import com.apoorvdarshan.calorietracker.models.MealType
 import com.apoorvdarshan.calorietracker.models.MealIngredient
 import com.apoorvdarshan.calorietracker.models.ServingUnitOption
 import com.apoorvdarshan.calorietracker.models.ServingAmountExpression
+import com.apoorvdarshan.calorietracker.models.SupplementalNutrient
 import com.apoorvdarshan.calorietracker.models.totals
 import com.apoorvdarshan.calorietracker.ui.components.DateWheelPicker
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassDialog
@@ -196,6 +197,7 @@ fun EditFoodEntrySheet(
         polyunsaturatedFat = scaledD(currentBaseEntry.polyunsaturatedFat),
         cholesterol = scaledD(currentBaseEntry.cholesterol),
         caffeine = scaledD(currentBaseEntry.caffeine),
+        supplementalNutrients = currentBaseEntry.supplementalNutrients.mapValues { (_, value) -> scaledD(value) ?: 0.0 },
         sodium = scaledD(currentBaseEntry.sodium),
         potassium = scaledD(currentBaseEntry.potassium),
         transFat = scaledD(currentBaseEntry.transFat),
@@ -240,6 +242,7 @@ fun EditFoodEntrySheet(
                     polyunsaturatedFat = newAnalysis.polyunsaturatedFat,
                     cholesterol = newAnalysis.cholesterol,
                     caffeine = newAnalysis.caffeine,
+                    supplementalNutrients = newAnalysis.supplementalNutrients,
                     sodium = newAnalysis.sodium,
                     potassium = newAnalysis.potassium,
                     transFat = newAnalysis.transFat,
@@ -325,7 +328,13 @@ fun EditFoodEntrySheet(
             Triple(stringResource(R.string.nutrition_label_vitamin_k), scaledD(currentBaseEntry.vitaminK), mcgUnit),
             Triple(stringResource(R.string.nutrition_label_folate), scaledD(currentBaseEntry.folate), mcgUnit),
             Triple(stringResource(R.string.nutrition_label_omega3), scaledD(currentBaseEntry.omega3), gUnit)
-        )
+        ) + SupplementalNutrient.values().map { nutrient ->
+            Triple(
+                stringResource(nutrient.displayNameRes),
+                scaledD(currentBaseEntry.supplementalNutrients[nutrient.storageKey]),
+                gUnit
+            )
+        }
 
         Box(modifier = Modifier.fillMaxWidth()) {
             LazyColumn(

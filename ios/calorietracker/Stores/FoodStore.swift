@@ -209,6 +209,12 @@ class FoodStore {
         entries(for: date).reduce(0) { $0 + ($1.caffeine ?? 0) }
     }
 
+    func supplementalNutrient(_ nutrient: SupplementalNutrient, for date: Date) -> Double {
+        entries(for: date).reduce(0) { total, entry in
+            total + (entry.supplementalNutrients[nutrient.rawValue] ?? 0)
+        }
+    }
+
     func sodium(for date: Date) -> Double {
         entries(for: date).reduce(0) { $0 + ($1.sodium ?? 0) }
     }

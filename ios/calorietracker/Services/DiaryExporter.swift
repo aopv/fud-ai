@@ -173,6 +173,7 @@ enum DiaryExporter {
             let sugar_g: Double?; let added_sugar_g: Double?; let fiber_g: Double?
             let saturated_fat_g: Double?; let monounsaturated_fat_g: Double?; let polyunsaturated_fat_g: Double?
             let cholesterol_mg: Double?; let caffeine_mg: Double?; let sodium_mg: Double?; let potassium_mg: Double?
+            let supplemental_nutrients_g: [String: Double]
             let trans_fat_g: Double?; let calcium_mg: Double?; let iron_mg: Double?
             let magnesium_mg: Double?; let zinc_mg: Double?
             let vitamin_a_mcg: Double?; let vitamin_c_mg: Double?; let vitamin_d_mcg: Double?
@@ -197,7 +198,9 @@ enum DiaryExporter {
                          monounsaturated_fat_g: e.monounsaturatedFat.map(r1),
                          polyunsaturated_fat_g: e.polyunsaturatedFat.map(r1),
                          cholesterol_mg: e.cholesterol.map(r1), caffeine_mg: e.caffeine.map(r1), sodium_mg: e.sodium.map(r1),
-                         potassium_mg: e.potassium.map(r1), trans_fat_g: e.transFat.map(r1),
+                         potassium_mg: e.potassium.map(r1),
+                         supplemental_nutrients_g: e.supplementalNutrients.mapValues(r1),
+                         trans_fat_g: e.transFat.map(r1),
                          calcium_mg: e.calcium.map(r1), iron_mg: e.iron.map(r1),
                          magnesium_mg: e.magnesium.map(r1), zinc_mg: e.zinc.map(r1),
                          vitamin_a_mcg: e.vitaminA.map(r1), vitamin_c_mg: e.vitaminC.map(r1),

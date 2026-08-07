@@ -79,6 +79,9 @@ object MealShare {
         put("saturatedFat", e.saturatedFat); put("monounsaturatedFat", e.monounsaturatedFat)
         put("polyunsaturatedFat", e.polyunsaturatedFat); put("cholesterol", e.cholesterol)
         put("caffeine", e.caffeine); put("sodium", e.sodium); put("potassium", e.potassium); put("transFat", e.transFat)
+        if (e.supplementalNutrients.isNotEmpty()) {
+            d.put("supplementalNutrients", JSONObject(e.supplementalNutrients))
+        }
         put("calcium", e.calcium); put("iron", e.iron); put("magnesium", e.magnesium); put("zinc", e.zinc)
         put("vitaminA", e.vitaminA); put("vitaminC", e.vitaminC); put("vitaminD", e.vitaminD)
         put("vitaminB12", e.vitaminB12); put("vitaminE", e.vitaminE); put("vitaminK", e.vitaminK)
@@ -167,6 +170,11 @@ object MealShare {
             saturatedFat = dbl("saturatedFat"), monounsaturatedFat = dbl("monounsaturatedFat"),
             polyunsaturatedFat = dbl("polyunsaturatedFat"), cholesterol = dbl("cholesterol"),
             caffeine = dbl("caffeine"), sodium = dbl("sodium"), potassium = dbl("potassium"), transFat = dbl("transFat"),
+            supplementalNutrients = d.optJSONObject("supplementalNutrients")?.let { nutrients ->
+                nutrients.keys().asSequence().mapNotNull { key ->
+                    dblFrom(nutrients, key)?.let { key to it }
+                }.toMap()
+            }.orEmpty(),
             calcium = dbl("calcium"), iron = dbl("iron"), magnesium = dbl("magnesium"), zinc = dbl("zinc"),
             vitaminA = dbl("vitaminA"), vitaminC = dbl("vitaminC"), vitaminD = dbl("vitaminD"),
             vitaminB12 = dbl("vitaminB12"), vitaminE = dbl("vitaminE"), vitaminK = dbl("vitaminK"),

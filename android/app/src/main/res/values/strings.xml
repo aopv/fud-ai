@@ -428,6 +428,14 @@
     <string name="nutrition_label_poly_fat">Poly Unsat. Fat</string>
     <string name="nutrition_label_cholesterol">Cholesterol</string>
     <string name="nutrition_label_caffeine">Caffeine</string>
+    <string name="nutrition_label_creatine">Creatine</string>
+    <string name="nutrition_label_beta_alanine">Beta-Alanine</string>
+    <string name="nutrition_label_l_citrulline">L-Citrulline</string>
+    <string name="nutrition_label_l_carnitine">L-Carnitine</string>
+    <string name="nutrition_label_l_arginine">L-Arginine</string>
+    <string name="nutrition_label_taurine">Taurine</string>
+    <string name="nutrition_label_betaine">Betaine</string>
+    <string name="nutrition_label_hmb">HMB</string>
     <string name="nutrition_label_sodium">Sodium</string>
     <string name="nutrition_label_potassium">Potassium</string>
     <string name="nutrition_em_dash">—</string>
