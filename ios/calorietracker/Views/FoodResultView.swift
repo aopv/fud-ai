@@ -1141,9 +1141,25 @@ struct EndEditingDecimalTextField: UIViewRepresentable {
         }
 
         private func makeCalculatorAccessoryView() -> UIView {
-            let accessory = UIVisualEffectView(effect: UIBlurEffect(style: .systemChromeMaterial))
+            let accessory = UIView()
             accessory.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 52)
             accessory.autoresizingMask = [.flexibleWidth]
+            accessory.backgroundColor = .clear
+
+            let material: UIVisualEffect
+            if #available(iOS 26.0, *) {
+                let glass = UIGlassEffect(style: .regular)
+                glass.tintColor = Self.calorieTint.withAlphaComponent(0.08)
+                material = glass
+            } else {
+                material = UIBlurEffect(style: .systemChromeMaterial)
+            }
+            let glassSurface = UIVisualEffectView(effect: material)
+            glassSurface.clipsToBounds = true
+            glassSurface.layer.cornerRadius = 16
+            glassSurface.layer.cornerCurve = .continuous
+            glassSurface.translatesAutoresizingMaskIntoConstraints = false
+            accessory.addSubview(glassSurface)
 
             let clear = button("C", action: #selector(clearTapped), accessibilityLabel: "Clear")
             let add = button("+", action: #selector(addTapped), accessibilityLabel: "Add")
@@ -1160,12 +1176,16 @@ struct EndEditingDecimalTextField: UIViewRepresentable {
             stack.distribution = .fillEqually
             stack.spacing = 5
             stack.translatesAutoresizingMaskIntoConstraints = false
-            accessory.contentView.addSubview(stack)
+            glassSurface.contentView.addSubview(stack)
             NSLayoutConstraint.activate([
-                stack.leadingAnchor.constraint(equalTo: accessory.contentView.leadingAnchor, constant: 8),
-                stack.trailingAnchor.constraint(equalTo: accessory.contentView.trailingAnchor, constant: -8),
-                stack.topAnchor.constraint(equalTo: accessory.contentView.topAnchor, constant: 6),
-                stack.bottomAnchor.constraint(equalTo: accessory.contentView.bottomAnchor, constant: -6)
+                glassSurface.leadingAnchor.constraint(equalTo: accessory.leadingAnchor, constant: 8),
+                glassSurface.trailingAnchor.constraint(equalTo: accessory.trailingAnchor, constant: -8),
+                glassSurface.topAnchor.constraint(equalTo: accessory.topAnchor, constant: 4),
+                glassSurface.bottomAnchor.constraint(equalTo: accessory.bottomAnchor, constant: -4),
+                stack.leadingAnchor.constraint(equalTo: glassSurface.contentView.leadingAnchor, constant: 5),
+                stack.trailingAnchor.constraint(equalTo: glassSurface.contentView.trailingAnchor, constant: -5),
+                stack.topAnchor.constraint(equalTo: glassSurface.contentView.topAnchor, constant: 4),
+                stack.bottomAnchor.constraint(equalTo: glassSurface.contentView.bottomAnchor, constant: -4)
             ])
             return accessory
         }
@@ -1241,7 +1261,7 @@ struct EndEditingDecimalTextField: UIViewRepresentable {
             button.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
             button.titleLabel?.adjustsFontSizeToFitWidth = true
             button.titleLabel?.minimumScaleFactor = 0.72
-            button.backgroundColor = emphasized ? Self.calorieTint : .secondarySystemFill
+            button.backgroundColor = emphasized ? Self.calorieTint : .clear
             button.layer.cornerRadius = 10
             button.accessibilityLabel = accessibilityLabel
             button.addTarget(self, action: action, for: .touchUpInside)
