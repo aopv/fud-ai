@@ -182,6 +182,7 @@ class CoachTools(
                 putIfPresent("monounsaturated_fat_g", food.monounsaturatedFat)
                 putIfPresent("polyunsaturated_fat_g", food.polyunsaturatedFat)
                 putIfPresent("cholesterol_mg", food.cholesterol)
+                putIfPresent("caffeine_mg", food.caffeine)
                 putIfPresent("sodium_mg", food.sodium)
                 putIfPresent("potassium_mg", food.potassium)
                 putIfPresent("trans_fat_g", food.transFat)

@@ -32,7 +32,7 @@ class HealthKitManager {
     /// the weight/body-fat backfills, which now restore own samples too.
     /// v6: active energy joined the write set so calculated workout calories can
     /// stay synchronized with Apple Health.
-    private let typesVersion = 6
+    private let typesVersion = 7
     private let typesVersionKey = "healthKitTypesVersion"
 
     /// Active-energy samples written for the workout diary are deliberately
@@ -62,6 +62,7 @@ class HealthKitManager {
         .dietaryFatMonounsaturated,
         .dietaryFatPolyunsaturated,
         .dietaryCholesterol,
+        .dietaryCaffeine,
         .dietarySodium,
         .dietaryPotassium,
         // Expanded HealthKit nutrition sync for downstream apps such as Bevel
@@ -79,6 +80,7 @@ class HealthKitManager {
     ]
 
     private let expandedNutritionTypeIdentifiers: Set<HKQuantityTypeIdentifier> = [
+        .dietaryCaffeine,
         .dietaryCalcium,
         .dietaryIron,
         .dietaryMagnesium,
@@ -847,6 +849,7 @@ class HealthKitManager {
         append(.dietaryFatMonounsaturated, value: entry.monounsaturatedFat, unit: .gram())
         append(.dietaryFatPolyunsaturated, value: entry.polyunsaturatedFat, unit: .gram())
         append(.dietaryCholesterol, value: entry.cholesterol, unit: .gramUnit(with: .milli))
+        append(.dietaryCaffeine, value: entry.caffeine, unit: .gramUnit(with: .milli))
         append(.dietarySodium, value: entry.sodium, unit: .gramUnit(with: .milli))
         append(.dietaryPotassium, value: entry.potassium, unit: .gramUnit(with: .milli))
         append(.dietaryCalcium, value: entry.calcium, unit: .gramUnit(with: .milli))
@@ -1102,6 +1105,7 @@ class HealthKitManager {
                 monounsaturatedFat: values[.dietaryFatMonounsaturated],
                 polyunsaturatedFat: values[.dietaryFatPolyunsaturated],
                 cholesterol: values[.dietaryCholesterol],
+                caffeine: values[.dietaryCaffeine],
                 sodium: values[.dietarySodium],
                 potassium: values[.dietaryPotassium],
                 calcium: values[.dietaryCalcium],

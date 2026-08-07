@@ -427,6 +427,7 @@
     <string name="nutrition_label_mono_fat">Mono Unsat. Fat</string>
     <string name="nutrition_label_poly_fat">Poly Unsat. Fat</string>
     <string name="nutrition_label_cholesterol">Cholesterol</string>
+    <string name="nutrition_label_caffeine">Caffeine</string>
     <string name="nutrition_label_sodium">Sodium</string>
     <string name="nutrition_label_potassium">Potassium</string>
     <string name="nutrition_em_dash">—</string>
@@ -996,7 +997,7 @@
     <string name="settings_calc_split_used">The AI fits protein, carbs, and fat to your calorie target, using these references as a guide. Protein scales with your activity level (and is based on lean body mass when a body fat %% is set); fat is set from bodyweight; carbs fill the rest. You can lock any value or edit it yourself in Settings.</string>
     <string name="settings_calc_split_formula">Protein: ~0.8–2.2 g per kg by activity level (raised slightly when losing)\nFat: ~0.6 g per kg bodyweight\nCarbs: remaining calories ÷ 4 kcal/g</string>
     <string name="settings_calc_micro_name">Per-meal estimates</string>
-    <string name="settings_calc_micro_used">Calorie, macro, fiber, sugar, saturated fat, cholesterol, sodium, potassium and other micronutrient values returned per meal are AI-generated estimates from the food image, voice transcript, or text description, using the AI provider you selected.</string>
+    <string name="settings_calc_micro_used">Calorie, macro, fiber, sugar, saturated fat, cholesterol, caffeine, sodium, potassium and other detailed nutrition values returned per meal are AI-generated estimates from the food image, voice transcript, or text description, using the AI provider you selected.</string>
     <string name="settings_not_medical_title">Not medical advice</string>
     <string name="settings_not_medical_body">Fud AI is an estimation tool, not a clinical instrument. Predictive equations carry inherent error (typically ±10%% for BMR). Consult a registered dietitian, physician, or sports medicine professional before significant diet changes — especially if you have a medical condition, are pregnant or breastfeeding, are under 18, or are managing an eating disorder.</string>
     <string name="settings_waist_cm_format">Waist %1$.0f cm</string>

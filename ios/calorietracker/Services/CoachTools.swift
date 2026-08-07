@@ -272,6 +272,7 @@ struct CoachTools {
             add("monounsaturated_fat_g", entry.monounsaturatedFat)
             add("polyunsaturated_fat_g", entry.polyunsaturatedFat)
             add("cholesterol_mg", entry.cholesterol)
+            add("caffeine_mg", entry.caffeine)
             add("sodium_mg", entry.sodium)
             add("potassium_mg", entry.potassium)
             add("trans_fat_g", entry.transFat)

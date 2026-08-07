@@ -22,6 +22,7 @@ struct EditFoodEntryView: View {
     @State private var baseMonounsaturatedFat: Double?
     @State private var basePolyunsaturatedFat: Double?
     @State private var baseCholesterol: Double?
+    @State private var baseCaffeine: Double?
     @State private var baseSodium: Double?
     @State private var basePotassium: Double?
     @State private var baseTransFat: Double?
@@ -72,6 +73,7 @@ struct EditFoodEntryView: View {
     private var scaledMonounsaturatedFat: Double? { baseMonounsaturatedFat.map { round($0 * scale * 10) / 10 } }
     private var scaledPolyunsaturatedFat: Double? { basePolyunsaturatedFat.map { round($0 * scale * 10) / 10 } }
     private var scaledCholesterol: Double? { baseCholesterol.map { round($0 * scale * 10) / 10 } }
+    private var scaledCaffeine: Double? { baseCaffeine.map { round($0 * scale * 10) / 10 } }
     private var scaledSodium: Double? { baseSodium.map { round($0 * scale * 10) / 10 } }
     private var scaledPotassium: Double? { basePotassium.map { round($0 * scale * 10) / 10 } }
     private var scaledTransFat: Double? { baseTransFat.map { round($0 * scale * 10) / 10 } }
@@ -116,6 +118,7 @@ struct EditFoodEntryView: View {
         self._baseMonounsaturatedFat = State(initialValue: entry.monounsaturatedFat)
         self._basePolyunsaturatedFat = State(initialValue: entry.polyunsaturatedFat)
         self._baseCholesterol = State(initialValue: entry.cholesterol)
+        self._baseCaffeine = State(initialValue: entry.caffeine)
         self._baseSodium = State(initialValue: entry.sodium)
         self._basePotassium = State(initialValue: entry.potassium)
         self._baseTransFat = State(initialValue: entry.transFat)
@@ -282,6 +285,7 @@ struct EditFoodEntryView: View {
                             OptionalNutritionDisplayRow(label: "Mono Fat", value: scaledMonounsaturatedFat, unit: "g")
                             OptionalNutritionDisplayRow(label: "Poly Fat", value: scaledPolyunsaturatedFat, unit: "g")
                             OptionalNutritionDisplayRow(label: "Cholesterol", value: scaledCholesterol, unit: "mg")
+                            OptionalNutritionDisplayRow(label: "Caffeine", value: scaledCaffeine, unit: "mg")
                             OptionalNutritionDisplayRow(label: "Sodium", value: scaledSodium, unit: "mg")
                             OptionalNutritionDisplayRow(label: "Potassium", value: scaledPotassium, unit: "mg")
                             OptionalNutritionDisplayRow(label: "Trans Fat", value: scaledTransFat, unit: "g")
@@ -446,6 +450,7 @@ struct EditFoodEntryView: View {
                 baseMonounsaturatedFat = newAnalysis.monounsaturatedFat
                 basePolyunsaturatedFat = newAnalysis.polyunsaturatedFat
                 baseCholesterol = newAnalysis.cholesterol
+                baseCaffeine = newAnalysis.caffeine
                 baseSodium = newAnalysis.sodium
                 basePotassium = newAnalysis.potassium
                 baseTransFat = newAnalysis.transFat
@@ -510,6 +515,7 @@ struct EditFoodEntryView: View {
             monounsaturatedFat: scaledMonounsaturatedFat,
             polyunsaturatedFat: scaledPolyunsaturatedFat,
             cholesterol: scaledCholesterol,
+            caffeine: scaledCaffeine,
             sodium: scaledSodium,
             potassium: scaledPotassium,
             transFat: scaledTransFat,

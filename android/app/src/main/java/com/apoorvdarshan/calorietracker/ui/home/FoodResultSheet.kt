@@ -146,6 +146,7 @@ fun FoodResultSheet(
     var editableMonounsaturatedFat by remember(analysis) { mutableStateOf(analysis.monounsaturatedFat) }
     var editablePolyunsaturatedFat by remember(analysis) { mutableStateOf(analysis.polyunsaturatedFat) }
     var editableCholesterol by remember(analysis) { mutableStateOf(analysis.cholesterol) }
+    var editableCaffeine by remember(analysis) { mutableStateOf(analysis.caffeine) }
     var editableSodium by remember(analysis) { mutableStateOf(analysis.sodium) }
     var editablePotassium by remember(analysis) { mutableStateOf(analysis.potassium) }
     var editableTransFat by remember(analysis) { mutableStateOf(analysis.transFat) }
@@ -212,6 +213,7 @@ fun FoodResultSheet(
         monounsaturatedFat = editableMonounsaturatedFat,
         polyunsaturatedFat = editablePolyunsaturatedFat,
         cholesterol = editableCholesterol,
+        caffeine = editableCaffeine,
         sodium = editableSodium,
         potassium = editablePotassium,
         transFat = editableTransFat,
@@ -248,6 +250,7 @@ fun FoodResultSheet(
         monounsaturatedFat = scaledD(editableMonounsaturatedFat),
         polyunsaturatedFat = scaledD(editablePolyunsaturatedFat),
         cholesterol = scaledD(editableCholesterol),
+        caffeine = scaledD(editableCaffeine),
         sodium = scaledD(editableSodium),
         potassium = scaledD(editablePotassium),
         transFat = scaledD(editableTransFat),
@@ -487,6 +490,7 @@ fun FoodResultSheet(
                             ReviewNutrientEditSpec(stringResource(R.string.sheet_micro_mono_fat), scaledD(editableMonounsaturatedFat), gUnit, { editableMonounsaturatedFat = baseOptionalFromText(it) }),
                             ReviewNutrientEditSpec(stringResource(R.string.sheet_micro_poly_fat), scaledD(editablePolyunsaturatedFat), gUnit, { editablePolyunsaturatedFat = baseOptionalFromText(it) }),
                             ReviewNutrientEditSpec(stringResource(R.string.sheet_micro_cholesterol), scaledD(editableCholesterol), mgUnit, { editableCholesterol = baseOptionalFromText(it) }),
+                            ReviewNutrientEditSpec(stringResource(R.string.nutrition_label_caffeine), scaledD(editableCaffeine), mgUnit, { editableCaffeine = baseOptionalFromText(it) }),
                             ReviewNutrientEditSpec(stringResource(R.string.sheet_micro_sodium), scaledD(editableSodium), mgUnit, { editableSodium = baseOptionalFromText(it) }),
                             ReviewNutrientEditSpec(stringResource(R.string.sheet_micro_potassium), scaledD(editablePotassium), mgUnit, { editablePotassium = baseOptionalFromText(it) }),
                             ReviewNutrientEditSpec(stringResource(R.string.nutrition_label_trans_fat), scaledD(editableTransFat), gUnit, { editableTransFat = baseOptionalFromText(it) }),

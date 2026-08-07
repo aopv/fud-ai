@@ -235,6 +235,7 @@ class FoodRepository(
                 monounsaturatedFat = record.monounsaturatedFat,
                 polyunsaturatedFat = record.polyunsaturatedFat,
                 cholesterol = record.cholesterol,
+                caffeine = record.caffeine,
                 sodium = record.sodium,
                 potassium = record.potassium,
                 transFat = record.transFat,

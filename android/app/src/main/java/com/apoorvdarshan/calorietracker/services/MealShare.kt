@@ -78,7 +78,7 @@ object MealShare {
         put("sugar", e.sugar); put("addedSugar", e.addedSugar); put("fiber", e.fiber)
         put("saturatedFat", e.saturatedFat); put("monounsaturatedFat", e.monounsaturatedFat)
         put("polyunsaturatedFat", e.polyunsaturatedFat); put("cholesterol", e.cholesterol)
-        put("sodium", e.sodium); put("potassium", e.potassium); put("transFat", e.transFat)
+        put("caffeine", e.caffeine); put("sodium", e.sodium); put("potassium", e.potassium); put("transFat", e.transFat)
         put("calcium", e.calcium); put("iron", e.iron); put("magnesium", e.magnesium); put("zinc", e.zinc)
         put("vitaminA", e.vitaminA); put("vitaminC", e.vitaminC); put("vitaminD", e.vitaminD)
         put("vitaminB12", e.vitaminB12); put("vitaminE", e.vitaminE); put("vitaminK", e.vitaminK)
@@ -166,7 +166,7 @@ object MealShare {
             sugar = dbl("sugar"), addedSugar = dbl("addedSugar"), fiber = dbl("fiber"),
             saturatedFat = dbl("saturatedFat"), monounsaturatedFat = dbl("monounsaturatedFat"),
             polyunsaturatedFat = dbl("polyunsaturatedFat"), cholesterol = dbl("cholesterol"),
-            sodium = dbl("sodium"), potassium = dbl("potassium"), transFat = dbl("transFat"),
+            caffeine = dbl("caffeine"), sodium = dbl("sodium"), potassium = dbl("potassium"), transFat = dbl("transFat"),
             calcium = dbl("calcium"), iron = dbl("iron"), magnesium = dbl("magnesium"), zinc = dbl("zinc"),
             vitaminA = dbl("vitaminA"), vitaminC = dbl("vitaminC"), vitaminD = dbl("vitaminD"),
             vitaminB12 = dbl("vitaminB12"), vitaminE = dbl("vitaminE"), vitaminK = dbl("vitaminK"),

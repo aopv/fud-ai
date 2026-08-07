@@ -330,6 +330,7 @@ struct FoodEntry: Identifiable, Codable {
     var monounsaturatedFat: Double? // grams
     var polyunsaturatedFat: Double? // grams
     var cholesterol: Double?    // milligrams
+    var caffeine: Double?       // milligrams
     var sodium: Double?         // milligrams
     var potassium: Double?      // milligrams
     var transFat: Double?       // grams
@@ -375,6 +376,7 @@ struct FoodEntry: Identifiable, Codable {
         monounsaturatedFat: Double? = nil,
         polyunsaturatedFat: Double? = nil,
         cholesterol: Double? = nil,
+        caffeine: Double? = nil,
         sodium: Double? = nil,
         potassium: Double? = nil,
         transFat: Double? = nil,
@@ -419,6 +421,7 @@ struct FoodEntry: Identifiable, Codable {
         self.monounsaturatedFat = monounsaturatedFat
         self.polyunsaturatedFat = polyunsaturatedFat
         self.cholesterol = cholesterol
+        self.caffeine = caffeine
         self.sodium = sodium
         self.potassium = potassium
         self.transFat = transFat
@@ -451,7 +454,7 @@ struct FoodEntry: Identifiable, Codable {
         case emoji, source, mealType
         case sugar, addedSugar, fiber, saturatedFat
         case monounsaturatedFat, polyunsaturatedFat
-        case cholesterol, sodium, potassium
+        case cholesterol, caffeine, sodium, potassium
         case transFat, calcium, iron, magnesium, zinc
         case vitaminA, vitaminC, vitaminD, vitaminB12, vitaminE, vitaminK, folate, omega3
         case servingSizeGrams
@@ -506,6 +509,7 @@ struct FoodEntry: Identifiable, Codable {
         monounsaturatedFat = try container.decodeIfPresent(Double.self, forKey: .monounsaturatedFat)
         polyunsaturatedFat = try container.decodeIfPresent(Double.self, forKey: .polyunsaturatedFat)
         cholesterol = try container.decodeIfPresent(Double.self, forKey: .cholesterol)
+        caffeine = try container.decodeIfPresent(Double.self, forKey: .caffeine)
         sodium = try container.decodeIfPresent(Double.self, forKey: .sodium)
         potassium = try container.decodeIfPresent(Double.self, forKey: .potassium)
         transFat = try container.decodeIfPresent(Double.self, forKey: .transFat)
@@ -555,6 +559,7 @@ struct FoodEntry: Identifiable, Codable {
         try container.encodeIfPresent(monounsaturatedFat, forKey: .monounsaturatedFat)
         try container.encodeIfPresent(polyunsaturatedFat, forKey: .polyunsaturatedFat)
         try container.encodeIfPresent(cholesterol, forKey: .cholesterol)
+        try container.encodeIfPresent(caffeine, forKey: .caffeine)
         try container.encodeIfPresent(sodium, forKey: .sodium)
         try container.encodeIfPresent(potassium, forKey: .potassium)
         try container.encodeIfPresent(transFat, forKey: .transFat)
@@ -627,6 +632,7 @@ struct FoodEntry: Identifiable, Codable {
             monounsaturatedFat: monounsaturatedFat,
             polyunsaturatedFat: polyunsaturatedFat,
             cholesterol: cholesterol,
+            caffeine: caffeine,
             sodium: sodium,
             potassium: potassium,
             transFat: transFat,

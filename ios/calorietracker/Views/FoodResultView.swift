@@ -31,6 +31,7 @@ struct FoodResultView: View {
     @State private var editableMonounsaturatedFat: Double?
     @State private var editablePolyunsaturatedFat: Double?
     @State private var editableCholesterol: Double?
+    @State private var editableCaffeine: Double?
     @State private var editableSodium: Double?
     @State private var editablePotassium: Double?
     @State private var editableTransFat: Double?
@@ -76,6 +77,7 @@ struct FoodResultView: View {
     private var scaledMonounsaturatedFat: Double? { editableMonounsaturatedFat.map { round($0 * scale * 10) / 10 } }
     private var scaledPolyunsaturatedFat: Double? { editablePolyunsaturatedFat.map { round($0 * scale * 10) / 10 } }
     private var scaledCholesterol: Double? { editableCholesterol.map { round($0 * scale * 10) / 10 } }
+    private var scaledCaffeine: Double? { editableCaffeine.map { round($0 * scale * 10) / 10 } }
     private var scaledSodium: Double? { editableSodium.map { round($0 * scale * 10) / 10 } }
     private var scaledPotassium: Double? { editablePotassium.map { round($0 * scale * 10) / 10 } }
     private var scaledTransFat: Double? { editableTransFat.map { round($0 * scale * 10) / 10 } }
@@ -117,6 +119,7 @@ struct FoodResultView: View {
         monounsaturatedFat: Double? = nil,
         polyunsaturatedFat: Double? = nil,
         cholesterol: Double? = nil,
+        caffeine: Double? = nil,
         sodium: Double? = nil,
         potassium: Double? = nil,
         transFat: Double? = nil,
@@ -174,6 +177,7 @@ struct FoodResultView: View {
         self._editableMonounsaturatedFat = State(initialValue: monounsaturatedFat)
         self._editablePolyunsaturatedFat = State(initialValue: polyunsaturatedFat)
         self._editableCholesterol = State(initialValue: cholesterol)
+        self._editableCaffeine = State(initialValue: caffeine)
         self._editableSodium = State(initialValue: sodium)
         self._editablePotassium = State(initialValue: potassium)
         self._editableTransFat = State(initialValue: transFat)
@@ -414,6 +418,7 @@ struct FoodResultView: View {
                             ReviewNutritionValueRow(label: "Mono Fat", displayValue: displayText(scaledMonounsaturatedFat), editValue: editText(scaledMonounsaturatedFat), unit: "g", isUnlocked: nutritionUnlocked, dim: true, onEdit: { updateOptionalBaseDouble(from: $0) { editableMonounsaturatedFat = $0 } })
                             ReviewNutritionValueRow(label: "Poly Fat", displayValue: displayText(scaledPolyunsaturatedFat), editValue: editText(scaledPolyunsaturatedFat), unit: "g", isUnlocked: nutritionUnlocked, dim: true, onEdit: { updateOptionalBaseDouble(from: $0) { editablePolyunsaturatedFat = $0 } })
                             ReviewNutritionValueRow(label: "Cholesterol", displayValue: displayText(scaledCholesterol), editValue: editText(scaledCholesterol), unit: "mg", isUnlocked: nutritionUnlocked, dim: true, onEdit: { updateOptionalBaseDouble(from: $0) { editableCholesterol = $0 } })
+                            ReviewNutritionValueRow(label: "Caffeine", displayValue: displayText(scaledCaffeine), editValue: editText(scaledCaffeine), unit: "mg", isUnlocked: nutritionUnlocked, dim: true, onEdit: { updateOptionalBaseDouble(from: $0) { editableCaffeine = $0 } })
                             ReviewNutritionValueRow(label: "Sodium", displayValue: displayText(scaledSodium), editValue: editText(scaledSodium), unit: "mg", isUnlocked: nutritionUnlocked, dim: true, onEdit: { updateOptionalBaseDouble(from: $0) { editableSodium = $0 } })
                             ReviewNutritionValueRow(label: "Potassium", displayValue: displayText(scaledPotassium), editValue: editText(scaledPotassium), unit: "mg", isUnlocked: nutritionUnlocked, dim: true, onEdit: { updateOptionalBaseDouble(from: $0) { editablePotassium = $0 } })
                             ReviewNutritionValueRow(label: "Trans Fat", displayValue: displayText(scaledTransFat), editValue: editText(scaledTransFat), unit: "g", isUnlocked: nutritionUnlocked, dim: true, onEdit: { updateOptionalBaseDouble(from: $0) { editableTransFat = $0 } })
@@ -541,6 +546,7 @@ struct FoodResultView: View {
             monounsaturatedFat: scaledMonounsaturatedFat,
             polyunsaturatedFat: scaledPolyunsaturatedFat,
             cholesterol: scaledCholesterol,
+            caffeine: scaledCaffeine,
             sodium: scaledSodium,
             potassium: scaledPotassium,
             transFat: scaledTransFat,

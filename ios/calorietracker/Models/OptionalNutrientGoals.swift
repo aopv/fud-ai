@@ -6,6 +6,7 @@ enum OptionalNutrient: String, CaseIterable, Identifiable, Codable {
     case addedSugar
     case saturatedFat
     case cholesterol
+    case caffeine
     case sodium
     case potassium
     case transFat
@@ -31,6 +32,7 @@ enum OptionalNutrient: String, CaseIterable, Identifiable, Codable {
         case .addedSugar: "added_sugar"
         case .saturatedFat: "saturated_fat"
         case .cholesterol: "cholesterol"
+        case .caffeine: "caffeine"
         case .sodium: "sodium"
         case .potassium: "potassium"
         case .transFat: "trans_fat"
@@ -56,6 +58,7 @@ enum OptionalNutrient: String, CaseIterable, Identifiable, Codable {
         case "added_sugar": self = .addedSugar
         case "saturated_fat": self = .saturatedFat
         case "cholesterol": self = .cholesterol
+        case "caffeine": self = .caffeine
         case "sodium": self = .sodium
         case "potassium": self = .potassium
         case "trans_fat": self = .transFat
@@ -82,6 +85,7 @@ enum OptionalNutrient: String, CaseIterable, Identifiable, Codable {
         case .addedSugar: LocalizedDisplayText.text("Added Sugar", polish: "Cukier dodany")
         case .saturatedFat: LocalizedDisplayText.text("Saturated Fat", polish: "Tłuszcze nasycone")
         case .cholesterol: LocalizedDisplayText.text("Cholesterol", polish: "Cholesterol")
+        case .caffeine: LocalizedDisplayText.text("Caffeine", polish: "Kofeina")
         case .sodium: LocalizedDisplayText.text("Sodium", polish: "Sód")
         case .potassium: LocalizedDisplayText.text("Potassium", polish: "Potas")
         case .transFat: LocalizedDisplayText.text("Trans Fat", polish: "Tłuszcze trans")
@@ -105,6 +109,7 @@ enum OptionalNutrient: String, CaseIterable, Identifiable, Codable {
         case .saturatedFat: LocalizedDisplayText.text("Sat Fat", polish: "Nasyc.")
         case .addedSugar: LocalizedDisplayText.text("Added", polish: "Dodany")
         case .transFat: LocalizedDisplayText.text("Trans", polish: "Trans")
+        case .caffeine: LocalizedDisplayText.text("Caffeine", polish: "Kofeina")
         case .vitaminA: LocalizedDisplayText.text("Vit A", polish: "Wit. A")
         case .vitaminC: LocalizedDisplayText.text("Vit C", polish: "Wit. C")
         case .vitaminD: LocalizedDisplayText.text("Vit D", polish: "Wit. D")
@@ -120,7 +125,7 @@ enum OptionalNutrient: String, CaseIterable, Identifiable, Codable {
         switch self {
         case .fiber, .potassium, .calcium, .iron, .magnesium, .zinc, .vitaminA, .vitaminC, .vitaminD, .vitaminB12, .vitaminE, .vitaminK, .folate, .omega3:
             LocalizedDisplayText.text("Target", polish: "Cel")
-        case .sugar, .addedSugar, .saturatedFat, .cholesterol, .sodium, .transFat:
+        case .sugar, .addedSugar, .saturatedFat, .cholesterol, .caffeine, .sodium, .transFat:
             LocalizedDisplayText.text("Limit", polish: "Limit")
         }
     }
@@ -132,6 +137,7 @@ enum OptionalNutrient: String, CaseIterable, Identifiable, Codable {
         case .addedSugar: "plus.circle.fill"
         case .saturatedFat: "circle.lefthalf.filled"
         case .cholesterol: "heart.fill"
+        case .caffeine: "cup.and.saucer.fill"
         case .sodium: "circle.grid.2x2.fill"
         case .potassium: "bolt.fill"
         case .transFat: "drop.fill"
@@ -152,7 +158,7 @@ enum OptionalNutrient: String, CaseIterable, Identifiable, Codable {
 
     var unit: String {
         switch self {
-        case .cholesterol, .sodium, .potassium, .calcium, .iron, .magnesium, .zinc, .vitaminC, .vitaminE: "mg"
+        case .cholesterol, .caffeine, .sodium, .potassium, .calcium, .iron, .magnesium, .zinc, .vitaminC, .vitaminE: "mg"
         case .vitaminA, .vitaminD, .vitaminB12, .vitaminK, .folate: "mcg"
         default: "g"
         }
@@ -165,6 +171,7 @@ enum OptionalNutrient: String, CaseIterable, Identifiable, Codable {
         case .addedSugar: 25
         case .saturatedFat: 20
         case .cholesterol: 300
+        case .caffeine: 400
         case .sodium: 2_300
         case .potassium: 3_500
         case .transFat: 0
@@ -190,6 +197,7 @@ enum OptionalNutrient: String, CaseIterable, Identifiable, Codable {
         case .addedSugar: 0...100
         case .saturatedFat: 0...80
         case .cholesterol: 0...1_000
+        case .caffeine: 0...1_000
         case .sodium: 500...6_000
         case .potassium: 1_000...6_000
         case .transFat: 0...10
@@ -214,6 +222,7 @@ enum OptionalNutrient: String, CaseIterable, Identifiable, Codable {
         case .magnesium: 25
         case .vitaminC, .vitaminK: 10
         case .cholesterol: 50
+        case .caffeine: 25
         case .iron, .zinc, .vitaminD, .vitaminB12, .vitaminE, .transFat, .omega3: 1
         default: 5
         }
@@ -223,7 +232,7 @@ enum OptionalNutrient: String, CaseIterable, Identifiable, Codable {
         switch self {
         case .fiber, .potassium, .calcium, .iron, .magnesium, .zinc, .vitaminA, .vitaminC, .vitaminD, .vitaminB12, .vitaminE, .vitaminK, .folate, .omega3:
             "target"
-        case .sugar, .addedSugar, .saturatedFat, .cholesterol, .sodium, .transFat:
+        case .sugar, .addedSugar, .saturatedFat, .cholesterol, .caffeine, .sodium, .transFat:
             "limit"
         }
     }

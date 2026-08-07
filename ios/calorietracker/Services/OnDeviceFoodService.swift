@@ -157,6 +157,7 @@ struct OnDeviceFoodService {
             monounsaturatedFat: nil,
             polyunsaturatedFat: nil,
             cholesterol: nil,
+            caffeine: nil,
             sodium: r.sodiumMg >= 0 ? r.sodiumMg : nil,
             potassium: nil,
             transFat: nil,

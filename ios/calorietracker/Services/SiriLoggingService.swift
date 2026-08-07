@@ -125,6 +125,7 @@ enum SiriLoggingService {
             monounsaturatedFat: analysis.monounsaturatedFat,
             polyunsaturatedFat: analysis.polyunsaturatedFat,
             cholesterol: analysis.cholesterol,
+            caffeine: analysis.caffeine,
             sodium: analysis.sodium,
             potassium: analysis.potassium,
             transFat: analysis.transFat,

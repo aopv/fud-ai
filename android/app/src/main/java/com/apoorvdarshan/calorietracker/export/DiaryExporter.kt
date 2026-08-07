@@ -136,7 +136,7 @@ object DiaryExporter {
         val sugar_g: Double? = null, val added_sugar_g: Double? = null, val fiber_g: Double? = null,
         val saturated_fat_g: Double? = null, val monounsaturated_fat_g: Double? = null,
         val polyunsaturated_fat_g: Double? = null, val cholesterol_mg: Double? = null,
-        val sodium_mg: Double? = null, val potassium_mg: Double? = null, val trans_fat_g: Double? = null,
+        val caffeine_mg: Double? = null, val sodium_mg: Double? = null, val potassium_mg: Double? = null, val trans_fat_g: Double? = null,
         val calcium_mg: Double? = null, val iron_mg: Double? = null, val magnesium_mg: Double? = null,
         val zinc_mg: Double? = null, val vitamin_a_mcg: Double? = null, val vitamin_c_mg: Double? = null,
         val vitamin_d_mcg: Double? = null, val vitamin_b12_mcg: Double? = null,
@@ -169,7 +169,7 @@ object DiaryExporter {
                             fiber_g = e.fiber?.let { r1(it) }, saturated_fat_g = e.saturatedFat?.let { r1(it) },
                             monounsaturated_fat_g = e.monounsaturatedFat?.let { r1(it) },
                             polyunsaturated_fat_g = e.polyunsaturatedFat?.let { r1(it) },
-                            cholesterol_mg = e.cholesterol?.let { r1(it) }, sodium_mg = e.sodium?.let { r1(it) },
+                            cholesterol_mg = e.cholesterol?.let { r1(it) }, caffeine_mg = e.caffeine?.let { r1(it) }, sodium_mg = e.sodium?.let { r1(it) },
                             potassium_mg = e.potassium?.let { r1(it) }, trans_fat_g = e.transFat?.let { r1(it) },
                             calcium_mg = e.calcium?.let { r1(it) }, iron_mg = e.iron?.let { r1(it) },
                             magnesium_mg = e.magnesium?.let { r1(it) }, zinc_mg = e.zinc?.let { r1(it) },
@@ -207,7 +207,7 @@ object DiaryExporter {
             )
         }
         val doc = Doc(
-            export = MetaDto("Fud AI", "1.2", RangeDto(dayFmt.format(lo), dayFmt.format(hi))),
+            export = MetaDto("Fud AI", "1.3", RangeDto(dayFmt.format(lo), dayFmt.format(hi))),
             days = days,
         )
         return jsonPretty.encodeToString(Doc.serializer(), doc)
@@ -234,8 +234,8 @@ object DiaryExporter {
             sb.append("- Fat: ${r1(tot[3])} / ${t.fat.roundToInt()} g\n")
             for ((mt, items) in meals(dayEntries)) {
                 sb.append("### ${mealDisplay(mt)}\n")
-                sb.append("| Time | Food | Weight | Calories | Protein (g) | Carbs (g) | Fat (g) | Sugar (g) | Added sugar (g) | Fiber (g) | Saturated fat (g) | Monounsaturated fat (g) | Polyunsaturated fat (g) | Cholesterol (mg) | Sodium (mg) | Potassium (mg) | Trans fat (g) | Calcium (mg) | Iron (mg) | Magnesium (mg) | Zinc (mg) | Vitamin A (mcg) | Vitamin C (mg) | Vitamin D (mcg) | Vitamin B12 (mcg) | Vitamin E (mg) | Vitamin K (mcg) | Folate (mcg) | Omega-3 (g) | Source | Ingredients |\n")
-                sb.append("|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|---|\n")
+                sb.append("| Time | Food | Weight | Calories | Protein (g) | Carbs (g) | Fat (g) | Sugar (g) | Added sugar (g) | Fiber (g) | Saturated fat (g) | Monounsaturated fat (g) | Polyunsaturated fat (g) | Cholesterol (mg) | Caffeine (mg) | Sodium (mg) | Potassium (mg) | Trans fat (g) | Calcium (mg) | Iron (mg) | Magnesium (mg) | Zinc (mg) | Vitamin A (mcg) | Vitamin C (mg) | Vitamin D (mcg) | Vitamin B12 (mcg) | Vitamin E (mg) | Vitamin K (mcg) | Folate (mcg) | Omega-3 (g) | Source | Ingredients |\n")
+                sb.append("|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|---|\n")
                 for (e in items) {
                     val weight = e.servingSizeGrams?.let { "${it.roundToInt()} g" } ?: "-"
                     val food = e.name.replace("|", "/")
@@ -245,7 +245,7 @@ object DiaryExporter {
                         optionalNumber(e.sugar, "-"), optionalNumber(e.addedSugar, "-"), optionalNumber(e.fiber, "-"),
                         optionalNumber(e.saturatedFat, "-"), optionalNumber(e.monounsaturatedFat, "-"),
                         optionalNumber(e.polyunsaturatedFat, "-"), optionalNumber(e.cholesterol, "-"),
-                        optionalNumber(e.sodium, "-"), optionalNumber(e.potassium, "-"), optionalNumber(e.transFat, "-"),
+                        optionalNumber(e.caffeine, "-"), optionalNumber(e.sodium, "-"), optionalNumber(e.potassium, "-"), optionalNumber(e.transFat, "-"),
                         optionalNumber(e.calcium, "-"), optionalNumber(e.iron, "-"), optionalNumber(e.magnesium, "-"),
                         optionalNumber(e.zinc, "-"), optionalNumber(e.vitaminA, "-"), optionalNumber(e.vitaminC, "-"),
                         optionalNumber(e.vitaminD, "-"), optionalNumber(e.vitaminB12, "-"), optionalNumber(e.vitaminE, "-"),
@@ -263,7 +263,7 @@ object DiaryExporter {
 
     private fun csv(byDay: Map<LocalDate, List<FoodEntry>>): String {
         val sb = StringBuilder()
-        sb.append("date,meal,time,food,weight_g,calories,protein_g,carbs_g,fat_g,sugar_g,added_sugar_g,fiber_g,saturated_fat_g,monounsaturated_fat_g,polyunsaturated_fat_g,cholesterol_mg,sodium_mg,potassium_mg,trans_fat_g,calcium_mg,iron_mg,magnesium_mg,zinc_mg,vitamin_a_mcg,vitamin_c_mg,vitamin_d_mcg,vitamin_b12_mcg,vitamin_e_mg,vitamin_k_mcg,folate_mcg,omega3_g,source,note,ingredients\n")
+        sb.append("date,meal,time,food,weight_g,calories,protein_g,carbs_g,fat_g,sugar_g,added_sugar_g,fiber_g,saturated_fat_g,monounsaturated_fat_g,polyunsaturated_fat_g,cholesterol_mg,caffeine_mg,sodium_mg,potassium_mg,trans_fat_g,calcium_mg,iron_mg,magnesium_mg,zinc_mg,vitamin_a_mcg,vitamin_c_mg,vitamin_d_mcg,vitamin_b12_mcg,vitamin_e_mg,vitamin_k_mcg,folate_mcg,omega3_g,source,note,ingredients\n")
         for ((date, dayEntries) in byDay) {
             val d = dayFmt.format(date)
             for ((mt, items) in meals(dayEntries)) {
@@ -274,7 +274,7 @@ object DiaryExporter {
                         e.calories.toString(), r1(e.protein).toString(), r1(e.carbs).toString(), r1(e.fat).toString(),
                         optionalNumber(e.sugar), optionalNumber(e.addedSugar), optionalNumber(e.fiber),
                         optionalNumber(e.saturatedFat), optionalNumber(e.monounsaturatedFat),
-                        optionalNumber(e.polyunsaturatedFat), optionalNumber(e.cholesterol), optionalNumber(e.sodium),
+                        optionalNumber(e.polyunsaturatedFat), optionalNumber(e.cholesterol), optionalNumber(e.caffeine), optionalNumber(e.sodium),
                         optionalNumber(e.potassium), optionalNumber(e.transFat), optionalNumber(e.calcium),
                         optionalNumber(e.iron), optionalNumber(e.magnesium), optionalNumber(e.zinc),
                         optionalNumber(e.vitaminA), optionalNumber(e.vitaminC), optionalNumber(e.vitaminD),

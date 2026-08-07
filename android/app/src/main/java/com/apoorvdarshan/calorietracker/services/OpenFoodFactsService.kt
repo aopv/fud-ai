@@ -94,6 +94,7 @@ object OpenFoodFactsService {
             monounsaturatedFat = rounded(servingValue("monounsaturated-fat")),
             polyunsaturatedFat = rounded(servingValue("polyunsaturated-fat")),
             cholesterol = milligrams(servingValue("cholesterol")),
+            caffeine = milligrams(servingValue("caffeine")),
             sodium = milligrams(servingValue("sodium")),
             potassium = milligrams(servingValue("potassium")),
             transFat = rounded(servingValue("trans-fat")),

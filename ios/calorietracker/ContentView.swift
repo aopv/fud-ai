@@ -1195,6 +1195,7 @@ struct HomeView: View {
                             monounsaturatedFat: result.monounsaturatedFat,
                             polyunsaturatedFat: result.polyunsaturatedFat,
                             cholesterol: result.cholesterol,
+                            caffeine: result.caffeine,
                             sodium: result.sodium,
                             potassium: result.potassium,
                             transFat: result.transFat,
@@ -1259,6 +1260,7 @@ struct HomeView: View {
                         monounsaturatedFat: entry.monounsaturatedFat,
                         polyunsaturatedFat: entry.polyunsaturatedFat,
                         cholesterol: entry.cholesterol,
+                        caffeine: entry.caffeine,
                         sodium: entry.sodium,
                         potassium: entry.potassium,
                         transFat: entry.transFat,
@@ -1894,6 +1896,7 @@ private enum OpenFoodFactsService {
             monounsaturatedFat: rounded(servingValue("monounsaturated-fat", in: nutriments, scale: scale)),
             polyunsaturatedFat: rounded(servingValue("polyunsaturated-fat", in: nutriments, scale: scale)),
             cholesterol: milligrams(servingValue("cholesterol", in: nutriments, scale: scale)),
+            caffeine: milligrams(servingValue("caffeine", in: nutriments, scale: scale)),
             sodium: milligrams(servingValue("sodium", in: nutriments, scale: scale)),
             potassium: milligrams(servingValue("potassium", in: nutriments, scale: scale)),
             transFat: rounded(servingValue("trans-fat", in: nutriments, scale: scale)),
@@ -2124,6 +2127,7 @@ struct NutritionDetailView: View {
                     NutritionDetailRow(icon: "drop", label: "Mono Unsat. Fat", value: formatMicro(foodStore.monounsaturatedFat(for: date)), unit: "g")
                     NutritionDetailRow(icon: "drop.halffull", label: "Poly Unsat. Fat", value: formatMicro(foodStore.polyunsaturatedFat(for: date)), unit: "g")
                     optionalNutritionRow(.cholesterol, value: foodStore.cholesterol(for: date))
+                    optionalNutritionRow(.caffeine, value: foodStore.caffeine(for: date))
                     optionalNutritionRow(.sodium, value: foodStore.sodium(for: date))
                     optionalNutritionRow(.potassium, value: foodStore.potassium(for: date))
                     optionalNutritionRow(.transFat, value: foodStore.transFat(for: date))

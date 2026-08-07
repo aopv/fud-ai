@@ -205,6 +205,10 @@ class FoodStore {
         entries(for: date).reduce(0) { $0 + ($1.cholesterol ?? 0) }
     }
 
+    func caffeine(for date: Date) -> Double {
+        entries(for: date).reduce(0) { $0 + ($1.caffeine ?? 0) }
+    }
+
     func sodium(for date: Date) -> Double {
         entries(for: date).reduce(0) { $0 + ($1.sodium ?? 0) }
     }

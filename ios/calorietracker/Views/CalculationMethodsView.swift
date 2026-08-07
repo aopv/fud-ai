@@ -65,7 +65,7 @@ struct CalculationMethodsView: View {
                     section(title: "Micronutrient values") {
                         formulaCard(
                             name: "Per-meal estimates",
-                            usedWhen: "Calorie, macro, fiber, sugar, saturated fat, cholesterol, sodium, potassium and other micronutrient values returned per meal are AI-generated estimates from the food image, voice transcript, or text description, using the AI provider you selected.",
+                            usedWhen: "Calorie, macro, fiber, sugar, saturated fat, cholesterol, caffeine, sodium, potassium and other detailed nutrition values returned per meal are AI-generated estimates from the food image, voice transcript, or text description, using the AI provider you selected.",
                             formula: nil,
                             citation: "Estimates rely on the underlying AI model's training data (USDA FoodData Central, manufacturer panels, scientific literature). Accuracy varies by food, portion-size visibility, and provider model. Always cross-check labels for foods you log frequently.",
                             url: URL(string: "https://fdc.nal.usda.gov/")

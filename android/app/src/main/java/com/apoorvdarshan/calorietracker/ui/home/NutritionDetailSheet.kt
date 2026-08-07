@@ -95,6 +95,7 @@ fun NutritionDetailSheet(
     val monoFat = entries.sumOf { it.monounsaturatedFat ?: 0.0 }
     val polyFat = entries.sumOf { it.polyunsaturatedFat ?: 0.0 }
     val cholesterol = entries.sumOf { it.cholesterol ?: 0.0 }
+    val caffeine = entries.sumOf { it.caffeine ?: 0.0 }
     val sodium = entries.sumOf { it.sodium ?: 0.0 }
     val potassium = entries.sumOf { it.potassium ?: 0.0 }
     val transFat = entries.sumOf { it.transFat ?: 0.0 }
@@ -172,6 +173,8 @@ fun NutritionDetailSheet(
                     DetailRow(Icons.Filled.WaterDrop, stringResource(R.string.nutrition_label_poly_fat), fmt(polyFat), stringResource(R.string.unit_g))
                     Hairline()
                     DetailRow(Icons.Filled.Favorite, stringResource(R.string.nutrition_label_cholesterol), fmt(cholesterol), stringResource(R.string.unit_mg), goal = "${optionalGoals.cholesterol}")
+                    Hairline()
+                    DetailRow(Icons.Filled.Bolt, stringResource(R.string.nutrition_label_caffeine), fmt(caffeine), stringResource(R.string.unit_mg), goal = "${optionalGoals.caffeine}")
                     Hairline()
                     DetailRow(Icons.Filled.Bolt, stringResource(R.string.nutrition_label_sodium), fmt(sodium), stringResource(R.string.unit_mg), goal = "${optionalGoals.sodium}")
                     Hairline()

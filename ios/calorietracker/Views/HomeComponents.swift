@@ -143,6 +143,7 @@ enum HomeTopNutrient: String, CaseIterable, Identifiable {
     case addedSugar
     case saturatedFat
     case cholesterol
+    case caffeine
     case sodium
     case potassium
     case transFat
@@ -171,6 +172,7 @@ enum HomeTopNutrient: String, CaseIterable, Identifiable {
         case .addedSugar: .addedSugar
         case .saturatedFat: .saturatedFat
         case .cholesterol: .cholesterol
+        case .caffeine: .caffeine
         case .sodium: .sodium
         case .potassium: .potassium
         case .transFat: .transFat
@@ -199,7 +201,7 @@ enum HomeTopNutrient: String, CaseIterable, Identifiable {
         case .protein: return LocalizedDisplayText.text("Protein", polish: "Białko")
         case .carbs: return LocalizedDisplayText.text("Carbs", polish: "Węglowodany")
         case .fat: return LocalizedDisplayText.text("Fat", polish: "Tłuszcz")
-        case .fiber, .sugar, .addedSugar, .saturatedFat, .cholesterol, .sodium, .potassium,
+        case .fiber, .sugar, .addedSugar, .saturatedFat, .cholesterol, .caffeine, .sodium, .potassium,
              .transFat, .calcium, .iron, .magnesium, .zinc, .vitaminA, .vitaminC, .vitaminD,
              .vitaminB12, .vitaminE, .vitaminK, .folate, .omega3:
             return optionalNutrient?.shortDisplayName ?? rawValue
@@ -213,7 +215,7 @@ enum HomeTopNutrient: String, CaseIterable, Identifiable {
 
         switch self {
         case .protein, .carbs, .fat: return "g"
-        case .fiber, .sugar, .addedSugar, .saturatedFat, .cholesterol, .sodium, .potassium,
+        case .fiber, .sugar, .addedSugar, .saturatedFat, .cholesterol, .caffeine, .sodium, .potassium,
              .transFat, .calcium, .iron, .magnesium, .zinc, .vitaminA, .vitaminC, .vitaminD,
              .vitaminB12, .vitaminE, .vitaminK, .folate, .omega3:
             return optionalNutrient?.unit ?? "g"
@@ -229,7 +231,7 @@ enum HomeTopNutrient: String, CaseIterable, Identifiable {
         case .protein: return "fork.knife"
         case .carbs: return "leaf"
         case .fat: return "drop.fill"
-        case .fiber, .sugar, .addedSugar, .saturatedFat, .cholesterol, .sodium, .potassium,
+        case .fiber, .sugar, .addedSugar, .saturatedFat, .cholesterol, .caffeine, .sodium, .potassium,
              .transFat, .calcium, .iron, .magnesium, .zinc, .vitaminA, .vitaminC, .vitaminD,
              .vitaminB12, .vitaminE, .vitaminK, .folate, .omega3:
             return optionalNutrient?.iconName ?? "circle"
@@ -259,6 +261,7 @@ enum HomeTopNutrient: String, CaseIterable, Identifiable {
         case .addedSugar: foodStore.addedSugar(for: date)
         case .saturatedFat: foodStore.saturatedFat(for: date)
         case .cholesterol: foodStore.cholesterol(for: date)
+        case .caffeine: foodStore.caffeine(for: date)
         case .sodium: foodStore.sodium(for: date)
         case .potassium: foodStore.potassium(for: date)
         case .transFat: foodStore.transFat(for: date)
@@ -282,7 +285,7 @@ enum HomeTopNutrient: String, CaseIterable, Identifiable {
         case .protein: return Double(profile.effectiveProtein)
         case .carbs: return Double(profile.effectiveCarbs)
         case .fat: return Double(profile.effectiveFat)
-        case .fiber, .sugar, .addedSugar, .saturatedFat, .cholesterol, .sodium, .potassium,
+        case .fiber, .sugar, .addedSugar, .saturatedFat, .cholesterol, .caffeine, .sodium, .potassium,
              .transFat, .calcium, .iron, .magnesium, .zinc, .vitaminA, .vitaminC, .vitaminD,
              .vitaminB12, .vitaminE, .vitaminK, .folate, .omega3:
             guard let optionalNutrient else { return 0 }

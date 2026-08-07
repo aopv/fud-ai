@@ -172,7 +172,7 @@ enum DiaryExporter {
             let protein_g: Double; let carbs_g: Double; let fat_g: Double
             let sugar_g: Double?; let added_sugar_g: Double?; let fiber_g: Double?
             let saturated_fat_g: Double?; let monounsaturated_fat_g: Double?; let polyunsaturated_fat_g: Double?
-            let cholesterol_mg: Double?; let sodium_mg: Double?; let potassium_mg: Double?
+            let cholesterol_mg: Double?; let caffeine_mg: Double?; let sodium_mg: Double?; let potassium_mg: Double?
             let trans_fat_g: Double?; let calcium_mg: Double?; let iron_mg: Double?
             let magnesium_mg: Double?; let zinc_mg: Double?
             let vitamin_a_mcg: Double?; let vitamin_c_mg: Double?; let vitamin_d_mcg: Double?
@@ -196,7 +196,7 @@ enum DiaryExporter {
                          saturated_fat_g: e.saturatedFat.map(r1),
                          monounsaturated_fat_g: e.monounsaturatedFat.map(r1),
                          polyunsaturated_fat_g: e.polyunsaturatedFat.map(r1),
-                         cholesterol_mg: e.cholesterol.map(r1), sodium_mg: e.sodium.map(r1),
+                         cholesterol_mg: e.cholesterol.map(r1), caffeine_mg: e.caffeine.map(r1), sodium_mg: e.sodium.map(r1),
                          potassium_mg: e.potassium.map(r1), trans_fat_g: e.transFat.map(r1),
                          calcium_mg: e.calcium.map(r1), iron_mg: e.iron.map(r1),
                          magnesium_mg: e.magnesium.map(r1), zinc_mg: e.zinc.map(r1),
@@ -225,7 +225,7 @@ enum DiaryExporter {
                 meals: meals
             )
         }
-        let doc = Doc(export: Meta(app: "Fud AI", format_version: "1.2",
+        let doc = Doc(export: Meta(app: "Fud AI", format_version: "1.3",
                                    date_range: Meta.Range(start: dayFmt.string(from: start), end: dayFmt.string(from: end))),
                       days: dayDocs)
         let enc = JSONEncoder()
@@ -249,8 +249,8 @@ enum DiaryExporter {
             s += "- Fat: \(r1(t.f)) / \(Int(targets.fat)) g\n"
             for g in bundle.groups {
                 s += "### \(g.meal.displayName)\n"
-                s += "| Time | Food | Weight | Calories | Protein (g) | Carbs (g) | Fat (g) | Sugar (g) | Added sugar (g) | Fiber (g) | Saturated fat (g) | Monounsaturated fat (g) | Polyunsaturated fat (g) | Cholesterol (mg) | Sodium (mg) | Potassium (mg) | Trans fat (g) | Calcium (mg) | Iron (mg) | Magnesium (mg) | Zinc (mg) | Vitamin A (mcg) | Vitamin C (mg) | Vitamin D (mcg) | Vitamin B12 (mcg) | Vitamin E (mg) | Vitamin K (mcg) | Folate (mcg) | Omega-3 (g) | Source | Ingredients |\n"
-                s += "|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|---|\n"
+                s += "| Time | Food | Weight | Calories | Protein (g) | Carbs (g) | Fat (g) | Sugar (g) | Added sugar (g) | Fiber (g) | Saturated fat (g) | Monounsaturated fat (g) | Polyunsaturated fat (g) | Cholesterol (mg) | Caffeine (mg) | Sodium (mg) | Potassium (mg) | Trans fat (g) | Calcium (mg) | Iron (mg) | Magnesium (mg) | Zinc (mg) | Vitamin A (mcg) | Vitamin C (mg) | Vitamin D (mcg) | Vitamin B12 (mcg) | Vitamin E (mg) | Vitamin K (mcg) | Folate (mcg) | Omega-3 (g) | Source | Ingredients |\n"
+                s += "|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|---|\n"
                 for e in g.entries {
                     let weight = e.servingSizeGrams.map { "\(Int($0)) g" } ?? "-"
                     let food = e.name.replacingOccurrences(of: "|", with: "/")
@@ -260,7 +260,7 @@ enum DiaryExporter {
                         optionalNumber(e.sugar, missing: "-"), optionalNumber(e.addedSugar, missing: "-"),
                         optionalNumber(e.fiber, missing: "-"), optionalNumber(e.saturatedFat, missing: "-"),
                         optionalNumber(e.monounsaturatedFat, missing: "-"), optionalNumber(e.polyunsaturatedFat, missing: "-"),
-                        optionalNumber(e.cholesterol, missing: "-"), optionalNumber(e.sodium, missing: "-"),
+                        optionalNumber(e.cholesterol, missing: "-"), optionalNumber(e.caffeine, missing: "-"), optionalNumber(e.sodium, missing: "-"),
                         optionalNumber(e.potassium, missing: "-"), optionalNumber(e.transFat, missing: "-"),
                         optionalNumber(e.calcium, missing: "-"), optionalNumber(e.iron, missing: "-"),
                         optionalNumber(e.magnesium, missing: "-"), optionalNumber(e.zinc, missing: "-"),
@@ -280,7 +280,7 @@ enum DiaryExporter {
     // MARK: - CSV
 
     private static func csv(_ days: [DayBundle]) -> String {
-        var s = "date,meal,time,food,weight_g,calories,protein_g,carbs_g,fat_g,sugar_g,added_sugar_g,fiber_g,saturated_fat_g,monounsaturated_fat_g,polyunsaturated_fat_g,cholesterol_mg,sodium_mg,potassium_mg,trans_fat_g,calcium_mg,iron_mg,magnesium_mg,zinc_mg,vitamin_a_mcg,vitamin_c_mg,vitamin_d_mcg,vitamin_b12_mcg,vitamin_e_mg,vitamin_k_mcg,folate_mcg,omega3_g,source,note,ingredients\n"
+        var s = "date,meal,time,food,weight_g,calories,protein_g,carbs_g,fat_g,sugar_g,added_sugar_g,fiber_g,saturated_fat_g,monounsaturated_fat_g,polyunsaturated_fat_g,cholesterol_mg,caffeine_mg,sodium_mg,potassium_mg,trans_fat_g,calcium_mg,iron_mg,magnesium_mg,zinc_mg,vitamin_a_mcg,vitamin_c_mg,vitamin_d_mcg,vitamin_b12_mcg,vitamin_e_mg,vitamin_k_mcg,folate_mcg,omega3_g,source,note,ingredients\n"
         for bundle in days {
             let date = dayFmt.string(from: bundle.date)
             for g in bundle.groups {
@@ -291,7 +291,7 @@ enum DiaryExporter {
                         String(e.calories), String(r1(e.protein)), String(r1(e.carbs)), String(r1(e.fat)),
                         optionalNumber(e.sugar), optionalNumber(e.addedSugar), optionalNumber(e.fiber),
                         optionalNumber(e.saturatedFat), optionalNumber(e.monounsaturatedFat),
-                        optionalNumber(e.polyunsaturatedFat), optionalNumber(e.cholesterol),
+                        optionalNumber(e.polyunsaturatedFat), optionalNumber(e.cholesterol), optionalNumber(e.caffeine),
                         optionalNumber(e.sodium), optionalNumber(e.potassium), optionalNumber(e.transFat),
                         optionalNumber(e.calcium), optionalNumber(e.iron), optionalNumber(e.magnesium),
                         optionalNumber(e.zinc), optionalNumber(e.vitaminA), optionalNumber(e.vitaminC),

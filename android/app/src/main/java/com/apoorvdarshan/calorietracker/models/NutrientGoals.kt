@@ -19,6 +19,7 @@ enum class HomeTopNutrient(
     ADDED_SUGAR("addedSugar", "Added Sugar", "g", R.string.nutrition_label_added_sugar, R.string.unit_g),
     SATURATED_FAT("saturatedFat", "Sat Fat", "g", R.string.nutrient_short_sat_fat, R.string.unit_g),
     CHOLESTEROL("cholesterol", "Cholesterol", "mg", R.string.nutrition_label_cholesterol, R.string.unit_mg),
+    CAFFEINE("caffeine", "Caffeine", "mg", R.string.nutrition_label_caffeine, R.string.unit_mg),
     SODIUM("sodium", "Sodium", "mg", R.string.nutrition_label_sodium, R.string.unit_mg),
     POTASSIUM("potassium", "Potassium", "mg", R.string.nutrition_label_potassium, R.string.unit_mg),
     TRANS_FAT("transFat", "Trans Fat", "g", R.string.nutrition_label_trans_fat, R.string.unit_g),
@@ -44,6 +45,7 @@ enum class HomeTopNutrient(
         ADDED_SUGAR -> entries.sumOf { it.addedSugar ?: 0.0 }
         SATURATED_FAT -> entries.sumOf { it.saturatedFat ?: 0.0 }
         CHOLESTEROL -> entries.sumOf { it.cholesterol ?: 0.0 }
+        CAFFEINE -> entries.sumOf { it.caffeine ?: 0.0 }
         SODIUM -> entries.sumOf { it.sodium ?: 0.0 }
         POTASSIUM -> entries.sumOf { it.potassium ?: 0.0 }
         TRANS_FAT -> entries.sumOf { it.transFat ?: 0.0 }
@@ -70,6 +72,7 @@ enum class HomeTopNutrient(
         ADDED_SUGAR -> optionalGoals.addedSugar
         SATURATED_FAT -> optionalGoals.saturatedFat
         CHOLESTEROL -> optionalGoals.cholesterol
+        CAFFEINE -> optionalGoals.caffeine
         SODIUM -> optionalGoals.sodium
         POTASSIUM -> optionalGoals.potassium
         TRANS_FAT -> optionalGoals.transFat
@@ -124,6 +127,7 @@ enum class OptionalNutrient(
     FIBER("Fiber", "g", 30, R.string.nutrition_label_fiber, R.string.unit_g),
     SATURATED_FAT("Saturated Fat", "g", 20, R.string.nutrition_label_saturated_fat, R.string.unit_g),
     CHOLESTEROL("Cholesterol", "mg", 300, R.string.nutrition_label_cholesterol, R.string.unit_mg),
+    CAFFEINE("Caffeine", "mg", 400, R.string.nutrition_label_caffeine, R.string.unit_mg),
     SODIUM("Sodium", "mg", 2300, R.string.nutrition_label_sodium, R.string.unit_mg),
     POTASSIUM("Potassium", "mg", 3500, R.string.nutrition_label_potassium, R.string.unit_mg),
     TRANS_FAT("Trans Fat", "g", 0, R.string.nutrition_label_trans_fat, R.string.unit_g),
@@ -148,6 +152,7 @@ data class OptionalNutrientGoals(
     val fiber: Int = OptionalNutrient.FIBER.defaultGoal,
     val saturatedFat: Int = OptionalNutrient.SATURATED_FAT.defaultGoal,
     val cholesterol: Int = OptionalNutrient.CHOLESTEROL.defaultGoal,
+    val caffeine: Int = OptionalNutrient.CAFFEINE.defaultGoal,
     val sodium: Int = OptionalNutrient.SODIUM.defaultGoal,
     val potassium: Int = OptionalNutrient.POTASSIUM.defaultGoal,
     val transFat: Int = OptionalNutrient.TRANS_FAT.defaultGoal,
@@ -170,6 +175,7 @@ data class OptionalNutrientGoals(
         OptionalNutrient.FIBER -> fiber
         OptionalNutrient.SATURATED_FAT -> saturatedFat
         OptionalNutrient.CHOLESTEROL -> cholesterol
+        OptionalNutrient.CAFFEINE -> caffeine
         OptionalNutrient.SODIUM -> sodium
         OptionalNutrient.POTASSIUM -> potassium
         OptionalNutrient.TRANS_FAT -> transFat
@@ -195,6 +201,7 @@ data class OptionalNutrientGoals(
             OptionalNutrient.FIBER -> copy(fiber = safe)
             OptionalNutrient.SATURATED_FAT -> copy(saturatedFat = safe)
             OptionalNutrient.CHOLESTEROL -> copy(cholesterol = safe)
+            OptionalNutrient.CAFFEINE -> copy(caffeine = safe)
             OptionalNutrient.SODIUM -> copy(sodium = safe)
             OptionalNutrient.POTASSIUM -> copy(potassium = safe)
             OptionalNutrient.TRANS_FAT -> copy(transFat = safe)

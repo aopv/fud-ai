@@ -98,6 +98,8 @@ enum WidgetSnapshotWriter {
             return sum(foods, \.saturatedFat)
         case .cholesterol:
             return sum(foods, \.cholesterol)
+        case .caffeine:
+            return sum(foods, \.caffeine)
         case .sodium:
             return sum(foods, \.sodium)
         case .potassium:
