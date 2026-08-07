@@ -40,6 +40,7 @@ import androidx.compose.material.icons.filled.EventRepeat
 import androidx.compose.material.icons.filled.FilterAltOff
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.GpsFixed
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Storage
 import androidx.compose.material.icons.filled.SwapHoriz
@@ -374,7 +375,6 @@ internal fun WorkoutPickerSheet(
                             ExerciseRow(
                                 item = item,
                                 onClick = { onToggleExercise(item) },
-                                onPreview = { previewItem = item },
                                 trailingContent = {
                                     Row(
                                         verticalAlignment = Alignment.CenterVertically,
@@ -404,6 +404,17 @@ internal fun WorkoutPickerSheet(
                                                 contentDescription = if (item.id in selectedExerciseIds) "Remove from day" else "Add to day",
                                                 tint = if (item.id in selectedExerciseIds) androidx.compose.ui.graphics.Color.White else workoutsColors().mutedText,
                                                 modifier = Modifier.size(if (item.id in selectedExerciseIds) 18.dp else 23.dp)
+                                            )
+                                        }
+                                        IconButton(
+                                            onClick = { previewItem = item },
+                                            modifier = Modifier.size(36.dp)
+                                        ) {
+                                            Icon(
+                                                Icons.Filled.Info,
+                                                contentDescription = "Preview ${item.name}",
+                                                tint = workoutsColors().accent,
+                                                modifier = Modifier.size(20.dp)
                                             )
                                         }
                                     }
