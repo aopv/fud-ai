@@ -47,11 +47,20 @@ private struct TrendPoint: Identifiable, Equatable {
 /// neighbours and turned the line into a solid band — ~60 bucket averages
 /// keep the trend shape readable. Sparse series pass through untouched.
 private func downsampled(_ points: [TrendPoint], maxPoints: Int = 60) -> [TrendPoint] {
-    guard points.count > maxPoints,
-          let first = points.first?.date, let last = points.last?.date else { return points }
+    guard let first = points.first?.date, let last = points.last?.date else { return points }
     let calendar = Calendar.current
     let spanDays = max(1, calendar.dateComponents([.day], from: first, to: last).day ?? 1)
-    let bucketDays = max(1, Int((Double(spanDays) / Double(maxPoints)).rounded(.up)))
+    let rangeLimit: Int
+    switch spanDays {
+    case ...45: rangeLimit = 60
+    case ...100: rangeLimit = 48
+    case ...200: rangeLimit = 36
+    case ...400: rangeLimit = 30
+    default: rangeLimit = 24
+    }
+    let adaptiveLimit = min(maxPoints, rangeLimit)
+    guard points.count > adaptiveLimit else { return points }
+    let bucketDays = max(1, Int((Double(spanDays) / Double(adaptiveLimit)).rounded(.up)))
     var buckets: [Int: (dateSum: TimeInterval, valueSum: Double, count: Int)] = [:]
     for point in points {
         let day = calendar.dateComponents([.day], from: first, to: point.date).day ?? 0
@@ -137,6 +146,8 @@ struct WeightChartSection: View {
             if weightEntries.isEmpty {
                 emptyState("Log your first weight to see trends")
             } else {
+                let chartPoints = plottedPoints
+
                 HStack(spacing: 8) {
                     if let current = currentWeightKg {
                         StatBadge(label: "Current", value: String(format: "%.1f %@", displayWeight(current), unit))
@@ -149,7 +160,7 @@ struct WeightChartSection: View {
                 }
 
                 Chart {
-                    ForEach(plottedPoints) { point in
+                    ForEach(chartPoints) { point in
                         LineMark(
                             x: .value("Date", point.date, unit: .day),
                             y: .value("Weight", point.value)
@@ -158,7 +169,7 @@ struct WeightChartSection: View {
                         .interpolationMethod(.catmullRom)
                         .lineStyle(StrokeStyle(lineWidth: 2))
 
-                        if showsPointMarks {
+                        if chartPoints.count <= 31 {
                             PointMark(
                                 x: .value("Date", point.date, unit: .day),
                                 y: .value("Weight", point.value)
@@ -215,7 +226,11 @@ struct WeightChartSection: View {
                                         .onChanged { value in
                                             guard abs(value.translation.width) > abs(value.translation.height),
                                                   let plotFrame else { return }
-                                            inspectWeight(at: value.location.x - plotFrame.minX, proxy: proxy)
+                                            inspectWeight(
+                                                at: value.location.x - plotFrame.minX,
+                                                proxy: proxy,
+                                                points: chartPoints
+                                            )
                                         }
                                         .onEnded { _ in
                                             withAnimation(.easeOut(duration: 0.16)) {
@@ -252,8 +267,6 @@ struct WeightChartSection: View {
     private var plottedPoints: [TrendPoint] {
         downsampled(sortedWeightEntries.map { TrendPoint(date: $0.date, value: displayWeight($0.weightKg)) })
     }
-
-    private var showsPointMarks: Bool { plottedPoints.count <= 31 }
 
     private var xAxis: TrendXAxis {
         TrendXAxis(first: sortedWeightEntries.first?.date, last: sortedWeightEntries.last?.date)
@@ -292,9 +305,9 @@ struct WeightChartSection: View {
         String(format: "%.1f %@", averageWeight, unit)
     }
 
-    private func inspectWeight(at plotX: CGFloat, proxy: ChartProxy) {
-        guard let date: Date = proxy.value(atX: plotX), !plottedPoints.isEmpty else { return }
-        let nearest = plottedPoints.min {
+    private func inspectWeight(at plotX: CGFloat, proxy: ChartProxy, points: [TrendPoint]) {
+        guard let date: Date = proxy.value(atX: plotX), !points.isEmpty else { return }
+        let nearest = points.min {
             abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date))
         }
         guard let nearest, nearest != inspectedPoint else { return }

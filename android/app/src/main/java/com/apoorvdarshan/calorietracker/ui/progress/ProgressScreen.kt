@@ -53,7 +53,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -582,8 +581,11 @@ private fun StatBadge(label: String, value: String, modifier: Modifier = Modifie
 @Composable
 private fun WeightChartCanvas(entries: List<WeightEntry>, goalKg: Double?, useMetric: Boolean) {
     val displayKg = { kg: Double -> if (useMetric) kg else kg * 2.20462 }
-    val sortedEntries = entries.sortedBy { it.date }
-    val displayWeights = sortedEntries.map { displayKg(it.weightKg) } + listOfNotNull(goalKg?.let(displayKg))
+    val sortedEntries = remember(entries) { entries.sortedBy { it.date } }
+    val displayWeights = remember(sortedEntries, goalKg, useMetric) {
+        sortedEntries.map { if (useMetric) it.weightKg else it.weightKg * 2.20462 } +
+            listOfNotNull(goalKg?.let { if (useMetric) it else it * 2.20462 })
+    }
     val minW = displayWeights.min()
     val maxW = displayWeights.max()
     val pad = maxOf((maxW - minW) * 0.15, 2.0)
@@ -597,7 +599,7 @@ private fun WeightChartCanvas(entries: List<WeightEntry>, goalKg: Double?, useMe
     val gridColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.10f)
     val secondaryColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
     val chartSurfaceColor = MaterialTheme.colorScheme.surface
-    val ticks = niceAxisTicks(yMin, yMax, count = 5)
+    val ticks = remember(yMin, yMax) { niceAxisTicks(yMin, yMax, count = 5) }
     val zone = ZoneId.systemDefault()
     // Labels pick up the year once a longer range crosses a calendar-year
     // boundary — "Jul 2024" instead of an ambiguous "Jul 3" (same iOS rule).
@@ -607,12 +609,17 @@ private fun WeightChartCanvas(entries: List<WeightEntry>, goalKg: Double?, useMe
     val xLabelFmt = DateTimeFormatter.ofPattern(if (showsYear) "MMM yyyy" else "MMM d", Locale.US).withZone(zone)
     // Dense ranges plot bucket averages so the line stays a readable curve;
     // dots only render while each reading is still distinguishable.
-    val points = downsampleTrend(sortedEntries.map { TrendPoint(it.date.toEpochMilli(), displayKg(it.weightKg)) })
+    val points = remember(sortedEntries, useMetric) {
+        downsampleTrend(
+            sortedEntries.map {
+                TrendPoint(it.date.toEpochMilli(), if (useMetric) it.weightKg else it.weightKg * 2.20462)
+            }
+        )
+    }
     val showsDots = points.size <= 31
     val haptic = LocalHapticFeedback.current
     val density = LocalDensity.current
     var selectedIndex by remember(points) { mutableStateOf<Int?>(null) }
-    var dragX by remember { mutableFloatStateOf(0f) }
     val selectedPoint = selectedIndex?.let(points::getOrNull)
     val inspectorDateFormat = remember {
         DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.getDefault()).withZone(ZoneId.systemDefault())
@@ -652,16 +659,21 @@ private fun WeightChartCanvas(entries: List<WeightEntry>, goalKg: Double?, useMe
                 Modifier
                     .fillMaxSize()
                     .pointerInput(points, canvasWidthPx) {
+                        // Gesture position stays local to the pointer coroutine.
+                        // Making every pixel of movement Compose state caused a
+                        // full chart recomposition and severe input latency on
+                        // 6M / 1Y / All ranges.
+                        var gestureX = 0f
                         detectHorizontalDragGestures(
                             onDragStart = { offset ->
-                                dragX = offset.x
-                                selectNearest(dragX)
+                                gestureX = offset.x
+                                selectNearest(gestureX)
                             },
                             onDragEnd = { selectedIndex = null },
                             onDragCancel = { selectedIndex = null },
                             onHorizontalDrag = { change, dragAmount ->
-                                dragX = (dragX + dragAmount).coerceIn(0f, size.width.toFloat())
-                                selectNearest(dragX)
+                                gestureX = (gestureX + dragAmount).coerceIn(0f, size.width.toFloat())
+                                selectNearest(gestureX)
                                 change.consume()
                             }
                         )
@@ -819,11 +831,22 @@ private data class TrendPoint(val timeMs: Long, val value: Double)
  *  neighbours and turned the line into a solid band — ~60 bucket averages
  *  keep the trend shape readable. Sparse series pass through untouched. */
 private fun downsampleTrend(points: List<TrendPoint>, maxPoints: Int = 60): List<TrendPoint> {
-    if (points.size <= maxPoints) return points
+    if (points.size < 2) return points
     val dayMs = 86_400_000L
     val first = points.first().timeMs
     val spanDays = maxOf(1L, (points.last().timeMs - first) / dayMs)
-    val bucketMs = Math.ceil(spanDays.toDouble() / maxPoints).toLong().coerceAtLeast(1L) * dayMs
+    // Long ranges need fewer interaction targets than short ranges. This keeps
+    // the visual trend intact while avoiding dozens of redraws + haptics during
+    // a single scrub across a two-year series.
+    val adaptiveLimit = minOf(maxPoints, when {
+        spanDays <= 45 -> 60
+        spanDays <= 100 -> 48
+        spanDays <= 200 -> 36
+        spanDays <= 400 -> 30
+        else -> 24
+    })
+    if (points.size <= adaptiveLimit) return points
+    val bucketMs = Math.ceil(spanDays.toDouble() / adaptiveLimit).toLong().coerceAtLeast(1L) * dayMs
     return points
         .groupBy { (it.timeMs - first) / bucketMs }
         .toSortedMap()
