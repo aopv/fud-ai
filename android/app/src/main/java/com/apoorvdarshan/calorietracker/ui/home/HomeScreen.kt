@@ -138,6 +138,8 @@ import com.apoorvdarshan.calorietracker.services.MealShare
 import com.apoorvdarshan.calorietracker.models.FoodSource
 import com.apoorvdarshan.calorietracker.models.MacroValueFormatter
 import com.apoorvdarshan.calorietracker.models.MealType
+import com.apoorvdarshan.calorietracker.models.QuickAction
+import com.apoorvdarshan.calorietracker.models.QuickActionRequest
 import com.apoorvdarshan.calorietracker.models.ServingUnitOption
 import com.apoorvdarshan.calorietracker.services.ai.FoodAnalysis
 import com.apoorvdarshan.calorietracker.ui.components.InAppCameraCaptureDialog
@@ -170,7 +172,11 @@ private enum class AddMenuGroup {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(container: AppContainer) {
+fun HomeScreen(
+    container: AppContainer,
+    quickActionRequest: QuickActionRequest? = null,
+    onQuickActionHandled: (Long) -> Unit = {}
+) {
     val vm: HomeViewModel = viewModel(factory = HomeViewModel.Factory(container))
     val ui by vm.ui.collectAsState()
     val ctx = LocalContext.current
@@ -243,6 +249,52 @@ fun HomeScreen(container: AppContainer) {
         } else {
             barcodePermission.launch(Manifest.permission.CAMERA)
         }
+    }
+
+    LaunchedEffect(
+        quickActionRequest?.id,
+        ui.analyzing,
+        ui.pendingAnalysis,
+        ui.error
+    ) {
+        val request = quickActionRequest ?: return@LaunchedEffect
+        if (ui.analyzing || ui.pendingAnalysis != null || ui.error != null) return@LaunchedEffect
+
+        showText = false
+        showVoice = false
+        showManual = false
+        savedMealsTab = null
+        showBarcodeScanner = false
+        showCopyFromDay = false
+        showAddMenu = false
+        addMenuGroup = null
+        editingEntry = null
+        showNutritionDetail = false
+        showCustomWaterLog = false
+        showCameraCapture = false
+        showMultiPhotoCapture = false
+        vm.setSelectedDate(LocalDate.now())
+
+        when (request.action) {
+            QuickAction.CAMERA -> openCamera()
+            QuickAction.PHOTOS -> {
+                isImportingPhotos = true
+                pendingCaptureImageBytes = emptyList()
+                photoPicker.launch(
+                    PickVisualMediaRequest(
+                        ActivityResultContracts.PickVisualMedia.ImageOnly
+                    )
+                )
+            }
+            QuickAction.VOICE -> showVoice = true
+            QuickAction.TEXT -> showText = true
+            QuickAction.BARCODE -> openBarcodeScanner()
+            QuickAction.FAVORITES -> savedMealsTab = SavedTab.FAVORITES
+            QuickAction.FREQUENT -> savedMealsTab = SavedTab.FREQUENT
+            QuickAction.RECENT -> savedMealsTab = SavedTab.RECENTS
+            QuickAction.MANUAL -> showManual = true
+        }
+        onQuickActionHandled(request.id)
     }
 
     val today = LocalDate.now()

@@ -45,6 +45,8 @@ import com.apoorvdarshan.calorietracker.ui.settings.SettingsScreen
 import com.apoorvdarshan.calorietracker.ui.settings.SettingsViewModel
 import com.apoorvdarshan.calorietracker.ui.workouts.WorkoutsScreen
 import com.apoorvdarshan.calorietracker.models.WorkoutTabMode
+import com.apoorvdarshan.calorietracker.models.QuickActionRequest
+import com.apoorvdarshan.calorietracker.ui.settings.QuickActionsScreen
 
 /**
  * Increments each time the app is opened: 1 on cold launch, then +1 on every
@@ -60,7 +62,9 @@ private const val WORKOUT_MODE_V2_DEFAULT_KEY = "mode.diary_default.v2"
 @Composable
 fun FudAINavHost(
     container: AppContainer,
-    startOnboarding: Boolean
+    startOnboarding: Boolean,
+    quickActionRequest: QuickActionRequest? = null,
+    onQuickActionHandled: (Long) -> Unit = {}
 ) {
     val nav = rememberNavController()
     // Warm the app-scoped Settings state while Home is visible. By the time the user changes
@@ -97,6 +101,18 @@ fun FudAINavHost(
     LaunchedEffect(currentRoute) {
         if (currentRoute == FudAIRoutes.SETTINGS) {
             settingsViewModel.refreshAiConfiguration()
+        }
+    }
+
+    LaunchedEffect(quickActionRequest?.id, currentRoute) {
+        if (quickActionRequest != null &&
+            currentRoute != FudAIRoutes.HOME &&
+            currentRoute != FudAIRoutes.ONBOARDING
+        ) {
+            nav.navigate(FudAIRoutes.HOME) {
+                popUpTo(FudAIRoutes.HOME) { inclusive = false }
+                launchSingleTop = true
+            }
         }
     }
 
@@ -184,7 +200,15 @@ fun FudAINavHost(
                         }
                     })
                 }
-                composable(FudAIRoutes.HOME) { TabInset { HomeScreen(container = container) } }
+                composable(FudAIRoutes.HOME) {
+                    TabInset {
+                        HomeScreen(
+                            container = container,
+                            quickActionRequest = quickActionRequest,
+                            onQuickActionHandled = onQuickActionHandled
+                        )
+                    }
+                }
                 composable(FudAIRoutes.PROGRESS) { TabInset { ProgressScreen(container = container) } }
                 composable(FudAIRoutes.COACH) { TabInset { CoachScreen(container = container) } }
                 composable(FudAIRoutes.SETTINGS) {
@@ -197,6 +221,9 @@ fun FudAINavHost(
                 }
                 composable(FudAIRoutes.CALCULATION_METHODS) {
                     CalculationMethodsScreen(onBack = { nav.popBackStack() })
+                }
+                composable(FudAIRoutes.QUICK_ACTIONS) {
+                    QuickActionsScreen(vm = settingsViewModel, onBack = { nav.popBackStack() })
                 }
                 composable(FudAIRoutes.BODY_MEASUREMENTS) {
                     BodyMeasurementsScreen(container = container, onBack = { nav.popBackStack() })

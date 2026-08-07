@@ -17,6 +17,7 @@ import com.apoorvdarshan.calorietracker.models.HomeTopNutrient
 import com.apoorvdarshan.calorietracker.models.MealSchedule
 import com.apoorvdarshan.calorietracker.models.OptionalNutrientGoals
 import com.apoorvdarshan.calorietracker.models.PendingFoodAnalysisDraft
+import com.apoorvdarshan.calorietracker.models.QuickAction
 import com.apoorvdarshan.calorietracker.models.SpeechLanguage
 import com.apoorvdarshan.calorietracker.models.SpeechProvider
 import com.apoorvdarshan.calorietracker.models.UserProfile
@@ -294,6 +295,23 @@ class PreferencesStore(private val context: Context) : WorkoutStateStore {
     /** false = Sunday, true = Monday (default). Mirrors iOS @AppStorage("weekStartsOnMonday"). */
     val weekStartsOnMonday: Flow<Boolean> = ds.data.map { it[Keys.WEEK_STARTS_MONDAY] ?: true }
     suspend fun setWeekStartsOnMonday(v: Boolean) { ds.edit { it[Keys.WEEK_STARTS_MONDAY] = v } }
+
+    val quickAction1: Flow<QuickAction> = quickAction(Keys.QUICK_ACTION_1, QuickAction.Defaults[0])
+    val quickAction2: Flow<QuickAction> = quickAction(Keys.QUICK_ACTION_2, QuickAction.Defaults[1])
+    val quickAction3: Flow<QuickAction> = quickAction(Keys.QUICK_ACTION_3, QuickAction.Defaults[2])
+
+    private fun quickAction(key: Preferences.Key<String>, fallback: QuickAction): Flow<QuickAction> =
+        ds.data.map { QuickAction.fromStorage(it[key], fallback) }
+
+    suspend fun setQuickAction(slot: Int, action: QuickAction) {
+        val key = when (slot) {
+            0 -> Keys.QUICK_ACTION_1
+            1 -> Keys.QUICK_ACTION_2
+            2 -> Keys.QUICK_ACTION_3
+            else -> return
+        }
+        ds.edit { it[key] = action.name }
+    }
 
     // -- Workout diary ---------------------------------------------------
     override val workoutState: Flow<WorkoutPersistedState> = ds.data.map { prefs ->
@@ -687,6 +705,9 @@ class PreferencesStore(private val context: Context) : WorkoutStateStore {
         val APPEARANCE_MODE = stringPreferencesKey("appearanceMode")
         val APP_THEME_COLOR = stringPreferencesKey("appThemeColor")
         val WEEK_STARTS_MONDAY = booleanPreferencesKey("weekStartsOnMonday")
+        val QUICK_ACTION_1 = stringPreferencesKey("quickAction.slot1")
+        val QUICK_ACTION_2 = stringPreferencesKey("quickAction.slot2")
+        val QUICK_ACTION_3 = stringPreferencesKey("quickAction.slot3")
         val WORKOUT_STATE = stringPreferencesKey("workoutDiaryStateV1")
         val MEAL_BREAKFAST_START = intPreferencesKey("mealBreakfastStartMinutes")
         val MEAL_LUNCH_START = intPreferencesKey("mealLunchStartMinutes")

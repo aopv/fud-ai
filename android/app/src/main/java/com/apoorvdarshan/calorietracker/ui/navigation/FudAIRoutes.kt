@@ -8,6 +8,7 @@ object FudAIRoutes {
     const val SETTINGS = "settings"
     const val OPTIONAL_NUTRIENT_GOALS = "settings/optional-nutrient-goals"
     const val CALCULATION_METHODS = "settings/calculation-methods"
+    const val QUICK_ACTIONS = "settings/quick-actions"
     const val BODY_MEASUREMENTS = "settings/body-measurements"
     const val WORKOUTS = "workouts"
 

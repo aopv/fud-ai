@@ -17,7 +17,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
 import com.apoorvdarshan.calorietracker.models.FoodEntry
+import com.apoorvdarshan.calorietracker.models.QuickActionRequest
 import com.apoorvdarshan.calorietracker.services.MealShare
+import com.apoorvdarshan.calorietracker.services.QuickActionShortcutManager
 import com.apoorvdarshan.calorietracker.services.ReviewPrompter
 import com.apoorvdarshan.calorietracker.ui.home.ImportSharedMealSheet
 import com.apoorvdarshan.calorietracker.ui.navigation.FudAINavHost
@@ -27,6 +29,7 @@ import com.google.android.play.core.ktx.launchReview
 import com.google.android.play.core.ktx.requestReview
 import com.google.android.play.core.review.ReviewManagerFactory
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -34,6 +37,7 @@ import kotlinx.coroutines.runBlocking
 open class MainActivity : ComponentActivity() {
     // Shared-meal deep link (issue #107). Non-empty -> the confirm sheet is shown over the app.
     private var pendingSharedMeals by mutableStateOf<List<FoodEntry>>(emptyList())
+    private var pendingQuickAction by mutableStateOf<QuickActionRequest?>(null)
 
     /** Decode a `fudai://add-meal` link (if that's what launched us) into pending meals. */
     private fun handleShareIntent(intent: Intent?) {
@@ -42,10 +46,17 @@ open class MainActivity : ComponentActivity() {
         MealShare.meals(uri)?.let { pendingSharedMeals = it }
     }
 
+    private fun handleQuickActionIntent(intent: Intent?) {
+        val action = QuickActionShortcutManager.actionFrom(intent) ?: return
+        pendingQuickAction = QuickActionRequest(action)
+        intent?.action = null
+    }
+
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
         handleShareIntent(intent)
+        handleQuickActionIntent(intent)
     }
     override fun onStart() {
         super.onStart()
@@ -121,6 +132,16 @@ open class MainActivity : ComponentActivity() {
         }
         // A fudai://add-meal link may have cold-launched us.
         handleShareIntent(intent)
+        handleQuickActionIntent(intent)
+
+        lifecycleScope.launch {
+            combine(
+                container.prefs.quickAction1,
+                container.prefs.quickAction2,
+                container.prefs.quickAction3
+            ) { first, second, third -> listOf(first, second, third) }
+                .collect { QuickActionShortcutManager.update(this@MainActivity, it) }
+        }
 
         val startOnboarding = runBlocking { !container.prefs.hasCompletedOnboarding.first() }
         val initialAppearance = runBlocking { container.prefs.appearanceMode.first() }
@@ -155,7 +176,14 @@ open class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    FudAINavHost(container = container, startOnboarding = startOnboarding)
+                    FudAINavHost(
+                        container = container,
+                        startOnboarding = startOnboarding,
+                        quickActionRequest = pendingQuickAction,
+                        onQuickActionHandled = { requestID ->
+                            if (pendingQuickAction?.id == requestID) pendingQuickAction = null
+                        }
+                    )
 
                     if (pendingSharedMeals.isNotEmpty()) {
                         ImportSharedMealSheet(

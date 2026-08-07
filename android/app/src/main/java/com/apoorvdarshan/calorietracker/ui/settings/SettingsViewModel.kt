@@ -10,6 +10,7 @@ import com.apoorvdarshan.calorietracker.models.AutoBalanceMacro
 import com.apoorvdarshan.calorietracker.models.CurrentMealSchedule
 import com.apoorvdarshan.calorietracker.models.MealSchedule
 import com.apoorvdarshan.calorietracker.models.OptionalNutrientGoals
+import com.apoorvdarshan.calorietracker.models.QuickAction
 import com.apoorvdarshan.calorietracker.models.SpeechLanguage
 import com.apoorvdarshan.calorietracker.models.SpeechProvider
 import com.apoorvdarshan.calorietracker.models.UserProfile
@@ -80,6 +81,7 @@ data class SettingsUiState(
     val fallbackModel: String = AIProvider.GEMINI.defaultModel,
     val fallbackApiKeyMasked: String = "",
     val optionalNutrientGoals: OptionalNutrientGoals = OptionalNutrientGoals.Default,
+    val quickActions: List<QuickAction> = QuickAction.Defaults,
     /** A goal-relevant input changed since the last Recalculate. Drives a soft nudge on the
      *  Recalculate row; the button stays tappable at all times — this never disables it. */
     val goalsNeedRecalc: Boolean = false
@@ -167,6 +169,11 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
             val fbModel = fbProvider.supportedModelOrDefault(container.prefs.selectedFallbackModel.first())
             val fbMasked = maskKey(container.keyStore.apiKey(fbProvider))
             val optionalGoals = container.prefs.optionalNutrientGoals.first()
+            val quickActions = listOf(
+                container.prefs.quickAction1.first(),
+                container.prefs.quickAction2.first(),
+                container.prefs.quickAction3.first()
+            )
             // Seed the recalc baseline for existing users / first launch so the nudge only fires
             // after a genuine change from here on, never immediately on open.
             val storedSignature = container.prefs.lastRecalcGoalSignature.first()
@@ -212,6 +219,7 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
                 fallbackModel = fbModel,
                 fallbackApiKeyMasked = fbMasked,
                 optionalNutrientGoals = optionalGoals,
+                quickActions = quickActions,
                 workoutSplit = workoutPreferences.split,
                 workoutRpeScale = workoutPreferences.rpeScale,
                 goalsNeedRecalc = needsRecalc(profile)
@@ -336,6 +344,18 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
         viewModelScope.launch {
             container.prefs.setAppearanceMode(mode)
             _ui.value = _ui.value.copy(appearanceMode = mode)
+        }
+    }
+
+    fun setQuickAction(slot: Int, action: QuickAction) {
+        if (slot !in 0..2) return
+        viewModelScope.launch {
+            container.prefs.setQuickAction(slot, action)
+            val updated = _ui.value.quickActions.toMutableList().apply {
+                while (size < 3) add(QuickAction.Defaults[size])
+                this[slot] = action
+            }
+            _ui.value = _ui.value.copy(quickActions = updated)
         }
     }
 

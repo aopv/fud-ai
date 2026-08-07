@@ -91,6 +91,33 @@ struct LogWeightIntent: AppIntent {
     }
 }
 
+@MainActor
+private func performQuickAction(slot: Int) -> some IntentResult {
+    QuickActionCoordinator.request(QuickActionSettings.action(for: slot))
+    return .result()
+}
+
+struct QuickActionOneIntent: AppIntent {
+    static let title: LocalizedStringResource = "Quick Action 1"
+    static let description = IntentDescription("Open your first configurable Fud AI quick action.")
+    static let openAppWhenRun = true
+    @MainActor func perform() async throws -> some IntentResult { performQuickAction(slot: 0) }
+}
+
+struct QuickActionTwoIntent: AppIntent {
+    static let title: LocalizedStringResource = "Quick Action 2"
+    static let description = IntentDescription("Open your second configurable Fud AI quick action.")
+    static let openAppWhenRun = true
+    @MainActor func perform() async throws -> some IntentResult { performQuickAction(slot: 1) }
+}
+
+struct QuickActionThreeIntent: AppIntent {
+    static let title: LocalizedStringResource = "Quick Action 3"
+    static let description = IntentDescription("Open your third configurable Fud AI quick action.")
+    static let openAppWhenRun = true
+    @MainActor func perform() async throws -> some IntentResult { performQuickAction(slot: 2) }
+}
+
 struct FudAIShortcuts: AppShortcutsProvider {
     static var appShortcuts: [AppShortcut] {
         AppShortcut(
@@ -123,6 +150,27 @@ struct FudAIShortcuts: AppShortcutsProvider {
             ],
             shortTitle: "Log Weight",
             systemImageName: "scalemass.fill"
+        )
+
+        AppShortcut(
+            intent: QuickActionOneIntent(),
+            phrases: ["Quick action one in \(.applicationName)"],
+            shortTitle: "Quick Action 1",
+            systemImageName: "1.circle.fill"
+        )
+
+        AppShortcut(
+            intent: QuickActionTwoIntent(),
+            phrases: ["Quick action two in \(.applicationName)"],
+            shortTitle: "Quick Action 2",
+            systemImageName: "2.circle.fill"
+        )
+
+        AppShortcut(
+            intent: QuickActionThreeIntent(),
+            phrases: ["Quick action three in \(.applicationName)"],
+            shortTitle: "Quick Action 3",
+            systemImageName: "3.circle.fill"
         )
     }
 }

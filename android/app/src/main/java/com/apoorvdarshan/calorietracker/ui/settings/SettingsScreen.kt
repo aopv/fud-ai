@@ -56,6 +56,7 @@ import androidx.compose.material.icons.automirrored.filled.TrendingDown
 import androidx.compose.material.icons.automirrored.filled.TrendingFlat
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Brightness6
+import androidx.compose.material.icons.outlined.Bolt
 import androidx.compose.material.icons.outlined.CalendarToday
 import androidx.compose.material.icons.outlined.Cake
 import androidx.compose.material.icons.outlined.DataUsage
@@ -147,6 +148,7 @@ import com.apoorvdarshan.calorietracker.models.Gender
 import com.apoorvdarshan.calorietracker.models.MealSchedule
 import com.apoorvdarshan.calorietracker.models.OptionalNutrient
 import com.apoorvdarshan.calorietracker.models.OptionalNutrientGoals
+import com.apoorvdarshan.calorietracker.models.QuickAction
 import com.apoorvdarshan.calorietracker.models.SpeechLanguage
 import com.apoorvdarshan.calorietracker.models.SpeechProvider
 import com.apoorvdarshan.calorietracker.models.UserProfile
@@ -615,6 +617,12 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                     if (ui.weekStartsOnMonday) stringResource(R.string.settings_week_monday) else stringResource(R.string.settings_week_sunday),
                     icon = Icons.Outlined.CalendarToday
                 ) { sheet = SettingsSheet.WEEK_START }
+                HorizontalDivider()
+                SettingRow(
+                    stringResource(R.string.settings_quick_actions),
+                    stringResource(R.string.settings_meal_times_customize),
+                    icon = Icons.Outlined.Bolt
+                ) { nav.navigate(FudAIRoutes.QUICK_ACTIONS) }
                 HorizontalDivider()
                 ToggleRow(stringResource(R.string.settings_notifications), ui.notificationsEnabled, icon = Icons.Outlined.Notifications, onChange = ::onNotificationsToggle)
                 if (ui.notificationsEnabled) {
@@ -1270,6 +1278,102 @@ fun OptionalNutrientGoalsScreen(
                 modifier = Modifier.fillMaxWidth(),
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.62f)
             )
+        }
+    }
+}
+
+@Composable
+fun QuickActionsScreen(
+    vm: SettingsViewModel,
+    onBack: () -> Unit
+) {
+    val ui by vm.ui.collectAsState()
+    var expandedSlot by remember { mutableStateOf<Int?>(null) }
+
+    Scaffold(containerColor = MaterialTheme.colorScheme.background) { padding ->
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .padding(horizontal = 16.dp),
+            contentPadding = androidx.compose.foundation.layout.PaddingValues(
+                top = 14.dp,
+                bottom = BottomNavScrollPadding
+            ),
+            verticalArrangement = Arrangement.spacedBy(14.dp)
+        ) {
+            item {
+                Row(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(16.dp))
+                        .clickable { onBack() }
+                        .padding(horizontal = 2.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = null,
+                        tint = AppColors.Calorie,
+                        modifier = Modifier.size(22.dp)
+                    )
+                    Spacer(Modifier.width(6.dp))
+                    Text(
+                        stringResource(R.string.nav_settings),
+                        color = AppColors.Calorie,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+            }
+            item {
+                Text(
+                    stringResource(R.string.settings_quick_actions),
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            }
+            item {
+                SectionCard(title = stringResource(R.string.settings_app_icon_shortcuts)) {
+                    repeat(3) { slot ->
+                        Box {
+                            val selected = ui.quickActions.getOrElse(slot) { QuickAction.Defaults[slot] }
+                            SettingRow(
+                                stringResource(R.string.settings_quick_action_number, slot + 1),
+                                selected.title,
+                                inlineMenu = true
+                            ) { expandedSlot = slot }
+                            Box(Modifier.align(Alignment.BottomEnd)) {
+                                DropdownMenu(
+                                    expanded = expandedSlot == slot,
+                                    onDismissRequest = { expandedSlot = null }
+                                ) {
+                                    QuickAction.entries.forEach { action ->
+                                        DropdownMenuItem(
+                                            text = { Text(action.title) },
+                                            trailingIcon = if (action == selected) {
+                                                { Icon(Icons.Filled.Check, contentDescription = null, tint = AppColors.Calorie) }
+                                            } else null,
+                                            onClick = {
+                                                vm.setQuickAction(slot, action)
+                                                expandedSlot = null
+                                            }
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                        if (slot < 2) HorizontalDivider()
+                    }
+                }
+            }
+            item {
+                Text(
+                    stringResource(R.string.settings_quick_actions_footer),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.58f),
+                    modifier = Modifier.padding(horizontal = 4.dp)
+                )
+            }
         }
     }
 }

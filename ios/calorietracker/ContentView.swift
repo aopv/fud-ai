@@ -115,6 +115,7 @@ struct ContentView: View {
     @AppStorage(WorkoutTabMode.storageKey) private var workoutTabModeRaw = WorkoutTabMode.defaultMode.rawValue
     @State private var appUpdateState: AppUpdateState = .idle
     @State private var selectedTab: AppTab = .home
+    @State private var quickActionRequest: QuickActionRequest?
 
     private var workoutsTabIcon: String {
         WorkoutTabMode.mode(for: workoutTabModeRaw).tabIcon
@@ -124,13 +125,22 @@ struct ContentView: View {
         standardTabView
             .tint(AppThemeColor.color(for: appThemeColorRaw).color)
             .task {
+                consumePendingQuickAction()
                 await refreshAppUpdateState()
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .quickActionRequested)) { _ in
+                consumePendingQuickAction()
             }
     }
 
     private var standardTabView: some View {
         TabView(selection: $selectedTab) {
-            HomeView()
+            HomeView(
+                quickActionRequest: quickActionRequest,
+                onQuickActionHandled: { requestID in
+                    if quickActionRequest?.id == requestID { quickActionRequest = nil }
+                }
+            )
                 .tag(AppTab.home)
                 .tabItem {
                     Image(systemName: "house.fill")
@@ -179,6 +189,12 @@ struct ContentView: View {
         case coach
         case settings
         case workouts
+    }
+
+    private func consumePendingQuickAction() {
+        guard let action = QuickActionCoordinator.consumePending() else { return }
+        selectedTab = .home
+        quickActionRequest = QuickActionRequest(action: action)
     }
 
     @MainActor
@@ -517,6 +533,8 @@ struct ActivityShareSheet: UIViewControllerRepresentable {
 
 // MARK: - Home View (Main Dashboard)
 struct HomeView: View {
+    let quickActionRequest: QuickActionRequest?
+    let onQuickActionHandled: (UUID) -> Void
     @Environment(FoodStore.self) private var foodStore
     @Environment(WaterStore.self) private var waterStore
     @Environment(\.scenePhase) private var scenePhase
@@ -1335,6 +1353,18 @@ struct HomeView: View {
                 checkAndConsumeSharedImage()
                 prewarmFoodDestinations()
             }
+            .task(id: quickActionRequest?.id) {
+                presentQuickActionIfPossible()
+            }
+            .onChange(of: activeSheet) { oldValue, newValue in
+                if oldValue != nil && newValue == nil {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+                        presentQuickActionIfPossible()
+                    }
+                } else {
+                    presentQuickActionIfPossible()
+                }
+            }
             .onChange(of: scenePhase) { _, newPhase in
                 if newPhase == .active {
                     checkAndConsumeSharedImage()
@@ -1349,6 +1379,71 @@ struct HomeView: View {
                     wasBackgrounded = true
                 }
             }
+        }
+    }
+
+    @MainActor
+    private func presentQuickActionIfPossible() {
+        guard let request = quickActionRequest, activeSheet == nil else { return }
+
+        let hadOpenDestination = showCamera || showBarcodeScanner || showPhotoPicker
+            || showVoicePopover || showTextPopover || showManualPopover
+            || savedMealsMode != nil || showContextSheet || showMultiPhotoCaptureSheet
+
+        showCamera = false
+        showBarcodeScanner = false
+        showPhotoPicker = false
+        showVoicePopover = false
+        showTextPopover = false
+        showManualPopover = false
+        savedMealsMode = nil
+        showContextSheet = false
+        showMultiPhotoCaptureSheet = false
+        showCopyFromDaySheet = false
+        showNutritionDetail = false
+        showCustomWaterLog = false
+        showError = false
+        selectedDate = .now
+
+        onQuickActionHandled(request.id)
+        let launch: @MainActor @Sendable () -> Void = {
+            presentFoodDestination {
+                switch request.action {
+                case .camera:
+                    cameraMode = .snapFoodWithContext
+                    isImportingPhotos = false
+                    captureImages = []
+                    contextDescription = ""
+                    showCamera = true
+                case .photos:
+                    cameraMode = .snapFoodWithContext
+                    isImportingPhotos = true
+                    captureImages = []
+                    contextDescription = ""
+                    selectedPhotoItems = []
+                    showPhotoPicker = true
+                case .voice:
+                    showVoicePopover = true
+                case .text:
+                    showTextPopover = true
+                case .barcode:
+                    showBarcodeScanner = true
+                case .favorites:
+                    savedMealsMode = .favorites
+                case .frequent:
+                    savedMealsMode = .frequent
+                case .recent:
+                    savedMealsMode = .recent
+                case .manual:
+                    showManualPopover = true
+                }
+            }
+        }
+
+        if hadOpenDestination {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.35, execute: launch)
+        } else {
+            launch()
         }
     }
     
@@ -3627,6 +3722,23 @@ struct ProfileView: View {
                         }
                     }
 
+                    NavigationLink {
+                        QuickActionsSettingsView()
+                    } label: {
+                        Label {
+                            HStack {
+                                Text("Quick Actions")
+                                Spacer()
+                                Text("Customize")
+                                    .foregroundStyle(.secondary)
+                                    .lineLimit(1)
+                            }
+                        } icon: {
+                            Image(systemName: "bolt.fill")
+                                .foregroundStyle(AppColors.calorie)
+                        }
+                    }
+
                     HStack {
                         Label {
                             Text("Water Tracking")
@@ -4507,7 +4619,6 @@ struct ProfileView: View {
             }
         }
     }
-
     private var requestTimeoutInput: some View {
         EndEditingDecimalTextField(
             text: $requestTimeoutSecondsText,
