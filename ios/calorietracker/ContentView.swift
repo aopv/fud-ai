@@ -3265,6 +3265,7 @@ struct ProfileView: View {
     }
     @State private var activeSheet: ActiveSheet?
     @State private var showExportDiary = false
+    @State private var showImportDiary = false
     @State private var showDeleteConfirmation = false
     @State private var showClearFoodLogConfirmation = false
     @State private var showCalculationMethods = false
@@ -4352,6 +4353,18 @@ struct ProfileView: View {
                     }
                     .buttonStyle(.plain)
 
+                    Button {
+                        showImportDiary = true
+                    } label: {
+                        Label {
+                            Text("Import Food Diary")
+                        } icon: {
+                            Image(systemName: "square.and.arrow.down")
+                                .foregroundStyle(AppColors.calorie)
+                        }
+                    }
+                    .buttonStyle(.plain)
+
                     // Clear Food Log
                     Button(role: .destructive) {
                         showClearFoodLogConfirmation = true
@@ -4398,6 +4411,9 @@ struct ProfileView: View {
             .navigationBarHidden(true)
             .sheet(isPresented: $showExportDiary) {
                 ExportDiaryView()
+            }
+            .sheet(isPresented: $showImportDiary) {
+                ImportDiaryView()
             }
             .sheet(item: $activeSheet) { sheet in
                 switch sheet {

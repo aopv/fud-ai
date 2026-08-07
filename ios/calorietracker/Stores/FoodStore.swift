@@ -407,6 +407,23 @@ class FoodStore {
         onEntriesChanged?()
     }
 
+    /// Applies a validated diary import in one local write, then mirrors the
+    /// resulting ID changes to Apple Health through the existing callbacks.
+    /// Entries whose IDs survive the import are updates; new IDs are additions.
+    func replaceEntriesFromImport(_ newEntries: [FoodEntry]) {
+        let oldIDs = Set(entries.map(\.id))
+        let newIDs = Set(newEntries.map(\.id))
+        let removedIDs = oldIDs.subtracting(newIDs)
+        let updatedEntries = newEntries.filter { oldIDs.contains($0.id) }
+        let addedEntries = newEntries.filter { !oldIDs.contains($0.id) }
+
+        replaceAllEntries(newEntries)
+
+        removedIDs.forEach { onEntryDeleted?($0) }
+        updatedEntries.forEach { onEntryUpdated?($0) }
+        addedEntries.forEach { onEntryAdded?($0) }
+    }
+
     func mergeWithCloudEntries(_ cloudEntries: [FoodEntry]) {
         var merged = Dictionary(uniqueKeysWithValues: entries.map { ($0.id, $0) })
         for cloudEntry in cloudEntries {

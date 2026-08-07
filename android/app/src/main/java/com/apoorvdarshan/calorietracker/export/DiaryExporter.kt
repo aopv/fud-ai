@@ -131,7 +131,7 @@ object DiaryExporter {
         val protein_g: Double, val carbs_g: Double, val fat_g: Double,
     )
     @Serializable private data class ItemDto(
-        val name: String, val quantity_g: Double? = null, val calories: Int,
+        val entry_id: String, val name: String, val quantity_g: Double? = null, val calories: Int,
         val protein_g: Double, val carbs_g: Double, val fat_g: Double,
         val sugar_g: Double? = null, val added_sugar_g: Double? = null, val fiber_g: Double? = null,
         val saturated_fat_g: Double? = null, val monounsaturated_fat_g: Double? = null,
@@ -162,6 +162,7 @@ object DiaryExporter {
                     type = mt.name.lowercase(),
                     items = items.map { e ->
                         ItemDto(
+                            entry_id = e.id.toString(),
                             name = e.name,
                             quantity_g = e.servingSizeGrams?.let { r1(it) },
                             calories = e.calories,
@@ -209,7 +210,7 @@ object DiaryExporter {
             )
         }
         val doc = Doc(
-            export = MetaDto("Fud AI", "1.3", RangeDto(dayFmt.format(lo), dayFmt.format(hi))),
+            export = MetaDto("Fud AI", "1.4", RangeDto(dayFmt.format(lo), dayFmt.format(hi))),
             days = days,
         )
         return jsonPretty.encodeToString(Doc.serializer(), doc)

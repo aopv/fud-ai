@@ -113,6 +113,29 @@ class FoodRepository(
         pruneOrphanedImages()
     }
 
+    /** Apply a validated diary import in one local write and keep Health Connect in sync. */
+    suspend fun replaceFromImport(entries: List<FoodEntry>) {
+        ensureFavoritesMigrated()
+        val previous = prefs.foodEntries.first()
+        val previousById = previous.associateBy { it.id }
+        val importedIds = entries.mapTo(mutableSetOf()) { it.id }
+        val removedIds = previous.map { it.id }.filterNot { it in importedIds }
+        val changed = entries.filter { previousById[it.id] != it }
+
+        prefs.setFoodEntries(entries)
+        pruneOrphanedImages()
+
+        if (shouldSyncHealth()) {
+            removedIds.forEach { health?.deleteNutrition(it) }
+            changed.forEach { health?.updateNutrition(it) }
+        } else {
+            // Prevent stale records written by an earlier sync-enabled session
+            // from restoring pre-import values later.
+            removedIds.forEach { health?.deleteNutrition(it) }
+            changed.filter { it.id in previousById }.forEach { health?.deleteNutrition(it.id) }
+        }
+    }
+
     suspend fun clear() {
         ensureFavoritesMigrated()
         prefs.setFoodEntries(emptyList())

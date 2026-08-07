@@ -29,10 +29,11 @@ class DiaryExporterTest {
         val date = entry.timestamp.atZone(ZoneId.systemDefault()).toLocalDate()
         val (_, json) = requireNotNull(build(entry, date, DiaryFormat.JSON))
         val root = JsonParser.parseString(json).asJsonObject
-        assertEquals("1.3", root["export"].asJsonObject["format_version"].asString)
+        assertEquals("1.4", root["export"].asJsonObject["format_version"].asString)
         val item = root["days"].asJsonArray[0].asJsonObject["meals"].asJsonArray[0]
             .asJsonObject["items"].asJsonArray[0].asJsonObject
 
+        assertEquals(entry.id.toString(), item["entry_id"].asString)
         nutrientFields.forEach { field -> assertTrue("Missing JSON nutrient field: $field", item.has(field)) }
         assertEquals(3.3, item["fiber_g"].asDouble, 0.0001)
         assertEquals(8.8, item["sodium_mg"].asDouble, 0.0001)

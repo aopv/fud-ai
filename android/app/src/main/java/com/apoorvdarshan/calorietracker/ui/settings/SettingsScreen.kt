@@ -62,6 +62,7 @@ import androidx.compose.material.icons.outlined.Cake
 import androidx.compose.material.icons.outlined.DataUsage
 import androidx.compose.material.icons.outlined.DeleteForever
 import androidx.compose.material.icons.outlined.DeleteSweep
+import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.Equalizer
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.GraphicEq
@@ -121,6 +122,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -157,6 +159,9 @@ import com.apoorvdarshan.calorietracker.models.WeightGoal
 import com.apoorvdarshan.calorietracker.models.WaterUnit
 import com.apoorvdarshan.calorietracker.models.WorkoutRpeScale
 import com.apoorvdarshan.calorietracker.models.WorkoutSplit
+import com.apoorvdarshan.calorietracker.export.DiaryImportMode
+import com.apoorvdarshan.calorietracker.export.DiaryImportPreview
+import com.apoorvdarshan.calorietracker.export.DiaryImporter
 import com.apoorvdarshan.calorietracker.services.health.HealthConnectAvailability
 import java.time.Instant
 import java.time.LocalDate
@@ -183,7 +188,10 @@ import com.apoorvdarshan.calorietracker.ui.theme.AppThemeColor
 import com.apoorvdarshan.calorietracker.ui.navigation.FudAIRoutes
 import com.apoorvdarshan.calorietracker.ui.util.clockTimePattern
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import java.util.Locale
 import java.time.LocalTime
 import kotlin.math.roundToInt
@@ -211,6 +219,10 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showClearFoodDialog by remember { mutableStateOf(false) }
     var showExportSheet by remember { mutableStateOf(false) }
+    var showImportSheet by remember { mutableStateOf(false) }
+    var importPreview by remember { mutableStateOf<DiaryImportPreview?>(null) }
+    var importError by remember { mutableStateOf<String?>(null) }
+    var importingDiary by remember { mutableStateOf(false) }
     var invalidGoalWeightMessage by remember { mutableStateOf<String?>(null) }
     var showMaxPinnedAlert by remember { mutableStateOf(false) }
     var showRebalanceBlockedAlert by remember { mutableStateOf(false) }
@@ -222,6 +234,29 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
     var showAdaptiveGoalsInfo by remember { mutableStateOf(false) }
     var pendingHealthPermissionAction by remember { mutableStateOf<HealthConnectPermissionAction?>(null) }
     val activityContext = LocalContext.current
+    val settingsScope = rememberCoroutineScope()
+    val importReadFailedMessage = stringResource(R.string.import_read_failed)
+
+    val importFileLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        if (uri == null) return@rememberLauncherForActivityResult
+        settingsScope.launch {
+            val result = runCatching {
+                withContext(Dispatchers.IO) {
+                    val bytes = activityContext.contentResolver.openInputStream(uri)?.use { input -> input.readBytes() }
+                        ?: throw IllegalArgumentException(importReadFailedMessage)
+                    if (bytes.size > DiaryImporter.MAXIMUM_FILE_SIZE) {
+                        throw IllegalArgumentException("This file is too large to import.")
+                    }
+                    DiaryImporter.parse(bytes.toString(Charsets.UTF_8))
+                }
+            }
+            importPreview = result.getOrNull()
+            importError = result.exceptionOrNull()?.localizedMessage ?: if (result.isFailure) importReadFailedMessage else null
+            showImportSheet = true
+        }
+    }
 
     // Notifications: API 33+ requires runtime POST_NOTIFICATIONS. We only flip the
     // pref to true if the user actually grants. Denial leaves the toggle off so
@@ -834,6 +869,24 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                 Row(
                     Modifier
                         .fillMaxWidth()
+                        .clickable {
+                            importFileLauncher.launch(arrayOf("application/json", "text/plain"))
+                        }
+                        .padding(horizontal = 16.dp, vertical = 14.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    FudIconBubble(icon = Icons.Outlined.Download, size = 22.dp, iconSize = 14.dp, tint = AppColors.Calorie)
+                    Spacer(Modifier.width(14.dp))
+                    Text(
+                        stringResource(R.string.import_diary_title),
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+                HorizontalDivider()
+                Row(
+                    Modifier
+                        .fillMaxWidth()
                         .clickable { showClearFoodDialog = true }
                         .padding(horizontal = 16.dp, vertical = 14.dp),
                     verticalAlignment = Alignment.CenterVertically
@@ -883,6 +936,41 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
             container = container,
             profile = profile,
             onDismiss = { showExportSheet = false },
+        )
+    }
+
+    if (showImportSheet) {
+        ImportDiarySheet(
+            preview = importPreview,
+            error = importError,
+            importing = importingDiary,
+            onDismiss = {
+                showImportSheet = false
+                importPreview = null
+                importError = null
+            },
+            onImport = { mode: DiaryImportMode ->
+                importPreview?.let { selected ->
+                    settingsScope.launch {
+                        importingDiary = true
+                        runCatching {
+                            val current = container.foodRepository.entries.first()
+                            val updated = withContext(Dispatchers.Default) {
+                                DiaryImporter.applying(selected, current, mode)
+                            }
+                            container.foodRepository.replaceFromImport(updated)
+                        }.onSuccess {
+                            showImportSheet = false
+                            importPreview = null
+                            importError = null
+                            permissionDeniedMessage = activityContext.getString(R.string.import_success, selected.entries.size)
+                        }.onFailure { error ->
+                            importError = error.localizedMessage ?: importReadFailedMessage
+                        }
+                        importingDiary = false
+                    }
+                }
+            },
         )
     }
 

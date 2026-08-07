@@ -168,7 +168,7 @@ enum DiaryExporter {
             let protein_g: Double; let carbs_g: Double; let fat_g: Double
         }
         struct Item: Encodable {
-            let name: String; let quantity_g: Double?; let calories: Int
+            let entry_id: String; let name: String; let quantity_g: Double?; let calories: Int
             let protein_g: Double; let carbs_g: Double; let fat_g: Double
             let sugar_g: Double?; let added_sugar_g: Double?; let fiber_g: Double?
             let saturated_fat_g: Double?; let monounsaturated_fat_g: Double?; let polyunsaturated_fat_g: Double?
@@ -191,7 +191,7 @@ enum DiaryExporter {
             let t = totals(bundle.groups)
             let meals: [Meal] = bundle.groups.map { g in
                 Meal(type: g.meal.rawValue, items: g.entries.map { e in
-                    Item(name: e.name, quantity_g: e.servingSizeGrams.map(r1), calories: e.calories,
+                    Item(entry_id: e.id.uuidString, name: e.name, quantity_g: e.servingSizeGrams.map(r1), calories: e.calories,
                          protein_g: r1(e.protein), carbs_g: r1(e.carbs), fat_g: r1(e.fat),
                          sugar_g: e.sugar.map(r1), added_sugar_g: e.addedSugar.map(r1), fiber_g: e.fiber.map(r1),
                          saturated_fat_g: e.saturatedFat.map(r1),
@@ -228,7 +228,7 @@ enum DiaryExporter {
                 meals: meals
             )
         }
-        let doc = Doc(export: Meta(app: "Fud AI", format_version: "1.3",
+        let doc = Doc(export: Meta(app: "Fud AI", format_version: "1.4",
                                    date_range: Meta.Range(start: dayFmt.string(from: start), end: dayFmt.string(from: end))),
                       days: dayDocs)
         let enc = JSONEncoder()

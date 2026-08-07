@@ -810,6 +810,14 @@
     <string name="whats_new_v30_widgets">Widgets redesign: the Home speedometer style, drawn at each widget\'s true size.</string>
     <string name="whats_new_v30_restore">Reinstalled or switched phones? Your food log, weight, and body fat now restore automatically from Health Connect.</string>
     <string name="export_diary_title">Export Food Diary</string>
+    <string name="import_diary_title">Import Food Diary</string>
+    <string name="import_entries">Food entries</string>
+    <string name="import_date_range">Date range</string>
+    <string name="import_replace_explanation">Replace removes existing food logs only within this exported date range, then recreates that range from the selected file. Matching entries keep their photos. Add keeps the current diary and creates duplicates as new entries.</string>
+    <string name="import_replace_action">Replace This Date Range</string>
+    <string name="import_add_action">Add as New Entries</string>
+    <string name="import_success">Imported %1$d food entries.</string>
+    <string name="import_read_failed">The selected file could not be read.</string>
     <string name="export_range">Range</string>
     <string name="export_format">Format</string>
     <string name="export_action">Export</string>

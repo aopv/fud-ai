@@ -24,12 +24,13 @@ struct DiaryExporterTests {
 
         let root = try #require(JSONSerialization.jsonObject(with: export.data) as? [String: Any])
         let metadata = try #require(root["export"] as? [String: Any])
-        #expect(metadata["format_version"] as? String == "1.2")
+        #expect(metadata["format_version"] as? String == "1.4")
         let days = try #require(root["days"] as? [[String: Any]])
         let meals = try #require(days.first?["meals"] as? [[String: Any]])
         let items = try #require(meals.first?["items"] as? [[String: Any]])
         let item = try #require(items.first)
 
+        #expect(item["entry_id"] as? String == fixture.entry.id.uuidString)
         for field in nutrientFields {
             #expect(item[field] != nil, "Missing JSON nutrient field: \(field)")
         }
