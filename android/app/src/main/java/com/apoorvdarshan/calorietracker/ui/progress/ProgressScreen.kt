@@ -1,9 +1,13 @@
 package com.apoorvdarshan.calorietracker.ui.progress
 
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -49,6 +53,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -68,7 +73,11 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipRect
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -88,6 +97,7 @@ import com.apoorvdarshan.calorietracker.ui.settings.NutritionPickerSheet
 import androidx.annotation.StringRes
 import com.apoorvdarshan.calorietracker.R
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -104,6 +114,7 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import kotlin.math.roundToInt
 
 /**
  * Verbatim port of ios/calorietracker/ContentView.swift > struct ProgressTabView,
@@ -571,20 +582,21 @@ private fun StatBadge(label: String, value: String, modifier: Modifier = Modifie
 @Composable
 private fun WeightChartCanvas(entries: List<WeightEntry>, goalKg: Double?, useMetric: Boolean) {
     val displayKg = { kg: Double -> if (useMetric) kg else kg * 2.20462 }
-    val unitLabel = if (useMetric) "" else ""
-    val displayWeights = entries.map { displayKg(it.weightKg) } + listOfNotNull(goalKg?.let(displayKg))
+    val sortedEntries = entries.sortedBy { it.date }
+    val displayWeights = sortedEntries.map { displayKg(it.weightKg) } + listOfNotNull(goalKg?.let(displayKg))
     val minW = displayWeights.min()
     val maxW = displayWeights.max()
     val pad = maxOf((maxW - minW) * 0.15, 2.0)
     val yMin = minW - pad
     val yMax = maxW + pad
-    val tStart = entries.first().date.toEpochMilli()
-    val tEnd = entries.last().date.toEpochMilli()
-    val singleEntry = entries.size == 1
+    val tStart = sortedEntries.first().date.toEpochMilli()
+    val tEnd = sortedEntries.last().date.toEpochMilli()
+    val singleEntry = sortedEntries.size == 1
     val tRange = maxOf(1L, tEnd - tStart)
     val goalLineColor = Color(0xFF34C759).copy(alpha = 0.7f)
     val gridColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.10f)
     val secondaryColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
+    val chartSurfaceColor = MaterialTheme.colorScheme.surface
     val ticks = niceAxisTicks(yMin, yMax, count = 5)
     val zone = ZoneId.systemDefault()
     // Labels pick up the year once a longer range crosses a calendar-year
@@ -595,54 +607,157 @@ private fun WeightChartCanvas(entries: List<WeightEntry>, goalKg: Double?, useMe
     val xLabelFmt = DateTimeFormatter.ofPattern(if (showsYear) "MMM yyyy" else "MMM d", Locale.US).withZone(zone)
     // Dense ranges plot bucket averages so the line stays a readable curve;
     // dots only render while each reading is still distinguishable.
-    val points = downsampleTrend(entries.map { TrendPoint(it.date.toEpochMilli(), displayKg(it.weightKg)) })
+    val points = downsampleTrend(sortedEntries.map { TrendPoint(it.date.toEpochMilli(), displayKg(it.weightKg)) })
     val showsDots = points.size <= 31
+    val haptic = LocalHapticFeedback.current
+    val density = LocalDensity.current
+    var selectedIndex by remember(points) { mutableStateOf<Int?>(null) }
+    var dragX by remember { mutableFloatStateOf(0f) }
+    val selectedPoint = selectedIndex?.let(points::getOrNull)
+    val inspectorDateFormat = remember {
+        DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.getDefault()).withZone(ZoneId.systemDefault())
+    }
 
     Row(Modifier.fillMaxWidth().height(180.dp)) {
-        Canvas(Modifier.weight(1f).fillMaxSize()) {
-            val w = size.width; val h = size.height
-            // Horizontal grid + tick marks
-            ticks.forEach { tick ->
-                val y = h - (((tick - yMin) / (yMax - yMin)).toFloat() * h)
-                drawLine(
-                    color = gridColor,
-                    start = Offset(0f, y), end = Offset(w, y),
-                    strokeWidth = 1f
-                )
+        BoxWithConstraints(Modifier.weight(1f).fillMaxSize()) {
+            val canvasWidthPx = with(density) { maxWidth.toPx() }
+            val selectedTargetX = selectedPoint?.let { point ->
+                if (singleEntry) canvasWidthPx / 2f
+                else ((point.timeMs - tStart).toDouble() / tRange * canvasWidthPx).toFloat()
+            } ?: 0f
+            val animatedInspectorX by animateFloatAsState(
+                targetValue = selectedTargetX,
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioNoBouncy,
+                    stiffness = Spring.StiffnessMedium
+                ),
+                label = "weightInspectorX"
+            )
+
+            fun selectNearest(x: Float) {
+                if (points.isEmpty() || canvasWidthPx <= 0f) return
+                val clampedX = x.coerceIn(0f, canvasWidthPx)
+                val nearest = points.indices.minByOrNull { index ->
+                    val pointX = if (singleEntry) canvasWidthPx / 2f else
+                        ((points[index].timeMs - tStart).toDouble() / tRange * canvasWidthPx).toFloat()
+                    kotlin.math.abs(pointX - clampedX)
+                } ?: return
+                if (nearest != selectedIndex) {
+                    selectedIndex = nearest
+                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                }
             }
-            // Vertical grid (4 columns) — faint dashed
-            for (i in 0..4) {
-                val x = (i.toFloat() / 4f) * w
-                drawLine(
-                    color = gridColor,
-                    start = Offset(x, 0f), end = Offset(x, h),
-                    strokeWidth = 1f,
-                    pathEffect = PathEffect.dashPathEffect(floatArrayOf(4f, 6f))
-                )
+
+            Canvas(
+                Modifier
+                    .fillMaxSize()
+                    .pointerInput(points, canvasWidthPx) {
+                        detectHorizontalDragGestures(
+                            onDragStart = { offset ->
+                                dragX = offset.x
+                                selectNearest(dragX)
+                            },
+                            onDragEnd = { selectedIndex = null },
+                            onDragCancel = { selectedIndex = null },
+                            onHorizontalDrag = { change, dragAmount ->
+                                dragX = (dragX + dragAmount).coerceIn(0f, size.width.toFloat())
+                                selectNearest(dragX)
+                                change.consume()
+                            }
+                        )
+                    }
+            ) {
+                val w = size.width; val h = size.height
+                // Horizontal grid + tick marks
+                ticks.forEach { tick ->
+                    val y = h - (((tick - yMin) / (yMax - yMin)).toFloat() * h)
+                    drawLine(
+                        color = gridColor,
+                        start = Offset(0f, y), end = Offset(w, y),
+                        strokeWidth = 1f
+                    )
+                }
+                // Vertical grid (4 columns) — faint dashed
+                for (i in 0..4) {
+                    val x = (i.toFloat() / 4f) * w
+                    drawLine(
+                        color = gridColor,
+                        start = Offset(x, 0f), end = Offset(x, h),
+                        strokeWidth = 1f,
+                        pathEffect = PathEffect.dashPathEffect(floatArrayOf(4f, 6f))
+                    )
+                }
+                goalKg?.let { gk ->
+                    val gv = displayKg(gk)
+                    val y = h - (((gv - yMin) / (yMax - yMin)).toFloat() * h)
+                    drawLine(
+                        color = goalLineColor,
+                        start = Offset(0f, y), end = Offset(w, y),
+                        strokeWidth = 3f,
+                        pathEffect = PathEffect.dashPathEffect(floatArrayOf(18f, 12f))
+                    )
+                }
+                val offsets = points.map { p ->
+                    Offset(
+                        if (singleEntry) w / 2f
+                        else ((p.timeMs - tStart).toDouble() / tRange * w).toFloat(),
+                        h - (((p.value - yMin) / (yMax - yMin)).toFloat() * h)
+                    )
+                }
+                // clipRect: the smoothed curve can overshoot the value range a
+                // touch between points — keep it inside the plot like iOS .clipped()
+                clipRect {
+                    drawPath(smoothTrendPath(offsets), AppColors.Calorie, style = Stroke(width = 5f))
+                    if (showsDots) {
+                        offsets.forEach { drawCircle(AppColors.Calorie, radius = 5.5f, center = it) }
+                    }
+
+                    selectedPoint?.let { point ->
+                        val pointY = h - (((point.value - yMin) / (yMax - yMin)).toFloat() * h)
+                        drawLine(
+                            color = AppColors.Calorie.copy(alpha = 0.62f),
+                            start = Offset(animatedInspectorX, 0f),
+                            end = Offset(animatedInspectorX, h),
+                            strokeWidth = 2.5f,
+                            pathEffect = PathEffect.dashPathEffect(floatArrayOf(7f, 7f))
+                        )
+                        drawCircle(chartSurfaceColor, radius = 11f, center = Offset(animatedInspectorX, pointY))
+                        drawCircle(AppColors.Calorie, radius = 6f, center = Offset(animatedInspectorX, pointY))
+                    }
+                }
             }
-            goalKg?.let { gk ->
-                val gv = displayKg(gk)
-                val y = h - (((gv - yMin) / (yMax - yMin)).toFloat() * h)
-                drawLine(
-                    color = goalLineColor,
-                    start = Offset(0f, y), end = Offset(w, y),
-                    strokeWidth = 3f,
-                    pathEffect = PathEffect.dashPathEffect(floatArrayOf(18f, 12f))
-                )
-            }
-            val offsets = points.map { p ->
-                Offset(
-                    if (singleEntry) w / 2f
-                    else ((p.timeMs - tStart).toDouble() / tRange * w).toFloat(),
-                    h - (((p.value - yMin) / (yMax - yMin)).toFloat() * h)
-                )
-            }
-            // clipRect: the smoothed curve can overshoot the value range a
-            // touch between points — keep it inside the plot like iOS .clipped()
-            clipRect {
-                drawPath(smoothTrendPath(offsets), AppColors.Calorie, style = Stroke(width = 5f))
-                if (showsDots) {
-                    offsets.forEach { drawCircle(AppColors.Calorie, radius = 5.5f, center = it) }
+
+            selectedPoint?.let { point ->
+                val tooltipWidth = 116.dp
+                val tooltipWidthPx = with(density) { tooltipWidth.toPx() }
+                val tooltipLeft = (animatedInspectorX - tooltipWidthPx / 2f)
+                    .coerceIn(0f, (canvasWidthPx - tooltipWidthPx).coerceAtLeast(0f))
+                Column(
+                    modifier = Modifier
+                        .offset { IntOffset(tooltipLeft.roundToInt(), with(density) { 6.dp.roundToPx() }) }
+                        .width(tooltipWidth)
+                        .shadow(8.dp, RoundedCornerShape(10.dp))
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.96f))
+                        .border(0.75.dp, AppColors.Calorie.copy(alpha = 0.24f), RoundedCornerShape(10.dp))
+                        .padding(horizontal = 8.dp, vertical = 6.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(1.dp)
+                ) {
+                    Text(
+                        inspectorDateFormat.format(Instant.ofEpochMilli(point.timeMs)),
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = secondaryColor,
+                        maxLines = 1
+                    )
+                    Text(
+                        String.format(Locale.US, "%.1f %s", point.value, if (useMetric) "kg" else "lbs"),
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        maxLines = 1
+                    )
                 }
             }
         }
