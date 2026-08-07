@@ -38,9 +38,9 @@ Snap, speak, or type a meal. AI logs the calories. Open source.
 ```
 Fud AI makes calorie tracking effortless with AI-powered food recognition. Snap a photo, scan a barcode, speak it, or type it — get instant nutrition: calories, protein, carbs, fats, vitamins, minerals, and more.
 
-NEW in v6.1: optionally track intermittent fasts with a persistent timer, a custom 1–168 hour goal, editable history, and a local goal alert. Start, end, or cancel from the Home + menu. Fasting stays separate from nutrition and Health Connect.
+NEW in v6.1: progressive multi-photo analysis follows ingredients added to one plate. Meals include editable ingredient breakdowns and serving fields include a calculator. You can also import diary JSON, configure app shortcuts, inspect exact weight-chart values, and preview exercises.
 
-Meal reuse is faster, copied foods use the current time, and exports include every stored nutrient. Water tracking adds selectable units. AI presets use current models, with configurable Ollama/custom timeouts.
+Nutrition adds custom goals, caffeine, creatine, beta-alanine, L-citrulline, L-carnitine, L-arginine, taurine, betaine, and HMB. Optional fasting adds persistent timers, editable history, goals, alerts, and Coach context. Android also adds a measured daily calorie summary and clearer Health Connect guidance.
 
 Open source, privacy-first. Bring your own API key.
 
@@ -55,7 +55,7 @@ WAYS TO LOG A MEAL
 • Copy from Day — copy meals from another date
 
 AI PROVIDERS
-Use Gemini, OpenAI, Claude, Grok, Groq, OpenRouter, Together, Hugging Face, Fireworks, DeepInfra, Mistral, Ollama, or an OpenAI-compatible endpoint. Keys are encrypted.
+Use Gemini, OpenAI, Claude, Grok, Groq, OpenRouter, Together, Hugging Face, Fireworks, DeepInfra, Mistral, Ollama, or an OpenAI-compatible endpoint.
 
 6 SPEECH-TO-TEXT ENGINES
 Native Android, Gemini, OpenAI Whisper, Groq, Deepgram, or AssemblyAI, with automatic or fixed language handling.
@@ -67,7 +67,7 @@ REVIEW BEFORE LOGGING
 Unlock Nutrition to correct calories, macros, and detailed nutrients before saving; serving changes then scale from your edits. What if? previews today's macro impact and can ask AI for a suggestion.
 
 WORKOUTS
-Plan by day and log sets, reps, weight, and RPE without a timer. Swipe weeks, estimate calorie burn, and review history in Progress. The 873-exercise photo library includes muscle/equipment filters, search, sorting, and details.
+Plan by day; log sets, reps, weight, and RPE. Browse 873 exercises with photos, filters, search, sorting, and details.
 
 PERSONALIZED GOALS
 BMR and TDEE calculators, six activity levels, automatic or editable macro targets, and customizable meal-time boundaries.
@@ -112,79 +112,95 @@ English-only on Play Console — non-English Play Store browsers (ar, az-AZ, de-
 
 ```
 <en-US>
-• Optional fasting tracker with a persistent timer, custom 1–168 hour goal, editable history, and an optional local goal alert.
-• Start, end, or cancel from Home. Fasting stays separate from nutrition and Health Connect; Coach can review only explicitly logged fasts.
-• Reliability and security improvements.
+• Progressive multi-photo meals, editable ingredient breakdowns, fiber entry, and a serving calculator.
+• Custom nutrient goals plus caffeine, creatine, and other performance compounds.
+• Drag across weight charts, preview exercises, import diary JSON, and configure app shortcuts.
+• Optional fasting with persistent timers and editable history.
+• Android adds measured daily calorie summaries, clearer Health Connect guidance, and smarter reminder behavior.
 </en-US>
 
 <ar>
-• متتبع صيام اختياري بمؤقت مستمر وهدف مخصص من 1 إلى 168 ساعة وسجل قابل للتعديل وتنبيه محلي اختياري.
-• يبقى الصيام منفصلًا عن التغذية وHealth Connect، مع تحسينات في الموثوقية والأمان.
+• تحليل تدريجي لصور الوجبات، مكونات قابلة للتعديل، حاسبة حصص، وأهداف موسعة للعناصر الغذائية.
+• فحص تفاعلي للرسوم، معاينة التمارين، استيراد سجل JSON، واختصارات قابلة للتخصيص.
+• صيام اختياري، وملخص يومي للسعرات، وإرشادات أوضح لـ Health Connect.
 </ar>
 
 <az-AZ>
-• Davamlı taymer, 1–168 saatlıq xüsusi məqsəd, redaktə edilən tarixçə və istəyə bağlı yerli bildiriş ilə oruc izləmə.
-• Oruc qidalanma və Health Connect-dən ayrı qalır; etibarlılıq və təhlükəsizlik təkmilləşdirildi.
+• Proqressiv çoxşəkilli yeməklər, redaktə olunan inqrediyentlər, porsiya kalkulyatoru və geniş qida məqsədləri.
+• İnteraktiv qrafiklər, məşq önizləməsi, JSON gündəlik idxalı və fərdiləşən qısayollar.
+• İstəyə bağlı oruc, gündəlik kalori xülasəsi və daha aydın Health Connect dəstəyi.
 </az-AZ>
 
 <de-DE>
-• Optionaler Fasten-Tracker mit dauerhaftem Timer, eigenem Ziel von 1–168 Stunden, bearbeitbarem Verlauf und optionaler lokaler Erinnerung.
-• Fasten bleibt von Ernährung und Health Connect getrennt; Zuverlässigkeit und Sicherheit wurden verbessert.
+• Progressive Mehrfoto-Mahlzeiten, bearbeitbare Zutaten, Portionsrechner und erweiterte Nährstoffziele.
+• Interaktive Diagramme, Übungsvorschau, JSON-Tagebuchimport und anpassbare App-Kurzbefehle.
+• Optionales Fasten, tägliche Kalorienbilanz und klarere Health-Connect-Hinweise.
 </de-DE>
 
 <es-ES>
-• Seguimiento de ayuno opcional con temporizador persistente, objetivo de 1–168 horas, historial editable y aviso local opcional.
-• El ayuno se mantiene separado de la nutrición y Health Connect; mejoras de fiabilidad y seguridad.
+• Comidas progresivas con varias fotos, ingredientes editables, calculadora de porciones y objetivos nutricionales ampliados.
+• Gráficos interactivos, vista previa de ejercicios, importación JSON y accesos directos configurables.
+• Ayuno opcional, resumen calórico diario y mejores indicaciones de Health Connect.
 </es-ES>
 
 <fr-FR>
-• Suivi du jeûne optionnel avec minuteur persistant, objectif de 1 à 168 h, historique modifiable et alerte locale facultative.
-• Le jeûne reste séparé de la nutrition et de Health Connect ; fiabilité et sécurité améliorées.
+• Repas progressifs multi-photos, ingrédients modifiables, calculateur de portions et objectifs nutritionnels étendus.
+• Graphiques interactifs, aperçu des exercices, import JSON et raccourcis configurables.
+• Jeûne facultatif, bilan calorique quotidien et indications Health Connect plus claires.
 </fr-FR>
 
 <hi-IN>
-• लगातार चलने वाला टाइमर, 1–168 घंटे का कस्टम लक्ष्य, संपादन योग्य इतिहास और वैकल्पिक स्थानीय अलर्ट वाला उपवास ट्रैकर।
-• उपवास पोषण और Health Connect से अलग रहता है; विश्वसनीयता और सुरक्षा में सुधार।
+• प्रोग्रेसिव मल्टी-फोटो भोजन, संपादन योग्य सामग्री, सर्विंग कैलकुलेटर और विस्तृत पोषक लक्ष्य।
+• इंटरैक्टिव चार्ट, व्यायाम पूर्वावलोकन, JSON डायरी आयात और कस्टम ऐप शॉर्टकट।
+• वैकल्पिक उपवास, दैनिक कैलोरी सारांश और बेहतर Health Connect मार्गदर्शन।
 </hi-IN>
 
 <it-IT>
-• Monitoraggio del digiuno opzionale con timer persistente, obiettivo da 1–168 ore, cronologia modificabile e avviso locale facoltativo.
-• Il digiuno resta separato da nutrizione e Health Connect; affidabilità e sicurezza migliorate.
+• Pasti progressivi multi-foto, ingredienti modificabili, calcolatore porzioni e obiettivi nutrizionali estesi.
+• Grafici interattivi, anteprima esercizi, importazione diario JSON e scorciatoie configurabili.
+• Digiuno opzionale, riepilogo calorico giornaliero e indicazioni Health Connect più chiare.
 </it-IT>
 
 <ja-JP>
-• 継続タイマー、1〜168時間のカスタム目標、編集可能な履歴、任意のローカル通知を備えた断食トラッカー。
-• 断食は栄養記録とHealth Connectから分離。信頼性とセキュリティも改善しました。
+• 段階的な複数写真の食事解析、編集可能な材料、分量計算機、拡張栄養目標。
+• グラフの詳細確認、運動プレビュー、JSON日記インポート、設定可能なショートカット。
+• 任意の断食記録、毎日のカロリー収支、より明確なHealth Connect案内。
 </ja-JP>
 
 <ko-KR>
-• 지속 타이머, 1~168시간 사용자 목표, 편집 가능한 기록, 선택적 로컬 알림을 갖춘 단식 추적 기능.
-• 단식은 영양 기록 및 Health Connect와 분리되며 안정성과 보안도 개선했습니다.
+• 단계별 다중 사진 식사, 편집 가능한 재료, 섭취량 계산기와 확장 영양 목표.
+• 대화형 차트, 운동 미리보기, JSON 식단 가져오기와 맞춤 앱 바로가기.
+• 선택적 단식, 일일 칼로리 요약과 더 명확한 Health Connect 안내.
 </ko-KR>
 
 <nl-NL>
-• Optionele vastentracker met blijvende timer, eigen doel van 1–168 uur, bewerkbare geschiedenis en optionele lokale melding.
-• Vasten blijft los van voeding en Health Connect; betrouwbaarheid en beveiliging zijn verbeterd.
+• Progressieve maaltijden met meerdere foto's, bewerkbare ingrediënten, portiecalculator en uitgebreide voedingsdoelen.
+• Interactieve grafieken, oefeningpreview, JSON-import en instelbare app-snelkoppelingen.
+• Optioneel vasten, dagelijkse caloriesamenvatting en duidelijkere Health Connect-uitleg.
 </nl-NL>
 
 <pt-BR>
-• Rastreador de jejum opcional com cronômetro persistente, meta de 1–168 horas, histórico editável e alerta local opcional.
-• O jejum fica separado da nutrição e do Health Connect; melhorias de confiabilidade e segurança.
+• Refeições progressivas com várias fotos, ingredientes editáveis, calculadora de porções e metas nutricionais ampliadas.
+• Gráficos interativos, prévia de exercícios, importação JSON e atalhos configuráveis.
+• Jejum opcional, resumo calórico diário e orientações mais claras do Health Connect.
 </pt-BR>
 
 <ro>
-• Urmărire opțională a postului cu cronometru persistent, obiectiv de 1–168 ore, istoric editabil și alertă locală opțională.
-• Postul rămâne separat de nutriție și Health Connect; fiabilitate și securitate îmbunătățite.
+• Mese progresive cu mai multe poze, ingrediente editabile, calculator de porții și obiective nutritive extinse.
+• Grafice interactive, previzualizare exerciții, import jurnal JSON și scurtături configurabile.
+• Post opțional, rezumat caloric zilnic și îndrumări Health Connect mai clare.
 </ro>
 
 <ru-RU>
-• Необязательный трекер голодания: постоянный таймер, цель 1–168 часов, редактируемая история и локальное уведомление.
-• Голодание отделено от питания и Health Connect; улучшены надёжность и безопасность.
+• Пошаговый анализ нескольких фото еды, редактируемые ингредиенты, калькулятор порций и расширенные цели нутриентов.
+• Интерактивные графики, просмотр упражнений, импорт JSON и настраиваемые ярлыки.
+• Необязательное голодание, дневной баланс калорий и понятные подсказки Health Connect.
 </ru-RU>
 
 <zh-CN>
-• 新增可选断食追踪：持续计时器、1–168 小时自定义目标、可编辑历史及可选本地提醒。
-• 断食与营养记录和 Health Connect 完全分离，并提升可靠性与安全性。
+• 渐进式多图餐食、可编辑食材、份量计算器和扩展营养目标。
+• 交互式图表、动作预览、JSON 日记导入和可配置应用快捷方式。
+• 可选断食、每日热量收支摘要，以及更清晰的 Health Connect 指引。
 </zh-CN>
 ```
 
