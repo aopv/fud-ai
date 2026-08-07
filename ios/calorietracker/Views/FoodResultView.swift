@@ -1065,7 +1065,7 @@ struct EndEditingDecimalTextField: UIViewRepresentable {
         textField.font = .preferredFont(forTextStyle: .body)
         textField.adjustsFontForContentSizeCategory = true
         context.coordinator.textField = textField
-        textField.inputAccessoryView = context.coordinator.makeToolbar()
+        textField.inputAccessoryView = context.coordinator.makeInputAccessoryView()
         textField.addTarget(context.coordinator, action: #selector(Coordinator.textDidChange(_:)), for: .editingChanged)
         return textField
     }
@@ -1107,7 +1107,7 @@ struct EndEditingDecimalTextField: UIViewRepresentable {
         private let onEditingChanged: (Bool) -> Void
         private let showsCalculatorToolbar: Bool
         weak var textField: UITextField?
-        private weak var equalsItem: UIBarButtonItem?
+        private weak var equalsButton: UIButton?
 
         init(
             text: Binding<String>,
@@ -1126,28 +1126,48 @@ struct EndEditingDecimalTextField: UIViewRepresentable {
             refreshPreview(for: text)
         }
 
-        func makeToolbar() -> UIToolbar {
+        func makeInputAccessoryView() -> UIView {
+            if showsCalculatorToolbar {
+                return makeCalculatorAccessoryView()
+            }
+
             let doneItem = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(doneTapped))
             doneItem.tintColor = Self.calorieTint
 
             let toolbar = UIToolbar()
-            if showsCalculatorToolbar {
-                let clear = item("C", action: #selector(clearTapped))
-                let add = item("+", action: #selector(addTapped))
-                let subtract = item("−", action: #selector(subtractTapped))
-                let multiply = item("×", action: #selector(multiplyTapped))
-                let divide = item("÷", action: #selector(divideTapped))
-                let equals = item("=", action: #selector(equalsTapped))
-                equalsItem = equals
-                toolbar.items = [
-                    clear, flexibleSpace(), add, flexibleSpace(), subtract, flexibleSpace(),
-                    multiply, flexibleSpace(), divide, flexibleSpace(), equals, flexibleSpace(), doneItem
-                ]
-            } else {
-                toolbar.items = [flexibleSpace(), doneItem]
-            }
+            toolbar.items = [flexibleSpace(), doneItem]
             toolbar.sizeToFit()
             return toolbar
+        }
+
+        private func makeCalculatorAccessoryView() -> UIView {
+            let accessory = UIVisualEffectView(effect: UIBlurEffect(style: .systemChromeMaterial))
+            accessory.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 52)
+            accessory.autoresizingMask = [.flexibleWidth]
+
+            let clear = button("C", action: #selector(clearTapped), accessibilityLabel: "Clear")
+            let add = button("+", action: #selector(addTapped), accessibilityLabel: "Add")
+            let subtract = button("−", action: #selector(subtractTapped), accessibilityLabel: "Subtract")
+            let multiply = button("×", action: #selector(multiplyTapped), accessibilityLabel: "Multiply")
+            let divide = button("÷", action: #selector(divideTapped), accessibilityLabel: "Divide")
+            let equals = button("=", action: #selector(equalsTapped), accessibilityLabel: "Equals")
+            let done = button("Done", action: #selector(doneTapped), accessibilityLabel: "Done", emphasized: true)
+            equalsButton = equals
+
+            let stack = UIStackView(arrangedSubviews: [clear, add, subtract, multiply, divide, equals, done])
+            stack.axis = .horizontal
+            stack.alignment = .fill
+            stack.distribution = .fillEqually
+            stack.spacing = 5
+            stack.translatesAutoresizingMaskIntoConstraints = false
+            accessory.contentView.addSubview(stack)
+            NSLayoutConstraint.activate([
+                stack.leadingAnchor.constraint(equalTo: accessory.contentView.leadingAnchor, constant: 8),
+                stack.trailingAnchor.constraint(equalTo: accessory.contentView.trailingAnchor, constant: -8),
+                stack.topAnchor.constraint(equalTo: accessory.contentView.topAnchor, constant: 6),
+                stack.bottomAnchor.constraint(equalTo: accessory.contentView.bottomAnchor, constant: -6)
+            ])
+            return accessory
         }
 
         @objc func doneTapped() {
@@ -1185,10 +1205,10 @@ struct EndEditingDecimalTextField: UIViewRepresentable {
                   let result = ServingAmountExpression.evaluate(expression),
                   result > 0
             else {
-                equalsItem?.title = "="
+                equalsButton?.setTitle("=", for: .normal)
                 return
             }
-            equalsItem?.title = "= \(ServingUnitEditor.formatQuantity(result))"
+            equalsButton?.setTitle("= \(ServingUnitEditor.formatQuantity(result))", for: .normal)
         }
 
         private func append(operation: Character) {
@@ -1209,10 +1229,23 @@ struct EndEditingDecimalTextField: UIViewRepresentable {
             }
         }
 
-        private func item(_ title: String, action: Selector) -> UIBarButtonItem {
-            let item = UIBarButtonItem(title: title, style: .plain, target: self, action: action)
-            item.tintColor = Self.calorieTint
-            return item
+        private func button(
+            _ title: String,
+            action: Selector,
+            accessibilityLabel: String,
+            emphasized: Bool = false
+        ) -> UIButton {
+            let button = UIButton(type: .system)
+            button.setTitle(title, for: .normal)
+            button.setTitleColor(emphasized ? .white : Self.calorieTint, for: .normal)
+            button.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
+            button.titleLabel?.adjustsFontSizeToFitWidth = true
+            button.titleLabel?.minimumScaleFactor = 0.72
+            button.backgroundColor = emphasized ? Self.calorieTint : .secondarySystemFill
+            button.layer.cornerRadius = 10
+            button.accessibilityLabel = accessibilityLabel
+            button.addTarget(self, action: action, for: .touchUpInside)
+            return button
         }
 
         private func flexibleSpace() -> UIBarButtonItem {
