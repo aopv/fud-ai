@@ -5,6 +5,7 @@ import SwiftUI
 /// the theme gradient synced from the phone (Fud Pink by default).
 struct WatchNutritionView: View {
     @EnvironmentObject private var receiver: WatchSnapshotReceiver
+    @State private var showsWaterLogger = false
 
     private var themeGradient: [Color] {
         [
@@ -38,14 +39,23 @@ struct WatchNutritionView: View {
             }
 
             if showsWater {
-                WatchWaterProgress(snapshot: receiver.snapshot, gradient: themeGradient)
-                    .padding(.top, 2)
+                Button {
+                    showsWaterLogger = true
+                } label: {
+                    WatchWaterProgress(snapshot: receiver.snapshot, gradient: themeGradient)
+                }
+                .buttonStyle(.plain)
+                .padding(.top, 2)
             }
         }
         .padding(.horizontal, 4)
         .frame(maxHeight: .infinity, alignment: .top)
         .onAppear {
             receiver.refreshFromDisk()
+        }
+        .sheet(isPresented: $showsWaterLogger) {
+            WatchWaterLogView(gradient: themeGradient)
+                .environmentObject(receiver)
         }
     }
 }
@@ -92,6 +102,12 @@ private struct WatchWaterProgress: View {
                 )
                 .lineLimit(1)
                 .minimumScaleFactor(0.65)
+
+            Image(systemName: "plus.circle.fill")
+                .font(.system(size: 12, weight: .bold))
+                .foregroundStyle(
+                    LinearGradient(colors: gradient, startPoint: .topLeading, endPoint: .bottomTrailing)
+                )
         }
         .padding(.horizontal, 7)
         .frame(height: 28)
@@ -104,8 +120,81 @@ private struct WatchWaterProgress: View {
                 .stroke((gradient.first ?? .pink).opacity(0.14), lineWidth: 0.5)
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Water")
+        .accessibilityLabel("Add water")
         .accessibilityValue(valueText)
+        .accessibilityHint("Opens quick water amounts")
+    }
+}
+
+private struct WatchWaterLogView: View {
+    private struct Preset: Identifiable {
+        let milliliters: Int
+        let label: String
+        var id: Int { milliliters }
+    }
+
+    @EnvironmentObject private var receiver: WatchSnapshotReceiver
+    @Environment(\.dismiss) private var dismiss
+    let gradient: [Color]
+
+    private let presets = [
+        Preset(milliliters: 250, label: "1 glass"),
+        Preset(milliliters: 500, label: "2 glasses"),
+        Preset(milliliters: 750, label: "3 glasses"),
+    ]
+
+    var body: some View {
+        ScrollView {
+            VStack(spacing: 8) {
+                Text("Add water")
+                    .font(.system(.headline, design: .rounded, weight: .bold))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                ForEach(presets) { preset in
+                    Button {
+                        receiver.logWater(milliliters: preset.milliliters)
+                        dismiss()
+                    } label: {
+                        HStack(spacing: 9) {
+                            Image(systemName: "drop.fill")
+                                .font(.system(size: 13, weight: .bold))
+                                .foregroundStyle(
+                                    LinearGradient(colors: gradient, startPoint: .top, endPoint: .bottom)
+                                )
+
+                            VStack(alignment: .leading, spacing: 1) {
+                                Text(preset.label)
+                                    .font(.system(.subheadline, design: .rounded, weight: .semibold))
+                                Text("~\(receiver.snapshot.waterDisplayValue(preset.milliliters)) \(receiver.snapshot.waterUnitSymbol)")
+                                    .font(.system(.caption2, design: .rounded, weight: .medium))
+                                    .foregroundStyle(.secondary)
+                            }
+
+                            Spacer(minLength: 2)
+
+                            Image(systemName: "plus")
+                                .font(.system(size: 12, weight: .bold))
+                                .foregroundStyle(gradient.first ?? .pink)
+                        }
+                        .padding(.horizontal, 10)
+                        .frame(minHeight: 42)
+                        .background(
+                            RoundedRectangle(cornerRadius: 13, style: .continuous)
+                                .fill((gradient.first ?? .pink).opacity(0.1))
+                        )
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 13, style: .continuous)
+                                .stroke((gradient.first ?? .pink).opacity(0.16), lineWidth: 0.5)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("Add \(preset.label) of water")
+                    .accessibilityValue("\(receiver.snapshot.waterDisplayValue(preset.milliliters)) \(receiver.snapshot.waterUnitSymbol)")
+                }
+            }
+            .padding(.horizontal, 5)
+            .padding(.bottom, 4)
+        }
     }
 }
 

@@ -9,9 +9,26 @@ final class WatchSnapshotSync: NSObject, WCSessionDelegate {
 
     private var pendingSnapshot: WidgetSnapshot?
     private var lastQueuedContent: QueuedSnapshotContent?
+    private var waterLogHandler: ((WatchWaterLogRequest) -> WatchWaterLogResult)?
+    private var pendingWaterLogs: [WatchWaterLogRequest] = []
 
     private override init() {
         super.init()
+    }
+
+    func activate() {
+        _ = activatedSession()
+    }
+
+    func configureWaterLogging(
+        handler: @escaping (WatchWaterLogRequest) -> WatchWaterLogResult
+    ) {
+        waterLogHandler = handler
+        let pending = pendingWaterLogs
+        pendingWaterLogs.removeAll()
+        for request in pending {
+            _ = handler(request)
+        }
     }
 
     func send(_ snapshot: WidgetSnapshot) {
@@ -86,6 +103,42 @@ final class WatchSnapshotSync: NSObject, WCSessionDelegate {
         session.activate()
     }
 
+    func session(
+        _ session: WCSession,
+        didReceiveMessage message: [String: Any],
+        replyHandler: @escaping ([String: Any]) -> Void
+    ) {
+        receiveWaterLog(message, replyHandler: replyHandler)
+    }
+
+    func session(_ session: WCSession, didReceiveUserInfo userInfo: [String: Any] = [:]) {
+        receiveWaterLog(userInfo, replyHandler: nil)
+    }
+
+    private func receiveWaterLog(
+        _ payload: [String: Any],
+        replyHandler: (([String: Any]) -> Void)?
+    ) {
+        guard let request = WatchWaterLogRequest(payload: payload) else {
+            replyHandler?([WatchWaterLogRequest.resultKey: WatchWaterLogResult.invalid.rawValue])
+            return
+        }
+
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            let result: WatchWaterLogResult
+            if let waterLogHandler {
+                result = waterLogHandler(request)
+            } else {
+                if !pendingWaterLogs.contains(where: { $0.id == request.id }) {
+                    pendingWaterLogs.append(request)
+                }
+                result = .queued
+            }
+            replyHandler?([WatchWaterLogRequest.resultKey: result.rawValue])
+        }
+    }
+
     private struct QueuedSnapshotContent: Equatable {
         let dayStart: Date
         let calories: Int
@@ -97,6 +150,10 @@ final class WatchSnapshotSync: NSObject, WCSessionDelegate {
         let fat: Double
         let fatGoal: Int
         let homeNutrients: [WidgetNutrientValue]?
+        let waterTrackingEnabled: Bool?
+        let waterCurrentMl: Int?
+        let waterGoalMl: Int?
+        let waterUnitRaw: String?
         let themeStartHex: UInt?
         let themeEndHex: UInt?
 
@@ -111,6 +168,10 @@ final class WatchSnapshotSync: NSObject, WCSessionDelegate {
             fat = snapshot.fat
             fatGoal = snapshot.fatGoal
             homeNutrients = snapshot.homeNutrients
+            waterTrackingEnabled = snapshot.waterTrackingEnabled
+            waterCurrentMl = snapshot.waterCurrentMl
+            waterGoalMl = snapshot.waterGoalMl
+            waterUnitRaw = snapshot.waterUnitRaw
             themeStartHex = snapshot.themeStartHex
             themeEndHex = snapshot.themeEndHex
         }

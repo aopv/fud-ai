@@ -11,6 +11,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
     ) -> Bool {
         UNUserNotificationCenter.current().delegate = self
         QuickActionSettings.registerApplicationShortcuts()
+        WatchSnapshotSync.shared.activate()
         return true
     }
 

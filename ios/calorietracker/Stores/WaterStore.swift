@@ -58,17 +58,27 @@ struct WaterEntry: Codable, Identifiable, Equatable {
 final class WaterStore {
     private(set) var entries: [WaterEntry] = []
     var onEntriesChanged: (() -> Void)?
+    private let defaults: UserDefaults
 
-    init() {
-        guard let data = UserDefaults.standard.data(forKey: WaterSettings.entriesKey),
+    init(defaults: UserDefaults = .standard) {
+        self.defaults = defaults
+        guard let data = defaults.data(forKey: WaterSettings.entriesKey),
               let decoded = try? JSONDecoder().decode([WaterEntry].self, from: data) else { return }
         entries = decoded
     }
 
     @discardableResult
     func add(milliliters: Int, on date: Date) -> WaterEntry? {
+        add(id: UUID(), milliliters: milliliters, on: date)
+    }
+
+    /// The Watch request UUID becomes the entry UUID so a retried connectivity
+    /// transfer can never add the same glass twice.
+    @discardableResult
+    func add(id: UUID, milliliters: Int, on date: Date) -> WaterEntry? {
         guard milliliters > 0 else { return nil }
-        let entry = WaterEntry(date: date, milliliters: milliliters)
+        if let existing = entries.first(where: { $0.id == id }) { return existing }
+        let entry = WaterEntry(id: id, date: date, milliliters: milliliters)
         entries.append(entry)
         save()
         onEntriesChanged?()
@@ -83,7 +93,7 @@ final class WaterStore {
 
     func clear() {
         entries = []
-        UserDefaults.standard.removeObject(forKey: WaterSettings.entriesKey)
+        defaults.removeObject(forKey: WaterSettings.entriesKey)
         onEntriesChanged?()
     }
 
@@ -95,6 +105,6 @@ final class WaterStore {
 
     private func save() {
         guard let data = try? JSONEncoder().encode(entries) else { return }
-        UserDefaults.standard.set(data, forKey: WaterSettings.entriesKey)
+        defaults.set(data, forKey: WaterSettings.entriesKey)
     }
 }

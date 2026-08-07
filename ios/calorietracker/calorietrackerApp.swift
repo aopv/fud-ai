@@ -341,6 +341,20 @@ struct calorietrackerApp: App {
             guard let profile = UserProfile.load() else { return }
             WidgetSnapshotWriter.publish(foods: foodStore.entries, profile: profile)
         }
+        WatchSnapshotSync.shared.configureWaterLogging { [waterStore] request in
+            guard UserDefaults.standard.bool(forKey: WaterSettings.enabledKey) else {
+                return .disabled
+            }
+            let duplicate = waterStore.entries.contains(where: { $0.id == request.id })
+            guard waterStore.add(
+                id: request.id,
+                milliliters: request.milliliters,
+                on: request.date
+            ) != nil else {
+                return .invalid
+            }
+            return duplicate ? .duplicate : .added
+        }
         // Install workout callbacks even when Health sync is currently off.
         // Writes honor the toggle, while deletion can still clean up a sample
         // exported before the user disabled Health sync.
