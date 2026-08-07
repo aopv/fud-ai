@@ -19,6 +19,8 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.apoorvdarshan.calorietracker.MainActivity
 import com.apoorvdarshan.calorietracker.R
+import com.apoorvdarshan.calorietracker.models.FastingSession
+import com.apoorvdarshan.calorietracker.models.formatFastingDuration
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -99,6 +101,61 @@ class NotificationService(private val context: Context) {
             context,
             Manifest.permission.POST_NOTIFICATIONS
         ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    fun ensureFastingChannel() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
+        val mgr = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        mgr.createNotificationChannel(
+            NotificationChannel(
+                CHANNEL_FASTING,
+                context.getString(R.string.notif_channel_fasting),
+                NotificationManager.IMPORTANCE_DEFAULT
+            ).apply { description = context.getString(R.string.notif_channel_fasting_desc) }
+        )
+    }
+
+    fun removeFastingChannel() {
+        cancelFastingGoal()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val mgr = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            mgr.deleteNotificationChannel(CHANNEL_FASTING)
+        }
+    }
+
+    fun scheduleFastingGoal(session: FastingSession?) {
+        cancelFastingGoal()
+        if (session == null || !session.isActive) return
+        val triggerAt = session.goalAt.toEpochMilli()
+        if (triggerAt <= System.currentTimeMillis()) return
+        ensureFastingChannel()
+
+        val intent = Intent(context, FastingGoalReceiver::class.java).apply {
+            putExtra(EXTRA_FASTING_GOAL_MINUTES, session.goalMinutes)
+        }
+        val pending = PendingIntent.getBroadcast(
+            context,
+            REQUEST_FASTING,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        val alarm = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarm.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt, pending)
+    }
+
+    fun cancelFastingGoal() {
+        val intent = Intent(context, FastingGoalReceiver::class.java)
+        val pending = PendingIntent.getBroadcast(
+            context,
+            REQUEST_FASTING,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_NO_CREATE
+        )
+        if (pending != null) {
+            val alarm = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            alarm.cancel(pending)
+            pending.cancel()
+        }
     }
 
     fun showGoalReached() {
@@ -230,10 +287,12 @@ class NotificationService(private val context: Context) {
         const val CHANNEL_BODY_FAT_LOG = "body_fat_log_reminder"
         const val CHANNEL_APP_UPDATE = "app_update"
         const val CHANNEL_WATER = "water_reminder"
+        const val CHANNEL_FASTING = "fasting_goal"
         const val EXTRA_CHANNEL = "channel"
         const val EXTRA_TITLE = "title"
         const val EXTRA_TEXT = "text"
         const val EXTRA_REQUEST = "request"
+        const val EXTRA_FASTING_GOAL_MINUTES = "fasting_goal_minutes"
         private const val GOAL_NOTIFICATION_ID = 4242
         private const val APP_UPDATE_NOTIFICATION_ID = 5555
         private const val REQUEST_STREAK = 1001
@@ -242,6 +301,38 @@ class NotificationService(private val context: Context) {
         private const val REQUEST_BODY_FAT = 1004
         private const val REQUEST_APP_UPDATE = 1005
         private const val REQUEST_WATER = 1006
+        private const val REQUEST_FASTING = 1007
+    }
+}
+
+/** One-shot fasting-goal alert. The session itself stays active until the user ends it. */
+class FastingGoalReceiver : BroadcastReceiver() {
+    override fun onReceive(context: Context, intent: Intent) {
+        val goalMinutes = intent.getIntExtra(
+            NotificationService.EXTRA_FASTING_GOAL_MINUTES,
+            16 * 60
+        )
+        val open = PendingIntent.getActivity(
+            context,
+            0,
+            Intent(context, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            },
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        val text = context.getString(
+            R.string.notif_fasting_goal_text,
+            formatFastingDuration(goalMinutes.toLong() * 60)
+        )
+        val notification = NotificationCompat.Builder(context, NotificationService.CHANNEL_FASTING)
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setContentTitle(context.getString(R.string.notif_fasting_goal_title))
+            .setContentText(text)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(text))
+            .setContentIntent(open)
+            .setAutoCancel(true)
+            .build()
+        NotificationManagerCompat.from(context).notifySafely(context, 1007, notification)
     }
 }
 

@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.apoorvdarshan.calorietracker.AppContainer
 import com.apoorvdarshan.calorietracker.R
 import com.apoorvdarshan.calorietracker.models.FoodEntry
+import com.apoorvdarshan.calorietracker.models.FastingSession
 import com.apoorvdarshan.calorietracker.models.FoodSource
 import com.apoorvdarshan.calorietracker.models.HomeTopNutrient
 import com.apoorvdarshan.calorietracker.models.MealType
@@ -55,6 +56,9 @@ data class HomeUiState(
     val waterDailyGoalMl: Int = 2_000,
     val waterUnit: WaterUnit = WaterUnit.Default,
     val waterTodayMl: Int = 0,
+    val fastingTrackingEnabled: Boolean = false,
+    val fastingDefaultGoalMinutes: Int = 16 * 60,
+    val fastingSessions: List<FastingSession> = emptyList(),
     val pendingAnalysis: FoodAnalysis? = null,
     val pendingImageBytes: ByteArray? = null,
     val pendingAdditionalImageBytes: List<ByteArray> = emptyList(),
@@ -79,6 +83,7 @@ data class HomeUiState(
         get() = listOfNotNull(pendingImageBytes) + pendingAdditionalImageBytes
     val pendingDraftImageFilenames: List<String>
         get() = listOfNotNull(pendingDraftImageFilename) + pendingDraftAdditionalImageFilenames
+    val activeFast: FastingSession? get() = fastingSessions.lastOrNull { it.isActive }
     fun isFavorite(entry: FoodEntry): Boolean = entry.favoriteKey in favoriteKeys
 }
 
@@ -147,6 +152,18 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
             .onEach { unit -> _ui.value = _ui.value.copy(waterUnit = unit) }
             .launchIn(viewModelScope)
 
+        container.prefs.fastingTrackingEnabled
+            .onEach { enabled -> _ui.value = _ui.value.copy(fastingTrackingEnabled = enabled) }
+            .launchIn(viewModelScope)
+
+        container.prefs.fastingDefaultGoalMinutes
+            .onEach { goal -> _ui.value = _ui.value.copy(fastingDefaultGoalMinutes = goal) }
+            .launchIn(viewModelScope)
+
+        container.fastingRepository.sessions
+            .onEach { sessions -> _ui.value = _ui.value.copy(fastingSessions = sessions) }
+            .launchIn(viewModelScope)
+
         combine(container.waterRepository.entries, _selectedDate) { entries, day ->
             val zone = ZoneId.systemDefault()
             entries
@@ -171,6 +188,53 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
             container.waterRepository.add(
                 WaterEntry(date = timestampForSelectedDay(), milliliters = milliliters)
             )
+        }
+    }
+
+    fun startFast(goalMinutes: Int) {
+        viewModelScope.launch {
+            container.fastingRepository.start(goalMinutes)
+            syncFastingNotification()
+        }
+    }
+
+    fun endFast() {
+        viewModelScope.launch {
+            container.fastingRepository.endActive()
+            container.notifications.cancelFastingGoal()
+        }
+    }
+
+    fun cancelFast() {
+        viewModelScope.launch {
+            container.fastingRepository.cancelActive()
+            container.notifications.cancelFastingGoal()
+        }
+    }
+
+    fun updateFast(session: FastingSession) {
+        viewModelScope.launch {
+            container.fastingRepository.update(session)
+            syncFastingNotification()
+        }
+    }
+
+    fun deleteFast(id: UUID) {
+        viewModelScope.launch {
+            container.fastingRepository.delete(id)
+            syncFastingNotification()
+        }
+    }
+
+    private suspend fun syncFastingNotification() {
+        val shouldNotify = container.prefs.notificationsEnabled.first() &&
+            container.prefs.fastingTrackingEnabled.first() &&
+            container.prefs.fastingGoalNotificationEnabled.first() &&
+            container.notifications.canPostNotifications()
+        if (shouldNotify) {
+            container.notifications.scheduleFastingGoal(container.fastingRepository.active())
+        } else {
+            container.notifications.cancelFastingGoal()
         }
     }
 

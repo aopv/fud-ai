@@ -83,6 +83,7 @@ import androidx.compose.material.icons.outlined.Calculate
 import androidx.compose.material.icons.outlined.Percent
 import androidx.compose.material.icons.outlined.SystemUpdate
 import androidx.compose.material.icons.outlined.TrackChanges
+import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material.icons.outlined.BatteryAlert
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Refresh
@@ -201,7 +202,7 @@ private enum class SettingsSheet {
     FALLBACK_PROVIDER, FALLBACK_MODEL, FALLBACK_KEY, FALLBACK_BASE_URL,
     GENDER, BIRTHDAY, HEIGHT, WEIGHT, BODY_FAT, GOAL_BODY_FAT, ACTIVITY, GOAL, GOAL_WEIGHT, GOAL_SPEED,
     CALORIES, PROTEIN, CARBS, FAT, OPTIONAL_NUTRIENTS,
-    APPEARANCE, WEEK_START, MEAL_TIMES, WATER_GOAL, WATER_UNIT, WORKOUT_SPLIT, WORKOUT_RPE
+    APPEARANCE, WEEK_START, MEAL_TIMES, WATER_GOAL, WATER_UNIT, FASTING_GOAL, WORKOUT_SPLIT, WORKOUT_RPE
 }
 
 private enum class HealthConnectPermissionAction {
@@ -665,6 +666,21 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                         },
                         icon = Icons.Outlined.Straighten
                     ) { sheet = SettingsSheet.WATER_UNIT }
+                }
+                HorizontalDivider()
+                ToggleRow(
+                    stringResource(R.string.settings_fasting_tracking),
+                    ui.fastingTrackingEnabled,
+                    icon = Icons.Outlined.Timer,
+                    onChange = vm::setFastingTrackingEnabled
+                )
+                if (ui.fastingTrackingEnabled) {
+                    HorizontalDivider()
+                    SettingRow(
+                        stringResource(R.string.settings_fasting_goal),
+                        stringResource(R.string.settings_fasting_goal_value, ui.fastingDefaultGoalMinutes / 60),
+                        icon = Icons.Outlined.TrackChanges
+                    ) { sheet = SettingsSheet.FASTING_GOAL }
                 }
                 HorizontalDivider()
                 SettingRow(
@@ -1255,6 +1271,15 @@ private fun NotificationTypeRows(
             onChange = vm::setWaterReminderEnabled
         )
     }
+    if (ui.fastingTrackingEnabled) {
+        HorizontalDivider()
+        ToggleRow(
+            stringResource(R.string.settings_notif_fasting_goal),
+            ui.fastingGoalNotificationEnabled,
+            icon = Icons.Outlined.Timer,
+            onChange = vm::setFastingGoalNotificationEnabled
+        )
+    }
     HorizontalDivider()
     ToggleRow(
         stringResource(R.string.settings_notif_goal_alerts),
@@ -1274,6 +1299,7 @@ private fun NotificationTypeRows(
         !ui.weightReminderEnabled &&
         !ui.bodyFatReminderEnabled &&
         (!ui.waterTrackingEnabled || !ui.waterReminderEnabled) &&
+        (!ui.fastingTrackingEnabled || !ui.fastingGoalNotificationEnabled) &&
         !ui.goalReachedNotificationsEnabled &&
         !ui.appUpdateNotificationsEnabled
     if (noneSelected) {
@@ -2081,6 +2107,13 @@ private fun SettingsSheets(
                     selected = { it == ui.waterUnit },
                     onSelect = { vm.setWaterUnit(it); onDismiss() }
                 )
+                SettingsSheet.FASTING_GOAL -> FastingGoalSheet(
+                    currentMinutes = ui.fastingDefaultGoalMinutes,
+                    onSave = {
+                        vm.setFastingDefaultGoalMinutes(it)
+                        onDismiss()
+                    }
+                )
                 SettingsSheet.CALORIES -> NutritionPickerSheet(
                     label = stringResource(R.string.macro_calories), unit = stringResource(R.string.unit_kcal),
                     currentValue = ui.profile?.effectiveCalories ?: 2000,
@@ -2598,6 +2631,28 @@ private fun WaterGoalSheet(current: Int, unit: WaterUnit, onSave: (Int) -> Unit)
     )
     Spacer(Modifier.height(16.dp))
     GradientSaveButton { onSave(unit.toMilliliters(goal.toDouble())) }
+    Spacer(Modifier.height(8.dp))
+}
+
+@Composable
+private fun FastingGoalSheet(currentMinutes: Int, onSave: (Int) -> Unit) {
+    var hours by remember(currentMinutes) { mutableIntStateOf((currentMinutes / 60).coerceIn(1, 168)) }
+    Text(
+        stringResource(R.string.settings_fasting_goal),
+        style = MaterialTheme.typography.titleLarge,
+        fontWeight = FontWeight.Bold
+    )
+    Spacer(Modifier.height(20.dp))
+    NumericWheelPicker(
+        value = hours,
+        onValueChange = { hours = it },
+        min = 1,
+        max = 168,
+        unit = stringResource(R.string.fasting_hours),
+        step = 1
+    )
+    Spacer(Modifier.height(16.dp))
+    GradientSaveButton { onSave(hours * 60) }
     Spacer(Modifier.height(8.dp))
 }
 

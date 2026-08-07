@@ -111,6 +111,7 @@ class CoachViewModel(private val container: AppContainer) : ViewModel() {
                 val bodyFats = container.bodyFatRepository.entries.first()
                 val measurements = container.bodyMeasurementRepository.entries.first()
                 val foods = container.foodRepository.entries.first()
+                val fastingSessions = container.fastingRepository.sessions.first()
                 val heightMetric = container.prefs.heightUnit.first() == "cm"
                 val weightMetric = container.prefs.weightUnit.first() == "kg"
                 val workoutState = container.workoutRepository.snapshot()
@@ -123,6 +124,7 @@ class CoachViewModel(private val container: AppContainer) : ViewModel() {
                     bodyFats = bodyFats,
                     measurements = measurements,
                     foods = foods,
+                    fastingSessions = fastingSessions,
                     heightMetric = heightMetric,
                     weightMetric = weightMetric,
                     imageBytes = imageBytes,

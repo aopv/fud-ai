@@ -12,6 +12,7 @@ struct ChatView: View {
     @Environment(BodyFatStore.self) private var bodyFatStore
     @Environment(BodyMeasurementStore.self) private var bodyMeasurementStore
     @Environment(FoodStore.self) private var foodStore
+    @Environment(FastingStore.self) private var fastingStore
     @Environment(StrengthWorkoutStore.self) private var strengthWorkoutStore
     @AppStorage("heightUnit") private var heightUnitRaw = "ftin"
     @AppStorage("weightUnit") private var weightUnitRaw = "lbs"
@@ -602,6 +603,7 @@ struct ChatView: View {
                     bodyFats: bodyFatStore.entries,
                     measurements: bodyMeasurementStore.entries,
                     foods: foodStore.entries,
+                    fastingSessions: fastingStore.sessions,
                     heightMetric: heightUnitRaw == "cm",
                     weightMetric: weightUnitRaw == "kg",
                     workoutSessions: strengthWorkoutStore.completedSessions,

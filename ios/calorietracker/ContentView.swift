@@ -543,6 +543,8 @@ struct HomeView: View {
     let onQuickActionHandled: (UUID) -> Void
     @Environment(FoodStore.self) private var foodStore
     @Environment(WaterStore.self) private var waterStore
+    @Environment(FastingStore.self) private var fastingStore
+    @Environment(NotificationManager.self) private var notificationManager
     @Environment(\.scenePhase) private var scenePhase
     @State private var showCamera = false
     @State private var showBarcodeScanner = false
@@ -587,6 +589,8 @@ struct HomeView: View {
     @State private var currentFoodSource: FoodSource = .snapFood
     @State private var showNutritionDetail = false
     @State private var showCustomWaterLog = false
+    @State private var showFastingStart = false
+    @State private var editingFastingSession: FastingSession?
     @State private var hasPresentedFoodDestination = false
     @State private var didPrewarmFoodDestinations = false
     // Bumped each time the app is opened (cold launch = 1, then +1 on every
@@ -601,6 +605,10 @@ struct HomeView: View {
     @AppStorage(WaterSettings.enabledKey) private var waterTrackingEnabled = false
     @AppStorage(WaterSettings.dailyGoalKey) private var waterDailyGoal = WaterSettings.defaultDailyGoalMl
     @AppStorage(WaterSettings.unitKey) private var waterUnitRaw = WaterUnit.defaultUnit.rawValue
+    @AppStorage(FastingSettings.enabledKey) private var fastingTrackingEnabled = false
+    @AppStorage(FastingSettings.defaultGoalMinutesKey) private var fastingDefaultGoalMinutes = FastingSettings.defaultGoalMinutes
+    @AppStorage(FastingSettings.notificationEnabledKey) private var fastingGoalNotificationEnabled = true
+    @AppStorage("notificationsEnabled") private var notificationsEnabled = false
     @Environment(ProfileStore.self) private var profileStore
 
     /// Force a body re-evaluation whenever profileStore.profile changes by reading it
@@ -669,6 +677,25 @@ struct HomeView: View {
     private func logWater(_ milliliters: Int) {
         _ = waterStore.add(milliliters: milliliters, on: logDateForSelectedDay)
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
+    }
+
+    private func refreshFastingGoalNotification() {
+        notificationManager.scheduleFastingGoal(
+            enabled: notificationsEnabled && fastingTrackingEnabled && fastingGoalNotificationEnabled,
+            session: fastingStore.activeSession
+        )
+    }
+
+    private func startFast(goalMinutes: Int) {
+        guard fastingStore.start(goalMinutes: goalMinutes) != nil else { return }
+        refreshFastingGoalNotification()
+        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+    }
+
+    private func endFast() {
+        guard fastingStore.endActive() != nil else { return }
+        notificationManager.cancelFastingGoal()
+        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
     }
 
     /// Lets the native menu finish its selection before presenting the chosen destination.
@@ -808,6 +835,34 @@ struct HomeView: View {
                     .listRowSeparator(.hidden)
                 }
 
+                // Fasting timeline. Stored separately from nutrition so these rows never
+                // affect calories, macros, meal grouping, Health nutrition, or exports.
+                let completedFasts = fastingStore.completed(on: selectedDate)
+                let activeFast = isToday ? fastingStore.activeSession : nil
+                if fastingTrackingEnabled && (activeFast != nil || !completedFasts.isEmpty) {
+                    Section("Fasting") {
+                        if let activeFast {
+                            ActiveFastingRow(session: activeFast)
+                                .listRowBackground(AppColors.appCard)
+                                .contentShape(Rectangle())
+                                .onTapGesture { editingFastingSession = activeFast }
+                        }
+                        ForEach(completedFasts) { session in
+                            CompletedFastingRow(session: session)
+                                .listRowBackground(AppColors.appCard)
+                                .contentShape(Rectangle())
+                                .onTapGesture { editingFastingSession = session }
+                                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                    Button(role: .destructive) {
+                                        fastingStore.delete(id: session.id)
+                                    } label: {
+                                        Label("Delete", systemImage: "trash.fill")
+                                    }
+                                }
+                        }
+                    }
+                }
+
                 // Food list
                 let mealGroups = foodStore.entriesByMeal(for: selectedDate, order: foodLogSortOrder)
                 if mealGroups.isEmpty {
@@ -898,6 +953,33 @@ struct HomeView: View {
             .navigationBarTitleDisplayMode(.inline)
             .overlay(alignment: .bottomTrailing) {
                 Menu {
+                    if fastingTrackingEnabled {
+                        if fastingStore.activeSession != nil {
+                            Menu {
+                                Button {
+                                    endFast()
+                                } label: {
+                                    Label("End Fast", systemImage: "stop.fill")
+                                }
+                                Button(role: .destructive) {
+                                    fastingStore.cancelActive()
+                                    notificationManager.cancelFastingGoal()
+                                } label: {
+                                    Label("Cancel Fast", systemImage: "trash")
+                                }
+                            } label: {
+                                Label("Fasting", systemImage: "timer")
+                            }
+                        } else {
+                            Button {
+                                presentFoodDestination {
+                                    showFastingStart = true
+                                }
+                            } label: {
+                                Label("Start Fast", systemImage: "timer")
+                            }
+                        }
+                    }
                     if waterTrackingEnabled {
                         Menu {
                             waterQuickMenuItems
@@ -1289,6 +1371,28 @@ struct HomeView: View {
             })
             .sheet(isPresented: $showCopyFromDaySheet) {
                 CopyFromDaySheet(targetDate: selectedDate)
+            }
+            .sheet(isPresented: $showFastingStart) {
+                FastingStartSheet(defaultGoalMinutes: fastingDefaultGoalMinutes) { goalMinutes in
+                    startFast(goalMinutes: goalMinutes)
+                }
+            }
+            .sheet(item: $editingFastingSession) { session in
+                FastingSessionEditorView(
+                    session: session,
+                    onSave: { updated in
+                        fastingStore.update(updated)
+                        refreshFastingGoalNotification()
+                    },
+                    onEndNow: { updated in
+                        fastingStore.update(updated)
+                        endFast()
+                    },
+                    onDelete: { removed in
+                        fastingStore.delete(id: removed.id)
+                        notificationManager.cancelFastingGoal()
+                    }
+                )
             }
             .sheet(isPresented: $showSiriPhrases) {
                 NavigationStack {
@@ -3221,6 +3325,7 @@ struct ProfileView: View {
     @Environment(WeightStore.self) private var weightStore
     @Environment(FoodStore.self) private var foodStore
     @Environment(WaterStore.self) private var waterStore
+    @Environment(FastingStore.self) private var fastingStore
     @Environment(StrengthWorkoutStore.self) private var strengthWorkoutStore
     @Environment(BodyMeasurementStore.self) private var bodyMeasurementStore
     @Environment(NotificationManager.self) private var notificationManager
@@ -3245,6 +3350,8 @@ struct ProfileView: View {
     @AppStorage(WaterSettings.enabledKey) private var waterTrackingEnabled = false
     @AppStorage(WaterSettings.dailyGoalKey) private var waterDailyGoal = WaterSettings.defaultDailyGoalMl
     @AppStorage(WaterSettings.unitKey) private var waterUnitRaw = WaterUnit.defaultUnit.rawValue
+    @AppStorage(FastingSettings.enabledKey) private var fastingTrackingEnabled = false
+    @AppStorage(FastingSettings.defaultGoalMinutesKey) private var fastingDefaultGoalMinutes = FastingSettings.defaultGoalMinutes
 
     private var waterUnit: WaterUnit { WaterUnit(rawValue: waterUnitRaw) ?? .defaultUnit }
 
@@ -3270,6 +3377,7 @@ struct ProfileView: View {
     @State private var showClearFoodLogConfirmation = false
     @State private var showCalculationMethods = false
     @State private var showWaterGoalPicker = false
+    @State private var showFastingGoalPicker = false
     @State private var showAutoMacroEditAlert = false
     @State private var showMaxPinnedAlert = false
     @State private var showInvalidGoalWeightAlert = false
@@ -3821,6 +3929,48 @@ struct ProfileView: View {
                         .onChange(of: waterUnitRaw) { _, _ in
                             WidgetSnapshotWriter.publish(foods: foodStore.entries, profile: profile)
                         }
+                    }
+
+                    HStack {
+                        Label {
+                            Text("Fasting Tracking")
+                        } icon: {
+                            Image(systemName: "timer")
+                                .foregroundStyle(AppColors.calorie)
+                        }
+                        Spacer()
+                        Toggle("Fasting Tracking", isOn: $fastingTrackingEnabled)
+                            .labelsHidden()
+                            .tint(AppColors.calorie)
+                            .onChange(of: fastingTrackingEnabled) { _, isEnabled in
+                                if !isEnabled {
+                                    fastingStore.cancelActive()
+                                    notificationManager.cancelFastingGoal()
+                                }
+                            }
+                    }
+
+                    if fastingTrackingEnabled {
+                        Button {
+                            showFastingGoalPicker = true
+                        } label: {
+                            HStack {
+                                Label {
+                                    Text("Default Fasting Goal")
+                                } icon: {
+                                    Image(systemName: "target")
+                                        .foregroundStyle(AppColors.calorie)
+                                }
+                                .foregroundStyle(.primary)
+                                Spacer()
+                                Text(FastingDurationFormatter.goal(minutes: fastingDefaultGoalMinutes))
+                                    .foregroundStyle(.secondary)
+                                Image(systemName: "chevron.right")
+                                    .font(.caption)
+                                    .foregroundStyle(.tertiary)
+                            }
+                        }
+                        .buttonStyle(.plain)
                     }
 
                 }
@@ -4598,6 +4748,11 @@ struct ProfileView: View {
                     WidgetSnapshotWriter.publish(foods: foodStore.entries, profile: profile)
                 }
             }
+            .sheet(isPresented: $showFastingGoalPicker) {
+                FastingGoalPickerSheet(currentGoalMinutes: fastingDefaultGoalMinutes) {
+                    fastingDefaultGoalMinutes = $0
+                }
+            }
             .onAppear {
                 // Existing users (and anyone who has never recalculated) start with no baseline.
                 // Seed it to the current inputs so the "recalculate suggested" nudge only appears
@@ -4631,6 +4786,7 @@ struct ProfileView: View {
                     foodStore.replaceAllEntries([])
                     weightStore.replaceAllEntries([])
                     waterStore.clear()
+                    fastingStore.clear()
                     strengthWorkoutStore.clearAll()
                     // Wipe the food-image folder defensively — replaceAllEntries
                     // already cleans per-entry files, but a belt-and-braces

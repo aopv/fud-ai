@@ -1097,6 +1097,7 @@ struct NutritionPickerSheet: View {
 
 struct NotificationSettingsView: View {
     @Environment(NotificationManager.self) private var notificationManager
+    @Environment(FastingStore.self) private var fastingStore
     @AppStorage("notificationsEnabled") private var notificationsEnabled = false
 
     @AppStorage("breakfastReminderEnabled") private var breakfastEnabled = true
@@ -1132,6 +1133,8 @@ struct NotificationSettingsView: View {
     @AppStorage(WaterSettings.reminderEnabledKey) private var waterReminderEnabled = false
     @AppStorage(WaterSettings.reminderHourKey) private var waterReminderHour = 14
     @AppStorage(WaterSettings.reminderMinuteKey) private var waterReminderMinute = 0
+    @AppStorage(FastingSettings.enabledKey) private var fastingTrackingEnabled = false
+    @AppStorage(FastingSettings.notificationEnabledKey) private var fastingGoalNotificationEnabled = true
 
     var body: some View {
         List {
@@ -1155,6 +1158,7 @@ struct NotificationSettingsView: View {
                             } else {
                                 applyMealReminders()
                                 applyWaterReminder()
+                                applyFastingGoalNotification()
                             }
                         }
                     } else {
@@ -1226,6 +1230,29 @@ struct NotificationSettingsView: View {
                         .onChange(of: waterReminderEnabled) { _, _ in applyWaterReminder() }
                         .onChange(of: waterReminderHour) { _, _ in applyWaterReminder() }
                         .onChange(of: waterReminderMinute) { _, _ in applyWaterReminder() }
+                    }
+                    .listRowBackground(AppColors.appCard)
+                }
+
+                if fastingTrackingEnabled {
+                    Section {
+                        Toggle(isOn: $fastingGoalNotificationEnabled) {
+                            Label {
+                                Text("Goal Reached")
+                            } icon: {
+                                Image(systemName: "timer")
+                                    .foregroundStyle(AppColors.calorie)
+                            }
+                        }
+                        .tint(AppColors.calorie)
+                        .onChange(of: fastingGoalNotificationEnabled) { _, _ in
+                            applyFastingGoalNotification()
+                        }
+                    } header: {
+                        Text("Fasting")
+                    } footer: {
+                        Text("Notifies you once when the active fast reaches its goal. The timer continues until you end it.")
+                            .font(.system(.caption, design: .rounded))
                     }
                     .listRowBackground(AppColors.appCard)
                 }
@@ -1313,6 +1340,13 @@ struct NotificationSettingsView: View {
             enabled: notificationsEnabled && waterTrackingEnabled && waterReminderEnabled,
             hour: waterReminderHour,
             minute: waterReminderMinute
+        )
+    }
+
+    private func applyFastingGoalNotification() {
+        notificationManager.scheduleFastingGoal(
+            enabled: notificationsEnabled && fastingTrackingEnabled && fastingGoalNotificationEnabled,
+            session: fastingStore.activeSession
         )
     }
 }

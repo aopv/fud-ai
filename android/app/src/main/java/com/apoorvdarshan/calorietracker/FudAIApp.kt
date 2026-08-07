@@ -5,6 +5,7 @@ import com.apoorvdarshan.calorietracker.data.BodyFatRepository
 import com.apoorvdarshan.calorietracker.data.BodyMeasurementRepository
 import com.apoorvdarshan.calorietracker.data.ChatRepository
 import com.apoorvdarshan.calorietracker.data.FoodRepository
+import com.apoorvdarshan.calorietracker.data.FastingRepository
 import com.apoorvdarshan.calorietracker.data.KeyStore
 import com.apoorvdarshan.calorietracker.data.PreferencesStore
 import com.apoorvdarshan.calorietracker.data.ProfileRepository
@@ -69,6 +70,9 @@ class FudAIApp : Application() {
         // updates — without this, a user who enabled Notifications once would
         // silently stop receiving the reminder after the next reboot.
         appScope.launch {
+            if (container.prefs.fastingTrackingEnabled.first()) {
+                container.notifications.ensureFastingChannel()
+            }
             if (container.prefs.notificationsEnabled.first() &&
                 container.notifications.canPostNotifications()
             ) {
@@ -108,6 +112,13 @@ class FudAIApp : Application() {
                     )
                 } else {
                     container.notifications.cancelWaterReminder()
+                }
+                if (container.prefs.fastingTrackingEnabled.first() &&
+                    container.prefs.fastingGoalNotificationEnabled.first()
+                ) {
+                    container.notifications.scheduleFastingGoal(container.fastingRepository.active())
+                } else {
+                    container.notifications.cancelFastingGoal()
                 }
             }
         }
@@ -173,6 +184,7 @@ class AppContainer(app: FudAIApp) {
     val bodyMeasurementRepository = BodyMeasurementRepository(prefs)
     val chatRepository = ChatRepository(prefs)
     val waterRepository = WaterRepository(prefs)
+    val fastingRepository = FastingRepository(prefs)
     val workoutRepository = WorkoutRepository(prefs, workoutHealthSync)
 
     val foodAnalysis = FoodAnalysisService(prefs, keyStore)

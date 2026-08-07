@@ -13,6 +13,7 @@ import com.apoorvdarshan.calorietracker.models.BodyFatEntry
 import com.apoorvdarshan.calorietracker.models.BodyMeasurement
 import com.apoorvdarshan.calorietracker.models.ChatMessage
 import com.apoorvdarshan.calorietracker.models.FoodEntry
+import com.apoorvdarshan.calorietracker.models.FastingSession
 import com.apoorvdarshan.calorietracker.models.HomeTopNutrient
 import com.apoorvdarshan.calorietracker.models.MealSchedule
 import com.apoorvdarshan.calorietracker.models.OptionalNutrientGoals
@@ -131,6 +132,34 @@ class PreferencesStore(private val context: Context) : WorkoutStateStore {
 
     suspend fun setWaterEntries(entries: List<WaterEntry>) {
         ds.edit { it[Keys.WATER_ENTRIES] = json.encodeToString(ListSerializer(WaterEntry.serializer()), entries) }
+    }
+
+    // -- Fasting tracking -----------------------------------------------
+    val fastingTrackingEnabled: Flow<Boolean> = ds.data.map { it[Keys.FASTING_TRACKING_ENABLED] ?: false }
+    suspend fun setFastingTrackingEnabled(v: Boolean) { ds.edit { it[Keys.FASTING_TRACKING_ENABLED] = v } }
+
+    val fastingDefaultGoalMinutes: Flow<Int> = ds.data.map {
+        (it[Keys.FASTING_DEFAULT_GOAL_MINUTES] ?: 16 * 60).coerceIn(60, 7 * 24 * 60)
+    }
+    suspend fun setFastingDefaultGoalMinutes(v: Int) {
+        ds.edit { it[Keys.FASTING_DEFAULT_GOAL_MINUTES] = v.coerceIn(60, 7 * 24 * 60) }
+    }
+
+    val fastingGoalNotificationEnabled: Flow<Boolean> = ds.data.map {
+        it[Keys.FASTING_GOAL_NOTIFICATION_ENABLED] ?: true
+    }
+    suspend fun setFastingGoalNotificationEnabled(v: Boolean) {
+        ds.edit { it[Keys.FASTING_GOAL_NOTIFICATION_ENABLED] = v }
+    }
+
+    val fastingSessions: Flow<List<FastingSession>> = ds.data.map { prefs ->
+        prefs[Keys.FASTING_SESSIONS]?.let {
+            runCatching { json.decodeFromString(ListSerializer(FastingSession.serializer()), it) }.getOrNull()
+        } ?: emptyList()
+    }
+
+    suspend fun setFastingSessions(sessions: List<FastingSession>) {
+        ds.edit { it[Keys.FASTING_SESSIONS] = json.encodeToString(ListSerializer(FastingSession.serializer()), sessions) }
     }
 
     /// Last app version a "new update" notification was posted for — so it fires at most once per
@@ -676,6 +705,10 @@ class PreferencesStore(private val context: Context) : WorkoutStateStore {
         val WATER_REMINDER_HOUR = intPreferencesKey("waterReminderHour")
         val WATER_REMINDER_MINUTE = intPreferencesKey("waterReminderMinute")
         val WATER_ENTRIES = stringPreferencesKey("waterEntries")
+        val FASTING_TRACKING_ENABLED = booleanPreferencesKey("fastingTrackingEnabled")
+        val FASTING_DEFAULT_GOAL_MINUTES = intPreferencesKey("fastingDefaultGoalMinutes")
+        val FASTING_GOAL_NOTIFICATION_ENABLED = booleanPreferencesKey("fastingGoalNotificationEnabled")
+        val FASTING_SESSIONS = stringPreferencesKey("fastingSessions")
         val LAST_NOTIFIED_UPDATE_VERSION = stringPreferencesKey("lastNotifiedUpdateVersion")
         val HEALTH_CONNECT_ENABLED = booleanPreferencesKey("healthConnectEnabled")
         val HEALTH_TYPES_VERSION = intPreferencesKey("healthTypesVersion")

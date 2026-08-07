@@ -56,6 +56,9 @@ data class SettingsUiState(
     val waterDailyGoalMl: Int = 2_000,
     val waterUnit: WaterUnit = WaterUnit.Default,
     val waterReminderEnabled: Boolean = false,
+    val fastingTrackingEnabled: Boolean = false,
+    val fastingDefaultGoalMinutes: Int = 16 * 60,
+    val fastingGoalNotificationEnabled: Boolean = true,
     val healthConnectEnabled: Boolean = false,
     val workoutHealthWriteGranted: Boolean = false,
     val healthEnergyGoalsEnabled: Boolean = false,
@@ -147,6 +150,9 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
             val waterGoal = container.prefs.waterDailyGoalMl.first()
             val waterUnit = container.prefs.waterUnit.first()
             val waterReminder = container.prefs.waterReminderEnabled.first()
+            val fastingTracking = container.prefs.fastingTrackingEnabled.first()
+            val fastingGoal = container.prefs.fastingDefaultGoalMinutes.first()
+            val fastingNotification = container.prefs.fastingGoalNotificationEnabled.first()
             val workoutPreferences = container.workoutRepository.preferences.first()
             val profile = container.profileRepository.current()
             val storedHealthConnect = container.prefs.healthConnectEnabled.first()
@@ -203,6 +209,9 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
                 waterDailyGoalMl = waterGoal,
                 waterUnit = waterUnit,
                 waterReminderEnabled = waterReminder,
+                fastingTrackingEnabled = fastingTracking,
+                fastingDefaultGoalMinutes = fastingGoal,
+                fastingGoalNotificationEnabled = fastingNotification,
                 healthConnectEnabled = storedHealthConnect,
                 workoutHealthWriteGranted = workoutHealthWriteGranted,
                 healthEnergyGoalsEnabled = energyGoals,
@@ -550,6 +559,34 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
         }
     }
 
+    fun setFastingTrackingEnabled(v: Boolean) {
+        viewModelScope.launch {
+            container.prefs.setFastingTrackingEnabled(v)
+            if (v) {
+                container.notifications.ensureFastingChannel()
+            } else {
+                container.fastingRepository.cancelActive()
+                container.notifications.removeFastingChannel()
+            }
+            _ui.value = _ui.value.copy(fastingTrackingEnabled = v)
+        }
+    }
+
+    fun setFastingDefaultGoalMinutes(v: Int) {
+        viewModelScope.launch {
+            container.prefs.setFastingDefaultGoalMinutes(v)
+            _ui.value = _ui.value.copy(fastingDefaultGoalMinutes = v.coerceIn(60, 7 * 24 * 60))
+        }
+    }
+
+    fun setFastingGoalNotificationEnabled(v: Boolean) {
+        viewModelScope.launch {
+            container.prefs.setFastingGoalNotificationEnabled(v)
+            _ui.value = _ui.value.copy(fastingGoalNotificationEnabled = v)
+            syncNotificationSchedules()
+        }
+    }
+
     private suspend fun syncNotificationSchedules() {
         val enabled = container.prefs.notificationsEnabled.first()
         if (!enabled || !container.notifications.canPostNotifications()) {
@@ -558,6 +595,7 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
             container.notifications.cancelWeightReminder()
             container.notifications.cancelBodyFatReminder()
             container.notifications.cancelWaterReminder()
+            container.notifications.cancelFastingGoal()
             return
         }
 
@@ -599,6 +637,14 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
             )
         } else {
             container.notifications.cancelWaterReminder()
+        }
+
+        if (container.prefs.fastingTrackingEnabled.first() &&
+            container.prefs.fastingGoalNotificationEnabled.first()
+        ) {
+            container.notifications.scheduleFastingGoal(container.fastingRepository.active())
+        } else {
+            container.notifications.cancelFastingGoal()
         }
     }
 

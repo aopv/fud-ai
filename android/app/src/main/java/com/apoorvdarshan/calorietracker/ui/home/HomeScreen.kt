@@ -1,6 +1,8 @@
 package com.apoorvdarshan.calorietracker.ui.home
 
 import android.Manifest
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -77,6 +79,9 @@ import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material.icons.filled.SwapVert
+import androidx.compose.material.icons.filled.Timer
+import androidx.compose.material.icons.filled.Stop
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -90,6 +95,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -134,6 +140,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.apoorvdarshan.calorietracker.R
 import com.apoorvdarshan.calorietracker.AppContainer
 import com.apoorvdarshan.calorietracker.models.FoodEntry
+import com.apoorvdarshan.calorietracker.models.FastingSession
+import com.apoorvdarshan.calorietracker.models.formatFastingDuration
 import com.apoorvdarshan.calorietracker.services.MealShare
 import com.apoorvdarshan.calorietracker.models.FoodSource
 import com.apoorvdarshan.calorietracker.models.MacroValueFormatter
@@ -158,16 +166,19 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZoneOffset
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.WeekFields
 import java.util.Locale
 import kotlin.math.roundToInt
+import kotlinx.coroutines.delay
 
 private enum class AddMenuGroup {
     PhotoAndScan,
     DescribeMeal,
     ReuseMeal,
-    Water
+    Water,
+    Fasting
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -195,6 +206,8 @@ fun HomeScreen(
     var editingEntry by remember { mutableStateOf<FoodEntry?>(null) }
     var showNutritionDetail by remember { mutableStateOf(false) }
     var showCustomWaterLog by remember { mutableStateOf(false) }
+    var showFastingStart by remember { mutableStateOf(false) }
+    var editingFast by remember { mutableStateOf<FastingSession?>(null) }
 
     var showCameraCapture by remember { mutableStateOf(false) }
     var showMultiPhotoCapture by remember { mutableStateOf(false) }
@@ -271,6 +284,8 @@ fun HomeScreen(
         editingEntry = null
         showNutritionDetail = false
         showCustomWaterLog = false
+        showFastingStart = false
+        editingFast = null
         showCameraCapture = false
         showMultiPhotoCapture = false
         vm.setSelectedDate(LocalDate.now())
@@ -302,6 +317,11 @@ fun HomeScreen(
     val isToday = selectedDate == today
     val mealGroups = remember(ui.todayEntries, ui.foodLogSortOrder) {
         foodLogMealGroups(ui.todayEntries, ui.foodLogSortOrder)
+    }
+    val completedFasts = remember(ui.fastingSessions, selectedDate) {
+        ui.fastingSessions.filter { session ->
+            session.endedAt?.atZone(ZoneId.systemDefault())?.toLocalDate() == selectedDate
+        }.sortedByDescending { it.endedAt }
     }
 
     // No topBar: the empty TopAppBar used to act as the status-bar spacer, but the
@@ -388,6 +408,34 @@ fun HomeScreen(
                         Box(modifier = Modifier.clickable { showNutritionDetail = true }) {
                             ViewMoreButton()
                         }
+                    }
+                }
+            }
+
+            // Fasting timeline. It is a separate model and never participates in
+            // FoodEntry totals, macros, meal grouping, Health nutrition, or exports.
+            if (ui.fastingTrackingEnabled && ((isToday && ui.activeFast != null) || completedFasts.isNotEmpty())) {
+                item { SectionHeader(stringResource(R.string.fasting)) }
+                if (isToday) {
+                    ui.activeFast?.let { session ->
+                        item(key = "active-fast-${session.id}") {
+                            SectionCardWrapper(isFirst = true, isLast = completedFasts.isEmpty()) {
+                                ActiveFastingRow(
+                                    session = session,
+                                    onClick = { editingFast = session }
+                                )
+                            }
+                        }
+                    }
+                }
+                items(completedFasts, key = { "fast-${it.id}" }) { session ->
+                    val index = completedFasts.indexOf(session)
+                    val hasActive = isToday && ui.activeFast != null
+                    SectionCardWrapper(
+                        isFirst = !hasActive && index == 0,
+                        isLast = index == completedFasts.lastIndex
+                    ) {
+                        CompletedFastingRow(session = session, onClick = { editingFast = session })
                     }
                 }
             }
@@ -500,6 +548,16 @@ fun HomeScreen(
                         if (ui.waterTrackingEnabled) {
                             SheetGlassDropdownMenuItem(label = stringResource(R.string.water), leadingIcon = Icons.Filled.WaterDrop, trailingIcon = Icons.Filled.ChevronRight) { addMenuGroup = AddMenuGroup.Water }
                         }
+                        if (ui.fastingTrackingEnabled) {
+                            if (ui.activeFast == null) {
+                                SheetGlassDropdownMenuItem(label = stringResource(R.string.fasting_start), leadingIcon = Icons.Filled.Timer) {
+                                    showAddMenu = false
+                                    showFastingStart = true
+                                }
+                            } else {
+                                SheetGlassDropdownMenuItem(label = stringResource(R.string.fasting), leadingIcon = Icons.Filled.Timer, trailingIcon = Icons.Filled.ChevronRight) { addMenuGroup = AddMenuGroup.Fasting }
+                            }
+                        }
                     }
 
                     AddMenuGroup.PhotoAndScan -> {
@@ -537,6 +595,20 @@ fun HomeScreen(
                         SheetGlassDropdownMenuItem(label = stringResource(R.string.water_custom_amount), leadingIcon = Icons.Filled.DriveFileRenameOutline) { showAddMenu = false; addMenuGroup = null; showCustomWaterLog = true }
                         SheetGlassDropdownMenuItem(label = "Back", leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
                     }
+
+                    AddMenuGroup.Fasting -> {
+                        SheetGlassDropdownMenuItem(label = stringResource(R.string.fasting_end), leadingIcon = Icons.Filled.Stop) {
+                            showAddMenu = false
+                            addMenuGroup = null
+                            vm.endFast()
+                        }
+                        SheetGlassDropdownMenuItem(label = stringResource(R.string.fasting_cancel), leadingIcon = Icons.Filled.Delete) {
+                            showAddMenu = false
+                            addMenuGroup = null
+                            vm.cancelFast()
+                        }
+                        SheetGlassDropdownMenuItem(label = "Back", leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
+                    }
                 }
             }
         }
@@ -555,6 +627,39 @@ fun HomeScreen(
             unit = ui.waterUnit,
             onDismiss = { showCustomWaterLog = false },
             onAdd = vm::addWater
+        )
+    }
+
+    if (showFastingStart) {
+        FastingGoalDialog(
+            title = stringResource(R.string.fasting_start),
+            initialMinutes = ui.fastingDefaultGoalMinutes,
+            confirmLabel = stringResource(R.string.fasting_start),
+            onConfirm = {
+                showFastingStart = false
+                vm.startFast(it)
+            },
+            onDismiss = { showFastingStart = false }
+        )
+    }
+
+    editingFast?.let { session ->
+        FastingSessionDialog(
+            session = session,
+            onSave = {
+                vm.updateFast(it)
+                editingFast = null
+            },
+            onEndNow = {
+                vm.updateFast(it)
+                vm.endFast()
+                editingFast = null
+            },
+            onDelete = {
+                vm.deleteFast(session.id)
+                editingFast = null
+            },
+            onDismiss = { editingFast = null }
         )
     }
 
@@ -721,6 +826,262 @@ fun HomeScreen(
             )
         }
     }
+}
+
+@Composable
+private fun ActiveFastingRow(session: FastingSession, onClick: () -> Unit) {
+    var now by remember(session.id) { mutableStateOf(Instant.now()) }
+    LaunchedEffect(session.id) {
+        while (true) {
+            delay(1_000)
+            now = Instant.now()
+        }
+    }
+    val elapsed = session.durationSeconds(now)
+    val progress = (elapsed.toFloat() / (session.goalMinutes * 60f)).coerceIn(0f, 1f)
+    val context = LocalContext.current
+    val timeFormatter = remember(context) {
+        DateTimeFormatter.ofPattern(clockTimePattern(context), Locale.getDefault())
+            .withZone(ZoneId.systemDefault())
+    }
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(horizontal = 18.dp, vertical = 13.dp)
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(Icons.Filled.Timer, contentDescription = null, tint = AppColors.Calorie, modifier = Modifier.size(27.dp))
+            Spacer(Modifier.width(12.dp))
+            Column(Modifier.weight(1f)) {
+                Text(stringResource(R.string.fasting_in_progress), fontWeight = FontWeight.SemiBold)
+                Text(
+                    stringResource(R.string.fasting_started_format, timeFormatter.format(session.startedAt)),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.58f)
+                )
+            }
+            Column(horizontalAlignment = Alignment.End) {
+                Text(
+                    formatFastingDuration(elapsed),
+                    color = AppColors.Calorie,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    stringResource(R.string.fasting_goal_format, formatFastingDuration(session.goalMinutes.toLong() * 60)),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.58f)
+                )
+            }
+            Spacer(Modifier.width(8.dp))
+            Icon(Icons.Filled.ChevronRight, contentDescription = null, tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.35f))
+        }
+        Spacer(Modifier.height(9.dp))
+        LinearProgressIndicator(
+            progress = { progress },
+            modifier = Modifier.fillMaxWidth().height(5.dp).clip(CircleShape),
+            color = AppColors.Calorie,
+            trackColor = AppColors.Calorie.copy(alpha = 0.16f)
+        )
+    }
+}
+
+@Composable
+private fun CompletedFastingRow(session: FastingSession, onClick: () -> Unit) {
+    val context = LocalContext.current
+    val timeFormatter = remember(context) {
+        DateTimeFormatter.ofPattern(clockTimePattern(context), Locale.getDefault())
+            .withZone(ZoneId.systemDefault())
+    }
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(horizontal = 18.dp, vertical = 13.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(Icons.Filled.Timer, contentDescription = null, tint = AppColors.Calorie, modifier = Modifier.size(27.dp))
+        Spacer(Modifier.width(12.dp))
+        Column(Modifier.weight(1f)) {
+            Text(
+                stringResource(R.string.fasting_completed_format, formatFastingDuration(session.durationSeconds())),
+                fontWeight = FontWeight.SemiBold
+            )
+            session.endedAt?.let { endedAt ->
+                Text(
+                    "${timeFormatter.format(session.startedAt)} – ${timeFormatter.format(endedAt)}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.58f)
+                )
+            }
+        }
+        Text(
+            stringResource(R.string.fasting_goal_format, formatFastingDuration(session.goalMinutes.toLong() * 60)),
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.58f)
+        )
+        Spacer(Modifier.width(8.dp))
+        Icon(Icons.Filled.ChevronRight, contentDescription = null, tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.35f))
+    }
+}
+
+@Composable
+private fun FastingGoalDialog(
+    title: String,
+    initialMinutes: Int,
+    confirmLabel: String,
+    onConfirm: (Int) -> Unit,
+    onDismiss: () -> Unit
+) {
+    var hours by remember(initialMinutes) { mutableIntStateOf((initialMinutes / 60).coerceIn(1, 168)) }
+    FudGlassDialog(onDismissRequest = onDismiss) {
+        Text(title, fontSize = 21.sp, fontWeight = FontWeight.Bold)
+        Text(
+            stringResource(R.string.fasting_choose_goal),
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.64f)
+        )
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            TextButton(onClick = { hours = (hours - 1).coerceAtLeast(1) }) {
+                Text("−", fontSize = 28.sp, color = AppColors.Calorie)
+            }
+            Text("$hours ${stringResource(R.string.fasting_hours)}", fontSize = 28.sp, fontWeight = FontWeight.Bold)
+            TextButton(onClick = { hours = (hours + 1).coerceAtMost(168) }) {
+                Text("+", fontSize = 28.sp, color = AppColors.Calorie)
+            }
+        }
+        FudGlassDialogActions(
+            primaryText = confirmLabel,
+            onPrimary = { onConfirm(hours * 60) },
+            dismissText = stringResource(R.string.action_cancel),
+            onDismiss = onDismiss
+        )
+    }
+}
+
+@Composable
+private fun FastingSessionDialog(
+    session: FastingSession,
+    onSave: (FastingSession) -> Unit,
+    onEndNow: (FastingSession) -> Unit,
+    onDelete: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    val context = LocalContext.current
+    var startedAt by remember(session.id) { mutableStateOf(session.startedAt) }
+    var endedAt by remember(session.id) { mutableStateOf(session.endedAt ?: Instant.now()) }
+    var goalHours by remember(session.id) { mutableIntStateOf((session.goalMinutes / 60).coerceIn(1, 168)) }
+    val dateTimeFormatter = remember(context) {
+        DateTimeFormatter.ofPattern("MMM d, yyyy • ${clockTimePattern(context)}", Locale.getDefault())
+            .withZone(ZoneId.systemDefault())
+    }
+
+    FudGlassDialog(onDismissRequest = onDismiss) {
+        Text(
+            stringResource(if (session.isActive) R.string.fasting_active else R.string.fasting_edit),
+            fontSize = 21.sp,
+            fontWeight = FontWeight.Bold
+        )
+        FastingEditorRow(
+            label = stringResource(R.string.fasting_started),
+            value = dateTimeFormatter.format(startedAt),
+            onClick = { showInstantPicker(context, startedAt) { startedAt = it } }
+        )
+        if (!session.isActive) {
+            FastingEditorRow(
+                label = stringResource(R.string.fasting_ended),
+                value = dateTimeFormatter.format(endedAt),
+                onClick = { showInstantPicker(context, endedAt) { endedAt = maxOf(it, startedAt) } }
+            )
+        }
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(stringResource(R.string.settings_fasting_goal), fontWeight = FontWeight.Medium)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                TextButton(onClick = { goalHours = (goalHours - 1).coerceAtLeast(1) }) { Text("−", color = AppColors.Calorie) }
+                Text("$goalHours h", fontWeight = FontWeight.SemiBold)
+                TextButton(onClick = { goalHours = (goalHours + 1).coerceAtMost(168) }) { Text("+", color = AppColors.Calorie) }
+            }
+        }
+
+        if (session.isActive) {
+            Button(
+                onClick = {
+                    onEndNow(session.copy(startedAt = startedAt, goalMinutes = goalHours * 60))
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = AppColors.Calorie),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(Icons.Filled.Stop, contentDescription = null)
+                Spacer(Modifier.width(8.dp))
+                Text(stringResource(R.string.fasting_end))
+            }
+        }
+        TextButton(onClick = onDelete, modifier = Modifier.fillMaxWidth()) {
+            Icon(Icons.Filled.Delete, contentDescription = null, tint = Color(0xFFFF453A))
+            Spacer(Modifier.width(8.dp))
+            Text(
+                stringResource(if (session.isActive) R.string.fasting_cancel else R.string.fasting_delete),
+                color = Color(0xFFFF453A)
+            )
+        }
+        FudGlassDialogActions(
+            primaryText = stringResource(R.string.action_save),
+            onPrimary = {
+                onSave(
+                    session.copy(
+                        startedAt = startedAt,
+                        endedAt = if (session.isActive) null else maxOf(endedAt, startedAt),
+                        goalMinutes = goalHours * 60
+                    )
+                )
+            },
+            dismissText = stringResource(R.string.action_cancel),
+            onDismiss = onDismiss
+        )
+    }
+}
+
+@Composable
+private fun FastingEditorRow(label: String, value: String, onClick: () -> Unit) {
+    Row(
+        Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).clickable(onClick = onClick).padding(12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(label, fontWeight = FontWeight.Medium)
+        Spacer(Modifier.weight(1f))
+        Text(value, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.62f))
+        Spacer(Modifier.width(6.dp))
+        Icon(Icons.Filled.ChevronRight, contentDescription = null, tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.35f))
+    }
+}
+
+private fun showInstantPicker(context: android.content.Context, initial: Instant, onPicked: (Instant) -> Unit) {
+    val zone = ZoneId.systemDefault()
+    val value = initial.atZone(zone)
+    DatePickerDialog(
+        context,
+        { _, year, month, day ->
+            TimePickerDialog(
+                context,
+                { _, hour, minute ->
+                    onPicked(ZonedDateTime.of(year, month + 1, day, hour, minute, 0, 0, zone).toInstant())
+                },
+                value.hour,
+                value.minute,
+                android.text.format.DateFormat.is24HourFormat(context)
+            ).show()
+        },
+        value.year,
+        value.monthValue - 1,
+        value.dayOfMonth
+    ).show()
 }
 
 // ── Week strip (iOS port) ────────────────────────────────────────────

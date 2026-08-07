@@ -9,6 +9,7 @@ import com.apoorvdarshan.calorietracker.models.BodyMeasurement
 import com.apoorvdarshan.calorietracker.models.ChatMessage
 import com.apoorvdarshan.calorietracker.models.WeightGoal
 import com.apoorvdarshan.calorietracker.models.FoodEntry
+import com.apoorvdarshan.calorietracker.models.FastingSession
 import com.apoorvdarshan.calorietracker.models.UserProfile
 import com.apoorvdarshan.calorietracker.models.WorkoutDayPlan
 import com.apoorvdarshan.calorietracker.models.WorkoutPreferences
@@ -55,6 +56,7 @@ class ChatService(
         bodyFats: List<BodyFatEntry>,
         measurements: List<BodyMeasurement> = emptyList(),
         foods: List<FoodEntry>,
+        fastingSessions: List<FastingSession> = emptyList(),
         heightMetric: Boolean,
         weightMetric: Boolean,
         imageBytes: ByteArray? = null,
@@ -69,6 +71,7 @@ class ChatService(
             bodyFats = bodyFats,
             measurements = measurements,
             foods = foods,
+            fastingSessions = fastingSessions,
             heightMetric = heightMetric,
             weightMetric = weightMetric,
             workoutSessions = workoutSessions,
@@ -82,6 +85,7 @@ class ChatService(
             weights = weights,
             bodyFats = bodyFats,
             foods = foods,
+            fastingSessions = fastingSessions,
             workoutSessions = workoutSessions,
             workoutPlans = workoutPlans,
             workoutPreferences = workoutPreferences,
@@ -117,6 +121,7 @@ class ChatService(
         bodyFats: List<BodyFatEntry>,
         measurements: List<BodyMeasurement> = emptyList(),
         foods: List<FoodEntry>,
+        fastingSessions: List<FastingSession> = emptyList(),
         heightMetric: Boolean,
         weightMetric: Boolean,
         workoutSessions: List<WorkoutSession> = emptyList(),
@@ -152,6 +157,7 @@ class ChatService(
         lines.add("You have access to functions that fetch the user's history on demand. The user profile + formulas + forecast below cover what's needed for most questions. Call a tool ONLY when the user asks about specific past dates, longer time ranges, individual meals, or trends that need raw data. Examples:")
         lines.add("- \"How was my weight in March?\" → call get_weight_history(from, to)")
         lines.add("- \"What did I eat last Tuesday?\" → call get_food_entries(from, to)")
+        lines.add("- \"How consistent has my fasting been?\" → call get_fasting_history(from, to)")
         lines.add("- \"What's my data range?\" → call get_data_summary")
         lines.add("- \"How is my training progressing?\" → call get_training_summary(from, to), then get_workout_history only if individual sets are needed")
         lines.add("- \"What workout do I have planned?\" → call get_workout_plans")
@@ -199,6 +205,7 @@ class ChatService(
         lines.add("")
         lines.add("## Data available")
         lines.add("- ${weights.size} weight entries, ${bodyFats.size} body-fat readings, ${foods.size} food entries logged total. Use get_data_summary to see exact date ranges.")
+        lines.add("- ${fastingSessions.size} explicitly tracked fasting sessions are available. Never treat a missing food log as a fast.")
         lines.add("- ${workoutSessions.size} completed strength workouts and ${workoutPlans.size} dated workout plans are available through the workout tools.")
         lines.add("- Workout logs may guide training, recovery, exercise selection, and progressive-overload advice. Never use estimated workout burn or workout volume to recalculate calorie/macro targets, alter the nutrition forecast, or invent energy expenditure.")
         measurements.maxByOrNull { it.date }?.promptSummary(profile.gender, profile.heightCm)?.let { summary ->

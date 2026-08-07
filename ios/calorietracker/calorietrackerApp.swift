@@ -22,6 +22,7 @@ struct calorietrackerApp: App {
     @State private var profileStore = ProfileStore()
     @State private var chatStore = ChatStore()
     @State private var waterStore = WaterStore()
+    @State private var fastingStore = FastingStore()
     @State private var strengthWorkoutStore = StrengthWorkoutStore()
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
     @AppStorage("appearanceMode") private var appearanceMode = "system"
@@ -66,6 +67,7 @@ struct calorietrackerApp: App {
                         .environment(profileStore)
                         .environment(chatStore)
                         .environment(waterStore)
+                        .environment(fastingStore)
                         .environment(strengthWorkoutStore)
                 } else {
                     OnboardingView(hasCompletedOnboarding: $hasCompletedOnboarding)
@@ -78,6 +80,7 @@ struct calorietrackerApp: App {
                         .environment(profileStore)
                         .environment(chatStore)
                         .environment(waterStore)
+                        .environment(fastingStore)
                 }
             }
             .tint(AppThemeColor.color(for: appThemeColorRaw).color)
@@ -340,6 +343,12 @@ struct calorietrackerApp: App {
         waterStore.onEntriesChanged = { [foodStore] in
             guard let profile = UserProfile.load() else { return }
             WidgetSnapshotWriter.publish(foods: foodStore.entries, profile: profile)
+        }
+        fastingStore.onSessionsChanged = { [notificationManager, fastingStore] in
+            let enabled = UserDefaults.standard.bool(forKey: "notificationsEnabled")
+                && UserDefaults.standard.bool(forKey: FastingSettings.enabledKey)
+                && UserDefaults.standard.bool(forKey: FastingSettings.notificationEnabledKey)
+            notificationManager.scheduleFastingGoal(enabled: enabled, session: fastingStore.activeSession)
         }
         WatchSnapshotSync.shared.configureWaterLogging { [waterStore] request in
             guard UserDefaults.standard.bool(forKey: WaterSettings.enabledKey) else {

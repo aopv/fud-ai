@@ -43,6 +43,7 @@ struct ChatService {
         bodyFats: [BodyFatEntry],
         measurements: [BodyMeasurement] = [],
         foods: [FoodEntry],
+        fastingSessions: [FastingSession] = [],
         heightMetric: Bool,
         weightMetric: Bool,
         workoutSessions: [StrengthWorkoutSession] = [],
@@ -56,6 +57,7 @@ struct ChatService {
             bodyFats: bodyFats,
             measurements: measurements,
             foods: foods,
+            fastingSessions: fastingSessions,
             heightMetric: heightMetric,
             weightMetric: weightMetric,
             workoutSessions: workoutSessions,
@@ -66,6 +68,7 @@ struct ChatService {
             weights: weights,
             bodyFats: bodyFats,
             foods: foods,
+            fastingSessions: fastingSessions,
             workoutSessions: workoutSessions,
             workoutPlans: workoutPlans,
             workoutPreferences: workoutPreferences,
@@ -104,6 +107,7 @@ struct ChatService {
         bodyFats: [BodyFatEntry],
         measurements: [BodyMeasurement] = [],
         foods: [FoodEntry],
+        fastingSessions: [FastingSession] = [],
         heightMetric: Bool,
         weightMetric: Bool,
         workoutSessions: [StrengthWorkoutSession] = [],
@@ -149,6 +153,7 @@ struct ChatService {
         lines.append("You have access to functions that fetch the user's history on demand. The user profile + formulas + forecast below cover what's needed for most questions. Call a tool ONLY when the user asks about specific past dates, longer time ranges, individual meals, or trends that need raw data. Examples:")
         lines.append("- \"How was my weight in March?\" → call get_weight_history(from, to)")
         lines.append("- \"What did I eat last Tuesday?\" → call get_food_entries(from, to)")
+        lines.append("- \"How consistent has my fasting been?\" → call get_fasting_history(from, to)")
         lines.append("- \"What's my data range?\" → call get_data_summary")
         if workoutAccessEnabled {
             lines.append("- \"How is my training progressing?\" → call get_training_summary(from, to), then get_workout_history only if individual sets are needed")
@@ -205,6 +210,7 @@ struct ChatService {
         lines.append("")
         lines.append("## Data available")
         lines.append("- \(weights.count) weight entries, \(bodyFats.count) body-fat readings, \(foods.count) food entries logged total. Use get_data_summary to see exact date ranges.")
+        lines.append("- \(fastingSessions.count) explicitly tracked fasting sessions are available. Never treat a missing food log as a fast.")
         if workoutAccessEnabled {
             lines.append("- \(workoutSessions.count) completed strength workouts and \(workoutPlans.count) dated workout plans are available through the workout tools.")
             lines.append("- Workout logs may guide training, recovery, exercise selection, and progressive-overload advice. Never use estimated workout burn or workout volume to recalculate calorie/macro targets, alter the nutrition forecast, or invent energy expenditure.")

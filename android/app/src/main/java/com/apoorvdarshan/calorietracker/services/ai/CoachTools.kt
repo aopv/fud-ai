@@ -2,6 +2,7 @@ package com.apoorvdarshan.calorietracker.services.ai
 
 import com.apoorvdarshan.calorietracker.models.BodyFatEntry
 import com.apoorvdarshan.calorietracker.models.FoodEntry
+import com.apoorvdarshan.calorietracker.models.FastingSession
 import com.apoorvdarshan.calorietracker.models.FoodSource
 import com.apoorvdarshan.calorietracker.models.MealType
 import com.apoorvdarshan.calorietracker.models.WorkoutDate
@@ -28,6 +29,7 @@ class CoachTools(
     private val weights: List<WeightEntry>,
     private val bodyFats: List<BodyFatEntry>,
     private val foods: List<FoodEntry>,
+    private val fastingSessions: List<FastingSession> = emptyList(),
     private val workoutSessions: List<WorkoutSession> = emptyList(),
     private val workoutPlans: List<WorkoutDayPlan> = emptyList(),
     private val workoutPreferences: WorkoutPreferences = WorkoutPreferences(),
@@ -65,6 +67,7 @@ class CoachTools(
         "get_body_fat_history" -> getBodyFatHistory(args)
         "get_calorie_totals" -> getCalorieTotals(args)
         "get_food_entries" -> getFoodEntries(args)
+        "get_fasting_history" -> getFastingHistory(args)
         "get_workout_history" -> getWorkoutHistory(args)
         "get_workout_plans" -> getWorkoutPlans(args)
         "get_workout_preferences" -> getWorkoutPreferences()
@@ -86,6 +89,10 @@ class CoachTools(
                 "weights" to dataRangePayload(weights.size, weightDates.firstOrNull(), weightDates.lastOrNull()),
                 "body_fats" to dataRangePayload(bodyFats.size, bodyFatDates.firstOrNull(), bodyFatDates.lastOrNull()),
                 "foods" to dataRangePayload(foods.size, foodDates.firstOrNull(), foodDates.lastOrNull()),
+                "fasting" to linkedMapOf(
+                    "count" to fastingSessions.size,
+                    "active" to fastingSessions.any { it.isActive }
+                ),
                 "workouts" to linkedMapOf(
                     "count" to effectiveSessions.size,
                     "first_date" to workoutDateKeys.firstOrNull(),
@@ -209,6 +216,36 @@ class CoachTools(
                 "to" to range.toDate.toString(),
                 "count" to entries.size,
                 "foods" to entries
+            )
+        )
+    }
+
+    private fun getFastingHistory(args: ToolArguments): String {
+        val range = parseRange(args)
+        val now = clock.instant()
+        val sessions = fastingSessions
+            .filter { session ->
+                val endpoint = session.endedAt ?: now
+                endpoint >= range.fromInstant && session.startedAt <= range.toInstant
+            }
+            .sortedBy { it.startedAt }
+            .take(args.boundedLimit(default = 200, maximum = 365))
+            .map { session ->
+                linkedMapOf(
+                    "status" to if (session.isActive) "active" else "completed",
+                    "started_at" to session.startedAt.toString(),
+                    "ended_at" to session.endedAt?.toString(),
+                    "duration_minutes" to session.durationSeconds(now) / 60,
+                    "goal_minutes" to session.goalMinutes,
+                    "goal_reached" to (session.durationSeconds(now) >= session.goalMinutes.toLong() * 60)
+                )
+            }
+        return json(
+            linkedMapOf(
+                "from" to range.fromDate.toString(),
+                "to" to range.toDate.toString(),
+                "count" to sessions.size,
+                "sessions" to sessions
             )
         )
     }
@@ -524,7 +561,8 @@ class CoachTools(
             "get_weight_history",
             "get_body_fat_history",
             "get_calorie_totals",
-            "get_food_entries"
+            "get_food_entries",
+            "get_fasting_history"
         )
 
         val WORKOUT_TOOL_NAMES = listOf(
@@ -543,6 +581,7 @@ class CoachTools(
             "get_body_fat_history" to "Fetch body-fat readings between two dates (inclusive). Returns date + percent. Use when the user asks about body composition trends older than the last 10 readings.",
             "get_calorie_totals" to "Daily calorie totals (sum of all logged foods per day) between two dates. Returns date + kcal. Use when the user asks about intake patterns older than the last 14 days.",
             "get_food_entries" to "Individual logged food items (name + calories + macros) between two dates. Use when the user asks about specific meals, what they ate on a given date, or wants macro breakdowns rather than just kcal totals.",
+            "get_fasting_history" to "Fetch explicitly tracked fasting sessions between two dates, including start/end timestamps, duration, goal, and whether the goal was reached. Never infer fasting from missing food logs.",
             "get_workout_history" to "Fetch completed strength workouts between two dates, including calculated calorie burn and every exercise and logged set with weight, reps, and RPE.",
             "get_workout_plans" to "Fetch dated workout diary plans and set targets. Optional ISO from/to dates narrow the result; without them it returns recent and upcoming plans around today.",
             "get_workout_preferences" to "Fetch workout-only preferences such as target muscles, injuries or issues, equipment, schedule, split, RPE scale, and strength numbers.",

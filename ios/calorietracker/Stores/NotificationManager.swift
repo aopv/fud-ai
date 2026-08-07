@@ -100,6 +100,29 @@ class NotificationManager {
         center.add(UNNotificationRequest(identifier: "water.reminder", content: content, trigger: trigger))
     }
 
+    // MARK: - Fasting Goal (one-shot)
+
+    func scheduleFastingGoal(enabled: Bool, session: FastingSession?) {
+        let center = UNUserNotificationCenter.current()
+        center.removePendingNotificationRequests(withIdentifiers: ["fasting.goal"])
+        guard enabled, let session, session.isActive else { return }
+
+        let interval = session.goalDate.timeIntervalSinceNow
+        guard interval > 1 else { return }
+
+        let content = UNMutableNotificationContent()
+        content.title = "Fasting Goal Reached"
+        content.body = "You reached your \(FastingDurationFormatter.goal(minutes: session.goalMinutes)) fasting goal. End the fast when you're ready."
+        content.sound = .default
+
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: interval, repeats: false)
+        center.add(UNNotificationRequest(identifier: "fasting.goal", content: content, trigger: trigger))
+    }
+
+    func cancelFastingGoal() {
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["fasting.goal"])
+    }
+
     // MARK: - Streak Reminder (one-shot, rescheduled on foreground/log)
 
     func scheduleStreakReminder(enabled: Bool, hour: Int, minute: Int, hasLoggedToday: Bool, currentStreak: Int) {

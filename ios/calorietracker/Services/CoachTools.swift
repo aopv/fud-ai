@@ -18,6 +18,7 @@ struct CoachTools {
     let weights: [WeightEntry]
     let bodyFats: [BodyFatEntry]
     let foods: [FoodEntry]
+    var fastingSessions: [FastingSession] = []
     var workoutSessions: [StrengthWorkoutSession] = []
     var workoutPlans: [StrengthWorkoutDayPlan] = []
     var workoutPreferences: StrengthWorkoutPreferences? = nil
@@ -30,6 +31,7 @@ struct CoachTools {
         "get_body_fat_history",
         "get_calorie_totals",
         "get_food_entries",
+        "get_fasting_history",
     ]
 
     static let workoutToolNames: [String] = [
@@ -73,6 +75,7 @@ struct CoachTools {
         "get_body_fat_history": "Fetch body-fat readings between two dates (inclusive). Returns date + percent. Use when the user asks about body composition trends older than the last 10 readings.",
         "get_calorie_totals": "Daily calorie totals (sum of all logged foods per day) between two dates. Returns date + kcal. Use when the user asks about intake patterns older than the last 14 days.",
         "get_food_entries": "Individual logged food items (name + calories + macros) between two dates. Use when the user asks about specific meals, what they ate on a given date, or wants macro breakdowns rather than just kcal totals.",
+        "get_fasting_history": "Fetch explicitly tracked fasting sessions between two dates, including start/end timestamps, duration, goal, and whether the goal was reached. Never infer fasting from missing food logs.",
         "get_workout_history": "Fetch completed strength workouts between two dates, including calculated calorie burn and every exercise and logged set with weight, reps, and RPE.",
         "get_workout_plans": "Fetch dated workout diary plans and set targets. Optional ISO from/to dates narrow the result; without them it returns recent and upcoming plans around today.",
         "get_workout_preferences": "Fetch workout-only preferences such as target muscles, injuries or issues, equipment, schedule, split, RPE scale, and strength numbers.",
@@ -127,6 +130,8 @@ struct CoachTools {
             return getCalorieTotals(arguments: arguments)
         case "get_food_entries":
             return getFoodEntries(arguments: arguments)
+        case "get_fasting_history":
+            return getFastingHistory(arguments: arguments)
         case "get_workout_history":
             return getWorkoutHistory(arguments: arguments)
         case "get_workout_plans":
@@ -164,6 +169,10 @@ struct CoachTools {
                 "count": foods.count,
                 "first_date": (foodDates.first.map(Self.iso) ?? NSNull()) as Any,
                 "last_date": (foodDates.last.map(Self.iso) ?? NSNull()) as Any,
+            ],
+            "fasting": [
+                "count": fastingSessions.count,
+                "active": fastingSessions.contains(where: \.isActive),
             ],
         ]
         guard workoutAccessEnabled else { return jsonString(payload) }
@@ -298,6 +307,34 @@ struct CoachTools {
             "to": Self.iso(to),
             "count": entries.count,
             "foods": entries,
+        ])
+    }
+
+    private func getFastingHistory(arguments: [String: Any]) -> String {
+        let (from, to) = parseRange(arguments)
+        let limit = (arguments["limit"] as? Int).map { min(max($0, 1), 365) } ?? 200
+        let filtered = fastingSessions
+            .filter { session in
+                let endpoint = session.endedAt ?? .now
+                return endpoint >= from && session.startedAt <= to
+            }
+            .sorted { $0.startedAt < $1.startedAt }
+            .prefix(limit)
+        let sessions = filtered.map { session -> [String: Any] in
+            [
+                "status": session.isActive ? "active" : "completed",
+                "started_at": Self.isoTimestamp(session.startedAt),
+                "ended_at": session.endedAt.map(Self.isoTimestamp) ?? NSNull(),
+                "duration_minutes": Int(session.duration() / 60),
+                "goal_minutes": session.goalMinutes,
+                "goal_reached": session.duration() >= TimeInterval(session.goalMinutes * 60),
+            ]
+        }
+        return jsonString([
+            "from": Self.iso(from),
+            "to": Self.iso(to),
+            "count": sessions.count,
+            "sessions": sessions,
         ])
     }
 
