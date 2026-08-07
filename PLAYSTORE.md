@@ -1,6 +1,6 @@
 # Play Store Listing
 
-Google Play Console listing copy for Fud AI Android v6.0 / versionCode 33. Each field is in a code block for easy copy-paste. Char counts are tracked because Play Console enforces hard caps and silently truncates anything over.
+Google Play Console listing copy for Fud AI Android v6.1 / versionCode 34. Each field is in a code block for easy copy-paste. Char counts are tracked because Play Console enforces hard caps and silently truncates anything over.
 
 **Where to paste each field in Play Console:**
 - App name / Short description / Full description → Grow → Store presence → **Main store listing** (default English) and Grow → Store presence → **Custom store listings** → Manage translations (per-language overrides)
@@ -38,7 +38,7 @@ Snap, speak, or type a meal. AI logs the calories. Open source.
 ```
 Fud AI makes calorie tracking effortless with AI-powered food recognition. Snap a photo, scan a barcode, speak it, or type it — get instant nutrition: calories, protein, carbs, fats, vitamins, minerals, and more.
 
-NEW in v6.0: plan and log strength workouts with sets, reps, weight, and RPE. Estimate daily workout burn, review it in Progress, and optionally sync it with Health Connect. Switch between the diary and 873-exercise library; Fud AI remembers your view.
+NEW in v6.1: optionally track intermittent fasts with a persistent timer, a custom 1–168 hour goal, editable history, and a local goal alert. Start, end, or cancel from the Home + menu. Fasting stays separate from nutrition and Health Connect.
 
 Meal reuse is faster, copied foods use the current time, and exports include every stored nutrient. Water tracking adds selectable units. AI presets use current models, with configurable Ollama/custom timeouts.
 
@@ -61,7 +61,7 @@ Use Gemini, OpenAI, Claude, Grok, Groq, OpenRouter, Together, Hugging Face, Fire
 Native Android, Gemini, OpenAI Whisper, Groq, Deepgram, or AssemblyAI, with automatic or fixed language handling.
 
 COACH
-Multi-turn chat can access your profile, goals, food log, progress, and workouts when requested. Images are supported.
+Multi-turn chat can access your profile, goals, food log, progress, workouts, and explicitly logged fasts when requested. It never assumes a missing meal means you fasted. Images are supported.
 
 REVIEW BEFORE LOGGING
 Unlock Nutrition to correct calories, macros, and detailed nutrients before saving; serving changes then scale from your edits. What if? previews today's macro impact and can ask AI for a suggestion.
@@ -81,6 +81,9 @@ Separate Calorie, Protein, Today, and Water widgets in the Home speedometer styl
 OPTIONAL WATER TRACKING
 Off by default. Set your own daily goal, quick-log one to three glasses or a custom amount, view progress below calories, schedule a local reminder, and use the dedicated Water widget. Water history stays on your device and is not sent to Health Connect.
 
+OPTIONAL FASTING TRACKING
+Off by default. Choose a 1–168 hour goal, start/end/cancel from the Home + menu, keep the timer across app restarts, optionally receive a local goal alert, and edit completed sessions. Fasting stays on your device and is not sent to Health Connect.
+
 15 LANGUAGES
 Auto-selected by phone language: English, Spanish, French, German, Italian, Portuguese (BR), Dutch, Russian, Japanese, Korean, Chinese, Hindi, Arabic, Romanian, Azerbaijani.
 
@@ -88,7 +91,7 @@ PRIVACY FIRST
 No account, Fud AI cloud, analytics, behavioral tracking, or ads. Android backup may apply under system settings. Keys are encrypted; AI/STT requests go directly to your provider. MIT licensed.
 
 HEALTH CONNECT
-Optional sync for nutrition, weight, body fat, and calculated workout calories, plus energy reads for goal estimates. Records can restore from Health Connect after reinstall.
+Optional sync for nutrition, weight, body fat, and calculated workout calories, plus energy reads for goal estimates. Records can restore from Health Connect after reinstall. Fasting is local-only.
 
 NOTE: Not medical advice. Estimates are AI-generated; consult a healthcare professional before significant diet changes.
 
@@ -103,114 +106,85 @@ English-only on Play Console — non-English Play Store browsers (ar, az-AZ, de-
 
 ---
 
-## 4. What's New (v6.0 / versionCode 33)
+## 4. What's New (v6.1 / versionCode 34)
 
 **500 char hard cap per language.** Paste the entire block below into Play Console's "Release notes" field — it auto-routes each `<lang-tag>` block to the matching locale.
 
 ```
 <en-US>
-• New workout diary/logger: plan exercises, enter sets, reps, weight and RPE, estimate daily calorie burn, and review workout history.
-• Switch between the logger and 873-exercise library; your last view stays selected.
-• Faster meal reuse, complete nutrient export, and selectable water units.
-• Updated AI model presets, configurable local/custom timeouts, Health Connect workout sync, and reliability fixes.
+• Optional fasting tracker with a persistent timer, custom 1–168 hour goal, editable history, and an optional local goal alert.
+• Start, end, or cancel from Home. Fasting stays separate from nutrition and Health Connect; Coach can review only explicitly logged fasts.
+• Reliability and security improvements.
 </en-US>
 
 <ar>
-• يوميات ومسجل تمارين جديد: خطط للتمارين وسجل المجموعات والتكرارات والوزن وRPE والسعرات.
-• بدّل بين المسجل ومكتبة تضم 873 تمرينًا، مع حفظ آخر عرض.
-• إعادة استخدام أسرع للوجبات، وتصدير كامل للمغذيات، ووحدات ماء قابلة للاختيار.
-• نماذج AI محدثة ومزامنة التمارين مع Health Connect وتحسينات للموثوقية.
+• متتبع صيام اختياري بمؤقت مستمر وهدف مخصص من 1 إلى 168 ساعة وسجل قابل للتعديل وتنبيه محلي اختياري.
+• يبقى الصيام منفصلًا عن التغذية وHealth Connect، مع تحسينات في الموثوقية والأمان.
 </ar>
 
 <az-AZ>
-• Yeni məşq gündəliyi: hərəkətləri planlayın, set, təkrar, çəki, RPE və kalori sərfini qeyd edin.
-• Gündəliklə 873 hərəkətlik kitabxana arasında keçin; son görünüş yadda qalır.
-• Yeməkləri daha sürətli təkrar istifadə edin, bütün qidaları ixrac edin və su vahidini seçin.
-• Yenilənmiş AI modelləri, Health Connect məşq sinxronu və etibarlılıq düzəlişləri.
+• Davamlı taymer, 1–168 saatlıq xüsusi məqsəd, redaktə edilən tarixçə və istəyə bağlı yerli bildiriş ilə oruc izləmə.
+• Oruc qidalanma və Health Connect-dən ayrı qalır; etibarlılıq və təhlükəsizlik təkmilləşdirildi.
 </az-AZ>
 
 <de-DE>
-• Neues Trainingstagebuch: Übungen planen und Sätze, Wiederholungen, Gewicht, RPE und Kalorien erfassen.
-• Zwischen Logger und Bibliothek mit 873 Übungen wechseln; die letzte Ansicht bleibt gewählt.
-• Mahlzeiten schneller wiederverwenden, alle Nährstoffe exportieren und Wassereinheit wählen.
-• Aktualisierte KI-Modelle, Health-Connect-Trainingssync und Zuverlässigkeitskorrekturen.
+• Optionaler Fasten-Tracker mit dauerhaftem Timer, eigenem Ziel von 1–168 Stunden, bearbeitbarem Verlauf und optionaler lokaler Erinnerung.
+• Fasten bleibt von Ernährung und Health Connect getrennt; Zuverlässigkeit und Sicherheit wurden verbessert.
 </de-DE>
 
 <es-ES>
-• Nuevo diario de entrenamiento: planifica ejercicios y registra series, repeticiones, peso, RPE y calorías.
-• Cambia entre el registro y la biblioteca de 873 ejercicios; se conserva la última vista.
-• Reutiliza comidas más rápido, exporta todos los nutrientes y elige la unidad de agua.
-• Modelos de IA actualizados, sincronización de entrenos con Health Connect y mejoras de fiabilidad.
+• Seguimiento de ayuno opcional con temporizador persistente, objetivo de 1–168 horas, historial editable y aviso local opcional.
+• El ayuno se mantiene separado de la nutrición y Health Connect; mejoras de fiabilidad y seguridad.
 </es-ES>
 
 <fr-FR>
-• Nouveau journal d'entraînement : planifiez puis notez séries, répétitions, poids, RPE et calories.
-• Basculez entre le journal et la bibliothèque de 873 exercices ; la dernière vue est mémorisée.
-• Réutilisation des repas accélérée, export de tous les nutriments et unité d'eau au choix.
-• Modèles IA actualisés, synchronisation Health Connect et correctifs de fiabilité.
+• Suivi du jeûne optionnel avec minuteur persistant, objectif de 1 à 168 h, historique modifiable et alerte locale facultative.
+• Le jeûne reste séparé de la nutrition et de Health Connect ; fiabilité et sécurité améliorées.
 </fr-FR>
 
 <hi-IN>
-• नया वर्कआउट लॉगर: व्यायाम प्लान करें और सेट, रेप, वजन, RPE व कैलोरी बर्न दर्ज करें।
-• लॉगर और 873 व्यायामों की लाइब्रेरी के बीच बदलें; पिछला दृश्य याद रहता है।
-• भोजन जल्दी दोबारा उपयोग करें, सभी पोषक तत्व निर्यात करें और पानी की इकाई चुनें।
-• नए AI मॉडल, Health Connect वर्कआउट सिंक और विश्वसनीयता सुधार।
+• लगातार चलने वाला टाइमर, 1–168 घंटे का कस्टम लक्ष्य, संपादन योग्य इतिहास और वैकल्पिक स्थानीय अलर्ट वाला उपवास ट्रैकर।
+• उपवास पोषण और Health Connect से अलग रहता है; विश्वसनीयता और सुरक्षा में सुधार।
 </hi-IN>
 
 <it-IT>
-• Nuovo diario allenamenti: pianifica esercizi e registra serie, ripetizioni, peso, RPE e calorie.
-• Passa tra diario e libreria di 873 esercizi; l'ultima vista resta selezionata.
-• Riutilizzo pasti più rapido, esportazione di tutti i nutrienti e unità dell'acqua selezionabile.
-• Modelli IA aggiornati, sincronizzazione allenamenti Health Connect e correzioni di affidabilità.
+• Monitoraggio del digiuno opzionale con timer persistente, obiettivo da 1–168 ore, cronologia modificabile e avviso locale facoltativo.
+• Il digiuno resta separato da nutrizione e Health Connect; affidabilità e sicurezza migliorate.
 </it-IT>
 
 <ja-JP>
-• 新しいワークアウト日記：種目を計画し、セット、回数、重量、RPE、消費カロリーを記録。
-• ロガーと873種目のライブラリを切替。最後に開いた表示を保持します。
-• 食事の再利用を高速化し、全栄養素の書き出しと水分単位の選択に対応。
-• AIモデルを更新し、Health Connectの運動同期と信頼性を改善。
+• 継続タイマー、1〜168時間のカスタム目標、編集可能な履歴、任意のローカル通知を備えた断食トラッカー。
+• 断食は栄養記録とHealth Connectから分離。信頼性とセキュリティも改善しました。
 </ja-JP>
 
 <ko-KR>
-• 새 운동 일지: 운동을 계획하고 세트, 횟수, 무게, RPE와 칼로리 소모를 기록하세요.
-• 로거와 873개 운동 라이브러리를 전환하며 마지막 화면이 유지됩니다.
-• 식사 재사용 속도 향상, 모든 영양소 내보내기, 물 단위 선택 기능.
-• 최신 AI 모델, Health Connect 운동 동기화 및 안정성 개선.
+• 지속 타이머, 1~168시간 사용자 목표, 편집 가능한 기록, 선택적 로컬 알림을 갖춘 단식 추적 기능.
+• 단식은 영양 기록 및 Health Connect와 분리되며 안정성과 보안도 개선했습니다.
 </ko-KR>
 
 <nl-NL>
-• Nieuw trainingsdagboek: plan oefeningen en log sets, herhalingen, gewicht, RPE en calorieën.
-• Wissel tussen logger en bibliotheek met 873 oefeningen; de laatste weergave blijft gekozen.
-• Maaltijden sneller hergebruiken, alle voedingsstoffen exporteren en watereenheid kiezen.
-• Bijgewerkte AI-modellen, Health Connect-trainingssync en betrouwbaarheidsfixes.
+• Optionele vastentracker met blijvende timer, eigen doel van 1–168 uur, bewerkbare geschiedenis en optionele lokale melding.
+• Vasten blijft los van voeding en Health Connect; betrouwbaarheid en beveiliging zijn verbeterd.
 </nl-NL>
 
 <pt-BR>
-• Novo diário de treino: planeje exercícios e registre séries, repetições, peso, RPE e calorias.
-• Alterne entre o registro e a biblioteca de 873 exercícios; a última tela fica salva.
-• Reutilize refeições mais rápido, exporte todos os nutrientes e escolha a unidade de água.
-• Modelos de IA atualizados, sincronização de treinos com Health Connect e correções de estabilidade.
+• Rastreador de jejum opcional com cronômetro persistente, meta de 1–168 horas, histórico editável e alerta local opcional.
+• O jejum fica separado da nutrição e do Health Connect; melhorias de confiabilidade e segurança.
 </pt-BR>
 
 <ro>
-• Jurnal nou de antrenament: planifică exerciții și notează seturi, repetări, greutate, RPE și calorii.
-• Comută între jurnal și biblioteca cu 873 de exerciții; ultima vizualizare rămâne selectată.
-• Refolosește mesele mai rapid, exportă toți nutrienții și alege unitatea pentru apă.
-• Modele AI actualizate, sincronizare Health Connect și remedieri de fiabilitate.
+• Urmărire opțională a postului cu cronometru persistent, obiectiv de 1–168 ore, istoric editabil și alertă locală opțională.
+• Postul rămâne separat de nutriție și Health Connect; fiabilitate și securitate îmbunătățite.
 </ro>
 
 <ru-RU>
-• Новый дневник тренировок: планируйте упражнения и записывайте подходы, повторы, вес, RPE и калории.
-• Переключайтесь между дневником и библиотекой из 873 упражнений; последний экран сохраняется.
-• Быстрее используйте блюда повторно, экспортируйте все нутриенты и выбирайте единицу воды.
-• Обновлены модели ИИ, синхронизация тренировок Health Connect и надёжность.
+• Необязательный трекер голодания: постоянный таймер, цель 1–168 часов, редактируемая история и локальное уведомление.
+• Голодание отделено от питания и Health Connect; улучшены надёжность и безопасность.
 </ru-RU>
 
 <zh-CN>
-• 新增训练日记：规划动作并记录组数、次数、重量、RPE 和消耗热量。
-• 可在记录器与 873 个动作库之间切换，并保留上次视图。
-• 更快复用餐食、导出全部营养素，并可选择饮水单位。
-• 更新 AI 模型、Health Connect 训练同步及多项稳定性修复。
+• 新增可选断食追踪：持续计时器、1–168 小时自定义目标、可编辑历史及可选本地提醒。
+• 断食与营养记录和 Health Connect 完全分离，并提升可靠性与安全性。
 </zh-CN>
 ```
 
@@ -243,7 +217,7 @@ These are one-time setup in Play Console → Policy → App content. Don't drift
 - **Target audience**: 13+
 - **News app**: No
 - **COVID-19 contact tracing**: No
-- **Data safety**: The developer operates no Fud AI account, analytics, advertising, or app-data backend. Do not declare Advertising ID. Most app data is local, and API keys are stored in EncryptedSharedPreferences. User-initiated AI/STT requests send the selected photos/text/audio directly to the provider the user configures; barcode lookup sends the barcode to Open Food Facts; optional shared-meal links place selected meal data in the URL; optional Health Connect sync reads/writes the declared health types. Complete the Play form according to Google's current definitions for these direct user-initiated transfers rather than broadly claiming that no data is processed. Network requests use HTTPS except a user-configured local/custom endpoint may use the URL the user supplies. Delete All Data removes local app data but not Health Connect records.
+- **Data safety**: The developer operates no Fud AI account, analytics, advertising, or app-data backend. Do not declare Advertising ID. Most app data, including fasting history, is local, and API keys are stored in EncryptedSharedPreferences. User-initiated AI/STT requests send the selected photos/text/audio directly to the provider the user configures; Coach requests may include explicitly logged fasting context when relevant; barcode lookup sends the barcode to Open Food Facts; optional shared-meal links place selected meal data in the URL; optional Health Connect sync reads/writes the declared health types. Complete the Play form according to Google's current definitions for these direct user-initiated transfers rather than broadly claiming that no data is processed. Network requests use HTTPS except a user-configured local/custom endpoint may use the URL the user supplies. Delete All Data removes local app data, including fasting history, but not Health Connect records.
 - **Government app**: No
 - **Financial features**: No
-- **Health features**: Yes — nutrition, body measurements, energy-based goals, calculated workout calories, and optional local water tracking. Health Connect permissions are READ/WRITE nutrition, weight, body fat, and active calories burned, plus READ total calories burned. Water history is local and is not written to Health Connect. Explain restore/backfill, Energy Burn Goals, and calculated workout-burn sync in the permissions declaration, and keep the in-app rationale/Manage Access flow aligned with the privacy policy.
+- **Health features**: Yes — nutrition, body measurements, energy-based goals, calculated workout calories, optional local water tracking, and optional local fasting tracking. Health Connect permissions are READ/WRITE nutrition, weight, body fat, and active calories burned, plus READ total calories burned. Water and fasting history are local and are not written to Health Connect. Explain restore/backfill, Energy Burn Goals, and calculated workout-burn sync in the permissions declaration, and keep the in-app rationale/Manage Access flow aligned with the privacy policy.

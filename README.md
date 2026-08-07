@@ -27,9 +27,9 @@
 
 Open-source, privacy-first calorie tracker for iOS and Android. Bring your own AI provider — 13 supported including Gemini, OpenAI, Claude, Grok, Groq, Hugging Face, Fireworks AI, DeepInfra, Mistral, and any custom OpenAI-compatible endpoint. Capture or import up to 10 food photos with an optional note, scan a barcode, ask your AI coach how to hit your goal, speak your lunch, or use Siri Shortcuts on iOS to log food and weight. On supported iPhones, food-description analysis for text, voice-transcribed, and Siri food logs can use Apple Intelligence on-device as the final fallback after BYOK provider/fallback attempts fail. No accounts, Fud AI cloud sync, tracking, or ads — completely free.
 
-iOS and Android 6.0 (build/versionCode 33) add the same end-to-end strength workout experience: a local workout diary and logger with date navigation, sets, reps, weight, RPE, calculated calorie-burn history, Health sync, Coach access, and an in-place switch to the 873-exercise library. The last workout view stays selected, while new installs open the diary first.
+iOS and Android 6.1 (build/versionCode 34) add an optional intermittent-fasting tracker alongside the existing nutrition and workout tools. Choose a goal from 1–168 hours, start, end, or cancel a fast from the Home + menu, keep the timer across app restarts, and review or edit completed sessions. Goal alerts are optional local notifications, and fasting remains separate from calories, macros, Apple Health, and Health Connect.
 
-The release also adds faster Saved Meal reuse, current-time meal copying, export of every stored nutrient, selectable water units, water progress on Apple Watch, current AI model presets, configurable timeouts for Ollama/custom endpoints, and reliability fixes across widgets, settings, images, and provider responses. Normal updates preserve existing local and Health data.
+The app also includes faster Saved Meal reuse, current-time meal copying, export of every stored nutrient, selectable water units, water progress on Apple Watch, current AI model presets, configurable timeouts for Ollama/custom endpoints, and reliability fixes across widgets, settings, images, and provider responses. Normal updates preserve existing local and Health data.
 
 [App Store](https://apps.apple.com/us/app/fud-ai-calorie-tracker/id6758935726) · [Google Play](https://play.google.com/store/apps/details?id=com.apoorvdarshan.calorietracker) · [Website](https://fud-ai.app) · [Report an Issue](https://github.com/apoorvdarshan/fud-ai/issues/new?labels=bug&title=Bug:%20) · [Request a Feature](https://github.com/apoorvdarshan/fud-ai/issues/new?labels=enhancement&title=Feature:%20)
 
@@ -54,7 +54,7 @@ The release also adds faster Saved Meal reuse, current-time meal copying, export
 - **Retryable analysis** — failed image analysis offers Retry and Cancel without limiting the number of retries
 
 ### Intelligence
-- **AI Coach tab** — multi-turn chat with memory. Coach can retrieve relevant profile, weight, body-fat, nutrition, and workout context, then answer questions like "what's my expected weight in 30 days?" or "how did my training go this week?". Camera/photo attachments work on both platforms. Memory persists across launches; Reset starts a fresh conversation. Long-press any reply to copy.
+- **AI Coach tab** — multi-turn chat with memory. Coach can retrieve relevant profile, weight, body-fat, nutrition, workout, and explicitly logged fasting context, then answer questions like "what's my expected weight in 30 days?" or "how did my training go this week?". It never treats a missing meal log as proof that you fasted. Camera/photo attachments work on both platforms. Memory persists across launches; Reset starts a fresh conversation. Long-press any reply to copy.
 - **AI Access** — free Bring Your Own Key: pick provider, model, fallback, custom instructions, and speech language directly on device. (The optional Fud AI Premium proxy from earlier iOS versions has been discontinued.)
 - **Apple Intelligence fallback** — on supported iPhones, food-description analysis for text, voice-transcribed, and Siri food logs can use Apple Intelligence on-device as the final fallback after BYOK provider/fallback attempts fail.
 - **AI optional nutrient goals** — estimate detailed nutrient goals from profile data without changing calorie/protein/carbs/fat formulas.
@@ -77,6 +77,7 @@ The release also adds faster Saved Meal reuse, current-time meal copying, export
 - **Six activity levels** — Sedentary, Light, Moderate, Active, Very Active, and Extra Active use work and training descriptions instead of step-count requirements
 - **Custom meal times** — choose when Breakfast, Lunch, Dinner, and Snack begin; the app uses those boundaries for automatic meal grouping
 - **Optional water tracking** — off by default; set any practical daily goal, quick-log one to three glasses or a custom amount, see progress below calories, and optionally schedule a local reminder
+- **Optional fasting tracking** — off by default; choose a 1–168 hour goal, start/end/cancel from the Home + menu, keep an active timer through app restarts, optionally receive a local goal alert, and edit or delete completed sessions without changing nutrition totals
 
 ### Workouts
 - **Workout diary & logger** — plan exercises by day, swipe between weeks, and log sets, reps, weight, and RPE without starting a timer
@@ -87,6 +88,7 @@ The release also adds faster Saved Meal reuse, current-time meal copying, export
 ### Health & platform
 - **Apple Health** — bidirectional sync for body measurements, meal nutrition, and calculated workout calories; Siri food/weight logs use the same HealthKit paths, and Energy Burn Goals can estimate calorie targets from active/total energy while macros stay editable
 - **Health Connect** — Android sync for nutrition, weight, body fat, and calculated workout calories, with permission reconciliation and backfill support; Energy Burn Goals can use recent energy data for calorie targets
+- **Local-only fasting records** — fasting sessions are intentionally not written to Apple Health or Health Connect; eligible OS backup/device transfer may still include them according to device settings
 - **Restore after a reinstall** — on a fresh install or new phone, food, weight, body-fat, and calculated workout-burn records previously written by Fud AI can restore from Apple Health / Health Connect; local workout plans and set details require an OS backup/device transfer
 - **Apple Watch** — watchOS app and complications show calories, macros, and compact water progress when water tracking is enabled
 - **Widgets** — iOS offers Fud AI in Small, Medium, and Large, small Protein, and a separate small/Lock Screen Water widget; Android offers Calorie, Protein, Today, and Water Glance widgets that update from local snapshots
@@ -156,7 +158,7 @@ Photo(s) / Text / Voice
   FoodStore.addEntry()  ──▶  UserDefaults (local) + Apple Health (optional)
 ```
 
-For the Coach chat, every turn builds a slim system prompt from your live profile, BMR formula in use, computed forecast, today's date/timezone, and a one-line snapshot of available data. Coach then pulls any date range of weight, body fat, calorie totals, or food entries on demand via tool calling — ask "what was my weight in March?" or "show me my body fat trend over the last 6 months" and it fetches exactly the slice it needs, including meal source, meal type, serving size, and micronutrients.
+For the Coach chat, every turn builds a slim system prompt from your live profile, BMR formula in use, computed forecast, today's date/timezone, and a one-line snapshot of available data. Coach then pulls relevant ranges of weight, body fat, calorie totals, food entries, workouts, or explicitly logged fasting sessions on demand via tool calling — ask "what was my weight in March?" or "how did my completed fasts line up with training this week?" and it fetches only the slice it needs. Coach never infers fasting from gaps in the food log.
 
 ## Screenshots
 
@@ -260,8 +262,8 @@ All values can be manually overridden in Settings, with a **Recalculate Goals** 
 
 ```
 fud-ai/
-├── ios/          # SwiftUI iOS app (v6.0 build 33)
-├── android/      # Kotlin + Jetpack Compose app (min SDK 26 / Android 8.0, v6.0 / versionCode 33)
+├── ios/          # SwiftUI iOS app (v6.1 build 34)
+├── android/      # Kotlin + Jetpack Compose app (min SDK 26 / Android 8.0, v6.1 / versionCode 34)
 ├── web/          # Marketing site — https://fud-ai.app (static HTML/CSS, Cloudflare Workers)
 ├── APPSTORE.md   # App Store Connect listing copy (iOS)
 ├── PLAYSTORE.md  # Google Play Console listing copy (Android)
@@ -357,7 +359,7 @@ See [SECURITY.md](SECURITY.md). Use [private vulnerability reporting](https://gi
 
 ## Privacy
 
-No accounts, Fud AI-operated cloud sync, or analytics. BYOK API keys are protected by iOS Keychain or Android EncryptedSharedPreferences, and requests go directly to the provider you choose. Food, weight, body-fat, water, and workout logs, custom meal times, goals, preferences, cached images, and widget/Watch snapshots are local except for OS backup/device transfer and the specific AI/STT, barcode, health-sync, update-check, export, or sharing action you initiate. Shared meal links carry the selected meal details in the URL, so anyone with the link can read them. Apple Health / Health Connect access is optional and can be reviewed or revoked through Manage Access. **Delete All Data** wipes the current local installation, including saved keys, water history, and workout plans/history, but never removes Apple Health, Health Connect, or older OS backups. See the complete [Privacy Policy](https://fud-ai.app/privacy.html).
+No accounts, Fud AI-operated cloud sync, or analytics. BYOK API keys are protected by iOS Keychain or Android EncryptedSharedPreferences, and requests go directly to the provider you choose. Food, weight, body-fat, water, fasting, and workout logs, custom meal times, goals, preferences, cached images, and widget/Watch snapshots are local except for OS backup/device transfer and the specific AI/STT, barcode, health-sync, update-check, export, or sharing action you initiate. When Coach is used, it may send explicitly logged fasting context to your selected AI provider, but it never infers fasting from missing meals. Shared meal links carry the selected meal details in the URL, so anyone with the link can read them. Apple Health / Health Connect access is optional and can be reviewed or revoked through Manage Access; fasting is not synced to either health store. **Delete All Data** wipes the current local installation, including saved keys, water and fasting history, and workout plans/history, but never removes Apple Health, Health Connect, or older OS backups. See the complete [Privacy Policy](https://fud-ai.app/privacy.html).
 
 ## License
 

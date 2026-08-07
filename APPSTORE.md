@@ -1,6 +1,6 @@
 # App Store Listing
 
-App Store Connect submission details for Fud AI v6.0 build 33. Each field is in a code block for easy copy-paste.
+App Store Connect submission details for Fud AI v6.1 build 34. Each field is in a code block for easy copy-paste.
 
 ## App Name
 ```
@@ -9,17 +9,17 @@ Fud AI - Calorie Tracker
 
 ## Subtitle (30 chars max)
 ```
-Macros, AI Coach & Workouts
+Macros, Fasting & Workouts
 ```
 
 ## Promotional Text (170 chars max)
 ```
-New in 6.0: log workouts with sets, reps, RPE and calorie-burn history; reuse meals faster; choose water units; and use current AI models.
+New in 6.1: track fasts with persistent timers, custom goals, editable history, optional goal alerts, and AI Coach context.
 ```
 
 ## Keywords (100 chars max)
 ```
-calorie,tracker,nutrition,macro,AI,food,scanner,diet,protein,weight,bodyfat,health,fitness,meal,log
+calorie,tracker,nutrition,macro,AI,food,scanner,fasting,protein,weight,bodyfat,health,fitness,meal
 ```
 
 ## Category
@@ -32,7 +32,7 @@ Secondary: Food & Drink
 ```
 Effortless calorie tracking with AI-powered food recognition. Snap, scan, speak, or type a meal — get instant calories, macros, and nutrients.
 
-NEW in v6.0: plan and log strength workouts with sets, reps, weight, and RPE. Estimate daily workout burn, review it in Progress, and optionally sync it with Apple Health. Switch between the diary and 873-exercise library; Fud AI remembers your view.
+NEW in v6.1: optionally track intermittent fasts with a persistent timer, a custom 1–168 hour goal, editable history, and a local goal alert. Start, end, or cancel from the Home + menu. Fasting stays separate from nutrition and Apple Health.
 
 Meal reuse is faster, copied foods use the current time, and exports include every stored nutrient. Water tracking adds selectable units and a compact Apple Watch view. AI presets use current models, with configurable Ollama/custom timeouts.
 
@@ -51,7 +51,7 @@ REVIEW BEFORE LOGGING
 Unlock Nutrition to correct calories, macros, and detailed nutrients. What if? previews daily macro impact before saving.
 
 COACH
-Multi-turn chat can access your profile, targets, forecast, food log, and workouts when requested.
+Multi-turn chat can access your profile, targets, forecast, food log, workouts, and explicitly logged fasts when requested. It never assumes a missing meal means you fasted.
 
 WORKOUTS
 Plan by day and log sets, reps, weight, and RPE without a timer. Swipe weeks, estimate calorie burn, and review history in Progress. The 873-exercise photo library includes muscle/equipment filters, search, sorting, and details.
@@ -68,11 +68,14 @@ Home Screen Fud AI widgets in Small, Medium, and Large; a small Protein widget; 
 OPTIONAL WATER TRACKING
 Off by default. Set your own daily goal, quick-log common glass amounts or a custom amount, view progress under calories, schedule a local reminder, and use the dedicated Water widget. Water history stays on your device and is not written to Apple Health.
 
+OPTIONAL FASTING TRACKING
+Off by default. Choose a 1–168 hour goal, start/end/cancel from the Home + menu, keep the timer across app restarts, optionally receive a local goal alert, and edit completed sessions. Fasting history stays on your device and is not written to Apple Health.
+
 PRIVACY
 No account, Fud AI cloud, analytics, behavioral tracking, or ads. BYOK keys stay in Keychain. Apple Intelligence can process eligible descriptions on-device. Barcode sends only its number to Open Food Facts. MIT licensed.
 
 APPLE HEALTH
-Optional sync for nutrition, weight, height, body fat, and calculated workout calories. External samples can auto-import or restore after reinstall. Energy Burn Goals can use active/total energy. Permissions remain manageable in Health.
+Optional sync for nutrition, weight, height, body fat, and calculated workout calories. External samples can auto-import or restore after reinstall. Energy Burn Goals can use active/total energy. Fasting is local-only. Permissions remain manageable in Health.
 
 Fud AI is not medical advice — consult a healthcare professional before significant diet changes.
 
@@ -82,24 +85,23 @@ Source: https://github.com/apoorvdarshan/fud-ai
 
 ```
 
-## What's New (v6.0)
+## What's New (v6.1)
 ```
-Fud AI 6.0 — workout logging on iPhone, faster meal reuse, and updated AI access.
+Fud AI 6.1 — optional intermittent fasting, clearer tracking, and reliability improvements.
 
 NEW
-• Workout diary and logger with weekly navigation, sets, reps, weight, RPE, and no required timer.
-• Calculate a day's workout calorie burn, review or delete burn history in Progress, and optionally sync it with Apple Health.
-• Switch between the diary and the 873-exercise library. Your last view persists; new installs start in the diary.
-• Coach can retrieve workout plans, preferences, completed sessions, and logged sets when answering training questions.
-• Choose a water unit and see compact water progress on Apple Watch when water tracking is enabled.
+• Optional fasting tracking, disabled by default, with a custom 1–168 hour goal.
+• Start, end, or cancel from the Home + menu; active timers persist across app restarts.
+• Review, edit, or delete completed fasting sessions without changing calories or macros.
+• Receive an optional one-time local alert when the goal is reached. The fast continues until you end it.
+• Coach can review explicitly logged fasting history when relevant and never infers a fast from missing meal logs.
 
 IMPROVED
-• Saved Meal destinations open directly; Recent and Frequent use rolling history windows, and copied foods use the current time and meal boundary.
-• Food-diary exports now include every stored nutrient.
-• Current supported AI model presets, legacy Gemini migration, and configurable timeouts for Ollama/custom endpoints.
-• More reliable provider responses, local vision requests, widgets, settings rendering, image cleanup, and keyboard dismissal.
+• Fasting records use a separate local store and are never written to Apple Health.
+• Disabling fasting cancels an active timer while preserving completed history.
+• Reliability and security updates across the app and bundled web tooling.
 
-Existing logs, goals, Health data, widgets, and BYOK settings are preserved during a normal update.
+Existing logs, goals, Health data, widgets, workout history, and BYOK settings are preserved during a normal update.
 ```
 
 ## Privacy URL
@@ -135,4 +137,5 @@ https://fud-ai.app
    • com.apoorvdarshan.calorietracker.tip.feast — $9.99
    Purchases go through StoreKit via RevenueCat, so App Store sandbox purchase testing is available.
 6) The app shows no ads and does not request tracking. In-app purchases are the 4 optional consumable tips above; nothing else is monetized.
+7) To review intermittent fasting: Settings → Fasting Tracking, enable it, choose a goal, then use Home → + → Start Fast. It is local-only, does not modify nutrition totals, and can be ended or cancelled at any time.
 ```
