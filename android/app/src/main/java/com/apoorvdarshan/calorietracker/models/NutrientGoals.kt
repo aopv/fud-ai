@@ -188,7 +188,7 @@ data class OptionalNutrientGoals(
     }
 
     fun withValue(nutrient: OptionalNutrient, value: Int): OptionalNutrientGoals {
-        val safe = value.coerceAtLeast(0)
+        val safe = value.coerceIn(0, MaximumCustomGoal)
         return when (nutrient) {
             OptionalNutrient.SUGAR -> copy(sugar = safe)
             OptionalNutrient.ADDED_SUGAR -> copy(addedSugar = safe)
@@ -214,6 +214,7 @@ data class OptionalNutrientGoals(
     }
 
     companion object {
+        const val MaximumCustomGoal = 999_999
         val Default = OptionalNutrientGoals()
     }
 }

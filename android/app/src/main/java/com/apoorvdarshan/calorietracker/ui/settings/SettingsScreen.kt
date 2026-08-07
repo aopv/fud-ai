@@ -1267,6 +1267,9 @@ fun OptionalNutrientGoalsScreen(
                 currentValue = ui.optionalNutrientGoals.valueFor(nutrient),
                 range = nutrient.pickerRange(),
                 step = nutrient.pickerStep(),
+                allowCustomValue = true,
+                guidanceUpperLimit = nutrient.generalAdultUpperLimit(),
+                customValueDetail = nutrient::customValueDetail,
                 onSave = { value ->
                     vm.setOptionalNutrientGoals(ui.optionalNutrientGoals.withValue(nutrient, value))
                     editing = null
@@ -2041,6 +2044,9 @@ private fun OptionalNutrientGoalsSheet(
             currentValue = goals.valueFor(nutrient),
             range = nutrient.pickerRange(),
             step = nutrient.pickerStep(),
+            allowCustomValue = true,
+            guidanceUpperLimit = nutrient.generalAdultUpperLimit(),
+            customValueDetail = nutrient::customValueDetail,
             onSave = { value ->
                 onChange(goals.withValue(nutrient, value))
                 editing = null
@@ -2586,7 +2592,10 @@ fun NutritionPickerSheet(
     resetLabel: String? = null,
     // Live wheel-selection reporter, for hosts that need the current value
     // before Save (e.g. to convert it when a unit switcher flips).
-    onValueChange: ((Int) -> Unit)? = null
+    onValueChange: ((Int) -> Unit)? = null,
+    allowCustomValue: Boolean = false,
+    guidanceUpperLimit: Int? = null,
+    customValueDetail: ((Int) -> String?)? = null
 ) {
     val items = remember(range, step) { (range.first..range.last step step).toList() }
     val snapped = (currentValue / step) * step
@@ -2594,25 +2603,109 @@ fun NutritionPickerSheet(
         items.minByOrNull { kotlin.math.abs(it - v) } ?: items.first()
     }
     var selected by remember(initial) { mutableStateOf(initial) }
+    val isPresetValue = currentValue in range && (currentValue - range.first) % step == 0
+    var customMode by remember(currentValue, range, step, allowCustomValue) {
+        mutableStateOf(allowCustomValue && !isPresetValue)
+    }
+    var customText by remember(currentValue) { mutableStateOf(currentValue.toString()) }
+    val customValue = customText.toIntOrNull()
+        ?.takeIf { it in 0..OptionalNutrientGoals.MaximumCustomGoal }
+    val valueToSave = if (customMode) customValue else selected
+
     Text(label, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
     Spacer(Modifier.height(12.dp))
-    Row(
-        Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
-    ) {
-        com.apoorvdarshan.calorietracker.ui.components.WheelPicker(
-            items = items,
-            selected = selected,
-            onSelect = { selected = it; onValueChange?.invoke(it) },
-            modifier = Modifier.width(120.dp)
-        )
-        Spacer(Modifier.width(8.dp))
-        Text(
-            unit,
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-        )
+    if (customMode) {
+        Row(
+            Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            FudGlassTextField(
+                value = customText,
+                onValueChange = { value ->
+                    customText = value.filter(Char::isDigit).take(7)
+                },
+                modifier = Modifier.weight(1f),
+                placeholder = "0",
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                textStyle = MaterialTheme.typography.titleMedium.copy(
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontWeight = FontWeight.Medium
+                )
+            )
+            Spacer(Modifier.width(10.dp))
+            Text(
+                unit,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+            )
+        }
+        customValue?.let { value ->
+            customValueDetail?.invoke(value)?.let { detail ->
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    detail,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.65f)
+                )
+            }
+        }
+        if (customValue != null && guidanceUpperLimit != null && customValue > guidanceUpperLimit) {
+            Spacer(Modifier.height(8.dp))
+            Text(
+                stringResource(R.string.nutrient_custom_upper_warning),
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                style = MaterialTheme.typography.bodySmall,
+                fontWeight = FontWeight.Medium,
+                color = Color(0xFFFF9F0A)
+            )
+        } else if (customValue == null) {
+            Spacer(Modifier.height(8.dp))
+            Text(
+                stringResource(R.string.nutrient_custom_invalid),
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+            )
+        }
+    } else {
+        Row(
+            Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            com.apoorvdarshan.calorietracker.ui.components.WheelPicker(
+                items = items,
+                selected = selected,
+                onSelect = { selected = it; onValueChange?.invoke(it) },
+                modifier = Modifier.width(120.dp)
+            )
+            Spacer(Modifier.width(8.dp))
+            Text(
+                unit,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+            )
+        }
+    }
+    if (allowCustomValue) {
+        TextButton(
+            onClick = {
+                customMode = !customMode
+                if (customMode) customText = selected.toString()
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                stringResource(if (customMode) R.string.nutrient_use_preset_wheel else R.string.nutrient_custom_amount),
+                color = AppColors.Calorie,
+                fontWeight = FontWeight.SemiBold
+            )
+        }
     }
     Spacer(Modifier.height(16.dp))
     Box(
@@ -2621,12 +2714,14 @@ fun NutritionPickerSheet(
             .height(54.dp)
             .clip(RoundedCornerShape(14.dp))
             .background(AppColors.CalorieGradient)
-            .clickable { onSave(selected) },
+            .clickable(enabled = valueToSave != null) {
+                valueToSave?.let(onSave)
+            },
         contentAlignment = Alignment.Center
     ) {
         Text(
             stringResource(R.string.action_save),
-            color = Color.White,
+            color = Color.White.copy(alpha = if (valueToSave == null) 0.45f else 1f),
             fontWeight = FontWeight.SemiBold,
             style = MaterialTheme.typography.titleMedium
         )
@@ -3135,6 +3230,25 @@ private fun OptionalNutrient.pickerStep(): Int = when (this) {
     OptionalNutrient.SUGAR,
     OptionalNutrient.ADDED_SUGAR -> 5
 }
+
+/**
+ * General adult upper intake levels used as non-blocking custom-goal guidance.
+ * Nutrients without a clear food-inclusive upper level intentionally return null.
+ */
+private fun OptionalNutrient.generalAdultUpperLimit(): Int? = when (this) {
+    OptionalNutrient.CALCIUM -> 2_500
+    OptionalNutrient.IRON -> 45
+    OptionalNutrient.ZINC -> 40
+    OptionalNutrient.VITAMIN_A -> 3_000
+    OptionalNutrient.VITAMIN_C -> 2_000
+    OptionalNutrient.VITAMIN_D -> 100
+    OptionalNutrient.VITAMIN_E -> 1_000
+    OptionalNutrient.FOLATE -> 1_000
+    else -> null
+}
+
+private fun OptionalNutrient.customValueDetail(value: Int): String? =
+    if (this == OptionalNutrient.VITAMIN_D) "${value * 40} IU" else null
 
 private val birthdayFormatter: DateTimeFormatter =
     DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.US)

@@ -58,7 +58,10 @@ struct OptionalNutrientGoalsSettingsView: View {
                 unit: nutrient.unit,
                 currentValue: goals.goal(for: nutrient),
                 range: nutrient.range,
-                step: nutrient.step
+                step: nutrient.step,
+                allowsCustomValue: true,
+                guidanceUpperLimit: nutrient.generalAdultUpperLimit,
+                customValueDetail: nutrient.customValueDetail
             ) { value in
                 save(goals.settingGoal(value, for: nutrient))
             }

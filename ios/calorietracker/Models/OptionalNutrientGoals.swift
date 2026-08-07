@@ -227,10 +227,33 @@ enum OptionalNutrient: String, CaseIterable, Identifiable, Codable {
             "limit"
         }
     }
+
+    /// A general adult upper intake level used only to provide non-blocking
+    /// guidance for custom goals. Nutrients without a clear food-inclusive
+    /// upper level intentionally return nil.
+    var generalAdultUpperLimit: Int? {
+        switch self {
+        case .calcium: 2_500
+        case .iron: 45
+        case .zinc: 40
+        case .vitaminA: 3_000
+        case .vitaminC: 2_000
+        case .vitaminD: 100
+        case .vitaminE: 1_000
+        case .folate: 1_000
+        default: nil
+        }
+    }
+
+    func customValueDetail(for value: Int) -> String? {
+        guard self == .vitaminD else { return nil }
+        return "\(value * 40) IU"
+    }
 }
 
 struct OptionalNutrientGoals: Codable, Equatable {
     static let storageKey = "optionalNutrientGoals"
+    static let maximumCustomGoal = 999_999
 
     private var values: [String: Int]
 
@@ -291,10 +314,6 @@ struct OptionalNutrientGoals: Codable, Equatable {
     }
 
     static func sanitized(_ value: Int, for nutrient: OptionalNutrient) -> Int {
-        let clamped = min(max(value, nutrient.range.lowerBound), nutrient.range.upperBound)
-        guard nutrient.step > 1 else { return clamped }
-        let offset = clamped - nutrient.range.lowerBound
-        let snappedOffset = Int((Double(offset) / Double(nutrient.step)).rounded()) * nutrient.step
-        return min(max(nutrient.range.lowerBound + snappedOffset, nutrient.range.lowerBound), nutrient.range.upperBound)
+        min(max(value, 0), maximumCustomGoal)
     }
 }

@@ -897,6 +897,9 @@ struct NutritionPickerSheet: View {
     let currentValue: Int
     let range: ClosedRange<Int>
     let step: Int
+    let allowsCustomValue: Bool
+    let guidanceUpperLimit: Int?
+    let customValueDetail: ((Int) -> String?)?
     let onSave: (Int) -> Void
     /// Optional callback to revert this macro to auto-balanced (custom value cleared).
     /// When provided, a button labeled `resetLabel` appears in the sheet.
@@ -908,6 +911,9 @@ struct NutritionPickerSheet: View {
     var onValueChange: ((Int) -> Void)? = nil
 
     @State private var selectedValue: Int
+    @State private var isEnteringCustomValue: Bool
+    @State private var customValueText: String
+    @State private var customFocusRequest = 0
 
     init(
         label: String,
@@ -915,6 +921,9 @@ struct NutritionPickerSheet: View {
         currentValue: Int,
         range: ClosedRange<Int>,
         step: Int,
+        allowsCustomValue: Bool = false,
+        guidanceUpperLimit: Int? = nil,
+        customValueDetail: ((Int) -> String?)? = nil,
         onSave: @escaping (Int) -> Void,
         onResetToAuto: (() -> Void)? = nil,
         resetLabel: String = "Reset to Auto-balance",
@@ -925,6 +934,9 @@ struct NutritionPickerSheet: View {
         self.currentValue = currentValue
         self.range = range
         self.step = step
+        self.allowsCustomValue = allowsCustomValue
+        self.guidanceUpperLimit = guidanceUpperLimit
+        self.customValueDetail = customValueDetail
         self.onSave = onSave
         self.onResetToAuto = onResetToAuto
         self.resetLabel = resetLabel
@@ -933,6 +945,21 @@ struct NutritionPickerSheet: View {
         let snapped = (currentValue / step) * step
         let clamped = min(max(snapped, range.lowerBound), range.upperBound)
         _selectedValue = State(initialValue: clamped)
+        let isPresetValue = range.contains(currentValue)
+            && (currentValue - range.lowerBound).isMultiple(of: step)
+        _isEnteringCustomValue = State(initialValue: allowsCustomValue && !isPresetValue)
+        _customValueText = State(initialValue: String(currentValue))
+    }
+
+    private var customValue: Int? {
+        guard let value = Int(customValueText),
+              (0...OptionalNutrientGoals.maximumCustomGoal).contains(value)
+        else { return nil }
+        return value
+    }
+
+    private var valueToSave: Int? {
+        isEnteringCustomValue ? customValue : selectedValue
     }
 
     var body: some View {
@@ -941,28 +968,90 @@ struct NutritionPickerSheet: View {
                 Text(LocalizedDisplayText.text(label))
                     .font(.system(.title2, design: .rounded, weight: .bold))
 
-                HStack(spacing: 0) {
-                    Picker(LocalizedDisplayText.text(label), selection: $selectedValue) {
-                        ForEach(Array(stride(from: range.lowerBound, through: range.upperBound, by: step)), id: \.self) { value in
-                            Text("\(value)").tag(value)
-                                .font(.system(.title2, design: .rounded, weight: .medium))
+                if isEnteringCustomValue {
+                    VStack(spacing: 10) {
+                        HStack(spacing: 10) {
+                            EndEditingDecimalTextField(
+                                text: Binding(
+                                    get: { customValueText },
+                                    set: { newValue in
+                                        customValueText = String(newValue.filter(\.isNumber).prefix(7))
+                                    }
+                                ),
+                                focusRequest: customFocusRequest,
+                                onEditingChanged: { _ in },
+                                keyboardType: .numberPad,
+                                placeholder: "0",
+                                accessibilityLabel: "Custom \(label) goal"
+                            )
+                            .frame(height: 28)
+
+                            Text(unit)
+                                .font(.system(.title3, design: .rounded))
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(.horizontal, 18)
+                        .padding(.vertical, 14)
+                        .background(AppColors.appCard, in: RoundedRectangle(cornerRadius: 16))
+
+                        if let customValue, let detail = customValueDetail?(customValue) {
+                            Text(detail)
+                                .font(.system(.subheadline, design: .rounded, weight: .medium))
+                                .foregroundStyle(.secondary)
+                        }
+
+                        if let customValue, let upperLimit = guidanceUpperLimit, customValue > upperLimit {
+                            Text("Above the general adult upper intake level. Use only if recommended by a healthcare professional.")
+                                .font(.system(.caption, design: .rounded, weight: .medium))
+                                .foregroundStyle(.orange)
+                                .multilineTextAlignment(.center)
+                                .padding(.horizontal, 24)
+                        } else if customValue == nil {
+                            Text("Enter a whole number from 0 to 999,999.")
+                                .font(.system(.caption, design: .rounded))
+                                .foregroundStyle(.secondary)
                         }
                     }
-                    .pickerStyle(.wheel)
-                    .frame(width: 120)
-                    .clipped()
-                    .onChange(of: selectedValue) { _, newValue in
-                        onValueChange?(newValue)
-                    }
+                    .padding(.horizontal, 24)
+                } else {
+                    HStack(spacing: 0) {
+                        Picker(LocalizedDisplayText.text(label), selection: $selectedValue) {
+                            ForEach(Array(stride(from: range.lowerBound, through: range.upperBound, by: step)), id: \.self) { value in
+                                Text("\(value)").tag(value)
+                                    .font(.system(.title2, design: .rounded, weight: .medium))
+                            }
+                        }
+                        .pickerStyle(.wheel)
+                        .frame(width: 120)
+                        .clipped()
+                        .onChange(of: selectedValue) { _, newValue in
+                            onValueChange?(newValue)
+                        }
 
-                    Text(unit)
-                        .font(.system(.title3, design: .rounded))
-                        .foregroundStyle(.secondary)
-                        .padding(.leading, 4)
+                        Text(unit)
+                            .font(.system(.title3, design: .rounded))
+                            .foregroundStyle(.secondary)
+                            .padding(.leading, 4)
+                    }
+                }
+
+                if allowsCustomValue {
+                    Button(isEnteringCustomValue ? "Use preset wheel" : "Custom amount") {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            isEnteringCustomValue.toggle()
+                            if isEnteringCustomValue {
+                                customValueText = String(selectedValue)
+                                customFocusRequest += 1
+                            }
+                        }
+                    }
+                    .font(.system(.subheadline, design: .rounded, weight: .semibold))
+                    .foregroundStyle(AppColors.calorie)
                 }
 
                 Button {
-                    onSave(selectedValue)
+                    guard let valueToSave else { return }
+                    onSave(valueToSave)
                     dismiss()
                 } label: {
                     Text("Save")
@@ -976,6 +1065,8 @@ struct NutritionPickerSheet: View {
                         .clipShape(RoundedRectangle(cornerRadius: 14))
                 }
                 .padding(.horizontal, 24)
+                .disabled(valueToSave == nil)
+                .opacity(valueToSave == nil ? 0.45 : 1)
 
                 if let resetAction = onResetToAuto {
                     Button {
@@ -998,7 +1089,7 @@ struct NutritionPickerSheet: View {
                 }
             }
         }
-        .presentationDetents([.medium])
+        .presentationDetents([.medium, .large])
     }
 }
 

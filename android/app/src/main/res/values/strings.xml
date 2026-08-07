@@ -968,6 +968,10 @@
     <string name="water_two_glasses_dynamic">2 glasses (~%1$s)</string>
     <string name="water_three_glasses_dynamic">3 glasses (~%1$s)</string>
     <string name="water_custom_amount">Custom amount</string>
+    <string name="nutrient_custom_amount">Custom amount</string>
+    <string name="nutrient_use_preset_wheel">Use preset wheel</string>
+    <string name="nutrient_custom_invalid">Enter a whole number from 0 to 999,999.</string>
+    <string name="nutrient_custom_upper_warning">Above the general adult upper intake level. Use only if recommended by a healthcare professional.</string>
     <string name="water_add">Add Water</string>
     <string name="water_progress">%1$d / %2$d ml</string>
     <string name="unit_ml">ml</string>
