@@ -1189,6 +1189,7 @@ private struct WorkoutLogExercisePickerSheet: View {
     @State private var selectedMechanics: Set<String> = []
     @State private var selectedCategories: Set<String> = []
     @State private var selectedSort: ExerciseLibrarySort = .name
+    @State private var previewItem: ExerciseLibraryItem?
 
     private let library = ExerciseLibraryService.shared
 
@@ -1317,10 +1318,15 @@ private struct WorkoutLogExercisePickerSheet: View {
                         ForEach(filteredExercises.prefix(120)) { item in
                             WorkoutLogPickerRow(
                                 item: item,
-                                isSelected: workoutStore.containsExercise(item.id, on: selectedDate)
-                            ) {
-                                workoutStore.toggleExercise(item, on: selectedDate)
-                            }
+                                isSelected: workoutStore.containsExercise(item.id, on: selectedDate),
+                                action: {
+                                    workoutStore.toggleExercise(item, on: selectedDate)
+                                },
+                                previewAction: {
+                                    dismissKeyboard()
+                                    previewItem = item
+                                }
+                            )
                             .listRowBackground(
                                 Color.workoutPanel.opacity(workoutStore.containsExercise(item.id, on: selectedDate) ? 0.28 : 0.18)
                             )
@@ -1353,6 +1359,17 @@ private struct WorkoutLogExercisePickerSheet: View {
             .listSectionSpacing(0)
             .navigationTitle("Add \(request.context.title)")
             .navigationBarTitleDisplayMode(.inline)
+            .navigationDestination(item: $previewItem) { item in
+                ExerciseLibraryDetailView(item: item)
+                    .safeAreaInset(edge: .bottom, spacing: 0) {
+                        WorkoutLogPreviewActionBar(
+                            isSelected: workoutStore.containsExercise(item.id, on: selectedDate),
+                            action: {
+                                workoutStore.toggleExercise(item, on: selectedDate)
+                            }
+                        )
+                    }
+            }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Done", action: onDone)
@@ -1721,50 +1738,101 @@ private struct WorkoutLogPickerRow: View {
     let item: ExerciseLibraryItem
     let isSelected: Bool
     let action: () -> Void
+    let previewAction: () -> Void
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Button(action: action) {
+                HStack(spacing: 12) {
+                    AnimatedExerciseVisual(
+                        exerciseName: item.name,
+                        imagePaths: item.imagePaths,
+                        height: 58,
+                        fillsWidth: false,
+                        allowsDerivedImageLookup: false
+                    )
+                    .frame(width: 76, height: 58)
+                    .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+                    .clipped()
+                    .layoutPriority(0)
+                    .accessibilityHidden(true)
+
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text(item.name)
+                            .font(.headline.weight(.semibold))
+                            .foregroundStyle(Color.workoutCharcoal)
+                            .lineLimit(2)
+
+                        Text("\(item.primaryMusclesTitle) - \(item.rawEquipment)")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(Color.workoutMutedText)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.72)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .layoutPriority(1)
+
+                    Image(systemName: isSelected ? "checkmark.circle.fill" : "plus.circle.fill")
+                        .font(.title3.weight(.bold))
+                        .foregroundStyle(isSelected ? Color.workoutAccent : Color.workoutMutedText)
+                        .frame(width: 34, height: 34)
+                }
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("\(item.name), \(item.primaryMusclesTitle), \(item.rawEquipment)")
+            .accessibilityValue(isSelected ? "Added" : "Not added")
+            .accessibilityHint(isSelected ? "Double tap to remove from this day" : "Double tap to add to this day")
+
+            Button(action: previewAction) {
+                Image(systemName: "info.circle.fill")
+                    .font(.system(size: 19, weight: .bold))
+                    .foregroundStyle(Color.workoutAccent)
+                    .frame(width: 34, height: 34)
+                    .background(Color.workoutPanel.opacity(0.36), in: Circle())
+                    .overlay {
+                        Circle()
+                            .stroke(Color.workoutHairline.opacity(0.28), lineWidth: 0.5)
+                    }
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Preview \(item.name)")
+        }
+        .padding(.vertical, 4)
+    }
+}
+
+private struct WorkoutLogPreviewActionBar: View {
+    let isSelected: Bool
+    let action: () -> Void
 
     var body: some View {
         Button(action: action) {
-            HStack(spacing: 12) {
-                AnimatedExerciseVisual(
-                    exerciseName: item.name,
-                    imagePaths: item.imagePaths,
-                    height: 58,
-                    fillsWidth: false,
-                    allowsDerivedImageLookup: false
-                )
-                .frame(width: 76, height: 58)
-                .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
-                .clipped()
-                .layoutPriority(0)
-                .accessibilityHidden(true)
-
-                VStack(alignment: .leading, spacing: 5) {
-                    Text(item.name)
-                        .font(.headline.weight(.semibold))
-                        .foregroundStyle(Color.workoutCharcoal)
-                        .lineLimit(2)
-
-                    Text("\(item.primaryMusclesTitle) - \(item.rawEquipment)")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(Color.workoutMutedText)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.72)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .layoutPriority(1)
-
-                Image(systemName: isSelected ? "checkmark.circle.fill" : "plus.circle.fill")
-                    .font(.title3.weight(.bold))
-                    .foregroundStyle(isSelected ? Color.workoutAccent : Color.workoutMutedText)
-                    .frame(width: 34, height: 34)
+            Label(
+                isSelected ? "Remove from day" : "Add exercise",
+                systemImage: isSelected ? "checkmark.circle.fill" : "plus.circle.fill"
+            )
+            .font(.headline.weight(.heavy))
+            .foregroundStyle(isSelected ? Color.workoutCharcoal : Color.white)
+            .frame(maxWidth: .infinity, minHeight: 52)
+            .background(
+                isSelected ? Color.workoutPanel.opacity(0.92) : Color.workoutAccent,
+                in: Capsule()
+            )
+            .overlay {
+                Capsule()
+                    .stroke(
+                        isSelected ? Color.workoutHairline.opacity(0.38) : Color.workoutAccent.opacity(0.55),
+                        lineWidth: 0.7
+                    )
             }
-            .padding(.vertical, 4)
-            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .accessibilityLabel("\(item.name), \(item.primaryMusclesTitle), \(item.rawEquipment)")
-        .accessibilityValue(isSelected ? "Added" : "Not added")
-        .accessibilityHint(isSelected ? "Double tap to remove from this day" : "Double tap to add to this day")
+        .workoutPressable()
+        .padding(.horizontal, 20)
+        .padding(.top, 10)
+        .padding(.bottom, 12)
+        .background(.ultraThinMaterial)
     }
 }
 

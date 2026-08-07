@@ -36,6 +36,7 @@ import androidx.compose.material.icons.filled.FilterListOff
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.GpsFixed
 import androidx.compose.material.icons.filled.GridView
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
@@ -561,6 +562,7 @@ internal fun CapsuleButton(text: String, icon: ImageVector, tint: Color, enabled
 internal fun ExerciseRow(
     item: ExerciseItem,
     onClick: () -> Unit,
+    onPreview: (() -> Unit)? = null,
     trailingContent: @Composable () -> Unit = {
         Icon(
             Icons.AutoMirrored.Filled.KeyboardArrowRight,
@@ -587,6 +589,26 @@ internal fun ExerciseRow(
                 .border(0.5.dp, colors.hairline.copy(alpha = 0.38f), RoundedCornerShape(18.dp))
         ) {
             AnimatedExerciseImage(item.imagePaths, Modifier.fillMaxSize())
+            if (onPreview != null) {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(5.dp)
+                        .size(30.dp)
+                        .clip(CircleShape)
+                        .background(colors.background.copy(alpha = 0.84f))
+                        .border(0.6.dp, colors.hairline.copy(alpha = 0.46f), CircleShape)
+                        .clickable { onPreview() },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        Icons.Filled.Info,
+                        contentDescription = "Preview ${item.name}",
+                        tint = colors.accent,
+                        modifier = Modifier.size(17.dp)
+                    )
+                }
+            }
         }
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(9.dp)) {
             Text(item.name, color = colors.charcoal, fontSize = 17.sp, fontWeight = FontWeight.SemiBold, maxLines = 2, overflow = TextOverflow.Ellipsis)

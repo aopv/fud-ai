@@ -138,6 +138,7 @@ internal fun WorkoutPickerSheet(
         mutableStateOf(if (request.isSavedContext) WorkoutPickerSource.SAVED else initialSource)
     }
     var filter by remember(request.contextId) { mutableStateOf(initialFilterState) }
+    var previewItem by remember(request.contextId) { mutableStateOf<ExerciseItem?>(null) }
     val focus = LocalFocusManager.current
     val keyboard = LocalSoftwareKeyboardController.current
     val context = LocalContext.current
@@ -219,20 +220,31 @@ internal fun WorkoutPickerSheet(
     }
 
     ModalBottomSheet(
-        onDismissRequest = onDismiss,
+        onDismissRequest = {
+            if (previewItem != null) previewItem = null else onDismiss()
+        },
         sheetState = sheetState,
         shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
         containerColor = MaterialTheme.colorScheme.background,
         dragHandle = null
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .navigationBarsPadding()
-                .background(workoutsColors().background)
-                .focusRequester(sheetFocusRequester)
-                .focusable()
-        ) {
+        val preview = previewItem
+        if (preview != null) {
+            ExercisePickerPreview(
+                item = preview,
+                isSelected = preview.id in selectedExerciseIds,
+                onToggle = { onToggleExercise(preview) },
+                onBack = { previewItem = null }
+            )
+        } else {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .navigationBarsPadding()
+                    .background(workoutsColors().background)
+                    .focusRequester(sheetFocusRequester)
+                    .focusable()
+            ) {
             PickerHeader(title = request.title, count = items.size, onDismiss = onDismiss)
 
             Column(
@@ -362,6 +374,7 @@ internal fun WorkoutPickerSheet(
                             ExerciseRow(
                                 item = item,
                                 onClick = { onToggleExercise(item) },
+                                onPreview = { previewItem = item },
                                 trailingContent = {
                                     Row(
                                         verticalAlignment = Alignment.CenterVertically,
@@ -404,6 +417,63 @@ internal fun WorkoutPickerSheet(
                         }
                     }
                 }
+            }
+        }
+    }
+}
+}
+
+@Composable
+private fun ExercisePickerPreview(
+    item: ExerciseItem,
+    isSelected: Boolean,
+    onToggle: () -> Unit,
+    onBack: () -> Unit
+) {
+    val colors = workoutsColors()
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .navigationBarsPadding()
+            .background(colors.background)
+    ) {
+        ExerciseDetailScreen(
+            item = item,
+            onBack = onBack,
+            modifier = Modifier.fillMaxSize()
+        )
+
+        FudGlassSurface(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 18.dp),
+            cornerRadius = 30.dp,
+            padding = 6.dp
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(CircleShape)
+                    .background(if (isSelected) colors.panel else AppColors.Calorie)
+                    .clickable { onToggle() }
+                    .padding(horizontal = 20.dp, vertical = 14.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Icon(
+                    if (isSelected) Icons.Filled.Check else Icons.Filled.AddCircle,
+                    contentDescription = null,
+                    tint = if (isSelected) colors.accent else androidx.compose.ui.graphics.Color.White,
+                    modifier = Modifier.size(21.dp)
+                )
+                Spacer(Modifier.size(8.dp))
+                Text(
+                    if (isSelected) "Remove from day" else "Add exercise",
+                    color = if (isSelected) colors.charcoal else androidx.compose.ui.graphics.Color.White,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.ExtraBold
+                )
             }
         }
     }
