@@ -144,14 +144,6 @@ enum HomeTopNutrient: String, CaseIterable, Identifiable {
     case saturatedFat
     case cholesterol
     case caffeine
-    case creatine
-    case betaAlanine
-    case lCitrulline
-    case lCarnitine
-    case lArginine
-    case taurine
-    case betaine
-    case hmb
     case sodium
     case potassium
     case transFat
@@ -167,6 +159,14 @@ enum HomeTopNutrient: String, CaseIterable, Identifiable {
     case vitaminK
     case folate
     case omega3
+    case creatine
+    case betaAlanine
+    case lCitrulline
+    case lCarnitine
+    case lArginine
+    case taurine
+    case betaine
+    case hmb
 
     static let storageKey = "homeTopNutrients"
     static let defaultSelection: [HomeTopNutrient] = [.protein, .carbs, .fat, .fiber]

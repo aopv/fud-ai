@@ -7,14 +7,6 @@ enum OptionalNutrient: String, CaseIterable, Identifiable, Codable {
     case saturatedFat
     case cholesterol
     case caffeine
-    case creatine
-    case betaAlanine
-    case lCitrulline
-    case lCarnitine
-    case lArginine
-    case taurine
-    case betaine
-    case hmb
     case sodium
     case potassium
     case transFat
@@ -30,6 +22,14 @@ enum OptionalNutrient: String, CaseIterable, Identifiable, Codable {
     case vitaminK
     case folate
     case omega3
+    case creatine
+    case betaAlanine
+    case lCitrulline
+    case lCarnitine
+    case lArginine
+    case taurine
+    case betaine
+    case hmb
 
     var id: String { rawValue }
 

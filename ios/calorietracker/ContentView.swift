@@ -2134,12 +2134,6 @@ struct NutritionDetailView: View {
                     NutritionDetailRow(icon: "drop.halffull", label: "Poly Unsat. Fat", value: formatMicro(foodStore.polyunsaturatedFat(for: date)), unit: "g")
                     optionalNutritionRow(.cholesterol, value: foodStore.cholesterol(for: date))
                     optionalNutritionRow(.caffeine, value: foodStore.caffeine(for: date))
-                    ForEach(SupplementalNutrient.allCases) { nutrient in
-                        optionalNutritionRow(
-                            nutrient.optionalNutrient,
-                            value: foodStore.supplementalNutrient(nutrient, for: date)
-                        )
-                    }
                     optionalNutritionRow(.sodium, value: foodStore.sodium(for: date))
                     optionalNutritionRow(.potassium, value: foodStore.potassium(for: date))
                     optionalNutritionRow(.transFat, value: foodStore.transFat(for: date))
@@ -2155,6 +2149,12 @@ struct NutritionDetailView: View {
                     optionalNutritionRow(.vitaminK, value: foodStore.vitaminK(for: date))
                     optionalNutritionRow(.folate, value: foodStore.folate(for: date))
                     optionalNutritionRow(.omega3, value: foodStore.omega3(for: date))
+                    ForEach(SupplementalNutrient.allCases) { nutrient in
+                        optionalNutritionRow(
+                            nutrient.optionalNutrient,
+                            value: foodStore.supplementalNutrient(nutrient, for: date)
+                        )
+                    }
                 }
                 .listRowBackground(AppColors.appCard)
             }

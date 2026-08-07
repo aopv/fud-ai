@@ -291,13 +291,6 @@ struct EditFoodEntryView: View {
                             OptionalNutritionDisplayRow(label: "Poly Fat", value: scaledPolyunsaturatedFat, unit: "g")
                             OptionalNutritionDisplayRow(label: "Cholesterol", value: scaledCholesterol, unit: "mg")
                             OptionalNutritionDisplayRow(label: "Caffeine", value: scaledCaffeine, unit: "mg")
-                            ForEach(SupplementalNutrient.allCases) { nutrient in
-                                OptionalNutritionDisplayRow(
-                                    label: nutrient.displayName,
-                                    value: scaledSupplementalNutrients[nutrient.rawValue],
-                                    unit: "g"
-                                )
-                            }
                             OptionalNutritionDisplayRow(label: "Sodium", value: scaledSodium, unit: "mg")
                             OptionalNutritionDisplayRow(label: "Potassium", value: scaledPotassium, unit: "mg")
                             OptionalNutritionDisplayRow(label: "Trans Fat", value: scaledTransFat, unit: "g")
@@ -313,6 +306,13 @@ struct EditFoodEntryView: View {
                             OptionalNutritionDisplayRow(label: "Vitamin K", value: scaledVitaminK, unit: "mcg")
                             OptionalNutritionDisplayRow(label: "Folate", value: scaledFolate, unit: "mcg")
                             OptionalNutritionDisplayRow(label: "Omega-3", value: scaledOmega3, unit: "g")
+                            ForEach(SupplementalNutrient.allCases) { nutrient in
+                                OptionalNutritionDisplayRow(
+                                    label: nutrient.displayName,
+                                    value: scaledSupplementalNutrients[nutrient.rawValue],
+                                    unit: "g"
+                                )
+                            }
                         }
                         .tint(AppColors.calorie)
                     }

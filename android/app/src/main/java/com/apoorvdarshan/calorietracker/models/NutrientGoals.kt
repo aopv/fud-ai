@@ -20,14 +20,6 @@ enum class HomeTopNutrient(
     SATURATED_FAT("saturatedFat", "Sat Fat", "g", R.string.nutrient_short_sat_fat, R.string.unit_g),
     CHOLESTEROL("cholesterol", "Cholesterol", "mg", R.string.nutrition_label_cholesterol, R.string.unit_mg),
     CAFFEINE("caffeine", "Caffeine", "mg", R.string.nutrition_label_caffeine, R.string.unit_mg),
-    CREATINE("creatine", "Creatine", "g", R.string.nutrition_label_creatine, R.string.unit_g),
-    BETA_ALANINE("betaAlanine", "Beta-Alanine", "g", R.string.nutrition_label_beta_alanine, R.string.unit_g),
-    L_CITRULLINE("lCitrulline", "L-Citrulline", "g", R.string.nutrition_label_l_citrulline, R.string.unit_g),
-    L_CARNITINE("lCarnitine", "L-Carnitine", "g", R.string.nutrition_label_l_carnitine, R.string.unit_g),
-    L_ARGININE("lArginine", "L-Arginine", "g", R.string.nutrition_label_l_arginine, R.string.unit_g),
-    TAURINE("taurine", "Taurine", "g", R.string.nutrition_label_taurine, R.string.unit_g),
-    BETAINE("betaine", "Betaine", "g", R.string.nutrition_label_betaine, R.string.unit_g),
-    HMB("hmb", "HMB", "g", R.string.nutrition_label_hmb, R.string.unit_g),
     SODIUM("sodium", "Sodium", "mg", R.string.nutrition_label_sodium, R.string.unit_mg),
     POTASSIUM("potassium", "Potassium", "mg", R.string.nutrition_label_potassium, R.string.unit_mg),
     TRANS_FAT("transFat", "Trans Fat", "g", R.string.nutrition_label_trans_fat, R.string.unit_g),
@@ -42,7 +34,15 @@ enum class HomeTopNutrient(
     VITAMIN_E("vitaminE", "Vit E", "mg", R.string.nutrient_short_vit_e, R.string.unit_mg),
     VITAMIN_K("vitaminK", "Vit K", "mcg", R.string.nutrient_short_vit_k, R.string.unit_mcg),
     FOLATE("folate", "Folate", "mcg", R.string.nutrition_label_folate, R.string.unit_mcg),
-    OMEGA3("omega3", "Omega", "g", R.string.nutrient_short_omega, R.string.unit_g);
+    OMEGA3("omega3", "Omega", "g", R.string.nutrient_short_omega, R.string.unit_g),
+    CREATINE("creatine", "Creatine", "g", R.string.nutrition_label_creatine, R.string.unit_g),
+    BETA_ALANINE("betaAlanine", "Beta-Alanine", "g", R.string.nutrition_label_beta_alanine, R.string.unit_g),
+    L_CITRULLINE("lCitrulline", "L-Citrulline", "g", R.string.nutrition_label_l_citrulline, R.string.unit_g),
+    L_CARNITINE("lCarnitine", "L-Carnitine", "g", R.string.nutrition_label_l_carnitine, R.string.unit_g),
+    L_ARGININE("lArginine", "L-Arginine", "g", R.string.nutrition_label_l_arginine, R.string.unit_g),
+    TAURINE("taurine", "Taurine", "g", R.string.nutrition_label_taurine, R.string.unit_g),
+    BETAINE("betaine", "Betaine", "g", R.string.nutrition_label_betaine, R.string.unit_g),
+    HMB("hmb", "HMB", "g", R.string.nutrition_label_hmb, R.string.unit_g);
 
     fun current(entries: List<FoodEntry>): Double = when (this) {
         PROTEIN -> entries.sumOf { it.protein }
@@ -152,14 +152,6 @@ enum class OptionalNutrient(
     SATURATED_FAT("Saturated Fat", "g", 20, R.string.nutrition_label_saturated_fat, R.string.unit_g),
     CHOLESTEROL("Cholesterol", "mg", 300, R.string.nutrition_label_cholesterol, R.string.unit_mg),
     CAFFEINE("Caffeine", "mg", 400, R.string.nutrition_label_caffeine, R.string.unit_mg),
-    CREATINE("Creatine", "g", 0, R.string.nutrition_label_creatine, R.string.unit_g),
-    BETA_ALANINE("Beta-Alanine", "g", 0, R.string.nutrition_label_beta_alanine, R.string.unit_g),
-    L_CITRULLINE("L-Citrulline", "g", 0, R.string.nutrition_label_l_citrulline, R.string.unit_g),
-    L_CARNITINE("L-Carnitine", "g", 0, R.string.nutrition_label_l_carnitine, R.string.unit_g),
-    L_ARGININE("L-Arginine", "g", 0, R.string.nutrition_label_l_arginine, R.string.unit_g),
-    TAURINE("Taurine", "g", 0, R.string.nutrition_label_taurine, R.string.unit_g),
-    BETAINE("Betaine", "g", 0, R.string.nutrition_label_betaine, R.string.unit_g),
-    HMB("HMB", "g", 0, R.string.nutrition_label_hmb, R.string.unit_g),
     SODIUM("Sodium", "mg", 2300, R.string.nutrition_label_sodium, R.string.unit_mg),
     POTASSIUM("Potassium", "mg", 3500, R.string.nutrition_label_potassium, R.string.unit_mg),
     TRANS_FAT("Trans Fat", "g", 0, R.string.nutrition_label_trans_fat, R.string.unit_g),
@@ -174,7 +166,15 @@ enum class OptionalNutrient(
     VITAMIN_E("Vitamin E", "mg", 15, R.string.nutrition_label_vitamin_e, R.string.unit_mg),
     VITAMIN_K("Vitamin K", "mcg", 120, R.string.nutrition_label_vitamin_k, R.string.unit_mcg),
     FOLATE("Folate", "mcg", 400, R.string.nutrition_label_folate, R.string.unit_mcg),
-    OMEGA3("Omega-3", "g", 2, R.string.nutrition_label_omega3, R.string.unit_g)
+    OMEGA3("Omega-3", "g", 2, R.string.nutrition_label_omega3, R.string.unit_g),
+    CREATINE("Creatine", "g", 0, R.string.nutrition_label_creatine, R.string.unit_g),
+    BETA_ALANINE("Beta-Alanine", "g", 0, R.string.nutrition_label_beta_alanine, R.string.unit_g),
+    L_CITRULLINE("L-Citrulline", "g", 0, R.string.nutrition_label_l_citrulline, R.string.unit_g),
+    L_CARNITINE("L-Carnitine", "g", 0, R.string.nutrition_label_l_carnitine, R.string.unit_g),
+    L_ARGININE("L-Arginine", "g", 0, R.string.nutrition_label_l_arginine, R.string.unit_g),
+    TAURINE("Taurine", "g", 0, R.string.nutrition_label_taurine, R.string.unit_g),
+    BETAINE("Betaine", "g", 0, R.string.nutrition_label_betaine, R.string.unit_g),
+    HMB("HMB", "g", 0, R.string.nutrition_label_hmb, R.string.unit_g)
 }
 
 @Serializable

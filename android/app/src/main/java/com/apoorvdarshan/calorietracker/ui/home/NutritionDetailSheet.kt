@@ -179,16 +179,6 @@ fun NutritionDetailSheet(
                     DetailRow(Icons.Filled.Favorite, stringResource(R.string.nutrition_label_cholesterol), fmt(cholesterol), stringResource(R.string.unit_mg), goal = "${optionalGoals.cholesterol}")
                     Hairline()
                     DetailRow(Icons.Filled.Bolt, stringResource(R.string.nutrition_label_caffeine), fmt(caffeine), stringResource(R.string.unit_mg), goal = "${optionalGoals.caffeine}")
-                    SupplementalNutrient.values().forEach { nutrient ->
-                        Hairline()
-                        DetailRow(
-                            Icons.Filled.Bolt,
-                            stringResource(nutrient.displayNameRes),
-                            fmt(supplementalNutrients[nutrient] ?: 0.0),
-                            stringResource(R.string.unit_g),
-                            goal = "${optionalGoals.valueFor(nutrient.optionalNutrient)}"
-                        )
-                    }
                     Hairline()
                     DetailRow(Icons.Filled.Bolt, stringResource(R.string.nutrition_label_sodium), fmt(sodium), stringResource(R.string.unit_mg), goal = "${optionalGoals.sodium}")
                     Hairline()
@@ -219,6 +209,16 @@ fun NutritionDetailSheet(
                     DetailRow(Icons.Filled.Spa, stringResource(R.string.nutrition_label_folate), fmt(folate), stringResource(R.string.unit_mcg), goal = "${optionalGoals.folate}")
                     Hairline()
                     DetailRow(Icons.Filled.WaterDrop, stringResource(R.string.nutrition_label_omega3), fmt(omega3), stringResource(R.string.unit_g), goal = "${optionalGoals.omega3}")
+                    SupplementalNutrient.values().forEach { nutrient ->
+                        Hairline()
+                        DetailRow(
+                            Icons.Filled.Bolt,
+                            stringResource(nutrient.displayNameRes),
+                            fmt(supplementalNutrients[nutrient] ?: 0.0),
+                            stringResource(R.string.unit_g),
+                            goal = "${optionalGoals.valueFor(nutrient.optionalNutrient)}"
+                        )
+                    }
                 }
             }
         }
