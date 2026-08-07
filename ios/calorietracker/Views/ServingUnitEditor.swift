@@ -19,7 +19,7 @@ struct ServingUnitEditor: View {
     }
 
     private var selectedQuantity: Double? {
-        Self.parseDecimal(quantityText)
+        ServingAmountExpression.evaluate(quantityText)
     }
 
     private var selectedUnitLabel: String {
@@ -31,11 +31,17 @@ struct ServingUnitEditor: View {
             EndEditingDecimalTextField(
                 text: $quantityText,
                 focusRequest: focusRequest,
-                onEditingChanged: onEditingChanged
+                onEditingChanged: { editing in
+                    if !editing {
+                        finalizeQuantityExpression()
+                    }
+                    onEditingChanged(editing)
+                },
+                showsCalculatorToolbar: true
             )
-            .frame(width: 72)
+            .frame(width: 104)
             .onChange(of: quantityText) { _, newValue in
-                guard let parsed = Self.parseDecimal(newValue), parsed > 0 else { return }
+                guard let parsed = ServingAmountExpression.evaluate(newValue), parsed > 0 else { return }
                 servingSizeGrams = parsed * selectedOption.gramsPerUnit
             }
             .onChange(of: selectedUnitID) { _, _ in
@@ -88,8 +94,19 @@ struct ServingUnitEditor: View {
         quantityText = Self.formatQuantity(quantity)
     }
 
+    private func finalizeQuantityExpression() {
+        let trimmed = quantityText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        guard let quantity = ServingAmountExpression.evaluate(trimmed), quantity > 0 else {
+            syncQuantityTextToSelectedUnit()
+            return
+        }
+        quantityText = Self.formatQuantity(quantity)
+        servingSizeGrams = quantity * selectedOption.gramsPerUnit
+    }
+
     static func formatQuantity(_ value: Double) -> String {
-        if value == value.rounded() {
+        if value == value.rounded(), value >= Double(Int.min), value <= Double(Int.max) {
             return String(Int(value))
         }
         if abs(value) < 10 {

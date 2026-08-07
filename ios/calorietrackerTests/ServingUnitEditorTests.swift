@@ -4,6 +4,35 @@ import Testing
 
 struct ServingUnitEditorTests {
 
+    // MARK: - Serving calculator
+
+    @Test func calculatorEvaluatesCommonServingAdjustments() {
+        #expect(ServingAmountExpression.evaluate("50+20") == 70)
+        #expect(ServingAmountExpression.evaluate("200−35") == 165)
+        #expect(ServingAmountExpression.evaluate("80×2") == 160)
+        #expect(ServingAmountExpression.evaluate("300÷3") == 100)
+    }
+
+    @Test func calculatorUsesStandardOperatorPrecedence() {
+        #expect(ServingAmountExpression.evaluate("50+20×2") == 90)
+    }
+
+    @Test func calculatorAcceptsLocalizedDecimals() {
+        #expect(ServingAmountExpression.evaluate("1,5+0,5", locale: Locale(identifier: "de_DE")) == 2)
+        #expect(ServingAmountExpression.evaluate("1.5+0.25", locale: Locale(identifier: "en_US")) == 1.75)
+    }
+
+    @Test func calculatorRejectsIncompleteAndUnsafeExpressions() {
+        #expect(ServingAmountExpression.evaluate("50+") == nil)
+        #expect(ServingAmountExpression.evaluate("50÷0") == nil)
+        #expect(ServingAmountExpression.evaluate("food+20") == nil)
+    }
+
+    @Test func calculatorOperatorButtonsReplaceAnIncompleteOperator() {
+        #expect(ServingAmountExpression.appending("+", to: "50") == "50+")
+        #expect(ServingAmountExpression.appending("×", to: "50+") == "50×")
+    }
+
     // MARK: - C locale (period decimal)
 
     @Test func cLocale_simpleInteger() {

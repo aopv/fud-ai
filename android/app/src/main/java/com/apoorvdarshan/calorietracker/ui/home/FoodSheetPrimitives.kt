@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
@@ -35,6 +36,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
@@ -64,6 +66,7 @@ import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material.icons.filled.WbTwilight
 import com.apoorvdarshan.calorietracker.R
 import com.apoorvdarshan.calorietracker.models.MealType
+import com.apoorvdarshan.calorietracker.models.ServingAmountExpression
 import com.apoorvdarshan.calorietracker.models.ServingUnitOption
 import com.apoorvdarshan.calorietracker.ui.theme.AppColors
 
@@ -255,7 +258,7 @@ internal fun ServingQuantityCard(
 ) {
     val pickerOptions = ServingUnitOption.pickerOptions(unitOptions)
     val selectedOption = ServingUnitOption.optionMatching(selectedUnitId, unitOptions)
-    val parsedQuantity = ServingUnitOption.parseQuantity(quantityText)
+    val parsedQuantity = ServingAmountExpression.evaluate(quantityText)
     val selectedUnitLabel = selectedOption.displayUnit(parsedQuantity)
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -266,6 +269,29 @@ internal fun ServingQuantityCard(
     val focusRequester = remember { FocusRequester() }
     var quantityFieldValue by remember {
         mutableStateOf(TextFieldValue(quantityText, selection = TextRange(quantityText.length)))
+    }
+    var quantityFocused by remember { mutableStateOf(false) }
+
+    fun updateQuantity(newValue: String) {
+        quantityFieldValue = TextFieldValue(newValue, selection = TextRange(newValue.length))
+        onQuantityChange(newValue)
+    }
+
+    fun finalizeQuantity() {
+        val trimmed = quantityFieldValue.text.trim()
+        if (trimmed.isEmpty()) return
+        val result = ServingAmountExpression.evaluate(trimmed)
+        val finalValue = if (result != null && result > 0) {
+            ServingUnitOption.formatQuantity(result)
+        } else {
+            val quantity = if (selectedOption.gramsPerUnit > 0) {
+                servingSizeGrams / selectedOption.gramsPerUnit
+            } else {
+                servingSizeGrams
+            }
+            ServingUnitOption.formatQuantity(quantity)
+        }
+        updateQuantity(finalValue)
     }
 
     LaunchedEffect(quantityText) {
@@ -297,10 +323,7 @@ internal fun ServingQuantityCard(
             BasicTextField(
                 value = quantityFieldValue,
                 onValueChange = { newValue ->
-                    quantityFieldValue = newValue.copy(
-                        selection = TextRange(newValue.text.length)
-                    )
-                    onQuantityChange(newValue.text)
+                    updateQuantity(newValue.text)
                 },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
@@ -311,8 +334,14 @@ internal fun ServingQuantityCard(
                 ),
                 cursorBrush = SolidColor(AppColors.Calorie),
                 modifier = Modifier
-                    .width(80.dp)
+                    .widthIn(min = 80.dp, max = 112.dp)
                     .focusRequester(focusRequester)
+                    .onFocusChanged { state ->
+                        if (quantityFocused && !state.isFocused) {
+                            finalizeQuantity()
+                        }
+                        quantityFocused = state.isFocused
+                    }
             )
             if (quantityText.isNotEmpty()) {
                 Spacer(Modifier.width(6.dp))
@@ -324,8 +353,7 @@ internal fun ServingQuantityCard(
                         .size(20.dp)
                         .clip(CircleShape)
                         .clickable {
-                            quantityFieldValue = TextFieldValue("", selection = TextRange.Zero)
-                            onQuantityChange("")
+                            updateQuantity("")
                             focusRequester.requestFocus()
                         }
                 )
@@ -391,6 +419,45 @@ internal fun ServingQuantityCard(
             }
         }
 
+        if (quantityFocused) {
+            val liveResult = ServingAmountExpression.evaluate(quantityFieldValue.text)
+                ?.takeIf { it > 0 && ServingAmountExpression.containsOperation(quantityFieldValue.text) }
+            SheetHairline()
+            if (liveResult != null) {
+                Text(
+                    "= ${ServingUnitOption.formatQuantity(liveResult)} $selectedUnitLabel",
+                    color = AppColors.Calorie,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    textAlign = TextAlign.End,
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 6.dp)
+                )
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                SheetCalculatorKey("C") {
+                    updateQuantity("")
+                    focusRequester.requestFocus()
+                }
+                for (operation in listOf('+', '−', '×', '÷')) {
+                    SheetCalculatorKey(operation.toString()) {
+                        updateQuantity(
+                            ServingAmountExpression.appendOperator(quantityFieldValue.text, operation)
+                        )
+                        focusRequester.requestFocus()
+                    }
+                }
+                SheetCalculatorKey("=", emphasized = true) {
+                    ServingAmountExpression.evaluate(quantityFieldValue.text)
+                        ?.takeIf { it > 0 }
+                        ?.let { updateQuantity(ServingUnitOption.formatQuantity(it)) }
+                    focusRequester.requestFocus()
+                }
+            }
+        }
+
         if (!selectedOption.isGramUnit) {
             SheetHairline()
             Row(
@@ -405,6 +472,34 @@ internal fun ServingQuantityCard(
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun RowScope.SheetCalculatorKey(
+    label: String,
+    emphasized: Boolean = false,
+    onClick: () -> Unit
+) {
+    val shape = RoundedCornerShape(10.dp)
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .weight(1f)
+            .height(36.dp)
+            .clip(shape)
+            .background(
+                if (emphasized) AppColors.Calorie
+                else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.075f)
+            )
+            .clickable(onClick = onClick)
+    ) {
+        Text(
+            label,
+            color = if (emphasized) Color.White else MaterialTheme.colorScheme.onSurface,
+            fontSize = 17.sp,
+            fontWeight = FontWeight.SemiBold
+        )
     }
 }
 

@@ -63,6 +63,7 @@ import com.apoorvdarshan.calorietracker.models.MacroValueFormatter
 import com.apoorvdarshan.calorietracker.models.MealType
 import com.apoorvdarshan.calorietracker.models.MealIngredient
 import com.apoorvdarshan.calorietracker.models.ServingUnitOption
+import com.apoorvdarshan.calorietracker.models.ServingAmountExpression
 import com.apoorvdarshan.calorietracker.models.totals
 import com.apoorvdarshan.calorietracker.models.UserProfile
 import com.apoorvdarshan.calorietracker.services.ai.FoodAnalysis
@@ -129,7 +130,7 @@ fun FoodResultSheet(
         )
     }
     val selectedServingOption = ServingUnitOption.optionMatching(selectedServingUnitId, servingUnitOptions)
-    val selectedServingQuantity = ServingUnitOption.parseQuantity(servingQuantityText)?.takeIf { it > 0 }
+    val selectedServingQuantity = ServingAmountExpression.evaluate(servingQuantityText)?.takeIf { it > 0 }
     val scale = if (baseServingGrams > 0) servingGrams / baseServingGrams else 1.0
     var mealType by remember { mutableStateOf(MealType.currentMeal) }
     var moreNutritionExpanded by remember { mutableStateOf(false) }
@@ -374,7 +375,7 @@ fun FoodResultSheet(
                     quantityText = servingQuantityText,
                     onQuantityChange = { newValue ->
                         servingQuantityText = newValue
-                        ServingUnitOption.parseQuantity(newValue)?.takeIf { it > 0 }?.let {
+                        ServingAmountExpression.evaluate(newValue)?.takeIf { it > 0 }?.let {
                             servingGrams = it * selectedServingOption.gramsPerUnit
                         }
                     },

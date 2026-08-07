@@ -95,7 +95,7 @@ struct FoodResultView: View {
         ServingUnitOption.option(matching: selectedServingUnitID, in: servingUnitOptions)
     }
     private var selectedServingQuantity: Double? {
-        ServingUnitEditor.parseDecimal(servingSizeText)
+        ServingAmountExpression.evaluate(servingSizeText)
     }
 
     init(
@@ -1053,6 +1053,7 @@ struct EndEditingDecimalTextField: UIViewRepresentable {
     var keyboardType: UIKeyboardType = .decimalPad
     var placeholder: String = "0"
     var accessibilityLabel: String? = nil
+    var showsCalculatorToolbar = false
 
     func makeUIView(context: Context) -> UITextField {
         let textField = UITextField()
@@ -1063,6 +1064,7 @@ struct EndEditingDecimalTextField: UIViewRepresentable {
         textField.accessibilityLabel = accessibilityLabel
         textField.font = .preferredFont(forTextStyle: .body)
         textField.adjustsFontForContentSizeCategory = true
+        context.coordinator.textField = textField
         textField.inputAccessoryView = context.coordinator.makeToolbar()
         textField.addTarget(context.coordinator, action: #selector(Coordinator.textDidChange(_:)), for: .editingChanged)
         return textField
@@ -1075,6 +1077,7 @@ struct EndEditingDecimalTextField: UIViewRepresentable {
         textField.keyboardType = keyboardType
         textField.placeholder = placeholder
         textField.accessibilityLabel = accessibilityLabel
+        context.coordinator.refreshPreview(for: text)
         if context.coordinator.lastFocusRequest != focusRequest {
             context.coordinator.lastFocusRequest = focusRequest
             DispatchQueue.main.async {
@@ -1085,7 +1088,12 @@ struct EndEditingDecimalTextField: UIViewRepresentable {
     }
 
     func makeCoordinator() -> Coordinator {
-        Coordinator(text: $text, focusRequest: focusRequest, onEditingChanged: onEditingChanged)
+        Coordinator(
+            text: $text,
+            focusRequest: focusRequest,
+            onEditingChanged: onEditingChanged,
+            showsCalculatorToolbar: showsCalculatorToolbar
+        )
     }
 
     private static func moveCaretToEnd(in textField: UITextField) {
@@ -1097,15 +1105,25 @@ struct EndEditingDecimalTextField: UIViewRepresentable {
         @Binding private var text: String
         var lastFocusRequest: Int
         private let onEditingChanged: (Bool) -> Void
+        private let showsCalculatorToolbar: Bool
+        weak var textField: UITextField?
+        private weak var equalsItem: UIBarButtonItem?
 
-        init(text: Binding<String>, focusRequest: Int, onEditingChanged: @escaping (Bool) -> Void) {
+        init(
+            text: Binding<String>,
+            focusRequest: Int,
+            onEditingChanged: @escaping (Bool) -> Void,
+            showsCalculatorToolbar: Bool
+        ) {
             self._text = text
             self.lastFocusRequest = focusRequest
             self.onEditingChanged = onEditingChanged
+            self.showsCalculatorToolbar = showsCalculatorToolbar
         }
 
         @objc func textDidChange(_ textField: UITextField) {
             text = textField.text ?? ""
+            refreshPreview(for: text)
         }
 
         func makeToolbar() -> UIToolbar {
@@ -1113,16 +1131,41 @@ struct EndEditingDecimalTextField: UIViewRepresentable {
             doneItem.tintColor = Self.calorieTint
 
             let toolbar = UIToolbar()
-            toolbar.items = [
-                UIBarButtonItem(systemItem: .flexibleSpace),
-                doneItem
-            ]
+            if showsCalculatorToolbar {
+                let clear = item("C", action: #selector(clearTapped))
+                let add = item("+", action: #selector(addTapped))
+                let subtract = item("−", action: #selector(subtractTapped))
+                let multiply = item("×", action: #selector(multiplyTapped))
+                let divide = item("÷", action: #selector(divideTapped))
+                let equals = item("=", action: #selector(equalsTapped))
+                equalsItem = equals
+                toolbar.items = [
+                    clear, flexibleSpace(), add, flexibleSpace(), subtract, flexibleSpace(),
+                    multiply, flexibleSpace(), divide, flexibleSpace(), equals, flexibleSpace(), doneItem
+                ]
+            } else {
+                toolbar.items = [flexibleSpace(), doneItem]
+            }
             toolbar.sizeToFit()
             return toolbar
         }
 
         @objc func doneTapped() {
+            collapseExpressionIfValid()
             UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        }
+
+        @objc private func clearTapped() {
+            replaceText(with: "")
+        }
+
+        @objc private func addTapped() { append(operation: "+") }
+        @objc private func subtractTapped() { append(operation: "−") }
+        @objc private func multiplyTapped() { append(operation: "×") }
+        @objc private func divideTapped() { append(operation: "÷") }
+
+        @objc private func equalsTapped() {
+            collapseExpressionIfValid()
         }
 
         func textFieldDidBeginEditing(_ textField: UITextField) {
@@ -1134,6 +1177,46 @@ struct EndEditingDecimalTextField: UIViewRepresentable {
 
         func textFieldDidEndEditing(_ textField: UITextField) {
             onEditingChanged(false)
+        }
+
+        func refreshPreview(for expression: String) {
+            guard showsCalculatorToolbar,
+                  ServingAmountExpression.containsOperation(expression),
+                  let result = ServingAmountExpression.evaluate(expression),
+                  result > 0
+            else {
+                equalsItem?.title = "="
+                return
+            }
+            equalsItem?.title = "= \(ServingUnitEditor.formatQuantity(result))"
+        }
+
+        private func append(operation: Character) {
+            replaceText(with: ServingAmountExpression.appending(operation, to: text))
+        }
+
+        private func collapseExpressionIfValid() {
+            guard let result = ServingAmountExpression.evaluate(text), result > 0 else { return }
+            replaceText(with: ServingUnitEditor.formatQuantity(result))
+        }
+
+        private func replaceText(with newValue: String) {
+            text = newValue
+            textField?.text = newValue
+            refreshPreview(for: newValue)
+            if let textField {
+                EndEditingDecimalTextField.moveCaretToEnd(in: textField)
+            }
+        }
+
+        private func item(_ title: String, action: Selector) -> UIBarButtonItem {
+            let item = UIBarButtonItem(title: title, style: .plain, target: self, action: action)
+            item.tintColor = Self.calorieTint
+            return item
+        }
+
+        private func flexibleSpace() -> UIBarButtonItem {
+            UIBarButtonItem(systemItem: .flexibleSpace)
         }
 
         private static let calorieTint = UIColor(red: 1.0, green: 55.0 / 255.0, blue: 95.0 / 255.0, alpha: 1.0)
