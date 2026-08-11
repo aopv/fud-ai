@@ -480,7 +480,7 @@ class FoodAnalysisService(
         return try {
             dispatch(primary, primaryModel, primaryBaseUrl, primaryKey, finalPrompt, uploadImages, maxTokens, requestTimeoutSeconds)
         } catch (primaryError: Throwable) {
-            val fallback = currentFallbackConfig(primary, primaryModel) ?: throw primaryError
+            val fallback = currentFallbackConfig(primary, primaryModel, primaryBaseUrl) ?: throw primaryError
             dispatch(fallback.provider, fallback.model, fallback.baseUrl, fallback.apiKey, finalPrompt, uploadImages, maxTokens, requestTimeoutSeconds)
         }
     }
@@ -582,16 +582,18 @@ class FoodAnalysisService(
 
     private suspend fun currentFallbackConfig(
         primary: AIProvider,
-        primaryModel: String
+        primaryModel: String,
+        primaryBaseUrl: String
     ): FallbackConfig? {
         if (!prefs.fallbackEnabled.first()) return null
         val provider = prefs.selectedFallbackProvider.first()
         val model = provider.supportedModelOrDefault(prefs.selectedFallbackModel.first())
+        val baseUrl = prefs.fallbackCustomBaseUrl(provider).first()?.takeIf { it.isNotEmpty() } ?: provider.baseUrl
         // Fallback identical to primary would be a pointless retry of the same call.
-        if (provider == primary && model == primaryModel) return null
+        // The same provider and model on a *different* server is a legitimate config.
+        if (provider == primary && model == primaryModel && baseUrl == primaryBaseUrl) return null
         val key = keyStore.apiKey(provider)
         if (provider.requiresApiKey && key.isNullOrEmpty()) return null
-        val baseUrl = prefs.customBaseUrl(provider).first()?.takeIf { it.isNotEmpty() } ?: provider.baseUrl
         if (baseUrl.isEmpty()) return null
         return FallbackConfig(provider, model, baseUrl, key)
     }
