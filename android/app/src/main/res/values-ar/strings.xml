@@ -662,4 +662,5 @@
     <string name="whats_new_v30_adaptive">تخرّجت ميزتا الأهداف التكيفية وحرق الطاقة من المرحلة التجريبية وأصبحتا مفعّلتين افتراضيًا للتثبيتات الجديدة.</string>
     <string name="whats_new_v30_widgets">تصميم جديد للودجات: نمط عدّاد السرعة من الرئيسية، مرسوم بالحجم الحقيقي لكل ودجة.</string>
     <string name="whats_new_v30_restore">أعدت التثبيت أو غيّرت هاتفك؟ يُستعاد الآن سجل طعامك ووزنك ودهون جسمك تلقائيًا من Health Connect.</string>
+    <string name="settings_other_nutrients_note">منفصل عن أهداف السعرات الحرارية والبروتين والكربوهيدرات والدهون.</string>
 </resources>

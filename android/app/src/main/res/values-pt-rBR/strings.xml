@@ -659,4 +659,5 @@
     <string name="whats_new_v30_adaptive">Metas adaptativas e Queima de energia saíram da fase experimental e vêm ativadas por padrão em novas instalações.</string>
     <string name="whats_new_v30_widgets">Widgets redesenhados: o estilo velocímetro da tela inicial, desenhado no tamanho real de cada widget.</string>
     <string name="whats_new_v30_restore">Reinstalou ou trocou de celular? Seu diário alimentar, peso e gordura corporal agora são restaurados automaticamente do Health Connect.</string>
+    <string name="settings_other_nutrients_note">Separado das metas de calorias, proteínas, carboidratos e gorduras.</string>
 </resources>

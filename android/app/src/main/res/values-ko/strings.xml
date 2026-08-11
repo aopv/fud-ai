@@ -657,4 +657,5 @@
     <string name="whats_new_v30_adaptive">적응형 목표와 에너지 소모가 실험 단계를 졸업하고 새 설치에서 기본으로 켜집니다.</string>
     <string name="whats_new_v30_widgets">위젯 개편: 홈의 속도계 스타일을 각 위젯의 실제 크기로 그립니다.</string>
     <string name="whats_new_v30_restore">재설치했거나 휴대폰을 바꿨나요? 이제 음식 기록, 체중, 체지방이 Health Connect에서 자동으로 복원됩니다.</string>
+    <string name="settings_other_nutrients_note">칼로리, 단백질, 탄수화물, 지방 목표와 별개입니다.</string>
 </resources>
