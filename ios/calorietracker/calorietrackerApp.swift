@@ -47,6 +47,7 @@ struct calorietrackerApp: App {
         // before any view reads them.
         UnitPreferenceMigration.runIfNeeded()
         AIProviderSettings.migrateLegacyGeminiModelsIfNeeded()
+        AIProviderSettings.migrateFallbackBaseURLsIfNeeded()
         if CommandLine.arguments.contains("--reset-onboarding") {
             UserDefaults.standard.removeObject(forKey: "hasCompletedOnboarding")
             UserDefaults.standard.removeObject(forKey: "userProfile")
