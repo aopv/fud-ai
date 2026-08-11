@@ -3439,7 +3439,7 @@ struct ProfileView: View {
     private var birthdayDisplay: String {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
-        return "\(formatter.string(from: profile.birthday)) (age \(profile.age))"
+        return String(localized: "\(formatter.string(from: profile.birthday)) (age \(profile.age))")
     }
 
     // Goal weight display
