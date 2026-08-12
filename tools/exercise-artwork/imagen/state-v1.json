@@ -1,84 +1,100 @@
 {
   "jobs": {
     "3_4_Sit-Up__f0__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T17:04:04+00:00",
+      "claimedBy": "root",
+      "completedAt": "2026-08-12T17:07:02+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/3_4_Sit-Up/0.png",
       "jobFingerprint": "388657a86e842d038e2f3a52c886c7dcdadd7ff29b510b0dda8c1989b1657b08",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "f3b2f96afd3bdb8568657007ca281de703ea3eef5c2867d8c765c8a53a9d3bcc",
+      "qaStatus": "rejected",
+      "status": "qa_failed"
     },
     "3_4_Sit-Up__f0__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T17:04:04+00:00",
+      "claimedBy": "root",
+      "completedAt": "2026-08-12T17:07:07+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/3_4_Sit-Up/0.png",
       "jobFingerprint": "76fe102668945081697d7e9203ffad99544a814cbf2cf6ead2a39ca662dc423d",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "b5478b37c4784d6200ea416c2762abc5bfe1085c6b16b2df637ba7ff9c9a8167",
+      "qaStatus": "rejected",
+      "status": "qa_failed"
     },
     "3_4_Sit-Up__f1__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T17:04:04+00:00",
+      "claimedBy": "root",
+      "completedAt": "2026-08-12T17:07:04+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/3_4_Sit-Up/1.png",
       "jobFingerprint": "96df433229be633fbadfe43e3b29701872cdeeefaaaed0978282524e026d120b",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "084f65946e93d61c681ef89c1a66466387f3f99e0934cf0a1e751a477a38455c",
+      "qaStatus": "rejected",
+      "status": "qa_failed"
     },
     "3_4_Sit-Up__f1__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T17:04:04+00:00",
+      "claimedBy": "root",
+      "completedAt": "2026-08-12T17:07:09+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/3_4_Sit-Up/1.png",
       "jobFingerprint": "c9953b156adbaa8ed9f178800ac5da2f01ddb092b475452ddc0088da375c8c96",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "9d836afc198465d7c61a88d0d0c725c0d1ac409a3d254f1c40c7cfa9f6f2a672",
+      "qaStatus": "rejected",
+      "status": "qa_failed"
     },
     "90_90_Hamstring__f0__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T17:00:20+00:00",
+      "claimedBy": "root",
+      "completedAt": "2026-08-12T17:03:23+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/90_90_Hamstring/0.png",
       "jobFingerprint": "4cd5dbaa621117e9304d02ab8207634b39ce79223a1e3fa2c76fa57f2eec39b2",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "1af4292bcd91493d6febeef7c27bf7e50b2243931dd0ec399ca84b76145e693b",
+      "qaStatus": "rejected",
+      "status": "qa_failed"
     },
     "90_90_Hamstring__f0__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T17:00:21+00:00",
+      "claimedBy": "root",
+      "completedAt": "2026-08-12T17:03:28+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/90_90_Hamstring/0.png",
       "jobFingerprint": "476945fbdd8b5cd3c310245246201c4b8bfbf25d9b2286541539700eac7060d2",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "880a0e5499691d3e2962dffadb93f3ec070739dfed76035fd3e4091dba0dd37b",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "90_90_Hamstring__f1__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T17:00:21+00:00",
+      "claimedBy": "root",
+      "completedAt": "2026-08-12T17:03:26+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/90_90_Hamstring/1.png",
       "jobFingerprint": "1580e160889231b5f990f51f8a791816d11c59351f5ada0fffc7f4bc862ee010",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "2120cbd98800fac301b5f9ecf08ff5e4f1ecc016ee508a7d0848c07755845acb",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "90_90_Hamstring__f1__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T17:00:21+00:00",
+      "claimedBy": "root",
+      "completedAt": "2026-08-12T17:03:30+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/90_90_Hamstring/1.png",
       "jobFingerprint": "ae7ceedf014c6126db61aa321351780807696fc0343c30a0945915f43e361aa0",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "52f83ab944b9485ccf549115bad1a3746e1c24641bda4fc05352b444acd27e1e",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Ab_Crunch_Machine__f0__female": {
       "attempts": 0,
@@ -569,44 +585,52 @@
       "status": "pending"
     },
     "Alternating_Deltoid_Raise__f0__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T16:57:13+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-12T16:58:05+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Alternating_Deltoid_Raise/0.png",
       "jobFingerprint": "e2d3d6d5a226f846e78ac4090667171c3af282b7a397659b24d2e628314b9691",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "0feed74c077a219cd9177c1b95f4b1aa95ee6b67aec86dd6dddf3303442d868d",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Alternating_Deltoid_Raise__f0__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T16:55:57+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-12T16:56:53+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Alternating_Deltoid_Raise/0.png",
       "jobFingerprint": "625b9929db8a2b11cc754c22f651610eb6ec93181669e7c77befd4718ea218d7",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "f8f4b1348ba227fe629104ce1a581be67413f4fea3c9b51983a08d87ffb53260",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Alternating_Deltoid_Raise__f1__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T16:58:05+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-12T16:59:09+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Alternating_Deltoid_Raise/1.png",
       "jobFingerprint": "23c47f233cda55200c7f0220408ea15389cfa219905f2fa22c5b0c61ec4ef978",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "42dc073afd305851f54d4ec935a5ab5f46374f0c326352bbd16a03a1a6b1f3fa",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Alternating_Deltoid_Raise__f1__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T16:56:53+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-12T16:57:53+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Alternating_Deltoid_Raise/1.png",
       "jobFingerprint": "1f138d4f824e0e79afb2314e8325151248e73bf3b48562a72b7c5fe1c154c129",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "1ed2633d2c5361889ca572f31159d6f166c5667939ed222fdb1fed53c0e361e8",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Alternating_Floor_Press__f0__female": {
       "attempts": 0,
@@ -1587,14 +1611,16 @@
       "status": "pending"
     },
     "Band_Pull_Apart__f0__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T16:59:04+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-12T17:00:06+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Band_Pull_Apart/0.png",
       "jobFingerprint": "3a0531010352d0fa7ff0b9fbcc4bf96b769f6c50255bf141b514c540caa63087",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "801e8317949c9b2469b6775f472bed43ba35f1ce4f8a5f0ec277e060ceae2287",
+      "qaStatus": "rejected",
+      "status": "qa_failed"
     },
     "Band_Pull_Apart__f1__female": {
       "attempts": 0,
@@ -1607,14 +1633,16 @@
       "status": "pending"
     },
     "Band_Pull_Apart__f1__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T17:00:07+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-12T17:01:13+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Band_Pull_Apart/1.png",
       "jobFingerprint": "d909257db223dc0ea1fc3a2031629ba4d6a86019ac9ea3d4a87d2776caac7187",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "650acff92a0690e1c9c732da25901956e1796e1a6287cd21be6853cb17259755",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Band_Skull_Crusher__f0__female": {
       "attempts": 0,
@@ -1787,14 +1815,16 @@
       "status": "pending"
     },
     "Barbell_Curl__f0__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T16:48:12+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-12T16:49:04+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Barbell_Curl/0.png",
       "jobFingerprint": "c189f5751aa8b5cbe2f09b965573621e6f51c284ab230822397ad5a46147abd9",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "d35d2ee520fc47afbe3a391bfc393a19cb29d2d6c7d4370515285729ecfe1854",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Barbell_Curl__f1__female": {
       "attempts": 0,
@@ -1807,14 +1837,16 @@
       "status": "pending"
     },
     "Barbell_Curl__f1__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T16:49:04+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-12T16:50:07+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Barbell_Curl/1.png",
       "jobFingerprint": "ab51fd005855b62f3cf8a844f5bb9b5e4e5ac5cde24c26df6ed50b4f09c5b733",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "7c0c862c1887bdea8f12a0bb8b8d16e176b02699505a0131a53bebb9b06aafe9",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Barbell_Curls_Lying_Against_An_Incline__f0__female": {
       "attempts": 0,
@@ -2387,14 +2419,16 @@
       "status": "pending"
     },
     "Barbell_Shrug_Behind_The_Back__f0__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T17:02:29+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-12T17:03:44+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Barbell_Shrug_Behind_The_Back/0.png",
       "jobFingerprint": "2631b49df195dc603d21dc08b59cc3f6ef6e8b48136b9ae4095eaa5417802e20",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "0da92b49924f09f18baee72973b4cd6c0f9e7d314d5b7ae8d1fdb8cb968dcfed",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Barbell_Shrug_Behind_The_Back__f1__female": {
       "attempts": 0,
@@ -2407,14 +2441,16 @@
       "status": "pending"
     },
     "Barbell_Shrug_Behind_The_Back__f1__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T17:03:45+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-12T17:04:58+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Barbell_Shrug_Behind_The_Back/1.png",
       "jobFingerprint": "29442a686e748afa1a32d5bc92f51b2cd6178caaaf455cbfa19264654ba14c05",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "133f8409ff99d3c005ce7d8200e698c8410e341dde24508d49e896f361944a5d",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Barbell_Shrug__f0__female": {
       "attempts": 0,
@@ -2427,14 +2463,16 @@
       "status": "pending"
     },
     "Barbell_Shrug__f0__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T16:51:15+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-12T16:52:19+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Barbell_Shrug/0.png",
       "jobFingerprint": "5df2ee5917a8e3bec9c7c86db13f2800e5cff735d32bccafd42bf876cdadb193",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "6a4e892c01989772d32740660f6fe61626e4a1cf9d0585e5c40654eb6b1fc07b",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Barbell_Shrug__f1__female": {
       "attempts": 0,
@@ -2447,14 +2485,16 @@
       "status": "pending"
     },
     "Barbell_Shrug__f1__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T16:52:19+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-12T16:53:23+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Barbell_Shrug/1.png",
       "jobFingerprint": "4b7812f0e0d650cf16263649ede45fcb0d274158af24af61f36ffee1aa75adf1",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "9b048a4331bc10c4e38aa32a574d3989732f9d4c97337d1f7440db88caa8c5a6",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Barbell_Side_Bend__f0__female": {
       "attempts": 0,
@@ -3825,44 +3865,52 @@
       "status": "pending"
     },
     "Bodyweight_Squat__f0__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T16:36:34+00:00",
+      "claimedBy": "root-generation",
+      "completedAt": "2026-08-12T16:40:43+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Bodyweight_Squat/0.png",
       "jobFingerprint": "5d571cd4e9eb05126a25fd5a5f13ba1dcfb06936826f6bc016dd09cdaa41a80f",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "4772d397a7629a8018908e50dcbb471710c22a6d02bc9711f34266bef20c2be9",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Bodyweight_Squat__f0__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T16:36:34+00:00",
+      "claimedBy": "root-generation",
+      "completedAt": "2026-08-12T16:40:38+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Bodyweight_Squat/0.png",
       "jobFingerprint": "a5a964b49fb10394d26d0801662db37a89d23d0484293615c04eae40847c754b",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "c19ccbbc14ed83201ccbb6991dc99734a401d683198f98b46f06b751812250bd",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Bodyweight_Squat__f1__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T16:36:35+00:00",
+      "claimedBy": "root-generation",
+      "completedAt": "2026-08-12T16:40:45+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Bodyweight_Squat/1.png",
       "jobFingerprint": "a19e8588b2499bcfec1badff308701b9e665aafe94420fb55b1aa97ad124e4c5",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "389e8672369c50e853cb2bbc1f1efb64758c4344a6d3a955a0499fb4c0f2df92",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Bodyweight_Squat__f1__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 2,
+      "claimedAt": "2026-08-12T16:43:40+00:00",
+      "claimedBy": "root-generation",
+      "completedAt": "2026-08-12T16:44:33+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Bodyweight_Squat/1.png",
       "jobFingerprint": "0e70c00658a7e6df00de16387c4f307b72b54b3dc930d3a93f78a66ba1625537",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "3abfbd2544e7323cc65c328854f331f0fe05cc82234991405754567579d5f351",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Bodyweight_Walking_Lunge__f0__female": {
       "attempts": 0,
@@ -5599,14 +5647,16 @@
       "status": "pending"
     },
     "Calf_Raises_-_With_Bands__f0__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T17:07:19+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-12T17:08:22+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Calf_Raises_-_With_Bands/0.png",
       "jobFingerprint": "49bbfde73e93a150e85c8b4b3af34d68a1ecce74c63337601ee0a557d8134db3",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "4cdb0fb5414becbe40fe5e0e96ae9a53a8f7ca865c2821ce6dd135c944c7706a",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Calf_Raises_-_With_Bands__f1__female": {
       "attempts": 0,
@@ -5619,14 +5669,16 @@
       "status": "pending"
     },
     "Calf_Raises_-_With_Bands__f1__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T17:08:22+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-12T17:09:36+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Calf_Raises_-_With_Bands/1.png",
       "jobFingerprint": "64ca8fa0f8eecf8c46e02d23d7e914c9c467056d6b5db1231a7e5d0ed9b80a37",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "c5577c57587a0b8363c3715f1f4e116cdb7940c335a62494f934ede52e017461",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Calf_Stretch_Elbows_Against_Wall__f0__female": {
       "attempts": 0,
@@ -9370,14 +9422,16 @@
       "status": "pending"
     },
     "Dumbbell_Lunges__f0__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T16:52:27+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-12T16:55:14+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Dumbbell_Lunges/0.png",
       "jobFingerprint": "e17d2a8eb22081ef9ce95fcf9d2a14117dde06537152e3cea9faf852e1c9427f",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "19be32ee9c3fc52026fc84c6b904265eb8b485914b116209ccb15036744e7b8a",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Dumbbell_Lunges__f0__male": {
       "attempts": 0,
@@ -9390,14 +9444,16 @@
       "status": "pending"
     },
     "Dumbbell_Lunges__f1__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T16:55:15+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-12T16:56:15+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Dumbbell_Lunges/1.png",
       "jobFingerprint": "9bc538ffbe34b156a68879c7eb2443e1c69774aa3d844949056c82a7a8f4a6ee",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "b6693020b4c6fa3887b30fc941101092055f4582556379925dce6882984daa76",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Dumbbell_Lunges__f1__male": {
       "attempts": 0,
@@ -9730,14 +9786,16 @@
       "status": "pending"
     },
     "Dumbbell_Raise__f0__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T16:35:13+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-12T16:38:21+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Dumbbell_Raise/0.png",
       "jobFingerprint": "e300d416e16705092bffefea3a1b914af53c917c51b15827d6b366f6d3ec2864",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "f3beacf8b96d9ab1386df3e476a8c941979a79d935a6260e7b4d37f9efb0e0c2",
+      "qaStatus": "rejected",
+      "status": "qa_failed"
     },
     "Dumbbell_Raise__f0__male": {
       "attempts": 1,
@@ -9752,14 +9810,16 @@
       "status": "qa_failed"
     },
     "Dumbbell_Raise__f1__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T16:38:23+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-12T16:39:39+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Dumbbell_Raise/1.png",
       "jobFingerprint": "44c70f5649a912c8d0a5bfb0701c3cf690cf5b0451d73bf42768b4d7478276e9",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "0704ce66c2d74abd701931b8897cd2794b8234cd463df1a20e9408b421ce97dd",
+      "qaStatus": "rejected",
+      "status": "qa_failed"
     },
     "Dumbbell_Raise__f1__male": {
       "attempts": 1,
@@ -9774,14 +9834,16 @@
       "status": "qa_failed"
     },
     "Dumbbell_Rear_Lunge__f0__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T17:02:55+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-12T17:04:56+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Dumbbell_Rear_Lunge/0.png",
       "jobFingerprint": "975d5a79152fdfb2ac414c37601c0de993821d07a9fc8df13d36e6894e224377",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "aaedfc456800539da1c1cf331c0233a8f5f0f62cd1bceb09f3b673c148ea6342",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Dumbbell_Rear_Lunge__f0__male": {
       "attempts": 0,
@@ -9794,14 +9856,16 @@
       "status": "pending"
     },
     "Dumbbell_Rear_Lunge__f1__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T17:04:58+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-12T17:06:26+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Dumbbell_Rear_Lunge/1.png",
       "jobFingerprint": "a7de260b23c1719a29a477ff1752ef79d548103d1286becd0046ca6b541b63a4",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "d6665fb2456294d2cc5e6af11e81a56a4ea3213a969c5e11162e15b1a8046de8",
+      "qaStatus": "rejected",
+      "status": "qa_failed"
     },
     "Dumbbell_Rear_Lunge__f1__male": {
       "attempts": 0,
@@ -9814,14 +9878,16 @@
       "status": "pending"
     },
     "Dumbbell_Scaption__f0__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T16:48:48+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-12T16:50:17+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Dumbbell_Scaption/0.png",
       "jobFingerprint": "fb1d12328a620e88a12d40a551a1fdb000b6eba0128512b05b3b674cb5078175",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "7a4346db1124cb07eed9567dec2f622e4e37d07f97f9c949dd80118531268953",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Dumbbell_Scaption__f0__male": {
       "attempts": 0,
@@ -9834,14 +9900,16 @@
       "status": "pending"
     },
     "Dumbbell_Scaption__f1__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T16:50:18+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-12T16:51:34+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Dumbbell_Scaption/1.png",
       "jobFingerprint": "01cdb191bb9c9f06d186bfb0ae2b8d1e94bc4bc9b06f584ac1e9fca891e62662",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "5a797479642cec3e5aa06cfc1f53da14ac7dcb21f8df86eb9f1acf1f7b19c2c7",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Dumbbell_Scaption__f1__male": {
       "attempts": 0,
@@ -10110,14 +10178,16 @@
       "status": "pending"
     },
     "Dumbbell_Squat__f0__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T16:59:34+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-12T17:00:30+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Dumbbell_Squat/0.png",
       "jobFingerprint": "55a85d853cd46e005bcf35277108f5cabadaa758bf026d6efad57ab71d466f97",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "431bc4afbda37b87335dbdef7928bd80f15a1d554b2ad977005f570430306239",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Dumbbell_Squat__f0__male": {
       "attempts": 0,
@@ -10130,14 +10200,16 @@
       "status": "pending"
     },
     "Dumbbell_Squat__f1__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T17:00:30+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-12T17:01:41+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Dumbbell_Squat/1.png",
       "jobFingerprint": "4ae36439e06f6d63fb410e54675d73b9781bc78949b06c9751f4a7ec4989e7ba",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "8f9926534b3e417ae8c04a0dac75340993cda93fb8203f85837396f074e64cd5",
+      "qaStatus": "rejected",
+      "status": "qa_failed"
     },
     "Dumbbell_Squat__f1__male": {
       "attempts": 0,
@@ -12080,14 +12152,16 @@
       "status": "pending"
     },
     "Front_Two-Dumbbell_Raise__f0__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T16:42:48+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-12T16:43:52+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Front_Two-Dumbbell_Raise/0.png",
       "jobFingerprint": "aba3617bb93499480290291c4801f02ecac1921223b8ec4b2fff54ba682cb735",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "6ea301a5b3b3cfe2ae564407b13956ffd058c0c053c6f0ab5ede0f44e9d23d02",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Front_Two-Dumbbell_Raise__f1__female": {
       "attempts": 0,
@@ -12100,14 +12174,16 @@
       "status": "pending"
     },
     "Front_Two-Dumbbell_Raise__f1__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T16:43:59+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-12T16:45:07+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Front_Two-Dumbbell_Raise/1.png",
       "jobFingerprint": "4b8eeffdd7133b7cf73850ccc14725f9490e2252696f15666f8b0d78adddc44a",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "5e2b08c9d85315388b3facae9433138fb573790d7824c59c2e255d336cf45691",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Full_Range-Of-Motion_Lat_Pulldown__f0__female": {
       "attempts": 0,
@@ -12560,14 +12636,16 @@
       "status": "pending"
     },
     "Hammer_Curls__f0__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T16:35:35+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-12T16:38:22+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Hammer_Curls/0.png",
       "jobFingerprint": "3e1ce388d4245475a1bdfede1d4fc417e591e198873d1c8f04c1aab2c35a8da9",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "eb2064a09f6e4c5ab1ee1f0acbeb030ef4c155e730c210b067537776d1c89b9d",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Hammer_Curls__f1__female": {
       "attempts": 0,
@@ -12580,14 +12658,16 @@
       "status": "pending"
     },
     "Hammer_Curls__f1__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T16:38:48+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-12T16:40:01+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Hammer_Curls/1.png",
       "jobFingerprint": "123f9db68fd47055f45503c5e5343b426fbccbebc7f623351e886130d2f86185",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "598e5a9ca54d883b0eca4aa5ca62a7f759e3f349876f1c3fb4e13425ab8dacd4",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Hammer_Grip_Incline_DB_Bench_Press__f0__female": {
       "attempts": 0,
@@ -18910,44 +18990,52 @@
       "status": "pending"
     },
     "Mountain_Climbers__f0__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 3,
+      "claimedAt": "2026-08-12T16:57:18+00:00",
+      "claimedBy": "root-generation",
+      "completedAt": "2026-08-12T16:58:23+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Mountain_Climbers/0.png",
       "jobFingerprint": "da7836f98f9a70d29dd56c3d3aa2167c2dedbafcc29f731a79865c9a56fbbe9e",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "115e3fdf977a991c97aa3023dfe72c1d08507e01e26c5e72b0947d67661fcb8b",
+      "qaStatus": "rejected",
+      "status": "qa_failed"
     },
     "Mountain_Climbers__f0__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T16:47:12+00:00",
+      "claimedBy": "root-generation",
+      "completedAt": "2026-08-12T16:50:50+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Mountain_Climbers/0.png",
       "jobFingerprint": "a074619a7ccfbfa0955574bcb21c2a9d1d922b47ba0f40e53edba3287fc17451",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "d62d4f8d5e8dc28ef83f4fd1143d9a83bfbae7b37e1eebcd1db75aeec3210b61",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Mountain_Climbers__f1__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T16:47:13+00:00",
+      "claimedBy": "root-generation",
+      "completedAt": "2026-08-12T16:50:57+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Mountain_Climbers/1.png",
       "jobFingerprint": "8d8d19d2ff7740dddd7b3ebdd995609b0b9a5ac10e57a79b58daef5ed110d968",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "d32d2f3d187f08ff73083993c51e988dee0fc25db9957c50c30facbe268fb506",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Mountain_Climbers__f1__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T16:47:12+00:00",
+      "claimedBy": "root-generation",
+      "completedAt": "2026-08-12T16:50:52+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Mountain_Climbers/1.png",
       "jobFingerprint": "004043f316c7cd5ba50d609b36e5cc8fcff4d5f2941a3f0ce6037c11cb1f2f37",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "bfe2636b9e55ae831ef2fb5684da7008703afaf3f793819744b4417d66cdc1b5",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Moving_Claw_Series__f0__female": {
       "attempts": 0,
@@ -26799,14 +26887,16 @@
       "status": "pending"
     },
     "Side_Lateral_Raise__f0__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T16:44:04+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-12T16:45:17+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Side_Lateral_Raise/0.png",
       "jobFingerprint": "5abda1e55dba8347b333cb617d2ba4cc0def7167c7385ff1c703da037bf0ce7a",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "497d0b0a850f8984668369c36a24e17a3caad008fa2ac9beddbc0245b35d64b0",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Side_Lateral_Raise__f0__male": {
       "attempts": 0,
@@ -26819,14 +26909,16 @@
       "status": "pending"
     },
     "Side_Lateral_Raise__f1__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T16:45:17+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-12T16:47:04+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Side_Lateral_Raise/1.png",
       "jobFingerprint": "3be47c18062fa622c67f693037e8817cc746c88aadb3c3312838e1925ca107cb",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "353299a7d1ff5b5699f8f270afd8c6b1c8925c97836662e9fd3b67a94ede25ff",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Side_Lateral_Raise__f1__male": {
       "attempts": 0,
@@ -30359,14 +30451,16 @@
       "status": "pending"
     },
     "Standing_Dumbbell_Calf_Raise__f0__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T16:40:09+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-12T16:41:46+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Standing_Dumbbell_Calf_Raise/0.png",
       "jobFingerprint": "586f85f1e9a6f21c609ff37afb04b1fb49aea71f5952eaf7681ea75f9953daa8",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "bf4c2d7d26464d357926f1e73a2fba62dd9f507eb2fd0ff89632c2866b862028",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Standing_Dumbbell_Calf_Raise__f0__male": {
       "attempts": 2,
@@ -30381,14 +30475,16 @@
       "status": "complete"
     },
     "Standing_Dumbbell_Calf_Raise__f1__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T16:41:46+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-12T16:42:52+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Standing_Dumbbell_Calf_Raise/1.png",
       "jobFingerprint": "e1b7d5a5fdb39c3f993435d5a1c2fd57016329e3abf3f08d98701a13bd9e43f3",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "74204b1ef52389b3fc9c1624245bd011ed09552b51f5af3e0c7eb040614a9751",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Standing_Dumbbell_Calf_Raise__f1__male": {
       "attempts": 1,
@@ -30457,14 +30553,16 @@
       "status": "pending"
     },
     "Standing_Dumbbell_Reverse_Curl__f0__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T16:45:44+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-12T16:46:42+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Standing_Dumbbell_Reverse_Curl/0.png",
       "jobFingerprint": "5cfe863ad4b7ec9376c998bc2f2a5ce69b1032f0757b920796ec16b521dc829f",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "10f00aba6b9ddfd00b2f921b5a1e6df4e8e6f997db730ff0fa429750b6c8883a",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Standing_Dumbbell_Reverse_Curl__f1__female": {
       "attempts": 0,
@@ -30477,14 +30575,16 @@
       "status": "pending"
     },
     "Standing_Dumbbell_Reverse_Curl__f1__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T16:46:42+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-12T16:47:32+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Standing_Dumbbell_Reverse_Curl/1.png",
       "jobFingerprint": "3f92be0290acc81c8dc89062267dd5e3d7b564931ac4bf1f0d758a19ce12dcd5",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "outputSHA256": "15e0ee0d5279027cdf35f885233444c7f60e1daba8926b880c98f9a4375b2ff0",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Standing_Dumbbell_Straight-Arm_Front_Delt_Raise_Above_Head__f0__female": {
       "attempts": 0,
