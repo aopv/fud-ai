@@ -400,6 +400,46 @@
       "reviewedAt": "2026-08-12T16:59:05+00:00",
       "reviewer": "qa-orchestrator"
     },
+    "Ankle_On_The_Knee__f0__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy side-by-side confirms locked female identity/outfit and the literal photographed endpoint despite the unusual exercise name: reclined low curl with both knees bent/feet grounded and hands at thighs. Complete two arms/hands and legs/feet, correct contacts, natural anatomy and clean transparency. Every unchanged auto pose/integrity gate passes; exact metrics retained in qa-report-v1.json.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:31:10+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Ankle_On_The_Knee__f0__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy side-by-side confirms locked male identity/outfit and the literal photographed endpoint despite the unusual exercise name: reclined low curl with both knees bent/feet grounded and hands at thighs. Complete two arms/hands and legs/feet, correct contacts, natural anatomy and clean transparency. Every unchanged auto pose/integrity gate passes; exact metrics retained in qa-report-v1.json.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:31:10+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Ankle_On_The_Knee__f1__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy side-by-side confirms locked female identity/outfit and the literal photographed endpoint despite the unusual exercise name: reclined figure-four position with ankle crossed over opposite knee and both hands behind the supporting thigh. Complete two arms/hands and legs/feet, correct contacts, natural anatomy and clean transparency. Every unchanged auto pose/integrity gate passes; exact metrics retained in qa-report-v1.json.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:31:10+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Ankle_On_The_Knee__f1__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy side-by-side confirms locked male identity/outfit and the literal photographed endpoint despite the unusual exercise name: reclined figure-four position with ankle crossed over opposite knee and both hands behind the supporting thigh. Complete two arms/hands and legs/feet, correct contacts, natural anatomy and clean transparency. Every unchanged auto pose/integrity gate passes; exact metrics retained in qa-report-v1.json.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:31:10+00:00",
+      "reviewer": "qa-orchestrator"
+    },
     "Arm_Circles__f0__female": {
       "anatomyApproved": true,
       "artifactFree": true,
@@ -518,6 +558,46 @@
       "notes": "Original-resolution exact legacy side-by-side confirms locked back-view male identity/outfit, exactly one two-strand resistance band connected to the left anchor and correct endpoint 1 (arms pulled wide into a shoulder-height T). Full body, natural shoulders/elbows/grips, correct band contact/tension, no extra anatomy or clutter, clean transparency. All unchanged pose/integrity gates pass; metrics retained in qa-report-v1.json.",
       "poseEquipmentApproved": true,
       "reviewedAt": "2026-08-12T18:03:40+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Band_Good_Morning__f0__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy side-by-side confirms locked female identity/outfit, one continuous resistance band under both shoes and over both shoulders with hands gripping its sides, plus correct endpoint 0 (deep hip hinge/flat back). Full body, correct equipment routing/contact/tension, complete limbs, natural anatomy and clean transparency. Every unchanged auto pose/integrity gate passes; metrics retained in qa-report-v1.json.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:34:56+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Band_Good_Morning__f0__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy side-by-side confirms locked male identity/outfit, one continuous resistance band under both shoes and over both shoulders with hands gripping its sides, plus correct endpoint 0 (deep hip hinge/flat back). Full body, correct equipment routing/contact/tension, complete limbs, natural anatomy and clean transparency. Every unchanged auto pose/integrity gate passes; metrics retained in qa-report-v1.json.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:34:56+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Band_Good_Morning__f1__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy side-by-side confirms locked female identity/outfit, one continuous resistance band under both shoes and over both shoulders with hands gripping its sides, plus correct endpoint 1 (upright standing lockout). Full body, correct equipment routing/contact/tension, complete limbs, natural anatomy and clean transparency. Every unchanged auto pose/integrity gate passes; metrics retained in qa-report-v1.json.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:34:56+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Band_Good_Morning__f1__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy side-by-side confirms locked male identity/outfit, one continuous resistance band under both shoes and over both shoulders with hands gripping its sides, plus correct endpoint 1 (upright standing lockout). Full body, correct equipment routing/contact/tension, complete limbs, natural anatomy and clean transparency. Every unchanged auto pose/integrity gate passes; metrics retained in qa-report-v1.json.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:34:56+00:00",
       "reviewer": "qa-orchestrator"
     },
     "Band_Pull_Apart__f1__male": {
@@ -640,6 +720,46 @@
       "reviewedAt": "2026-08-12T16:45:12+00:00",
       "reviewer": "qa-orchestrator"
     },
+    "Bodyweight_Walking_Lunge__f0__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy side-by-side confirms locked female identity/outfit, no equipment, hands on hips and correct same-side walking-lunge progression: standing knee-drive endpoint with IMAGE-RIGHT knee lifted. Anatomical side continuity, foot contacts, full body, complete limbs, natural anatomy and transparency are correct. Every unchanged auto pose/integrity gate passes; metrics retained in qa-report-v1.json.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:39:57+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Bodyweight_Walking_Lunge__f0__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy side-by-side confirms locked male identity/outfit, no equipment, hands on hips and correct same-side walking-lunge progression: standing knee-drive endpoint with IMAGE-RIGHT knee lifted. Anatomical side continuity, foot contacts, full body, complete limbs, natural anatomy and transparency are correct. Every unchanged auto pose/integrity gate passes; metrics retained in qa-report-v1.json.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:39:57+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Bodyweight_Walking_Lunge__f1__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy side-by-side confirms locked female identity/outfit, no equipment, hands on hips and correct same-side walking-lunge progression: bottom lunge with IMAGE-RIGHT leg forward and opposite rear knee lowered. Anatomical side continuity, foot contacts, full body, complete limbs, natural anatomy and transparency are correct. Every unchanged auto pose/integrity gate passes; metrics retained in qa-report-v1.json.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:39:57+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Bodyweight_Walking_Lunge__f1__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy side-by-side confirms locked male identity/outfit, no equipment, hands on hips and correct same-side walking-lunge progression: bottom lunge with IMAGE-RIGHT leg forward and opposite rear knee lowered. Anatomical side continuity, foot contacts, full body, complete limbs, natural anatomy and transparency are correct. Every unchanged auto pose/integrity gate passes; metrics retained in qa-report-v1.json.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:39:57+00:00",
+      "reviewer": "qa-orchestrator"
+    },
     "Cable_Crossover__f0__female": {
       "anatomyApproved": true,
       "artifactFree": true,
@@ -678,6 +798,86 @@
       "notes": "Exact old f1 side-by-side confirms same canonical male and continuous band under both feet with two handles; both heels elevated on toes, elbows flexed about 90\u00b0, handles at shoulders. Complete correct anatomy/equipment, no artifacts. Unchanged auto pass: confidence 0.970446, RMSE 0.152365, median 3.505\u00b0, p90 15.674\u00b0, torso 0.153\u00b0, left/right true; integrity/chroma pass.",
       "poseEquipmentApproved": true,
       "reviewedAt": "2026-08-12T17:10:52+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Cat_Stretch__f0__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy side-by-side confirms locked female identity/outfit and correct cat-stretch endpoint 0 (neutral quadruped spine). Both palms/knees and foot contacts remain consistent across endpoints; full body, complete limbs, natural joints and clean transparency. Every unchanged auto pose/integrity gate passes; metrics retained in qa-report-v1.json.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:43:46+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Cat_Stretch__f0__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy side-by-side confirms locked male identity/outfit and correct cat-stretch endpoint 0 (neutral quadruped spine). Both palms/knees and foot contacts remain consistent across endpoints; full body, complete limbs, natural joints and clean transparency. Every unchanged auto pose/integrity gate passes; metrics retained in qa-report-v1.json.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:43:46+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Cat_Stretch__f1__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy side-by-side confirms locked female identity/outfit and correct cat-stretch endpoint 1 (pronounced rounded cat arch with head tucked). Both palms/knees and foot contacts remain consistent across endpoints; full body, complete limbs, natural joints and clean transparency. Every unchanged auto pose/integrity gate passes; metrics retained in qa-report-v1.json.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:43:46+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Cat_Stretch__f1__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy side-by-side confirms locked male identity/outfit and correct cat-stretch endpoint 1 (pronounced rounded cat arch with head tucked). Both palms/knees and foot contacts remain consistent across endpoints; full body, complete limbs, natural joints and clean transparency. Every unchanged auto pose/integrity gate passes; metrics retained in qa-report-v1.json.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:43:46+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Close-Grip_Standing_Barbell_Curl__f0__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy side-by-side confirms locked male identity/outfit, one continuous straight barbell with exactly two plates, narrow supinated grip far inside shoulders, correct low-to-upper-chest curl endpoint, intact anatomy and clean transparency.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T19:04:44+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Close-Grip_Standing_Barbell_Curl__f1__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy side-by-side confirms locked male identity/outfit, one continuous straight barbell with exactly two plates, narrow supinated grip far inside shoulders, correct low-to-upper-chest curl endpoint, intact anatomy and clean transparency.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T19:04:44+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Cross_Body_Hammer_Curl__f0__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy side-by-side confirms locked female identity/outfit, exactly two dumbbells, neutral hammer grip, correct cross-body curl side alternation between endpoints, full body, intact hands/anatomy and clean transparency.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T19:06:33+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Cross_Body_Hammer_Curl__f1__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy side-by-side confirms locked female identity/outfit, exactly two dumbbells, neutral hammer grip, correct cross-body curl side alternation between endpoints, full body, intact hands/anatomy and clean transparency.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T19:06:34+00:00",
       "reviewer": "qa-orchestrator"
     },
     "Dumbbell_Alternate_Bicep_Curl__f0__female": {
@@ -790,6 +990,16 @@
       "reviewedAt": "2026-08-12T17:58:30+00:00",
       "reviewer": "qa-orchestrator"
     },
+    "Dumbbell_One-Arm_Upright_Row__f0__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy comparison confirms locked male identity/outfit, precisely one dumbbell in subject-right/IMAGE-LEFT hand, free hand on hip, and correct endpoint 0 (high upright row with elbow above wrist). Full body, correct laterality, complete grip/limbs, natural anatomy and clean transparency. Every unchanged auto pose/integrity gate passes; metrics retained in qa-report-v1.json.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:43:46+00:00",
+      "reviewer": "qa-orchestrator"
+    },
     "Dumbbell_One-Arm_Upright_Row__f1__female": {
       "anatomyApproved": true,
       "artifactFree": true,
@@ -798,6 +1008,16 @@
       "notes": "Original-resolution exact legacy comparison confirms locked female identity/outfit, exactly one dumbbell on screen-left and opposite hand on hip. Endpoint 1 matches the old image (working arm straight/down); full body, complete grips/limbs, natural anatomy and clean transparency. Every unchanged automatic pose/integrity gate passes; exact metrics retained in qa-report-v1.json.",
       "poseEquipmentApproved": true,
       "reviewedAt": "2026-08-12T17:58:30+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Dumbbell_One-Arm_Upright_Row__f1__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy comparison confirms locked male identity/outfit, precisely one dumbbell in subject-right/IMAGE-LEFT hand, free hand on hip, and correct endpoint 1 (working arm straight/down). Full body, correct laterality, complete grip/limbs, natural anatomy and clean transparency. Every unchanged auto pose/integrity gate passes; metrics retained in qa-report-v1.json.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:43:46+00:00",
       "reviewer": "qa-orchestrator"
     },
     "Dumbbell_Rear_Lunge__f0__female": {
@@ -980,6 +1200,46 @@
       "reviewedAt": "2026-08-12T17:56:02+00:00",
       "reviewer": "qa-orchestrator"
     },
+    "Dynamic_Chest_Stretch__f0__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Targeted retry passes unchanged pose/integrity gates and original-resolution exact-source review. Locked female identity, non-symmetric 3/4 projected arms extended forward with palms together, correct f0 endpoint, intact fingers/anatomy and clean transparency.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:56:06+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Dynamic_Chest_Stretch__f0__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Targeted retry passes unchanged pose/integrity gates and original-resolution exact-source review. Locked male identity, non-symmetric 3/4 projected arms extended forward with palms together, correct f0 endpoint, intact fingers/anatomy and clean transparency.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:56:06+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Dynamic_Chest_Stretch__f1__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Exact legacy side-by-side confirms locked identity/outfit, full-body stance, correct endpoint 1 horizontal T/open-palm chest stretch, symmetric shoulders, intact fingers and clean transparency. Individually valid; complete gender pair remains excluded until its f0 passes unchanged automation.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:49:51+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Dynamic_Chest_Stretch__f1__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Exact legacy side-by-side confirms locked identity/outfit, full-body stance, correct endpoint 1 horizontal T/open-palm chest stretch, symmetric shoulders, intact fingers and clean transparency. Individually valid; complete gender pair remains excluded until its f0 passes unchanged automation.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:49:51+00:00",
+      "reviewer": "qa-orchestrator"
+    },
     "EZ-Bar_Curl__f0__male": {
       "anatomyApproved": true,
       "artifactFree": true,
@@ -1000,6 +1260,46 @@
       "reviewedAt": "2026-08-12T17:56:02+00:00",
       "reviewer": "qa-orchestrator"
     },
+    "Elbows_Back__f0__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Exact legacy side-by-side confirms locked female identity/outfit, full-body IMAGE-RIGHT side profile, relaxed arms, correct f0 endpoint, intact anatomy/fingers and clean transparency.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:53:23+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Elbows_Back__f0__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "reject",
+      "notes": "Final targeted retry remains visually exact and clean but still hard-fails unchanged occupancy gate at 0.073692 versus fixed 0.08 minimum (slightly worse than prior 0.074106). Rejected/unshipped; no more retries per checkpoint instruction.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:57:32+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Elbows_Back__f1__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Exact legacy side-by-side confirms locked female identity/outfit, rear three-quarter view, both hands on back hips with elbows drawn back, correct f1 endpoint, intact hands/anatomy and clean transparency.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:53:23+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Elbows_Back__f1__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Exact legacy side-by-side confirms locked male identity/outfit, rear three-quarter view, both hands on back hips with elbows drawn back, correct f1 endpoint, intact hands/anatomy and clean transparency. Individually valid; pair remains excluded unless f0 passes unchanged integrity gate.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:53:23+00:00",
+      "reviewer": "qa-orchestrator"
+    },
     "Front_Dumbbell_Raise__f0__female": {
       "anatomyApproved": true,
       "artifactFree": true,
@@ -1010,6 +1310,16 @@
       "reviewedAt": "2026-08-12T17:39:32+00:00",
       "reviewer": "qa-orchestrator"
     },
+    "Front_Dumbbell_Raise__f0__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy side-by-side confirms locked male identity/outfit, full-body frontal stance, exactly two dumbbells, and correct low endpoint with both arms down. Anatomy and transparency clean.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:51:30+00:00",
+      "reviewer": "qa-orchestrator"
+    },
     "Front_Dumbbell_Raise__f1__female": {
       "anatomyApproved": true,
       "artifactFree": true,
@@ -1018,6 +1328,16 @@
       "notes": "Rejected under unchanged exact-source p90 gate despite clean identity/two DBs/anatomy. Culprit anatomical right shoulder\u2192elbow source -85.160\u00b0 vs output +28.760\u00b0, delta/p90 113.919\u00b0. Generated raised arm is opposite screen side/direction relative to the source-labelled arm. Confidence 0.924657, RMSE 0.197714, left/right aggregate true; integrity/chroma pass. Pair unshipped pending targeted arm-side correction.",
       "poseEquipmentApproved": false,
       "reviewedAt": "2026-08-12T17:39:32+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Front_Dumbbell_Raise__f1__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy side-by-side confirms locked male identity/outfit, exactly two dumbbells, subject-right/IMAGE-LEFT arm raised to eye height while subject-left/IMAGE-RIGHT remains low, correct laterality, clean anatomy and transparency.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:51:30+00:00",
       "reviewer": "qa-orchestrator"
     },
     "Front_Two-Dumbbell_Raise__f0__female": {
@@ -1160,6 +1480,16 @@
       "reviewedAt": "2026-08-12T18:04:36+00:00",
       "reviewer": "qa-orchestrator"
     },
+    "Reverse_Barbell_Curl__f1__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy side-by-side confirms locked male identity/outfit, one continuous straight bar with exactly two plates, correct bilateral pronated reverse grips, elbows pinned/deeply flexed and bar at chest in endpoint 1. Full body, complete hands/limbs, natural joints and clean transparency. Unchanged auto pass: confidence .964766, RMSE .156488, median2.397\u00b0, p9012.402\u00b0, torso2.818\u00b0, L/R true; integrity/chroma pass. Completes accepted male pair.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:24:53+00:00",
+      "reviewer": "qa-orchestrator"
+    },
     "Side_Lateral_Raise__f0__female": {
       "anatomyApproved": true,
       "artifactFree": true,
@@ -1178,6 +1508,46 @@
       "notes": "Compared at original resolution with exact legacy endpoint 1 and canonical female identity. Correct symmetric high lateral raise: both near-straight arms elevated diagonally out above shoulder height, two dumbbells aligned at endpoints, upright stance. Identity/outfit consistent; bilateral hands, weights, shoulders, feet, anatomy and matte show no visible anomaly. Unchanged automatic QA passes: confidence 0.976142, normalized RMSE 0.320463, median limb angle 3.297 degrees, p90 29.493 degrees, torso delta 2.936 degrees, chroma fringe 0.",
       "poseEquipmentApproved": true,
       "reviewedAt": "2026-08-12T16:49:08+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Standing_Alternating_Dumbbell_Press__f0__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy side-by-side confirms locked female identity/outfit, exactly two dumbbells and correct alternating-press endpoint 0 (both weights at shoulders/goalpost start). Full body, correct side assignment, grips, complete limbs, natural anatomy and clean transparency. Every unchanged auto pose/integrity gate passes; metrics retained in qa-report-v1.json.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:36:28+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Standing_Alternating_Dumbbell_Press__f1__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy side-by-side confirms locked female identity/outfit, exactly two dumbbells and correct alternating-press endpoint 1 (IMAGE-LEFT arm extended overhead while IMAGE-RIGHT remains bent at shoulder). Full body, correct side assignment, grips, complete limbs, natural anatomy and clean transparency. Every unchanged auto pose/integrity gate passes; metrics retained in qa-report-v1.json.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:36:28+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Standing_Bent-Over_Two-Arm_Dumbbell_Triceps_Extension__f0__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy side-by-side confirms locked female identity/outfit, deep IMAGE-RIGHT-facing hip hinge, precisely two dumbbells, elbows high and flexed at endpoint 0. Hands, weights, limbs and transparency clean.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:51:30+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Standing_Bent-Over_Two-Arm_Dumbbell_Triceps_Extension__f1__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy side-by-side confirms locked female identity/outfit, deep IMAGE-RIGHT-facing hip hinge, precisely two dumbbells, and both arms kicked back near-straight at endpoint 1. Dumbbells remain separate; anatomy and transparency clean.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:51:30+00:00",
       "reviewer": "qa-orchestrator"
     },
     "Standing_Dumbbell_Calf_Raise__f0__female": {
@@ -1240,6 +1610,16 @@
       "reviewedAt": "2026-08-12T16:11:43+00:00",
       "reviewer": "qa-orchestrator"
     },
+    "Standing_Dumbbell_Reverse_Curl__f0__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy comparison confirms locked female identity/outfit, exactly two dumbbells with pronated/knuckles-up reverse grips and correct endpoint 0 (arms straight/down beside thighs). Full body, complete hands/weights/limbs, natural anatomy and clean transparency. Every unchanged auto pose/integrity gate passes; exact metrics retained in qa-report-v1.json.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:28:27+00:00",
+      "reviewer": "qa-orchestrator"
+    },
     "Standing_Dumbbell_Reverse_Curl__f0__male": {
       "anatomyApproved": true,
       "artifactFree": true,
@@ -1248,6 +1628,16 @@
       "notes": "Compared at original resolution with exact legacy endpoint 0 and canonical male identity. Correct 3/4 standing start: two dumbbells, arms straight/down, wrists pronated in reverse-curl grip, elbows close to torso. Identity/outfit consistent; bilateral hands, weights, shoulders, feet, anatomy and matte show no visible anomaly. Unchanged automatic QA passes: confidence 0.994364, normalized RMSE 0.148818, median limb angle 1.445 degrees, p90 9.375 degrees, torso delta 1.249 degrees, chroma fringe 0.",
       "poseEquipmentApproved": true,
       "reviewedAt": "2026-08-12T16:50:05+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Standing_Dumbbell_Reverse_Curl__f1__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy comparison confirms locked female identity/outfit, exactly two dumbbells with pronated/knuckles-up reverse grips and correct endpoint 1 (elbows pinned with both forearms flexed near 90 degrees). Full body, complete hands/weights/limbs, natural anatomy and clean transparency. Every unchanged auto pose/integrity gate passes; exact metrics retained in qa-report-v1.json.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:28:27+00:00",
       "reviewer": "qa-orchestrator"
     },
     "Standing_Dumbbell_Reverse_Curl__f1__male": {
@@ -1260,6 +1650,66 @@
       "reviewedAt": "2026-08-12T16:50:05+00:00",
       "reviewer": "qa-orchestrator"
     },
+    "Standing_Dumbbell_Straight-Arm_Front_Delt_Raise_Above_Head__f0__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy side-by-side confirms locked female identity/outfit, full-body frontal stance, exactly two dumbbells, straight arms lowered beside the thighs, correct endpoint 0, clean anatomy and transparency.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:47:36+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Standing_Dumbbell_Straight-Arm_Front_Delt_Raise_Above_Head__f1__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy side-by-side confirms locked female identity/outfit, full-body frontal stance, exactly two dumbbells, and both arms remaining near-straight through the overhead front-raise endpoint rather than becoming a bent-elbow press. Anatomy and transparency are clean.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:47:36+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Standing_Dumbbell_Triceps_Extension__f0__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy comparison confirms locked female identity/outfit, exactly one dumbbell held bilaterally overhead and correct endpoint 0 (arms extended vertically overhead). Full body, complete hands/arms/feet, natural anatomy, correct equipment contact and clean transparency. Every unchanged automatic pose/integrity gate passes; exact metrics retained in qa-report-v1.json.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:24:53+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Standing_Dumbbell_Triceps_Extension__f0__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy side-by-side confirms locked male identity/outfit, exactly one shared dumbbell held by both hands, arms extended overhead at f0, full body, clean hands/anatomy/transparency.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:56:42+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Standing_Dumbbell_Triceps_Extension__f1__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy comparison confirms locked female identity/outfit, exactly one dumbbell held bilaterally overhead and correct endpoint 1 (elbows flexed with dumbbell behind head). Full body, complete hands/arms/feet, natural anatomy, correct equipment contact and clean transparency. Every unchanged automatic pose/integrity gate passes; exact metrics retained in qa-report-v1.json.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:24:53+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Standing_Dumbbell_Triceps_Extension__f1__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy side-by-side confirms locked male identity/outfit, exactly one shared dumbbell held by both hands behind crown, elbows high/deeply flexed at f1, full body, clean hands/anatomy/transparency.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:56:42+00:00",
+      "reviewer": "qa-orchestrator"
+    },
     "Standing_Dumbbell_Upright_Row__f0__female": {
       "anatomyApproved": true,
       "artifactFree": true,
@@ -1270,6 +1720,16 @@
       "reviewedAt": "2026-08-12T17:29:16+00:00",
       "reviewer": "qa-orchestrator"
     },
+    "Standing_Dumbbell_Upright_Row__f0__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy comparison confirms locked male identity/outfit, exactly two dumbbells and correct endpoint order (0: high upright row with elbows above wrists). Full body, complete grips/limbs, natural anatomy and clean transparency. Every unchanged auto pose/integrity gate passes; exact metrics retained in qa-report-v1.json.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:37:42+00:00",
+      "reviewer": "qa-orchestrator"
+    },
     "Standing_Dumbbell_Upright_Row__f1__female": {
       "anatomyApproved": true,
       "artifactFree": true,
@@ -1278,6 +1738,56 @@
       "notes": "Exact legacy f1 comparison confirms same female and exactly two dumbbells at low start endpoint, both arms straight, correct full-body camera/anatomy and clean artwork. Auto pass: confidence 0.988695, RMSE 0.100494, median 5.047\u00b0, p90 14.244\u00b0, torso 1.275\u00b0, left/right true; integrity/chroma pass.",
       "poseEquipmentApproved": true,
       "reviewedAt": "2026-08-12T17:29:16+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Standing_Dumbbell_Upright_Row__f1__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy comparison confirms locked male identity/outfit, exactly two dumbbells and correct endpoint order (1: low start with arms straight/down). Full body, complete grips/limbs, natural anatomy and clean transparency. Every unchanged auto pose/integrity gate passes; exact metrics retained in qa-report-v1.json.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:37:42+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Standing_Hip_Circles__f0__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Exact legacy side-by-side confirms locked female identity/outfit, IMAGE-RIGHT side profile, upright torso, both feet grounded and hands clasped at f0; clean anatomy/transparency.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T19:04:44+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Standing_Hip_Circles__f0__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "reject",
+      "notes": "Exact pose/identity/anatomy are visually clean, but unchanged integrity gate fails foreground occupancy 0.078171 below fixed 0.08 minimum. Rejected/unshipped without threshold change.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T19:04:44+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Standing_Hip_Circles__f1__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Exact legacy side-by-side confirms locked female identity/outfit, IMAGE-RIGHT side profile, same near leg raised with hip/knee about 90 degrees, torso upright/hands clasped; correct laterality and clean anatomy/transparency.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T19:04:44+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Standing_Hip_Circles__f1__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Exact legacy side-by-side confirms locked male identity/outfit, IMAGE-RIGHT side profile, same near leg raised with hip/knee about 90 degrees, torso upright/hands clasped; correct laterality and clean anatomy/transparency. Individually valid, pair excluded because f0 integrity fails.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T19:04:44+00:00",
       "reviewer": "qa-orchestrator"
     },
     "Standing_Inner-Biceps_Curl__f0__male": {
@@ -1298,6 +1808,86 @@
       "notes": "Original-resolution exact legacy side-by-side confirms locked male identity/outfit, exactly two dumbbells, correct bilateral supinated/inner-curl grips and endpoint 1 (elbows pinned with forearms curled outward/up.) Full body, complete hands/weights/limbs, natural joints and clean transparency. All unchanged automatic pose/integrity gates pass; exact metrics retained in qa-report-v1.json.",
       "poseEquipmentApproved": true,
       "reviewedAt": "2026-08-12T17:59:55+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Standing_One-Arm_Dumbbell_Triceps_Extension__f0__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy side-by-side confirms locked female identity/outfit, precisely one dumbbell in the IMAGE-LEFT working hand and correct endpoint 0 (working arm extended overhead). Full body, correct side continuity, equipment separated from hair/head, complete hands/limbs, natural anatomy and clean transparency. Every unchanged auto pose/integrity gate passes; metrics retained in qa-report-v1.json.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:39:57+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Standing_One-Arm_Dumbbell_Triceps_Extension__f1__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy side-by-side confirms locked female identity/outfit, precisely one dumbbell in the IMAGE-LEFT working hand and correct endpoint 1 (same upper arm vertical with elbow flexed/dumbbell behind head). Full body, correct side continuity, equipment separated from hair/head, complete hands/limbs, natural anatomy and clean transparency. Every unchanged auto pose/integrity gate passes; metrics retained in qa-report-v1.json.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:39:57+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Standing_Palm-In_One-Arm_Dumbbell_Press__f0__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Targeted retry exact-source/pair comparison confirms locked female identity, precisely one IMAGE-LEFT dumbbell at shoulder in neutral grip, IMAGE-RIGHT hand atop a complete near-frontal bench, and compact symmetric bench orientation now consistent with accepted f1. Anatomy and transparency clean.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:49:51+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Standing_Palm-In_One-Arm_Dumbbell_Press__f1__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy comparison confirms locked female identity/outfit, precisely one IMAGE-LEFT dumbbell overhead with neutral grip, IMAGE-RIGHT hand atop the complete near-front bench, full body, complete limbs, natural anatomy and clean transparency. Every unchanged auto pose/integrity gate passes. Individually accepted; pair withheld pending f0 bench-orientation retry.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:42:58+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Standing_Palms-In_Dumbbell_Press__f0__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy comparison confirms locked female identity/outfit, exactly two dumbbells with neutral palms-in grips and correct endpoint 0 (both arms extended overhead). Full body, complete hands/weights/limbs, natural anatomy and clean transparency. Every unchanged auto pose/integrity gate passes; exact metrics retained in qa-report-v1.json.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:33:42+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Standing_Palms-In_Dumbbell_Press__f1__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy comparison confirms locked female identity/outfit, exactly two dumbbells with neutral palms-in grips and correct endpoint 1 (weights at shoulders with elbows flexed in a goalpost). Full body, complete hands/weights/limbs, natural anatomy and clean transparency. Every unchanged auto pose/integrity gate passes; exact metrics retained in qa-report-v1.json.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:33:42+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Stiff-Legged_Dumbbell_Deadlift__f0__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy comparison confirms locked female identity/outfit, exactly two dumbbells, near-straight legs and correct stiff-legged deadlift endpoint 0 (upright lockout with weights beside thighs). Full body, complete grips/limbs, natural anatomy and clean transparency. All unchanged pose/integrity gates pass; exact metrics retained in qa-report-v1.json.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:31:11+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Stiff-Legged_Dumbbell_Deadlift__f1__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy comparison confirms locked female identity/outfit, exactly two dumbbells, near-straight legs and correct stiff-legged deadlift endpoint 1 (deep hip hinge with flat back and weights lowered near knees/shins). Full body, complete grips/limbs, natural anatomy and clean transparency. All unchanged pose/integrity gates pass; exact metrics retained in qa-report-v1.json.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:31:11+00:00",
       "reviewer": "qa-orchestrator"
     },
     "Tire_Flip__f0__female": {
@@ -1339,6 +1929,26 @@
       "poseEquipmentApproved": true,
       "reviewedAt": "2026-08-12T15:21:55+00:00",
       "reviewer": "dataset-audit"
+    },
+    "Wide-Grip_Standing_Barbell_Curl__f0__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy comparison confirms locked male identity/outfit, one continuous straight bar with exactly two plates, clearly wide bilateral supinated grip and correct endpoint 0 (arms extended/bar low). Full body, complete hands/limbs, natural wrists/elbows and clean transparency. Every unchanged auto pose/integrity gate passes; exact metrics retained in qa-report-v1.json.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:31:10+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Wide-Grip_Standing_Barbell_Curl__f1__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Original-resolution exact legacy comparison confirms locked male identity/outfit, one continuous straight bar with exactly two plates, clearly wide bilateral supinated grip and correct endpoint 1 (elbows flexed/bar high at upper chest). Full body, complete hands/limbs, natural wrists/elbows and clean transparency. Every unchanged auto pose/integrity gate passes; exact metrics retained in qa-report-v1.json.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T18:31:11+00:00",
+      "reviewer": "qa-orchestrator"
     },
     "Wrist_Circles__f1__female": {
       "anatomyApproved": true,
