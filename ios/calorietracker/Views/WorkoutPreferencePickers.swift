@@ -270,6 +270,8 @@ struct WorkoutEquipmentImagePickerRow: View {
                 value: option,
                 title: label(option),
                 count: matchingExercises.count,
+                exerciseID: representative?.id,
+                rawEquipment: representative?.rawEquipment ?? option,
                 imagePaths: representative?.imagePaths ?? []
             )
         }
@@ -301,6 +303,8 @@ private struct WorkoutEquipmentImageOption: Identifiable {
     let value: String
     let title: String
     let count: Int
+    let exerciseID: String?
+    let rawEquipment: String
     let imagePaths: [String]
 }
 
@@ -381,7 +385,9 @@ private struct WorkoutEquipmentImageTile: View {
         VStack(alignment: .leading, spacing: 8) {
             ZStack(alignment: .topTrailing) {
                 AnimatedExerciseVisual(
+                    exerciseID: option.exerciseID,
                     imagePaths: option.imagePaths,
+                    rawEquipment: option.rawEquipment,
                     height: 96,
                     allowsDerivedImageLookup: false,
                     fallbackSystemImage: "dumbbell.fill",

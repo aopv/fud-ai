@@ -1,0 +1,68 @@
+{
+  "entries": [
+    {
+      "exerciseID": "Dumbbell_Bicep_Curl",
+      "frames": [
+        {
+          "bytes": 30360,
+          "filename": "FudExercise_female_Dumbbell_Bicep_Curl_0.webp",
+          "frameIndex": 0,
+          "jobID": "Dumbbell_Bicep_Curl__f0__female",
+          "sha256": "a59d65c37732ed767147c0a7ab7b4deb591cfe5113f8da0ece013d6564dd15e0"
+        },
+        {
+          "bytes": 31608,
+          "filename": "FudExercise_female_Dumbbell_Bicep_Curl_1.webp",
+          "frameIndex": 1,
+          "jobID": "Dumbbell_Bicep_Curl__f1__female",
+          "sha256": "a7616a4ef036b5e2a5fae0f5fcd0618a5490c3583964260206a320da07a155f9"
+        }
+      ],
+      "gender": "female"
+    },
+    {
+      "exerciseID": "Dumbbell_Bicep_Curl",
+      "frames": [
+        {
+          "bytes": 27576,
+          "filename": "FudExercise_male_Dumbbell_Bicep_Curl_0.webp",
+          "frameIndex": 0,
+          "jobID": "Dumbbell_Bicep_Curl__f0__male",
+          "sha256": "ab6128e7870ca2f825cc8ca8d6bad1c1a0f50f5ac676ca8276b1c92cea0d3372"
+        },
+        {
+          "bytes": 30290,
+          "filename": "FudExercise_male_Dumbbell_Bicep_Curl_1.webp",
+          "frameIndex": 1,
+          "jobID": "Dumbbell_Bicep_Curl__f1__male",
+          "sha256": "dfaa731bfbc03cd4563672913efe18d6de4a68899e9abbbac91f2e8c3c373767"
+        }
+      ],
+      "gender": "male"
+    },
+    {
+      "exerciseID": "Tire_Flip",
+      "frames": [
+        {
+          "bytes": 26760,
+          "filename": "FudExercise_male_Tire_Flip_0.webp",
+          "frameIndex": 0,
+          "jobID": "Tire_Flip__f0__male",
+          "sha256": "d541f58695baf4c4155b332d2d11d40b780d0168f9499ab935d40ad9e5622c41"
+        },
+        {
+          "bytes": 31934,
+          "filename": "FudExercise_male_Tire_Flip_1.webp",
+          "frameIndex": 1,
+          "jobID": "Tire_Flip__f1__male",
+          "sha256": "db22ba206e825cf80158ad7dc3920abf84d6392dcf18bab8af606ddf83d916f0"
+        }
+      ],
+      "gender": "male"
+    }
+  ],
+  "format": "webp",
+  "pairCount": 3,
+  "schemaVersion": 1,
+  "size": 768
+}

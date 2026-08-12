@@ -836,8 +836,10 @@ private struct WorkoutLogExerciseCard: View {
             Button(action: openDetail) {
                 HStack(alignment: .center, spacing: 12) {
                     AnimatedExerciseVisual(
+                        exerciseID: exercise.itemID,
                         exerciseName: exercise.name,
                         imagePaths: exercise.imagePaths,
+                        rawEquipment: exercise.rawEquipment,
                         height: 64,
                         fillsWidth: false,
                         allowsDerivedImageLookup: false
@@ -1745,8 +1747,10 @@ private struct WorkoutLogPickerRow: View {
             Button(action: action) {
                 HStack(spacing: 12) {
                     AnimatedExerciseVisual(
+                        exerciseID: item.id,
                         exerciseName: item.name,
                         imagePaths: item.imagePaths,
+                        rawEquipment: item.rawEquipment,
                         height: 58,
                         fillsWidth: false,
                         allowsDerivedImageLookup: false

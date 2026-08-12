@@ -1,0 +1,105 @@
+{
+  "jobs": {
+    "Barbell_Squat__f0__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Compared with exact legacy endpoint and approved female identity. Full figure/equipment contained; pose, identity, anatomy, and chroma extraction visually approved.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T15:14:37+00:00",
+      "reviewer": "settings-audit-visual"
+    },
+    "Cable_Crossover__f1__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Compared with exact legacy endpoint and approved female identity. Full figure/equipment contained; pose, identity, anatomy, and chroma extraction visually approved.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T15:14:37+00:00",
+      "reviewer": "settings-audit-visual"
+    },
+    "Dumbbell_Bicep_Curl__f0__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Independently compared with exact legacy endpoint and approved canonical character reference; pose, grip, dumbbell count, clothing, anatomy and post-despill edge rendering are correct.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T15:14:56+00:00",
+      "reviewer": "dataset-audit"
+    },
+    "Dumbbell_Bicep_Curl__f0__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Independently compared with exact legacy endpoint and approved canonical character reference; pose, grip, dumbbell count, clothing, anatomy and post-despill edge rendering are correct.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T15:14:56+00:00",
+      "reviewer": "dataset-audit"
+    },
+    "Dumbbell_Bicep_Curl__f1__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Independently compared with exact legacy endpoint and approved canonical character reference; pose, grip, dumbbell count, clothing, anatomy and post-despill edge rendering are correct.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T15:14:56+00:00",
+      "reviewer": "dataset-audit"
+    },
+    "Dumbbell_Bicep_Curl__f1__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Independently compared with exact legacy endpoint and approved canonical character reference; pose, grip, dumbbell count, clothing, anatomy and post-despill edge rendering are correct.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T15:14:56+00:00",
+      "reviewer": "dataset-audit"
+    },
+    "Tire_Flip__f0__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Compared with exact Tire Flip endpoint 0 and approved female reference: low squat, bilateral under-tire grip, tire orientation/scale, identity, anatomy, clothing, and clean transparency are correct.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T15:21:55+00:00",
+      "reviewer": "dataset-audit"
+    },
+    "Tire_Flip__f0__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Compared with exact Tire Flip endpoint 0 and approved male reference: low squat, bilateral under-tire grip, tire orientation/scale, identity, anatomy, clothing, and clean transparency are correct.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T15:21:55+00:00",
+      "reviewer": "dataset-audit"
+    },
+    "Tire_Flip__f1__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "reject",
+      "notes": "Rejected: automated pose QA fails normalized RMSE (0.881 > 0.85) and torso angle (36.782\u00b0 > 32\u00b0); generated finish has a materially steeper tire/body relationship than the legacy endpoint. Regenerate without weakening thresholds.",
+      "poseEquipmentApproved": false,
+      "reviewedAt": "2026-08-12T15:21:55+00:00",
+      "reviewer": "dataset-audit"
+    },
+    "Tire_Flip__f1__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Compared with exact Tire Flip endpoint 1 and approved male reference: staggered stance, forward torso, bilateral under-tire grip, lifted tire, identity, anatomy, and clean transparency are correct; automated pose gate also passes.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T15:21:55+00:00",
+      "reviewer": "dataset-audit"
+    }
+  },
+  "schemaVersion": 1
+}

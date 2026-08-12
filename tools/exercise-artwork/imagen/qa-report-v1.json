@@ -1,0 +1,579 @@
+{
+  "evaluated": 9,
+  "manifestQA": {
+    "exerciseCount": 875,
+    "femaleJobs": 1750,
+    "inputHashesVerified": 1752,
+    "jobCount": 3500,
+    "maleJobs": 1750,
+    "uniqueOutputPaths": 3500
+  },
+  "missing": 3491,
+  "results": {
+    "Barbell_Squat__f0__female": {
+      "edgeLayoutCosine": 0.49108,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.00011526,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.141572,
+        "passed": true,
+        "sha256": "7b266fb3f67ad54e7121f0903a6db630231d2aeb8b89b02fb267d0ae51db7df5",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Compared with exact legacy endpoint and approved female identity. Full figure/equipment contained; pose, identity, anatomy, and chroma extraction visually approved.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T15:14:37+00:00",
+        "reviewer": "settings-audit-visual"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 4.518,
+        "normalizedRMSE": 0.193952,
+        "outputConfidence": 0.942519,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 14.323,
+        "passed": true,
+        "sourceConfidence": 0.880997,
+        "sourceDetected": true,
+        "swappedRMSE": 0.518371,
+        "torsoAngleDegrees": 1.766
+      },
+      "status": "accepted"
+    },
+    "Cable_Crossover__f1__female": {
+      "edgeLayoutCosine": 0.793192,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.00084859,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.200301,
+        "passed": true,
+        "sha256": "8e616c4fbf54f1353eb1149f9dc14c1ca1ee9397347fe34f91ca2a9547b7409a",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Compared with exact legacy endpoint and approved female identity. Full figure/equipment contained; pose, identity, anatomy, and chroma extraction visually approved.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T15:14:37+00:00",
+        "reviewer": "settings-audit-visual"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 3.129,
+        "normalizedRMSE": 0.193115,
+        "outputConfidence": 0.967744,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 22.128,
+        "passed": true,
+        "sourceConfidence": 0.962015,
+        "sourceDetected": true,
+        "swappedRMSE": 0.475431,
+        "torsoAngleDegrees": 1.94
+      },
+      "status": "accepted"
+    },
+    "Dumbbell_Bicep_Curl__f0__female": {
+      "edgeLayoutCosine": 0.478801,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.00036816,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.117312,
+        "passed": true,
+        "sha256": "3eb0b250207c9bd499c606229da2d59eb2d62030ffbd690ef94060cc9ac1cc6f",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Independently compared with exact legacy endpoint and approved canonical character reference; pose, grip, dumbbell count, clothing, anatomy and post-despill edge rendering are correct.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T15:14:56+00:00",
+        "reviewer": "dataset-audit"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 4.24,
+        "normalizedRMSE": 0.17628,
+        "outputConfidence": 0.863226,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 10.816,
+        "passed": true,
+        "sourceConfidence": 0.92883,
+        "sourceDetected": true,
+        "swappedRMSE": 0.552684,
+        "torsoAngleDegrees": 3.471
+      },
+      "status": "accepted"
+    },
+    "Dumbbell_Bicep_Curl__f0__male": {
+      "edgeLayoutCosine": 0.509537,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.129847,
+        "passed": true,
+        "sha256": "f251ba8014a66b09d21440d3c6ffbc4c8d0a9a8156ff1c34fe5eee0e306d2ecc",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Independently compared with exact legacy endpoint and approved canonical character reference; pose, grip, dumbbell count, clothing, anatomy and post-despill edge rendering are correct.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T15:14:56+00:00",
+        "reviewer": "dataset-audit"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 3.117,
+        "normalizedRMSE": 0.119072,
+        "outputConfidence": 0.971303,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 10.298,
+        "passed": true,
+        "sourceConfidence": 0.92883,
+        "sourceDetected": true,
+        "swappedRMSE": 0.530788,
+        "torsoAngleDegrees": 3.784
+      },
+      "status": "accepted"
+    },
+    "Dumbbell_Bicep_Curl__f1__female": {
+      "edgeLayoutCosine": 0.437825,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0001735,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.116224,
+        "passed": true,
+        "sha256": "e4bafe45fa1f9693060b1725c75b11d74594e5b452a135c53eb8d5e5de5c28ce",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Independently compared with exact legacy endpoint and approved canonical character reference; pose, grip, dumbbell count, clothing, anatomy and post-despill edge rendering are correct.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T15:14:56+00:00",
+        "reviewer": "dataset-audit"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 5.856,
+        "normalizedRMSE": 0.163435,
+        "outputConfidence": 0.975675,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 60.514,
+        "passed": true,
+        "sourceConfidence": 0.950769,
+        "sourceDetected": true,
+        "swappedRMSE": 0.517385,
+        "torsoAngleDegrees": 4.828
+      },
+      "status": "accepted"
+    },
+    "Dumbbell_Bicep_Curl__f1__male": {
+      "edgeLayoutCosine": 0.615476,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.00087499,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.121904,
+        "passed": true,
+        "sha256": "76ce7782de18cea8ebd3c6b7492379d84129051549e64c3dab2e5f4d31c1acc4",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Independently compared with exact legacy endpoint and approved canonical character reference; pose, grip, dumbbell count, clothing, anatomy and post-despill edge rendering are correct.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T15:14:56+00:00",
+        "reviewer": "dataset-audit"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 2.751,
+        "normalizedRMSE": 0.173339,
+        "outputConfidence": 0.978536,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 55.371,
+        "passed": true,
+        "sourceConfidence": 0.950769,
+        "sourceDetected": true,
+        "swappedRMSE": 0.566878,
+        "torsoAngleDegrees": 5.02
+      },
+      "status": "accepted"
+    },
+    "Tire_Flip__f0__female": {
+      "edgeLayoutCosine": 0.375133,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 8.28e-06,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.230756,
+        "passed": true,
+        "sha256": "6f7122b8307fda4d1be2dd9481a55e2d59dbc60d224899d55f7173c40e4c3bec",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Compared with exact Tire Flip endpoint 0 and approved female reference: low squat, bilateral under-tire grip, tire orientation/scale, identity, anatomy, clothing, and clean transparency are correct.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T15:21:55+00:00",
+        "reviewer": "dataset-audit"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 14.234,
+        "normalizedRMSE": 0.535056,
+        "outputConfidence": 0.948945,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 39.191,
+        "passed": true,
+        "sourceConfidence": 0.838702,
+        "sourceDetected": true,
+        "swappedRMSE": 0.577202,
+        "torsoAngleDegrees": 2.273
+      },
+      "status": "accepted"
+    },
+    "Tire_Flip__f0__male": {
+      "edgeLayoutCosine": 0.423418,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 4.08e-06,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.234145,
+        "passed": true,
+        "sha256": "e2e5691be042ec14b8ee9dd622b6715694dc98306b51ce032850adf9a23287a0",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Compared with exact Tire Flip endpoint 0 and approved male reference: low squat, bilateral under-tire grip, tire orientation/scale, identity, anatomy, clothing, and clean transparency are correct.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T15:21:55+00:00",
+        "reviewer": "dataset-audit"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 10.822,
+        "normalizedRMSE": 0.452384,
+        "outputConfidence": 0.873087,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 26.378,
+        "passed": true,
+        "sourceConfidence": 0.838702,
+        "sourceDetected": true,
+        "swappedRMSE": 0.698602,
+        "torsoAngleDegrees": 7.13
+      },
+      "status": "accepted"
+    },
+    "Tire_Flip__f1__male": {
+      "edgeLayoutCosine": 0.395506,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 9.383e-05,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.203639,
+        "passed": true,
+        "sha256": "04c842a764bce6a983495c6ae9a06da26b9365227780a05f365120705a80492d",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Compared with exact Tire Flip endpoint 1 and approved male reference: staggered stance, forward torso, bilateral under-tire grip, lifted tire, identity, anatomy, and clean transparency are correct; automated pose gate also passes.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T15:21:55+00:00",
+        "reviewer": "dataset-audit"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 6.549,
+        "normalizedRMSE": 0.588614,
+        "outputConfidence": 0.80896,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 31.224,
+        "passed": true,
+        "sourceConfidence": 0.745374,
+        "sourceDetected": true,
+        "swappedRMSE": 0.725803,
+        "torsoAngleDegrees": 7.457
+      },
+      "status": "accepted"
+    }
+  },
+  "schemaVersion": 1,
+  "statuses": {
+    "accepted": 9
+  },
+  "thresholds": {
+    "edgeAlphaFractionMaximum": 0.025,
+    "foregroundOccupancy": [
+      0.08,
+      0.82
+    ],
+    "medianLimbAngleDegreesMaximum": 38,
+    "normalizedPoseRMSEMaximum": 0.85,
+    "outputPoseConfidenceMinimum": 0.55,
+    "p90LimbAngleDegreesMaximum": 72,
+    "torsoAngleDegreesMaximum": 32
+  }
+}

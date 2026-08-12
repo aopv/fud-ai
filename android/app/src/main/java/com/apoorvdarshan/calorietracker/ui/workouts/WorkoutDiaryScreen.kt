@@ -96,6 +96,7 @@ import com.apoorvdarshan.calorietracker.data.ExerciseRepository
 import com.apoorvdarshan.calorietracker.R
 import com.apoorvdarshan.calorietracker.models.PlannedExercise
 import com.apoorvdarshan.calorietracker.models.PlannedSet
+import com.apoorvdarshan.calorietracker.models.Gender
 import com.apoorvdarshan.calorietracker.models.WorkoutWeightUnit
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassDialog
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassSurface
@@ -122,6 +123,7 @@ internal fun WorkoutDiaryScreen(
     viewModel: WorkoutsViewModel,
     modifier: Modifier = Modifier,
     weekStartsOnMonday: Boolean = true,
+    artworkGender: Gender = Gender.MALE,
     onShowLibrary: () -> Unit
 ) {
     var pickerRequest by remember { mutableStateOf<WorkoutPickerRequest?>(null) }
@@ -246,6 +248,7 @@ internal fun WorkoutDiaryScreen(
                 items(state.exercises, key = { it.id }) { exercise ->
                     WorkoutExerciseCard(
                         exercise = exercise,
+                        artworkGender = artworkGender,
                         modifier = Modifier.onGloballyPositioned { coordinates ->
                             exerciseCardBounds[exercise.id] = coordinates.boundsInRoot()
                         },
@@ -354,6 +357,7 @@ internal fun WorkoutDiaryScreen(
                     com.apoorvdarshan.calorietracker.models.WorkoutSplit.FULL_BODY,
                     com.apoorvdarshan.calorietracker.models.WorkoutSplit.CUSTOM
                 ),
+            artworkGender = artworkGender,
             onSourceChange = viewModel::setPickerSource,
             onFilterStateChange = { viewModel.setPickerFilter(request.contextId, it) },
             onToggleExercise = viewModel::toggleExercise,
@@ -683,6 +687,7 @@ private fun WorkoutEmptyState(
 @Composable
 private fun WorkoutExerciseCard(
     exercise: PlannedExercise,
+    artworkGender: Gender,
     modifier: Modifier = Modifier,
     weightUnit: WorkoutWeightUnit,
     rpePlaceholder: String,
@@ -722,7 +727,12 @@ private fun WorkoutExerciseCard(
                             RoundedCornerShape(16.dp)
                         )
                 ) {
-                    AnimatedExerciseImage(exercise.imagePaths, Modifier.fillMaxSize())
+                    AnimatedExerciseImage(
+                        exerciseId = exercise.itemId,
+                        imagePaths = exercise.imagePaths,
+                        gender = artworkGender,
+                        modifier = Modifier.fillMaxSize()
+                    )
                 }
                 Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(5.dp)) {
                     Text(

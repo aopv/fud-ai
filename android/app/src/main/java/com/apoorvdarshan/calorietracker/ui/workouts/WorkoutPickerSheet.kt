@@ -78,6 +78,7 @@ import com.apoorvdarshan.calorietracker.data.ExerciseItem
 import com.apoorvdarshan.calorietracker.data.ExerciseRepository
 import com.apoorvdarshan.calorietracker.data.ExerciseSort
 import com.apoorvdarshan.calorietracker.models.WorkoutSplitGroup
+import com.apoorvdarshan.calorietracker.models.Gender
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassSurface
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassTextButton
 import com.apoorvdarshan.calorietracker.ui.theme.AppColors
@@ -130,6 +131,7 @@ internal fun WorkoutPickerSheet(
     initialFilterState: WorkoutPickerFilterState,
     preferredEquipment: Set<String>,
     hidePrimaryFilter: Boolean,
+    artworkGender: Gender = Gender.MALE,
     onSourceChange: (WorkoutPickerSource) -> Unit,
     onFilterStateChange: (WorkoutPickerFilterState) -> Unit,
     onToggleExercise: (ExerciseItem) -> Unit,
@@ -241,6 +243,7 @@ internal fun WorkoutPickerSheet(
         if (preview != null) {
             ExercisePickerPreview(
                 item = preview,
+                artworkGender = artworkGender,
                 isSelected = preview.id in selectedExerciseIds,
                 onToggle = { onToggleExercise(preview) },
                 onBack = { previewItem = null }
@@ -382,6 +385,7 @@ internal fun WorkoutPickerSheet(
                         items(items.take(120), key = { it.id }) { item ->
                             ExerciseRow(
                                 item = item,
+                                gender = artworkGender,
                                 onClick = { onToggleExercise(item) },
                                 trailingContent = {
                                     Row(
@@ -445,6 +449,7 @@ internal fun WorkoutPickerSheet(
 @Composable
 private fun ExercisePickerPreview(
     item: ExerciseItem,
+    artworkGender: Gender,
     isSelected: Boolean,
     onToggle: () -> Unit,
     onBack: () -> Unit
@@ -458,6 +463,7 @@ private fun ExercisePickerPreview(
     ) {
         ExerciseDetailScreen(
             item = item,
+            gender = artworkGender,
             onBack = onBack,
             modifier = Modifier.fillMaxSize()
         )

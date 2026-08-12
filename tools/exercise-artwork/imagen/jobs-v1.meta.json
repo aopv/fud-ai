@@ -1,0 +1,37 @@
+{
+  "blockedSourceExerciseIDs": [
+    "Bicycling"
+  ],
+  "characterReferences": {
+    "female": {
+      "path": "shared/exercise-artwork/fud-flat-raster-v1/references/female.png",
+      "ready": true,
+      "sha256": "9f74b7074fdc05238d9f743ab79ff40ee87946c75c6333a7d3f426c68513222d"
+    },
+    "male": {
+      "path": "shared/exercise-artwork/fud-flat-raster-v1/references/male.png",
+      "ready": true,
+      "sha256": "44e935323379df6f3c0213c9189414f94498d215894fed3fe2bfe053b0be10e3"
+    }
+  },
+  "exerciseCount": 875,
+  "framesPerExercise": 2,
+  "genders": [
+    "male",
+    "female"
+  ],
+  "jobCount": 3500,
+  "jobsSHA256": "12fd90a337457b2e22ef79b4c1faea3e5f3846fd18b4abc45c85e1df464d84aa",
+  "pilotExerciseIDs": [
+    "3_4_Sit-Up",
+    "Barbell_Bench_Press_-_Medium_Grip",
+    "Cable_Crossover",
+    "Clean_and_Jerk",
+    "Dumbbell_Bicep_Curl",
+    "Leg_Press",
+    "Tire_Flip",
+    "Triceps_Pushdown"
+  ],
+  "schemaVersion": 1,
+  "style": "fud-flat-raster-v1"
+}
