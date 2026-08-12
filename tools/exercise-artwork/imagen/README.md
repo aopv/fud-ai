@@ -107,6 +107,16 @@ clearance, an output pose confidence of at least 0.55, bounded normalized pose e
 and limb-angle errors, and no left/right swap. Edge-layout similarity is reported as a warning-only
 diagnostic because the source is photography and the output is flat artwork.
 
+The chroma-fringe check treats green-dominant contamination at any visible alpha as spill. Its
+separate cyan heuristic applies only to non-opaque antialiased edge pixels (`alpha < 240`), so
+legitimate fully opaque navy/blue mats and equipment are not misclassified as key-color fringe.
+
+Normalization uses an 896px maximum content extent by default. If an otherwise accepted image
+fails **only** the fixed foreground-occupancy gate, the identical preserved raw may be released and
+completed again with `--content-size` between 896 and 944. This deterministic refit must be recorded
+as a new attempt and pass every unchanged automated and manual gate; it is not permission to crop
+the subject, redraw the pose, or weaken the 0.08 occupancy minimum.
+
 Automation cannot reliably prove equipment correctness, character consistency, anatomy, or the
 absence of small visual artifacts. A reviewer must set all four booleans for a job in
 `manual-reviews-v1.json`: `characterApproved`, `poseEquipmentApproved`, `anatomyApproved`, and

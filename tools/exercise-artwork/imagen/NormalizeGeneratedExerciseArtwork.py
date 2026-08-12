@@ -14,7 +14,8 @@ from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageStat
 
 
 CANVAS_SIZE = 1024
-CONTENT_SIZE = 896
+DEFAULT_CONTENT_SIZE = 896
+MAX_CONTENT_SIZE = 944
 
 
 def sha256(path: Path) -> str:
@@ -109,7 +110,17 @@ def derive_alpha(image: Image.Image, threshold: int) -> tuple[Image.Image, Image
     return rgba, alpha, "edge-connected-background"
 
 
-def normalize(input_path: Path, output_path: Path, threshold: int = 42) -> dict:
+def normalize(
+    input_path: Path,
+    output_path: Path,
+    threshold: int = 42,
+    content_size: int = DEFAULT_CONTENT_SIZE,
+) -> dict:
+    if not DEFAULT_CONTENT_SIZE <= content_size <= MAX_CONTENT_SIZE:
+        raise ValueError(
+            f"Content size must be between {DEFAULT_CONTENT_SIZE} and {MAX_CONTENT_SIZE}: "
+            f"{content_size}"
+        )
     with Image.open(input_path) as loaded:
         loaded.load()
         original_mode = loaded.mode
@@ -135,7 +146,7 @@ def normalize(input_path: Path, output_path: Path, threshold: int = 42) -> dict:
         min(image.height, bottom + pad),
     )
     cropped = image.crop(crop_box)
-    scale = min(CONTENT_SIZE / cropped.width, CONTENT_SIZE / cropped.height)
+    scale = min(content_size / cropped.width, content_size / cropped.height)
     resized_size = (
         max(1, round(cropped.width * scale)),
         max(1, round(cropped.height * scale)),
@@ -173,6 +184,7 @@ def normalize(input_path: Path, output_path: Path, threshold: int = 42) -> dict:
         "inputMode": original_mode,
         "inputSize": list(image.size),
         "backgroundRemoval": method,
+        "contentSize": content_size,
         "cropBox": list(crop_box),
         "output": str(output_path),
         "outputSize": [CANVAS_SIZE, CANVAS_SIZE],
@@ -186,9 +198,18 @@ def main() -> None:
     parser.add_argument("--input", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--threshold", type=int, default=42)
+    parser.add_argument(
+        "--content-size",
+        type=int,
+        default=DEFAULT_CONTENT_SIZE,
+        help=(
+            "Maximum normalized content extent in pixels. Values above the default are reserved "
+            "for deterministic refits of preserved raws that failed only the occupancy gate."
+        ),
+    )
     parser.add_argument("--metadata", type=Path)
     args = parser.parse_args()
-    result = normalize(args.input, args.output, args.threshold)
+    result = normalize(args.input, args.output, args.threshold, args.content_size)
     if args.metadata:
         args.metadata.parent.mkdir(parents=True, exist_ok=True)
         args.metadata.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")

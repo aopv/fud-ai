@@ -125,6 +125,14 @@ def main() -> None:
     complete.add_argument("--input", type=Path, required=True)
     complete.add_argument("--chroma-key", action="store_true")
     complete.add_argument(
+        "--content-size",
+        type=int,
+        help=(
+            "Explicit deterministic refit size passed to the normalizer. Omit for the default; "
+            "use only to repair a documented occupancy-only QA failure from preserved raw input."
+        ),
+    )
+    complete.add_argument(
         "--chroma-remover", type=Path,
         default=Path.home() / ".codex/skills/.system/imagegen/scripts/remove_chroma_key.py",
     )
@@ -269,9 +277,14 @@ def main() -> None:
                              "--despill"],
                             check=True,
                         )
+                    normalize_command = [
+                        sys.executable, str(args.normalizer), "--input", str(normalizer_input),
+                        "--output", str(output_path),
+                    ]
+                    if args.content_size is not None:
+                        normalize_command.extend(["--content-size", str(args.content_size)])
                     normalization = subprocess.run(
-                        [sys.executable, str(args.normalizer), "--input", str(normalizer_input),
-                         "--output", str(output_path)],
+                        normalize_command,
                         check=True,
                         capture_output=True,
                         text=True,
@@ -281,6 +294,7 @@ def main() -> None:
                     "status": "completed_pending_qa",
                     "completedAt": utc_now(),
                     "generatedInputPath": generated_input_path,
+                    "normalization": normalized,
                     "outputSHA256": sha256(output_path),
                     "qaStatus": "pending",
                     "error": None,
@@ -311,6 +325,7 @@ def main() -> None:
                     "claimedBy": None,
                     "claimedAt": None,
                     "generatedInputPath": None,
+                    "normalization": None,
                     "outputSHA256": None,
                     "qaStatus": None,
                     "error": None,

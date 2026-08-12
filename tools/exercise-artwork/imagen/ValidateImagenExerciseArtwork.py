@@ -110,7 +110,14 @@ def image_integrity(path: Path) -> dict:
             continue
         opaque_or_edge_pixels += 1
         green_spill = green > 100 and green > red * 1.3 and green > blue * 1.15
-        cyan_spill = green > 80 and blue > 80 and red < min(green, blue) * 0.55
+        # Cyan contamination is an antialiased matte-edge artifact. Fully opaque navy/blue
+        # equipment (for example an exercise mat) is valid subject content, not chroma spill.
+        cyan_spill = (
+            alpha_value < 240
+            and green > 80
+            and blue > 80
+            and red < min(green, blue) * 0.55
+        )
         if green_spill or cyan_spill:
             chroma_pixels += 1
     chroma_fraction = chroma_pixels / max(opaque_or_edge_pixels, 1)
