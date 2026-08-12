@@ -1,5 +1,5 @@
 {
-  "evaluated": 85,
+  "evaluated": 117,
   "manifestQA": {
     "exerciseCount": 875,
     "femaleJobs": 1750,
@@ -8,313 +8,8 @@
     "maleJobs": 1750,
     "uniqueOutputPaths": 3500
   },
-  "missing": 3415,
+  "missing": 3383,
   "results": {
-    "3_4_Sit-Up__f0__female": {
-      "edgeLayoutCosine": 0.578681,
-      "edgeLayoutWarning": false,
-      "generationStateValid": true,
-      "integrity": {
-        "checks": {
-          "chromaFringe": true,
-          "dimensions": true,
-          "edgeClearance": true,
-          "hasTransparency": true,
-          "occupancy": true,
-          "png": true
-        },
-        "chromaFringeFraction": 0.0,
-        "edgeAlphaFraction": 0.0,
-        "foregroundOccupancy": 0.150084,
-        "passed": true,
-        "sha256": "f3b2f96afd3bdb8568657007ca281de703ea3eef5c2867d8c765c8a53a9d3bcc",
-        "size": [
-          1024,
-          1024
-        ]
-      },
-      "manualRequiredFields": [
-        "characterApproved",
-        "poseEquipmentApproved",
-        "anatomyApproved",
-        "artifactFree"
-      ],
-      "manualReview": {
-        "anatomyApproved": true,
-        "artifactFree": true,
-        "characterApproved": true,
-        "decision": "reject",
-        "notes": "Exact legacy side-by-side confirms the intended 3/4 sit-up endpoint, canonical gender identity/outfit, planted feet and bent knees, hands at head with elbows out, complete limbs, and clean artwork. Rejected/unshipped strictly because the unchanged automatic pose gate fails: confidence 0.703788, RMSE 0.321397, median 12.323 degrees, p90 129.028 degrees, torso 12.919 degrees, left/right True. Integrity passes; chroma fringe 0.0.",
-        "poseEquipmentApproved": true,
-        "reviewedAt": "2026-08-12T17:09:07+00:00",
-        "reviewer": "qa-orchestrator"
-      },
-      "pose": {
-        "checks": {
-          "leftRight": true,
-          "medianLimbAngle": true,
-          "normalizedRMSE": true,
-          "outputConfidence": true,
-          "p90LimbAngle": false,
-          "torsoAngle": true
-        },
-        "medianLimbAngleDegrees": 12.323,
-        "normalizedRMSE": 0.321397,
-        "outputConfidence": 0.703788,
-        "outputDetected": true,
-        "p90LimbAngleDegrees": 129.028,
-        "passed": false,
-        "sourceConfidence": 0.633236,
-        "sourceDetected": true,
-        "swappedRMSE": 0.431863,
-        "torsoAngleDegrees": 12.919
-      },
-      "status": "auto_failed"
-    },
-    "3_4_Sit-Up__f0__male": {
-      "edgeLayoutCosine": 0.56029,
-      "edgeLayoutWarning": false,
-      "generationStateValid": true,
-      "integrity": {
-        "checks": {
-          "chromaFringe": true,
-          "dimensions": true,
-          "edgeClearance": true,
-          "hasTransparency": true,
-          "occupancy": true,
-          "png": true
-        },
-        "chromaFringeFraction": 0.0,
-        "edgeAlphaFraction": 0.0,
-        "foregroundOccupancy": 0.139204,
-        "passed": true,
-        "sha256": "b5478b37c4784d6200ea416c2762abc5bfe1085c6b16b2df637ba7ff9c9a8167",
-        "size": [
-          1024,
-          1024
-        ]
-      },
-      "manualRequiredFields": [
-        "characterApproved",
-        "poseEquipmentApproved",
-        "anatomyApproved",
-        "artifactFree"
-      ],
-      "manualReview": {
-        "anatomyApproved": true,
-        "artifactFree": true,
-        "characterApproved": true,
-        "decision": "reject",
-        "notes": "Exact legacy side-by-side confirms the intended 3/4 sit-up endpoint, canonical gender identity/outfit, planted feet and bent knees, hands at head with elbows out, complete limbs, and clean artwork. Rejected/unshipped strictly because the unchanged automatic pose gate fails: confidence 0.49093, RMSE 0.343898, median 8.274 degrees, p90 125.974 degrees, torso 5.849 degrees, left/right True. Integrity passes; chroma fringe 0.0.",
-        "poseEquipmentApproved": true,
-        "reviewedAt": "2026-08-12T17:09:07+00:00",
-        "reviewer": "qa-orchestrator"
-      },
-      "pose": {
-        "checks": {
-          "leftRight": true,
-          "medianLimbAngle": true,
-          "normalizedRMSE": true,
-          "outputConfidence": false,
-          "p90LimbAngle": false,
-          "torsoAngle": true
-        },
-        "medianLimbAngleDegrees": 8.274,
-        "normalizedRMSE": 0.343898,
-        "outputConfidence": 0.49093,
-        "outputDetected": true,
-        "p90LimbAngleDegrees": 125.974,
-        "passed": false,
-        "sourceConfidence": 0.633236,
-        "sourceDetected": true,
-        "swappedRMSE": 0.47167,
-        "torsoAngleDegrees": 5.849
-      },
-      "status": "auto_failed"
-    },
-    "3_4_Sit-Up__f1__female": {
-      "edgeLayoutCosine": 0.632784,
-      "edgeLayoutWarning": false,
-      "generationStateValid": true,
-      "integrity": {
-        "checks": {
-          "chromaFringe": true,
-          "dimensions": true,
-          "edgeClearance": true,
-          "hasTransparency": true,
-          "occupancy": true,
-          "png": true
-        },
-        "chromaFringeFraction": 1.699e-05,
-        "edgeAlphaFraction": 0.0,
-        "foregroundOccupancy": 0.224992,
-        "passed": true,
-        "sha256": "084f65946e93d61c681ef89c1a66466387f3f99e0934cf0a1e751a477a38455c",
-        "size": [
-          1024,
-          1024
-        ]
-      },
-      "manualRequiredFields": [
-        "characterApproved",
-        "poseEquipmentApproved",
-        "anatomyApproved",
-        "artifactFree"
-      ],
-      "manualReview": {
-        "anatomyApproved": true,
-        "artifactFree": true,
-        "characterApproved": true,
-        "decision": "reject",
-        "notes": "Exact legacy side-by-side confirms the intended 3/4 sit-up endpoint, canonical gender identity/outfit, planted feet and bent knees, hands at head with elbows out, complete limbs, and clean artwork. Rejected/unshipped strictly because the unchanged automatic pose gate fails: confidence 0.982106, RMSE 0.484596, median 11.355 degrees, p90 142.244 degrees, torso 12.15 degrees, left/right True. Integrity passes; chroma fringe 1.699e-05.",
-        "poseEquipmentApproved": true,
-        "reviewedAt": "2026-08-12T17:09:07+00:00",
-        "reviewer": "qa-orchestrator"
-      },
-      "pose": {
-        "checks": {
-          "leftRight": true,
-          "medianLimbAngle": true,
-          "normalizedRMSE": true,
-          "outputConfidence": true,
-          "p90LimbAngle": false,
-          "torsoAngle": true
-        },
-        "medianLimbAngleDegrees": 11.355,
-        "normalizedRMSE": 0.484596,
-        "outputConfidence": 0.982106,
-        "outputDetected": true,
-        "p90LimbAngleDegrees": 142.244,
-        "passed": false,
-        "sourceConfidence": 0.868138,
-        "sourceDetected": true,
-        "swappedRMSE": 0.485357,
-        "torsoAngleDegrees": 12.15
-      },
-      "status": "auto_failed"
-    },
-    "3_4_Sit-Up__f1__male": {
-      "edgeLayoutCosine": 0.661986,
-      "edgeLayoutWarning": false,
-      "generationStateValid": true,
-      "integrity": {
-        "checks": {
-          "chromaFringe": true,
-          "dimensions": true,
-          "edgeClearance": true,
-          "hasTransparency": true,
-          "occupancy": true,
-          "png": true
-        },
-        "chromaFringeFraction": 0.0,
-        "edgeAlphaFraction": 0.0,
-        "foregroundOccupancy": 0.228267,
-        "passed": true,
-        "sha256": "9d836afc198465d7c61a88d0d0c725c0d1ac409a3d254f1c40c7cfa9f6f2a672",
-        "size": [
-          1024,
-          1024
-        ]
-      },
-      "manualRequiredFields": [
-        "characterApproved",
-        "poseEquipmentApproved",
-        "anatomyApproved",
-        "artifactFree"
-      ],
-      "manualReview": {
-        "anatomyApproved": true,
-        "artifactFree": true,
-        "characterApproved": true,
-        "decision": "reject",
-        "notes": "Exact legacy side-by-side confirms the intended 3/4 sit-up endpoint, canonical gender identity/outfit, planted feet and bent knees, hands at head with elbows out, complete limbs, and clean artwork. Rejected/unshipped strictly because the unchanged automatic pose gate fails: confidence 0.987705, RMSE 0.529752, median 15.693 degrees, p90 152.64 degrees, torso 17.244 degrees, left/right True. Integrity passes; chroma fringe 0.0.",
-        "poseEquipmentApproved": true,
-        "reviewedAt": "2026-08-12T17:09:07+00:00",
-        "reviewer": "qa-orchestrator"
-      },
-      "pose": {
-        "checks": {
-          "leftRight": true,
-          "medianLimbAngle": true,
-          "normalizedRMSE": true,
-          "outputConfidence": true,
-          "p90LimbAngle": false,
-          "torsoAngle": true
-        },
-        "medianLimbAngleDegrees": 15.693,
-        "normalizedRMSE": 0.529752,
-        "outputConfidence": 0.987705,
-        "outputDetected": true,
-        "p90LimbAngleDegrees": 152.64,
-        "passed": false,
-        "sourceConfidence": 0.868138,
-        "sourceDetected": true,
-        "swappedRMSE": 0.527412,
-        "torsoAngleDegrees": 17.244
-      },
-      "status": "auto_failed"
-    },
-    "90_90_Hamstring__f0__female": {
-      "edgeLayoutCosine": 0.4342,
-      "edgeLayoutWarning": false,
-      "generationStateValid": true,
-      "integrity": {
-        "checks": {
-          "chromaFringe": true,
-          "dimensions": true,
-          "edgeClearance": true,
-          "hasTransparency": true,
-          "occupancy": true,
-          "png": true
-        },
-        "chromaFringeFraction": 1.046e-05,
-        "edgeAlphaFraction": 0.0,
-        "foregroundOccupancy": 0.091454,
-        "passed": true,
-        "sha256": "1af4292bcd91493d6febeef7c27bf7e50b2243931dd0ec399ca84b76145e693b",
-        "size": [
-          1024,
-          1024
-        ]
-      },
-      "manualRequiredFields": [
-        "characterApproved",
-        "poseEquipmentApproved",
-        "anatomyApproved",
-        "artifactFree"
-      ],
-      "manualReview": {
-        "anatomyApproved": true,
-        "artifactFree": true,
-        "characterApproved": true,
-        "decision": "reject",
-        "notes": "Exact old f0 side-by-side: canonical female identity/outfit, supine body, one ground leg extended, opposite knee bent about 90 degrees, both hands behind thigh, two complete legs/arms/hands, and clean transparent artwork are visually valid. Rejected strictly because unchanged automatic pose gate fails: direct RMSE 0.948451, p90 131.281 degrees, and left/right check false (swapped RMSE 0.316306). Integrity passes, chroma fringe 0.00001046. Pair must remain unshipped.",
-        "poseEquipmentApproved": true,
-        "reviewedAt": "2026-08-12T17:07:25+00:00",
-        "reviewer": "qa-orchestrator"
-      },
-      "pose": {
-        "checks": {
-          "leftRight": false,
-          "medianLimbAngle": true,
-          "normalizedRMSE": false,
-          "outputConfidence": true,
-          "p90LimbAngle": false,
-          "torsoAngle": true
-        },
-        "medianLimbAngleDegrees": 13.778,
-        "normalizedRMSE": 0.948451,
-        "outputConfidence": 0.815668,
-        "outputDetected": true,
-        "p90LimbAngleDegrees": 131.281,
-        "passed": false,
-        "sourceConfidence": 0.853551,
-        "sourceDetected": true,
-        "swappedRMSE": 0.316306,
-        "torsoAngleDegrees": 4.885
-      },
-      "status": "auto_failed"
-    },
     "90_90_Hamstring__f0__male": {
       "edgeLayoutCosine": 0.530856,
       "edgeLayoutWarning": false,
@@ -495,6 +190,494 @@
         "sourceDetected": true,
         "swappedRMSE": 1.500977,
         "torsoAngleDegrees": 1.813
+      },
+      "status": "accepted"
+    },
+    "Advanced_Kettlebell_Windmill__f0__female": {
+      "edgeLayoutCosine": 0.67789,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.091886,
+        "passed": true,
+        "sha256": "e9df3d37a207d56d336688ae1bae4c5389f1c16378bac160f80d97d55d6e71a4",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Original-resolution exact legacy side-by-side confirms locked female identity/outfit, exactly one kettlebell in the overhead hand and the correct Advanced Kettlebell Windmill endpoint: wide upright stance, overhead arm vertical, free arm behind torso. Two complete arms/hands and legs/feet, natural joints, correct gaze/equipment contact, no extra anatomy, clean transparency. All unchanged auto pose/integrity gates pass; metrics retained in qa-report-v1.json.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T17:58:29+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 6.073,
+        "normalizedRMSE": 0.212965,
+        "outputConfidence": 0.968302,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 9.271,
+        "passed": true,
+        "sourceConfidence": 0.868849,
+        "sourceDetected": true,
+        "swappedRMSE": 1.093345,
+        "torsoAngleDegrees": 7.875
+      },
+      "status": "accepted"
+    },
+    "Advanced_Kettlebell_Windmill__f0__male": {
+      "edgeLayoutCosine": 0.672016,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.095698,
+        "passed": true,
+        "sha256": "8ed5e586582a3be048b0a01fd9b0ed51c72b179100dc37ceba4f9b2034f1d6a9",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Original-resolution exact legacy side-by-side confirms locked male identity/outfit, exactly one kettlebell in the overhead hand and the correct Advanced Kettlebell Windmill endpoint: wide upright stance, overhead arm vertical, free arm behind torso. Two complete arms/hands and legs/feet, natural joints, correct gaze/equipment contact, no extra anatomy, clean transparency. All unchanged auto pose/integrity gates pass; metrics retained in qa-report-v1.json.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T17:58:29+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 4.223,
+        "normalizedRMSE": 0.15153,
+        "outputConfidence": 0.906521,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 57.125,
+        "passed": true,
+        "sourceConfidence": 0.868849,
+        "sourceDetected": true,
+        "swappedRMSE": 0.975708,
+        "torsoAngleDegrees": 3.544
+      },
+      "status": "accepted"
+    },
+    "Advanced_Kettlebell_Windmill__f1__female": {
+      "edgeLayoutCosine": 0.662358,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.115613,
+        "passed": true,
+        "sha256": "5feeaf437d79d8cd7d30c06dc88529db2fe9e3e973ee7a79903663d5d3033fad",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Original-resolution exact legacy side-by-side confirms locked female identity/outfit, exactly one kettlebell in the overhead hand and the correct Advanced Kettlebell Windmill endpoint: deep lateral hip hinge, overhead arm vertical, free hand reaching the lower shin. Two complete arms/hands and legs/feet, natural joints, correct gaze/equipment contact, no extra anatomy, clean transparency. All unchanged auto pose/integrity gates pass; metrics retained in qa-report-v1.json.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T17:58:29+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 9.912,
+        "normalizedRMSE": 0.685757,
+        "outputConfidence": 0.997301,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 31.866,
+        "passed": true,
+        "sourceConfidence": 0.90139,
+        "sourceDetected": true,
+        "swappedRMSE": 2.028682,
+        "torsoAngleDegrees": 4.604
+      },
+      "status": "accepted"
+    },
+    "Advanced_Kettlebell_Windmill__f1__male": {
+      "edgeLayoutCosine": 0.655454,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.121635,
+        "passed": true,
+        "sha256": "12b1f20f2efc3d2a281589e39997f3de62572236be946d250d0a373016d2e2b7",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Original-resolution exact legacy side-by-side confirms locked male identity/outfit, exactly one kettlebell in the overhead hand and the correct Advanced Kettlebell Windmill endpoint: deep lateral hip hinge, overhead arm vertical, free hand reaching the lower shin. Two complete arms/hands and legs/feet, natural joints, correct gaze/equipment contact, no extra anatomy, clean transparency. All unchanged auto pose/integrity gates pass; metrics retained in qa-report-v1.json.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T17:58:29+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 4.252,
+        "normalizedRMSE": 0.568442,
+        "outputConfidence": 0.997149,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 28.04,
+        "passed": true,
+        "sourceConfidence": 0.90139,
+        "sourceDetected": true,
+        "swappedRMSE": 2.148947,
+        "torsoAngleDegrees": 0.721
+      },
+      "status": "accepted"
+    },
+    "All_Fours_Quad_Stretch__f0__female": {
+      "edgeLayoutCosine": 0.519595,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.170286,
+        "passed": true,
+        "sha256": "679c5995cd8a1ff9246e013e19e44b9a0b20fb735ea046dffacdcf7873d7d9ab",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Original-resolution exact legacy side-by-side confirms locked female identity/outfit and the correct All Fours Quad Stretch endpoint: neutral quadruped with both palms and knees supporting. Complete two arms/hands and two legs/feet, natural contacts/joints, no extra anatomy, and clean transparency. Every unchanged automatic pose and integrity gate passes; exact metrics are retained in qa-report-v1.json.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T17:56:02+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 6.284,
+        "normalizedRMSE": 0.420865,
+        "outputConfidence": 0.982368,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 24.207,
+        "passed": true,
+        "sourceConfidence": 0.876246,
+        "sourceDetected": true,
+        "swappedRMSE": 0.370968,
+        "torsoAngleDegrees": 6.172
+      },
+      "status": "accepted"
+    },
+    "All_Fours_Quad_Stretch__f0__male": {
+      "edgeLayoutCosine": 0.519201,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.173651,
+        "passed": true,
+        "sha256": "06e9f80e7ca484db58a1dbcfd38be368b7c24c21159684d0a59d3657cabd38ec",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Original-resolution exact legacy side-by-side confirms locked male identity/outfit and the correct All Fours Quad Stretch endpoint: neutral quadruped with both palms and knees supporting. Complete two arms/hands and two legs/feet, natural contacts/joints, no extra anatomy, and clean transparency. Every unchanged automatic pose and integrity gate passes; exact metrics are retained in qa-report-v1.json.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T17:56:02+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 6.217,
+        "normalizedRMSE": 0.409163,
+        "outputConfidence": 0.975778,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 21.102,
+        "passed": true,
+        "sourceConfidence": 0.876246,
+        "sourceDetected": true,
+        "swappedRMSE": 0.360183,
+        "torsoAngleDegrees": 4.619
+      },
+      "status": "accepted"
+    },
+    "All_Fours_Quad_Stretch__f1__female": {
+      "edgeLayoutCosine": 0.684376,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.247768,
+        "passed": true,
+        "sha256": "eedb5bd2f71e5c86502ed44ae24875956e1519161a3567d99295fc1c857d4252",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Original-resolution exact legacy side-by-side confirms locked female identity/outfit and the correct All Fours Quad Stretch endpoint: one palm/one knee supporting while the opposite hand grips the flexed raised foot. Complete two arms/hands and two legs/feet, natural contacts/joints, no extra anatomy, and clean transparency. Every unchanged automatic pose and integrity gate passes; exact metrics are retained in qa-report-v1.json.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T17:56:02+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 6.318,
+        "normalizedRMSE": 0.255811,
+        "outputConfidence": 0.987662,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 11.054,
+        "passed": true,
+        "sourceConfidence": 0.877917,
+        "sourceDetected": true,
+        "swappedRMSE": 1.380781,
+        "torsoAngleDegrees": 8.16
+      },
+      "status": "accepted"
+    },
+    "All_Fours_Quad_Stretch__f1__male": {
+      "edgeLayoutCosine": 0.711972,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.242682,
+        "passed": true,
+        "sha256": "f482c2da34165103adff1ff4e6ef52871f16350ce1ee35aaa46e3088c2894372",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Original-resolution exact legacy side-by-side confirms locked male identity/outfit and the correct All Fours Quad Stretch endpoint: one palm/one knee supporting while the opposite hand grips the flexed raised foot. Complete two arms/hands and two legs/feet, natural contacts/joints, no extra anatomy, and clean transparency. Every unchanged automatic pose and integrity gate passes; exact metrics are retained in qa-report-v1.json.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T17:56:02+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 3.917,
+        "normalizedRMSE": 0.235778,
+        "outputConfidence": 0.962674,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 13.833,
+        "passed": true,
+        "sourceConfidence": 0.877917,
+        "sourceDetected": true,
+        "swappedRMSE": 1.369125,
+        "torsoAngleDegrees": 8.69
       },
       "status": "accepted"
     },
@@ -739,6 +922,250 @@
         "sourceDetected": true,
         "swappedRMSE": 0.543231,
         "torsoAngleDegrees": 3.705
+      },
+      "status": "accepted"
+    },
+    "Alternate_Heel_Touchers__f1__female": {
+      "edgeLayoutCosine": 0.624221,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.198066,
+        "passed": true,
+        "sha256": "d031dc7800d8428d5a7c520a9ff9f9a75e170e924628275b1836fd988ac24a99",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Exact old f1 side-by-side confirms locked female identity/outfit and opposite-side heel reach relative to f0, with shoulders lifted, knees/feet stable, correct complete arms/hands and clean anatomy. Auto pass: confidence 0.851080, RMSE 0.302514, median 22.902\u00b0, p90 35.025\u00b0, torso 18.054\u00b0, left/right true; integrity/chroma pass. Individual accepted but f0 failed, so pair excluded.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T17:29:16+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 22.902,
+        "normalizedRMSE": 0.302514,
+        "outputConfidence": 0.85108,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 35.025,
+        "passed": true,
+        "sourceConfidence": 0.830661,
+        "sourceDetected": true,
+        "swappedRMSE": 0.598712,
+        "torsoAngleDegrees": 18.054
+      },
+      "status": "accepted"
+    },
+    "Alternate_Heel_Touchers__f1__male": {
+      "edgeLayoutCosine": 0.69215,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.204535,
+        "passed": true,
+        "sha256": "c85342827452859eb4b4f99804496eeb940a781537fffd866c6f063a821827ea",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Exact old f1 side-by-side confirms locked male identity/outfit and true opposite-side heel reach, shoulders lifted, knees/feet stable, complete correct hands/legs and clean artwork. Auto pass: confidence 0.853504, RMSE 0.300663, median 24.016\u00b0, p90 37.329\u00b0, torso 19.396\u00b0, left/right true; integrity/chroma pass. Individual accepted but f0 failed, so pair excluded.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T17:29:16+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 24.016,
+        "normalizedRMSE": 0.300663,
+        "outputConfidence": 0.853504,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 37.329,
+        "passed": true,
+        "sourceConfidence": 0.830661,
+        "sourceDetected": true,
+        "swappedRMSE": 0.619655,
+        "torsoAngleDegrees": 19.396
+      },
+      "status": "accepted"
+    },
+    "Alternate_Incline_Dumbbell_Curl__f0__female": {
+      "edgeLayoutCosine": 0.579374,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 4.21e-06,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.22729,
+        "passed": true,
+        "sha256": "13e9d2ed2454d89d3fbd3dc3b3db233d6d88086f91eb976d78b69326defede95",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Exact old f0 side-by-side confirms locked female identity/outfit, complete incline bench, exactly two dumbbells and bilateral curled start endpoint with correct contacts/anatomy. Auto passes all unchanged thresholds (see QA report; p90 66.916\u00b0). Individual accepted; f1 hard-failed, so pair excluded.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T17:48:12+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 12.008,
+        "normalizedRMSE": 0.327562,
+        "outputConfidence": 0.937184,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 66.916,
+        "passed": true,
+        "sourceConfidence": 0.785698,
+        "sourceDetected": true,
+        "swappedRMSE": 0.648668,
+        "torsoAngleDegrees": 1.053
+      },
+      "status": "accepted"
+    },
+    "Alternate_Incline_Dumbbell_Curl__f0__male": {
+      "edgeLayoutCosine": 0.601349,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 4.29e-06,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.2228,
+        "passed": true,
+        "sha256": "beb14cf31201a4ce10a9b14b4d19d6c3e20d68bed8174aa409c6510839f9ee3d",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Exact old f0 side-by-side confirms locked male identity/outfit, complete incline bench, exactly two dumbbells and bilateral curled start endpoint with correct contacts/anatomy. Auto passes all unchanged thresholds (see QA report; p90 69.052\u00b0). Individual accepted; f1 hard-failed, so pair excluded.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T17:48:12+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 13.689,
+        "normalizedRMSE": 0.371664,
+        "outputConfidence": 0.952377,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 69.052,
+        "passed": true,
+        "sourceConfidence": 0.785698,
+        "sourceDetected": true,
+        "swappedRMSE": 0.689259,
+        "torsoAngleDegrees": 2.448
       },
       "status": "accepted"
     },
@@ -1230,8 +1657,8 @@
       },
       "status": "accepted"
     },
-    "Band_Pull_Apart__f0__male": {
-      "edgeLayoutCosine": 0.53185,
+    "Arnold_Dumbbell_Press__f0__female": {
+      "edgeLayoutCosine": 0.456933,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
       "integrity": {
@@ -1243,11 +1670,11 @@
           "occupancy": true,
           "png": true
         },
-        "chromaFringeFraction": 9.305e-05,
+        "chromaFringeFraction": 9.14e-06,
         "edgeAlphaFraction": 0.0,
-        "foregroundOccupancy": 0.113161,
+        "foregroundOccupancy": 0.209394,
         "passed": true,
-        "sha256": "801e8317949c9b2469b6775f472bed43ba35f1ce4f8a5f0ec277e060ceae2287",
+        "sha256": "8ddaf6dcaaf542d20180b1d5ce4d549a57e9d81db0a2e07d98af7ede8c6159a9",
         "size": [
           1024,
           1024
@@ -1259,28 +1686,464 @@
         "anatomyApproved",
         "artifactFree"
       ],
-      "manualReview": {},
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Exact legacy endpoint side-by-side at original resolution confirms locked female identity/outfit, complete upright bench, exactly two dumbbells, correct seated Arnold press endpoint (0: weights at shoulders with elbows flexed), correct grips, full limbs/feet, natural anatomy, and clean transparent artwork. All unchanged automatic pose and integrity gates pass; see qa-report-v1.json for exact metrics.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T17:53:30+00:00",
+        "reviewer": "qa-orchestrator"
+      },
       "pose": {
         "checks": {
           "leftRight": true,
           "medianLimbAngle": true,
           "normalizedRMSE": true,
           "outputConfidence": true,
-          "p90LimbAngle": false,
+          "p90LimbAngle": true,
           "torsoAngle": true
         },
-        "medianLimbAngleDegrees": 8.624,
-        "normalizedRMSE": 0.173123,
-        "outputConfidence": 0.946975,
+        "medianLimbAngleDegrees": 3.118,
+        "normalizedRMSE": 0.160167,
+        "outputConfidence": 0.963147,
         "outputDetected": true,
-        "p90LimbAngleDegrees": 98.188,
-        "passed": false,
-        "sourceConfidence": 0.945915,
+        "p90LimbAngleDegrees": 14.55,
+        "passed": true,
+        "sourceConfidence": 0.712689,
         "sourceDetected": true,
-        "swappedRMSE": 0.674882,
-        "torsoAngleDegrees": 0.663
+        "swappedRMSE": 0.491032,
+        "torsoAngleDegrees": 0.49
       },
-      "status": "auto_failed"
+      "status": "accepted"
+    },
+    "Arnold_Dumbbell_Press__f0__male": {
+      "edgeLayoutCosine": 0.547606,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.213567,
+        "passed": true,
+        "sha256": "c7fb9765586cb0c4b235b9cf874e0c50471f57916a347c4e61132eb4453b15dd",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Exact legacy endpoint side-by-side at original resolution confirms locked male identity/outfit, complete upright bench, exactly two dumbbells, correct seated Arnold press endpoint (0: weights at shoulders with elbows flexed), correct grips, full limbs/feet, natural anatomy, and clean transparent artwork. All unchanged automatic pose and integrity gates pass; see qa-report-v1.json for exact metrics.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T17:53:30+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 6.241,
+        "normalizedRMSE": 0.163362,
+        "outputConfidence": 0.952365,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 10.366,
+        "passed": true,
+        "sourceConfidence": 0.712689,
+        "sourceDetected": true,
+        "swappedRMSE": 0.475127,
+        "torsoAngleDegrees": 5.168
+      },
+      "status": "accepted"
+    },
+    "Arnold_Dumbbell_Press__f1__female": {
+      "edgeLayoutCosine": 0.408124,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.152325,
+        "passed": true,
+        "sha256": "23fdee4c0abcb467b3412a8a92998653a367cab82358e0bcde94ca3f00f530ef",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Exact legacy endpoint side-by-side at original resolution confirms locked female identity/outfit, complete upright bench, exactly two dumbbells, correct seated Arnold press endpoint (1: bilateral overhead finish with arms extended), correct grips, full limbs/feet, natural anatomy, and clean transparent artwork. All unchanged automatic pose and integrity gates pass; see qa-report-v1.json for exact metrics.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T17:53:30+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 1.805,
+        "normalizedRMSE": 0.152958,
+        "outputConfidence": 0.917788,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 8.589,
+        "passed": true,
+        "sourceConfidence": 0.70823,
+        "sourceDetected": true,
+        "swappedRMSE": 0.398695,
+        "torsoAngleDegrees": 1.165
+      },
+      "status": "accepted"
+    },
+    "Arnold_Dumbbell_Press__f1__male": {
+      "edgeLayoutCosine": 0.477596,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.161531,
+        "passed": true,
+        "sha256": "05caab1f8a01b602df965273f51b98dd9a0fc1b8deb45bf0f5ea3453383cdb89",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Exact legacy endpoint side-by-side at original resolution confirms locked male identity/outfit, complete upright bench, exactly two dumbbells, correct seated Arnold press endpoint (1: bilateral overhead finish with arms extended), correct grips, full limbs/feet, natural anatomy, and clean transparent artwork. All unchanged automatic pose and integrity gates pass; see qa-report-v1.json for exact metrics.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T17:53:30+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 3.306,
+        "normalizedRMSE": 0.178043,
+        "outputConfidence": 0.962567,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 7.756,
+        "passed": true,
+        "sourceConfidence": 0.70823,
+        "sourceDetected": true,
+        "swappedRMSE": 0.436117,
+        "torsoAngleDegrees": 5.011
+      },
+      "status": "accepted"
+    },
+    "Back_Flyes_-_With_Bands__f0__female": {
+      "edgeLayoutCosine": 0.614747,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.109504,
+        "passed": true,
+        "sha256": "1b9539b2d9d0c4c892116049fc4cf9c7f64e8c9d140f5e3fa9c0fd8527ee93a4",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Original-resolution exact legacy side-by-side confirms locked back-view female identity/outfit, exactly one two-strand resistance band connected to the left anchor and correct endpoint 0 (both hands together/forward). Full body, natural shoulders/elbows/grips, correct band contact/tension, no extra anatomy or clutter, clean transparency. All unchanged pose/integrity gates pass; metrics retained in qa-report-v1.json.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T18:03:39+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 7.972,
+        "normalizedRMSE": 0.279832,
+        "outputConfidence": 0.721066,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 34.418,
+        "passed": true,
+        "sourceConfidence": 0.683113,
+        "sourceDetected": true,
+        "swappedRMSE": 0.41698,
+        "torsoAngleDegrees": 3.712
+      },
+      "status": "accepted"
+    },
+    "Back_Flyes_-_With_Bands__f0__male": {
+      "edgeLayoutCosine": 0.627991,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.110402,
+        "passed": true,
+        "sha256": "d817e52c8a67c848fb16d29e4f1e81df42b170982753ba6bd1719edbc8559e64",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Original-resolution exact legacy side-by-side confirms locked back-view male identity/outfit, exactly one two-strand resistance band connected to the left anchor and correct endpoint 0 (both hands together/forward). Full body, natural shoulders/elbows/grips, correct band contact/tension, no extra anatomy or clutter, clean transparency. All unchanged pose/integrity gates pass; metrics retained in qa-report-v1.json.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T18:03:39+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 5.165,
+        "normalizedRMSE": 0.19248,
+        "outputConfidence": 0.684932,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 26.705,
+        "passed": true,
+        "sourceConfidence": 0.683113,
+        "sourceDetected": true,
+        "swappedRMSE": 0.376448,
+        "torsoAngleDegrees": 1.564
+      },
+      "status": "accepted"
+    },
+    "Back_Flyes_-_With_Bands__f1__female": {
+      "edgeLayoutCosine": 0.638774,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.12026,
+        "passed": true,
+        "sha256": "8c7f93e4abd0ee8ee2a642b54bdd9c5717447368ca6d51af31e8bee1e8d02128",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Original-resolution exact legacy side-by-side confirms locked back-view female identity/outfit, exactly one two-strand resistance band connected to the left anchor and correct endpoint 1 (arms pulled wide into a shoulder-height T). Full body, natural shoulders/elbows/grips, correct band contact/tension, no extra anatomy or clutter, clean transparency. All unchanged pose/integrity gates pass; metrics retained in qa-report-v1.json.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T18:03:39+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 6.667,
+        "normalizedRMSE": 0.29942,
+        "outputConfidence": 0.979181,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 32.194,
+        "passed": true,
+        "sourceConfidence": 0.701093,
+        "sourceDetected": true,
+        "swappedRMSE": 0.747375,
+        "torsoAngleDegrees": 0.828
+      },
+      "status": "accepted"
+    },
+    "Back_Flyes_-_With_Bands__f1__male": {
+      "edgeLayoutCosine": 0.659382,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.128321,
+        "passed": true,
+        "sha256": "a008f5bfcf03d8d085d33db7a6ef97c7e635884e83d2fa5a0bfc6c63714f2681",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Original-resolution exact legacy side-by-side confirms locked back-view male identity/outfit, exactly one two-strand resistance band connected to the left anchor and correct endpoint 1 (arms pulled wide into a shoulder-height T). Full body, natural shoulders/elbows/grips, correct band contact/tension, no extra anatomy or clutter, clean transparency. All unchanged pose/integrity gates pass; metrics retained in qa-report-v1.json.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T18:03:40+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 7.686,
+        "normalizedRMSE": 0.222432,
+        "outputConfidence": 0.913661,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 17.433,
+        "passed": true,
+        "sourceConfidence": 0.701093,
+        "sourceDetected": true,
+        "swappedRMSE": 0.709764,
+        "torsoAngleDegrees": 2.129
+      },
+      "status": "accepted"
     },
     "Band_Pull_Apart__f1__male": {
       "edgeLayoutCosine": 0.594368,
@@ -2319,6 +3182,67 @@
       },
       "status": "accepted"
     },
+    "Dumbbell_Alternate_Bicep_Curl__f0__male": {
+      "edgeLayoutCosine": 0.582474,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.128862,
+        "passed": true,
+        "sha256": "f444a1fd4ec36fe57d8424af7398dcb05f233a437b8a1230c2e15ba2132d0b42",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Exact legacy f0 side-by-side confirms locked male identity/outfit, full-body 3-quarter stance, exactly two dumbbells, viewer-left arm curled and viewer-right arm lowered with correct grip/contact. Complete clean anatomy and integrity. Auto pass: confidence 0.961974, RMSE 0.137196, median 0.748\u00b0, p90 6.972\u00b0, torso 0.090\u00b0, left/right true.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T17:27:19+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 0.748,
+        "normalizedRMSE": 0.137196,
+        "outputConfidence": 0.961974,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 6.972,
+        "passed": true,
+        "sourceConfidence": 0.936742,
+        "sourceDetected": true,
+        "swappedRMSE": 0.627887,
+        "torsoAngleDegrees": 0.09
+      },
+      "status": "accepted"
+    },
     "Dumbbell_Alternate_Bicep_Curl__f1__female": {
       "edgeLayoutCosine": 0.574429,
       "edgeLayoutWarning": false,
@@ -2377,6 +3301,67 @@
         "sourceDetected": true,
         "swappedRMSE": 0.604729,
         "torsoAngleDegrees": 4.151
+      },
+      "status": "accepted"
+    },
+    "Dumbbell_Alternate_Bicep_Curl__f1__male": {
+      "edgeLayoutCosine": 0.618304,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.118831,
+        "passed": true,
+        "sha256": "c255756ffce251958cd323f878625434e8b9e855d538200c29f286e5a993ae6c",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Targeted retry exact legacy comparison confirms locked male identity/outfit, exactly two dumbbells, viewer-right curl with elbow pinned and forearm/weight now angled inward across torso while opposite arm remains straight/down. Full body, correct grip/contact, natural anatomy and clean transparency. Unchanged auto pass: confidence 0.987160, RMSE 0.151875, median 1.268\u00b0, p90 31.025\u00b0, torso 0.324\u00b0, left/right true; integrity/chroma pass. Male pair complete.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T17:32:07+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 1.268,
+        "normalizedRMSE": 0.151875,
+        "outputConfidence": 0.98716,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 31.025,
+        "passed": true,
+        "sourceConfidence": 0.973118,
+        "sourceDetected": true,
+        "swappedRMSE": 0.55716,
+        "torsoAngleDegrees": 0.324
       },
       "status": "accepted"
     },
@@ -2746,8 +3731,8 @@
       },
       "status": "accepted"
     },
-    "Dumbbell_Raise__f0__female": {
-      "edgeLayoutCosine": 0.498748,
+    "Dumbbell_One-Arm_Upright_Row__f0__female": {
+      "edgeLayoutCosine": 0.520903,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
       "integrity": {
@@ -2759,11 +3744,11 @@
           "occupancy": true,
           "png": true
         },
-        "chromaFringeFraction": 0.0,
+        "chromaFringeFraction": 8.69e-06,
         "edgeAlphaFraction": 0.0,
-        "foregroundOccupancy": 0.108643,
+        "foregroundOccupancy": 0.110106,
         "passed": true,
-        "sha256": "f3beacf8b96d9ab1386df3e476a8c941979a79d935a6260e7b4d37f9efb0e0c2",
+        "sha256": "3c71a0ba08abde8db3c8dac7f1f6b228670d4fdb7c64b15c2d5fded4f22384b5",
         "size": [
           1024,
           1024
@@ -2775,31 +3760,40 @@
         "anatomyApproved",
         "artifactFree"
       ],
-      "manualReview": {},
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Original-resolution exact legacy comparison confirms locked female identity/outfit, exactly one dumbbell on screen-left and opposite hand on hip. Endpoint 0 matches the old image (working elbow high/out with weight below wrist); full body, complete grips/limbs, natural anatomy and clean transparency. Every unchanged automatic pose/integrity gate passes; exact metrics retained in qa-report-v1.json.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T17:58:30+00:00",
+        "reviewer": "qa-orchestrator"
+      },
       "pose": {
         "checks": {
           "leftRight": true,
           "medianLimbAngle": true,
           "normalizedRMSE": true,
           "outputConfidence": true,
-          "p90LimbAngle": false,
+          "p90LimbAngle": true,
           "torsoAngle": true
         },
-        "medianLimbAngleDegrees": 11.023,
-        "normalizedRMSE": 0.363559,
-        "outputConfidence": 0.935429,
+        "medianLimbAngleDegrees": 10.565,
+        "normalizedRMSE": 0.206389,
+        "outputConfidence": 0.907363,
         "outputDetected": true,
-        "p90LimbAngleDegrees": 103.662,
-        "passed": false,
-        "sourceConfidence": 0.672903,
+        "p90LimbAngleDegrees": 41.894,
+        "passed": true,
+        "sourceConfidence": 0.884619,
         "sourceDetected": true,
-        "swappedRMSE": 0.524105,
-        "torsoAngleDegrees": 2.271
+        "swappedRMSE": 0.642262,
+        "torsoAngleDegrees": 2.167
       },
-      "status": "auto_failed"
+      "status": "accepted"
     },
-    "Dumbbell_Raise__f1__female": {
-      "edgeLayoutCosine": 0.502619,
+    "Dumbbell_One-Arm_Upright_Row__f1__female": {
+      "edgeLayoutCosine": 0.458676,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
       "integrity": {
@@ -2813,9 +3807,9 @@
         },
         "chromaFringeFraction": 0.0,
         "edgeAlphaFraction": 0.0,
-        "foregroundOccupancy": 0.119813,
+        "foregroundOccupancy": 0.109456,
         "passed": true,
-        "sha256": "0704ce66c2d74abd701931b8897cd2794b8234cd463df1a20e9408b421ce97dd",
+        "sha256": "e2451932ec23370fff1729b53e37baf90b3272c3f3dd6b70b48ff88412a5e8ac",
         "size": [
           1024,
           1024
@@ -2827,28 +3821,37 @@
         "anatomyApproved",
         "artifactFree"
       ],
-      "manualReview": {},
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Original-resolution exact legacy comparison confirms locked female identity/outfit, exactly one dumbbell on screen-left and opposite hand on hip. Endpoint 1 matches the old image (working arm straight/down); full body, complete grips/limbs, natural anatomy and clean transparency. Every unchanged automatic pose/integrity gate passes; exact metrics retained in qa-report-v1.json.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T17:58:30+00:00",
+        "reviewer": "qa-orchestrator"
+      },
       "pose": {
         "checks": {
           "leftRight": true,
           "medianLimbAngle": true,
           "normalizedRMSE": true,
           "outputConfidence": true,
-          "p90LimbAngle": false,
+          "p90LimbAngle": true,
           "torsoAngle": true
         },
-        "medianLimbAngleDegrees": 14.725,
-        "normalizedRMSE": 0.279218,
-        "outputConfidence": 0.913566,
+        "medianLimbAngleDegrees": 5.884,
+        "normalizedRMSE": 0.208345,
+        "outputConfidence": 0.973597,
         "outputDetected": true,
-        "p90LimbAngleDegrees": 74.091,
-        "passed": false,
-        "sourceConfidence": 0.715087,
+        "p90LimbAngleDegrees": 12.216,
+        "passed": true,
+        "sourceConfidence": 0.985587,
         "sourceDetected": true,
-        "swappedRMSE": 0.59415,
-        "torsoAngleDegrees": 4.544
+        "swappedRMSE": 0.50018,
+        "torsoAngleDegrees": 1.166
       },
-      "status": "auto_failed"
+      "status": "accepted"
     },
     "Dumbbell_Rear_Lunge__f0__female": {
       "edgeLayoutCosine": 0.647251,
@@ -2911,8 +3914,8 @@
       },
       "status": "accepted"
     },
-    "Dumbbell_Rear_Lunge__f1__female": {
-      "edgeLayoutCosine": 0.626163,
+    "Dumbbell_Rear_Lunge__f0__male": {
+      "edgeLayoutCosine": 0.709208,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
       "integrity": {
@@ -2926,9 +3929,9 @@
         },
         "chromaFringeFraction": 0.0,
         "edgeAlphaFraction": 0.0,
-        "foregroundOccupancy": 0.134376,
+        "foregroundOccupancy": 0.122908,
         "passed": true,
-        "sha256": "d6665fb2456294d2cc5e6af11e81a56a4ea3213a969c5e11162e15b1a8046de8",
+        "sha256": "fdc4e1b94d8bc82fc1b9cb04f3a70b5ed8e74c9156a240334c375383a2f46ad9",
         "size": [
           1024,
           1024
@@ -2940,28 +3943,37 @@
         "anatomyApproved",
         "artifactFree"
       ],
-      "manualReview": {},
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Exact old f0 comparison confirms locked male identity/outfit, upright start stance, exactly two dumbbells held down, full body, correct grips and clean anatomy. Auto pass: confidence 0.943916, RMSE 0.124371, median 5.042\u00b0, p90 7.690\u00b0, torso 3.145\u00b0, left/right true; integrity/chroma pass. Individual accepted; f1 rejected pending retry.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T17:42:22+00:00",
+        "reviewer": "qa-orchestrator"
+      },
       "pose": {
         "checks": {
           "leftRight": true,
           "medianLimbAngle": true,
           "normalizedRMSE": true,
           "outputConfidence": true,
-          "p90LimbAngle": false,
+          "p90LimbAngle": true,
           "torsoAngle": true
         },
-        "medianLimbAngleDegrees": 5.17,
-        "normalizedRMSE": 0.29332,
-        "outputConfidence": 0.813234,
+        "medianLimbAngleDegrees": 5.042,
+        "normalizedRMSE": 0.124371,
+        "outputConfidence": 0.943916,
         "outputDetected": true,
-        "p90LimbAngleDegrees": 79.047,
-        "passed": false,
-        "sourceConfidence": 0.909183,
+        "p90LimbAngleDegrees": 7.69,
+        "passed": true,
+        "sourceConfidence": 0.924678,
         "sourceDetected": true,
-        "swappedRMSE": 0.610542,
-        "torsoAngleDegrees": 1.031
+        "swappedRMSE": 0.516531,
+        "torsoAngleDegrees": 3.145
       },
-      "status": "auto_failed"
+      "status": "accepted"
     },
     "Dumbbell_Scaption__f0__female": {
       "edgeLayoutCosine": 0.536658,
@@ -3634,8 +4646,8 @@
       },
       "status": "accepted"
     },
-    "Dumbbell_Squat__f1__female": {
-      "edgeLayoutCosine": 0.534089,
+    "Dumbbell_Squat__f0__male": {
+      "edgeLayoutCosine": 0.682071,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
       "integrity": {
@@ -3649,9 +4661,9 @@
         },
         "chromaFringeFraction": 0.0,
         "edgeAlphaFraction": 0.0,
-        "foregroundOccupancy": 0.184634,
+        "foregroundOccupancy": 0.123695,
         "passed": true,
-        "sha256": "8f9926534b3e417ae8c04a0dac75340993cda93fb8203f85837396f074e64cd5",
+        "sha256": "268f52ff87593dc4dc54ffc90cd745d16e9143227af7c12ea387a09c2a6a1552",
         "size": [
           1024,
           1024
@@ -3663,28 +4675,464 @@
         "anatomyApproved",
         "artifactFree"
       ],
-      "manualReview": {},
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Exact old f0 side-by-side confirms locked male identity/outfit, upright start stance, exactly two dumbbells held low, full body and clean anatomy. Auto pass: confidence 0.980567, RMSE 0.101574, median 5.594\u00b0, p90 12.205\u00b0, torso 2.013\u00b0, left/right true; integrity/chroma pass. Individual accepted; f1 hard-failed so pair excluded.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T17:30:52+00:00",
+        "reviewer": "qa-orchestrator"
+      },
       "pose": {
         "checks": {
           "leftRight": true,
           "medianLimbAngle": true,
           "normalizedRMSE": true,
           "outputConfidence": true,
-          "p90LimbAngle": false,
+          "p90LimbAngle": true,
           "torsoAngle": true
         },
-        "medianLimbAngleDegrees": 16.642,
-        "normalizedRMSE": 0.601653,
-        "outputConfidence": 0.827523,
+        "medianLimbAngleDegrees": 5.594,
+        "normalizedRMSE": 0.101574,
+        "outputConfidence": 0.980567,
         "outputDetected": true,
-        "p90LimbAngleDegrees": 91.556,
-        "passed": false,
+        "p90LimbAngleDegrees": 12.205,
+        "passed": true,
+        "sourceConfidence": 0.923325,
+        "sourceDetected": true,
+        "swappedRMSE": 0.547339,
+        "torsoAngleDegrees": 2.013
+      },
+      "status": "accepted"
+    },
+    "Dumbbell_Squat__f1__male": {
+      "edgeLayoutCosine": 0.61246,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.188919,
+        "passed": true,
+        "sha256": "0e1289b85cb8a0bb436d45de5624454e1bb34d8939a52b8024284dccd4d4d238",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Targeted retry exact legacy comparison confirms locked male identity/outfit, exactly two dumbbells beside lower legs, corrected hips clearly above knees with downward thigh projection, deep squat, feet/heels fully shown, natural anatomy and clean transparency. Unchanged auto pass: confidence 0.914755, RMSE 0.463963, median 13.353\u00b0, p90 61.235\u00b0, torso 24.686\u00b0, left/right true; integrity/chroma pass. Male pair complete.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T17:37:44+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 13.353,
+        "normalizedRMSE": 0.463963,
+        "outputConfidence": 0.914755,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 61.235,
+        "passed": true,
         "sourceConfidence": 0.922979,
         "sourceDetected": true,
-        "swappedRMSE": 1.183677,
-        "torsoAngleDegrees": 19.116
+        "swappedRMSE": 1.175478,
+        "torsoAngleDegrees": 24.686
       },
-      "status": "auto_failed"
+      "status": "accepted"
+    },
+    "Dumbbell_Step_Ups__f0__female": {
+      "edgeLayoutCosine": 0.62003,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.103436,
+        "passed": true,
+        "sha256": "a5c91e0039b4d89b57662aa0ee0a19214180ab94b4e28be7d26667d793ba13ea",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Exact old f0 comparison confirms locked female identity/outfit, exactly two dumbbells, complete bench, full upright-on-platform start pose facing image-left and clean anatomy. Auto pass: confidence 0.865189, RMSE 0.212920, median 4.351\u00b0, p90 13.160\u00b0, torso 0.518\u00b0, left/right true; integrity/chroma pass. Individual accepted; f1 rejected pending retry.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T17:48:13+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 4.351,
+        "normalizedRMSE": 0.21292,
+        "outputConfidence": 0.865189,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 13.16,
+        "passed": true,
+        "sourceConfidence": 0.854474,
+        "sourceDetected": true,
+        "swappedRMSE": 0.407303,
+        "torsoAngleDegrees": 0.518
+      },
+      "status": "accepted"
+    },
+    "Dumbbell_Step_Ups__f1__female": {
+      "edgeLayoutCosine": 0.63508,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.147539,
+        "passed": true,
+        "sha256": "d9727404faf16e607160e28fa5143ee8aa484a66eb9f0fac4b483ca940588de5",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Attempt 3 accepted after original-resolution exact legacy comparison. Locked female identity/outfit, exactly two dumbbells, full bench and full body; endpoint 1 correctly faces image-left with the lead foot planted on the bench, lead knee flexed/high and trailing foot on the floor. Limbs, grips, equipment contact and anatomy are complete and clean. Unchanged auto gates pass: confidence .847746, RMSE .332485, median 8.724\u00b0, p90 43.772\u00b0, torso 2.706\u00b0, L/R true; integrity/chroma pass.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T17:56:02+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 8.724,
+        "normalizedRMSE": 0.332485,
+        "outputConfidence": 0.847746,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 43.772,
+        "passed": true,
+        "sourceConfidence": 0.773391,
+        "sourceDetected": true,
+        "swappedRMSE": 0.596538,
+        "torsoAngleDegrees": 2.706
+      },
+      "status": "accepted"
+    },
+    "EZ-Bar_Curl__f0__male": {
+      "edgeLayoutCosine": 0.661605,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.130636,
+        "passed": true,
+        "sha256": "da8ce0bfdc0eb4379b763912cdb7c3c79b558505f3935dd20e7ea4cf139d422a",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Original-resolution exact legacy comparison confirms locked male identity/outfit, exactly one symmetric EZ bar with two total plates and correct bilateral supinated grips. Endpoint 0 matches the old image (arms extended with bar low); full body, natural wrists/elbows, complete anatomy and clean transparency. All unchanged automatic pose/integrity gates pass; exact metrics retained in qa-report-v1.json.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T17:56:02+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 7.028,
+        "normalizedRMSE": 0.161896,
+        "outputConfidence": 0.988666,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 19.115,
+        "passed": true,
+        "sourceConfidence": 0.980644,
+        "sourceDetected": true,
+        "swappedRMSE": 0.464105,
+        "torsoAngleDegrees": 4.228
+      },
+      "status": "accepted"
+    },
+    "EZ-Bar_Curl__f1__male": {
+      "edgeLayoutCosine": 0.653656,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.125706,
+        "passed": true,
+        "sha256": "2973644f284abf086e7ed596a46425e1a31d7ea0eb9740d66632c8a15fa29b53",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Original-resolution exact legacy comparison confirms locked male identity/outfit, exactly one symmetric EZ bar with two total plates and correct bilateral supinated grips. Endpoint 1 matches the old image (elbows flexed with bar at upper chest); full body, natural wrists/elbows, complete anatomy and clean transparency. All unchanged automatic pose/integrity gates pass; exact metrics retained in qa-report-v1.json.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T17:56:02+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 7.667,
+        "normalizedRMSE": 0.155787,
+        "outputConfidence": 0.955829,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 32.46,
+        "passed": true,
+        "sourceConfidence": 0.910001,
+        "sourceDetected": true,
+        "swappedRMSE": 0.480205,
+        "torsoAngleDegrees": 5.218
+      },
+      "status": "accepted"
+    },
+    "Front_Dumbbell_Raise__f0__female": {
+      "edgeLayoutCosine": 0.525306,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.111111,
+        "passed": true,
+        "sha256": "db3766d117bcc0f0fff558e561811824ba6a9bc53d15b94d08ca4bf047ba6270",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Exact old f0 comparison confirms locked female identity/outfit, exactly two dumbbells both low, full-body 3-quarter camera, straight arms, correct grips and clean anatomy. Auto pass: confidence 0.977055, RMSE 0.106855, median 3.718\u00b0, p90 14.274\u00b0, torso 4.737\u00b0, left/right true; integrity/chroma pass. Individual accepted; f1 rejected pending retry.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T17:39:32+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 3.718,
+        "normalizedRMSE": 0.106855,
+        "outputConfidence": 0.977055,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 14.274,
+        "passed": true,
+        "sourceConfidence": 0.979355,
+        "sourceDetected": true,
+        "swappedRMSE": 0.393484,
+        "torsoAngleDegrees": 4.737
+      },
+      "status": "accepted"
+    },
+    "Front_Two-Dumbbell_Raise__f0__female": {
+      "edgeLayoutCosine": 0.639301,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.112306,
+        "passed": true,
+        "sha256": "27423a9cd8024e0882b9d60a6043a6b428359c22e7d85966bcd9db0151551af7",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Exact legacy f0 side-by-side confirms locked female identity/outfit, full-body front/3-quarter stance, exactly two dumbbells held low with both arms straight, correct contacts and complete clean anatomy. Unchanged auto pass: confidence 0.985896, RMSE 0.074263, median 2.732\u00b0, p90 11.694\u00b0, torso 1.121\u00b0, left/right true; integrity/chroma pass.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T17:27:18+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 2.732,
+        "normalizedRMSE": 0.074263,
+        "outputConfidence": 0.985896,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 11.694,
+        "passed": true,
+        "sourceConfidence": 0.989882,
+        "sourceDetected": true,
+        "swappedRMSE": 0.425557,
+        "torsoAngleDegrees": 1.121
+      },
+      "status": "accepted"
     },
     "Front_Two-Dumbbell_Raise__f0__male": {
       "edgeLayoutCosine": 0.685481,
@@ -3744,6 +5192,67 @@
         "sourceDetected": true,
         "swappedRMSE": 0.528961,
         "torsoAngleDegrees": 0.181
+      },
+      "status": "accepted"
+    },
+    "Front_Two-Dumbbell_Raise__f1__female": {
+      "edgeLayoutCosine": 0.616588,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.107134,
+        "passed": true,
+        "sha256": "483c5e8c425104185ab0a2deaf8c0d7b9194af5e53c5a3fc619a210b56bf11e2",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Targeted retry exact-source comparison confirms locked female identity/outfit, full body, exactly two dumbbells and corrected foreshortened high-forward bilateral arm endpoint with proper grips and clean anatomy. Unchanged auto pass: confidence 0.883763, RMSE 0.202562, median 3.116\u00b0, p90 26.889\u00b0, torso 4.055\u00b0, left/right true; integrity/chroma pass. Combined with accepted f0, female pair eligible.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T17:30:52+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 3.116,
+        "normalizedRMSE": 0.202562,
+        "outputConfidence": 0.883763,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 26.889,
+        "passed": true,
+        "sourceConfidence": 0.827729,
+        "sourceDetected": true,
+        "swappedRMSE": 0.497733,
+        "torsoAngleDegrees": 4.055
       },
       "status": "accepted"
     },
@@ -3808,6 +5317,67 @@
       },
       "status": "accepted"
     },
+    "Hammer_Curls__f0__female": {
+      "edgeLayoutCosine": 0.626412,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.114369,
+        "passed": true,
+        "sha256": "227462de10327ef7b46574001e29bc7b3c2713237375ea24e2b1e31569a010a8",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Original-resolution exact legacy comparison confirms locked female identity/outfit, exactly two dumbbells with neutral hammer grips and correct endpoint 0 (arms extended down). Full body, complete hands/weights/limbs, natural anatomy and clean transparency. Every unchanged automatic pose/integrity gate passes; metrics retained in qa-report-v1.json.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T18:03:40+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 2.764,
+        "normalizedRMSE": 0.161074,
+        "outputConfidence": 0.959759,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 4.76,
+        "passed": true,
+        "sourceConfidence": 0.903614,
+        "sourceDetected": true,
+        "swappedRMSE": 0.505703,
+        "torsoAngleDegrees": 0.386
+      },
+      "status": "accepted"
+    },
     "Hammer_Curls__f0__male": {
       "edgeLayoutCosine": 0.553315,
       "edgeLayoutWarning": false,
@@ -3866,6 +5436,67 @@
         "sourceDetected": true,
         "swappedRMSE": 0.473357,
         "torsoAngleDegrees": 1.922
+      },
+      "status": "accepted"
+    },
+    "Hammer_Curls__f1__female": {
+      "edgeLayoutCosine": 0.65305,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.110308,
+        "passed": true,
+        "sha256": "9256a53b402f33ed7b59f31707935929a3085ee806102937e4a05823e30521b7",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Original-resolution exact legacy comparison confirms locked female identity/outfit, exactly two dumbbells with neutral hammer grips and correct endpoint 1 (bilateral flexed curl with elbows pinned). Full body, complete hands/weights/limbs, natural anatomy and clean transparency. Every unchanged automatic pose/integrity gate passes; metrics retained in qa-report-v1.json.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T18:03:40+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 1.86,
+        "normalizedRMSE": 0.123127,
+        "outputConfidence": 0.949752,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 25.569,
+        "passed": true,
+        "sourceConfidence": 0.931727,
+        "sourceDetected": true,
+        "swappedRMSE": 0.421949,
+        "torsoAngleDegrees": 0.29
       },
       "status": "accepted"
     },
@@ -3929,58 +5560,6 @@
         "torsoAngleDegrees": 0.753
       },
       "status": "accepted"
-    },
-    "Mountain_Climbers__f0__female": {
-      "edgeLayoutCosine": 0.604952,
-      "edgeLayoutWarning": false,
-      "generationStateValid": true,
-      "integrity": {
-        "checks": {
-          "chromaFringe": true,
-          "dimensions": true,
-          "edgeClearance": true,
-          "hasTransparency": true,
-          "occupancy": true,
-          "png": true
-        },
-        "chromaFringeFraction": 1.44e-05,
-        "edgeAlphaFraction": 0.0,
-        "foregroundOccupancy": 0.132974,
-        "passed": true,
-        "sha256": "115e3fdf977a991c97aa3023dfe72c1d08507e01e26c5e72b0947d67661fcb8b",
-        "size": [
-          1024,
-          1024
-        ]
-      },
-      "manualRequiredFields": [
-        "characterApproved",
-        "poseEquipmentApproved",
-        "anatomyApproved",
-        "artifactFree"
-      ],
-      "manualReview": {},
-      "pose": {
-        "checks": {
-          "leftRight": false,
-          "medianLimbAngle": true,
-          "normalizedRMSE": false,
-          "outputConfidence": true,
-          "p90LimbAngle": false,
-          "torsoAngle": true
-        },
-        "medianLimbAngleDegrees": 16.538,
-        "normalizedRMSE": 1.012597,
-        "outputConfidence": 0.987729,
-        "outputDetected": true,
-        "p90LimbAngleDegrees": 90.816,
-        "passed": false,
-        "sourceConfidence": 0.933837,
-        "sourceDetected": true,
-        "swappedRMSE": 0.660381,
-        "torsoAngleDegrees": 18.726
-      },
-      "status": "auto_failed"
     },
     "Mountain_Climbers__f0__male": {
       "edgeLayoutCosine": 0.629838,
@@ -4162,6 +5741,189 @@
         "sourceDetected": true,
         "swappedRMSE": 0.854701,
         "torsoAngleDegrees": 2.252
+      },
+      "status": "accepted"
+    },
+    "Plie_Dumbbell_Squat__f0__female": {
+      "edgeLayoutCosine": 0.632378,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.133357,
+        "passed": true,
+        "sha256": "7b246612d6b5c584ac617c4e3f4ee648c9f3bf51c3fbd8e29028200e55dc3cc4",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Exact old f0 comparison confirms locked female identity/outfit, wide turned-out stance, tall/start endpoint, exactly one dumbbell held vertically by its top with both hands, full body and clean anatomy. Auto pass: confidence 0.993503, RMSE 0.323570, median 11.918\u00b0, p90 24.465\u00b0, torso 1.979\u00b0, left/right true; integrity/chroma pass.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T17:35:34+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 11.918,
+        "normalizedRMSE": 0.32357,
+        "outputConfidence": 0.993503,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 24.465,
+        "passed": true,
+        "sourceConfidence": 0.986638,
+        "sourceDetected": true,
+        "swappedRMSE": 0.783532,
+        "torsoAngleDegrees": 1.979
+      },
+      "status": "accepted"
+    },
+    "Plie_Dumbbell_Squat__f1__female": {
+      "edgeLayoutCosine": 0.637956,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.202722,
+        "passed": true,
+        "sha256": "832c93127daf400b2e0520f767e00ef529eee299f16c4b2c9f170d9b25ece3bb",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Exact old f1 comparison confirms same female and one vertical dumbbell, deep wide pli\u00e9 squat with knees tracking outward and heels/feet visible, correct two-hand contact and clean anatomy. Auto pass: confidence 0.995128, RMSE 0.315302, median 4.345\u00b0, p90 20.007\u00b0, torso 3.599\u00b0, left/right true; integrity/chroma pass.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T17:35:34+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 4.345,
+        "normalizedRMSE": 0.315302,
+        "outputConfidence": 0.995128,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 20.007,
+        "passed": true,
+        "sourceConfidence": 0.99371,
+        "sourceDetected": true,
+        "swappedRMSE": 1.042264,
+        "torsoAngleDegrees": 3.599
+      },
+      "status": "accepted"
+    },
+    "Reverse_Barbell_Curl__f0__male": {
+      "edgeLayoutCosine": 0.718158,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.133237,
+        "passed": true,
+        "sha256": "6c05585d885504b106c60e2f8216165e0475584ef39927e77cb7473a6a4a11f4",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Original-resolution exact legacy f0 comparison confirms locked male identity/outfit, one continuous straight bar with exactly two plates, bilateral pronated/reverse grips and arms extended/down in the correct start endpoint. Full body, complete hands/limbs, natural wrists/elbows and clean transparency. All unchanged automatic pose/integrity gates pass (confidence .990795, RMSE .149569, median4.456\u00b0, p9012.762\u00b0, torso1.023\u00b0, L/R true). Individually accepted but deliberately unshipped because f1 is not complete/accepted.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T18:04:36+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 4.456,
+        "normalizedRMSE": 0.149569,
+        "outputConfidence": 0.990795,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 12.762,
+        "passed": true,
+        "sourceConfidence": 0.959553,
+        "sourceDetected": true,
+        "swappedRMSE": 0.45952,
+        "torsoAngleDegrees": 1.023
       },
       "status": "accepted"
     },
@@ -4775,6 +6537,250 @@
       },
       "status": "accepted"
     },
+    "Standing_Dumbbell_Upright_Row__f0__female": {
+      "edgeLayoutCosine": 0.685735,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.108274,
+        "passed": true,
+        "sha256": "f979a0cf7c5d96f121145bcc694eb903846c6d82798653be7cd50768ff381f3c",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Exact legacy f0 comparison confirms locked female identity/outfit, exactly two dumbbells in high upright-row endpoint, wrists below elevated elbows, correct grips, full-body anatomy and clean transparency. Auto pass: confidence 0.942256, RMSE 0.162161, median 5.419\u00b0, p90 27.861\u00b0, torso 3.521\u00b0, left/right true; integrity/chroma pass.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T17:29:16+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 5.419,
+        "normalizedRMSE": 0.162161,
+        "outputConfidence": 0.942256,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 27.861,
+        "passed": true,
+        "sourceConfidence": 0.950465,
+        "sourceDetected": true,
+        "swappedRMSE": 0.621699,
+        "torsoAngleDegrees": 3.521
+      },
+      "status": "accepted"
+    },
+    "Standing_Dumbbell_Upright_Row__f1__female": {
+      "edgeLayoutCosine": 0.669345,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.105629,
+        "passed": true,
+        "sha256": "72ff7b10871d46784a460815617615dc7a8aab1d3811e788a1aa46cc07d71d5e",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Exact legacy f1 comparison confirms same female and exactly two dumbbells at low start endpoint, both arms straight, correct full-body camera/anatomy and clean artwork. Auto pass: confidence 0.988695, RMSE 0.100494, median 5.047\u00b0, p90 14.244\u00b0, torso 1.275\u00b0, left/right true; integrity/chroma pass.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T17:29:16+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 5.047,
+        "normalizedRMSE": 0.100494,
+        "outputConfidence": 0.988695,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 14.244,
+        "passed": true,
+        "sourceConfidence": 0.989231,
+        "sourceDetected": true,
+        "swappedRMSE": 0.405734,
+        "torsoAngleDegrees": 1.275
+      },
+      "status": "accepted"
+    },
+    "Standing_Inner-Biceps_Curl__f0__male": {
+      "edgeLayoutCosine": 0.687995,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.132388,
+        "passed": true,
+        "sha256": "cddd8d341a53e308c105963d932f8353963055c2e8e5b1e0d7ba95392d37b8df",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Original-resolution exact legacy side-by-side confirms locked male identity/outfit, exactly two dumbbells, correct bilateral supinated/inner-curl grips and endpoint 0 (arms extended down beside thighs.) Full body, complete hands/weights/limbs, natural joints and clean transparency. All unchanged automatic pose/integrity gates pass; exact metrics retained in qa-report-v1.json.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T17:59:55+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 4.318,
+        "normalizedRMSE": 0.129526,
+        "outputConfidence": 0.989519,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 8.384,
+        "passed": true,
+        "sourceConfidence": 0.933418,
+        "sourceDetected": true,
+        "swappedRMSE": 0.538294,
+        "torsoAngleDegrees": 3.288
+      },
+      "status": "accepted"
+    },
+    "Standing_Inner-Biceps_Curl__f1__male": {
+      "edgeLayoutCosine": 0.660464,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.125508,
+        "passed": true,
+        "sha256": "3ffcb8439a3a4dff7a8b3c5ae7e07274e580cf48ab9c3b92bddb48a158087c41",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Original-resolution exact legacy side-by-side confirms locked male identity/outfit, exactly two dumbbells, correct bilateral supinated/inner-curl grips and endpoint 1 (elbows pinned with forearms curled outward/up.) Full body, complete hands/weights/limbs, natural joints and clean transparency. All unchanged automatic pose/integrity gates pass; exact metrics retained in qa-report-v1.json.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T17:59:55+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 6.553,
+        "normalizedRMSE": 0.128222,
+        "outputConfidence": 0.988258,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 40.806,
+        "passed": true,
+        "sourceConfidence": 0.92396,
+        "sourceDetected": true,
+        "swappedRMSE": 0.572649,
+        "torsoAngleDegrees": 5.009
+      },
+      "status": "accepted"
+    },
     "Tire_Flip__f0__female": {
       "edgeLayoutCosine": 0.375133,
       "edgeLayoutWarning": false,
@@ -5144,8 +7150,7 @@
   },
   "schemaVersion": 1,
   "statuses": {
-    "accepted": 74,
-    "auto_failed": 11
+    "accepted": 117
   },
   "thresholds": {
     "edgeAlphaFractionMaximum": 0.025,
