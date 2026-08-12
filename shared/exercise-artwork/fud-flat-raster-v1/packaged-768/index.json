@@ -265,6 +265,30 @@
       "gender": "female"
     },
     {
+      "exerciseID": "Bench_Dips",
+      "frames": [
+        {
+          "bytes": 33730,
+          "frameIndex": 0,
+          "jobID": "Bench_Dips__f0__female",
+          "masterBytes": 272082,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Bench_Dips/0.webp",
+          "rgbaRMSE": 8.4669,
+          "sha256": "1108e61c447850433bcbf1f2fafb29fdb903755a3581759360c147f9b1334bf4"
+        },
+        {
+          "bytes": 38122,
+          "frameIndex": 1,
+          "jobID": "Bench_Dips__f1__female",
+          "masterBytes": 285434,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Bench_Dips/1.webp",
+          "rgbaRMSE": 10.5911,
+          "sha256": "7309bdbc18a52f08d5e94f799def146b71a61d11ef92773a3eb03423985ddf5a"
+        }
+      ],
+      "gender": "female"
+    },
+    {
       "exerciseID": "Bodyweight_Squat",
       "frames": [
         {
@@ -308,6 +332,30 @@
           "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Bodyweight_Walking_Lunge/1.webp",
           "rgbaRMSE": 6.3332,
           "sha256": "8d6f5eb0ecc9c168453cc0b5d744a2443fd353b6642d919be31a23ae38005922"
+        }
+      ],
+      "gender": "female"
+    },
+    {
+      "exerciseID": "Butt_Lift_Bridge",
+      "frames": [
+        {
+          "bytes": 19392,
+          "frameIndex": 0,
+          "jobID": "Butt_Lift_Bridge__f0__female",
+          "masterBytes": 215525,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Butt_Lift_Bridge/0.webp",
+          "rgbaRMSE": 5.1713,
+          "sha256": "ae4ba4bdc43d5c56ed492997aad4ed69b52ec700e50467a371df6b3d6de6be5e"
+        },
+        {
+          "bytes": 22120,
+          "frameIndex": 1,
+          "jobID": "Butt_Lift_Bridge__f1__female",
+          "masterBytes": 224108,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Butt_Lift_Bridge/1.webp",
+          "rgbaRMSE": 5.5463,
+          "sha256": "1cef7c35b588bc542f1bbc95f9af00bd6299c24a194ab862a599b3c25fc3da02"
         }
       ],
       "gender": "female"
@@ -361,6 +409,30 @@
       "gender": "female"
     },
     {
+      "exerciseID": "Chair_Lower_Back_Stretch",
+      "frames": [
+        {
+          "bytes": 32538,
+          "frameIndex": 0,
+          "jobID": "Chair_Lower_Back_Stretch__f0__female",
+          "masterBytes": 240082,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Chair_Lower_Back_Stretch/0.webp",
+          "rgbaRMSE": 8.8333,
+          "sha256": "4fea59cd86b8b040ae777895f4b32e445e19bb8e8aa094dda2653f8767f30473"
+        },
+        {
+          "bytes": 34552,
+          "frameIndex": 1,
+          "jobID": "Chair_Lower_Back_Stretch__f1__female",
+          "masterBytes": 253178,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Chair_Lower_Back_Stretch/1.webp",
+          "rgbaRMSE": 8.0744,
+          "sha256": "420fde7fbf85e280e052b135550bb36fab0f4cfb1811d31d2b8194af2f00ffa6"
+        }
+      ],
+      "gender": "female"
+    },
+    {
       "exerciseID": "Childs_Pose",
       "frames": [
         {
@@ -409,6 +481,30 @@
       "gender": "female"
     },
     {
+      "exerciseID": "Concentration_Curls",
+      "frames": [
+        {
+          "bytes": 53308,
+          "frameIndex": 0,
+          "jobID": "Concentration_Curls__f0__female",
+          "masterBytes": 468321,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Concentration_Curls/0.webp",
+          "rgbaRMSE": 12.1184,
+          "sha256": "2dcb2187c8193d7ca509ab6923018bd3b7f6c250efe6a14d8885a1d1bb099f98"
+        },
+        {
+          "bytes": 38786,
+          "frameIndex": 1,
+          "jobID": "Concentration_Curls__f1__female",
+          "masterBytes": 369374,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Concentration_Curls/1.webp",
+          "rgbaRMSE": 6.9866,
+          "sha256": "9674f13ec611d8d495c12df95ac6e8341c99fc2a6382bce8b4878f8d1de56b09"
+        }
+      ],
+      "gender": "female"
+    },
+    {
       "exerciseID": "Cross_Body_Hammer_Curl",
       "frames": [
         {
@@ -452,6 +548,30 @@
           "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Dumbbell_Alternate_Bicep_Curl/1.webp",
           "rgbaRMSE": 6.9182,
           "sha256": "68dde2f28441be98c5d573361aae3e6143d00917af8a3d7e786ba94b38067067"
+        }
+      ],
+      "gender": "female"
+    },
+    {
+      "exerciseID": "Dumbbell_Bench_Press_with_Neutral_Grip",
+      "frames": [
+        {
+          "bytes": 42128,
+          "frameIndex": 0,
+          "jobID": "Dumbbell_Bench_Press_with_Neutral_Grip__f0__female",
+          "masterBytes": 365510,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Dumbbell_Bench_Press_with_Neutral_Grip/0.webp",
+          "rgbaRMSE": 8.8372,
+          "sha256": "ee7bac9ae18eb02511d9501f1c07092eeaa4ee2b846beb2c6f138eaeaf0e8404"
+        },
+        {
+          "bytes": 38560,
+          "frameIndex": 1,
+          "jobID": "Dumbbell_Bench_Press_with_Neutral_Grip__f1__female",
+          "masterBytes": 299806,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Dumbbell_Bench_Press_with_Neutral_Grip/1.webp",
+          "rgbaRMSE": 12.2022,
+          "sha256": "06ba7134548f1392729adc6f4c342370b0dd3d11483d705f8431065a733fd59d"
         }
       ],
       "gender": "female"
@@ -697,6 +817,30 @@
       "gender": "female"
     },
     {
+      "exerciseID": "Elbow_Circles",
+      "frames": [
+        {
+          "bytes": 27290,
+          "frameIndex": 0,
+          "jobID": "Elbow_Circles__f0__female",
+          "masterBytes": 214983,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Elbow_Circles/0.webp",
+          "rgbaRMSE": 7.5322,
+          "sha256": "e1e4a08cce2df3b9e16d381802014858786cb75f43874de368096b7f9e043dcb"
+        },
+        {
+          "bytes": 24640,
+          "frameIndex": 1,
+          "jobID": "Elbow_Circles__f1__female",
+          "masterBytes": 210302,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Elbow_Circles/1.webp",
+          "rgbaRMSE": 6.6317,
+          "sha256": "14fc72c6249feee8466c95f27258b192079ba49b4f02d326ff1583726d30306e"
+        }
+      ],
+      "gender": "female"
+    },
+    {
       "exerciseID": "Elbows_Back",
       "frames": [
         {
@@ -865,6 +1009,30 @@
       "gender": "female"
     },
     {
+      "exerciseID": "Seated_Bent-Over_Rear_Delt_Raise",
+      "frames": [
+        {
+          "bytes": 36952,
+          "frameIndex": 0,
+          "jobID": "Seated_Bent-Over_Rear_Delt_Raise__f0__female",
+          "masterBytes": 330215,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Seated_Bent-Over_Rear_Delt_Raise/0.webp",
+          "rgbaRMSE": 8.0855,
+          "sha256": "50c9323d8ed59d0f320b523a0ecef642092114e715ecb7d8549075ba083e2673"
+        },
+        {
+          "bytes": 39766,
+          "frameIndex": 1,
+          "jobID": "Seated_Bent-Over_Rear_Delt_Raise__f1__female",
+          "masterBytes": 345734,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Seated_Bent-Over_Rear_Delt_Raise/1.webp",
+          "rgbaRMSE": 9.0759,
+          "sha256": "32c0b954dec3c7eb722441093d2fa9c619516eb4c8b149ae2558724d46985ff9"
+        }
+      ],
+      "gender": "female"
+    },
+    {
       "exerciseID": "Seated_Dumbbell_Curl",
       "frames": [
         {
@@ -908,6 +1076,54 @@
           "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Seated_Dumbbell_Inner_Biceps_Curl/1.webp",
           "rgbaRMSE": 7.5509,
           "sha256": "cae3654e5559eeb22de5a303741eb47ceda7acdc175e3bdacf09b44c6552cfbf"
+        }
+      ],
+      "gender": "female"
+    },
+    {
+      "exerciseID": "Seated_Side_Lateral_Raise",
+      "frames": [
+        {
+          "bytes": 37772,
+          "frameIndex": 0,
+          "jobID": "Seated_Side_Lateral_Raise__f0__female",
+          "masterBytes": 292808,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Seated_Side_Lateral_Raise/0.webp",
+          "rgbaRMSE": 13.8108,
+          "sha256": "731b35dedf26f9f5908837cb49815802d490936a34c0162df34d775c108cbda5"
+        },
+        {
+          "bytes": 38340,
+          "frameIndex": 1,
+          "jobID": "Seated_Side_Lateral_Raise__f1__female",
+          "masterBytes": 307658,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Seated_Side_Lateral_Raise/1.webp",
+          "rgbaRMSE": 10.6288,
+          "sha256": "966120d6e80b298726df80dd7f13f31a4fbd824c9421285a9d4a083d8b5aa528"
+        }
+      ],
+      "gender": "female"
+    },
+    {
+      "exerciseID": "Shoulder_Circles",
+      "frames": [
+        {
+          "bytes": 26090,
+          "frameIndex": 0,
+          "jobID": "Shoulder_Circles__f0__female",
+          "masterBytes": 207104,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Shoulder_Circles/0.webp",
+          "rgbaRMSE": 6.0971,
+          "sha256": "779d7e3c0bd198638391358d524a31da9917a90bd7baf193d509dad4b63a14e0"
+        },
+        {
+          "bytes": 26542,
+          "frameIndex": 1,
+          "jobID": "Shoulder_Circles__f1__female",
+          "masterBytes": 211918,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Shoulder_Circles/1.webp",
+          "rgbaRMSE": 6.5302,
+          "sha256": "d47738063e1e1e178a2bc83224459ad0c4d74fee0064496aaf3977e5dfabf25d"
         }
       ],
       "gender": "female"
@@ -1004,6 +1220,30 @@
           "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Standing_Bent-Over_Two-Arm_Dumbbell_Triceps_Extension/1.webp",
           "rgbaRMSE": 6.497,
           "sha256": "da4381ef18d05932958e9dd7e305c4dd97a83f8f6e25dc12cba9b5accab51d21"
+        }
+      ],
+      "gender": "female"
+    },
+    {
+      "exerciseID": "Standing_Biceps_Stretch",
+      "frames": [
+        {
+          "bytes": 25088,
+          "frameIndex": 0,
+          "jobID": "Standing_Biceps_Stretch__f0__female",
+          "masterBytes": 201585,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Standing_Biceps_Stretch/0.webp",
+          "rgbaRMSE": 6.474,
+          "sha256": "93ec04068bff040edd4aacccd8b6681126e0f069d79062f7c3ad7f5d613a0a4f"
+        },
+        {
+          "bytes": 25886,
+          "frameIndex": 1,
+          "jobID": "Standing_Biceps_Stretch__f1__female",
+          "masterBytes": 211655,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Standing_Biceps_Stretch/1.webp",
+          "rgbaRMSE": 7.398,
+          "sha256": "ff70268dc057ee3e6aee9d7802cc13c70e3777f83a97ca20921cda1f3c98c0a2"
         }
       ],
       "gender": "female"
@@ -1369,6 +1609,54 @@
       "gender": "female"
     },
     {
+      "exerciseID": "Triceps_Stretch",
+      "frames": [
+        {
+          "bytes": 26140,
+          "frameIndex": 0,
+          "jobID": "Triceps_Stretch__f0__female",
+          "masterBytes": 213085,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Triceps_Stretch/0.webp",
+          "rgbaRMSE": 6.2386,
+          "sha256": "f4b9c533ea1c111cba8db98ad7b57aa841263dfa4a5cb7dea389703075946d11"
+        },
+        {
+          "bytes": 23280,
+          "frameIndex": 1,
+          "jobID": "Triceps_Stretch__f1__female",
+          "masterBytes": 191608,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Triceps_Stretch/1.webp",
+          "rgbaRMSE": 6.0375,
+          "sha256": "ce8a3784d6e6025921f64410970829640bdcdc3ee7ef4373a3a019c72b811da3"
+        }
+      ],
+      "gender": "female"
+    },
+    {
+      "exerciseID": "Upward_Stretch",
+      "frames": [
+        {
+          "bytes": 26392,
+          "frameIndex": 0,
+          "jobID": "Upward_Stretch__f0__female",
+          "masterBytes": 212125,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Upward_Stretch/0.webp",
+          "rgbaRMSE": 6.3482,
+          "sha256": "5b922badacf431a649193de37131ae182df7ef79dca1c9254438dc6422c3cbf1"
+        },
+        {
+          "bytes": 23496,
+          "frameIndex": 1,
+          "jobID": "Upward_Stretch__f1__female",
+          "masterBytes": 169681,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Upward_Stretch/1.webp",
+          "rgbaRMSE": 7.3451,
+          "sha256": "c433426384afea0b2d899f5b9ced34d4f7db78c86d4df4c24e06e73a421f362f"
+        }
+      ],
+      "gender": "female"
+    },
+    {
       "exerciseID": "Wide-Grip_Standing_Barbell_Curl",
       "frames": [
         {
@@ -1609,6 +1897,54 @@
       "gender": "male"
     },
     {
+      "exerciseID": "Backward_Medicine_Ball_Throw",
+      "frames": [
+        {
+          "bytes": 36756,
+          "frameIndex": 0,
+          "jobID": "Backward_Medicine_Ball_Throw__f0__male",
+          "masterBytes": 428605,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Backward_Medicine_Ball_Throw/0.webp",
+          "rgbaRMSE": 4.683,
+          "sha256": "0b72f191aafab5f49a42c4bd4e546bb8bc14317921639897184cd85db39564b2"
+        },
+        {
+          "bytes": 25632,
+          "frameIndex": 1,
+          "jobID": "Backward_Medicine_Ball_Throw__f1__male",
+          "masterBytes": 178747,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Backward_Medicine_Ball_Throw/1.webp",
+          "rgbaRMSE": 8.7236,
+          "sha256": "11ee411ef6122ef41b107e6bf18fb35f611019f1a1c99435ba130231ab6aa7a3"
+        }
+      ],
+      "gender": "male"
+    },
+    {
+      "exerciseID": "Ball_Leg_Curl",
+      "frames": [
+        {
+          "bytes": 22698,
+          "frameIndex": 0,
+          "jobID": "Ball_Leg_Curl__f0__male",
+          "masterBytes": 214086,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Ball_Leg_Curl/0.webp",
+          "rgbaRMSE": 7.7742,
+          "sha256": "c92a61c3c3eafbcc7e5964acb7ef90006358892588da570b1d423b39ee493e2c"
+        },
+        {
+          "bytes": 26818,
+          "frameIndex": 1,
+          "jobID": "Ball_Leg_Curl__f1__male",
+          "masterBytes": 280609,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Ball_Leg_Curl/1.webp",
+          "rgbaRMSE": 5.2813,
+          "sha256": "99f004fda28edca87807eab16d0439a246ab64275c7e96c38dbaca078611e018"
+        }
+      ],
+      "gender": "male"
+    },
+    {
       "exerciseID": "Band_Good_Morning",
       "frames": [
         {
@@ -1705,6 +2041,102 @@
       "gender": "male"
     },
     {
+      "exerciseID": "Bench_Dips",
+      "frames": [
+        {
+          "bytes": 33440,
+          "frameIndex": 0,
+          "jobID": "Bench_Dips__f0__male",
+          "masterBytes": 299749,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Bench_Dips/0.webp",
+          "rgbaRMSE": 8.3248,
+          "sha256": "e0b2143c556b61c7aa79f0be87d60166425476bebeb411fcc92385c0c7fbb554"
+        },
+        {
+          "bytes": 35620,
+          "frameIndex": 1,
+          "jobID": "Bench_Dips__f1__male",
+          "masterBytes": 301494,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Bench_Dips/1.webp",
+          "rgbaRMSE": 8.3952,
+          "sha256": "ca60d5e7af463d0cfe18213a6a0edc92d170677fbf94ca0ca98f0cd9e75bf2ee"
+        }
+      ],
+      "gender": "male"
+    },
+    {
+      "exerciseID": "Bent_Over_Barbell_Row",
+      "frames": [
+        {
+          "bytes": 37518,
+          "frameIndex": 0,
+          "jobID": "Bent_Over_Barbell_Row__f0__male",
+          "masterBytes": 375161,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Bent_Over_Barbell_Row/0.webp",
+          "rgbaRMSE": 7.0568,
+          "sha256": "ffc580a3caf32fe4346e44f207dd1da7fab46fbe93a55e1c8dadb0dae976a75e"
+        },
+        {
+          "bytes": 34024,
+          "frameIndex": 1,
+          "jobID": "Bent_Over_Barbell_Row__f1__male",
+          "masterBytes": 348207,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Bent_Over_Barbell_Row/1.webp",
+          "rgbaRMSE": 6.0324,
+          "sha256": "b013f98792e328cd0dbffd760ac9c7f610f2b48bba9d047880b9c39c580018d4"
+        }
+      ],
+      "gender": "male"
+    },
+    {
+      "exerciseID": "Bent_Over_Two-Dumbbell_Row",
+      "frames": [
+        {
+          "bytes": 31978,
+          "frameIndex": 0,
+          "jobID": "Bent_Over_Two-Dumbbell_Row__f0__male",
+          "masterBytes": 334025,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Bent_Over_Two-Dumbbell_Row/0.webp",
+          "rgbaRMSE": 5.7396,
+          "sha256": "01d0d5064cb2d1fa795e0caec4b725c8f8877dfd84398d605b9166558aaa2370"
+        },
+        {
+          "bytes": 32052,
+          "frameIndex": 1,
+          "jobID": "Bent_Over_Two-Dumbbell_Row__f1__male",
+          "masterBytes": 333711,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Bent_Over_Two-Dumbbell_Row/1.webp",
+          "rgbaRMSE": 6.0064,
+          "sha256": "89d80ea9fce734d716275279d4968b93718a0ce512a5c6acddfa91adc1e2e151"
+        }
+      ],
+      "gender": "male"
+    },
+    {
+      "exerciseID": "Bent_Over_Two-Dumbbell_Row_With_Palms_In",
+      "frames": [
+        {
+          "bytes": 29038,
+          "frameIndex": 0,
+          "jobID": "Bent_Over_Two-Dumbbell_Row_With_Palms_In__f0__male",
+          "masterBytes": 303149,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Bent_Over_Two-Dumbbell_Row_With_Palms_In/0.webp",
+          "rgbaRMSE": 5.0278,
+          "sha256": "b59a74d875994a40c7442358a72b47c728aa46b5f0cb7d9e0dcaefeade1a8e8b"
+        },
+        {
+          "bytes": 27352,
+          "frameIndex": 1,
+          "jobID": "Bent_Over_Two-Dumbbell_Row_With_Palms_In__f1__male",
+          "masterBytes": 280933,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Bent_Over_Two-Dumbbell_Row_With_Palms_In/1.webp",
+          "rgbaRMSE": 5.5849,
+          "sha256": "4006919a42f8594965953f06191c000b9d0c620ec56d6b57f165bbb4185cb0f6"
+        }
+      ],
+      "gender": "male"
+    },
+    {
       "exerciseID": "Bodyweight_Squat",
       "frames": [
         {
@@ -1777,6 +2209,30 @@
       "gender": "male"
     },
     {
+      "exerciseID": "Car_Drivers",
+      "frames": [
+        {
+          "bytes": 28364,
+          "frameIndex": 0,
+          "jobID": "Car_Drivers__f0__male",
+          "masterBytes": 252933,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Car_Drivers/0.webp",
+          "rgbaRMSE": 6.4558,
+          "sha256": "7dfc2a3bc691ead05835fee585c6760f47f0bb6bc4c99a6f39aa139d02f5515a"
+        },
+        {
+          "bytes": 30514,
+          "frameIndex": 1,
+          "jobID": "Car_Drivers__f1__male",
+          "masterBytes": 266096,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Car_Drivers/1.webp",
+          "rgbaRMSE": 6.4222,
+          "sha256": "9a6a80233fe3a1fed5e8b83124b71b69a170c988c8fb9d857be936b6f31b37dc"
+        }
+      ],
+      "gender": "male"
+    },
+    {
       "exerciseID": "Cat_Stretch",
       "frames": [
         {
@@ -1796,6 +2252,30 @@
           "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Cat_Stretch/1.webp",
           "rgbaRMSE": 4.3418,
           "sha256": "0ac13ec97a451fc5e2f2f689e6b5f159e6358ad369c9433b6ddbd0c8aff797e4"
+        }
+      ],
+      "gender": "male"
+    },
+    {
+      "exerciseID": "Chair_Lower_Back_Stretch",
+      "frames": [
+        {
+          "bytes": 32728,
+          "frameIndex": 0,
+          "jobID": "Chair_Lower_Back_Stretch__f0__male",
+          "masterBytes": 269351,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Chair_Lower_Back_Stretch/0.webp",
+          "rgbaRMSE": 8.5262,
+          "sha256": "b513ee718dac62e9751ff9f82e1578bce1f6c7b3e241c4f68900eac391104152"
+        },
+        {
+          "bytes": 36354,
+          "frameIndex": 1,
+          "jobID": "Chair_Lower_Back_Stretch__f1__male",
+          "masterBytes": 293389,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Chair_Lower_Back_Stretch/1.webp",
+          "rgbaRMSE": 8.8036,
+          "sha256": "e0059801a2a72ddfb590d5b59b5b8b6354301330b1f5eeab5dcb44690b1b126a"
         }
       ],
       "gender": "male"
@@ -2185,6 +2665,30 @@
       "gender": "male"
     },
     {
+      "exerciseID": "Elbow_Circles",
+      "frames": [
+        {
+          "bytes": 26624,
+          "frameIndex": 0,
+          "jobID": "Elbow_Circles__f0__male",
+          "masterBytes": 227646,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Elbow_Circles/0.webp",
+          "rgbaRMSE": 6.815,
+          "sha256": "fe842ffb077a376792fb48d5873fd1039e5c23ddcd28aea0d63d8e6af2d8a574"
+        },
+        {
+          "bytes": 24652,
+          "frameIndex": 1,
+          "jobID": "Elbow_Circles__f1__male",
+          "masterBytes": 211498,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Elbow_Circles/1.webp",
+          "rgbaRMSE": 6.6375,
+          "sha256": "321f4872b1bc9c171c26523c773d0a6f6f570672ffdb5ef046034d5944ed0dc9"
+        }
+      ],
+      "gender": "male"
+    },
+    {
       "exerciseID": "Front_Dumbbell_Raise",
       "frames": [
         {
@@ -2353,6 +2857,30 @@
       "gender": "male"
     },
     {
+      "exerciseID": "Shoulder_Circles",
+      "frames": [
+        {
+          "bytes": 25180,
+          "frameIndex": 0,
+          "jobID": "Shoulder_Circles__f0__male",
+          "masterBytes": 217169,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Shoulder_Circles/0.webp",
+          "rgbaRMSE": 5.7466,
+          "sha256": "12afb033fdbe31ffe303c032b8e6aca08285c044141401f90b690ced4777c9bc"
+        },
+        {
+          "bytes": 25212,
+          "frameIndex": 1,
+          "jobID": "Shoulder_Circles__f1__male",
+          "masterBytes": 223301,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Shoulder_Circles/1.webp",
+          "rgbaRMSE": 5.9575,
+          "sha256": "85d3cda8a61532c7f97fc09afe7541097721253c448e522c0998a92711bb17d8"
+        }
+      ],
+      "gender": "male"
+    },
+    {
       "exerciseID": "Side_Neck_Stretch",
       "frames": [
         {
@@ -2396,6 +2924,30 @@
           "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Standing_Alternating_Dumbbell_Press/1.webp",
           "rgbaRMSE": 6.4957,
           "sha256": "545e1bf004ee88be9be2e64ba22e7865685b7b44706e6227b6d92bea822e1ef1"
+        }
+      ],
+      "gender": "male"
+    },
+    {
+      "exerciseID": "Standing_Biceps_Stretch",
+      "frames": [
+        {
+          "bytes": 22042,
+          "frameIndex": 0,
+          "jobID": "Standing_Biceps_Stretch__f0__male",
+          "masterBytes": 202086,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Standing_Biceps_Stretch/0.webp",
+          "rgbaRMSE": 5.3018,
+          "sha256": "3daa91e3551b4bc6fce0a00e7bb65f0e789eed692f4f829279b7be8556f9cd8b"
+        },
+        {
+          "bytes": 23468,
+          "frameIndex": 1,
+          "jobID": "Standing_Biceps_Stretch__f1__male",
+          "masterBytes": 215890,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Standing_Biceps_Stretch/1.webp",
+          "rgbaRMSE": 5.68,
+          "sha256": "9fbaa9dbd0bc158cc48a25c3c27a77600e8caa0736ec5d4651f891d052079a61"
         }
       ],
       "gender": "male"
@@ -2521,6 +3073,30 @@
       "gender": "male"
     },
     {
+      "exerciseID": "Standing_Front_Barbell_Raise_Over_Head",
+      "frames": [
+        {
+          "bytes": 26804,
+          "frameIndex": 0,
+          "jobID": "Standing_Front_Barbell_Raise_Over_Head__f0__male",
+          "masterBytes": 229349,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Standing_Front_Barbell_Raise_Over_Head/0.webp",
+          "rgbaRMSE": 5.7667,
+          "sha256": "119f3c7887faa36e744d04866cc0f8276f07a8b4b93f2af8b4925538df556b95"
+        },
+        {
+          "bytes": 25896,
+          "frameIndex": 1,
+          "jobID": "Standing_Front_Barbell_Raise_Over_Head__f1__male",
+          "masterBytes": 199002,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Standing_Front_Barbell_Raise_Over_Head/1.webp",
+          "rgbaRMSE": 7.0136,
+          "sha256": "69a4588dcc5ca6de3a042ef91b5d40ed04a0c7b339914d97f5f7fbba49c81048"
+        }
+      ],
+      "gender": "male"
+    },
+    {
       "exerciseID": "Standing_Inner-Biceps_Curl",
       "frames": [
         {
@@ -2593,6 +3169,54 @@
       "gender": "male"
     },
     {
+      "exerciseID": "Triceps_Stretch",
+      "frames": [
+        {
+          "bytes": 25394,
+          "frameIndex": 0,
+          "jobID": "Triceps_Stretch__f0__male",
+          "masterBytes": 224672,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Triceps_Stretch/0.webp",
+          "rgbaRMSE": 5.706,
+          "sha256": "f57f9f7ce0653c2a10bc49e20ca3ae57e0e9979562276d27921912be1485247b"
+        },
+        {
+          "bytes": 24028,
+          "frameIndex": 1,
+          "jobID": "Triceps_Stretch__f1__male",
+          "masterBytes": 219287,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Triceps_Stretch/1.webp",
+          "rgbaRMSE": 6.7063,
+          "sha256": "25e4b6e712414eae4c71fc560a7b9713345ab447c48b6ff41029619f680c61c5"
+        }
+      ],
+      "gender": "male"
+    },
+    {
+      "exerciseID": "Upward_Stretch",
+      "frames": [
+        {
+          "bytes": 25204,
+          "frameIndex": 0,
+          "jobID": "Upward_Stretch__f0__male",
+          "masterBytes": 225859,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Upward_Stretch/0.webp",
+          "rgbaRMSE": 5.536,
+          "sha256": "72d3c97af8fa1b88f2224b06b37df82e49abf10032d21870b07108f6626b3cc2"
+        },
+        {
+          "bytes": 22934,
+          "frameIndex": 1,
+          "jobID": "Upward_Stretch__f1__male",
+          "masterBytes": 179763,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Upward_Stretch/1.webp",
+          "rgbaRMSE": 6.7374,
+          "sha256": "12cd1e1bdda716d81826fc867c6a074308b4f0af019308ea00afdf4682f9cc05"
+        }
+      ],
+      "gender": "male"
+    },
+    {
       "exerciseID": "Wide-Grip_Standing_Barbell_Curl",
       "frames": [
         {
@@ -2618,7 +3242,7 @@
     }
   ],
   "format": "webp",
-  "pairCount": 109,
+  "pairCount": 135,
   "quality": 82,
   "schemaVersion": 1,
   "size": 768,
