@@ -181,6 +181,46 @@
       "gender": "female"
     },
     {
+      "exerciseID": "Barbell_Curl",
+      "frames": [
+        {
+          "bytes": 29892,
+          "filename": "FudExercise_female_Barbell_Curl_0.webp",
+          "frameIndex": 0,
+          "jobID": "Barbell_Curl__f0__female",
+          "sha256": "e87f27c0812be03c189c2c83b29c96859e8b189531eeb8d0e0f059090864db53"
+        },
+        {
+          "bytes": 27220,
+          "filename": "FudExercise_female_Barbell_Curl_1.webp",
+          "frameIndex": 1,
+          "jobID": "Barbell_Curl__f1__female",
+          "sha256": "bc1d6ef98473480ed3c198201d6e3af0f73a964a8d8881f998fc881e7e0ff2d4"
+        }
+      ],
+      "gender": "female"
+    },
+    {
+      "exerciseID": "Barbell_Shrug",
+      "frames": [
+        {
+          "bytes": 31036,
+          "filename": "FudExercise_female_Barbell_Shrug_0.webp",
+          "frameIndex": 0,
+          "jobID": "Barbell_Shrug__f0__female",
+          "sha256": "69e76fef88243e07953798df9bf3b9ecd529786db50ba86d8c2f8edeca552909"
+        },
+        {
+          "bytes": 29976,
+          "filename": "FudExercise_female_Barbell_Shrug_1.webp",
+          "frameIndex": 1,
+          "jobID": "Barbell_Shrug__f1__female",
+          "sha256": "4da77b94b85afc45820f03cebcb3c920f2df9a6977f85e241f9c19a0a14541e5"
+        }
+      ],
+      "gender": "female"
+    },
+    {
       "exerciseID": "Bodyweight_Squat",
       "frames": [
         {
@@ -256,6 +296,46 @@
           "frameIndex": 1,
           "jobID": "Cat_Stretch__f1__female",
           "sha256": "772022d66a07352084aaa0df7854317f88187697eb2a08b25592321a2e5b77bc"
+        }
+      ],
+      "gender": "female"
+    },
+    {
+      "exerciseID": "Childs_Pose",
+      "frames": [
+        {
+          "bytes": 24922,
+          "filename": "FudExercise_female_Childs_Pose_0.webp",
+          "frameIndex": 0,
+          "jobID": "Childs_Pose__f0__female",
+          "sha256": "be44da3f8c7301305735b407bd9ca0dcc2575cdcd93915d4c9fac2d474e12ab9"
+        },
+        {
+          "bytes": 28548,
+          "filename": "FudExercise_female_Childs_Pose_1.webp",
+          "frameIndex": 1,
+          "jobID": "Childs_Pose__f1__female",
+          "sha256": "60a048682a1594bc229e8f669810db1822d1cd4cfa16ec33e207559ff7380c58"
+        }
+      ],
+      "gender": "female"
+    },
+    {
+      "exerciseID": "Close-Grip_Standing_Barbell_Curl",
+      "frames": [
+        {
+          "bytes": 26518,
+          "filename": "FudExercise_female_Close-Grip_Standing_Barbell_Curl_0.webp",
+          "frameIndex": 0,
+          "jobID": "Close-Grip_Standing_Barbell_Curl__f0__female",
+          "sha256": "e5661c8f6c82a876719cf6c9e4d7096ef2daa25090ba6dfd812e41d2b309d1dc"
+        },
+        {
+          "bytes": 25546,
+          "filename": "FudExercise_female_Close-Grip_Standing_Barbell_Curl_1.webp",
+          "frameIndex": 1,
+          "jobID": "Close-Grip_Standing_Barbell_Curl__f1__female",
+          "sha256": "92cd3b461a6c9fa680f51500e8747f1c2ab27ba34e9a2a3d196410456de7169e"
         }
       ],
       "gender": "female"
@@ -341,6 +421,26 @@
       "gender": "female"
     },
     {
+      "exerciseID": "Dumbbell_One-Arm_Shoulder_Press",
+      "frames": [
+        {
+          "bytes": 29618,
+          "filename": "FudExercise_female_Dumbbell_One-Arm_Shoulder_Press_0.webp",
+          "frameIndex": 0,
+          "jobID": "Dumbbell_One-Arm_Shoulder_Press__f0__female",
+          "sha256": "c170583fb892fedcda751a8d6cab5f54c646fabfc689dbfb912a725bda635b85"
+        },
+        {
+          "bytes": 25770,
+          "filename": "FudExercise_female_Dumbbell_One-Arm_Shoulder_Press_1.webp",
+          "frameIndex": 1,
+          "jobID": "Dumbbell_One-Arm_Shoulder_Press__f1__female",
+          "sha256": "97cc17b4ee83a2ed293ca5f4afe4f202636d234cbb81da64876238a08e539640"
+        }
+      ],
+      "gender": "female"
+    },
+    {
       "exerciseID": "Dumbbell_One-Arm_Upright_Row",
       "frames": [
         {
@@ -376,6 +476,26 @@
           "frameIndex": 1,
           "jobID": "Dumbbell_Scaption__f1__female",
           "sha256": "fbfbdfb41dc40701cd529f69e03033421d4c4242d2abc548455afc1346959d8a"
+        }
+      ],
+      "gender": "female"
+    },
+    {
+      "exerciseID": "Dumbbell_Shoulder_Press",
+      "frames": [
+        {
+          "bytes": 42898,
+          "filename": "FudExercise_female_Dumbbell_Shoulder_Press_0.webp",
+          "frameIndex": 0,
+          "jobID": "Dumbbell_Shoulder_Press__f0__female",
+          "sha256": "72727313a52436b323c018ffd34ecbcde700ea237b24e2bc2bfc4c283ca6c081"
+        },
+        {
+          "bytes": 34554,
+          "filename": "FudExercise_female_Dumbbell_Shoulder_Press_1.webp",
+          "frameIndex": 1,
+          "jobID": "Dumbbell_Shoulder_Press__f1__female",
+          "sha256": "d08d2b893f3ebf6e96a35f53122085fd33f066ce04bea2973d0f6be98f2b5697"
         }
       ],
       "gender": "female"
@@ -521,6 +641,46 @@
       "gender": "female"
     },
     {
+      "exerciseID": "Hug_Knees_To_Chest",
+      "frames": [
+        {
+          "bytes": 27468,
+          "filename": "FudExercise_female_Hug_Knees_To_Chest_0.webp",
+          "frameIndex": 0,
+          "jobID": "Hug_Knees_To_Chest__f0__female",
+          "sha256": "d1cce89413aac9dbbad3e0b8a2368d6a79bb11b5467f0e47f8864549501b2560"
+        },
+        {
+          "bytes": 34246,
+          "filename": "FudExercise_female_Hug_Knees_To_Chest_1.webp",
+          "frameIndex": 1,
+          "jobID": "Hug_Knees_To_Chest__f1__female",
+          "sha256": "0ab8e0628d9825f8151bee4e7ca0922c9c3484b82385b60446b9f40790a339d1"
+        }
+      ],
+      "gender": "female"
+    },
+    {
+      "exerciseID": "One_Knee_To_Chest",
+      "frames": [
+        {
+          "bytes": 23374,
+          "filename": "FudExercise_female_One_Knee_To_Chest_0.webp",
+          "frameIndex": 0,
+          "jobID": "One_Knee_To_Chest__f0__female",
+          "sha256": "5b0614a3af0ac03c0cf78a714b568d2ae47057ed8969a61ab44d18e39f2a9832"
+        },
+        {
+          "bytes": 23210,
+          "filename": "FudExercise_female_One_Knee_To_Chest_1.webp",
+          "frameIndex": 1,
+          "jobID": "One_Knee_To_Chest__f1__female",
+          "sha256": "25a720ac31be483329f3d0cdafaa88d9a98c4979527feff7c74f11b9a943d1b9"
+        }
+      ],
+      "gender": "female"
+    },
+    {
       "exerciseID": "Plie_Dumbbell_Squat",
       "frames": [
         {
@@ -541,6 +701,66 @@
       "gender": "female"
     },
     {
+      "exerciseID": "Reverse_Barbell_Curl",
+      "frames": [
+        {
+          "bytes": 28428,
+          "filename": "FudExercise_female_Reverse_Barbell_Curl_0.webp",
+          "frameIndex": 0,
+          "jobID": "Reverse_Barbell_Curl__f0__female",
+          "sha256": "c2e1656c43ca22b7e9c29bf10d7e115802bcb8b40ced31068ddc43ada3e76628"
+        },
+        {
+          "bytes": 28576,
+          "filename": "FudExercise_female_Reverse_Barbell_Curl_1.webp",
+          "frameIndex": 1,
+          "jobID": "Reverse_Barbell_Curl__f1__female",
+          "sha256": "54768954c28f908bdc056c1990a4346bba22fae5b6f30303c1ba5b69be2af83b"
+        }
+      ],
+      "gender": "female"
+    },
+    {
+      "exerciseID": "Seated_Dumbbell_Curl",
+      "frames": [
+        {
+          "bytes": 40350,
+          "filename": "FudExercise_female_Seated_Dumbbell_Curl_0.webp",
+          "frameIndex": 0,
+          "jobID": "Seated_Dumbbell_Curl__f0__female",
+          "sha256": "36a939574c3b6bd1e819aea445f5e9361ce341924e452beb080140ee12ee6d7a"
+        },
+        {
+          "bytes": 41764,
+          "filename": "FudExercise_female_Seated_Dumbbell_Curl_1.webp",
+          "frameIndex": 1,
+          "jobID": "Seated_Dumbbell_Curl__f1__female",
+          "sha256": "f24f89a1b50118483014139828eb06b688e86d359c4c8ac0768eed2a747d7216"
+        }
+      ],
+      "gender": "female"
+    },
+    {
+      "exerciseID": "Seated_Dumbbell_Inner_Biceps_Curl",
+      "frames": [
+        {
+          "bytes": 31914,
+          "filename": "FudExercise_female_Seated_Dumbbell_Inner_Biceps_Curl_0.webp",
+          "frameIndex": 0,
+          "jobID": "Seated_Dumbbell_Inner_Biceps_Curl__f0__female",
+          "sha256": "91ab44f6dbe97608049a98f5f10cfc177be7504ba77a082e106c2e0e92e96060"
+        },
+        {
+          "bytes": 34982,
+          "filename": "FudExercise_female_Seated_Dumbbell_Inner_Biceps_Curl_1.webp",
+          "frameIndex": 1,
+          "jobID": "Seated_Dumbbell_Inner_Biceps_Curl__f1__female",
+          "sha256": "cae3654e5559eeb22de5a303741eb47ceda7acdc175e3bdacf09b44c6552cfbf"
+        }
+      ],
+      "gender": "female"
+    },
+    {
       "exerciseID": "Side_Lateral_Raise",
       "frames": [
         {
@@ -556,6 +776,26 @@
           "frameIndex": 1,
           "jobID": "Side_Lateral_Raise__f1__female",
           "sha256": "fbc29b4d564e13456aede2c570fd67bbed46efa53ec5db3353edfb99fa93aa9a"
+        }
+      ],
+      "gender": "female"
+    },
+    {
+      "exerciseID": "Side_Neck_Stretch",
+      "frames": [
+        {
+          "bytes": 27290,
+          "filename": "FudExercise_female_Side_Neck_Stretch_0.webp",
+          "frameIndex": 0,
+          "jobID": "Side_Neck_Stretch__f0__female",
+          "sha256": "8502acf717f59a17e4ca3cc6affae6c022c29e069742ecfbb7e634f2c614a890"
+        },
+        {
+          "bytes": 27936,
+          "filename": "FudExercise_female_Side_Neck_Stretch_1.webp",
+          "frameIndex": 1,
+          "jobID": "Side_Neck_Stretch__f1__female",
+          "sha256": "b48caa1519d0afdc2154bcbfa15e59255fefeeb63205c214967f710c9d736d8f"
         }
       ],
       "gender": "female"
@@ -721,6 +961,26 @@
       "gender": "female"
     },
     {
+      "exerciseID": "Standing_Front_Barbell_Raise_Over_Head",
+      "frames": [
+        {
+          "bytes": 27242,
+          "filename": "FudExercise_female_Standing_Front_Barbell_Raise_Over_Head_0.webp",
+          "frameIndex": 0,
+          "jobID": "Standing_Front_Barbell_Raise_Over_Head__f0__female",
+          "sha256": "76c7f77eda37e52af66e2617ac0cc4b99bf1c0b8cfe101695447b3b398cc6560"
+        },
+        {
+          "bytes": 24678,
+          "filename": "FudExercise_female_Standing_Front_Barbell_Raise_Over_Head_1.webp",
+          "frameIndex": 1,
+          "jobID": "Standing_Front_Barbell_Raise_Over_Head__f1__female",
+          "sha256": "9f3a30ad59fe98a1d927bf388fd6f6ad57d25da7edf1134aeedbe7dd1032f0ff"
+        }
+      ],
+      "gender": "female"
+    },
+    {
       "exerciseID": "Standing_Hip_Circles",
       "frames": [
         {
@@ -741,6 +1001,26 @@
       "gender": "female"
     },
     {
+      "exerciseID": "Standing_Military_Press",
+      "frames": [
+        {
+          "bytes": 30442,
+          "filename": "FudExercise_female_Standing_Military_Press_0.webp",
+          "frameIndex": 0,
+          "jobID": "Standing_Military_Press__f0__female",
+          "sha256": "13104a9dddaa641400f3bb787b076e834fe02f08f0558cd9aa8f137a2873036a"
+        },
+        {
+          "bytes": 28258,
+          "filename": "FudExercise_female_Standing_Military_Press_1.webp",
+          "frameIndex": 1,
+          "jobID": "Standing_Military_Press__f1__female",
+          "sha256": "31264b665120d848d8d209e0377a51b757aeb422aa0a1d7f777f6e6317593fa8"
+        }
+      ],
+      "gender": "female"
+    },
+    {
       "exerciseID": "Standing_One-Arm_Dumbbell_Triceps_Extension",
       "frames": [
         {
@@ -756,6 +1036,26 @@
           "frameIndex": 1,
           "jobID": "Standing_One-Arm_Dumbbell_Triceps_Extension__f1__female",
           "sha256": "c81c3f27b41529a16591a0c1619893a1b0c6e10f94ea745693be8e35c1577887"
+        }
+      ],
+      "gender": "female"
+    },
+    {
+      "exerciseID": "Standing_Overhead_Barbell_Triceps_Extension",
+      "frames": [
+        {
+          "bytes": 25638,
+          "filename": "FudExercise_female_Standing_Overhead_Barbell_Triceps_Extension_0.webp",
+          "frameIndex": 0,
+          "jobID": "Standing_Overhead_Barbell_Triceps_Extension__f0__female",
+          "sha256": "7e149d8690b8ed01314f962f00c9a3a70d33da0a0c1b618d76a52b7ad36b5466"
+        },
+        {
+          "bytes": 24650,
+          "filename": "FudExercise_female_Standing_Overhead_Barbell_Triceps_Extension_1.webp",
+          "frameIndex": 1,
+          "jobID": "Standing_Overhead_Barbell_Triceps_Extension__f1__female",
+          "sha256": "22546dbf60f624b1c86e82e08f9cbbf7f260ce339de717339df041ff2aa9a168"
         }
       ],
       "gender": "female"
@@ -836,6 +1136,26 @@
           "frameIndex": 1,
           "jobID": "Tire_Flip__f1__female",
           "sha256": "9bc44081da70728e7c392e320b2b9dc9eeab6dcebbaa07ee1405aadf9c638bdc"
+        }
+      ],
+      "gender": "female"
+    },
+    {
+      "exerciseID": "Wide-Grip_Standing_Barbell_Curl",
+      "frames": [
+        {
+          "bytes": 31414,
+          "filename": "FudExercise_female_Wide-Grip_Standing_Barbell_Curl_0.webp",
+          "frameIndex": 0,
+          "jobID": "Wide-Grip_Standing_Barbell_Curl__f0__female",
+          "sha256": "2e406a7a6cf866f95aef9abdb653cbca21cc168dc99773ae788cd55b83560fa0"
+        },
+        {
+          "bytes": 30200,
+          "filename": "FudExercise_female_Wide-Grip_Standing_Barbell_Curl_1.webp",
+          "frameIndex": 1,
+          "jobID": "Wide-Grip_Standing_Barbell_Curl__f1__female",
+          "sha256": "754a844fa997c7486528149d77dd02a3198dc594f347b4d3f452ac3d17d3970a"
         }
       ],
       "gender": "female"
@@ -1181,6 +1501,66 @@
       "gender": "male"
     },
     {
+      "exerciseID": "Childs_Pose",
+      "frames": [
+        {
+          "bytes": 21812,
+          "filename": "FudExercise_male_Childs_Pose_0.webp",
+          "frameIndex": 0,
+          "jobID": "Childs_Pose__f0__male",
+          "sha256": "70346f23e623c99ecd6f396aa2d35afe7c1f8e95b92dcd764638e3dcc6224e5c"
+        },
+        {
+          "bytes": 26758,
+          "filename": "FudExercise_male_Childs_Pose_1.webp",
+          "frameIndex": 1,
+          "jobID": "Childs_Pose__f1__male",
+          "sha256": "75191768842114be520c3a94c6651edc124c7d84aa83db19de8f9b82aa5ca607"
+        }
+      ],
+      "gender": "male"
+    },
+    {
+      "exerciseID": "Chin_To_Chest_Stretch",
+      "frames": [
+        {
+          "bytes": 26584,
+          "filename": "FudExercise_male_Chin_To_Chest_Stretch_0.webp",
+          "frameIndex": 0,
+          "jobID": "Chin_To_Chest_Stretch__f0__male",
+          "sha256": "3d6b79831dc45f4f0a7c005fb792a75b192ade99ebcbc659fc5e7808139fde1f"
+        },
+        {
+          "bytes": 28794,
+          "filename": "FudExercise_male_Chin_To_Chest_Stretch_1.webp",
+          "frameIndex": 1,
+          "jobID": "Chin_To_Chest_Stretch__f1__male",
+          "sha256": "95bf76cc67c3d59475562e4f01e4244cbd95466fcd05d9e9701332101193f3c9"
+        }
+      ],
+      "gender": "male"
+    },
+    {
+      "exerciseID": "Close-Grip_EZ_Bar_Curl",
+      "frames": [
+        {
+          "bytes": 26154,
+          "filename": "FudExercise_male_Close-Grip_EZ_Bar_Curl_0.webp",
+          "frameIndex": 0,
+          "jobID": "Close-Grip_EZ_Bar_Curl__f0__male",
+          "sha256": "4ba1336d47b6032657445f20900587935773cb8af3b5b2da32ba4c2146faccb2"
+        },
+        {
+          "bytes": 25170,
+          "filename": "FudExercise_male_Close-Grip_EZ_Bar_Curl_1.webp",
+          "frameIndex": 1,
+          "jobID": "Close-Grip_EZ_Bar_Curl__f1__male",
+          "sha256": "72d8f1c97ecdb623b4fc83ecd5219c6223806296814f6965c9f0fca618c85fd6"
+        }
+      ],
+      "gender": "male"
+    },
+    {
       "exerciseID": "Close-Grip_Standing_Barbell_Curl",
       "frames": [
         {
@@ -1196,6 +1576,46 @@
           "frameIndex": 1,
           "jobID": "Close-Grip_Standing_Barbell_Curl__f1__male",
           "sha256": "a2c5fb6aa944f4e88c15f6297c3b346d895362f9ed6024ebbe064e0385d6a3bd"
+        }
+      ],
+      "gender": "male"
+    },
+    {
+      "exerciseID": "Cross_Body_Hammer_Curl",
+      "frames": [
+        {
+          "bytes": 23788,
+          "filename": "FudExercise_male_Cross_Body_Hammer_Curl_0.webp",
+          "frameIndex": 0,
+          "jobID": "Cross_Body_Hammer_Curl__f0__male",
+          "sha256": "cc2831dbffbb5df43c43df27f3dae5d03d5121c21fa623c9fbce81d1e477b66c"
+        },
+        {
+          "bytes": 23596,
+          "filename": "FudExercise_male_Cross_Body_Hammer_Curl_1.webp",
+          "frameIndex": 1,
+          "jobID": "Cross_Body_Hammer_Curl__f1__male",
+          "sha256": "bd5e0cb6d921b7706581b3447a0925cd0f697353a6369a18ddb996f78769a80c"
+        }
+      ],
+      "gender": "male"
+    },
+    {
+      "exerciseID": "Dancers_Stretch",
+      "frames": [
+        {
+          "bytes": 26768,
+          "filename": "FudExercise_male_Dancers_Stretch_0.webp",
+          "frameIndex": 0,
+          "jobID": "Dancers_Stretch__f0__male",
+          "sha256": "f66bddc392c6b4de8b41738e6951353436ee80f1a7ce1828c07ae425b1da8291"
+        },
+        {
+          "bytes": 28004,
+          "filename": "FudExercise_male_Dancers_Stretch_1.webp",
+          "frameIndex": 1,
+          "jobID": "Dancers_Stretch__f1__male",
+          "sha256": "8a4427f2fca8284ea432dfd26674dfdd10011632a0e5641ef0033fed928cb70a"
         }
       ],
       "gender": "male"
@@ -1241,6 +1661,26 @@
       "gender": "male"
     },
     {
+      "exerciseID": "Dumbbell_One-Arm_Shoulder_Press",
+      "frames": [
+        {
+          "bytes": 26744,
+          "filename": "FudExercise_male_Dumbbell_One-Arm_Shoulder_Press_0.webp",
+          "frameIndex": 0,
+          "jobID": "Dumbbell_One-Arm_Shoulder_Press__f0__male",
+          "sha256": "270b0594c4c07fbd67faf48711cbb139f552e047a16318d4b0f618e8d2d0c515"
+        },
+        {
+          "bytes": 23834,
+          "filename": "FudExercise_male_Dumbbell_One-Arm_Shoulder_Press_1.webp",
+          "frameIndex": 1,
+          "jobID": "Dumbbell_One-Arm_Shoulder_Press__f1__male",
+          "sha256": "e4e387efd0376f07cb715150cb9cf95328daf21089f7543347f2a8583761a99b"
+        }
+      ],
+      "gender": "male"
+    },
+    {
       "exerciseID": "Dumbbell_One-Arm_Upright_Row",
       "frames": [
         {
@@ -1256,6 +1696,26 @@
           "frameIndex": 1,
           "jobID": "Dumbbell_One-Arm_Upright_Row__f1__male",
           "sha256": "e59eabc15fdeeb40c36201971cea1df6b2317e46335481aa95896e6d01ea70da"
+        }
+      ],
+      "gender": "male"
+    },
+    {
+      "exerciseID": "Dumbbell_Scaption",
+      "frames": [
+        {
+          "bytes": 29788,
+          "filename": "FudExercise_male_Dumbbell_Scaption_0.webp",
+          "frameIndex": 0,
+          "jobID": "Dumbbell_Scaption__f0__male",
+          "sha256": "7557e5eb8bb9fa6d1ddedeb724c35a68966fde9b8aadc9b32ecb791375bf88d7"
+        },
+        {
+          "bytes": 31666,
+          "filename": "FudExercise_male_Dumbbell_Scaption_1.webp",
+          "frameIndex": 1,
+          "jobID": "Dumbbell_Scaption__f1__male",
+          "sha256": "a5307a8f4e4a83086efa3c96e2fea7bd6c47d7201f0b4966047c137a56165979"
         }
       ],
       "gender": "male"
@@ -1421,6 +1881,26 @@
       "gender": "male"
     },
     {
+      "exerciseID": "Hug_Knees_To_Chest",
+      "frames": [
+        {
+          "bytes": 21454,
+          "filename": "FudExercise_male_Hug_Knees_To_Chest_0.webp",
+          "frameIndex": 0,
+          "jobID": "Hug_Knees_To_Chest__f0__male",
+          "sha256": "b5f772ba3c9b9323233c8c1a0b1ddaa22edeb625beb5aa1dee11d33e325acfcb"
+        },
+        {
+          "bytes": 28810,
+          "filename": "FudExercise_male_Hug_Knees_To_Chest_1.webp",
+          "frameIndex": 1,
+          "jobID": "Hug_Knees_To_Chest__f1__male",
+          "sha256": "d16a19ae8f505c9e138e2b175374a123ea069f1cb7aefdab13b735e7d5b1e827"
+        }
+      ],
+      "gender": "male"
+    },
+    {
       "exerciseID": "Mountain_Climbers",
       "frames": [
         {
@@ -1441,6 +1921,26 @@
       "gender": "male"
     },
     {
+      "exerciseID": "One_Knee_To_Chest",
+      "frames": [
+        {
+          "bytes": 22572,
+          "filename": "FudExercise_male_One_Knee_To_Chest_0.webp",
+          "frameIndex": 0,
+          "jobID": "One_Knee_To_Chest__f0__male",
+          "sha256": "787a78ceb57a57a7a483562e3d4f074de4d714c66a8ea0a479eb3ae730b84b4a"
+        },
+        {
+          "bytes": 22380,
+          "filename": "FudExercise_male_One_Knee_To_Chest_1.webp",
+          "frameIndex": 1,
+          "jobID": "One_Knee_To_Chest__f1__male",
+          "sha256": "3946544d26b2762566b96bf4bc03f3b417c91374a2b6e2994e1a1f377e7c0db5"
+        }
+      ],
+      "gender": "male"
+    },
+    {
       "exerciseID": "Reverse_Barbell_Curl",
       "frames": [
         {
@@ -1456,6 +1956,46 @@
           "frameIndex": 1,
           "jobID": "Reverse_Barbell_Curl__f1__male",
           "sha256": "ef154d371ac32d8f9d880d84039771745339f9527b6f8c4fb0d183a74aedcd52"
+        }
+      ],
+      "gender": "male"
+    },
+    {
+      "exerciseID": "Side_Neck_Stretch",
+      "frames": [
+        {
+          "bytes": 26130,
+          "filename": "FudExercise_male_Side_Neck_Stretch_0.webp",
+          "frameIndex": 0,
+          "jobID": "Side_Neck_Stretch__f0__male",
+          "sha256": "efecbad558fafd95ac69e337343925fedde7b439015f3b74fa2ca867b37dafd1"
+        },
+        {
+          "bytes": 26886,
+          "filename": "FudExercise_male_Side_Neck_Stretch_1.webp",
+          "frameIndex": 1,
+          "jobID": "Side_Neck_Stretch__f1__male",
+          "sha256": "f1165d1f7d8c65012a41056aae6610e63bc5f3c9002a2be9307f80b6464cb1ac"
+        }
+      ],
+      "gender": "male"
+    },
+    {
+      "exerciseID": "Standing_Alternating_Dumbbell_Press",
+      "frames": [
+        {
+          "bytes": 29554,
+          "filename": "FudExercise_male_Standing_Alternating_Dumbbell_Press_0.webp",
+          "frameIndex": 0,
+          "jobID": "Standing_Alternating_Dumbbell_Press__f0__male",
+          "sha256": "ce46c8d5068598250f28ee267e07fadd415b5f2c1509e4c2881e263de4f19723"
+        },
+        {
+          "bytes": 25328,
+          "filename": "FudExercise_male_Standing_Alternating_Dumbbell_Press_1.webp",
+          "frameIndex": 1,
+          "jobID": "Standing_Alternating_Dumbbell_Press__f1__male",
+          "sha256": "545e1bf004ee88be9be2e64ba22e7865685b7b44706e6227b6d92bea822e1ef1"
         }
       ],
       "gender": "male"
@@ -1496,6 +2036,26 @@
           "frameIndex": 1,
           "jobID": "Standing_Dumbbell_Reverse_Curl__f1__male",
           "sha256": "b29a7401353b6db9c759171be4f802f082101ecde047ee5cb0db5a3e3c197b68"
+        }
+      ],
+      "gender": "male"
+    },
+    {
+      "exerciseID": "Standing_Dumbbell_Straight-Arm_Front_Delt_Raise_Above_Head",
+      "frames": [
+        {
+          "bytes": 22702,
+          "filename": "FudExercise_male_Standing_Dumbbell_Straight-Arm_Front_Delt_Raise_Above_Head_0.webp",
+          "frameIndex": 0,
+          "jobID": "Standing_Dumbbell_Straight-Arm_Front_Delt_Raise_Above_Head__f0__male",
+          "sha256": "ae9e95201cc22dc254de0fb7ca60a548156524e65568b47142cfeea81cf38eab"
+        },
+        {
+          "bytes": 25470,
+          "filename": "FudExercise_male_Standing_Dumbbell_Straight-Arm_Front_Delt_Raise_Above_Head_1.webp",
+          "frameIndex": 1,
+          "jobID": "Standing_Dumbbell_Straight-Arm_Front_Delt_Raise_Above_Head__f1__male",
+          "sha256": "b5df4e6b19ec3f05fdd4e58040decc2ed83bbb54df5753599e99d872007a07b9"
         }
       ],
       "gender": "male"
@@ -1561,6 +2121,26 @@
       "gender": "male"
     },
     {
+      "exerciseID": "Standing_Palms-In_Dumbbell_Press",
+      "frames": [
+        {
+          "bytes": 24638,
+          "filename": "FudExercise_male_Standing_Palms-In_Dumbbell_Press_0.webp",
+          "frameIndex": 0,
+          "jobID": "Standing_Palms-In_Dumbbell_Press__f0__male",
+          "sha256": "48e4b1d42fe13c8a05dab3fcc5cfb5cbfc52007e6d99dad0e28131028ec36b3a"
+        },
+        {
+          "bytes": 23636,
+          "filename": "FudExercise_male_Standing_Palms-In_Dumbbell_Press_1.webp",
+          "frameIndex": 1,
+          "jobID": "Standing_Palms-In_Dumbbell_Press__f1__male",
+          "sha256": "65a451aeed7e4d40d54ed5f7636b4945e35f97850decaef8bca96c6e8e2dc496"
+        }
+      ],
+      "gender": "male"
+    },
+    {
       "exerciseID": "Tire_Flip",
       "frames": [
         {
@@ -1602,7 +2182,7 @@
     }
   ],
   "format": "webp",
-  "pairCount": 80,
+  "pairCount": 109,
   "schemaVersion": 1,
   "size": 768
 }
