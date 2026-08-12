@@ -226,7 +226,8 @@ def main() -> None:
                             [sys.executable, str(args.chroma_remover), "--input", str(input_path),
                              "--out", str(normalizer_input), "--auto-key", "border",
                              "--soft-matte", "--transparent-threshold", "12",
-                             "--opaque-threshold", "220", "--despill"],
+                             "--opaque-threshold", "220", "--edge-contract", "1",
+                             "--despill"],
                             check=True,
                         )
                     normalization = subprocess.run(
@@ -264,7 +265,8 @@ def main() -> None:
                             [sys.executable, str(args.chroma_remover), "--input", str(input_path),
                              "--out", str(normalizer_input), "--auto-key", "border",
                              "--soft-matte", "--transparent-threshold", "12",
-                             "--opaque-threshold", "220", "--despill"],
+                             "--opaque-threshold", "220", "--edge-contract", "1",
+                             "--despill"],
                             check=True,
                         )
                     normalization = subprocess.run(

@@ -1,5 +1,85 @@
 {
   "jobs": {
+    "Alternate_Hammer_Curl__f0__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Compared at original resolution with exact legacy endpoint 0 and canonical female identity sheet. Matches the asymmetric hammer curl: correct raised/lowered arm arrangement, two dumbbells, neutral grips, camera orientation and stance. Face/hair, coral top, navy/coral leggings, shoes, body proportions, hands, feet, transparent matte and edges show no visible anomaly. Unchanged automatic QA passes: confidence 0.961, normalized RMSE 0.233, median limb angle 2.537 degrees, p90 21.743 degrees, torso delta 0.737 degrees.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T15:56:22+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Alternate_Hammer_Curl__f0__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Compared at original resolution with exact legacy endpoint 0 and canonical male identity sheet. Matches the alternating curl asymmetry: one forearm flexed with neutral hammer grip, opposite arm lowered with one dumbbell in each hand; camera orientation, stance, body proportions, clothing, face/hair, equipment count, hands, feet, transparency, and edges show no visible anomaly. Unchanged automated gates pass: confidence 0.969, normalized RMSE 0.236, median limb angle 6.405 degrees, p90 40.239 degrees, torso delta 3.390 degrees.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T15:55:58+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Alternate_Hammer_Curl__f1__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Compared at original resolution with exact legacy endpoint 1, endpoint 0 counterpart, and canonical female identity sheet. Correctly switches the flexed arm relative to endpoint 0 while keeping the opposite arm lowered; two dumbbells, neutral grips, stance and camera orientation match. Face/hair, coral/navy clothing, body proportions, hands, feet, transparent matte and edges show no visible anomaly. Unchanged automatic QA passes: confidence 0.979, normalized RMSE 0.282, median limb angle 6.968 degrees, p90 61.780 degrees, torso delta 3.860 degrees.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T15:57:56+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Alternate_Hammer_Curl__f1__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Retry 2 accepted after original-resolution comparison with exact legacy endpoint 1, accepted male endpoint 0, and canonical male identity. Correctly switches the flexed arm relative to endpoint 0 while opposite arm is lowered; two dumbbells, neutral hammer grips, stance and camera orientation match. Face/hair/clothing/body proportions, hands, feet and transparent edges show no visible anomaly. Unchanged automatic QA passes: confidence 0.986, normalized RMSE 0.283, median limb angle 10.365 degrees, p90 68.528 degrees, torso delta 3.705 degrees.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T16:00:22+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Arm_Circles__f0__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Compared at original resolution with exact Arm Circles endpoint 0 and canonical female identity. Front-facing stance, feet, both arms straight at shoulder height, hands/palms and symmetry match; no equipment expected. Face/hair/coral-and-navy clothing/body proportions, shoulders, elbows, wrists, fingers, legs, feet and transparent edges show no visible anomaly. Unchanged automatic QA passes: confidence 0.990, normalized RMSE 0.278, median limb angle 5.475 degrees, p90 18.290 degrees, torso delta 0.124 degrees.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T16:02:42+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Arm_Circles__f0__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Compared at original resolution with exact legacy Arm Circles endpoint 0 and canonical male identity. Front-facing stance, feet position, both arms straight at shoulder height, palm orientation and left/right symmetry match; no equipment expected. Face/hair/clothing/body proportions, shoulders, elbows, wrists, fingers, legs, feet and transparency show no visible anomaly. Unchanged automatic QA passes: confidence 0.997, normalized RMSE 0.221, median limb angle 4.225 degrees, p90 15.771 degrees, torso delta 1.478 degrees.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T16:00:22+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Arm_Circles__f1__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Accepted after deterministic re-extraction of identical preserved raw removed only green matte fringe; original-resolution comparison with exact endpoint 1, accepted female endpoint 0 and canonical identity remains correct. Arms form symmetric raised diagonal V with straight elbows and matching palms; front-facing stance, identity/clothing/body proportions, fingers, limbs and feet show no anomaly. Unchanged automatic QA now passes all integrity and pose gates: zero chroma fringe, confidence 0.994, normalized RMSE 0.296, median limb angle 4.358 degrees, p90 19.482 degrees, torso delta 0.707 degrees.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T16:09:13+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Arm_Circles__f1__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Compared at original resolution with exact legacy Arm Circles endpoint 1, accepted endpoint 0, and canonical male identity. Correct progression from horizontal arms to symmetric raised diagonal V; shoulders, elbows, wrists, palm direction, front-facing stance, feet and left/right symmetry match. No equipment expected. Face/hair/clothing/body proportions, fingers, limbs and transparency show no visible anomaly. Unchanged automatic QA passes: confidence 0.997, normalized RMSE 0.205, median limb angle 4.436 degrees, p90 10.003 degrees, torso delta 0.885 degrees.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T16:01:21+00:00",
+      "reviewer": "qa-orchestrator"
+    },
     "Barbell_Squat__f0__female": {
       "anatomyApproved": true,
       "artifactFree": true,
@@ -10,6 +90,16 @@
       "reviewedAt": "2026-08-12T15:14:37+00:00",
       "reviewer": "settings-audit-visual"
     },
+    "Cable_Crossover__f0__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Retry accepted after original-resolution comparison with exact Cable Crossover endpoint 0, canonical female identity and accepted endpoint 1. Correct open start position: arms extended wide at shoulder height, both hands grip handles, cables connect to two complete high pulleys/towers, forward lean and staggered stance match. Identity/clothing, body proportions, fingers, cable routing, equipment symmetry, feet and transparent edges show no visible anomaly. Unchanged automatic QA passes: confidence 0.973, normalized RMSE 0.329, median limb angle 4.515 degrees, p90 7.778 degrees, torso delta 2.402 degrees.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T16:02:42+00:00",
+      "reviewer": "qa-orchestrator"
+    },
     "Cable_Crossover__f1__female": {
       "anatomyApproved": true,
       "artifactFree": true,
@@ -19,6 +109,26 @@
       "poseEquipmentApproved": true,
       "reviewedAt": "2026-08-12T15:14:37+00:00",
       "reviewer": "settings-audit-visual"
+    },
+    "Dumbbell_Alternate_Bicep_Curl__f0__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Compared at original resolution with exact Dumbbell Alternate Bicep Curl endpoint 0 and canonical female identity. One arm is flexed with palm-up curl while opposite arm hangs straight holding the second dumbbell; dumbbell count, grip, elbow position, front-facing stance and left/right orientation match. Identity/clothing/body proportions, hands, plates, limbs, feet and transparent edges show no visible anomaly. Unchanged automatic QA passes: confidence 0.804, normalized RMSE 0.224, median limb angle 4.090 degrees, p90 6.533 degrees, torso delta 0.873 degrees.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T16:04:22+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Dumbbell_Alternate_Bicep_Curl__f1__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Retry 2 accepted after original-resolution comparison with exact endpoint 1, accepted endpoint 0 and canonical female identity. Correctly alternates the curled arm relative to endpoint 0; one palm-up curl at shoulder height, opposite arm straight holding second dumbbell, with matching stance and left/right orientation. Identity/clothing/body proportions, hands/grips, plates, limbs, feet and transparent edges show no visible anomaly. Unchanged automatic QA passes: confidence 0.974, normalized RMSE 0.187, median limb angle 4.937 degrees, p90 37.553 degrees, torso delta 4.151 degrees.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T16:09:13+00:00",
+      "reviewer": "qa-orchestrator"
     },
     "Dumbbell_Bicep_Curl__f0__female": {
       "anatomyApproved": true,
@@ -60,6 +170,126 @@
       "reviewedAt": "2026-08-12T15:14:56+00:00",
       "reviewer": "dataset-audit"
     },
+    "Dumbbell_Shrug__f0__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Compared at original resolution with exact legacy endpoint 0 and canonical female identity. Correct relaxed shoulders, arms straight, bilateral dumbbells, frontal stance. Identity/outfit consistent; hands, feet, weights, anatomy, alpha matte and edges show no visible anomaly. Unchanged automatic QA passes: confidence 0.900235, normalized RMSE 0.224338, median limb angle 2.858 degrees, p90 6.794 degrees, torso delta 0.564 degrees, chroma fringe 0.00000824.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T16:17:44+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Dumbbell_Shrug__f0__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Compared at original resolution with exact Dumbbell Shrug endpoint 0 and canonical male identity. Correct relaxed starting position: shoulders lowered, elbows straight, two matched dumbbells at outer thighs with correct grips, upright torso and stance. Face/hair/clothing/body proportions, hands, plates, limbs, feet and transparency show no visible anomaly. Unchanged automatic QA passes: confidence 0.987, normalized RMSE 0.143, median limb angle 4.250 degrees, p90 10.282 degrees, torso delta 3.725 degrees.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T16:02:09+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Dumbbell_Shrug__f1__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Compared at original resolution with exact legacy endpoint 1 and canonical female identity. Correct bilateral shoulder elevation with shortened neck while elbows stay straight and both dumbbells remain level. Identity/outfit consistent; hands, feet, weights, anatomy, alpha matte and edges show no visible anomaly. Unchanged automatic QA passes: confidence 0.918424, normalized RMSE 0.132457, median limb angle 2.797 degrees, p90 10.432 degrees, torso delta 0.603 degrees, chroma fringe 0.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T16:17:45+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Dumbbell_Shrug__f1__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Compared at original resolution with exact Dumbbell Shrug endpoint 1, accepted endpoint 0 and canonical male identity. Clear contracted progression: both shoulders elevated toward ears with shortened neck while elbows remain straight; two matched dumbbells stay at thighs with correct grips, upright front-facing stance. Identity/clothing/body proportions, hands, plates, limbs, feet and transparent edges show no visible anomaly. Unchanged automatic QA passes: confidence 0.985, normalized RMSE 0.113, median limb angle 2.227 degrees, p90 6.962 degrees, torso delta 0.843 degrees.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T16:03:13+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Dumbbell_Side_Bend__f0__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Compared at original resolution with exact legacy endpoint 0 and canonical female identity. Correct image-left dumbbell with straight arm, free hand on image-right hip, and torso bent toward the loaded image-left side. Identity/outfit consistent; hand, weight, spine/hips, feet, anatomy and matte show no visible anomaly. Unchanged automatic QA passes: confidence 0.980027, normalized RMSE 0.177020, median limb angle 5.175 degrees, p90 6.191 degrees, torso delta 6.590 degrees, chroma fringe 0.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T16:19:05+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Dumbbell_Side_Bend__f0__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Compared at original resolution with exact Dumbbell Side Bend endpoint 0 and canonical male identity. Torso bends toward the dumbbell side; viewer-left arm hangs straight holding one dumbbell, viewer-right hand rests on hip, hips/legs/feet remain stable and left/right orientation matches. Identity/clothing/body proportions, hand/grip, plate geometry, spine/limbs, feet and transparency show no visible anomaly. Unchanged automatic QA passes: confidence 0.970, normalized RMSE 0.188, median limb angle 3.373 degrees, p90 7.187 degrees, torso delta 7.760 degrees.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T16:04:52+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Dumbbell_Side_Bend__f1__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Compared at original resolution with exact legacy endpoint 1 and canonical female identity. Correct image-right dumbbell with straight arm, free hand on image-left hip, and torso bent toward the loaded image-right side, precisely reversing endpoint 0. Identity/outfit consistent; hand, weight, spine/hips, feet, anatomy and matte show no visible anomaly. Unchanged automatic QA passes: confidence 0.985914, normalized RMSE 0.264878, median limb angle 10.256 degrees, p90 57.245 degrees, torso delta 4.087 degrees, chroma fringe 0.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T16:19:05+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Dumbbell_Side_Bend__f1__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Retry 2 accepted after original-resolution comparison with exact Dumbbell Side Bend endpoint 1, accepted endpoint 0 and canonical male identity. Torso bends to the opposite side from endpoint 0 as legacy requires; viewer-left arm remains straight holding one dumbbell, free hand rests on hip, hips/legs/feet stable and left/right orientation correct. Identity/clothing/body proportions, hand/grip, spine/limbs, feet and transparent edges show no visible anomaly. Unchanged automatic QA passes: confidence 0.991, normalized RMSE 0.209, median limb angle 4.312 degrees, p90 10.557 degrees, torso delta 6.222 degrees.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T16:07:19+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Standing_Dumbbell_Calf_Raise__f0__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Compared at original resolution with exact legacy endpoint 0 and canonical male identity. Rear view preserves two dumbbells, straight knees, forefeet supported on the full step and heels visibly overhanging/lowered. Identity/outfit consistent; hands, feet, step, weights, anatomy and matte show no visible anomaly. Unchanged automatic QA passes: confidence 0.929839, normalized RMSE 0.181740, median limb angle 2.933 degrees, p90 7.787 degrees, torso delta 2.255 degrees, chroma fringe 0.00081896.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T16:17:45+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Standing_Dumbbell_Calf_Raise__f1__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Compared at original resolution with exact legacy endpoint 1 and canonical male identity. Rear view preserves two dumbbells and full step; forefeet remain supported while heels are raised into the tiptoe finish with straight knees and rear soles visible. Identity/outfit consistent; hands, feet, equipment, anatomy and matte show no visible anomaly. Unchanged automatic QA passes: confidence 0.897177, normalized RMSE 0.146020, median limb angle 2.124 degrees, p90 7.541 degrees, torso delta 2.089 degrees, chroma fringe 0.00047680.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T16:17:45+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Standing_Dumbbell_Press__f0__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Compared at original resolution with exact Standing Dumbbell Press endpoint 0 and canonical female identity. Correct rack start: two dumbbells beside shoulders, elbows bent near 90 degrees and pointing outward, wrists stacked over elbows, upright stance and camera orientation match. Identity/clothing/body proportions, hands/grips, plates, shoulders, limbs, feet and transparency show no visible anomaly. Unchanged automatic QA passes: confidence 0.935, normalized RMSE 0.222, median limb angle 4.296 degrees, p90 13.528 degrees, torso delta 1.169 degrees.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T16:06:51+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Standing_Dumbbell_Press__f1__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Compared at original resolution with exact Standing Dumbbell Press endpoint 1, accepted endpoint 0 and canonical female identity. Correct overhead finish: both dumbbells above shoulders, arms nearly straight with slight safe elbow bend, wrists stacked, upright torso/stance and camera orientation match. Identity/clothing/body proportions, hands/grips, plates, shoulders, limbs, feet and transparent edges show no visible anomaly. Unchanged automatic QA passes: confidence 0.854, normalized RMSE 0.116, median limb angle 4.504 degrees, p90 9.638 degrees, torso delta 1.338 degrees.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T16:11:43+00:00",
+      "reviewer": "qa-orchestrator"
+    },
     "Tire_Flip__f0__female": {
       "anatomyApproved": true,
       "artifactFree": true,
@@ -84,11 +314,11 @@
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
-      "decision": "reject",
-      "notes": "Rejected: automated pose QA fails normalized RMSE (0.881 > 0.85) and torso angle (36.782\u00b0 > 32\u00b0); generated finish has a materially steeper tire/body relationship than the legacy endpoint. Regenerate without weakening thresholds.",
-      "poseEquipmentApproved": false,
-      "reviewedAt": "2026-08-12T15:21:55+00:00",
-      "reviewer": "dataset-audit"
+      "decision": "accept",
+      "notes": "Retry 2 accepted after original-resolution comparison with exact legacy Tire Flip endpoint 1, accepted female endpoint 0, and canonical identity sheet. Correct finish progression: tire is lifted and tilted toward the athlete, torso/chest contacts upper tire, arms reach beneath it, split stance and left/right orientation match. One complete tire, correct tread, face/hair/clothing/body proportions, fingers, limbs, feet and transparent edges show no visible anomaly. Unchanged automatic QA passes: confidence 0.833, normalized RMSE 0.649, median limb angle 10.469 degrees, p90 24.476 degrees, torso delta 20.964 degrees.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T15:59:43+00:00",
+      "reviewer": "qa-orchestrator"
     },
     "Tire_Flip__f1__male": {
       "anatomyApproved": true,
@@ -99,6 +329,26 @@
       "poseEquipmentApproved": true,
       "reviewedAt": "2026-08-12T15:21:55+00:00",
       "reviewer": "dataset-audit"
+    },
+    "Wrist_Circles__f1__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Compared at original resolution with exact legacy endpoint 1 and canonical female identity. Correct elbows held near the torso with forearms forward and both wrists rotated so fingers point downward/backs of hands face forward, clearly distinct from endpoint 0. No equipment; identity, anatomy, fingers, feet and matte show no visible anomaly. Unchanged automatic QA passes: confidence 0.991096, normalized RMSE 0.217391, median limb angle 4.208 degrees, p90 12.422 degrees, torso delta 1.277 degrees, chroma fringe 0.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T16:17:45+00:00",
+      "reviewer": "qa-orchestrator"
+    },
+    "Wrist_Circles__f1__male": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "notes": "Compared at original resolution with exact legacy endpoint 1 and canonical male identity. Correct elbows held near the torso with forearms forward and both wrists rotated so fingers point downward/backs of hands face forward, clearly distinct from endpoint 0. No equipment; identity, anatomy, fingers, feet and matte show no visible anomaly. Unchanged automatic QA passes: confidence 0.995287, normalized RMSE 0.154155, median limb angle 6.037 degrees, p90 26.369 degrees, torso delta 0.684 degrees, chroma fringe 0.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-12T16:17:45+00:00",
+      "reviewer": "qa-orchestrator"
     }
   },
   "schemaVersion": 1

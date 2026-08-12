@@ -1,5 +1,5 @@
 {
-  "evaluated": 9,
+  "evaluated": 40,
   "manifestQA": {
     "exerciseCount": 875,
     "femaleJobs": 1750,
@@ -8,8 +8,496 @@
     "maleJobs": 1750,
     "uniqueOutputPaths": 3500
   },
-  "missing": 3491,
+  "missing": 3460,
   "results": {
+    "Alternate_Hammer_Curl__f0__female": {
+      "edgeLayoutCosine": 0.500794,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.121058,
+        "passed": true,
+        "sha256": "8a5d8b589139896b206efad8e3eeab0884ae952589b9dd6cae045190d6b6f058",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Compared at original resolution with exact legacy endpoint 0 and canonical female identity sheet. Matches the asymmetric hammer curl: correct raised/lowered arm arrangement, two dumbbells, neutral grips, camera orientation and stance. Face/hair, coral top, navy/coral leggings, shoes, body proportions, hands, feet, transparent matte and edges show no visible anomaly. Unchanged automatic QA passes: confidence 0.961, normalized RMSE 0.233, median limb angle 2.537 degrees, p90 21.743 degrees, torso delta 0.737 degrees.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T15:56:22+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 2.537,
+        "normalizedRMSE": 0.232561,
+        "outputConfidence": 0.961002,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 21.743,
+        "passed": true,
+        "sourceConfidence": 0.781185,
+        "sourceDetected": true,
+        "swappedRMSE": 0.623266,
+        "torsoAngleDegrees": 0.737
+      },
+      "status": "accepted"
+    },
+    "Alternate_Hammer_Curl__f0__male": {
+      "edgeLayoutCosine": 0.590583,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.00056649,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.125472,
+        "passed": true,
+        "sha256": "4bbfa511d49454d47925fcaf880b6330757e19e705b1e09d4082d697eba2ca14",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Compared at original resolution with exact legacy endpoint 0 and canonical male identity sheet. Matches the alternating curl asymmetry: one forearm flexed with neutral hammer grip, opposite arm lowered with one dumbbell in each hand; camera orientation, stance, body proportions, clothing, face/hair, equipment count, hands, feet, transparency, and edges show no visible anomaly. Unchanged automated gates pass: confidence 0.969, normalized RMSE 0.236, median limb angle 6.405 degrees, p90 40.239 degrees, torso delta 3.390 degrees.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T15:55:58+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 6.405,
+        "normalizedRMSE": 0.236311,
+        "outputConfidence": 0.968923,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 40.239,
+        "passed": true,
+        "sourceConfidence": 0.781185,
+        "sourceDetected": true,
+        "swappedRMSE": 0.624976,
+        "torsoAngleDegrees": 3.39
+      },
+      "status": "accepted"
+    },
+    "Alternate_Hammer_Curl__f1__female": {
+      "edgeLayoutCosine": 0.566826,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 8.13e-06,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.117767,
+        "passed": true,
+        "sha256": "4920d4c1b6c6224d9c40b3a6030b1e015a7eff0b14daa0b01696e0ec0be7f1e0",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Compared at original resolution with exact legacy endpoint 1, endpoint 0 counterpart, and canonical female identity sheet. Correctly switches the flexed arm relative to endpoint 0 while keeping the opposite arm lowered; two dumbbells, neutral grips, stance and camera orientation match. Face/hair, coral/navy clothing, body proportions, hands, feet, transparent matte and edges show no visible anomaly. Unchanged automatic QA passes: confidence 0.979, normalized RMSE 0.282, median limb angle 6.968 degrees, p90 61.780 degrees, torso delta 3.860 degrees.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T15:57:56+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 6.968,
+        "normalizedRMSE": 0.281989,
+        "outputConfidence": 0.978658,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 61.78,
+        "passed": true,
+        "sourceConfidence": 0.88142,
+        "sourceDetected": true,
+        "swappedRMSE": 0.530341,
+        "torsoAngleDegrees": 3.86
+      },
+      "status": "accepted"
+    },
+    "Alternate_Hammer_Curl__f1__male": {
+      "edgeLayoutCosine": 0.624653,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.00016481,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.128351,
+        "passed": true,
+        "sha256": "2e3e770fe933dd5a2bdaf3e2e3e71f2e49d348c3fe56f531d2ba27a0dd429dd0",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Retry 2 accepted after original-resolution comparison with exact legacy endpoint 1, accepted male endpoint 0, and canonical male identity. Correctly switches the flexed arm relative to endpoint 0 while opposite arm is lowered; two dumbbells, neutral hammer grips, stance and camera orientation match. Face/hair/clothing/body proportions, hands, feet and transparent edges show no visible anomaly. Unchanged automatic QA passes: confidence 0.986, normalized RMSE 0.283, median limb angle 10.365 degrees, p90 68.528 degrees, torso delta 3.705 degrees.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T16:00:22+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 10.365,
+        "normalizedRMSE": 0.282651,
+        "outputConfidence": 0.985705,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 68.528,
+        "passed": true,
+        "sourceConfidence": 0.88142,
+        "sourceDetected": true,
+        "swappedRMSE": 0.543231,
+        "torsoAngleDegrees": 3.705
+      },
+      "status": "accepted"
+    },
+    "Arm_Circles__f0__female": {
+      "edgeLayoutCosine": 0.587405,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 4.104e-05,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.116652,
+        "passed": true,
+        "sha256": "9e1a646ba0ac3a3deac207028eb096736de165c2d194987b492436912cda2212",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Compared at original resolution with exact Arm Circles endpoint 0 and canonical female identity. Front-facing stance, feet, both arms straight at shoulder height, hands/palms and symmetry match; no equipment expected. Face/hair/coral-and-navy clothing/body proportions, shoulders, elbows, wrists, fingers, legs, feet and transparent edges show no visible anomaly. Unchanged automatic QA passes: confidence 0.990, normalized RMSE 0.278, median limb angle 5.475 degrees, p90 18.290 degrees, torso delta 0.124 degrees.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T16:02:42+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 5.475,
+        "normalizedRMSE": 0.277723,
+        "outputConfidence": 0.989555,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 18.29,
+        "passed": true,
+        "sourceConfidence": 0.991087,
+        "sourceDetected": true,
+        "swappedRMSE": 1.031138,
+        "torsoAngleDegrees": 0.124
+      },
+      "status": "accepted"
+    },
+    "Arm_Circles__f0__male": {
+      "edgeLayoutCosine": 0.645677,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 7.62e-06,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.125654,
+        "passed": true,
+        "sha256": "b89eab2609abf0e5816a938db038b94f5b2873a1cd4b236b8919b0350b8f8702",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Compared at original resolution with exact legacy Arm Circles endpoint 0 and canonical male identity. Front-facing stance, feet position, both arms straight at shoulder height, palm orientation and left/right symmetry match; no equipment expected. Face/hair/clothing/body proportions, shoulders, elbows, wrists, fingers, legs, feet and transparency show no visible anomaly. Unchanged automatic QA passes: confidence 0.997, normalized RMSE 0.221, median limb angle 4.225 degrees, p90 15.771 degrees, torso delta 1.478 degrees.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T16:00:22+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 4.225,
+        "normalizedRMSE": 0.221451,
+        "outputConfidence": 0.997317,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 15.771,
+        "passed": true,
+        "sourceConfidence": 0.991087,
+        "sourceDetected": true,
+        "swappedRMSE": 0.993926,
+        "torsoAngleDegrees": 1.478
+      },
+      "status": "accepted"
+    },
+    "Arm_Circles__f1__female": {
+      "edgeLayoutCosine": 0.621069,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.116626,
+        "passed": true,
+        "sha256": "36e78ac1dffe41da50422b3bd5e1bbc07fc79a51ccf3db58af20469a213129b4",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Accepted after deterministic re-extraction of identical preserved raw removed only green matte fringe; original-resolution comparison with exact endpoint 1, accepted female endpoint 0 and canonical identity remains correct. Arms form symmetric raised diagonal V with straight elbows and matching palms; front-facing stance, identity/clothing/body proportions, fingers, limbs and feet show no anomaly. Unchanged automatic QA now passes all integrity and pose gates: zero chroma fringe, confidence 0.994, normalized RMSE 0.296, median limb angle 4.358 degrees, p90 19.482 degrees, torso delta 0.707 degrees.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T16:09:13+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 4.358,
+        "normalizedRMSE": 0.296105,
+        "outputConfidence": 0.994212,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 19.482,
+        "passed": true,
+        "sourceConfidence": 0.985895,
+        "sourceDetected": true,
+        "swappedRMSE": 0.961235,
+        "torsoAngleDegrees": 0.707
+      },
+      "status": "accepted"
+    },
+    "Arm_Circles__f1__male": {
+      "edgeLayoutCosine": 0.701871,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.129373,
+        "passed": true,
+        "sha256": "3bb2b67156df80be1e9ba4c0c78ed12a59323dbb59645bcc2abc8a5dfb434bcc",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Compared at original resolution with exact legacy Arm Circles endpoint 1, accepted endpoint 0, and canonical male identity. Correct progression from horizontal arms to symmetric raised diagonal V; shoulders, elbows, wrists, palm direction, front-facing stance, feet and left/right symmetry match. No equipment expected. Face/hair/clothing/body proportions, fingers, limbs and transparency show no visible anomaly. Unchanged automatic QA passes: confidence 0.997, normalized RMSE 0.205, median limb angle 4.436 degrees, p90 10.003 degrees, torso delta 0.885 degrees.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T16:01:21+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 4.436,
+        "normalizedRMSE": 0.204923,
+        "outputConfidence": 0.996616,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 10.003,
+        "passed": true,
+        "sourceConfidence": 0.985895,
+        "sourceDetected": true,
+        "swappedRMSE": 0.897074,
+        "torsoAngleDegrees": 0.885
+      },
+      "status": "accepted"
+    },
     "Barbell_Squat__f0__female": {
       "edgeLayoutCosine": 0.49108,
       "edgeLayoutWarning": false,
@@ -71,6 +559,119 @@
       },
       "status": "accepted"
     },
+    "Barbell_Squat__f1__female": {
+      "edgeLayoutCosine": 0.511056,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.189944,
+        "passed": true,
+        "sha256": "de255c4ea34a171a3d44f2c74979544edd75321f722624c348e80625e9353e44",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {},
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": false,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 14.223,
+        "normalizedRMSE": 0.419231,
+        "outputConfidence": 0.881294,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 175.862,
+        "passed": false,
+        "sourceConfidence": 0.627289,
+        "sourceDetected": true,
+        "swappedRMSE": 0.875801,
+        "torsoAngleDegrees": 3.628
+      },
+      "status": "auto_failed"
+    },
+    "Cable_Crossover__f0__female": {
+      "edgeLayoutCosine": 0.622738,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.169987,
+        "passed": true,
+        "sha256": "b62f7148ea87b7a3627f7ac01a80082d5a5dcec7605bbace57aaf5e85f75924e",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Retry accepted after original-resolution comparison with exact Cable Crossover endpoint 0, canonical female identity and accepted endpoint 1. Correct open start position: arms extended wide at shoulder height, both hands grip handles, cables connect to two complete high pulleys/towers, forward lean and staggered stance match. Identity/clothing, body proportions, fingers, cable routing, equipment symmetry, feet and transparent edges show no visible anomaly. Unchanged automatic QA passes: confidence 0.973, normalized RMSE 0.329, median limb angle 4.515 degrees, p90 7.778 degrees, torso delta 2.402 degrees.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T16:02:42+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 4.515,
+        "normalizedRMSE": 0.328867,
+        "outputConfidence": 0.973017,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 7.778,
+        "passed": true,
+        "sourceConfidence": 0.965883,
+        "sourceDetected": true,
+        "swappedRMSE": 0.990532,
+        "torsoAngleDegrees": 2.402
+      },
+      "status": "accepted"
+    },
     "Cable_Crossover__f1__female": {
       "edgeLayoutCosine": 0.793192,
       "edgeLayoutWarning": false,
@@ -129,6 +730,128 @@
         "sourceDetected": true,
         "swappedRMSE": 0.475431,
         "torsoAngleDegrees": 1.94
+      },
+      "status": "accepted"
+    },
+    "Dumbbell_Alternate_Bicep_Curl__f0__female": {
+      "edgeLayoutCosine": 0.506241,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.120358,
+        "passed": true,
+        "sha256": "5800fa20d69d39684640d899f7a2bc69f0a0b459970d702a95a607d649eb7e3b",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Compared at original resolution with exact Dumbbell Alternate Bicep Curl endpoint 0 and canonical female identity. One arm is flexed with palm-up curl while opposite arm hangs straight holding the second dumbbell; dumbbell count, grip, elbow position, front-facing stance and left/right orientation match. Identity/clothing/body proportions, hands, plates, limbs, feet and transparent edges show no visible anomaly. Unchanged automatic QA passes: confidence 0.804, normalized RMSE 0.224, median limb angle 4.090 degrees, p90 6.533 degrees, torso delta 0.873 degrees.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T16:04:22+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 4.09,
+        "normalizedRMSE": 0.224346,
+        "outputConfidence": 0.803915,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 6.533,
+        "passed": true,
+        "sourceConfidence": 0.936742,
+        "sourceDetected": true,
+        "swappedRMSE": 0.654927,
+        "torsoAngleDegrees": 0.873
+      },
+      "status": "accepted"
+    },
+    "Dumbbell_Alternate_Bicep_Curl__f1__female": {
+      "edgeLayoutCosine": 0.574429,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.113971,
+        "passed": true,
+        "sha256": "628b15fafb18a3bcd23f463bcc1a4689056db00da26bb68d576b1e3874d38943",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Retry 2 accepted after original-resolution comparison with exact endpoint 1, accepted endpoint 0 and canonical female identity. Correctly alternates the curled arm relative to endpoint 0; one palm-up curl at shoulder height, opposite arm straight holding second dumbbell, with matching stance and left/right orientation. Identity/clothing/body proportions, hands/grips, plates, limbs, feet and transparent edges show no visible anomaly. Unchanged automatic QA passes: confidence 0.974, normalized RMSE 0.187, median limb angle 4.937 degrees, p90 37.553 degrees, torso delta 4.151 degrees.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T16:09:13+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 4.937,
+        "normalizedRMSE": 0.18737,
+        "outputConfidence": 0.97388,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 37.553,
+        "passed": true,
+        "sourceConfidence": 0.973118,
+        "sourceDetected": true,
+        "swappedRMSE": 0.604729,
+        "torsoAngleDegrees": 4.151
       },
       "status": "accepted"
     },
@@ -376,6 +1099,842 @@
       },
       "status": "accepted"
     },
+    "Dumbbell_Raise__f0__male": {
+      "edgeLayoutCosine": 0.530923,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.00098594,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.121572,
+        "passed": true,
+        "sha256": "30653fadb22f3d198fd6d47bbc72e6a178b4a8342e25911508d818394a97cf45",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {},
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": false,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 13.562,
+        "normalizedRMSE": 0.346076,
+        "outputConfidence": 0.967312,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 103.624,
+        "passed": false,
+        "sourceConfidence": 0.672903,
+        "sourceDetected": true,
+        "swappedRMSE": 0.548137,
+        "torsoAngleDegrees": 1.735
+      },
+      "status": "auto_failed"
+    },
+    "Dumbbell_Raise__f1__male": {
+      "edgeLayoutCosine": 0.473107,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.00061033,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.124191,
+        "passed": true,
+        "sha256": "39cf6cb83ab06f897874fe467ba624e68cd3f36ab5cb733ca4b7b22cbfa5413a",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {},
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": false,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 6.388,
+        "normalizedRMSE": 0.289953,
+        "outputConfidence": 0.896563,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 83.187,
+        "passed": false,
+        "sourceConfidence": 0.715087,
+        "sourceDetected": true,
+        "swappedRMSE": 0.617269,
+        "torsoAngleDegrees": 4.478
+      },
+      "status": "auto_failed"
+    },
+    "Dumbbell_Shrug__f0__female": {
+      "edgeLayoutCosine": 0.619118,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 8.24e-06,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.116112,
+        "passed": true,
+        "sha256": "fbaabdf30777d5462d0f6f5232d1a2288d477e49043aefe432e1f84937d4e4ef",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Compared at original resolution with exact legacy endpoint 0 and canonical female identity. Correct relaxed shoulders, arms straight, bilateral dumbbells, frontal stance. Identity/outfit consistent; hands, feet, weights, anatomy, alpha matte and edges show no visible anomaly. Unchanged automatic QA passes: confidence 0.900235, normalized RMSE 0.224338, median limb angle 2.858 degrees, p90 6.794 degrees, torso delta 0.564 degrees, chroma fringe 0.00000824.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T16:17:44+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 2.858,
+        "normalizedRMSE": 0.224338,
+        "outputConfidence": 0.900235,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 6.794,
+        "passed": true,
+        "sourceConfidence": 0.966905,
+        "sourceDetected": true,
+        "swappedRMSE": 0.579253,
+        "torsoAngleDegrees": 0.564
+      },
+      "status": "accepted"
+    },
+    "Dumbbell_Shrug__f0__male": {
+      "edgeLayoutCosine": 0.659404,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.00041088,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.121402,
+        "passed": true,
+        "sha256": "03c05cf987a6d37589680d06e979e1ec89bfb2947c0bf51b5949e9684b3f04be",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Compared at original resolution with exact Dumbbell Shrug endpoint 0 and canonical male identity. Correct relaxed starting position: shoulders lowered, elbows straight, two matched dumbbells at outer thighs with correct grips, upright torso and stance. Face/hair/clothing/body proportions, hands, plates, limbs, feet and transparency show no visible anomaly. Unchanged automatic QA passes: confidence 0.987, normalized RMSE 0.143, median limb angle 4.250 degrees, p90 10.282 degrees, torso delta 3.725 degrees.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T16:02:09+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 4.25,
+        "normalizedRMSE": 0.14292,
+        "outputConfidence": 0.986663,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 10.282,
+        "passed": true,
+        "sourceConfidence": 0.966905,
+        "sourceDetected": true,
+        "swappedRMSE": 0.535822,
+        "torsoAngleDegrees": 3.725
+      },
+      "status": "accepted"
+    },
+    "Dumbbell_Shrug__f1__female": {
+      "edgeLayoutCosine": 0.635795,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.123871,
+        "passed": true,
+        "sha256": "c3ca857eebcd3c524a5ed090a968643c561b1882f7d8cab6567105a9ca8e7557",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Compared at original resolution with exact legacy endpoint 1 and canonical female identity. Correct bilateral shoulder elevation with shortened neck while elbows stay straight and both dumbbells remain level. Identity/outfit consistent; hands, feet, weights, anatomy, alpha matte and edges show no visible anomaly. Unchanged automatic QA passes: confidence 0.918424, normalized RMSE 0.132457, median limb angle 2.797 degrees, p90 10.432 degrees, torso delta 0.603 degrees, chroma fringe 0.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T16:17:45+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 2.797,
+        "normalizedRMSE": 0.132457,
+        "outputConfidence": 0.918424,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 10.432,
+        "passed": true,
+        "sourceConfidence": 0.971645,
+        "sourceDetected": true,
+        "swappedRMSE": 0.506022,
+        "torsoAngleDegrees": 0.603
+      },
+      "status": "accepted"
+    },
+    "Dumbbell_Shrug__f1__male": {
+      "edgeLayoutCosine": 0.51385,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0007864,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.137864,
+        "passed": true,
+        "sha256": "72586836b8322349d3240cea75d7cb08aec2d0f1a775b0b6977adf4b8917d9db",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Compared at original resolution with exact Dumbbell Shrug endpoint 1, accepted endpoint 0 and canonical male identity. Clear contracted progression: both shoulders elevated toward ears with shortened neck while elbows remain straight; two matched dumbbells stay at thighs with correct grips, upright front-facing stance. Identity/clothing/body proportions, hands, plates, limbs, feet and transparent edges show no visible anomaly. Unchanged automatic QA passes: confidence 0.985, normalized RMSE 0.113, median limb angle 2.227 degrees, p90 6.962 degrees, torso delta 0.843 degrees.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T16:03:13+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 2.227,
+        "normalizedRMSE": 0.112697,
+        "outputConfidence": 0.985397,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 6.962,
+        "passed": true,
+        "sourceConfidence": 0.971645,
+        "sourceDetected": true,
+        "swappedRMSE": 0.51558,
+        "torsoAngleDegrees": 0.843
+      },
+      "status": "accepted"
+    },
+    "Dumbbell_Side_Bend__f0__female": {
+      "edgeLayoutCosine": 0.615468,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.135796,
+        "passed": true,
+        "sha256": "ce30d21d53d7b51823052c40b3d8b5c8978914550555d1a1e7741f511f7837b7",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Compared at original resolution with exact legacy endpoint 0 and canonical female identity. Correct image-left dumbbell with straight arm, free hand on image-right hip, and torso bent toward the loaded image-left side. Identity/outfit consistent; hand, weight, spine/hips, feet, anatomy and matte show no visible anomaly. Unchanged automatic QA passes: confidence 0.980027, normalized RMSE 0.177020, median limb angle 5.175 degrees, p90 6.191 degrees, torso delta 6.590 degrees, chroma fringe 0.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T16:19:05+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 5.175,
+        "normalizedRMSE": 0.17702,
+        "outputConfidence": 0.980027,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 6.191,
+        "passed": true,
+        "sourceConfidence": 0.90638,
+        "sourceDetected": true,
+        "swappedRMSE": 0.743747,
+        "torsoAngleDegrees": 6.59
+      },
+      "status": "accepted"
+    },
+    "Dumbbell_Side_Bend__f0__male": {
+      "edgeLayoutCosine": 0.678718,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.00025697,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.145901,
+        "passed": true,
+        "sha256": "b99b7fdf9b54c144eff5a5afe26a4cd6fd078972dbccaccd3a5af10660cb4fd8",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Compared at original resolution with exact Dumbbell Side Bend endpoint 0 and canonical male identity. Torso bends toward the dumbbell side; viewer-left arm hangs straight holding one dumbbell, viewer-right hand rests on hip, hips/legs/feet remain stable and left/right orientation matches. Identity/clothing/body proportions, hand/grip, plate geometry, spine/limbs, feet and transparency show no visible anomaly. Unchanged automatic QA passes: confidence 0.970, normalized RMSE 0.188, median limb angle 3.373 degrees, p90 7.187 degrees, torso delta 7.760 degrees.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T16:04:52+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 3.373,
+        "normalizedRMSE": 0.187812,
+        "outputConfidence": 0.97019,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 7.187,
+        "passed": true,
+        "sourceConfidence": 0.90638,
+        "sourceDetected": true,
+        "swappedRMSE": 0.746163,
+        "torsoAngleDegrees": 7.76
+      },
+      "status": "accepted"
+    },
+    "Dumbbell_Side_Bend__f1__female": {
+      "edgeLayoutCosine": 0.636487,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.124415,
+        "passed": true,
+        "sha256": "bba3889f51056bc8342682244b5a3d7461363f063556cdaa4ab823db17526dc1",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Compared at original resolution with exact legacy endpoint 1 and canonical female identity. Correct image-right dumbbell with straight arm, free hand on image-left hip, and torso bent toward the loaded image-right side, precisely reversing endpoint 0. Identity/outfit consistent; hand, weight, spine/hips, feet, anatomy and matte show no visible anomaly. Unchanged automatic QA passes: confidence 0.985914, normalized RMSE 0.264878, median limb angle 10.256 degrees, p90 57.245 degrees, torso delta 4.087 degrees, chroma fringe 0.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T16:19:05+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 10.256,
+        "normalizedRMSE": 0.264878,
+        "outputConfidence": 0.985914,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 57.245,
+        "passed": true,
+        "sourceConfidence": 0.980603,
+        "sourceDetected": true,
+        "swappedRMSE": 0.623932,
+        "torsoAngleDegrees": 4.087
+      },
+      "status": "accepted"
+    },
+    "Dumbbell_Side_Bend__f1__male": {
+      "edgeLayoutCosine": 0.672954,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 9.824e-05,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.136915,
+        "passed": true,
+        "sha256": "a9445dd50a03e247755d57cd18db5b73a41f6ac89086d4bd594c549d06fb6a9e",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Retry 2 accepted after original-resolution comparison with exact Dumbbell Side Bend endpoint 1, accepted endpoint 0 and canonical male identity. Torso bends to the opposite side from endpoint 0 as legacy requires; viewer-left arm remains straight holding one dumbbell, free hand rests on hip, hips/legs/feet stable and left/right orientation correct. Identity/clothing/body proportions, hand/grip, spine/limbs, feet and transparent edges show no visible anomaly. Unchanged automatic QA passes: confidence 0.991, normalized RMSE 0.209, median limb angle 4.312 degrees, p90 10.557 degrees, torso delta 6.222 degrees.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T16:07:19+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 4.312,
+        "normalizedRMSE": 0.208723,
+        "outputConfidence": 0.990701,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 10.557,
+        "passed": true,
+        "sourceConfidence": 0.980603,
+        "sourceDetected": true,
+        "swappedRMSE": 0.607258,
+        "torsoAngleDegrees": 6.222
+      },
+      "status": "accepted"
+    },
+    "Standing_Dumbbell_Calf_Raise__f0__male": {
+      "edgeLayoutCosine": 0.712798,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.00081896,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.12421,
+        "passed": true,
+        "sha256": "8958e73b3012e5a7828813ee1122a80780514a3ca15da5693dfb50b5172c6e3d",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Compared at original resolution with exact legacy endpoint 0 and canonical male identity. Rear view preserves two dumbbells, straight knees, forefeet supported on the full step and heels visibly overhanging/lowered. Identity/outfit consistent; hands, feet, step, weights, anatomy and matte show no visible anomaly. Unchanged automatic QA passes: confidence 0.929839, normalized RMSE 0.181740, median limb angle 2.933 degrees, p90 7.787 degrees, torso delta 2.255 degrees, chroma fringe 0.00081896.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T16:17:45+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 2.933,
+        "normalizedRMSE": 0.18174,
+        "outputConfidence": 0.929839,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 7.787,
+        "passed": true,
+        "sourceConfidence": 0.948621,
+        "sourceDetected": true,
+        "swappedRMSE": 0.564603,
+        "torsoAngleDegrees": 2.255
+      },
+      "status": "accepted"
+    },
+    "Standing_Dumbbell_Calf_Raise__f1__male": {
+      "edgeLayoutCosine": 0.572319,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0004768,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.124792,
+        "passed": true,
+        "sha256": "2515caf493b25f347834705da21e173af68dcfc299a290ddf38bd176e65d7ca2",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Compared at original resolution with exact legacy endpoint 1 and canonical male identity. Rear view preserves two dumbbells and full step; forefeet remain supported while heels are raised into the tiptoe finish with straight knees and rear soles visible. Identity/outfit consistent; hands, feet, equipment, anatomy and matte show no visible anomaly. Unchanged automatic QA passes: confidence 0.897177, normalized RMSE 0.146020, median limb angle 2.124 degrees, p90 7.541 degrees, torso delta 2.089 degrees, chroma fringe 0.00047680.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T16:17:45+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 2.124,
+        "normalizedRMSE": 0.14602,
+        "outputConfidence": 0.897177,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 7.541,
+        "passed": true,
+        "sourceConfidence": 0.867728,
+        "sourceDetected": true,
+        "swappedRMSE": 0.566241,
+        "torsoAngleDegrees": 2.089
+      },
+      "status": "accepted"
+    },
+    "Standing_Dumbbell_Press__f0__female": {
+      "edgeLayoutCosine": 0.315641,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.125479,
+        "passed": true,
+        "sha256": "1cd56017831aa25738d9b1875eafbd66f95578267f60cf56f4846e2db17d82e9",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Compared at original resolution with exact Standing Dumbbell Press endpoint 0 and canonical female identity. Correct rack start: two dumbbells beside shoulders, elbows bent near 90 degrees and pointing outward, wrists stacked over elbows, upright stance and camera orientation match. Identity/clothing/body proportions, hands/grips, plates, shoulders, limbs, feet and transparency show no visible anomaly. Unchanged automatic QA passes: confidence 0.935, normalized RMSE 0.222, median limb angle 4.296 degrees, p90 13.528 degrees, torso delta 1.169 degrees.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T16:06:51+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 4.296,
+        "normalizedRMSE": 0.221844,
+        "outputConfidence": 0.934648,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 13.528,
+        "passed": true,
+        "sourceConfidence": 0.676399,
+        "sourceDetected": true,
+        "swappedRMSE": 0.657539,
+        "torsoAngleDegrees": 1.169
+      },
+      "status": "accepted"
+    },
+    "Standing_Dumbbell_Press__f1__female": {
+      "edgeLayoutCosine": 0.312845,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.087762,
+        "passed": true,
+        "sha256": "3eac3e006ec267b6d2f3e0a5e18814bcc950c41057a6298441049ecf233b8b8f",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Compared at original resolution with exact Standing Dumbbell Press endpoint 1, accepted endpoint 0 and canonical female identity. Correct overhead finish: both dumbbells above shoulders, arms nearly straight with slight safe elbow bend, wrists stacked, upright torso/stance and camera orientation match. Identity/clothing/body proportions, hands/grips, plates, shoulders, limbs, feet and transparent edges show no visible anomaly. Unchanged automatic QA passes: confidence 0.854, normalized RMSE 0.116, median limb angle 4.504 degrees, p90 9.638 degrees, torso delta 1.338 degrees.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T16:11:43+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 4.504,
+        "normalizedRMSE": 0.116222,
+        "outputConfidence": 0.853741,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 9.638,
+        "passed": true,
+        "sourceConfidence": 0.537449,
+        "sourceDetected": true,
+        "swappedRMSE": 0.382955,
+        "torsoAngleDegrees": 1.338
+      },
+      "status": "accepted"
+    },
     "Tire_Flip__f0__female": {
       "edgeLayoutCosine": 0.375133,
       "edgeLayoutWarning": false,
@@ -498,6 +2057,67 @@
       },
       "status": "accepted"
     },
+    "Tire_Flip__f1__female": {
+      "edgeLayoutCosine": 0.478294,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.25206,
+        "passed": true,
+        "sha256": "a7d93d24333fb920df3f79a22c6a82f16ef8123d1ab93889670dd9e9cd444475",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Retry 2 accepted after original-resolution comparison with exact legacy Tire Flip endpoint 1, accepted female endpoint 0, and canonical identity sheet. Correct finish progression: tire is lifted and tilted toward the athlete, torso/chest contacts upper tire, arms reach beneath it, split stance and left/right orientation match. One complete tire, correct tread, face/hair/clothing/body proportions, fingers, limbs, feet and transparent edges show no visible anomaly. Unchanged automatic QA passes: confidence 0.833, normalized RMSE 0.649, median limb angle 10.469 degrees, p90 24.476 degrees, torso delta 20.964 degrees.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T15:59:43+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 10.469,
+        "normalizedRMSE": 0.648832,
+        "outputConfidence": 0.833186,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 24.476,
+        "passed": true,
+        "sourceConfidence": 0.745374,
+        "sourceDetected": true,
+        "swappedRMSE": 0.742058,
+        "torsoAngleDegrees": 20.964
+      },
+      "status": "accepted"
+    },
     "Tire_Flip__f1__male": {
       "edgeLayoutCosine": 0.395506,
       "edgeLayoutWarning": false,
@@ -558,11 +2178,238 @@
         "torsoAngleDegrees": 7.457
       },
       "status": "accepted"
+    },
+    "Wrist_Circles__f0__female": {
+      "edgeLayoutCosine": 0.48178,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.110583,
+        "passed": true,
+        "sha256": "099f6bb3f1f33b3938a9616f7e5ecf560f58843b46b841227daf42c2f01a5bc4",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {},
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": false,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 5.328,
+        "normalizedRMSE": 0.184589,
+        "outputConfidence": 0.990787,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 73.278,
+        "passed": false,
+        "sourceConfidence": 0.983292,
+        "sourceDetected": true,
+        "swappedRMSE": 0.637592,
+        "torsoAngleDegrees": 0.249
+      },
+      "status": "auto_failed"
+    },
+    "Wrist_Circles__f0__male": {
+      "edgeLayoutCosine": 0.549213,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.117263,
+        "passed": true,
+        "sha256": "cdc8e8d84c4854be80fb5a6611fba86bca8aef7b3b9813ec90387328fc0aed44",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {},
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": false,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 4.386,
+        "normalizedRMSE": 0.14636,
+        "outputConfidence": 0.992322,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 74.965,
+        "passed": false,
+        "sourceConfidence": 0.983292,
+        "sourceDetected": true,
+        "swappedRMSE": 0.630788,
+        "torsoAngleDegrees": 0.673
+      },
+      "status": "auto_failed"
+    },
+    "Wrist_Circles__f1__female": {
+      "edgeLayoutCosine": 0.528347,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.109317,
+        "passed": true,
+        "sha256": "af3a0eb0b1c7d26e68b956b60acd754453505a3a8c93eccac6563a1178b4bdf9",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Compared at original resolution with exact legacy endpoint 1 and canonical female identity. Correct elbows held near the torso with forearms forward and both wrists rotated so fingers point downward/backs of hands face forward, clearly distinct from endpoint 0. No equipment; identity, anatomy, fingers, feet and matte show no visible anomaly. Unchanged automatic QA passes: confidence 0.991096, normalized RMSE 0.217391, median limb angle 4.208 degrees, p90 12.422 degrees, torso delta 1.277 degrees, chroma fringe 0.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T16:17:45+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 4.208,
+        "normalizedRMSE": 0.217391,
+        "outputConfidence": 0.991096,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 12.422,
+        "passed": true,
+        "sourceConfidence": 0.985805,
+        "sourceDetected": true,
+        "swappedRMSE": 0.628165,
+        "torsoAngleDegrees": 1.277
+      },
+      "status": "accepted"
+    },
+    "Wrist_Circles__f1__male": {
+      "edgeLayoutCosine": 0.609321,
+      "edgeLayoutWarning": false,
+      "generationStateValid": true,
+      "integrity": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.118726,
+        "passed": true,
+        "sha256": "a4a8031402d4db1d34318a35a11530a02594d790956413281cb14ccea8c7c806",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "manualRequiredFields": [
+        "characterApproved",
+        "poseEquipmentApproved",
+        "anatomyApproved",
+        "artifactFree"
+      ],
+      "manualReview": {
+        "anatomyApproved": true,
+        "artifactFree": true,
+        "characterApproved": true,
+        "decision": "accept",
+        "notes": "Compared at original resolution with exact legacy endpoint 1 and canonical male identity. Correct elbows held near the torso with forearms forward and both wrists rotated so fingers point downward/backs of hands face forward, clearly distinct from endpoint 0. No equipment; identity, anatomy, fingers, feet and matte show no visible anomaly. Unchanged automatic QA passes: confidence 0.995287, normalized RMSE 0.154155, median limb angle 6.037 degrees, p90 26.369 degrees, torso delta 0.684 degrees, chroma fringe 0.",
+        "poseEquipmentApproved": true,
+        "reviewedAt": "2026-08-12T16:17:45+00:00",
+        "reviewer": "qa-orchestrator"
+      },
+      "pose": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 6.037,
+        "normalizedRMSE": 0.154155,
+        "outputConfidence": 0.995287,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 26.369,
+        "passed": true,
+        "sourceConfidence": 0.985805,
+        "sourceDetected": true,
+        "swappedRMSE": 0.622789,
+        "torsoAngleDegrees": 0.684
+      },
+      "status": "accepted"
     }
   },
   "schemaVersion": 1,
   "statuses": {
-    "accepted": 9
+    "accepted": 35,
+    "auto_failed": 5
   },
   "thresholds": {
     "edgeAlphaFractionMaximum": 0.025,
