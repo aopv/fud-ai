@@ -19,6 +19,10 @@ from SequenceArtworkSchema import (  # noqa: E402
     alignment_drift, alignment_metadata, normalized_pose_interpolation,
     runtime_selection, validate_job_sequences,
 )
+from AlignExerciseArtworkSequence import (  # noqa: E402
+    alpha_geometry, canonical_target, transform_plan, transform_rgba,
+)
+from ValidateImagenExerciseArtwork import compare_poses, merged_report_results  # noqa: E402
 
 
 def job(exercise: str, frame: int, count: int) -> dict:
@@ -79,6 +83,61 @@ class SequenceSchemaTests(unittest.TestCase):
         jobs = [job("Motion", index, 6) for index in range(6)]
         state = {jobs[0]["jobID"]: {"status": "complete", "qaStatus": "accepted"}}
         self.assertIsNone(runtime_selection(jobs, state))
+
+    def test_uniform_alignment_plan_moves_whole_rgba_without_deformation(self) -> None:
+        alignments = [{"pelvisAnchor": [0.3, 0.4], "torsoAnchor": [0.3, 0.3],
+                       "subjectScale": 0.2} for _ in range(6)]
+        alignments[5] = {"pelvisAnchor": [0.5, 0.6], "torsoAnchor": [0.5, 0.5],
+                         "subjectScale": 0.2}
+        target = canonical_target(alignments)
+        self.assertEqual(target["pelvisAnchor"], [0.4, 0.5])
+        plan = transform_plan(alignments[0], target)
+        self.assertEqual(plan["uniformScale"], 1.0)
+        image = Image.new("RGBA", (1024, 1024), (0, 0, 0, 0))
+        for x in range(260, 360):
+            for y in range(360, 460):
+                image.putpixel((x, y), (200, 20, 40, 255))
+        output = transform_rgba(image, plan)
+        geometry = alpha_geometry(output)
+        self.assertTrue(geometry["passed"])
+        left, top, right, bottom = geometry["alphaBoundingBox"]
+        self.assertLessEqual(abs((right - left) - 100), 1)
+        self.assertLessEqual(abs((bottom - top) - 100), 1)
+        self.assertAlmostEqual((left + right) / 2, 410, delta=3)
+        self.assertAlmostEqual((top + bottom) / 2, 510, delta=3)
+
+    def test_partial_report_merge_preserves_unselected_results(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            report = Path(directory) / "report.json"
+            report.write_text(json.dumps({"results": {
+                "selected": {"status": "old"}, "unselected": {"status": "accepted"},
+            }}))
+            merged = merged_report_results(
+                report, {"selected": {"status": "auto_failed"}}, partial=True)
+            self.assertEqual(merged["selected"]["status"], "auto_failed")
+            self.assertEqual(merged["unselected"]["status"], "accepted")
+            replaced = merged_report_results(
+                report, {"selected": {"status": "auto_failed"}}, partial=False)
+            self.assertNotIn("unselected", replaced)
+
+    def test_pose_failure_reports_exact_segments(self) -> None:
+        joints = {
+            "nose": [0.5, 0.1], "leftShoulder": [0.4, 0.3], "rightShoulder": [0.6, 0.3],
+            "leftElbow": [0.3, 0.5], "rightElbow": [0.7, 0.5],
+            "leftWrist": [0.2, 0.7], "rightWrist": [0.8, 0.7],
+            "leftHip": [0.45, 0.6], "rightHip": [0.55, 0.6],
+            "leftKnee": [0.4, 0.8], "rightKnee": [0.6, 0.8],
+            "leftAnkle": [0.4, 1.0], "rightAnkle": [0.6, 1.0],
+        }
+        changed = {name: list(point) for name, point in joints.items()}
+        changed["leftWrist"] = [0.5, 0.3]
+        result = compare_poses({"joints": joints, "confidence": 1.0},
+                               {"joints": changed, "confidence": 1.0})
+        diagnostics = result["segmentDiagnostics"]
+        self.assertEqual(len(diagnostics), 8)
+        self.assertIn("leftElbow->leftWrist", [item["segment"] for item in diagnostics[:2]])
+        self.assertIn("sourceStart", diagnostics[0])
+        self.assertIn("outputEnd", diagnostics[0])
 
 
 class MigrationFixtureTests(unittest.TestCase):

@@ -198,6 +198,39 @@ Coverage includes v1/v2 shape, interpolation/alignment pass and failure, endpoin
 accepted/rejected/pending/orphan/blocked states, six-frame packaging, strict verification, and both
 platform stagers.
 
+## Deterministic sequence alignment
+
+`AlignExerciseArtworkSequence.py` aligns a complete six-frame set without deforming body parts or
+equipment. MediaPipe detects each pelvis anchor and shoulder-to-pelvis scale; the canonical target
+is the mean endpoint pelvis and geometric-mean endpoint scale. One affine uniform scale plus
+translation is applied to the whole RGBA canvas, so the person, weights, bench, mat, and all contact
+geometry move together. Every output must retain an alpha margin of at least 8 px, preserve alpha
+area within 5%, and pass the ordinary integrity, pose, and consecutive drift gates.
+
+The normal safe mode writes a separate aligned tree and metadata report:
+
+```sh
+/tmp/fud-pose-venv/bin/python \
+  tools/exercise-artwork/imagen/AlignExerciseArtworkSequence.py \
+  --exercise-id Dumbbell_Bicep_Curl --gender female \
+  --model /tmp/pose_landmarker_heavy.task \
+  --output-root /tmp/fud-aligned-pilot \
+  --metadata /tmp/fud-aligned-pilot-report.json
+```
+
+The report records input/output hashes, target derivation, exact scale/translation, alpha geometry,
+pose comparisons, per-segment angle diagnostics, and post-transform drift. Failed pose QA retains
+the separate outputs and report for targeted generation retry evidence, but cannot update canonical
+masters. Canonical replacement requires explicit `--apply --backup-root <empty-directory>`; all six
+original PNGs are copied and hash-verified before any staged aligned output replaces a master. The
+queue is locked, recorded master hashes must match, raw Imagen provenance remains untouched, and
+all six jobs return to `completed_pending_qa` with new hashes plus their alignment transforms so the
+ordinary automated and manual gates must accept them again.
+
+Partial validation is report-safe: `ValidateImagenExerciseArtwork.py --pilot-only` merges selected
+results into the existing report and recomputes stored counts instead of deleting non-pilot QA
+evidence. `--apply-state` continues to touch only jobs evaluated by that invocation.
+
 It writes quality-82 alpha WebP derivatives and an index under `shared/exercise-artwork/
 fud-flat-raster-v1/packaged-768/`. Every derivative must pass alpha, dimension, RGBA visual-RMSE,
 master-hash, and smaller-than-master gates. The 1024px PNG masters stay in `shared/` for QA and are

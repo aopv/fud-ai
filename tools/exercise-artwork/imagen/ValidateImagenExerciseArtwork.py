@@ -227,8 +227,22 @@ def compare_poses(source: dict | None, output: dict | None) -> dict:
     first, second = normalize_pose(source), normalize_pose(output)
     direct = rmse(first, second)
     swapped = rmse(first, second, swapped=True)
-    deltas = sorted(math.degrees(angle_delta(angle(first[a], first[b]), angle(second[a], second[b])))
-                    for a, b in SEGMENTS)
+    segment_diagnostics = []
+    for start, end in SEGMENTS:
+        source_angle = math.degrees(angle(first[start], first[end]))
+        output_angle = math.degrees(angle(second[start], second[end]))
+        delta = math.degrees(angle_delta(math.radians(source_angle), math.radians(output_angle)))
+        segment_diagnostics.append({
+            "segment": f"{start}->{end}",
+            "sourceAngleDegrees": round(source_angle, 3),
+            "outputAngleDegrees": round(output_angle, 3),
+            "deltaDegrees": round(delta, 3),
+            "sourceStart": [round(value, 6) for value in first[start]],
+            "sourceEnd": [round(value, 6) for value in first[end]],
+            "outputStart": [round(value, 6) for value in second[start]],
+            "outputEnd": [round(value, 6) for value in second[end]],
+        })
+    deltas = sorted(item["deltaDegrees"] for item in segment_diagnostics)
     median_angle = (deltas[3] + deltas[4]) / 2
     p90_angle = deltas[7]
     source_neck = midpoint(first["leftShoulder"], first["rightShoulder"])
@@ -251,6 +265,8 @@ def compare_poses(source: dict | None, output: dict | None) -> dict:
         "medianLimbAngleDegrees": round(median_angle, 3),
         "p90LimbAngleDegrees": round(p90_angle, 3),
         "torsoAngleDegrees": round(torso_angle, 3),
+        "segmentDiagnostics": sorted(segment_diagnostics,
+                                     key=lambda item: item["deltaDegrees"], reverse=True),
         "checks": checks,
         "passed": all(checks.values()),
     }
@@ -263,6 +279,19 @@ def atomic_json(path: Path, value: object) -> None:
         temporary.flush(); os.fsync(temporary.fileno())
         temporary_path = Path(temporary.name)
     os.replace(temporary_path, path)
+
+
+def merged_report_results(report_path: Path, current: dict, partial: bool) -> dict:
+    """Keep non-selected QA evidence when a deliberately partial validation runs."""
+    if not partial or not report_path.is_file():
+        return dict(current)
+    try:
+        existing = json.loads(report_path.read_text()).get("results", {})
+    except (json.JSONDecodeError, OSError):
+        existing = {}
+    merged = dict(existing)
+    merged.update(current)
+    return merged
 
 
 def main() -> None:
@@ -412,11 +441,14 @@ def main() -> None:
         if landmarker is not None:
             landmarker.close()
 
-    counts = Counter(result["status"] for result in results.values())
+    stored_results = merged_report_results(args.report, results, args.pilot_only)
+    counts = Counter(result["status"] for result in stored_results.values())
     report = {
         "schemaVersion": 2 if any(descriptor(job)["frameCount"] == 6 for job in jobs) else 1,
         "manifestQA": manifest_qa,
         "evaluated": len(results),
+        "storedEvaluated": len(stored_results),
+        "partialRun": args.pilot_only,
         "missing": len(missing),
         "statuses": dict(sorted(counts.items())),
         "thresholds": {
@@ -429,7 +461,7 @@ def main() -> None:
             "edgeAlphaFractionMaximum": 0.025,
             "alignment": ALIGNMENT_THRESHOLDS,
         },
-        "results": dict(sorted(results.items())),
+        "results": dict(sorted(stored_results.items())),
     }
     args.report.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")
 
