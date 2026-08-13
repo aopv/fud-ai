@@ -97,6 +97,54 @@
       "gender": "female"
     },
     {
+      "exerciseID": "Alternating_Kettlebell_Press",
+      "frames": [
+        {
+          "bytes": 25926,
+          "frameIndex": 0,
+          "jobID": "Alternating_Kettlebell_Press__f0__female",
+          "masterBytes": 216363,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Alternating_Kettlebell_Press/0.webp",
+          "rgbaRMSE": 6.1592,
+          "sha256": "1d722efc1710b13fadc70326cd6e213acd1a086ebae4cd0d87f05221bbc9ad80"
+        },
+        {
+          "bytes": 24216,
+          "frameIndex": 1,
+          "jobID": "Alternating_Kettlebell_Press__f1__female",
+          "masterBytes": 182609,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Alternating_Kettlebell_Press/1.webp",
+          "rgbaRMSE": 6.865,
+          "sha256": "741cf43244cc74498bf6fd902a0ef92c2b6f3d2b5814ebb6a89a6ee23e544064"
+        }
+      ],
+      "gender": "female"
+    },
+    {
+      "exerciseID": "Alternating_Kettlebell_Row",
+      "frames": [
+        {
+          "bytes": 28850,
+          "frameIndex": 0,
+          "jobID": "Alternating_Kettlebell_Row__f0__female",
+          "masterBytes": 285384,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Alternating_Kettlebell_Row/0.webp",
+          "rgbaRMSE": 5.2548,
+          "sha256": "be4ca712defee5d47fb08ef0af187468c12d6c1af737b311253c446dfc514051"
+        },
+        {
+          "bytes": 30170,
+          "frameIndex": 1,
+          "jobID": "Alternating_Kettlebell_Row__f1__female",
+          "masterBytes": 280411,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Alternating_Kettlebell_Row/1.webp",
+          "rgbaRMSE": 6.9274,
+          "sha256": "f888f7a926d6cf288892facf5c56c306e7f1e291431dfd886ac69587fdde902b"
+        }
+      ],
+      "gender": "female"
+    },
+    {
       "exerciseID": "Ankle_On_The_Knee",
       "frames": [
         {
@@ -212,6 +260,30 @@
           "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Band_Good_Morning/1.webp",
           "rgbaRMSE": 7.925,
           "sha256": "06f8ff5c32619a0af8d95289c09cb25469ab3e7a5c3f3994fe018017e51852bb"
+        }
+      ],
+      "gender": "female"
+    },
+    {
+      "exerciseID": "Band_Hip_Adductions",
+      "frames": [
+        {
+          "bytes": 30212,
+          "frameIndex": 0,
+          "jobID": "Band_Hip_Adductions__f0__female",
+          "masterBytes": 236712,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Band_Hip_Adductions/0.webp",
+          "rgbaRMSE": 8.3074,
+          "sha256": "aa98da89c3e15b41ca4f4a4919cdb5168f94ce7a7095f3cfc13f3d2cae27e773"
+        },
+        {
+          "bytes": 27520,
+          "frameIndex": 1,
+          "jobID": "Band_Hip_Adductions__f1__female",
+          "masterBytes": 208027,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Band_Hip_Adductions/1.webp",
+          "rgbaRMSE": 8.1735,
+          "sha256": "ad4f5a1bdf2bfaaed445d1b31bead17548e620464ec393a0bcb80fbdca92a0ae"
         }
       ],
       "gender": "female"
@@ -649,6 +721,54 @@
       "gender": "female"
     },
     {
+      "exerciseID": "Decline_Push-Up",
+      "frames": [
+        {
+          "bytes": 25080,
+          "frameIndex": 0,
+          "jobID": "Decline_Push-Up__f0__female",
+          "masterBytes": 201691,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Decline_Push-Up/0.webp",
+          "rgbaRMSE": 8.7068,
+          "sha256": "eed870e77c4c41b2650a024de00fea7d0caa3ce61f2159a9db9623655a5c59dd"
+        },
+        {
+          "bytes": 22658,
+          "frameIndex": 1,
+          "jobID": "Decline_Push-Up__f1__female",
+          "masterBytes": 188472,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Decline_Push-Up/1.webp",
+          "rgbaRMSE": 7.5025,
+          "sha256": "4231b5b73520dea90aa69a61a08f6b6b159cb6165b2c751856ec10e85e2275f5"
+        }
+      ],
+      "gender": "female"
+    },
+    {
+      "exerciseID": "Double_Leg_Butt_Kick",
+      "frames": [
+        {
+          "bytes": 27818,
+          "frameIndex": 0,
+          "jobID": "Double_Leg_Butt_Kick__f0__female",
+          "masterBytes": 261371,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Double_Leg_Butt_Kick/0.webp",
+          "rgbaRMSE": 5.775,
+          "sha256": "3b29bf29f332307f6a338ee69af803bf68035c4283a4113a63b9470858e6bd9e"
+        },
+        {
+          "bytes": 22528,
+          "frameIndex": 1,
+          "jobID": "Double_Leg_Butt_Kick__f1__female",
+          "masterBytes": 183511,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Double_Leg_Butt_Kick/1.webp",
+          "rgbaRMSE": 5.8062,
+          "sha256": "aa9a8ac88cb92d75839f1cfddc8cab4f47e98c136b0320ad6f50bb9c290cb518"
+        }
+      ],
+      "gender": "female"
+    },
+    {
       "exerciseID": "Dumbbell_Alternate_Bicep_Curl",
       "frames": [
         {
@@ -716,6 +836,54 @@
           "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Dumbbell_Bicep_Curl/1.webp",
           "rgbaRMSE": 12.2687,
           "sha256": "a7616a4ef036b5e2a5fae0f5fcd0618a5490c3583964260206a320da07a155f9"
+        }
+      ],
+      "gender": "female"
+    },
+    {
+      "exerciseID": "Dumbbell_Floor_Press",
+      "frames": [
+        {
+          "bytes": 26056,
+          "frameIndex": 0,
+          "jobID": "Dumbbell_Floor_Press__f0__female",
+          "masterBytes": 236467,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Dumbbell_Floor_Press/0.webp",
+          "rgbaRMSE": 6.6276,
+          "sha256": "d610ff809a02d25e6c1fc3d4ec0de5b6c362881c9bd885546ee2c55e8dab8afa"
+        },
+        {
+          "bytes": 25994,
+          "frameIndex": 1,
+          "jobID": "Dumbbell_Floor_Press__f1__female",
+          "masterBytes": 233231,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Dumbbell_Floor_Press/1.webp",
+          "rgbaRMSE": 6.101,
+          "sha256": "065f971b26ad90a00ca81bbb868ac0598af502b11c96178d61302c2ccd656773"
+        }
+      ],
+      "gender": "female"
+    },
+    {
+      "exerciseID": "Dumbbell_Incline_Row",
+      "frames": [
+        {
+          "bytes": 48936,
+          "frameIndex": 0,
+          "jobID": "Dumbbell_Incline_Row__f0__female",
+          "masterBytes": 418924,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Dumbbell_Incline_Row/0.webp",
+          "rgbaRMSE": 10.0904,
+          "sha256": "968f3ded5b7f6f22d7cc9915804ecf6c7c40b07f0e7769b8602edbffd35a9660"
+        },
+        {
+          "bytes": 45862,
+          "frameIndex": 1,
+          "jobID": "Dumbbell_Incline_Row__f1__female",
+          "masterBytes": 410817,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Dumbbell_Incline_Row/1.webp",
+          "rgbaRMSE": 9.0932,
+          "sha256": "2bff76cd4d39d055df3b641b88ec760c425c457944cbd4d1d9a3c911fa1d9126"
         }
       ],
       "gender": "female"
@@ -1009,6 +1177,54 @@
       "gender": "female"
     },
     {
+      "exerciseID": "Flat_Bench_Leg_Pull-In",
+      "frames": [
+        {
+          "bytes": 26212,
+          "frameIndex": 0,
+          "jobID": "Flat_Bench_Leg_Pull-In__f0__female",
+          "masterBytes": 307828,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Flat_Bench_Leg_Pull-In/0.webp",
+          "rgbaRMSE": 4.4782,
+          "sha256": "db0e07f652d2d2e8ec8a0b6e87375ad62d3d071419bca4e0ed6873bfdab8541b"
+        },
+        {
+          "bytes": 24880,
+          "frameIndex": 1,
+          "jobID": "Flat_Bench_Leg_Pull-In__f1__female",
+          "masterBytes": 225518,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Flat_Bench_Leg_Pull-In/1.webp",
+          "rgbaRMSE": 6.5029,
+          "sha256": "91f8e57a290de911719f3fcf0013fa5921f640220ff791f29447a4a261656829"
+        }
+      ],
+      "gender": "female"
+    },
+    {
+      "exerciseID": "Flat_Bench_Lying_Leg_Raise",
+      "frames": [
+        {
+          "bytes": 20956,
+          "frameIndex": 0,
+          "jobID": "Flat_Bench_Lying_Leg_Raise__f0__female",
+          "masterBytes": 194209,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Flat_Bench_Lying_Leg_Raise/0.webp",
+          "rgbaRMSE": 4.8514,
+          "sha256": "ba00bce24cb9cab42ad03c1eaaabef943cc059f4dedf94aa84bc2e89cd24ad6f"
+        },
+        {
+          "bytes": 27340,
+          "frameIndex": 1,
+          "jobID": "Flat_Bench_Lying_Leg_Raise__f1__female",
+          "masterBytes": 275315,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Flat_Bench_Lying_Leg_Raise/1.webp",
+          "rgbaRMSE": 5.6406,
+          "sha256": "8197613c85da2752e653f477d67921c147f412cf4d36cd1b9168d27419d60470"
+        }
+      ],
+      "gender": "female"
+    },
+    {
       "exerciseID": "Front_Two-Dumbbell_Raise",
       "frames": [
         {
@@ -1129,6 +1345,30 @@
       "gender": "female"
     },
     {
+      "exerciseID": "Inchworm",
+      "frames": [
+        {
+          "bytes": 32112,
+          "frameIndex": 0,
+          "jobID": "Inchworm__f0__female",
+          "masterBytes": 313111,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Inchworm/0.webp",
+          "rgbaRMSE": 6.7119,
+          "sha256": "e28c950ffcd7db5e7ee98c0b11eea9fc70e8e18de656c6bdab4b6888a3b7d44c"
+        },
+        {
+          "bytes": 26446,
+          "frameIndex": 1,
+          "jobID": "Inchworm__f1__female",
+          "masterBytes": 214817,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Inchworm/1.webp",
+          "rgbaRMSE": 7.7511,
+          "sha256": "df719af0e72b34e7891380e7cfaa4ff714912e588bbd679098f24e45d6a1e885"
+        }
+      ],
+      "gender": "female"
+    },
+    {
       "exerciseID": "Kettlebell_Sumo_High_Pull",
       "frames": [
         {
@@ -1148,6 +1388,78 @@
           "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Kettlebell_Sumo_High_Pull/1.webp",
           "rgbaRMSE": 8.5792,
           "sha256": "799454d39be3ac9f2cb96015282b293d578786e5a95786dc4895011682d9f85c"
+        }
+      ],
+      "gender": "female"
+    },
+    {
+      "exerciseID": "Knee_Tuck_Jump",
+      "frames": [
+        {
+          "bytes": 29380,
+          "frameIndex": 0,
+          "jobID": "Knee_Tuck_Jump__f0__female",
+          "masterBytes": 290659,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Knee_Tuck_Jump/0.webp",
+          "rgbaRMSE": 5.3058,
+          "sha256": "c994f7084b1ef35fc9bc593711e4a640a3c90152332d67d40d02b5c818b8314a"
+        },
+        {
+          "bytes": 24708,
+          "frameIndex": 1,
+          "jobID": "Knee_Tuck_Jump__f1__female",
+          "masterBytes": 192477,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Knee_Tuck_Jump/1.webp",
+          "rgbaRMSE": 7.191,
+          "sha256": "36ebba0e51a58cbf3e4a5cc1c5d17aa5dee05fe6ccbb6bc21344ea7d909501fe"
+        }
+      ],
+      "gender": "female"
+    },
+    {
+      "exerciseID": "Leg-Up_Hamstring_Stretch",
+      "frames": [
+        {
+          "bytes": 22096,
+          "frameIndex": 0,
+          "jobID": "Leg-Up_Hamstring_Stretch__f0__female",
+          "masterBytes": 176442,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Leg-Up_Hamstring_Stretch/0.webp",
+          "rgbaRMSE": 6.5758,
+          "sha256": "87b440d19f44259e2ad61816df1404d07a29d5d6ecabeb48dd0aab5bcca15d5e"
+        },
+        {
+          "bytes": 23828,
+          "frameIndex": 1,
+          "jobID": "Leg-Up_Hamstring_Stretch__f1__female",
+          "masterBytes": 187327,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Leg-Up_Hamstring_Stretch/1.webp",
+          "rgbaRMSE": 7.8755,
+          "sha256": "50c19aa335fa84a9afe57459c04e99588608901529ccf8c8c33f1ab40876a12d"
+        }
+      ],
+      "gender": "female"
+    },
+    {
+      "exerciseID": "Monster_Walk",
+      "frames": [
+        {
+          "bytes": 34628,
+          "frameIndex": 0,
+          "jobID": "Monster_Walk__f0__female",
+          "masterBytes": 276330,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Monster_Walk/0.webp",
+          "rgbaRMSE": 9.3483,
+          "sha256": "427f2016d4885ddcb0b6413f0f4645d242b56419a3891df7f05f6a39cd030fa5"
+        },
+        {
+          "bytes": 29460,
+          "frameIndex": 1,
+          "jobID": "Monster_Walk__f1__female",
+          "masterBytes": 235060,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Monster_Walk/1.webp",
+          "rgbaRMSE": 7.6776,
+          "sha256": "c7caf3853b3a0837e0240baa426631eda2392b1f9dce38c037855bc7af20b8c0"
         }
       ],
       "gender": "female"
@@ -1201,6 +1513,30 @@
       "gender": "female"
     },
     {
+      "exerciseID": "Rear_Leg_Raises",
+      "frames": [
+        {
+          "bytes": 29930,
+          "frameIndex": 0,
+          "jobID": "Rear_Leg_Raises__f0__female",
+          "masterBytes": 270442,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Rear_Leg_Raises/0.webp",
+          "rgbaRMSE": 7.1597,
+          "sha256": "f804ae96f6d49f6b8e1785e6de28da0b97bbb87e8f7015f87733a394d6751983"
+        },
+        {
+          "bytes": 31852,
+          "frameIndex": 1,
+          "jobID": "Rear_Leg_Raises__f1__female",
+          "masterBytes": 235241,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Rear_Leg_Raises/1.webp",
+          "rgbaRMSE": 8.8301,
+          "sha256": "607e4dfa129d90284d6af105fc7bad2fa76b337f90af46efb72ee274105a2b99"
+        }
+      ],
+      "gender": "female"
+    },
+    {
       "exerciseID": "Reverse_Barbell_Curl",
       "frames": [
         {
@@ -1220,6 +1556,30 @@
           "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Reverse_Barbell_Curl/1.webp",
           "rgbaRMSE": 8.4278,
           "sha256": "54768954c28f908bdc056c1990a4346bba22fae5b6f30303c1ba5b69be2af83b"
+        }
+      ],
+      "gender": "female"
+    },
+    {
+      "exerciseID": "Rocket_Jump",
+      "frames": [
+        {
+          "bytes": 32862,
+          "frameIndex": 0,
+          "jobID": "Rocket_Jump__f0__female",
+          "masterBytes": 288101,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Rocket_Jump/0.webp",
+          "rgbaRMSE": 6.6546,
+          "sha256": "016482317d1ed0b985a887b1a55933a50722e3e8237f2ae50af2748d97a3a3c9"
+        },
+        {
+          "bytes": 25598,
+          "frameIndex": 1,
+          "jobID": "Rocket_Jump__f1__female",
+          "masterBytes": 186563,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Rocket_Jump/1.webp",
+          "rgbaRMSE": 8.6619,
+          "sha256": "44f8b8e29f68fda98d7af748b256fc7d63f4d45b2276d83d54cb067f7becc25c"
         }
       ],
       "gender": "female"
@@ -1369,6 +1729,30 @@
       "gender": "female"
     },
     {
+      "exerciseID": "Side_Bridge",
+      "frames": [
+        {
+          "bytes": 30416,
+          "frameIndex": 0,
+          "jobID": "Side_Bridge__f0__female",
+          "masterBytes": 249170,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Side_Bridge/0.webp",
+          "rgbaRMSE": 8.1529,
+          "sha256": "342d0fc7d3f7995916e8e02ac80aa7dc6141508e581d20bdcd710368641ef0aa"
+        },
+        {
+          "bytes": 30048,
+          "frameIndex": 1,
+          "jobID": "Side_Bridge__f1__female",
+          "masterBytes": 231446,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Side_Bridge/1.webp",
+          "rgbaRMSE": 9.1198,
+          "sha256": "29b1fd38cb806c31e2c760103c77baee699676b3893685c057f405137fb9d03b"
+        }
+      ],
+      "gender": "female"
+    },
+    {
       "exerciseID": "Side_Lateral_Raise",
       "frames": [
         {
@@ -1436,6 +1820,30 @@
           "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Side_Neck_Stretch/1.webp",
           "rgbaRMSE": 7.9227,
           "sha256": "b48caa1519d0afdc2154bcbfa15e59255fefeeb63205c214967f710c9d736d8f"
+        }
+      ],
+      "gender": "female"
+    },
+    {
+      "exerciseID": "Single_Leg_Glute_Bridge",
+      "frames": [
+        {
+          "bytes": 30098,
+          "frameIndex": 0,
+          "jobID": "Single_Leg_Glute_Bridge__f0__female",
+          "masterBytes": 269725,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Single_Leg_Glute_Bridge/0.webp",
+          "rgbaRMSE": 5.2756,
+          "sha256": "8a473c648f2272923d37e032cca413e35a7cb6303bf95d2d759ac17beab575b0"
+        },
+        {
+          "bytes": 34042,
+          "frameIndex": 1,
+          "jobID": "Single_Leg_Glute_Bridge__f1__female",
+          "masterBytes": 266737,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Single_Leg_Glute_Bridge/1.webp",
+          "rgbaRMSE": 8.7428,
+          "sha256": "e8ce1c0d2aefd4a8c0a5aeb7bf8e36c797e4b9f733233b62ff2ae218a0ec339a"
         }
       ],
       "gender": "female"
@@ -1729,6 +2137,30 @@
       "gender": "female"
     },
     {
+      "exerciseID": "Standing_Long_Jump",
+      "frames": [
+        {
+          "bytes": 31464,
+          "frameIndex": 0,
+          "jobID": "Standing_Long_Jump__f0__female",
+          "masterBytes": 323359,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Standing_Long_Jump/0.webp",
+          "rgbaRMSE": 6.2937,
+          "sha256": "d934c3350ef1418ccc710a985c64713c9024a0a2ad7d6b1dd84acc7177105100"
+        },
+        {
+          "bytes": 25020,
+          "frameIndex": 1,
+          "jobID": "Standing_Long_Jump__f1__female",
+          "masterBytes": 213415,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Standing_Long_Jump/1.webp",
+          "rgbaRMSE": 5.9167,
+          "sha256": "ea4e39a5f073ce6ee4c0adcc3c9cd7588ef91466900d07b438e2b7e12413fb23"
+        }
+      ],
+      "gender": "female"
+    },
+    {
       "exerciseID": "Standing_Military_Press",
       "frames": [
         {
@@ -1868,6 +2300,30 @@
           "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Standing_Pelvic_Tilt/1.webp",
           "rgbaRMSE": 5.7978,
           "sha256": "8b65fc5761976c0e8774bc83cdf98fc7db78c30be0f10fbf4f732e090462dc26"
+        }
+      ],
+      "gender": "female"
+    },
+    {
+      "exerciseID": "Star_Jump",
+      "frames": [
+        {
+          "bytes": 31686,
+          "frameIndex": 0,
+          "jobID": "Star_Jump__f0__female",
+          "masterBytes": 292657,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Star_Jump/0.webp",
+          "rgbaRMSE": 5.5986,
+          "sha256": "0ce3a0d8cbe3ffd924c18cb481beb50f6d0db43058973615eff75848a94dcd2b"
+        },
+        {
+          "bytes": 33724,
+          "frameIndex": 1,
+          "jobID": "Star_Jump__f1__female",
+          "masterBytes": 250990,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Star_Jump/1.webp",
+          "rgbaRMSE": 9.9413,
+          "sha256": "55897540768266e8550d3a8a84dcc671e1d3b01d04bcec01d726d6f84002c85d"
         }
       ],
       "gender": "female"
@@ -2185,6 +2641,30 @@
       "gender": "male"
     },
     {
+      "exerciseID": "Alternate_Leg_Diagonal_Bound",
+      "frames": [
+        {
+          "bytes": 25994,
+          "frameIndex": 0,
+          "jobID": "Alternate_Leg_Diagonal_Bound__f0__male",
+          "masterBytes": 250268,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Alternate_Leg_Diagonal_Bound/0.webp",
+          "rgbaRMSE": 6.121,
+          "sha256": "34329440360a8c203c443900a596c3ba0e6b917f0af2005952970dd9969d76b0"
+        },
+        {
+          "bytes": 23564,
+          "frameIndex": 1,
+          "jobID": "Alternate_Leg_Diagonal_Bound__f1__male",
+          "masterBytes": 237772,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Alternate_Leg_Diagonal_Bound/1.webp",
+          "rgbaRMSE": 4.8657,
+          "sha256": "284968ef1ab1a79d95feacc1fe6c9d11d424f2f13e635bc407419eff55b7ab01"
+        }
+      ],
+      "gender": "male"
+    },
+    {
       "exerciseID": "Alternating_Deltoid_Raise",
       "frames": [
         {
@@ -2401,6 +2881,30 @@
       "gender": "male"
     },
     {
+      "exerciseID": "Barbell_Deadlift",
+      "frames": [
+        {
+          "bytes": 31874,
+          "frameIndex": 0,
+          "jobID": "Barbell_Deadlift__f0__male",
+          "masterBytes": 306902,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Barbell_Deadlift/0.webp",
+          "rgbaRMSE": 6.1886,
+          "sha256": "7a5aa425de72261103ab1d4540694e83a89520c7580ba73865243f26d28e667b"
+        },
+        {
+          "bytes": 29866,
+          "frameIndex": 1,
+          "jobID": "Barbell_Deadlift__f1__male",
+          "masterBytes": 260835,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Barbell_Deadlift/1.webp",
+          "rgbaRMSE": 6.7618,
+          "sha256": "ca34944fe8b81cf40b9ecc96ee390b0908f980c8b9dd623533cdca2108d933ec"
+        }
+      ],
+      "gender": "male"
+    },
+    {
       "exerciseID": "Barbell_Shrug",
       "frames": [
         {
@@ -2444,6 +2948,30 @@
           "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Barbell_Shrug_Behind_The_Back/1.webp",
           "rgbaRMSE": 6.3891,
           "sha256": "2ca0b2832e034451994c38042465d7a8d3a5dbb7a8fba59028dcd8198bf39608"
+        }
+      ],
+      "gender": "male"
+    },
+    {
+      "exerciseID": "Barbell_Side_Bend",
+      "frames": [
+        {
+          "bytes": 30104,
+          "frameIndex": 0,
+          "jobID": "Barbell_Side_Bend__f0__male",
+          "masterBytes": 236926,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Barbell_Side_Bend/0.webp",
+          "rgbaRMSE": 9.0232,
+          "sha256": "d7fbd0081b740e259583a359a7f8d0171612633da70937b83f4e29bde6625686"
+        },
+        {
+          "bytes": 34520,
+          "frameIndex": 1,
+          "jobID": "Barbell_Side_Bend__f1__male",
+          "masterBytes": 263739,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Barbell_Side_Bend/1.webp",
+          "rgbaRMSE": 8.4856,
+          "sha256": "60ff1f5f58974dfdc30abafbad8cf1a8006743b23ffa06fa9e03aad78ee61bef"
         }
       ],
       "gender": "male"
@@ -2588,6 +3116,30 @@
           "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Bodyweight_Walking_Lunge/1.webp",
           "rgbaRMSE": 4.7341,
           "sha256": "50b94e9f5da3abfc49185cb3f4a1df1e35aa04a2799753b3a45da31d81259caf"
+        }
+      ],
+      "gender": "male"
+    },
+    {
+      "exerciseID": "Butt_Lift_Bridge",
+      "frames": [
+        {
+          "bytes": 18660,
+          "frameIndex": 0,
+          "jobID": "Butt_Lift_Bridge__f0__male",
+          "masterBytes": 224356,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Butt_Lift_Bridge/0.webp",
+          "rgbaRMSE": 7.484,
+          "sha256": "6fbd4efff985a9e5dd7a86051b656ba3a00d3fe50a53e7ea605538ac20b70901"
+        },
+        {
+          "bytes": 29388,
+          "frameIndex": 1,
+          "jobID": "Butt_Lift_Bridge__f1__male",
+          "masterBytes": 292985,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Butt_Lift_Bridge/1.webp",
+          "rgbaRMSE": 6.771,
+          "sha256": "2c958299449d91e1ae65fec6a67e7d6c5b5da5219b956e5c68eb9402efdb01be"
         }
       ],
       "gender": "male"
@@ -2804,6 +3356,30 @@
           "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Close-Grip_Standing_Barbell_Curl/1.webp",
           "rgbaRMSE": 5.92,
           "sha256": "a2c5fb6aa944f4e88c15f6297c3b346d895362f9ed6024ebbe064e0385d6a3bd"
+        }
+      ],
+      "gender": "male"
+    },
+    {
+      "exerciseID": "Concentration_Curls",
+      "frames": [
+        {
+          "bytes": 41600,
+          "frameIndex": 0,
+          "jobID": "Concentration_Curls__f0__male",
+          "masterBytes": 453124,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Concentration_Curls/0.webp",
+          "rgbaRMSE": 5.7451,
+          "sha256": "5cce12a451af93b3d0b791702230e6892fecb11f7604791d3dc6007ebeecb7d7"
+        },
+        {
+          "bytes": 42712,
+          "frameIndex": 1,
+          "jobID": "Concentration_Curls__f1__male",
+          "masterBytes": 456227,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Concentration_Curls/1.webp",
+          "rgbaRMSE": 6.9587,
+          "sha256": "b0c36a1475dd498a742b7bd945e2ebe1d9bb2472731d9a01ca47bc9a557dccc3"
         }
       ],
       "gender": "male"
@@ -3313,6 +3889,54 @@
       "gender": "male"
     },
     {
+      "exerciseID": "Knee_Tuck_Jump",
+      "frames": [
+        {
+          "bytes": 31532,
+          "frameIndex": 0,
+          "jobID": "Knee_Tuck_Jump__f0__male",
+          "masterBytes": 362393,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Knee_Tuck_Jump/0.webp",
+          "rgbaRMSE": 4.6117,
+          "sha256": "c04928ea05bc72e2b4eb387236f45cc0d9c791757d5cbdeaca44ae59b20c6732"
+        },
+        {
+          "bytes": 23860,
+          "frameIndex": 1,
+          "jobID": "Knee_Tuck_Jump__f1__male",
+          "masterBytes": 213376,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Knee_Tuck_Jump/1.webp",
+          "rgbaRMSE": 6.2535,
+          "sha256": "840ded5bc7c6f973112e803a6de1015731beb4a0735d9b6abfbfeaadbed09be6"
+        }
+      ],
+      "gender": "male"
+    },
+    {
+      "exerciseID": "Lateral_Bound",
+      "frames": [
+        {
+          "bytes": 29902,
+          "frameIndex": 0,
+          "jobID": "Lateral_Bound__f0__male",
+          "masterBytes": 309659,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Lateral_Bound/0.webp",
+          "rgbaRMSE": 4.8116,
+          "sha256": "a04659ee3f83783df37e4df0949713212473086507c119edac74cf8fa4ced4be"
+        },
+        {
+          "bytes": 24738,
+          "frameIndex": 1,
+          "jobID": "Lateral_Bound__f1__male",
+          "masterBytes": 273111,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Lateral_Bound/1.webp",
+          "rgbaRMSE": 4.39,
+          "sha256": "b4650f9d1371dd7cf9f855b0267eeaa58ceb598464f10c7d0274ac88243c2a87"
+        }
+      ],
+      "gender": "male"
+    },
+    {
       "exerciseID": "Monster_Walk",
       "frames": [
         {
@@ -3385,6 +4009,54 @@
       "gender": "male"
     },
     {
+      "exerciseID": "Plate_Pinch",
+      "frames": [
+        {
+          "bytes": 34464,
+          "frameIndex": 0,
+          "jobID": "Plate_Pinch__f0__male",
+          "masterBytes": 356501,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Plate_Pinch/0.webp",
+          "rgbaRMSE": 6.5427,
+          "sha256": "77da742e6e5a49b1996088d81b84acc2bea39c05f1ae8bff4934c50607a4a718"
+        },
+        {
+          "bytes": 25060,
+          "frameIndex": 1,
+          "jobID": "Plate_Pinch__f1__male",
+          "masterBytes": 223504,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Plate_Pinch/1.webp",
+          "rgbaRMSE": 6.8671,
+          "sha256": "e13ce0c1acda19278dfecba9a818f6965c65d77deb0bf194405be2edda82c820"
+        }
+      ],
+      "gender": "male"
+    },
+    {
+      "exerciseID": "Pushups",
+      "frames": [
+        {
+          "bytes": 30704,
+          "frameIndex": 0,
+          "jobID": "Pushups__f0__male",
+          "masterBytes": 322797,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Pushups/0.webp",
+          "rgbaRMSE": 5.5453,
+          "sha256": "ec625ca7667173c0baf5770bc1a5d85f3a1a5def943c9c3b64f8d7386837be6a"
+        },
+        {
+          "bytes": 22824,
+          "frameIndex": 1,
+          "jobID": "Pushups__f1__male",
+          "masterBytes": 225888,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Pushups/1.webp",
+          "rgbaRMSE": 7.0169,
+          "sha256": "f37e969d33c54cabd5e1e39e1b6dde79295b02756138fcacc8a6aa196005fae2"
+        }
+      ],
+      "gender": "male"
+    },
+    {
       "exerciseID": "Reverse_Barbell_Curl",
       "frames": [
         {
@@ -3404,6 +4076,126 @@
           "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Reverse_Barbell_Curl/1.webp",
           "rgbaRMSE": 6.1837,
           "sha256": "ef154d371ac32d8f9d880d84039771745339f9527b6f8c4fb0d183a74aedcd52"
+        }
+      ],
+      "gender": "male"
+    },
+    {
+      "exerciseID": "Reverse_Crunch",
+      "frames": [
+        {
+          "bytes": 20760,
+          "frameIndex": 0,
+          "jobID": "Reverse_Crunch__f0__male",
+          "masterBytes": 248936,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Reverse_Crunch/0.webp",
+          "rgbaRMSE": 5.106,
+          "sha256": "02ef948e673069c6342b738dea21a79f35e1357387495629275911e2b8c9e2d2"
+        },
+        {
+          "bytes": 24732,
+          "frameIndex": 1,
+          "jobID": "Reverse_Crunch__f1__male",
+          "masterBytes": 302754,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Reverse_Crunch/1.webp",
+          "rgbaRMSE": 4.7029,
+          "sha256": "5f014c5df419054c9f51aa9f61b4dc116b51d29263c9118d04f239feade8f312"
+        }
+      ],
+      "gender": "male"
+    },
+    {
+      "exerciseID": "Rocket_Jump",
+      "frames": [
+        {
+          "bytes": 35038,
+          "frameIndex": 0,
+          "jobID": "Rocket_Jump__f0__male",
+          "masterBytes": 329694,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Rocket_Jump/0.webp",
+          "rgbaRMSE": 6.4592,
+          "sha256": "2b257a27418de32c8caeec2dfdb50ec5efe7a34185e45187be9dd1ae0d0cd613"
+        },
+        {
+          "bytes": 23566,
+          "frameIndex": 1,
+          "jobID": "Rocket_Jump__f1__male",
+          "masterBytes": 178605,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Rocket_Jump/1.webp",
+          "rgbaRMSE": 8.3274,
+          "sha256": "b755b8e864695a2282165f7a4084ed0acfb3b1fc56b497cc180ea184128ff7d5"
+        }
+      ],
+      "gender": "male"
+    },
+    {
+      "exerciseID": "Romanian_Deadlift",
+      "frames": [
+        {
+          "bytes": 32278,
+          "frameIndex": 0,
+          "jobID": "Romanian_Deadlift__f0__male",
+          "masterBytes": 268401,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Romanian_Deadlift/0.webp",
+          "rgbaRMSE": 7.4979,
+          "sha256": "665e1d0a70820f02d0022a67112a1a51d14b5d395adf8884f76def1839670743"
+        },
+        {
+          "bytes": 29558,
+          "frameIndex": 1,
+          "jobID": "Romanian_Deadlift__f1__male",
+          "masterBytes": 249869,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Romanian_Deadlift/1.webp",
+          "rgbaRMSE": 6.5685,
+          "sha256": "41fb193e64ff0aacf0347ea0065b16a04fb26b991b18da24146c86023d2ff7ca"
+        }
+      ],
+      "gender": "male"
+    },
+    {
+      "exerciseID": "Rope_Jumping",
+      "frames": [
+        {
+          "bytes": 31608,
+          "frameIndex": 0,
+          "jobID": "Rope_Jumping__f0__male",
+          "masterBytes": 210525,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Rope_Jumping/0.webp",
+          "rgbaRMSE": 7.2244,
+          "sha256": "e5d3daa9ab205eae60203d2b2464341670f3fcf2c9ed176d659df10dbe796b1c"
+        },
+        {
+          "bytes": 33218,
+          "frameIndex": 1,
+          "jobID": "Rope_Jumping__f1__male",
+          "masterBytes": 213377,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Rope_Jumping/1.webp",
+          "rgbaRMSE": 8.3094,
+          "sha256": "a549c65ebe309e37f5c5689312c4289dd34613754591b18f70d2b309e3edfdc0"
+        }
+      ],
+      "gender": "male"
+    },
+    {
+      "exerciseID": "Seated_Dumbbell_Curl",
+      "frames": [
+        {
+          "bytes": 35786,
+          "frameIndex": 0,
+          "jobID": "Seated_Dumbbell_Curl__f0__male",
+          "masterBytes": 397870,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Seated_Dumbbell_Curl/0.webp",
+          "rgbaRMSE": 5.8542,
+          "sha256": "352f33a8b387cb4bd5555a6b280ea3c3bd4e08c0663ecfba5c029dcf4a112d79"
+        },
+        {
+          "bytes": 40216,
+          "frameIndex": 1,
+          "jobID": "Seated_Dumbbell_Curl__f1__male",
+          "masterBytes": 394196,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Seated_Dumbbell_Curl/1.webp",
+          "rgbaRMSE": 8.5541,
+          "sha256": "b8829cfa411df088f1d0988861432cfdbb991404ec4768138001e492424b4efe"
         }
       ],
       "gender": "male"
@@ -3524,6 +4316,30 @@
           "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Standing_Alternating_Dumbbell_Press/1.webp",
           "rgbaRMSE": 6.4957,
           "sha256": "545e1bf004ee88be9be2e64ba22e7865685b7b44706e6227b6d92bea822e1ef1"
+        }
+      ],
+      "gender": "male"
+    },
+    {
+      "exerciseID": "Standing_Barbell_Press_Behind_Neck",
+      "frames": [
+        {
+          "bytes": 29514,
+          "frameIndex": 0,
+          "jobID": "Standing_Barbell_Press_Behind_Neck__f0__male",
+          "masterBytes": 243491,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Standing_Barbell_Press_Behind_Neck/0.webp",
+          "rgbaRMSE": 7.278,
+          "sha256": "be0de3b242be222314892e7d75eb5e1914a23ec96b51a3629f67f21d1327b4c8"
+        },
+        {
+          "bytes": 27870,
+          "frameIndex": 1,
+          "jobID": "Standing_Barbell_Press_Behind_Neck__f1__male",
+          "masterBytes": 199000,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Standing_Barbell_Press_Behind_Neck/1.webp",
+          "rgbaRMSE": 9.0095,
+          "sha256": "da6fb3c5a79ae512a3ef0eefd87c332a2b6f34d34cfdb6544b2848ef403143dc"
         }
       ],
       "gender": "male"
@@ -3721,6 +4537,78 @@
       "gender": "male"
     },
     {
+      "exerciseID": "Standing_Long_Jump",
+      "frames": [
+        {
+          "bytes": 29866,
+          "frameIndex": 0,
+          "jobID": "Standing_Long_Jump__f0__male",
+          "masterBytes": 347981,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Standing_Long_Jump/0.webp",
+          "rgbaRMSE": 5.2037,
+          "sha256": "56703cf011c110e0f5cf119c997e11f9f949306368c6089a322caca324ca08be"
+        },
+        {
+          "bytes": 23356,
+          "frameIndex": 1,
+          "jobID": "Standing_Long_Jump__f1__male",
+          "masterBytes": 224435,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Standing_Long_Jump/1.webp",
+          "rgbaRMSE": 5.5204,
+          "sha256": "8dd08ab3b9ee793e5c78f3ba6849610537a1263c34ddc052a4755bc782f2e597"
+        }
+      ],
+      "gender": "male"
+    },
+    {
+      "exerciseID": "Standing_Military_Press",
+      "frames": [
+        {
+          "bytes": 27146,
+          "frameIndex": 0,
+          "jobID": "Standing_Military_Press__f0__male",
+          "masterBytes": 232053,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Standing_Military_Press/0.webp",
+          "rgbaRMSE": 6.3386,
+          "sha256": "eb04db5dfd5bd16c97b2f9c1179b0a41f465f3dbe08dcff3a630bdfb6967eb63"
+        },
+        {
+          "bytes": 27390,
+          "frameIndex": 1,
+          "jobID": "Standing_Military_Press__f1__male",
+          "masterBytes": 198809,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Standing_Military_Press/1.webp",
+          "rgbaRMSE": 9.2425,
+          "sha256": "ca902110c5d2cd36a299ea344c81c46c7ac2634f77b56c33d5cc605ce9496809"
+        }
+      ],
+      "gender": "male"
+    },
+    {
+      "exerciseID": "Standing_Overhead_Barbell_Triceps_Extension",
+      "frames": [
+        {
+          "bytes": 25552,
+          "frameIndex": 0,
+          "jobID": "Standing_Overhead_Barbell_Triceps_Extension__f0__male",
+          "masterBytes": 221606,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Standing_Overhead_Barbell_Triceps_Extension/0.webp",
+          "rgbaRMSE": 6.3942,
+          "sha256": "b7d97c9f49b89d8cc57d0f2a359ef3389ae342e752448ae36096fd06ca3cb735"
+        },
+        {
+          "bytes": 25252,
+          "frameIndex": 1,
+          "jobID": "Standing_Overhead_Barbell_Triceps_Extension__f1__male",
+          "masterBytes": 183537,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Standing_Overhead_Barbell_Triceps_Extension/1.webp",
+          "rgbaRMSE": 8.0541,
+          "sha256": "dac1aee0a0e4887f5a96495909b614e6f6f1f9125cb2d6d2d7b1bfacc1768fa8"
+        }
+      ],
+      "gender": "male"
+    },
+    {
       "exerciseID": "Standing_Palms-In_Dumbbell_Press",
       "frames": [
         {
@@ -3764,6 +4652,102 @@
           "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Standing_Pelvic_Tilt/1.webp",
           "rgbaRMSE": 4.5027,
           "sha256": "5a9714ef6a9e250e84d11d93e9f0836c181f1896dd966feb34a0529320fbf260"
+        }
+      ],
+      "gender": "male"
+    },
+    {
+      "exerciseID": "Standing_Soleus_And_Achilles_Stretch",
+      "frames": [
+        {
+          "bytes": 25236,
+          "frameIndex": 0,
+          "jobID": "Standing_Soleus_And_Achilles_Stretch__f0__male",
+          "masterBytes": 250765,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Standing_Soleus_And_Achilles_Stretch/0.webp",
+          "rgbaRMSE": 5.4844,
+          "sha256": "fd6e6476ecd427dd6b4d30249198543041208d323c2f0878cfa7bec105ba06eb"
+        },
+        {
+          "bytes": 25934,
+          "frameIndex": 1,
+          "jobID": "Standing_Soleus_And_Achilles_Stretch__f1__male",
+          "masterBytes": 244769,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Standing_Soleus_And_Achilles_Stretch/1.webp",
+          "rgbaRMSE": 5.6777,
+          "sha256": "8256315f65cc0df61d24d935512d8b66709e9445c1847d62b4e2735d8b76f9c4"
+        }
+      ],
+      "gender": "male"
+    },
+    {
+      "exerciseID": "Star_Jump",
+      "frames": [
+        {
+          "bytes": 34588,
+          "frameIndex": 0,
+          "jobID": "Star_Jump__f0__male",
+          "masterBytes": 340240,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Star_Jump/0.webp",
+          "rgbaRMSE": 5.4007,
+          "sha256": "4b8b1f350f6982722cb1f9ee2de0b7547752bee8617ad6288e46d5658cdecca0"
+        },
+        {
+          "bytes": 35400,
+          "frameIndex": 1,
+          "jobID": "Star_Jump__f1__male",
+          "masterBytes": 285977,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Star_Jump/1.webp",
+          "rgbaRMSE": 10.1306,
+          "sha256": "a449af7ecd1cd2d6c65c1c6f8e6998346e2efa0741803a1134b7751971cb0982"
+        }
+      ],
+      "gender": "male"
+    },
+    {
+      "exerciseID": "Stiff-Legged_Barbell_Deadlift",
+      "frames": [
+        {
+          "bytes": 37318,
+          "frameIndex": 0,
+          "jobID": "Stiff-Legged_Barbell_Deadlift__f0__male",
+          "masterBytes": 380762,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Stiff-Legged_Barbell_Deadlift/0.webp",
+          "rgbaRMSE": 6.1057,
+          "sha256": "5ecc01225348888f3c2333de60aca386d1fd2bcd0bcbfcab93f5ec089fb9aadb"
+        },
+        {
+          "bytes": 29210,
+          "frameIndex": 1,
+          "jobID": "Stiff-Legged_Barbell_Deadlift__f1__male",
+          "masterBytes": 260911,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Stiff-Legged_Barbell_Deadlift/1.webp",
+          "rgbaRMSE": 5.9051,
+          "sha256": "0717f07b6355a48c19cadeecc5b0a174313cc564e3d50db9dd3f99d892a46369"
+        }
+      ],
+      "gender": "male"
+    },
+    {
+      "exerciseID": "Stiff-Legged_Dumbbell_Deadlift",
+      "frames": [
+        {
+          "bytes": 25404,
+          "frameIndex": 0,
+          "jobID": "Stiff-Legged_Dumbbell_Deadlift__f0__male",
+          "masterBytes": 232636,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Stiff-Legged_Dumbbell_Deadlift/0.webp",
+          "rgbaRMSE": 6.1261,
+          "sha256": "da78436e6aaee3148006fc1a8d5f3a403d7b7e126bf580777af35c5aee7808c3"
+        },
+        {
+          "bytes": 32246,
+          "frameIndex": 1,
+          "jobID": "Stiff-Legged_Dumbbell_Deadlift__f1__male",
+          "masterBytes": 363209,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Stiff-Legged_Dumbbell_Deadlift/1.webp",
+          "rgbaRMSE": 4.9262,
+          "sha256": "70e78e0806fa1b041db5549082de9ef75038ef9049e1bdaf716d6eee79065518"
         }
       ],
       "gender": "male"
@@ -3887,10 +4871,34 @@
         }
       ],
       "gender": "male"
+    },
+    {
+      "exerciseID": "Wrist_Rotations_with_Straight_Bar",
+      "frames": [
+        {
+          "bytes": 31170,
+          "frameIndex": 0,
+          "jobID": "Wrist_Rotations_with_Straight_Bar__f0__male",
+          "masterBytes": 291470,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Wrist_Rotations_with_Straight_Bar/0.webp",
+          "rgbaRMSE": 6.4234,
+          "sha256": "fd40e32aef2c29fd9b270b5db94f774c91c43831feb96e0fd5f0f35b523b5306"
+        },
+        {
+          "bytes": 30158,
+          "frameIndex": 1,
+          "jobID": "Wrist_Rotations_with_Straight_Bar__f1__male",
+          "masterBytes": 284353,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/male/Wrist_Rotations_with_Straight_Bar/1.webp",
+          "rgbaRMSE": 6.9934,
+          "sha256": "8cee4a0ac1b3b250d818d3d2d80e62ea314767e73278313a716e0233fb0b6a29"
+        }
+      ],
+      "gender": "male"
     }
   ],
   "format": "webp",
-  "pairCount": 162,
+  "pairCount": 204,
   "quality": 82,
   "schemaVersion": 1,
   "size": 768,

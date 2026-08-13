@@ -556,44 +556,144 @@
       "status": "qa_failed"
     },
     "Alternate_Leg_Diagonal_Bound__f0__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T23:36:37+00:00",
+      "claimedBy": "root",
+      "completedAt": "2026-08-12T23:37:29+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Alternate_Leg_Diagonal_Bound/0.png",
       "jobFingerprint": "2f180a48fc83f03f3fa7f005f3c0a5b171f23719249bc66cdbe90341c5d4acc1",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          240,
+          12,
+          887,
+          1146
+        ],
+        "foregroundOccupancy": 0.11771,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-ezer5498/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Alternate_Leg_Diagonal_Bound/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "449ba428906baea5550ebd018d12b6c4c1d98203a111cabfac868dac64b9b0e4"
+      },
+      "outputSHA256": "449ba428906baea5550ebd018d12b6c4c1d98203a111cabfac868dac64b9b0e4",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Alternate_Leg_Diagonal_Bound__f0__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T23:36:37+00:00",
+      "claimedBy": "root",
+      "completedAt": "2026-08-12T23:39:04+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Alternate_Leg_Diagonal_Bound/0.png",
       "jobFingerprint": "a03df7e03f76429462bbe6a8070e36fdcd36a2d0beebaa11dba84bd437954683",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          267,
+          32,
+          901,
+          1131
+        ],
+        "foregroundOccupancy": 0.132578,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-_jex_tls/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Alternate_Leg_Diagonal_Bound/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "e175b20031953895088d0b3a090331aaaae28b44cfa5e1ebb070cb3ad4ca3ed7"
+      },
+      "outputSHA256": "e175b20031953895088d0b3a090331aaaae28b44cfa5e1ebb070cb3ad4ca3ed7",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Alternate_Leg_Diagonal_Bound__f1__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 2,
+      "claimedAt": "2026-08-12T23:47:56+00:00",
+      "claimedBy": "root",
+      "completedAt": "2026-08-12T23:49:22+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Alternate_Leg_Diagonal_Bound/1.png",
       "jobFingerprint": "4234d04fe096d0f55dbc4590c4868a742b240d759381f599bab6deec80eec92b",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          415,
+          13,
+          825,
+          1219
+        ],
+        "foregroundOccupancy": 0.097812,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-bduomick/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Alternate_Leg_Diagonal_Bound/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "879d94a71027d51a492913d1cc3a37d8cc02460811fda1be28f3323a7ed06fb0"
+      },
+      "outputSHA256": "879d94a71027d51a492913d1cc3a37d8cc02460811fda1be28f3323a7ed06fb0",
+      "qaStatus": "rejected",
+      "status": "qa_failed"
     },
     "Alternate_Leg_Diagonal_Bound__f1__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T23:36:38+00:00",
+      "claimedBy": "root",
+      "completedAt": "2026-08-12T23:39:59+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Alternate_Leg_Diagonal_Bound/1.png",
       "jobFingerprint": "7c6105dee3d3bdf4ef16a68fa77c6fd2ff5e508e27bc22e254fbd7d74058c4ed",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          378,
+          41,
+          822,
+          1166
+        ],
+        "foregroundOccupancy": 0.12816,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-q210mzml/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Alternate_Leg_Diagonal_Bound/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "9a14726a0b34c55c087136c2add1aa48a0fafbecf885f2ff03bc7c60c93f1c1f"
+      },
+      "outputSHA256": "9a14726a0b34c55c087136c2add1aa48a0fafbecf885f2ff03bc7c60c93f1c1f",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Alternating_Cable_Shoulder_Press__f0__female": {
       "attempts": 0,
@@ -764,14 +864,39 @@
       "status": "pending"
     },
     "Alternating_Kettlebell_Press__f0__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T23:32:26+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-12T23:34:00+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Alternating_Kettlebell_Press/0.png",
       "jobFingerprint": "fc6d6159963952869de6bda88cb2c6fb46885a1baf20de7e60a74fb8f2edd9d5",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          397,
+          29,
+          856,
+          1209
+        ],
+        "foregroundOccupancy": 0.113747,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-lgsownej/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Alternating_Kettlebell_Press/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "3d05ab4be8aae6f0e79446b49ae1505648ac8cf72fb4f01ed951304b450c1651"
+      },
+      "outputSHA256": "3d05ab4be8aae6f0e79446b49ae1505648ac8cf72fb4f01ed951304b450c1651",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Alternating_Kettlebell_Press__f0__male": {
       "attempts": 0,
@@ -784,14 +909,39 @@
       "status": "pending"
     },
     "Alternating_Kettlebell_Press__f1__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T23:32:26+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-12T23:34:02+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Alternating_Kettlebell_Press/1.png",
       "jobFingerprint": "bc7994ed0a00b8bdb7fa6d4fc2b60e3b5985c88d2c95f57c52c5f2c41cb1b6b9",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          406,
+          7,
+          796,
+          1247
+        ],
+        "foregroundOccupancy": 0.090405,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-7rqp70fo/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Alternating_Kettlebell_Press/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "8dadb632b692ad6058dde0a150df68b566efd990980716c9ca9ab733ca50a9e4"
+      },
+      "outputSHA256": "8dadb632b692ad6058dde0a150df68b566efd990980716c9ca9ab733ca50a9e4",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Alternating_Kettlebell_Press__f1__male": {
       "attempts": 0,
@@ -804,14 +954,39 @@
       "status": "pending"
     },
     "Alternating_Kettlebell_Row__f0__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T23:45:39+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-12T23:47:18+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Alternating_Kettlebell_Row/0.png",
       "jobFingerprint": "5051e7d40866d6088ad1201a68a4f8af843539a763146a51c242009c8beb2df7",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          386,
+          42,
+          861,
+          1143
+        ],
+        "foregroundOccupancy": 0.148175,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-kur7u0p9/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Alternating_Kettlebell_Row/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "bf9bb8cc462392c38eec519cddcedda1c8b49d39888864636eeabd3b9a9e5b46"
+      },
+      "outputSHA256": "bf9bb8cc462392c38eec519cddcedda1c8b49d39888864636eeabd3b9a9e5b46",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Alternating_Kettlebell_Row__f0__male": {
       "attempts": 0,
@@ -824,14 +999,39 @@
       "status": "pending"
     },
     "Alternating_Kettlebell_Row__f1__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T23:45:39+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-12T23:47:20+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Alternating_Kettlebell_Row/1.png",
       "jobFingerprint": "cb54a6d1a57489f261b2d14fab7f05f6b10170b375accef2bc59e75e341926fc",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          361,
+          0,
+          874,
+          1246
+        ],
+        "foregroundOccupancy": 0.150826,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-laie54vp/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Alternating_Kettlebell_Row/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "3e62c830f7c1c3315e98da750b3630997f0518d0ee938e674bba8b5d80d21e62"
+      },
+      "outputSHA256": "3e62c830f7c1c3315e98da750b3630997f0518d0ee938e674bba8b5d80d21e62",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Alternating_Kettlebell_Row__f1__male": {
       "attempts": 0,
@@ -884,52 +1084,144 @@
       "status": "pending"
     },
     "Ankle_Circles__f0__female": {
-      "attempts": 1,
-      "claimedAt": null,
-      "claimedBy": null,
+      "attempts": 2,
+      "claimedAt": "2026-08-12T23:31:57+00:00",
+      "claimedBy": "root",
+      "completedAt": "2026-08-12T23:33:19+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Ankle_Circles/0.png",
       "jobFingerprint": "9da6e01e678e26d60c2e16d37604e72c0595e7a49273d045cb7b6dddf75559e9",
-      "normalization": null,
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          184,
+          0,
+          985,
+          1143
+        ],
+        "foregroundOccupancy": 0.287292,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-4_76d5j6/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Ankle_Circles/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "bb72c78e7ff464e905ba0b02a72dc6b37fb4eed7188cdcbb154f7cbfed81cb17"
+      },
+      "outputSHA256": "bb72c78e7ff464e905ba0b02a72dc6b37fb4eed7188cdcbb154f7cbfed81cb17",
+      "qaStatus": "rejected",
+      "status": "qa_failed"
     },
     "Ankle_Circles__f0__male": {
-      "attempts": 1,
-      "claimedAt": null,
-      "claimedBy": null,
+      "attempts": 2,
+      "claimedAt": "2026-08-12T23:31:57+00:00",
+      "claimedBy": "root",
+      "completedAt": "2026-08-12T23:35:07+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Ankle_Circles/0.png",
       "jobFingerprint": "0236039d20daef5f48e2ace3e5b79edb678ae26ee4dd6dcb31b88aada5683d77",
-      "normalization": null,
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          254,
+          0,
+          1006,
+          1151
+        ],
+        "foregroundOccupancy": 0.259333,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-_lfivsv3/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Ankle_Circles/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "4de8935ee31edae133cc4dc73240d4c53ab0c959730b90b81db3e493259d4085"
+      },
+      "outputSHA256": "4de8935ee31edae133cc4dc73240d4c53ab0c959730b90b81db3e493259d4085",
+      "qaStatus": "rejected",
+      "status": "qa_failed"
     },
     "Ankle_Circles__f1__female": {
-      "attempts": 1,
-      "claimedAt": null,
-      "claimedBy": null,
+      "attempts": 2,
+      "claimedAt": "2026-08-12T23:31:57+00:00",
+      "claimedBy": "root",
+      "completedAt": "2026-08-12T23:34:05+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Ankle_Circles/1.png",
       "jobFingerprint": "11bd15005a88ef200f07b4f1b46cb9ab83f7d1946bd2c251cb0ea912f46af446",
-      "normalization": null,
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          111,
+          0,
+          1078,
+          1079
+        ],
+        "foregroundOccupancy": 0.305849,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-t_9hzt27/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Ankle_Circles/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "3e607f09c4b72b33be52e48747cc7d6bd59826f09f849b29d86b999e9e5e8cd0"
+      },
+      "outputSHA256": "3e607f09c4b72b33be52e48747cc7d6bd59826f09f849b29d86b999e9e5e8cd0",
+      "qaStatus": "rejected",
+      "status": "qa_failed"
     },
     "Ankle_Circles__f1__male": {
-      "attempts": 1,
-      "claimedAt": null,
-      "claimedBy": null,
+      "attempts": 2,
+      "claimedAt": "2026-08-12T23:31:57+00:00",
+      "claimedBy": "root",
+      "completedAt": "2026-08-12T23:35:58+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Ankle_Circles/1.png",
       "jobFingerprint": "faed14918caa96e278b057faf90d20edee847f26b8f66dcf39dd4eb24812df37",
-      "normalization": null,
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          83,
+          0,
+          1138,
+          1140
+        ],
+        "foregroundOccupancy": 0.277873,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-ax9k3nhj/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Ankle_Circles/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "12255c0c2d71d478bbff6f80f23331a3ca7d7cf4bf8571d9b2c14b4179297f71"
+      },
+      "outputSHA256": "12255c0c2d71d478bbff6f80f23331a3ca7d7cf4bf8571d9b2c14b4179297f71",
+      "qaStatus": "rejected",
+      "status": "qa_failed"
     },
     "Ankle_On_The_Knee__f0__female": {
       "attempts": 1,
@@ -1404,14 +1696,39 @@
       "status": "pending"
     },
     "Backward_Medicine_Ball_Throw__f0__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 2,
+      "claimedAt": "2026-08-13T00:00:48+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-13T00:02:03+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Backward_Medicine_Ball_Throw/0.png",
       "jobFingerprint": "518a9a60be94e39921ecab0ece9dce1b18cba738c3b70eb6a435ba4cb8f2ca90",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          89,
+          174,
+          1147,
+          1069
+        ],
+        "foregroundOccupancy": 0.244203,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-4_apman_/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Backward_Medicine_Ball_Throw/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "963f6900ccde23a2986ac60143bfbf1642ad94b7d67468a5d26a66fea8b5d3b4"
+      },
+      "outputSHA256": "963f6900ccde23a2986ac60143bfbf1642ad94b7d67468a5d26a66fea8b5d3b4",
+      "qaStatus": "rejected",
+      "status": "qa_failed"
     },
     "Backward_Medicine_Ball_Throw__f0__male": {
       "attempts": 1,
@@ -1426,14 +1743,39 @@
       "status": "complete"
     },
     "Backward_Medicine_Ball_Throw__f1__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T23:53:37+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-12T23:55:20+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Backward_Medicine_Ball_Throw/1.png",
       "jobFingerprint": "d9db7d6b4dd0c2e4b0d4cb28f724dd950972a93339adf3db89269b1a773a3f0e",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          391,
+          0,
+          856,
+          1254
+        ],
+        "foregroundOccupancy": 0.094095,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-5u_sufoy/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Backward_Medicine_Ball_Throw/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "8aec5531bf55e9efd73bb3e4e4323f69dab988e128d73fdeae82b5c2adf8f781"
+      },
+      "outputSHA256": "8aec5531bf55e9efd73bb3e4e4323f69dab988e128d73fdeae82b5c2adf8f781",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Backward_Medicine_Ball_Throw__f1__male": {
       "attempts": 1,
@@ -1660,14 +2002,39 @@
       "status": "complete"
     },
     "Band_Hip_Adductions__f0__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T23:37:23+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-12T23:38:59+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Band_Hip_Adductions/0.png",
       "jobFingerprint": "560fc100cb5a89f4e7c774e136a6d020d1e446a3512a1fe1efbe5dcda681896a",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          281,
+          4,
+          1254,
+          1236
+        ],
+        "foregroundOccupancy": 0.119121,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-ctk6pd82/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Band_Hip_Adductions/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "200b4e1d920f8e720697e25eda9014e9dcef1bf0f68565500a69fee41c67638f"
+      },
+      "outputSHA256": "200b4e1d920f8e720697e25eda9014e9dcef1bf0f68565500a69fee41c67638f",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Band_Hip_Adductions__f0__male": {
       "attempts": 0,
@@ -1680,14 +2047,39 @@
       "status": "pending"
     },
     "Band_Hip_Adductions__f1__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T23:37:24+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-12T23:39:02+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Band_Hip_Adductions/1.png",
       "jobFingerprint": "7a702ba94fef5f40d3b231763b2867143a551df8b0e8724daca48e265c4f9b40",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          378,
+          0,
+          1254,
+          1218
+        ],
+        "foregroundOccupancy": 0.110327,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-75r8ajkd/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Band_Hip_Adductions/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "bd0fde17e068dd075981cfafba491c9c7d969371f58b63da5d8a61518df51a3e"
+      },
+      "outputSHA256": "bd0fde17e068dd075981cfafba491c9c7d969371f58b63da5d8a61518df51a3e",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Band_Hip_Adductions__f1__male": {
       "attempts": 0,
@@ -2030,15 +2422,39 @@
       "status": "qa_failed"
     },
     "Barbell_Deadlift__f0__male": {
-      "attempts": 1,
-      "claimedAt": null,
-      "claimedBy": null,
+      "attempts": 2,
+      "claimedAt": "2026-08-13T01:31:00+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-13T01:33:06+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Barbell_Deadlift/0.png",
       "jobFingerprint": "eeda803a2661ec6f789b83a4bc1745df64f5c8c7bcf856dc1f68e3f35d71ae2a",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          40,
+          192,
+          1218,
+          1047
+        ],
+        "foregroundOccupancy": 0.158566,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-m57j7gjl/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Barbell_Deadlift/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "c0ff1e2b9a0a3dd89a60221636f629d8036f2d19fe85ed3a1fb9c05a9952305b"
+      },
+      "outputSHA256": "c0ff1e2b9a0a3dd89a60221636f629d8036f2d19fe85ed3a1fb9c05a9952305b",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Barbell_Deadlift__f1__female": {
       "attempts": 1,
@@ -2076,15 +2492,39 @@
       "status": "complete"
     },
     "Barbell_Deadlift__f1__male": {
-      "attempts": 1,
-      "claimedAt": null,
-      "claimedBy": null,
+      "attempts": 2,
+      "claimedAt": "2026-08-13T01:33:06+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-13T01:34:48+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Barbell_Deadlift/1.png",
       "jobFingerprint": "e94f418a860d15f9edf52ed7b7a354ec72aa6d1322ffcff10b7fb26254c0c07e",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          121,
+          20,
+          1133,
+          1233
+        ],
+        "foregroundOccupancy": 0.153662,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-ysb_zcfr/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Barbell_Deadlift/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "7b82abb88d21579611f4c7f5e6edb32744498b97a7f5222698c4a2fd7dacd700"
+      },
+      "outputSHA256": "7b82abb88d21579611f4c7f5e6edb32744498b97a7f5222698c4a2fd7dacd700",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Barbell_Full_Squat__f0__female": {
       "attempts": 0,
@@ -2727,14 +3167,39 @@
       "status": "complete"
     },
     "Barbell_Side_Bend__f0__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T01:40:11+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-13T01:41:47+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Barbell_Side_Bend/0.png",
       "jobFingerprint": "97b62319ad42ebaa2e3dee4cff41e22aac2f44ba67fcfae970ed6655437a27db",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          85,
+          8,
+          1168,
+          1240
+        ],
+        "foregroundOccupancy": 0.131615,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-o8h9cn0s/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Barbell_Side_Bend/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "edf8fa5c36d8c9fc5b27e2367f28e9fd4d95c774b9b532adde080821f2d6d7c4"
+      },
+      "outputSHA256": "edf8fa5c36d8c9fc5b27e2367f28e9fd4d95c774b9b532adde080821f2d6d7c4",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Barbell_Side_Bend__f1__female": {
       "attempts": 1,
@@ -2749,14 +3214,39 @@
       "status": "complete"
     },
     "Barbell_Side_Bend__f1__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T01:41:47+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-13T01:43:29+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Barbell_Side_Bend/1.png",
       "jobFingerprint": "07467be6df918f0cf13ecfc5436ada823eafc4ae955cdca3b1ab3ccac931c23a",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          186,
+          47,
+          1144,
+          1190
+        ],
+        "foregroundOccupancy": 0.136137,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-3tl6xp1m/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Barbell_Side_Bend/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "6286e12f2326502a2408510a04fb9fa613926f4966a91cb857d41bcd193cea87"
+      },
+      "outputSHA256": "6286e12f2326502a2408510a04fb9fa613926f4966a91cb857d41bcd193cea87",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Barbell_Side_Split_Squat__f0__female": {
       "attempts": 1,
@@ -4809,14 +5299,39 @@
       "status": "complete"
     },
     "Butt_Lift_Bridge__f0__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T01:14:10+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-13T01:15:25+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Butt_Lift_Bridge/0.png",
       "jobFingerprint": "c42bb8ff40b5f0eff612ab73218a89e4f39596360fc49a67aac09e63634739ed",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          1,
+          351,
+          1254,
+          842
+        ],
+        "foregroundOccupancy": 0.136787,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-8lh6vanq/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Butt_Lift_Bridge/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "ed990c1f89d5320468692a4f6720034897f195f72820c4a9bc540ac2e60523c2"
+      },
+      "outputSHA256": "ed990c1f89d5320468692a4f6720034897f195f72820c4a9bc540ac2e60523c2",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Butt_Lift_Bridge__f1__female": {
       "attempts": 1,
@@ -4831,14 +5346,39 @@
       "status": "complete"
     },
     "Butt_Lift_Bridge__f1__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 2,
+      "claimedAt": "2026-08-13T01:26:52+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-13T01:26:54+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Butt_Lift_Bridge/1.png",
       "jobFingerprint": "77c60899029549c0b11580b4532583ba95c659dfeddf6066489b766d88422bc6",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "chroma-green-despill",
+        "contentSize": 896,
+        "cropBox": [
+          0,
+          331,
+          1254,
+          1254
+        ],
+        "foregroundOccupancy": 0.171111,
+        "input": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/raw/male/Butt_Lift_Bridge/1.png",
+        "inputMode": "RGB",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Butt_Lift_Bridge/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "b2b4ce81ba0c6adca46e9bb790d81ad2f3fab65a9fc602f3758e1af1ebebae70"
+      },
+      "outputSHA256": "b2b4ce81ba0c6adca46e9bb790d81ad2f3fab65a9fc602f3758e1af1ebebae70",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Butterfly__f0__female": {
       "attempts": 0,
@@ -6509,14 +7049,39 @@
       "status": "pending"
     },
     "Chair_Leg_Extended_Stretch__f0__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T00:55:36+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-13T00:57:38+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Chair_Leg_Extended_Stretch/0.png",
       "jobFingerprint": "bd2fe6b3d096c5d23e51d1d574c173d3245b3effff5e610d12eb063d27c99b64",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          230,
+          18,
+          926,
+          1178
+        ],
+        "foregroundOccupancy": 0.166678,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-xu5inj3a/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Chair_Leg_Extended_Stretch/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "15e85e1f7320633d5731140978c9e19218da242128f801673313b1a656030148"
+      },
+      "outputSHA256": "15e85e1f7320633d5731140978c9e19218da242128f801673313b1a656030148",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Chair_Leg_Extended_Stretch__f0__male": {
       "attempts": 1,
@@ -6531,14 +7096,39 @@
       "status": "complete"
     },
     "Chair_Leg_Extended_Stretch__f1__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 2,
+      "claimedAt": "2026-08-13T01:01:43+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-13T01:02:58+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Chair_Leg_Extended_Stretch/1.png",
       "jobFingerprint": "ade3bd6b6523b59d72b8fdd042af95420ebb868e652b071df8949f022f2026af",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          173,
+          19,
+          1014,
+          1165
+        ],
+        "foregroundOccupancy": 0.164619,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-73qoi2gj/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Chair_Leg_Extended_Stretch/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "1313f5bc2d6a71983656294e384e594d278447feabe5728b685c6c4f0c9f5d5c"
+      },
+      "outputSHA256": "1313f5bc2d6a71983656294e384e594d278447feabe5728b685c6c4f0c9f5d5c",
+      "qaStatus": "rejected",
+      "status": "qa_failed"
     },
     "Chair_Leg_Extended_Stretch__f1__male": {
       "attempts": 1,
@@ -7959,14 +8549,39 @@
       "status": "complete"
     },
     "Concentration_Curls__f0__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T00:37:16+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-13T00:38:11+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Concentration_Curls/0.png",
       "jobFingerprint": "b57858350ab20bd9f0b8892e625626a52ce37679fccbf7fe874a6b5d23128bea",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          222,
+          167,
+          1254,
+          1097
+        ],
+        "foregroundOccupancy": 0.267702,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-5pe20sad/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Concentration_Curls/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "5e5a3fe51c45dd40de31406db8ee48c90da151bc152a44bd290494e2e0a6d380"
+      },
+      "outputSHA256": "5e5a3fe51c45dd40de31406db8ee48c90da151bc152a44bd290494e2e0a6d380",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Concentration_Curls__f1__female": {
       "attempts": 2,
@@ -7981,14 +8596,39 @@
       "status": "complete"
     },
     "Concentration_Curls__f1__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T00:38:11+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-13T00:39:07+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Concentration_Curls/1.png",
       "jobFingerprint": "0974ede3e620fab902394eb09f69de8454ad0928b53dbd5b7e4adfe4cb02c74e",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          141,
+          137,
+          1254,
+          1118
+        ],
+        "foregroundOccupancy": 0.253837,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-hrkrnmy7/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Concentration_Curls/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "02f69df965b58072e97d40a7d1e5c4c6a2a0e7f6b09a3297628770958ec39f41"
+      },
+      "outputSHA256": "02f69df965b58072e97d40a7d1e5c4c6a2a0e7f6b09a3297628770958ec39f41",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Cross-Body_Crunch__f0__female": {
       "attempts": 0,
@@ -8855,14 +9495,39 @@
       "status": "pending"
     },
     "Decline_Push-Up__f0__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T00:39:37+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-13T00:41:29+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Decline_Push-Up/0.png",
       "jobFingerprint": "f9c486312920e178811911808a03c7040a0368bb6f05b87c21a1c2a30d1ae2c9",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          41,
+          256,
+          1237,
+          907
+        ],
+        "foregroundOccupancy": 0.119249,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-ngibjlub/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Decline_Push-Up/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "6084b7c8fa83f6f60f5cd6fe93d31f71e3f574452138ab96cc49a5626fa868f1"
+      },
+      "outputSHA256": "6084b7c8fa83f6f60f5cd6fe93d31f71e3f574452138ab96cc49a5626fa868f1",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Decline_Push-Up__f0__male": {
       "attempts": 0,
@@ -8875,14 +9540,39 @@
       "status": "pending"
     },
     "Decline_Push-Up__f1__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T00:39:37+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-13T00:41:32+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Decline_Push-Up/1.png",
       "jobFingerprint": "7075e946accf3b2e2596077501cbb978af027ccec9c77bf1e8394981155389c1",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          18,
+          383,
+          1254,
+          871
+        ],
+        "foregroundOccupancy": 0.108937,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-qnc1h26u/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Decline_Push-Up/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "0f39c43cc2a09e776795070d9aecad75403b39c43ac9e3433f40be24fb4b41c7"
+      },
+      "outputSHA256": "0f39c43cc2a09e776795070d9aecad75403b39c43ac9e3433f40be24fb4b41c7",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Decline_Push-Up__f1__male": {
       "attempts": 0,
@@ -9415,14 +10105,39 @@
       "status": "pending"
     },
     "Double_Leg_Butt_Kick__f0__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T00:15:57+00:00",
+      "claimedBy": "root",
+      "completedAt": "2026-08-13T00:16:58+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Double_Leg_Butt_Kick/0.png",
       "jobFingerprint": "0e463893f77f283dfef28da269b608c49ae827d9845922969f1fe7f8aeea447a",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          387,
+          75,
+          866,
+          1196
+        ],
+        "foregroundOccupancy": 0.141233,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-s3gulmfg/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Double_Leg_Butt_Kick/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "bbb04982d756ff725a2804870a39a436e67252aa3dd3ff664e203247b2183828"
+      },
+      "outputSHA256": "bbb04982d756ff725a2804870a39a436e67252aa3dd3ff664e203247b2183828",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Double_Leg_Butt_Kick__f0__male": {
       "attempts": 0,
@@ -9435,14 +10150,39 @@
       "status": "pending"
     },
     "Double_Leg_Butt_Kick__f1__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T00:16:58+00:00",
+      "claimedBy": "root",
+      "completedAt": "2026-08-13T00:17:57+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Double_Leg_Butt_Kick/1.png",
       "jobFingerprint": "593f09db4b616c5c8a56bbab93ce15779024fac7f2f1d71b7019565400aa1826",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          462,
+          33,
+          786,
+          1159
+        ],
+        "foregroundOccupancy": 0.098001,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-mqgdr849/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Double_Leg_Butt_Kick/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "5a1dff28a0ed07998532378c3efaa5d3b0c23e5d02cb881a36861ad8f3ec5292"
+      },
+      "outputSHA256": "5a1dff28a0ed07998532378c3efaa5d3b0c23e5d02cb881a36861ad8f3ec5292",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Double_Leg_Butt_Kick__f1__male": {
       "attempts": 0,
@@ -9891,14 +10631,39 @@
       "status": "pending"
     },
     "Dumbbell_Floor_Press__f0__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T02:01:33+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-13T02:03:27+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Dumbbell_Floor_Press/0.png",
       "jobFingerprint": "5b73f4a59832a26c76eb58d9e6869da24a4e002083fc49bc6e44c50da737942e",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          37,
+          299,
+          1217,
+          948
+        ],
+        "foregroundOccupancy": 0.121488,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-ak1fr2iq/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Dumbbell_Floor_Press/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "f4a37979bc41cfa2c88fe07fd6db464bab2e05d66e04daa2ddd0e8a55ff3505f"
+      },
+      "outputSHA256": "f4a37979bc41cfa2c88fe07fd6db464bab2e05d66e04daa2ddd0e8a55ff3505f",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Dumbbell_Floor_Press__f0__male": {
       "attempts": 0,
@@ -9911,14 +10676,39 @@
       "status": "pending"
     },
     "Dumbbell_Floor_Press__f1__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T02:01:33+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-13T02:03:29+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Dumbbell_Floor_Press/1.png",
       "jobFingerprint": "428a1b20e8b603de58c16e34f54c1a4e02b9063650063702aafed8ccc087c844",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          20,
+          396,
+          1242,
+          889
+        ],
+        "foregroundOccupancy": 0.121407,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-j5hsjgrg/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Dumbbell_Floor_Press/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "b79a7c79d50cdc9002b0430a2c6bc463811d64bfa3a578932c9670cfdcebfc9a"
+      },
+      "outputSHA256": "b79a7c79d50cdc9002b0430a2c6bc463811d64bfa3a578932c9670cfdcebfc9a",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Dumbbell_Floor_Press__f1__male": {
       "attempts": 0,
@@ -9931,14 +10721,39 @@
       "status": "pending"
     },
     "Dumbbell_Flyes__f0__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T01:30:59+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-13T01:33:29+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Dumbbell_Flyes/0.png",
       "jobFingerprint": "c3b2bcaaf772aee413f247032fd09913e1be850c563e286665beb194966fb692",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          59,
+          146,
+          1212,
+          1020
+        ],
+        "foregroundOccupancy": 0.210914,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-20hneq18/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Dumbbell_Flyes/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "9fe6b009154006d90de54508e152e321e561455aa887161ffc0cf81347bc5257"
+      },
+      "outputSHA256": "9fe6b009154006d90de54508e152e321e561455aa887161ffc0cf81347bc5257",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Dumbbell_Flyes__f0__male": {
       "attempts": 0,
@@ -9951,14 +10766,39 @@
       "status": "pending"
     },
     "Dumbbell_Flyes__f1__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 2,
+      "claimedAt": "2026-08-13T01:40:43+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-13T01:42:37+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Dumbbell_Flyes/1.png",
       "jobFingerprint": "2f697731290d12bcfe045f796b3336621108e9af095accb79c260c06906db734",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          40,
+          283,
+          1233,
+          1032
+        ],
+        "foregroundOccupancy": 0.179925,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-31hbsza3/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Dumbbell_Flyes/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "2eff945d0092fdcb21403bba461471ef259805cc8b360fd1e00b9f3f33cc3721"
+      },
+      "outputSHA256": "2eff945d0092fdcb21403bba461471ef259805cc8b360fd1e00b9f3f33cc3721",
+      "qaStatus": "rejected",
+      "status": "qa_failed"
     },
     "Dumbbell_Flyes__f1__male": {
       "attempts": 0,
@@ -9971,14 +10811,39 @@
       "status": "pending"
     },
     "Dumbbell_Incline_Row__f0__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T01:51:57+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-13T01:57:36+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Dumbbell_Incline_Row/0.png",
       "jobFingerprint": "a61f3d1d520d9def5239ed86d7c034de3a8a451969e7eb363ba14e44285e97b1",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          70,
+          115,
+          1104,
+          1023
+        ],
+        "foregroundOccupancy": 0.209686,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-cf1n3fej/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Dumbbell_Incline_Row/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "33ca8a5ab8b76bb5b4f1d4cb4afe235ff54518a4f2059d6e1ad136b8da439bfa"
+      },
+      "outputSHA256": "33ca8a5ab8b76bb5b4f1d4cb4afe235ff54518a4f2059d6e1ad136b8da439bfa",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Dumbbell_Incline_Row__f0__male": {
       "attempts": 0,
@@ -9991,14 +10856,39 @@
       "status": "pending"
     },
     "Dumbbell_Incline_Row__f1__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T01:51:57+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-13T01:57:39+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Dumbbell_Incline_Row/1.png",
       "jobFingerprint": "770182c0fbba7f3b8b030f3c9b144392e4e9bcb19dc0afc8852c001b2346f0d0",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          50,
+          102,
+          1097,
+          1041
+        ],
+        "foregroundOccupancy": 0.196774,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-m2dwafqu/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Dumbbell_Incline_Row/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "36047fcccd490f6c0b200eb5c71a5ecf428f61916086ce8b59b65732a8bbd420"
+      },
+      "outputSHA256": "36047fcccd490f6c0b200eb5c71a5ecf428f61916086ce8b59b65732a8bbd420",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Dumbbell_Incline_Row__f1__male": {
       "attempts": 0,
@@ -11739,14 +12629,39 @@
       "status": "pending"
     },
     "Fast_Skipping__f0__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T00:29:05+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-13T00:30:27+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Fast_Skipping/0.png",
       "jobFingerprint": "4bffb163e9f071b5669ae9bf3add0b922e8404b03e83214aaf4bc7487f4c3d07",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          274,
+          30,
+          884,
+          1215
+        ],
+        "foregroundOccupancy": 0.117049,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-zuct11iq/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Fast_Skipping/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "c0af4569440879df479cdb435d9a7b9987384f1132445b93b5001614c1fa4b98"
+      },
+      "outputSHA256": "c0af4569440879df479cdb435d9a7b9987384f1132445b93b5001614c1fa4b98",
+      "qaStatus": "rejected",
+      "status": "qa_failed"
     },
     "Fast_Skipping__f1__female": {
       "attempts": 0,
@@ -11759,14 +12674,39 @@
       "status": "pending"
     },
     "Fast_Skipping__f1__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T00:30:27+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-13T00:32:28+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Fast_Skipping/1.png",
       "jobFingerprint": "6cf4912bc27576b99cbc8152630e9c2526fb636fa63607a04b8ea07106bd66f0",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          313,
+          39,
+          939,
+          1170
+        ],
+        "foregroundOccupancy": 0.121114,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-mqju6qv4/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Fast_Skipping/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "cb639815aba2b8d5ecdb8aa76d6463830ab1512087826ced33f1e4b10d3df3fd"
+      },
+      "outputSHA256": "cb639815aba2b8d5ecdb8aa76d6463830ab1512087826ced33f1e4b10d3df3fd",
+      "qaStatus": "rejected",
+      "status": "qa_failed"
     },
     "Finger_Curls__f0__female": {
       "attempts": 0,
@@ -11849,14 +12789,39 @@
       "status": "pending"
     },
     "Flat_Bench_Leg_Pull-In__f0__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T01:20:59+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-13T01:23:22+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Flat_Bench_Leg_Pull-In/0.png",
       "jobFingerprint": "0c4cb23a92a522b99b1945be6113dfef1ea46f56e14cce3ae644e04c8865293f",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          76,
+          90,
+          1225,
+          1043
+        ],
+        "foregroundOccupancy": 0.199167,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-be8miuj0/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Flat_Bench_Leg_Pull-In/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "d3badfe0193f60f1adbd9b32029c448ca0eb9a509f0ce7ed7fc5cb4eb9d65083"
+      },
+      "outputSHA256": "d3badfe0193f60f1adbd9b32029c448ca0eb9a509f0ce7ed7fc5cb4eb9d65083",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Flat_Bench_Leg_Pull-In__f0__male": {
       "attempts": 0,
@@ -11869,14 +12834,39 @@
       "status": "pending"
     },
     "Flat_Bench_Leg_Pull-In__f1__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T01:20:59+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-13T01:23:25+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Flat_Bench_Leg_Pull-In/1.png",
       "jobFingerprint": "be4bc1a736d5c069143dd035481e99ab0612472fd781442adffc52c4cee5afc1",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          55,
+          382,
+          1241,
+          927
+        ],
+        "foregroundOccupancy": 0.134443,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-qhxrab0b/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Flat_Bench_Leg_Pull-In/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "428c7511f2567f14591a33013cff98a460ffab094adc36ee3be3af01789787b2"
+      },
+      "outputSHA256": "428c7511f2567f14591a33013cff98a460ffab094adc36ee3be3af01789787b2",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Flat_Bench_Leg_Pull-In__f1__male": {
       "attempts": 0,
@@ -11889,14 +12879,39 @@
       "status": "pending"
     },
     "Flat_Bench_Lying_Leg_Raise__f0__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T00:45:02+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-13T00:46:52+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Flat_Bench_Lying_Leg_Raise/0.png",
       "jobFingerprint": "3cb6a90ff5c2de6ae28dc7602b2b31a066d89634f0953a2d34cda5485f2caee0",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          56,
+          388,
+          1216,
+          880
+        ],
+        "foregroundOccupancy": 0.11893,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-psicv021/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Flat_Bench_Lying_Leg_Raise/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "5c0d6d71e32eb811d83fe3afc38de3206f4efb4fddff6c8c0d9711261946e80d"
+      },
+      "outputSHA256": "5c0d6d71e32eb811d83fe3afc38de3206f4efb4fddff6c8c0d9711261946e80d",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Flat_Bench_Lying_Leg_Raise__f0__male": {
       "attempts": 0,
@@ -11909,14 +12924,39 @@
       "status": "pending"
     },
     "Flat_Bench_Lying_Leg_Raise__f1__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 2,
+      "claimedAt": "2026-08-13T00:50:53+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-13T00:51:51+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Flat_Bench_Lying_Leg_Raise/1.png",
       "jobFingerprint": "591e61e4fc24d84816d789cdfa61bd06d5e830484a6476670b5b37413309c097",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          135,
+          64,
+          1154,
+          1127
+        ],
+        "foregroundOccupancy": 0.174465,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-d11qmjoy/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Flat_Bench_Lying_Leg_Raise/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "6cf8d784d8bad52955eeca8aa2eb24572eb3ca7cc7b56ec69e0af36ea283a04a"
+      },
+      "outputSHA256": "6cf8d784d8bad52955eeca8aa2eb24572eb3ca7cc7b56ec69e0af36ea283a04a",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Flat_Bench_Lying_Leg_Raise__f1__male": {
       "attempts": 0,
@@ -12697,14 +13737,39 @@
       "status": "pending"
     },
     "Front_Plate_Raise__f0__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T01:06:42+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-13T01:08:41+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Front_Plate_Raise/0.png",
       "jobFingerprint": "4cda027388750aa5f72e26543f846e808697cac5bd146c36f2f3620ef8cb2745",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          432,
+          2,
+          795,
+          1250
+        ],
+        "foregroundOccupancy": 0.111209,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-ec71chjt/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Front_Plate_Raise/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "bc3cd457b7c048f1c301b49f23def12d62a37c9eff27ef2e2eed7f39ba94cbc3"
+      },
+      "outputSHA256": "bc3cd457b7c048f1c301b49f23def12d62a37c9eff27ef2e2eed7f39ba94cbc3",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Front_Plate_Raise__f0__male": {
       "attempts": 1,
@@ -12719,14 +13784,39 @@
       "status": "complete"
     },
     "Front_Plate_Raise__f1__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 2,
+      "claimedAt": "2026-08-13T01:13:34+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-13T01:14:50+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Front_Plate_Raise/1.png",
       "jobFingerprint": "310a959e2f6e32d2bd8474cfd708f100e7a42892b264af71cc864de55be30be7",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          429,
+          0,
+          789,
+          1247
+        ],
+        "foregroundOccupancy": 0.102409,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-otzy0scl/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Front_Plate_Raise/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "a8e1a3e3a33c866e5c6933ef2e39ce621e75a8de9ec063fb787ca59954593528"
+      },
+      "outputSHA256": "a8e1a3e3a33c866e5c6933ef2e39ce621e75a8de9ec063fb787ca59954593528",
+      "qaStatus": "rejected",
+      "status": "qa_failed"
     },
     "Front_Plate_Raise__f1__male": {
       "attempts": 2,
@@ -14555,14 +15645,39 @@
       "status": "pending"
     },
     "Inchworm__f0__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T02:12:37+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-13T02:14:41+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Inchworm/0.png",
       "jobFingerprint": "51e7b3abef3434e121c380cbb79b6904fb6e3e04fb7e5167a8eaf3325d0eba87",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          109,
+          156,
+          1110,
+          1008
+        ],
+        "foregroundOccupancy": 0.181884,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-xbu0ky7v/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Inchworm/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "822e38565109ccdc9af2477efbc7b41e9a1b03591fc2e83bc468373c85db7eda"
+      },
+      "outputSHA256": "822e38565109ccdc9af2477efbc7b41e9a1b03591fc2e83bc468373c85db7eda",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Inchworm__f0__male": {
       "attempts": 0,
@@ -14575,14 +15690,39 @@
       "status": "pending"
     },
     "Inchworm__f1__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T02:12:37+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-13T02:14:43+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Inchworm/1.png",
       "jobFingerprint": "87ac743b2cfa703e0cd2df7f89e7313a5df5463fbed125049da807571e67893e",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          77,
+          359,
+          1173,
+          979
+        ],
+        "foregroundOccupancy": 0.105203,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-_6qyvsxf/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Inchworm/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "d126f8828caaf64bfec084020e4a8d0b1c62044ad5b6557d858b9d91c0b71e6d"
+      },
+      "outputSHA256": "d126f8828caaf64bfec084020e4a8d0b1c62044ad5b6557d858b9d91c0b71e6d",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Inchworm__f1__male": {
       "attempts": 0,
@@ -16998,44 +18138,144 @@
       "status": "pending"
     },
     "Knee_Tuck_Jump__f0__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T23:58:45+00:00",
+      "claimedBy": "root",
+      "completedAt": "2026-08-12T23:59:52+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Knee_Tuck_Jump/0.png",
       "jobFingerprint": "a9b1d4e25f8cc385804b48df3c4650dc0319a3c47bedf8c1312f0511646fd79a",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          307,
+          77,
+          936,
+          1162
+        ],
+        "foregroundOccupancy": 0.17285,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-zfnb7sqv/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Knee_Tuck_Jump/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "0ca50362072868e08037695549fbc374bcb86d4fabb467c93a25a5271472e532"
+      },
+      "outputSHA256": "0ca50362072868e08037695549fbc374bcb86d4fabb467c93a25a5271472e532",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Knee_Tuck_Jump__f0__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 2,
+      "claimedAt": "2026-08-13T00:06:19+00:00",
+      "claimedBy": "root",
+      "completedAt": "2026-08-13T00:07:36+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Knee_Tuck_Jump/0.png",
       "jobFingerprint": "3bf141d25fb5b95e17ae7f83fdb6f165f950a3856e48d313ee69296129c7ad30",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          330,
+          213,
+          895,
+          1048
+        ],
+        "foregroundOccupancy": 0.213257,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-fvmkb1kj/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Knee_Tuck_Jump/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "e42e980e3868093de94f88172ec3137c1067ba5f0f8865eb42148e6c85c6eb4c"
+      },
+      "outputSHA256": "e42e980e3868093de94f88172ec3137c1067ba5f0f8865eb42148e6c85c6eb4c",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Knee_Tuck_Jump__f1__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T23:58:46+00:00",
+      "claimedBy": "root",
+      "completedAt": "2026-08-13T00:01:09+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Knee_Tuck_Jump/1.png",
       "jobFingerprint": "fb7ddfa00e3bacb9b5f6d7effc8b2aad68bf6ad3c13a330bf9a7cfc4647c3e01",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          380,
+          13,
+          873,
+          1140
+        ],
+        "foregroundOccupancy": 0.102611,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-344yh9qm/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Knee_Tuck_Jump/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "68e4f48e4a536cfd76afa11d61ce74eb7d2603e9fb4f25ca825302e309ce16d6"
+      },
+      "outputSHA256": "68e4f48e4a536cfd76afa11d61ce74eb7d2603e9fb4f25ca825302e309ce16d6",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Knee_Tuck_Jump__f1__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 2,
+      "claimedAt": "2026-08-13T00:13:51+00:00",
+      "claimedBy": "root",
+      "completedAt": "2026-08-13T00:14:58+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Knee_Tuck_Jump/1.png",
       "jobFingerprint": "e2884572c0e1d7d8b29886174eb37ed7b08efba6ab720f34d0ee6fc3189437f3",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          370,
+          14,
+          877,
+          1109
+        ],
+        "foregroundOccupancy": 0.114565,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-x2tyfpqf/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Knee_Tuck_Jump/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "9564b60a23229ef648cda448e4ff911f50371b42c4609caacea3ee8e3fab7a5d"
+      },
+      "outputSHA256": "9564b60a23229ef648cda448e4ff911f50371b42c4609caacea3ee8e3fab7a5d",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Kneeling_Arm_Drill__f0__female": {
       "attempts": 0,
@@ -17496,14 +18736,39 @@
       "status": "pending"
     },
     "Lateral_Bound__f0__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T23:52:16+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-12T23:53:22+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Lateral_Bound/0.png",
       "jobFingerprint": "184fe01e5276d9a642004302012cf6134fbf75dd4494601829fde7423373b37e",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          170,
+          94,
+          1019,
+          1099
+        ],
+        "foregroundOccupancy": 0.173999,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-o68jwpu5/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Lateral_Bound/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "cc12f3afd46347bdc3a39afde30364dac93f5cfb5b15789d172a2757d70a50ce"
+      },
+      "outputSHA256": "cc12f3afd46347bdc3a39afde30364dac93f5cfb5b15789d172a2757d70a50ce",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Lateral_Bound__f1__female": {
       "attempts": 0,
@@ -17516,14 +18781,39 @@
       "status": "pending"
     },
     "Lateral_Bound__f1__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T23:53:22+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-12T23:54:25+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Lateral_Bound/1.png",
       "jobFingerprint": "a8b9f50e5af2568ca4e2846a7d645e9f39f02a2dd4fc10c1b090f929cd4d883e",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          393,
+          68,
+          846,
+          1173
+        ],
+        "foregroundOccupancy": 0.145741,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-9eu80x6g/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Lateral_Bound/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "f7d8014730336a53d3d0eebfad40e41e21aad93df9ce557cdf3b330f0cd7c70e"
+      },
+      "outputSHA256": "f7d8014730336a53d3d0eebfad40e41e21aad93df9ce557cdf3b330f0cd7c70e",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Lateral_Box_Jump__f0__female": {
       "attempts": 0,
@@ -17726,14 +19016,39 @@
       "status": "pending"
     },
     "Leg-Up_Hamstring_Stretch__f0__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T02:19:13+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-13T02:21:49+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Leg-Up_Hamstring_Stretch/0.png",
       "jobFingerprint": "62f107d06990c070c869ddc4e0dda892f26744e591ee951d245edc77241034b7",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          6,
+          352,
+          1254,
+          844
+        ],
+        "foregroundOccupancy": 0.094309,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-s7ku07v7/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Leg-Up_Hamstring_Stretch/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "2ede16b52224cefff286391e4ea60309bb80d9879b4138faf4541e9f72e14d97"
+      },
+      "outputSHA256": "2ede16b52224cefff286391e4ea60309bb80d9879b4138faf4541e9f72e14d97",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Leg-Up_Hamstring_Stretch__f0__male": {
       "attempts": 0,
@@ -17746,14 +19061,39 @@
       "status": "pending"
     },
     "Leg-Up_Hamstring_Stretch__f1__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T02:19:13+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-13T02:21:51+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Leg-Up_Hamstring_Stretch/1.png",
       "jobFingerprint": "f2cff13dc1fd0b09c873aee5fdb0b8ae5fcdb4bc41194cc30e1ade903f4b8e4c",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          17,
+          128,
+          1254,
+          999
+        ],
+        "foregroundOccupancy": 0.097871,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-mrxe2hdn/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Leg-Up_Hamstring_Stretch/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "4219eec43f3dac1af4ac4e60737be2eb7c49460390f6153bb584e8c4e044bb99"
+      },
+      "outputSHA256": "4219eec43f3dac1af4ac4e60737be2eb7c49460390f6153bb584e8c4e044bb99",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Leg-Up_Hamstring_Stretch__f1__male": {
       "attempts": 0,
@@ -20046,14 +21386,39 @@
       "status": "pending"
     },
     "Monster_Walk__f0__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T02:06:53+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-13T02:08:57+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Monster_Walk/0.png",
       "jobFingerprint": "e2f32e3380e26ab75082d532a562e8f6f8c34d69c802c62ee0986b3d5638dedc",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          184,
+          29,
+          1061,
+          1219
+        ],
+        "foregroundOccupancy": 0.143173,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-qb7_6dn8/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Monster_Walk/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "6bb9b4aa40a81b50bf090c964a2603d371fcbca721ee0da7145a7d4dcbc92897"
+      },
+      "outputSHA256": "6bb9b4aa40a81b50bf090c964a2603d371fcbca721ee0da7145a7d4dcbc92897",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Monster_Walk__f0__male": {
       "attempts": 1,
@@ -20091,14 +21456,39 @@
       "status": "complete"
     },
     "Monster_Walk__f1__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T02:06:53+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-13T02:09:00+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Monster_Walk/1.png",
       "jobFingerprint": "a2ee41ef38b94da5673ad2af50b17864d4d6e3c9442ba5d6a9206c89cfa0e261",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          367,
+          8,
+          873,
+          1225
+        ],
+        "foregroundOccupancy": 0.121935,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-b3_9pies/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Monster_Walk/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "8f37209afb7bd0c7286cdda56b56cd1157b474d5a52170cdd582486e3f3467db"
+      },
+      "outputSHA256": "8f37209afb7bd0c7286cdda56b56cd1157b474d5a52170cdd582486e3f3467db",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Monster_Walk__f1__male": {
       "attempts": 3,
@@ -20544,14 +21934,39 @@
       "status": "pending"
     },
     "Oblique_Crunches_-_On_The_Floor__f0__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 2,
+      "claimedAt": "2026-08-13T02:32:25+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-13T02:34:34+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Oblique_Crunches_-_On_The_Floor/0.png",
       "jobFingerprint": "4ff765c12219e087a65240fef1c1676df97c4e500abcc3de2e09804d6a0e8090",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          0,
+          266,
+          1254,
+          854
+        ],
+        "foregroundOccupancy": 0.151066,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-fglzj3vo/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Oblique_Crunches_-_On_The_Floor/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "ff9b46f5f48b11782537a97ba78307c884a0ea3a4f2062275032c3ab0058d0fe"
+      },
+      "outputSHA256": "ff9b46f5f48b11782537a97ba78307c884a0ea3a4f2062275032c3ab0058d0fe",
+      "qaStatus": "rejected",
+      "status": "qa_failed"
     },
     "Oblique_Crunches_-_On_The_Floor__f0__male": {
       "attempts": 0,
@@ -20564,14 +21979,39 @@
       "status": "pending"
     },
     "Oblique_Crunches_-_On_The_Floor__f1__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 2,
+      "claimedAt": "2026-08-13T02:32:25+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-13T02:34:36+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Oblique_Crunches_-_On_The_Floor/1.png",
       "jobFingerprint": "adb363e15c07810c6d814bd439b2c7947b32280efdc4a793cf6fc7e2f7a5d82b",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          11,
+          244,
+          1243,
+          870
+        ],
+        "foregroundOccupancy": 0.179289,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-bc052d01/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Oblique_Crunches_-_On_The_Floor/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "c1e52726c0baa3d0827e2de6e5e9e4e623d0b0be336416a17751b1e43df8e697"
+      },
+      "outputSHA256": "c1e52726c0baa3d0827e2de6e5e9e4e623d0b0be336416a17751b1e43df8e697",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Oblique_Crunches_-_On_The_Floor__f1__male": {
       "attempts": 0,
@@ -23050,14 +24490,39 @@
       "status": "pending"
     },
     "Plate_Pinch__f0__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T23:37:13+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-12T23:38:06+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Plate_Pinch/0.png",
       "jobFingerprint": "04acd5cb7932986625c3c696db1b67c4d5114dc12be9df88f3049d89c96cff47",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          360,
+          65,
+          909,
+          1157
+        ],
+        "foregroundOccupancy": 0.199677,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-s1_pb1wi/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Plate_Pinch/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "3cb1946417399dd25ac85d9b3e8f2950a716389b6b6a6b8464125b9e9580e11b"
+      },
+      "outputSHA256": "3cb1946417399dd25ac85d9b3e8f2950a716389b6b6a6b8464125b9e9580e11b",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Plate_Pinch__f1__female": {
       "attempts": 0,
@@ -23070,14 +24535,39 @@
       "status": "pending"
     },
     "Plate_Pinch__f1__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T23:38:07+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-12T23:39:06+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Plate_Pinch/1.png",
       "jobFingerprint": "e7be44f4ae01f27634c9548268dfd97349b05065ae5e11257f91f3ea40c1f730",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          401,
+          0,
+          824,
+          1254
+        ],
+        "foregroundOccupancy": 0.123669,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-rc_buw35/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Plate_Pinch/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "bcfd70e7ea0a440434be44f605ba030d9983bc1385b18a2402afb0d31e69aa45"
+      },
+      "outputSHA256": "bcfd70e7ea0a440434be44f605ba030d9983bc1385b18a2402afb0d31e69aa45",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Plate_Twist__f0__female": {
       "attempts": 0,
@@ -24223,14 +25713,39 @@
       "status": "pending"
     },
     "Pushups__f0__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T00:54:31+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-13T00:55:27+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Pushups/0.png",
       "jobFingerprint": "ebd58d57c0020e634518370785430e47be11115e0d6101d587e09a956fb47f7f",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          139,
+          206,
+          1212,
+          1012
+        ],
+        "foregroundOccupancy": 0.177001,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-wakviyzg/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Pushups/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "741c44bd169e651fc725feba2791c83c1d8450fce636522a35a211a4d7a14896"
+      },
+      "outputSHA256": "741c44bd169e651fc725feba2791c83c1d8450fce636522a35a211a4d7a14896",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Pushups__f1__female": {
       "attempts": 0,
@@ -24243,14 +25758,39 @@
       "status": "pending"
     },
     "Pushups__f1__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T00:55:27+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-13T00:56:33+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Pushups/1.png",
       "jobFingerprint": "0810d3aac36b8bb91eedc184520e2066d725d739eef9465e129e66bc1fe2cc2f",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          49,
+          513,
+          1217,
+          932
+        ],
+        "foregroundOccupancy": 0.128565,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-68ozbx61/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Pushups/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "f0f507f800908e28f5472609b37a93986cd41f2b35eaa36b4786d26094243936"
+      },
+      "outputSHA256": "f0f507f800908e28f5472609b37a93986cd41f2b35eaa36b4786d26094243936",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Pyramid__f0__female": {
       "attempts": 0,
@@ -24533,14 +26073,39 @@
       "status": "pending"
     },
     "Rear_Leg_Raises__f0__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T00:05:15+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-13T00:06:57+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Rear_Leg_Raises/0.png",
       "jobFingerprint": "5eebd6fbe10d575de25d304ae708c0c782cf44c011db86d02083a089beb2fd1f",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          68,
+          205,
+          1150,
+          960
+        ],
+        "foregroundOccupancy": 0.163583,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-0pibksme/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Rear_Leg_Raises/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "ec2c82a295e277856f0027d605236cc7044f55c7c389f86b69caf233e7bd22e9"
+      },
+      "outputSHA256": "ec2c82a295e277856f0027d605236cc7044f55c7c389f86b69caf233e7bd22e9",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Rear_Leg_Raises__f0__male": {
       "attempts": 0,
@@ -24553,14 +26118,39 @@
       "status": "pending"
     },
     "Rear_Leg_Raises__f1__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T00:05:15+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-13T00:06:59+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Rear_Leg_Raises/1.png",
       "jobFingerprint": "3204ad23a35371e395a7bc09c6f87037f14a129b435209aae8e65074b99fdbb0",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          42,
+          219,
+          1193,
+          950
+        ],
+        "foregroundOccupancy": 0.123855,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-bxm3lbvm/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Rear_Leg_Raises/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "6aa12445a3262a6e0b006ff31574c91d497928025f3a64e92155d0e7a23575ed"
+      },
+      "outputSHA256": "6aa12445a3262a6e0b006ff31574c91d497928025f3a64e92155d0e7a23575ed",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Rear_Leg_Raises__f1__male": {
       "attempts": 0,
@@ -24991,14 +26581,39 @@
       "status": "pending"
     },
     "Reverse_Crunch__f0__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 2,
+      "claimedAt": "2026-08-13T01:08:10+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-13T01:09:18+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Reverse_Crunch/0.png",
       "jobFingerprint": "9d7faaecc38278b4b397e36a57a3563278bdf3de632bc8d40958f94037fe20cc",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          0,
+          252,
+          1254,
+          930
+        ],
+        "foregroundOccupancy": 0.164101,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-juelxwiu/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Reverse_Crunch/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "5e83aaac0b77174d4aac6e12344b28da361d49e7dbb2c08e8745e105a531bbae"
+      },
+      "outputSHA256": "5e83aaac0b77174d4aac6e12344b28da361d49e7dbb2c08e8745e105a531bbae",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Reverse_Crunch__f1__female": {
       "attempts": 0,
@@ -25011,14 +26626,39 @@
       "status": "pending"
     },
     "Reverse_Crunch__f1__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 2,
+      "claimedAt": "2026-08-13T01:09:18+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-13T01:10:23+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Reverse_Crunch/1.png",
       "jobFingerprint": "de7491fa44f311f3d4f1f0079ea415764a866753c9bf16d9172157f48c60cbda",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          21,
+          181,
+          1234,
+          1004
+        ],
+        "foregroundOccupancy": 0.196525,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-6n8nz00d/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Reverse_Crunch/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "48897c9408bf81327fff424e35bd2134d665f26534ae9dc1af3487beab2f2223"
+      },
+      "outputSHA256": "48897c9408bf81327fff424e35bd2134d665f26534ae9dc1af3487beab2f2223",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Reverse_Flyes_With_External_Rotation__f0__female": {
       "attempts": 0,
@@ -25501,44 +27141,144 @@
       "status": "pending"
     },
     "Rocket_Jump__f0__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T00:08:41+00:00",
+      "claimedBy": "root",
+      "completedAt": "2026-08-13T00:09:50+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Rocket_Jump/0.png",
       "jobFingerprint": "af5af69931955ecf0096ae2605ebffc027784d8e656618d8b357fd37e3eb3340",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          349,
+          62,
+          904,
+          1192
+        ],
+        "foregroundOccupancy": 0.165127,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-gbv116bv/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Rocket_Jump/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "83d5a2719d828bed86dd71176b8de6f0c248335f064a768928eaef69959a1a70"
+      },
+      "outputSHA256": "83d5a2719d828bed86dd71176b8de6f0c248335f064a768928eaef69959a1a70",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Rocket_Jump__f0__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T00:01:22+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-13T00:02:25+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Rocket_Jump/0.png",
       "jobFingerprint": "71fd4bb9ae7f18325f74d2a37cf16ab9bed0d58484ba8a7c6efee871072a9f5a",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          367,
+          185,
+          888,
+          1096
+        ],
+        "foregroundOccupancy": 0.191818,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-jijg4q5i/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Rocket_Jump/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "a78a04666efc81ac2b4b6576ecd6ce428b3b180bb4bd25372d29dc32e177ed01"
+      },
+      "outputSHA256": "a78a04666efc81ac2b4b6576ecd6ce428b3b180bb4bd25372d29dc32e177ed01",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Rocket_Jump__f1__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T00:09:59+00:00",
+      "claimedBy": "root",
+      "completedAt": "2026-08-13T00:10:52+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Rocket_Jump/1.png",
       "jobFingerprint": "98050ea6ce9a7166563c36a8f48c6ccbb61ef9a65f609c8c0da6d7c2deede448",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          461,
+          0,
+          790,
+          1162
+        ],
+        "foregroundOccupancy": 0.096455,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-a9p7hz60/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Rocket_Jump/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "e6d73113d8ba748ab49743c6f5bc456cc83b29b7e09e89f5e5da0fe50d3bd9bb"
+      },
+      "outputSHA256": "e6d73113d8ba748ab49743c6f5bc456cc83b29b7e09e89f5e5da0fe50d3bd9bb",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Rocket_Jump__f1__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T00:02:25+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-13T00:03:30+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Rocket_Jump/1.png",
       "jobFingerprint": "b4ba30e9d5fd7f0fae21295a36d444adb50d1e6585d07bbc260174453f1d8d92",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          483,
+          1,
+          773,
+          1112
+        ],
+        "foregroundOccupancy": 0.094242,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-um8mf8ew/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Rocket_Jump/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "2ebffcef323430a8cb54433404806e9c857c8421d1d623c60dbec3bab6077654"
+      },
+      "outputSHA256": "2ebffcef323430a8cb54433404806e9c857c8421d1d623c60dbec3bab6077654",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Rocking_Standing_Calf_Raise__f0__female": {
       "attempts": 0,
@@ -25551,15 +27291,39 @@
       "status": "pending"
     },
     "Rocking_Standing_Calf_Raise__f0__male": {
-      "attempts": 1,
-      "claimedAt": null,
-      "claimedBy": null,
+      "attempts": 2,
+      "claimedAt": "2026-08-12T23:45:33+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-12T23:46:35+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Rocking_Standing_Calf_Raise/0.png",
       "jobFingerprint": "74f2bb73bf0f6f18304849e207a9bbc30b3f74d65f77ad3bdeef18689f3dacee",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          172,
+          55,
+          1043,
+          1140
+        ],
+        "foregroundOccupancy": 0.159992,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-sxapj62e/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Rocking_Standing_Calf_Raise/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "fdc2ff1338776963a4615a3c64a38feda5c7db7208f5b2b64aeaaa223f170a4d"
+      },
+      "outputSHA256": "fdc2ff1338776963a4615a3c64a38feda5c7db7208f5b2b64aeaaa223f170a4d",
+      "qaStatus": "rejected",
+      "status": "qa_failed"
     },
     "Rocking_Standing_Calf_Raise__f1__female": {
       "attempts": 0,
@@ -25572,15 +27336,16 @@
       "status": "pending"
     },
     "Rocking_Standing_Calf_Raise__f1__male": {
-      "attempts": 1,
+      "attempts": 2,
       "claimedAt": null,
       "claimedBy": null,
-      "error": null,
-      "generatedInputPath": null,
+      "error": "generator preflight rejection: locked male outfit violation; short sleeves added instead of solid-charcoal sleeveless top",
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Rocking_Standing_Calf_Raise/1.png",
       "jobFingerprint": "e63e53399e63bcc2f3deab0fdc6a8d67baeba0747ba604f1102f06d07dc3e490",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": null,
+      "outputSHA256": "e12088f17df77cb81f6db73b1e93d7bb238704594d8dc356baeef305f1d34103",
+      "qaStatus": "rejected",
+      "status": "qa_failed"
     },
     "Rocky_Pull-Ups_Pulldowns__f0__female": {
       "attempts": 0,
@@ -25633,14 +27398,39 @@
       "status": "pending"
     },
     "Romanian_Deadlift__f0__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T02:33:08+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-13T02:34:11+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Romanian_Deadlift/0.png",
       "jobFingerprint": "2a42f03917f02afc5dcaac4748e388551e4fe9e950d2734ab0df3bd165b16823",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          48,
+          127,
+          1206,
+          1136
+        ],
+        "foregroundOccupancy": 0.149718,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-o3w4xgxs/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Romanian_Deadlift/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "d880705dafdbaaba5e3e361003697f77dd7d78f1a5aa938d4550b486ae395bdd"
+      },
+      "outputSHA256": "d880705dafdbaaba5e3e361003697f77dd7d78f1a5aa938d4550b486ae395bdd",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Romanian_Deadlift__f1__female": {
       "attempts": 0,
@@ -25653,14 +27443,39 @@
       "status": "pending"
     },
     "Romanian_Deadlift__f1__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T02:34:11+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-13T02:35:16+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Romanian_Deadlift/1.png",
       "jobFingerprint": "4993188c788d547ee1fb21a7142887081e5c600cad9dc5b2b372151a233e1561",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          75,
+          3,
+          1164,
+          1198
+        ],
+        "foregroundOccupancy": 0.147631,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-twxdjv3i/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Romanian_Deadlift/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "22532567ee673bc5b9afa12434001ec42c3d1eed9179692e1b95cd19bdfd9cd6"
+      },
+      "outputSHA256": "22532567ee673bc5b9afa12434001ec42c3d1eed9179692e1b95cd19bdfd9cd6",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Romanian_Deadlift_from_Deficit__f0__female": {
       "attempts": 0,
@@ -25793,14 +27608,39 @@
       "status": "pending"
     },
     "Rope_Jumping__f0__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T00:05:59+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-13T00:07:07+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Rope_Jumping/0.png",
       "jobFingerprint": "1cc43c49d5ac8f32d83414a79f4b7afbb587b1364f553c4fcc7e70eb11ff2d1a",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          293,
+          0,
+          960,
+          1220
+        ],
+        "foregroundOccupancy": 0.101843,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-5x92u4cn/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Rope_Jumping/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "a63dec2e970b871756986f4d9134a369a20193f61da9d7ee95904d2929d13763"
+      },
+      "outputSHA256": "a63dec2e970b871756986f4d9134a369a20193f61da9d7ee95904d2929d13763",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Rope_Jumping__f1__female": {
       "attempts": 0,
@@ -25813,14 +27653,39 @@
       "status": "pending"
     },
     "Rope_Jumping__f1__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T00:07:07+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-13T00:08:19+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Rope_Jumping/1.png",
       "jobFingerprint": "6d4c6cc9ae509142a44c608420689dc9b67b2168ff58b21bf218f70740b3f340",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          262,
+          6,
+          991,
+          1214
+        ],
+        "foregroundOccupancy": 0.104098,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-0ris2ze4/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Rope_Jumping/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "b21ba403b07c8dba29cb17d04371a27af85f92e573ae40fb107456f667b55678"
+      },
+      "outputSHA256": "b21ba403b07c8dba29cb17d04371a27af85f92e573ae40fb107456f667b55678",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Rope_Straight-Arm_Pulldown__f0__female": {
       "attempts": 0,
@@ -26719,14 +28584,39 @@
       "status": "complete"
     },
     "Seated_Dumbbell_Curl__f0__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T00:42:08+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-13T00:43:18+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Seated_Dumbbell_Curl/0.png",
       "jobFingerprint": "f7598f9235b7c03ea998a10b4f620abb41a29655ce3b22011ea0f6a170439cfe",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          216,
+          45,
+          1085,
+          1145
+        ],
+        "foregroundOccupancy": 0.215369,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-6il3sw4x/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Seated_Dumbbell_Curl/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "5910ee7689d414ff2dbb0f690f7fab3a5e36d8493d02a0bdd0caf9de21dfd1df"
+      },
+      "outputSHA256": "5910ee7689d414ff2dbb0f690f7fab3a5e36d8493d02a0bdd0caf9de21dfd1df",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Seated_Dumbbell_Curl__f1__female": {
       "attempts": 1,
@@ -26741,14 +28631,39 @@
       "status": "complete"
     },
     "Seated_Dumbbell_Curl__f1__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 2,
+      "claimedAt": "2026-08-13T00:47:47+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-13T00:48:55+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Seated_Dumbbell_Curl/1.png",
       "jobFingerprint": "45138525e889e078f566376298d5eb5f4b9bc1c98538d4dc3aa4696c5ba44fda",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          181,
+          44,
+          1102,
+          1166
+        ],
+        "foregroundOccupancy": 0.219791,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-h1aq_qga/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Seated_Dumbbell_Curl/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "17cce1b9e175fc70f565df8b573732c881f098be4df04943f5a14695237646d1"
+      },
+      "outputSHA256": "17cce1b9e175fc70f565df8b573732c881f098be4df04943f5a14695237646d1",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Seated_Dumbbell_Inner_Biceps_Curl__f0__female": {
       "attempts": 1,
@@ -27979,14 +29894,39 @@
       "status": "pending"
     },
     "Side_Bridge__f0__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T00:23:20+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-13T00:25:22+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Side_Bridge/0.png",
       "jobFingerprint": "111246edcb712f30b2e20643d884ad807436a6fb8b40f6c33aaa4f2e4771963a",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          18,
+          257,
+          1232,
+          930
+        ],
+        "foregroundOccupancy": 0.13813,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-wxvay56j/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Side_Bridge/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "272a2c18fa90fa1eaadaf2a21ef75896b9e8ca0d9420f46c73a5f8d462385840"
+      },
+      "outputSHA256": "272a2c18fa90fa1eaadaf2a21ef75896b9e8ca0d9420f46c73a5f8d462385840",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Side_Bridge__f0__male": {
       "attempts": 0,
@@ -27999,14 +29939,39 @@
       "status": "pending"
     },
     "Side_Bridge__f1__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T00:23:20+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-13T00:25:24+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Side_Bridge/1.png",
       "jobFingerprint": "df508ca2e0e8cd929c43918977acd2970c8a2c19523ee29f6b1ce0322b7cfe46",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          25,
+          295,
+          1251,
+          943
+        ],
+        "foregroundOccupancy": 0.121531,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-gnabyidj/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Side_Bridge/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "2fe025c3d71da8809d558508711673bbe0aff2d584a5465647aab5879448b5c6"
+      },
+      "outputSHA256": "2fe025c3d71da8809d558508711673bbe0aff2d584a5465647aab5879448b5c6",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Side_Bridge__f1__male": {
       "attempts": 0,
@@ -29015,14 +30980,39 @@
       "status": "pending"
     },
     "Single_Leg_Glute_Bridge__f0__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T00:30:24+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-13T00:33:23+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Single_Leg_Glute_Bridge/0.png",
       "jobFingerprint": "d2757f009c21a955c4887fcaf32a2e71e936aa620bc99b824c702521607681dc",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          55,
+          134,
+          1158,
+          1021
+        ],
+        "foregroundOccupancy": 0.146137,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-k98q86bd/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Single_Leg_Glute_Bridge/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "deee1908496369586d984f623dd226a933479177d64c713a8ccac1e26302e6e0"
+      },
+      "outputSHA256": "deee1908496369586d984f623dd226a933479177d64c713a8ccac1e26302e6e0",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Single_Leg_Glute_Bridge__f0__male": {
       "attempts": 0,
@@ -29035,14 +31025,39 @@
       "status": "pending"
     },
     "Single_Leg_Glute_Bridge__f1__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T00:30:27+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-13T00:33:32+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Single_Leg_Glute_Bridge/1.png",
       "jobFingerprint": "ad6576544091829f50b7fdf548fd76cadb3ff793149e9649e05861a9b279d6d6",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          35,
+          95,
+          1196,
+          1013
+        ],
+        "foregroundOccupancy": 0.144487,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-6odg4cz_/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Single_Leg_Glute_Bridge/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "6fea6e84709bada046f207ed97115660cff7501acb1cd4acb682b179329d27cb"
+      },
+      "outputSHA256": "6fea6e84709bada046f207ed97115660cff7501acb1cd4acb682b179329d27cb",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Single_Leg_Glute_Bridge__f1__male": {
       "attempts": 0,
@@ -29135,14 +31150,39 @@
       "status": "pending"
     },
     "Sit_Squats__f0__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 2,
+      "claimedAt": "2026-08-13T00:17:36+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-13T00:18:54+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Sit_Squats/0.png",
       "jobFingerprint": "53df6504fd8d36bd2184d917ff056e82c3e79b2057adc20c45fa3ba4119e1cba",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          451,
+          19,
+          786,
+          1201
+        ],
+        "foregroundOccupancy": 0.097683,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-_vq3gmrt/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Sit_Squats/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "43edcee5230680a65771f79bc6bf71d02c764ed8f79c6b403374c1f429a74ec2"
+      },
+      "outputSHA256": "43edcee5230680a65771f79bc6bf71d02c764ed8f79c6b403374c1f429a74ec2",
+      "qaStatus": "rejected",
+      "status": "qa_failed"
     },
     "Sit_Squats__f0__male": {
       "attempts": 0,
@@ -29155,14 +31195,39 @@
       "status": "pending"
     },
     "Sit_Squats__f1__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T00:12:06+00:00",
+      "claimedBy": "female-generation",
+      "completedAt": "2026-08-13T00:14:07+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Sit_Squats/1.png",
       "jobFingerprint": "b24215e47da2625b11910fcb26e80633188bb8949d643c1910a5669009516eba",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          334,
+          97,
+          899,
+          1136
+        ],
+        "foregroundOccupancy": 0.138829,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-jo0w1754/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Sit_Squats/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "622e436ea656e9ddcdf9066d7472dad75732312061c9e373afccdae631de2448"
+      },
+      "outputSHA256": "622e436ea656e9ddcdf9066d7472dad75732312061c9e373afccdae631de2448",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Sit_Squats__f1__male": {
       "attempts": 0,
@@ -31428,14 +33493,39 @@
       "status": "complete"
     },
     "Standing_Barbell_Press_Behind_Neck__f0__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T02:09:57+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-13T02:11:33+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Standing_Barbell_Press_Behind_Neck/0.png",
       "jobFingerprint": "116677e09841c45021322aed14ac0afa281cf62ffa41f3a8a1f1d8a31a51efd1",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          176,
+          6,
+          1068,
+          1241
+        ],
+        "foregroundOccupancy": 0.134597,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-ero3c6h6/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Standing_Barbell_Press_Behind_Neck/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "91ebb97827d37955280ff594965860e69c42d3aff2e24d07ac76e04235cec838"
+      },
+      "outputSHA256": "91ebb97827d37955280ff594965860e69c42d3aff2e24d07ac76e04235cec838",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Standing_Barbell_Press_Behind_Neck__f1__female": {
       "attempts": 1,
@@ -31473,14 +33563,39 @@
       "status": "complete"
     },
     "Standing_Barbell_Press_Behind_Neck__f1__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T02:11:33+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-13T02:13:15+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Standing_Barbell_Press_Behind_Neck/1.png",
       "jobFingerprint": "93f16271e156e85ace016e3dc6d656e8908755881fafba0e402beeede3df32e2",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          243,
+          10,
+          1003,
+          1221
+        ],
+        "foregroundOccupancy": 0.101533,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-hju1_kel/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Standing_Barbell_Press_Behind_Neck/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "3908963a488227487a13a80722d8ff34b45b72dee881f2593a0408d519348539"
+      },
+      "outputSHA256": "3908963a488227487a13a80722d8ff34b45b72dee881f2593a0408d519348539",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Standing_Bent-Over_One-Arm_Dumbbell_Triceps_Extension__f0__female": {
       "attempts": 1,
@@ -32627,44 +34742,145 @@
       "status": "pending"
     },
     "Standing_Long_Jump__f0__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T23:51:22+00:00",
+      "claimedBy": "root",
+      "completedAt": "2026-08-12T23:52:22+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Standing_Long_Jump/0.png",
       "jobFingerprint": "a614a612878c5fc6fe60dfadcdedb6341d15a122b82b581e917ca065d22d0455",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          244,
+          163,
+          991,
+          1079
+        ],
+        "foregroundOccupancy": 0.183021,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-ofd6nom5/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Standing_Long_Jump/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "09316e0f3795e34991f2720846421da32a775b6f7203601859798d55a812174b"
+      },
+      "outputSHA256": "09316e0f3795e34991f2720846421da32a775b6f7203601859798d55a812174b",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Standing_Long_Jump__f0__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T23:51:22+00:00",
+      "claimedBy": "root",
+      "completedAt": "2026-08-12T23:54:31+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Standing_Long_Jump/0.png",
       "jobFingerprint": "f11e2cdddf549156c1aae0c8613fc6688089cbd286e6246d6da5b6ae595f9480",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          222,
+          171,
+          1004,
+          1098
+        ],
+        "foregroundOccupancy": 0.202336,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-ehe5u_f1/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Standing_Long_Jump/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "f09afea588556bd8835c798e352016917b38777ed1d01ce702014215e51a8079"
+      },
+      "outputSHA256": "f09afea588556bd8835c798e352016917b38777ed1d01ce702014215e51a8079",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Standing_Long_Jump__f1__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T23:51:22+00:00",
+      "claimedBy": "root",
+      "completedAt": "2026-08-12T23:53:32+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Standing_Long_Jump/1.png",
       "jobFingerprint": "4d507442ad0afba7897f8ec4c7f234a389ef25510944296406198a32210848fb",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          186,
+          29,
+          1042,
+          1186
+        ],
+        "foregroundOccupancy": 0.104098,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-_f82lvr6/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Standing_Long_Jump/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "b3182b0816a18976f19f0cd50829384aace8e98ddeac4152dcfbacb96563f310"
+      },
+      "outputSHA256": "b3182b0816a18976f19f0cd50829384aace8e98ddeac4152dcfbacb96563f310",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Standing_Long_Jump__f1__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 2,
+      "claimedAt": "2026-08-12T23:56:48+00:00",
+      "claimedBy": "root",
+      "completedAt": "2026-08-12T23:57:50+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "failedAt": "2026-08-12T23:55:44+00:00",
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Standing_Long_Jump/1.png",
       "jobFingerprint": "dae3a4d4c0ddb5a6befae45782a6b689c51a840628b717da1969a8ba76ab3582",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          178,
+          44,
+          1060,
+          1156
+        ],
+        "foregroundOccupancy": 0.114452,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-2tr1bf6w/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Standing_Long_Jump/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "61d7a78241fb2795b71569df380cc19b871ec0e5200cdf101695f9fc368272d8"
+      },
+      "outputSHA256": "61d7a78241fb2795b71569df380cc19b871ec0e5200cdf101695f9fc368272d8",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Standing_Low-Pulley_Deltoid_Raise__f0__female": {
       "attempts": 0,
@@ -32759,14 +34975,39 @@
       "status": "complete"
     },
     "Standing_Military_Press__f0__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 2,
+      "claimedAt": "2026-08-13T01:57:53+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-13T01:57:55+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Standing_Military_Press/0.png",
       "jobFingerprint": "0282d1977d8e24303e2633c7c727fecf14ef4377d7e332349ab3b52f714a30c6",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          271,
+          15,
+          979,
+          1235
+        ],
+        "foregroundOccupancy": 0.128386,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-zkg1ho4w/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Standing_Military_Press/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "cd38d3622c8097d2ca0b6a3ab99a83ee638dde20fea38fb3c7862c20c7eec77c"
+      },
+      "outputSHA256": "cd38d3622c8097d2ca0b6a3ab99a83ee638dde20fea38fb3c7862c20c7eec77c",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Standing_Military_Press__f1__female": {
       "attempts": 1,
@@ -32781,14 +35022,39 @@
       "status": "complete"
     },
     "Standing_Military_Press__f1__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T01:57:55+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-13T01:59:23+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Standing_Military_Press/1.png",
       "jobFingerprint": "45773ace720b7c7477adf4e2f40798038994e2ba8c07111df5a0b643949f9b21",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          281,
+          0,
+          969,
+          1232
+        ],
+        "foregroundOccupancy": 0.102326,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-_p6cp66o/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Standing_Military_Press/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "051362ff5b3d4861da2679cb36137c718ef5d5df3a7a4e1ab771cccaa5e96474"
+      },
+      "outputSHA256": "051362ff5b3d4861da2679cb36137c718ef5d5df3a7a4e1ab771cccaa5e96474",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Standing_Olympic_Plate_Hand_Squeeze__f0__female": {
       "attempts": 0,
@@ -32967,14 +35233,39 @@
       "status": "complete"
     },
     "Standing_Overhead_Barbell_Triceps_Extension__f0__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T02:04:02+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-13T02:05:36+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Standing_Overhead_Barbell_Triceps_Extension/0.png",
       "jobFingerprint": "718e8c62c5ccf6df729aacddf8e100056861867b23e08ff9ca4459ab9c4a61bc",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          344,
+          64,
+          903,
+          1193
+        ],
+        "foregroundOccupancy": 0.12676,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-mn1sm2y7/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Standing_Overhead_Barbell_Triceps_Extension/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "9ce308ca82b80e8f239919cdb2cc92afe94d78620deafae718dd860bb6da0872"
+      },
+      "outputSHA256": "9ce308ca82b80e8f239919cdb2cc92afe94d78620deafae718dd860bb6da0872",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Standing_Overhead_Barbell_Triceps_Extension__f1__female": {
       "attempts": 1,
@@ -32989,14 +35280,39 @@
       "status": "complete"
     },
     "Standing_Overhead_Barbell_Triceps_Extension__f1__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T02:05:36+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-13T02:07:11+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Standing_Overhead_Barbell_Triceps_Extension/1.png",
       "jobFingerprint": "7f91e055aac3227c6022dea88bbb974cdea0def287325d313edc8bf229871e28",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          394,
+          0,
+          845,
+          1173
+        ],
+        "foregroundOccupancy": 0.095322,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-4wnao5ig/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Standing_Overhead_Barbell_Triceps_Extension/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "f1869b0510b7710bf9919ccabe2011286e2d3636c17633722b8cd0f8a45b1717"
+      },
+      "outputSHA256": "f1869b0510b7710bf9919ccabe2011286e2d3636c17633722b8cd0f8a45b1717",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Standing_Palm-In_One-Arm_Dumbbell_Press__f0__female": {
       "attempts": 2,
@@ -33275,14 +35591,39 @@
       "status": "pending"
     },
     "Standing_Soleus_And_Achilles_Stretch__f0__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T00:15:00+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-13T00:16:06+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Standing_Soleus_And_Achilles_Stretch/0.png",
       "jobFingerprint": "268c7fa24cec1494e9e8d2f0aafc3f31769814d21d20d9c996ac6c7c9ed12067",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          280,
+          15,
+          928,
+          1232
+        ],
+        "foregroundOccupancy": 0.136686,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-4w3_f5pj/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Standing_Soleus_And_Achilles_Stretch/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "2eb7596985605078058e6db057590edb57d5f2438cf3a9939854c89595857e07"
+      },
+      "outputSHA256": "2eb7596985605078058e6db057590edb57d5f2438cf3a9939854c89595857e07",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Standing_Soleus_And_Achilles_Stretch__f1__female": {
       "attempts": 0,
@@ -33295,14 +35636,39 @@
       "status": "pending"
     },
     "Standing_Soleus_And_Achilles_Stretch__f1__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 3,
+      "claimedAt": "2026-08-13T00:24:38+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-13T00:24:40+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Standing_Soleus_And_Achilles_Stretch/1.png",
       "jobFingerprint": "c1b4e4350058e7b763c6e306b737173263265d99c2da743f8451ba6eb17fe7fb",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          409,
+          26,
+          855,
+          1219
+        ],
+        "foregroundOccupancy": 0.134278,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-axrv22cl/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Standing_Soleus_And_Achilles_Stretch/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "47b999d926b40e0a13d72b551de853f8b441c44554c140e2176bae97ea7d0195"
+      },
+      "outputSHA256": "47b999d926b40e0a13d72b551de853f8b441c44554c140e2176bae97ea7d0195",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Standing_Toe_Touches__f0__female": {
       "attempts": 1,
@@ -33317,14 +35683,39 @@
       "status": "failed"
     },
     "Standing_Toe_Touches__f0__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T00:45:58+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-13T00:46:50+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Standing_Toe_Touches/0.png",
       "jobFingerprint": "14bb6ee3d0b76b0d6a20579e4638af3a5230b1b1203bd31d6945d08c8cae19e8",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          516,
+          26,
+          782,
+          1226
+        ],
+        "foregroundOccupancy": 0.076025,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-x88rrpdx/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Standing_Toe_Touches/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "4f851dc019ec5ffbae5124e920e870fe34d376bc15770e5fb8e366fe38a466c6"
+      },
+      "outputSHA256": "4f851dc019ec5ffbae5124e920e870fe34d376bc15770e5fb8e366fe38a466c6",
+      "qaStatus": "rejected",
+      "status": "qa_failed"
     },
     "Standing_Toe_Touches__f1__female": {
       "attempts": 1,
@@ -33338,11 +35729,13 @@
       "status": "pending"
     },
     "Standing_Toe_Touches__f1__male": {
-      "attempts": 0,
+      "attempts": 1,
+      "claimedAt": null,
       "claimedBy": null,
       "error": null,
       "generatedInputPath": null,
       "jobFingerprint": "3a96699252ea15a4d079eb57e9186ece2723467c79a53c3043c5f3469407f46a",
+      "normalization": null,
       "outputSHA256": null,
       "qaStatus": null,
       "status": "pending"
@@ -33428,44 +35821,144 @@
       "status": "pending"
     },
     "Star_Jump__f0__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T23:41:29+00:00",
+      "claimedBy": "root",
+      "completedAt": "2026-08-12T23:42:25+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Star_Jump/0.png",
       "jobFingerprint": "5c2b6367d4353aa8ddb55cd73766bcf2595f0d35f3bd465b622fddca52e4b8ae",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          416,
+          184,
+          824,
+          1134
+        ],
+        "foregroundOccupancy": 0.169816,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-g8uf4y90/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Star_Jump/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "0da5d6c431c89f9577db5aff1e1bf6a82ada8590f204966b87cf2f08bfc2ef32"
+      },
+      "outputSHA256": "0da5d6c431c89f9577db5aff1e1bf6a82ada8590f204966b87cf2f08bfc2ef32",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Star_Jump__f0__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T23:41:30+00:00",
+      "claimedBy": "root",
+      "completedAt": "2026-08-12T23:44:13+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Star_Jump/0.png",
       "jobFingerprint": "a62191fd27eb424170fa9b0f89b74d0c940bb1b10e39abd9fd6b4009eadd0521",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          396,
+          172,
+          856,
+          1065
+        ],
+        "foregroundOccupancy": 0.200581,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-d0cswwr4/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Star_Jump/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "1ef01c7e9143624f749e60c56c46142ef51af7c0786de340413951bb51271a84"
+      },
+      "outputSHA256": "1ef01c7e9143624f749e60c56c46142ef51af7c0786de340413951bb51271a84",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Star_Jump__f1__female": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T23:41:30+00:00",
+      "claimedBy": "root",
+      "completedAt": "2026-08-12T23:43:21+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/female/Star_Jump/1.png",
       "jobFingerprint": "a590ecc8d112f887203d419e52437c5c5ea49171761c654ec097935dda77e8a4",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          161,
+          39,
+          1093,
+          1129
+        ],
+        "foregroundOccupancy": 0.122258,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-zqoow96a/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Star_Jump/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "da1acd00b11a7a0eea41ffb23fee7c4938d546b6d7035cd5bb7cab3f0dbd30a5"
+      },
+      "outputSHA256": "da1acd00b11a7a0eea41ffb23fee7c4938d546b6d7035cd5bb7cab3f0dbd30a5",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Star_Jump__f1__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T23:41:30+00:00",
+      "claimedBy": "root",
+      "completedAt": "2026-08-12T23:45:14+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Star_Jump/1.png",
       "jobFingerprint": "612b44fd71a54b3a2de8086151c6e147ebb4b0582e5f7f3ed0a43094126f98d2",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          135,
+          37,
+          1118,
+          1127
+        ],
+        "foregroundOccupancy": 0.142593,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-_4znp6kn/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Star_Jump/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "05fe8cffc450642c3eaa7cc333163068c99bf5c75cfa9c942ae7f39d683bdeb0"
+      },
+      "outputSHA256": "05fe8cffc450642c3eaa7cc333163068c99bf5c75cfa9c942ae7f39d683bdeb0",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Step-up_with_Knee_Raise__f0__female": {
       "attempts": 0,
@@ -33558,14 +36051,39 @@
       "status": "pending"
     },
     "Stiff-Legged_Barbell_Deadlift__f0__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T02:16:42+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-13T02:18:27+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Stiff-Legged_Barbell_Deadlift/0.png",
       "jobFingerprint": "6c03c8819675c93174d19c8fc1fc8c074155d7f699a0d6f190d326a3979ed884",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          86,
+          133,
+          1147,
+          1052
+        ],
+        "foregroundOccupancy": 0.215082,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-ovouiwca/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Stiff-Legged_Barbell_Deadlift/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "eb5c73db061a9f4b0ef0ac96094afa469c13d6a538d5038a7f0c7c8d4d8fcc9f"
+      },
+      "outputSHA256": "eb5c73db061a9f4b0ef0ac96094afa469c13d6a538d5038a7f0c7c8d4d8fcc9f",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Stiff-Legged_Barbell_Deadlift__f1__female": {
       "attempts": 0,
@@ -33578,14 +36096,39 @@
       "status": "pending"
     },
     "Stiff-Legged_Barbell_Deadlift__f1__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T02:18:27+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-13T02:20:04+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Stiff-Legged_Barbell_Deadlift/1.png",
       "jobFingerprint": "43be4e21ba1d7c807804587e773cb6386aa6f54f59f61ceb3f7521efbc3b49fa",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          181,
+          20,
+          1049,
+          1182
+        ],
+        "foregroundOccupancy": 0.148308,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-pjhrmkfn/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Stiff-Legged_Barbell_Deadlift/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "61b741225e5e65a3c8e5e33acdf58f8c78e693b9460771d5e5f5b8dd21d3f65f"
+      },
+      "outputSHA256": "61b741225e5e65a3c8e5e33acdf58f8c78e693b9460771d5e5f5b8dd21d3f65f",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Stiff-Legged_Dumbbell_Deadlift__f0__female": {
       "attempts": 1,
@@ -33600,14 +36143,39 @@
       "status": "complete"
     },
     "Stiff-Legged_Dumbbell_Deadlift__f0__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T02:26:38+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-13T02:27:32+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Stiff-Legged_Dumbbell_Deadlift/0.png",
       "jobFingerprint": "5ff135c9eac56bf9eeca07476ca0135157c13c4868fa046634265fc07382fa13",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          380,
+          0,
+          874,
+          1214
+        ],
+        "foregroundOccupancy": 0.128623,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-4y8c9zbh/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Stiff-Legged_Dumbbell_Deadlift/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "3587c0d4f1de20317140eebed5ae64121630df0f5df5ff32d34f4f011a908d3b"
+      },
+      "outputSHA256": "3587c0d4f1de20317140eebed5ae64121630df0f5df5ff32d34f4f011a908d3b",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Stiff-Legged_Dumbbell_Deadlift__f1__female": {
       "attempts": 1,
@@ -33622,14 +36190,39 @@
       "status": "complete"
     },
     "Stiff-Legged_Dumbbell_Deadlift__f1__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T02:27:43+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-13T02:28:37+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Stiff-Legged_Dumbbell_Deadlift/1.png",
       "jobFingerprint": "6a7a52f2d3592a791387ec86e4025c040e1b41136bfa24e1f541793443504f79",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          330,
+          86,
+          908,
+          1085
+        ],
+        "foregroundOccupancy": 0.206398,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-msk8rjk9/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Stiff-Legged_Dumbbell_Deadlift/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "5cb9ff95d63630e4f9380bfa8bc7f8077615cc26f56dc2ec708dadb0d06ced8e"
+      },
+      "outputSHA256": "5cb9ff95d63630e4f9380bfa8bc7f8077615cc26f56dc2ec708dadb0d06ced8e",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Stiff_Leg_Barbell_Good_Morning__f0__female": {
       "attempts": 0,
@@ -34042,14 +36635,39 @@
       "status": "pending"
     },
     "Superman__f0__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-13T01:01:23+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-13T01:02:24+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Superman/0.png",
       "jobFingerprint": "7e0f90208fca47ac7a2e21de74de45c06e350b108ccbae6fe74a6e289996af6c",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          0,
+          481,
+          1254,
+          762
+        ],
+        "foregroundOccupancy": 0.064773,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-m87qkg0t/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Superman/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "d03670a2fcd4eafc1c777fd4f5eba931f0d79183492bc46f94a09c2b3afe83d9"
+      },
+      "outputSHA256": "d03670a2fcd4eafc1c777fd4f5eba931f0d79183492bc46f94a09c2b3afe83d9",
+      "qaStatus": "rejected",
+      "status": "qa_failed"
     },
     "Superman__f1__female": {
       "attempts": 0,
@@ -34062,11 +36680,13 @@
       "status": "pending"
     },
     "Superman__f1__male": {
-      "attempts": 0,
+      "attempts": 1,
+      "claimedAt": null,
       "claimedBy": null,
       "error": null,
       "generatedInputPath": null,
       "jobFingerprint": "32b281f3785f4b87a3d3bd5298f6449101ecc6bac66948e46759083e68c1a6b6",
+      "normalization": null,
       "outputSHA256": null,
       "qaStatus": null,
       "status": "pending"
@@ -37040,14 +39660,39 @@
       "status": "pending"
     },
     "Wrist_Rotations_with_Straight_Bar__f0__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T23:32:39+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-12T23:33:34+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Wrist_Rotations_with_Straight_Bar/0.png",
       "jobFingerprint": "30c8f4f1350fa382daedaa0589f2110797fb2e6f6bc7efc23283340e8eccf7a8",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          157,
+          25,
+          1069,
+          1194
+        ],
+        "foregroundOccupancy": 0.153234,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-8gekm2z6/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Wrist_Rotations_with_Straight_Bar/0.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "0c86fee8042e45a5da20b8701b04e8555ef6403923cbae31cd7fc7eec243c045"
+      },
+      "outputSHA256": "0c86fee8042e45a5da20b8701b04e8555ef6403923cbae31cd7fc7eec243c045",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Wrist_Rotations_with_Straight_Bar__f1__female": {
       "attempts": 0,
@@ -37060,14 +39705,39 @@
       "status": "pending"
     },
     "Wrist_Rotations_with_Straight_Bar__f1__male": {
-      "attempts": 0,
-      "claimedBy": null,
+      "attempts": 1,
+      "claimedAt": "2026-08-12T23:33:34+00:00",
+      "claimedBy": "male-generation",
+      "completedAt": "2026-08-12T23:34:29+00:00",
       "error": null,
-      "generatedInputPath": null,
+      "generatedInputPath": "shared/exercise-artwork/fud-flat-raster-v1/raw/male/Wrist_Rotations_with_Straight_Bar/1.png",
       "jobFingerprint": "23a9f230a95fb8e9b2df5fb58f0066ebd210440488af17fa47e34ed5a0f17b50",
-      "outputSHA256": null,
-      "qaStatus": null,
-      "status": "pending"
+      "normalization": {
+        "backgroundRemoval": "existing-alpha",
+        "contentSize": 896,
+        "cropBox": [
+          55,
+          8,
+          1200,
+          1201
+        ],
+        "foregroundOccupancy": 0.157189,
+        "input": "/var/folders/lz/q5g78gnn0039f4ks9758z0ym0000gn/T/fud-exercise-chroma-yvmzbegf/transparent.png",
+        "inputMode": "RGBA",
+        "inputSize": [
+          1254,
+          1254
+        ],
+        "output": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/male/Wrist_Rotations_with_Straight_Bar/1.png",
+        "outputSize": [
+          1024,
+          1024
+        ],
+        "sha256": "1a3de83a5340635691572055e724b618798ad41987d7c9188c5cd3e708b2874d"
+      },
+      "outputSHA256": "1a3de83a5340635691572055e724b618798ad41987d7c9188c5cd3e708b2874d",
+      "qaStatus": "accepted",
+      "status": "complete"
     },
     "Yoke_Walk__f0__female": {
       "attempts": 0,
