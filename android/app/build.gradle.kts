@@ -17,10 +17,15 @@ val keystoreProps = Properties().apply {
     if (keystorePropsFile.exists()) load(keystorePropsFile.inputStream())
 }
 
+// Windows installs expose the interpreter as `python` — a `python3` on PATH
+// there is usually just the Microsoft Store alias stub, which exits with 9009
+// and fails the build. Unix convention stays `python3`.
+val pythonCommand = if (System.getProperty("os.name").startsWith("Windows")) "python" else "python3"
+
 val verifyExerciseArtwork by tasks.registering(Exec::class) {
     workingDir(rootProject.projectDir.parentFile)
     commandLine(
-        "python3",
+        pythonCommand,
         "tools/exercise-artwork/imagen/VerifyPackagedExerciseArtwork.py"
     )
 }
