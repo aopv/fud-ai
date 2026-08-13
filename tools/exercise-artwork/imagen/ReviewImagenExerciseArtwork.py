@@ -39,11 +39,21 @@ def main() -> None:
     parser.add_argument("--pose-equipment", choices=("yes", "no"))
     parser.add_argument("--anatomy", choices=("yes", "no"))
     parser.add_argument("--artifact-free", choices=("yes", "no"))
+    parser.add_argument(
+        "--intermediate-pose",
+        choices=("yes", "no"),
+        help="Required explicit motion-order approval for schema-v2 in-between frames",
+    )
     parser.add_argument("--clear", action="store_true",
                         help="Remove a stale manual decision for this job")
     args = parser.parse_args()
-    job_ids = {json.loads(line)["jobID"] for line in args.jobs.read_text().splitlines() if line.strip()}
-    if args.job_id not in job_ids:
+    jobs = {
+        job["jobID"]: job
+        for line in args.jobs.read_text().splitlines()
+        if line.strip()
+        for job in (json.loads(line),)
+    }
+    if args.job_id not in jobs:
         raise SystemExit(f"Unknown job ID: {args.job_id}")
     if not args.clear and args.decision is None:
         raise SystemExit("--decision is required unless --clear is used")
@@ -53,6 +63,10 @@ def main() -> None:
         "anatomyApproved": args.anatomy,
         "artifactFree": args.artifact_free,
     }
+    job = jobs[args.job_id]
+    is_intermediate = job.get("sequence", {}).get("frameRole") == "inbetween"
+    if is_intermediate:
+        values["intermediatePoseApproved"] = args.intermediate_pose
     if args.decision == "accept" and any(value != "yes" for value in values.values()):
         raise SystemExit("Accept requires explicit --character/--pose-equipment/--anatomy/--artifact-free yes")
     lock_path = args.reviews.with_suffix(args.reviews.suffix + ".lock")
@@ -68,7 +82,7 @@ def main() -> None:
             return
         review = {
             field: values[field] == "yes" if values[field] is not None else False
-            for field in FIELDS
+            for field in values
         }
         review.update({
             "decision": args.decision,

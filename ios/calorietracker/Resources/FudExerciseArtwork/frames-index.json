@@ -177,27 +177,55 @@
     },
     {
       "exerciseID": "Arm_Circles",
-      "frameCount": 2,
-      "frameDurationMs": 700,
+      "frameCount": 6,
+      "frameDurationMs": 120,
       "frames": [
         {
-          "bytes": 26608,
+          "bytes": 27032,
           "filename": "FudExercise_female_Arm_Circles_0.webp",
           "frameIndex": 0,
           "jobID": "Arm_Circles__f0__female",
-          "sha256": "360942b65302f062dd945f0bbd3c821b51d18767b9950a9439c5a6d3f330a3bb"
+          "sha256": "d7571df5282f1b82497088c331c377098fba0a2df952f9516e34391fca9a9c4c"
         },
         {
-          "bytes": 29188,
+          "bytes": 28534,
           "filename": "FudExercise_female_Arm_Circles_1.webp",
           "frameIndex": 1,
+          "jobID": "Arm_Circles__f1__female",
+          "sha256": "7b3c68102e91d594f85d86eb8538be6bf7704f339f0928b1d6f7a8dff5d91f86"
+        },
+        {
+          "bytes": 32310,
+          "filename": "FudExercise_female_Arm_Circles_2.webp",
+          "frameIndex": 2,
+          "jobID": "Arm_Circles__f2__female",
+          "sha256": "a66d0811d9d4ded4b103a11ac86f45ec08002e2de21c0c1781b646b9ee59a1a5"
+        },
+        {
+          "bytes": 32390,
+          "filename": "FudExercise_female_Arm_Circles_3.webp",
+          "frameIndex": 3,
+          "jobID": "Arm_Circles__f3__female",
+          "sha256": "fae51c2a9e5d5b722357cb23ae67c4c3d12cccba3aa661cff664f3207062defd"
+        },
+        {
+          "bytes": 35322,
+          "filename": "FudExercise_female_Arm_Circles_4.webp",
+          "frameIndex": 4,
+          "jobID": "Arm_Circles__f4__female",
+          "sha256": "e43d0d270b52bdbf4f90de98c5133864223027d3df1e1d2c6e1284fbd7dd313c"
+        },
+        {
+          "bytes": 29632,
+          "filename": "FudExercise_female_Arm_Circles_5.webp",
+          "frameIndex": 5,
           "jobID": "Arm_Circles__f5__female",
-          "sha256": "1dbfa49f668ced4eb7e11eb152a90089ff0065881537f72ea6d7738841b07339"
+          "sha256": "a855e1ee79c3fd6caefa7bdf219f5ccaf0567bf2d4a799de099f60d3bd4c1c3d"
         }
       ],
       "gender": "female",
       "playback": "pingPong",
-      "sequenceMode": "endpointsOnly",
+      "sequenceMode": "completeSequence",
       "sequenceVersion": 1
     },
     {

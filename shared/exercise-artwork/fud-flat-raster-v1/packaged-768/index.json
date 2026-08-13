@@ -219,33 +219,325 @@
     },
     {
       "exerciseID": "Arm_Circles",
-      "frameCount": 2,
-      "frameDurationMs": 700,
+      "frameCount": 6,
+      "frameDurationMs": 120,
       "frames": [
         {
-          "bytes": 26608,
+          "bytes": 27032,
           "frameIndex": 0,
           "jobID": "Arm_Circles__f0__female",
-          "masterBytes": 220319,
+          "masterBytes": 230617,
           "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Arm_Circles/0.webp",
-          "rgbaRMSE": 5.9972,
-          "sha256": "360942b65302f062dd945f0bbd3c821b51d18767b9950a9439c5a6d3f330a3bb",
+          "rgbaRMSE": 5.3391,
+          "sequenceQA": {
+            "alignment": {
+              "method": "mediapipe-pelvis-torso-v1",
+              "pelvisAnchor": [
+                0.502724,
+                0.459302
+              ],
+              "subjectScale": 0.227196,
+              "torsoAnchor": [
+                0.502726,
+                0.345704
+              ]
+            },
+            "driftFromPrevious": null,
+            "expectedPose": null,
+            "passed": true,
+            "sequence": {
+              "endpointFrameIndices": [
+                0,
+                5
+              ],
+              "frameCount": 6,
+              "frameIndex": 0,
+              "frameRole": "endpoint",
+              "interpolationT": 0.0,
+              "schemaVersion": 2
+            },
+            "sequenceComplete": true
+          },
+          "sha256": "d7571df5282f1b82497088c331c377098fba0a2df952f9516e34391fca9a9c4c",
           "sourceFrameIndex": 0
         },
         {
-          "bytes": 29188,
+          "bytes": 28534,
           "frameIndex": 1,
-          "jobID": "Arm_Circles__f5__female",
-          "masterBytes": 222331,
+          "jobID": "Arm_Circles__f1__female",
+          "masterBytes": 226072,
           "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Arm_Circles/1.webp",
-          "rgbaRMSE": 7.6929,
-          "sha256": "1dbfa49f668ced4eb7e11eb152a90089ff0065881537f72ea6d7738841b07339",
+          "rgbaRMSE": 7.928,
+          "sequenceQA": {
+            "alignment": {
+              "method": "mediapipe-pelvis-torso-v1",
+              "pelvisAnchor": [
+                0.501398,
+                0.46095
+              ],
+              "subjectScale": 0.226018,
+              "torsoAnchor": [
+                0.501483,
+                0.34794
+              ]
+            },
+            "driftFromPrevious": {
+              "checks": {
+                "pelvisAnchorDrift": true,
+                "subjectScaleRelativeDrift": true,
+                "torsoAnchorDrift": true
+              },
+              "passed": true,
+              "pelvisAnchorDrift": 0.002115,
+              "subjectScaleRelativeDrift": 0.005185,
+              "torsoAnchorDrift": 0.002558
+            },
+            "expectedPose": {
+              "endpointReferenceSHA256": [
+                "5559f1dcf002b390acfbe312b2b5e8a03386369ec4a6e1be27d673ee5a7dc773",
+                "f2dc17e6c5319139918c93f125940f40354b62b09e33cb69e3213d6704e7cba9"
+              ],
+              "interpolationT": 0.2,
+              "method": "linear-normalized-landmarks-v1"
+            },
+            "passed": true,
+            "sequence": {
+              "endpointFrameIndices": [
+                0,
+                5
+              ],
+              "frameCount": 6,
+              "frameIndex": 1,
+              "frameRole": "inbetween",
+              "interpolationT": 0.2,
+              "schemaVersion": 2
+            },
+            "sequenceComplete": true
+          },
+          "sha256": "7b3c68102e91d594f85d86eb8538be6bf7704f339f0928b1d6f7a8dff5d91f86",
+          "sourceFrameIndex": 1
+        },
+        {
+          "bytes": 32310,
+          "frameIndex": 2,
+          "jobID": "Arm_Circles__f2__female",
+          "masterBytes": 236586,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Arm_Circles/2.webp",
+          "rgbaRMSE": 9.0078,
+          "sequenceQA": {
+            "alignment": {
+              "method": "mediapipe-pelvis-torso-v1",
+              "pelvisAnchor": [
+                0.502556,
+                0.466188
+              ],
+              "subjectScale": 0.231042,
+              "torsoAnchor": [
+                0.50222,
+                0.350668
+              ]
+            },
+            "driftFromPrevious": {
+              "checks": {
+                "pelvisAnchorDrift": true,
+                "subjectScaleRelativeDrift": true,
+                "torsoAnchorDrift": true
+              },
+              "passed": true,
+              "pelvisAnchorDrift": 0.005364,
+              "subjectScaleRelativeDrift": 0.022228,
+              "torsoAnchorDrift": 0.002826
+            },
+            "expectedPose": {
+              "endpointReferenceSHA256": [
+                "5559f1dcf002b390acfbe312b2b5e8a03386369ec4a6e1be27d673ee5a7dc773",
+                "f2dc17e6c5319139918c93f125940f40354b62b09e33cb69e3213d6704e7cba9"
+              ],
+              "interpolationT": 0.4,
+              "method": "linear-normalized-landmarks-v1"
+            },
+            "passed": true,
+            "sequence": {
+              "endpointFrameIndices": [
+                0,
+                5
+              ],
+              "frameCount": 6,
+              "frameIndex": 2,
+              "frameRole": "inbetween",
+              "interpolationT": 0.4,
+              "schemaVersion": 2
+            },
+            "sequenceComplete": true
+          },
+          "sha256": "a66d0811d9d4ded4b103a11ac86f45ec08002e2de21c0c1781b646b9ee59a1a5",
+          "sourceFrameIndex": 2
+        },
+        {
+          "bytes": 32390,
+          "frameIndex": 3,
+          "jobID": "Arm_Circles__f3__female",
+          "masterBytes": 234547,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Arm_Circles/3.webp",
+          "rgbaRMSE": 9.2678,
+          "sequenceQA": {
+            "alignment": {
+              "method": "mediapipe-pelvis-torso-v1",
+              "pelvisAnchor": [
+                0.501873,
+                0.465783
+              ],
+              "subjectScale": 0.229262,
+              "torsoAnchor": [
+                0.502126,
+                0.351152
+              ]
+            },
+            "driftFromPrevious": {
+              "checks": {
+                "pelvisAnchorDrift": true,
+                "subjectScaleRelativeDrift": true,
+                "torsoAnchorDrift": true
+              },
+              "passed": true,
+              "pelvisAnchorDrift": 0.000794,
+              "subjectScaleRelativeDrift": 0.007704,
+              "torsoAnchorDrift": 0.000493
+            },
+            "expectedPose": {
+              "endpointReferenceSHA256": [
+                "5559f1dcf002b390acfbe312b2b5e8a03386369ec4a6e1be27d673ee5a7dc773",
+                "f2dc17e6c5319139918c93f125940f40354b62b09e33cb69e3213d6704e7cba9"
+              ],
+              "interpolationT": 0.6,
+              "method": "linear-normalized-landmarks-v1"
+            },
+            "passed": true,
+            "sequence": {
+              "endpointFrameIndices": [
+                0,
+                5
+              ],
+              "frameCount": 6,
+              "frameIndex": 3,
+              "frameRole": "inbetween",
+              "interpolationT": 0.6,
+              "schemaVersion": 2
+            },
+            "sequenceComplete": true
+          },
+          "sha256": "fae51c2a9e5d5b722357cb23ae67c4c3d12cccba3aa661cff664f3207062defd",
+          "sourceFrameIndex": 3
+        },
+        {
+          "bytes": 35322,
+          "frameIndex": 4,
+          "jobID": "Arm_Circles__f4__female",
+          "masterBytes": 254416,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Arm_Circles/4.webp",
+          "rgbaRMSE": 10.2407,
+          "sequenceQA": {
+            "alignment": {
+              "method": "mediapipe-pelvis-torso-v1",
+              "pelvisAnchor": [
+                0.502957,
+                0.46518
+              ],
+              "subjectScale": 0.230608,
+              "torsoAnchor": [
+                0.501625,
+                0.349883
+              ]
+            },
+            "driftFromPrevious": {
+              "checks": {
+                "pelvisAnchorDrift": true,
+                "subjectScaleRelativeDrift": true,
+                "torsoAnchorDrift": true
+              },
+              "passed": true,
+              "pelvisAnchorDrift": 0.00124,
+              "subjectScaleRelativeDrift": 0.005871,
+              "torsoAnchorDrift": 0.001364
+            },
+            "expectedPose": {
+              "endpointReferenceSHA256": [
+                "5559f1dcf002b390acfbe312b2b5e8a03386369ec4a6e1be27d673ee5a7dc773",
+                "f2dc17e6c5319139918c93f125940f40354b62b09e33cb69e3213d6704e7cba9"
+              ],
+              "interpolationT": 0.8,
+              "method": "linear-normalized-landmarks-v1"
+            },
+            "passed": true,
+            "sequence": {
+              "endpointFrameIndices": [
+                0,
+                5
+              ],
+              "frameCount": 6,
+              "frameIndex": 4,
+              "frameRole": "inbetween",
+              "interpolationT": 0.8,
+              "schemaVersion": 2
+            },
+            "sequenceComplete": true
+          },
+          "sha256": "e43d0d270b52bdbf4f90de98c5133864223027d3df1e1d2c6e1284fbd7dd313c",
+          "sourceFrameIndex": 4
+        },
+        {
+          "bytes": 29632,
+          "frameIndex": 5,
+          "jobID": "Arm_Circles__f5__female",
+          "masterBytes": 226753,
+          "path": "shared/exercise-artwork/fud-flat-raster-v1/packaged-768/frames/female/Arm_Circles/5.webp",
+          "rgbaRMSE": 6.7468,
+          "sequenceQA": {
+            "alignment": {
+              "method": "mediapipe-pelvis-torso-v1",
+              "pelvisAnchor": [
+                0.50175,
+                0.46394
+              ],
+              "subjectScale": 0.229052,
+              "torsoAnchor": [
+                0.500751,
+                0.349418
+              ]
+            },
+            "driftFromPrevious": {
+              "checks": {
+                "pelvisAnchorDrift": true,
+                "subjectScaleRelativeDrift": true,
+                "torsoAnchorDrift": true
+              },
+              "passed": true,
+              "pelvisAnchorDrift": 0.00173,
+              "subjectScaleRelativeDrift": 0.006747,
+              "torsoAnchorDrift": 0.00099
+            },
+            "expectedPose": null,
+            "passed": true,
+            "sequence": {
+              "endpointFrameIndices": [
+                0,
+                5
+              ],
+              "frameCount": 6,
+              "frameIndex": 5,
+              "frameRole": "endpoint",
+              "interpolationT": 1.0,
+              "schemaVersion": 2
+            },
+            "sequenceComplete": true
+          },
+          "sha256": "a855e1ee79c3fd6caefa7bdf219f5ccaf0567bf2d4a799de099f60d3bd4c1c3d",
           "sourceFrameIndex": 5
         }
       ],
       "gender": "female",
       "playback": "pingPong",
-      "sequenceMode": "endpointsOnly",
+      "sequenceMode": "completeSequence",
       "sequenceVersion": 1
     },
     {

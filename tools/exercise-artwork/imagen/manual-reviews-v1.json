@@ -530,6 +530,50 @@
       "reviewedAt": "2026-08-12T16:00:22+00:00",
       "reviewer": "qa-orchestrator"
     },
+    "Arm_Circles__f1__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "intermediatePoseApproved": true,
+      "notes": "Aligned six-frame visual review: exact locked female identity; body-only equipment state; straight symmetric arms; monotonic 0\u21925 elevation; no reversal, bounce, crop, extra anatomy, logo, or artifact.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-13T10:16:31+00:00",
+      "reviewer": "root-visual-qa"
+    },
+    "Arm_Circles__f2__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "intermediatePoseApproved": true,
+      "notes": "Aligned six-frame visual review: exact locked female identity; body-only equipment state; straight symmetric arms; monotonic 0\u21925 elevation; no reversal, bounce, crop, extra anatomy, logo, or artifact.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-13T10:16:31+00:00",
+      "reviewer": "root-visual-qa"
+    },
+    "Arm_Circles__f3__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "intermediatePoseApproved": true,
+      "notes": "Aligned six-frame visual review: exact locked female identity; body-only equipment state; straight symmetric arms; monotonic 0\u21925 elevation; no reversal, bounce, crop, extra anatomy, logo, or artifact.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-13T10:16:32+00:00",
+      "reviewer": "root-visual-qa"
+    },
+    "Arm_Circles__f4__female": {
+      "anatomyApproved": true,
+      "artifactFree": true,
+      "characterApproved": true,
+      "decision": "accept",
+      "intermediatePoseApproved": true,
+      "notes": "Aligned six-frame visual review: exact locked female identity; body-only equipment state; straight symmetric arms; monotonic 0\u21925 elevation; no reversal, bounce, crop, extra anatomy, logo, or artifact.",
+      "poseEquipmentApproved": true,
+      "reviewedAt": "2026-08-13T10:16:32+00:00",
+      "reviewer": "root-visual-qa"
+    },
     "Arm_Circles__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
