@@ -177,6 +177,14 @@ V2 package and platform indexes add entry-level `frameCount: 6`, `frameDurationM
 and may omit these fields. The verifier requires exact index/disk/master/state parity and checks the
 persisted alignment/expected-pose evidence for every shipped v2 frame.
 
+During migration, a v2 exercise whose exact `f0` and `f5` are accepted but whose intermediates are
+not complete ships safely as `sequenceMode: "endpointsOnly"`: two contiguous runtime frames `0/1`
+map to source jobs `f0/f5` through `sourceFrameIndex: 0/5`, use `frameDurationMs: 700`, and ping-pong.
+One accepted endpoint never ships alone. Once all six jobs are accepted and complete sequence QA
+passes, the next package run deterministically upgrades the entry to
+`sequenceMode: "completeSequence"`, contiguous runtime frames `0...5`, and `frameDurationMs: 120`. Verifier,
+contact sheet, and both stagers recompute this mode from jobs/state and reject stale mappings.
+
 ## Isolated verification
 
 All fixtures use temporary manifests, state, masters, packages, and platform staging; they do not
