@@ -20,7 +20,7 @@
       "reviewedAt": "2026-08-12T17:09:07+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "3_4_Sit-Up__f1__female": {
+    "3_4_Sit-Up__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -30,7 +30,7 @@
       "reviewedAt": "2026-08-12T17:09:07+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "3_4_Sit-Up__f1__male": {
+    "3_4_Sit-Up__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -60,7 +60,7 @@
       "reviewedAt": "2026-08-12T17:07:26+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "90_90_Hamstring__f1__female": {
+    "90_90_Hamstring__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -70,7 +70,7 @@
       "reviewedAt": "2026-08-12T17:07:26+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "90_90_Hamstring__f1__male": {
+    "90_90_Hamstring__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -100,7 +100,7 @@
       "reviewedAt": "2026-08-12T17:42:23+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Ab_Roller__f1__female": {
+    "Ab_Roller__f5__female": {
       "anatomyApproved": true,
       "artifactFree": false,
       "characterApproved": true,
@@ -110,7 +110,7 @@
       "reviewedAt": "2026-08-12T17:42:23+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Ab_Roller__f1__male": {
+    "Ab_Roller__f5__male": {
       "anatomyApproved": true,
       "artifactFree": false,
       "characterApproved": true,
@@ -140,7 +140,7 @@
       "reviewedAt": "2026-08-12T17:34:11+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Adductor__f1__female": {
+    "Adductor__f5__female": {
       "anatomyApproved": true,
       "artifactFree": false,
       "characterApproved": true,
@@ -150,7 +150,7 @@
       "reviewedAt": "2026-08-12T17:34:11+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Adductor__f1__male": {
+    "Adductor__f5__male": {
       "anatomyApproved": true,
       "artifactFree": false,
       "characterApproved": true,
@@ -180,7 +180,7 @@
       "reviewedAt": "2026-08-12T17:58:29+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Advanced_Kettlebell_Windmill__f1__female": {
+    "Advanced_Kettlebell_Windmill__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -190,7 +190,7 @@
       "reviewedAt": "2026-08-12T17:58:29+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Advanced_Kettlebell_Windmill__f1__male": {
+    "Advanced_Kettlebell_Windmill__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -220,7 +220,7 @@
       "reviewedAt": "2026-08-12T17:56:02+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "All_Fours_Quad_Stretch__f1__female": {
+    "All_Fours_Quad_Stretch__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -230,7 +230,7 @@
       "reviewedAt": "2026-08-12T17:56:02+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "All_Fours_Quad_Stretch__f1__male": {
+    "All_Fours_Quad_Stretch__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -260,7 +260,7 @@
       "reviewedAt": "2026-08-12T15:55:58+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Alternate_Hammer_Curl__f1__female": {
+    "Alternate_Hammer_Curl__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -270,7 +270,7 @@
       "reviewedAt": "2026-08-12T15:57:56+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Alternate_Hammer_Curl__f1__male": {
+    "Alternate_Hammer_Curl__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -300,7 +300,7 @@
       "reviewedAt": "2026-08-12T17:29:16+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Alternate_Heel_Touchers__f1__female": {
+    "Alternate_Heel_Touchers__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -310,7 +310,7 @@
       "reviewedAt": "2026-08-12T17:29:16+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Alternate_Heel_Touchers__f1__male": {
+    "Alternate_Heel_Touchers__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -340,7 +340,7 @@
       "reviewedAt": "2026-08-12T17:48:12+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Alternate_Incline_Dumbbell_Curl__f1__female": {
+    "Alternate_Incline_Dumbbell_Curl__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -350,7 +350,7 @@
       "reviewedAt": "2026-08-12T17:48:12+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Alternate_Incline_Dumbbell_Curl__f1__male": {
+    "Alternate_Incline_Dumbbell_Curl__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -380,7 +380,7 @@
       "reviewedAt": "2026-08-12T23:42:33+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Alternate_Leg_Diagonal_Bound__f1__male": {
+    "Alternate_Leg_Diagonal_Bound__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -410,7 +410,7 @@
       "reviewedAt": "2026-08-12T16:59:05+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Alternating_Deltoid_Raise__f1__female": {
+    "Alternating_Deltoid_Raise__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -420,7 +420,7 @@
       "reviewedAt": "2026-08-12T17:01:17+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Alternating_Deltoid_Raise__f1__male": {
+    "Alternating_Deltoid_Raise__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -440,7 +440,7 @@
       "reviewedAt": "2026-08-12T23:36:34+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Alternating_Kettlebell_Press__f1__female": {
+    "Alternating_Kettlebell_Press__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -460,7 +460,7 @@
       "reviewedAt": "2026-08-12T23:51:52+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Alternating_Kettlebell_Row__f1__female": {
+    "Alternating_Kettlebell_Row__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -490,7 +490,7 @@
       "reviewedAt": "2026-08-12T18:31:10+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Ankle_On_The_Knee__f1__female": {
+    "Ankle_On_The_Knee__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -500,7 +500,7 @@
       "reviewedAt": "2026-08-12T18:31:10+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Ankle_On_The_Knee__f1__male": {
+    "Ankle_On_The_Knee__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -530,7 +530,7 @@
       "reviewedAt": "2026-08-12T16:00:22+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Arm_Circles__f1__female": {
+    "Arm_Circles__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -540,7 +540,7 @@
       "reviewedAt": "2026-08-12T16:09:13+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Arm_Circles__f1__male": {
+    "Arm_Circles__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -570,7 +570,7 @@
       "reviewedAt": "2026-08-12T17:53:30+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Arnold_Dumbbell_Press__f1__female": {
+    "Arnold_Dumbbell_Press__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -580,7 +580,7 @@
       "reviewedAt": "2026-08-12T17:53:30+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Arnold_Dumbbell_Press__f1__male": {
+    "Arnold_Dumbbell_Press__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -610,7 +610,7 @@
       "reviewedAt": "2026-08-12T18:03:39+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Back_Flyes_-_With_Bands__f1__female": {
+    "Back_Flyes_-_With_Bands__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -620,7 +620,7 @@
       "reviewedAt": "2026-08-12T18:03:39+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Back_Flyes_-_With_Bands__f1__male": {
+    "Back_Flyes_-_With_Bands__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -640,7 +640,7 @@
       "reviewedAt": "2026-08-12T21:20:38+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Backward_Medicine_Ball_Throw__f1__female": {
+    "Backward_Medicine_Ball_Throw__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -650,7 +650,7 @@
       "reviewedAt": "2026-08-13T00:00:04+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Backward_Medicine_Ball_Throw__f1__male": {
+    "Backward_Medicine_Ball_Throw__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -670,7 +670,7 @@
       "reviewedAt": "2026-08-12T21:07:35+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Ball_Leg_Curl__f1__male": {
+    "Ball_Leg_Curl__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -700,7 +700,7 @@
       "reviewedAt": "2026-08-12T18:34:56+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Band_Good_Morning__f1__female": {
+    "Band_Good_Morning__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -710,7 +710,7 @@
       "reviewedAt": "2026-08-12T18:34:56+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Band_Good_Morning__f1__male": {
+    "Band_Good_Morning__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -730,7 +730,7 @@
       "reviewedAt": "2026-08-12T23:42:33+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Band_Hip_Adductions__f1__female": {
+    "Band_Hip_Adductions__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -740,7 +740,7 @@
       "reviewedAt": "2026-08-12T23:42:34+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Band_Pull_Apart__f1__male": {
+    "Band_Pull_Apart__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -770,7 +770,7 @@
       "reviewedAt": "2026-08-12T16:51:11+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Barbell_Curl__f1__female": {
+    "Barbell_Curl__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -780,7 +780,7 @@
       "reviewedAt": "2026-08-12T19:34:24+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Barbell_Curl__f1__male": {
+    "Barbell_Curl__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -800,7 +800,7 @@
       "reviewedAt": "2026-08-13T01:38:57+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Barbell_Deadlift__f1__female": {
+    "Barbell_Deadlift__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -810,7 +810,7 @@
       "reviewedAt": "2026-08-12T22:54:55+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Barbell_Deadlift__f1__male": {
+    "Barbell_Deadlift__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -840,7 +840,7 @@
       "reviewedAt": "2026-08-12T17:09:37+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Barbell_Shrug_Behind_The_Back__f1__male": {
+    "Barbell_Shrug_Behind_The_Back__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -870,7 +870,7 @@
       "reviewedAt": "2026-08-12T16:54:57+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Barbell_Shrug__f1__female": {
+    "Barbell_Shrug__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -880,7 +880,7 @@
       "reviewedAt": "2026-08-12T19:52:18+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Barbell_Shrug__f1__male": {
+    "Barbell_Shrug__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -910,7 +910,7 @@
       "reviewedAt": "2026-08-13T01:47:10+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Barbell_Side_Bend__f1__female": {
+    "Barbell_Side_Bend__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -920,7 +920,7 @@
       "reviewedAt": "2026-08-12T22:20:40+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Barbell_Side_Bend__f1__male": {
+    "Barbell_Side_Bend__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -940,7 +940,7 @@
       "reviewedAt": "2026-08-12T22:42:59+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Barbell_Side_Split_Squat__f1__female": {
+    "Barbell_Side_Split_Squat__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -980,7 +980,7 @@
       "reviewedAt": "2026-08-12T20:49:38+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Bench_Dips__f1__female": {
+    "Bench_Dips__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -990,7 +990,7 @@
       "reviewedAt": "2026-08-12T20:45:32+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Bench_Dips__f1__male": {
+    "Bench_Dips__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1020,7 +1020,7 @@
       "reviewedAt": "2026-08-12T20:55:35+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Bent_Over_Barbell_Row__f1__female": {
+    "Bent_Over_Barbell_Row__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1030,7 +1030,7 @@
       "reviewedAt": "2026-08-12T23:03:34+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Bent_Over_Barbell_Row__f1__male": {
+    "Bent_Over_Barbell_Row__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1060,7 +1060,7 @@
       "reviewedAt": "2026-08-12T21:00:25+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Bent_Over_Two-Dumbbell_Row_With_Palms_In__f1__female": {
+    "Bent_Over_Two-Dumbbell_Row_With_Palms_In__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1070,7 +1070,7 @@
       "reviewedAt": "2026-08-12T22:34:05+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Bent_Over_Two-Dumbbell_Row_With_Palms_In__f1__male": {
+    "Bent_Over_Two-Dumbbell_Row_With_Palms_In__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1100,7 +1100,7 @@
       "reviewedAt": "2026-08-12T20:51:45+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Bent_Over_Two-Dumbbell_Row__f1__female": {
+    "Bent_Over_Two-Dumbbell_Row__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1110,7 +1110,7 @@
       "reviewedAt": "2026-08-12T22:34:05+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Bent_Over_Two-Dumbbell_Row__f1__male": {
+    "Bent_Over_Two-Dumbbell_Row__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1140,7 +1140,7 @@
       "reviewedAt": "2026-08-12T16:41:34+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Bodyweight_Squat__f1__female": {
+    "Bodyweight_Squat__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1150,7 +1150,7 @@
       "reviewedAt": "2026-08-12T16:41:33+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Bodyweight_Squat__f1__male": {
+    "Bodyweight_Squat__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1180,7 +1180,7 @@
       "reviewedAt": "2026-08-12T18:39:57+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Bodyweight_Walking_Lunge__f1__female": {
+    "Bodyweight_Walking_Lunge__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1190,7 +1190,7 @@
       "reviewedAt": "2026-08-12T18:39:57+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Bodyweight_Walking_Lunge__f1__male": {
+    "Bodyweight_Walking_Lunge__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1220,7 +1220,7 @@
       "reviewedAt": "2026-08-13T01:19:32+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Butt_Lift_Bridge__f1__female": {
+    "Butt_Lift_Bridge__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1230,7 +1230,7 @@
       "reviewedAt": "2026-08-12T21:20:38+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Butt_Lift_Bridge__f1__male": {
+    "Butt_Lift_Bridge__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1250,7 +1250,7 @@
       "reviewedAt": "2026-08-12T16:02:42+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Cable_Crossover__f1__female": {
+    "Cable_Crossover__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1270,7 +1270,7 @@
       "reviewedAt": "2026-08-12T17:10:52+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Calf_Raises_-_With_Bands__f1__male": {
+    "Calf_Raises_-_With_Bands__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1290,7 +1290,7 @@
       "reviewedAt": "2026-08-12T21:28:01+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Car_Drivers__f1__male": {
+    "Car_Drivers__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1320,7 +1320,7 @@
       "reviewedAt": "2026-08-12T18:43:46+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Cat_Stretch__f1__female": {
+    "Cat_Stretch__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1330,7 +1330,7 @@
       "reviewedAt": "2026-08-12T18:43:46+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Cat_Stretch__f1__male": {
+    "Cat_Stretch__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1360,7 +1360,7 @@
       "reviewedAt": "2026-08-12T22:09:31+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Chair_Leg_Extended_Stretch__f1__female": {
+    "Chair_Leg_Extended_Stretch__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1370,7 +1370,7 @@
       "reviewedAt": "2026-08-13T01:05:07+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Chair_Leg_Extended_Stretch__f1__male": {
+    "Chair_Leg_Extended_Stretch__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1400,7 +1400,7 @@
       "reviewedAt": "2026-08-12T20:55:51+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Chair_Lower_Back_Stretch__f1__female": {
+    "Chair_Lower_Back_Stretch__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1410,7 +1410,7 @@
       "reviewedAt": "2026-08-12T20:55:51+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Chair_Lower_Back_Stretch__f1__male": {
+    "Chair_Lower_Back_Stretch__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1450,7 +1450,7 @@
       "reviewedAt": "2026-08-12T19:47:53+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Childs_Pose__f1__female": {
+    "Childs_Pose__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1460,7 +1460,7 @@
       "reviewedAt": "2026-08-12T19:44:07+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Childs_Pose__f1__male": {
+    "Childs_Pose__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1490,7 +1490,7 @@
       "reviewedAt": "2026-08-12T20:03:12+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Chin_To_Chest_Stretch__f1__female": {
+    "Chin_To_Chest_Stretch__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1500,7 +1500,7 @@
       "reviewedAt": "2026-08-12T20:03:11+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Chin_To_Chest_Stretch__f1__male": {
+    "Chin_To_Chest_Stretch__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1520,7 +1520,7 @@
       "reviewedAt": "2026-08-12T19:28:57+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Close-Grip_EZ_Bar_Curl__f1__male": {
+    "Close-Grip_EZ_Bar_Curl__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1550,7 +1550,7 @@
       "reviewedAt": "2026-08-12T19:04:44+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Close-Grip_Standing_Barbell_Curl__f1__female": {
+    "Close-Grip_Standing_Barbell_Curl__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1560,7 +1560,7 @@
       "reviewedAt": "2026-08-12T19:39:52+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Close-Grip_Standing_Barbell_Curl__f1__male": {
+    "Close-Grip_Standing_Barbell_Curl__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1580,7 +1580,7 @@
       "reviewedAt": "2026-08-12T21:33:15+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Cocoons__f1__male": {
+    "Cocoons__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1610,7 +1610,7 @@
       "reviewedAt": "2026-08-13T00:41:20+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Concentration_Curls__f1__female": {
+    "Concentration_Curls__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1620,7 +1620,7 @@
       "reviewedAt": "2026-08-12T21:03:48+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Concentration_Curls__f1__male": {
+    "Concentration_Curls__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1650,7 +1650,7 @@
       "reviewedAt": "2026-08-12T19:34:24+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Cross_Body_Hammer_Curl__f1__female": {
+    "Cross_Body_Hammer_Curl__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1660,7 +1660,7 @@
       "reviewedAt": "2026-08-12T19:06:34+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Cross_Body_Hammer_Curl__f1__male": {
+    "Cross_Body_Hammer_Curl__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1680,7 +1680,7 @@
       "reviewedAt": "2026-08-12T21:28:14+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Crunch_-_Hands_Overhead__f1__female": {
+    "Crunch_-_Hands_Overhead__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1710,7 +1710,7 @@
       "reviewedAt": "2026-08-12T19:52:18+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Dancers_Stretch__f1__female": {
+    "Dancers_Stretch__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1720,7 +1720,7 @@
       "reviewedAt": "2026-08-12T19:52:18+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Dancers_Stretch__f1__male": {
+    "Dancers_Stretch__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1740,7 +1740,7 @@
       "reviewedAt": "2026-08-12T21:20:38+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Dead_Bug__f1__female": {
+    "Dead_Bug__f5__female": {
       "anatomyApproved": true,
       "artifactFree": false,
       "characterApproved": true,
@@ -1760,7 +1760,7 @@
       "reviewedAt": "2026-08-13T00:44:10+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Decline_Push-Up__f1__female": {
+    "Decline_Push-Up__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1780,7 +1780,7 @@
       "reviewedAt": "2026-08-13T00:21:35+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Double_Leg_Butt_Kick__f1__female": {
+    "Double_Leg_Butt_Kick__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1820,7 +1820,7 @@
       "reviewedAt": "2026-08-12T17:27:19+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Dumbbell_Alternate_Bicep_Curl__f1__female": {
+    "Dumbbell_Alternate_Bicep_Curl__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1830,7 +1830,7 @@
       "reviewedAt": "2026-08-12T16:09:13+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Dumbbell_Alternate_Bicep_Curl__f1__male": {
+    "Dumbbell_Alternate_Bicep_Curl__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1850,7 +1850,7 @@
       "reviewedAt": "2026-08-12T21:33:14+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Dumbbell_Bench_Press__f1__female": {
+    "Dumbbell_Bench_Press__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1870,7 +1870,7 @@
       "reviewedAt": "2026-08-12T20:55:35+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Dumbbell_Bench_Press_with_Neutral_Grip__f1__female": {
+    "Dumbbell_Bench_Press_with_Neutral_Grip__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1900,7 +1900,7 @@
       "reviewedAt": "2026-08-12T15:14:56+00:00",
       "reviewer": "dataset-audit"
     },
-    "Dumbbell_Bicep_Curl__f1__female": {
+    "Dumbbell_Bicep_Curl__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1910,7 +1910,7 @@
       "reviewedAt": "2026-08-12T15:14:56+00:00",
       "reviewer": "dataset-audit"
     },
-    "Dumbbell_Bicep_Curl__f1__male": {
+    "Dumbbell_Bicep_Curl__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1930,7 +1930,7 @@
       "reviewedAt": "2026-08-13T02:05:46+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Dumbbell_Floor_Press__f1__female": {
+    "Dumbbell_Floor_Press__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1950,7 +1950,7 @@
       "reviewedAt": "2026-08-13T01:38:57+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Dumbbell_Flyes__f1__female": {
+    "Dumbbell_Flyes__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1970,7 +1970,7 @@
       "reviewedAt": "2026-08-13T02:00:45+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Dumbbell_Incline_Row__f1__female": {
+    "Dumbbell_Incline_Row__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -1990,7 +1990,7 @@
       "reviewedAt": "2026-08-12T16:57:52+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Dumbbell_Lunges__f1__female": {
+    "Dumbbell_Lunges__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2010,7 +2010,7 @@
       "reviewedAt": "2026-08-12T21:00:26+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Dumbbell_Lying_Rear_Lateral_Raise__f1__female": {
+    "Dumbbell_Lying_Rear_Lateral_Raise__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2040,7 +2040,7 @@
       "reviewedAt": "2026-08-12T19:41:02+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Dumbbell_One-Arm_Shoulder_Press__f1__female": {
+    "Dumbbell_One-Arm_Shoulder_Press__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2050,7 +2050,7 @@
       "reviewedAt": "2026-08-12T19:37:24+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Dumbbell_One-Arm_Shoulder_Press__f1__male": {
+    "Dumbbell_One-Arm_Shoulder_Press__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2080,7 +2080,7 @@
       "reviewedAt": "2026-08-12T18:43:46+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Dumbbell_One-Arm_Upright_Row__f1__female": {
+    "Dumbbell_One-Arm_Upright_Row__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2090,7 +2090,7 @@
       "reviewedAt": "2026-08-12T17:58:30+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Dumbbell_One-Arm_Upright_Row__f1__male": {
+    "Dumbbell_One-Arm_Upright_Row__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2120,7 +2120,7 @@
       "reviewedAt": "2026-08-12T17:42:22+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Dumbbell_Rear_Lunge__f1__male": {
+    "Dumbbell_Rear_Lunge__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2150,7 +2150,7 @@
       "reviewedAt": "2026-08-12T19:47:54+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Dumbbell_Scaption__f1__female": {
+    "Dumbbell_Scaption__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2160,7 +2160,7 @@
       "reviewedAt": "2026-08-12T16:54:57+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Dumbbell_Scaption__f1__male": {
+    "Dumbbell_Scaption__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2180,7 +2180,7 @@
       "reviewedAt": "2026-08-12T19:47:53+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Dumbbell_Shoulder_Press__f1__female": {
+    "Dumbbell_Shoulder_Press__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2210,7 +2210,7 @@
       "reviewedAt": "2026-08-12T16:02:09+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Dumbbell_Shrug__f1__female": {
+    "Dumbbell_Shrug__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2220,7 +2220,7 @@
       "reviewedAt": "2026-08-12T16:17:45+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Dumbbell_Shrug__f1__male": {
+    "Dumbbell_Shrug__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2250,7 +2250,7 @@
       "reviewedAt": "2026-08-12T16:04:52+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Dumbbell_Side_Bend__f1__female": {
+    "Dumbbell_Side_Bend__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2260,7 +2260,7 @@
       "reviewedAt": "2026-08-12T16:19:05+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Dumbbell_Side_Bend__f1__male": {
+    "Dumbbell_Side_Bend__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2290,7 +2290,7 @@
       "reviewedAt": "2026-08-12T17:30:52+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Dumbbell_Squat__f1__male": {
+    "Dumbbell_Squat__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2310,7 +2310,7 @@
       "reviewedAt": "2026-08-12T17:48:13+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Dumbbell_Step_Ups__f1__female": {
+    "Dumbbell_Step_Ups__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2340,7 +2340,7 @@
       "reviewedAt": "2026-08-12T18:56:06+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Dynamic_Chest_Stretch__f1__female": {
+    "Dynamic_Chest_Stretch__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2350,7 +2350,7 @@
       "reviewedAt": "2026-08-12T18:49:51+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Dynamic_Chest_Stretch__f1__male": {
+    "Dynamic_Chest_Stretch__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2380,7 +2380,7 @@
       "reviewedAt": "2026-08-12T17:56:02+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "EZ-Bar_Curl__f1__female": {
+    "EZ-Bar_Curl__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2390,7 +2390,7 @@
       "reviewedAt": "2026-08-12T22:09:31+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "EZ-Bar_Curl__f1__male": {
+    "EZ-Bar_Curl__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2420,7 +2420,7 @@
       "reviewedAt": "2026-08-12T21:20:38+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Elbow_Circles__f1__female": {
+    "Elbow_Circles__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2430,7 +2430,7 @@
       "reviewedAt": "2026-08-12T21:31:15+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Elbow_Circles__f1__male": {
+    "Elbow_Circles__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2460,7 +2460,7 @@
       "reviewedAt": "2026-08-12T18:57:32+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Elbows_Back__f1__female": {
+    "Elbows_Back__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2470,7 +2470,7 @@
       "reviewedAt": "2026-08-12T18:53:23+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Elbows_Back__f1__male": {
+    "Elbows_Back__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2490,7 +2490,7 @@
       "reviewedAt": "2026-08-13T01:28:53+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Flat_Bench_Leg_Pull-In__f1__female": {
+    "Flat_Bench_Leg_Pull-In__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2510,7 +2510,7 @@
       "reviewedAt": "2026-08-13T00:50:33+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Flat_Bench_Lying_Leg_Raise__f1__female": {
+    "Flat_Bench_Lying_Leg_Raise__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2540,7 +2540,7 @@
       "reviewedAt": "2026-08-12T18:51:30+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Front_Dumbbell_Raise__f1__female": {
+    "Front_Dumbbell_Raise__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2550,7 +2550,7 @@
       "reviewedAt": "2026-08-12T17:39:32+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Front_Dumbbell_Raise__f1__male": {
+    "Front_Dumbbell_Raise__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2580,7 +2580,7 @@
       "reviewedAt": "2026-08-12T22:54:55+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Front_Plate_Raise__f1__female": {
+    "Front_Plate_Raise__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2610,7 +2610,7 @@
       "reviewedAt": "2026-08-12T16:45:46+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Front_Two-Dumbbell_Raise__f1__female": {
+    "Front_Two-Dumbbell_Raise__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2620,7 +2620,7 @@
       "reviewedAt": "2026-08-12T17:30:52+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Front_Two-Dumbbell_Raise__f1__male": {
+    "Front_Two-Dumbbell_Raise__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2650,7 +2650,7 @@
       "reviewedAt": "2026-08-12T22:40:58+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Glute_Kickback__f1__female": {
+    "Glute_Kickback__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2660,7 +2660,7 @@
       "reviewedAt": "2026-08-12T22:40:58+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Glute_Kickback__f1__male": {
+    "Glute_Kickback__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2680,7 +2680,7 @@
       "reviewedAt": "2026-08-12T22:42:59+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Goblet_Squat__f1__female": {
+    "Goblet_Squat__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2710,7 +2710,7 @@
       "reviewedAt": "2026-08-12T16:40:52+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Hammer_Curls__f1__female": {
+    "Hammer_Curls__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2720,7 +2720,7 @@
       "reviewedAt": "2026-08-12T18:03:40+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Hammer_Curls__f1__male": {
+    "Hammer_Curls__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2750,7 +2750,7 @@
       "reviewedAt": "2026-08-12T19:56:34+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Hug_Knees_To_Chest__f1__female": {
+    "Hug_Knees_To_Chest__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2760,7 +2760,7 @@
       "reviewedAt": "2026-08-12T19:56:34+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Hug_Knees_To_Chest__f1__male": {
+    "Hug_Knees_To_Chest__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2780,7 +2780,7 @@
       "reviewedAt": "2026-08-13T02:18:27+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Inchworm__f1__female": {
+    "Inchworm__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2800,7 +2800,7 @@
       "reviewedAt": "2026-08-12T22:59:14+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Isometric_Neck_Exercise_-_Front_And_Back__f1__male": {
+    "Isometric_Neck_Exercise_-_Front_And_Back__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2820,7 +2820,7 @@
       "reviewedAt": "2026-08-12T23:03:34+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Isometric_Neck_Exercise_-_Sides__f1__male": {
+    "Isometric_Neck_Exercise_-_Sides__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2840,7 +2840,7 @@
       "reviewedAt": "2026-08-12T23:03:34+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Kettlebell_Sumo_High_Pull__f1__female": {
+    "Kettlebell_Sumo_High_Pull__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2860,7 +2860,7 @@
       "reviewedAt": "2026-08-12T22:39:00+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Knee_Circles__f1__male": {
+    "Knee_Circles__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2890,7 +2890,7 @@
       "reviewedAt": "2026-08-13T00:10:39+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Knee_Tuck_Jump__f1__female": {
+    "Knee_Tuck_Jump__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2900,7 +2900,7 @@
       "reviewedAt": "2026-08-13T00:04:55+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Knee_Tuck_Jump__f1__male": {
+    "Knee_Tuck_Jump__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2930,7 +2930,7 @@
       "reviewedAt": "2026-08-12T20:10:56+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Kneeling_Hip_Flexor__f1__female": {
+    "Kneeling_Hip_Flexor__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2940,7 +2940,7 @@
       "reviewedAt": "2026-08-12T20:10:56+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Kneeling_Hip_Flexor__f1__male": {
+    "Kneeling_Hip_Flexor__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2960,7 +2960,7 @@
       "reviewedAt": "2026-08-12T23:56:09+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Lateral_Bound__f1__male": {
+    "Lateral_Bound__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -2980,7 +2980,7 @@
       "reviewedAt": "2026-08-13T02:24:57+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Leg-Up_Hamstring_Stretch__f1__female": {
+    "Leg-Up_Hamstring_Stretch__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3010,7 +3010,7 @@
       "reviewedAt": "2026-08-12T22:29:25+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Monster_Walk__f1__female": {
+    "Monster_Walk__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3020,7 +3020,7 @@
       "reviewedAt": "2026-08-13T02:11:17+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Monster_Walk__f1__male": {
+    "Monster_Walk__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3040,7 +3040,7 @@
       "reviewedAt": "2026-08-12T16:53:02+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Mountain_Climbers__f1__female": {
+    "Mountain_Climbers__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3050,7 +3050,7 @@
       "reviewedAt": "2026-08-12T16:53:02+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Mountain_Climbers__f1__male": {
+    "Mountain_Climbers__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3070,7 +3070,7 @@
       "reviewedAt": "2026-08-13T08:06:03+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Oblique_Crunches_-_On_The_Floor__f1__female": {
+    "Oblique_Crunches_-_On_The_Floor__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3100,7 +3100,7 @@
       "reviewedAt": "2026-08-12T20:06:40+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "One_Knee_To_Chest__f1__female": {
+    "One_Knee_To_Chest__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3110,7 +3110,7 @@
       "reviewedAt": "2026-08-12T20:06:40+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "One_Knee_To_Chest__f1__male": {
+    "One_Knee_To_Chest__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3140,7 +3140,7 @@
       "reviewedAt": "2026-08-12T20:00:12+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Pelvic_Tilt_Into_Bridge__f1__female": {
+    "Pelvic_Tilt_Into_Bridge__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3150,7 +3150,7 @@
       "reviewedAt": "2026-08-12T20:00:12+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Pelvic_Tilt_Into_Bridge__f1__male": {
+    "Pelvic_Tilt_Into_Bridge__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3170,7 +3170,7 @@
       "reviewedAt": "2026-08-12T23:42:34+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Plate_Pinch__f1__male": {
+    "Plate_Pinch__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3190,7 +3190,7 @@
       "reviewedAt": "2026-08-12T17:35:34+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Plie_Dumbbell_Squat__f1__female": {
+    "Plie_Dumbbell_Squat__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3210,7 +3210,7 @@
       "reviewedAt": "2026-08-13T01:00:55+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Pushups__f1__male": {
+    "Pushups__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3230,7 +3230,7 @@
       "reviewedAt": "2026-08-13T00:10:39+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Rear_Leg_Raises__f1__female": {
+    "Rear_Leg_Raises__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3260,7 +3260,7 @@
       "reviewedAt": "2026-08-12T18:04:36+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Reverse_Barbell_Curl__f1__female": {
+    "Reverse_Barbell_Curl__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3270,7 +3270,7 @@
       "reviewedAt": "2026-08-12T19:56:35+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Reverse_Barbell_Curl__f1__male": {
+    "Reverse_Barbell_Curl__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3290,7 +3290,7 @@
       "reviewedAt": "2026-08-13T01:12:46+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Reverse_Crunch__f1__male": {
+    "Reverse_Crunch__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3320,7 +3320,7 @@
       "reviewedAt": "2026-08-13T00:04:56+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Rocket_Jump__f1__female": {
+    "Rocket_Jump__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3330,7 +3330,7 @@
       "reviewedAt": "2026-08-13T00:13:56+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Rocket_Jump__f1__male": {
+    "Rocket_Jump__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3350,7 +3350,7 @@
       "reviewedAt": "2026-08-13T08:06:03+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Romanian_Deadlift__f1__male": {
+    "Romanian_Deadlift__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3370,7 +3370,7 @@
       "reviewedAt": "2026-08-13T00:10:39+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Rope_Jumping__f1__male": {
+    "Rope_Jumping__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3390,7 +3390,7 @@
       "reviewedAt": "2026-08-12T20:59:59+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Seated_Bent-Over_Rear_Delt_Raise__f1__female": {
+    "Seated_Bent-Over_Rear_Delt_Raise__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3420,7 +3420,7 @@
       "reviewedAt": "2026-08-13T00:47:13+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Seated_Dumbbell_Curl__f1__female": {
+    "Seated_Dumbbell_Curl__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3430,7 +3430,7 @@
       "reviewedAt": "2026-08-12T19:28:57+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Seated_Dumbbell_Curl__f1__male": {
+    "Seated_Dumbbell_Curl__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3450,7 +3450,7 @@
       "reviewedAt": "2026-08-12T19:31:40+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Seated_Dumbbell_Inner_Biceps_Curl__f1__female": {
+    "Seated_Dumbbell_Inner_Biceps_Curl__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3470,7 +3470,7 @@
       "reviewedAt": "2026-08-12T20:45:31+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Seated_Side_Lateral_Raise__f1__female": {
+    "Seated_Side_Lateral_Raise__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3500,7 +3500,7 @@
       "reviewedAt": "2026-08-12T21:10:01+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Shoulder_Circles__f1__female": {
+    "Shoulder_Circles__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3510,7 +3510,7 @@
       "reviewedAt": "2026-08-12T21:10:01+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Shoulder_Circles__f1__male": {
+    "Shoulder_Circles__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3540,7 +3540,7 @@
       "reviewedAt": "2026-08-12T22:20:40+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Shoulder_Stretch__f1__female": {
+    "Shoulder_Stretch__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3550,7 +3550,7 @@
       "reviewedAt": "2026-08-12T22:20:40+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Shoulder_Stretch__f1__male": {
+    "Shoulder_Stretch__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3570,7 +3570,7 @@
       "reviewedAt": "2026-08-13T00:29:06+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Side_Bridge__f1__female": {
+    "Side_Bridge__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3600,7 +3600,7 @@
       "reviewedAt": "2026-08-12T19:56:34+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Side_Lateral_Raise__f1__female": {
+    "Side_Lateral_Raise__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3610,7 +3610,7 @@
       "reviewedAt": "2026-08-12T16:49:08+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Side_Lateral_Raise__f1__male": {
+    "Side_Lateral_Raise__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3640,7 +3640,7 @@
       "reviewedAt": "2026-08-12T22:45:48+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Side_Leg_Raises__f1__female": {
+    "Side_Leg_Raises__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3650,7 +3650,7 @@
       "reviewedAt": "2026-08-12T22:45:48+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Side_Leg_Raises__f1__male": {
+    "Side_Leg_Raises__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3680,7 +3680,7 @@
       "reviewedAt": "2026-08-12T19:35:55+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Side_Neck_Stretch__f1__female": {
+    "Side_Neck_Stretch__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3690,7 +3690,7 @@
       "reviewedAt": "2026-08-12T19:35:55+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Side_Neck_Stretch__f1__male": {
+    "Side_Neck_Stretch__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3710,7 +3710,7 @@
       "reviewedAt": "2026-08-13T00:37:14+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Single_Leg_Glute_Bridge__f1__female": {
+    "Single_Leg_Glute_Bridge__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3720,7 +3720,7 @@
       "reviewedAt": "2026-08-13T00:37:14+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Sit_Squats__f1__female": {
+    "Sit_Squats__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3750,7 +3750,7 @@
       "reviewedAt": "2026-08-12T20:03:11+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Standing_Alternating_Dumbbell_Press__f1__female": {
+    "Standing_Alternating_Dumbbell_Press__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3760,7 +3760,7 @@
       "reviewedAt": "2026-08-12T18:36:28+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Standing_Alternating_Dumbbell_Press__f1__male": {
+    "Standing_Alternating_Dumbbell_Press__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3770,7 +3770,7 @@
       "reviewedAt": "2026-08-12T20:03:11+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Standing_Barbell_Calf_Raise__f1__female": {
+    "Standing_Barbell_Calf_Raise__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3800,7 +3800,7 @@
       "reviewedAt": "2026-08-13T02:15:32+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Standing_Barbell_Press_Behind_Neck__f1__female": {
+    "Standing_Barbell_Press_Behind_Neck__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3810,7 +3810,7 @@
       "reviewedAt": "2026-08-12T22:59:15+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Standing_Barbell_Press_Behind_Neck__f1__male": {
+    "Standing_Barbell_Press_Behind_Neck__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3830,7 +3830,7 @@
       "reviewedAt": "2026-08-12T18:51:30+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Standing_Bent-Over_Two-Arm_Dumbbell_Triceps_Extension__f1__female": {
+    "Standing_Bent-Over_Two-Arm_Dumbbell_Triceps_Extension__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3860,7 +3860,7 @@
       "reviewedAt": "2026-08-12T21:29:13+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Standing_Biceps_Stretch__f1__female": {
+    "Standing_Biceps_Stretch__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3870,7 +3870,7 @@
       "reviewedAt": "2026-08-12T21:29:13+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Standing_Biceps_Stretch__f1__male": {
+    "Standing_Biceps_Stretch__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3900,7 +3900,7 @@
       "reviewedAt": "2026-08-12T16:17:45+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Standing_Dumbbell_Calf_Raise__f1__female": {
+    "Standing_Dumbbell_Calf_Raise__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3910,7 +3910,7 @@
       "reviewedAt": "2026-08-12T16:44:02+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Standing_Dumbbell_Calf_Raise__f1__male": {
+    "Standing_Dumbbell_Calf_Raise__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3930,7 +3930,7 @@
       "reviewedAt": "2026-08-12T16:06:51+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Standing_Dumbbell_Press__f1__female": {
+    "Standing_Dumbbell_Press__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3960,7 +3960,7 @@
       "reviewedAt": "2026-08-12T16:50:05+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Standing_Dumbbell_Reverse_Curl__f1__female": {
+    "Standing_Dumbbell_Reverse_Curl__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -3970,7 +3970,7 @@
       "reviewedAt": "2026-08-12T18:28:27+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Standing_Dumbbell_Reverse_Curl__f1__male": {
+    "Standing_Dumbbell_Reverse_Curl__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4000,7 +4000,7 @@
       "reviewedAt": "2026-08-12T20:08:13+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Standing_Dumbbell_Straight-Arm_Front_Delt_Raise_Above_Head__f1__female": {
+    "Standing_Dumbbell_Straight-Arm_Front_Delt_Raise_Above_Head__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4010,7 +4010,7 @@
       "reviewedAt": "2026-08-12T18:47:36+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Standing_Dumbbell_Straight-Arm_Front_Delt_Raise_Above_Head__f1__male": {
+    "Standing_Dumbbell_Straight-Arm_Front_Delt_Raise_Above_Head__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4040,7 +4040,7 @@
       "reviewedAt": "2026-08-12T18:56:42+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Standing_Dumbbell_Triceps_Extension__f1__female": {
+    "Standing_Dumbbell_Triceps_Extension__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4050,7 +4050,7 @@
       "reviewedAt": "2026-08-12T18:24:53+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Standing_Dumbbell_Triceps_Extension__f1__male": {
+    "Standing_Dumbbell_Triceps_Extension__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4080,7 +4080,7 @@
       "reviewedAt": "2026-08-12T18:37:42+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Standing_Dumbbell_Upright_Row__f1__female": {
+    "Standing_Dumbbell_Upright_Row__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4090,7 +4090,7 @@
       "reviewedAt": "2026-08-12T17:29:16+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Standing_Dumbbell_Upright_Row__f1__male": {
+    "Standing_Dumbbell_Upright_Row__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4120,7 +4120,7 @@
       "reviewedAt": "2026-08-12T20:42:24+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Standing_Front_Barbell_Raise_Over_Head__f1__female": {
+    "Standing_Front_Barbell_Raise_Over_Head__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4130,7 +4130,7 @@
       "reviewedAt": "2026-08-12T20:00:12+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Standing_Front_Barbell_Raise_Over_Head__f1__male": {
+    "Standing_Front_Barbell_Raise_Over_Head__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4160,7 +4160,7 @@
       "reviewedAt": "2026-08-12T19:04:44+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Standing_Hip_Circles__f1__female": {
+    "Standing_Hip_Circles__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4170,7 +4170,7 @@
       "reviewedAt": "2026-08-12T19:04:44+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Standing_Hip_Circles__f1__male": {
+    "Standing_Hip_Circles__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4200,7 +4200,7 @@
       "reviewedAt": "2026-08-12T17:59:55+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Standing_Inner-Biceps_Curl__f1__male": {
+    "Standing_Inner-Biceps_Curl__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4230,7 +4230,7 @@
       "reviewedAt": "2026-08-12T19:31:40+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Standing_Lateral_Stretch__f1__female": {
+    "Standing_Lateral_Stretch__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4240,7 +4240,7 @@
       "reviewedAt": "2026-08-12T19:31:40+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Standing_Lateral_Stretch__f1__male": {
+    "Standing_Lateral_Stretch__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4270,7 +4270,7 @@
       "reviewedAt": "2026-08-13T00:00:04+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Standing_Long_Jump__f1__female": {
+    "Standing_Long_Jump__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4280,7 +4280,7 @@
       "reviewedAt": "2026-08-12T23:56:09+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Standing_Long_Jump__f1__male": {
+    "Standing_Long_Jump__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4310,7 +4310,7 @@
       "reviewedAt": "2026-08-13T02:02:53+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Standing_Military_Press__f1__female": {
+    "Standing_Military_Press__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4320,7 +4320,7 @@
       "reviewedAt": "2026-08-12T20:06:40+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Standing_Military_Press__f1__male": {
+    "Standing_Military_Press__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4340,7 +4340,7 @@
       "reviewedAt": "2026-08-12T18:39:57+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Standing_One-Arm_Dumbbell_Triceps_Extension__f1__female": {
+    "Standing_One-Arm_Dumbbell_Triceps_Extension__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4370,7 +4370,7 @@
       "reviewedAt": "2026-08-13T02:09:14+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Standing_Overhead_Barbell_Triceps_Extension__f1__female": {
+    "Standing_Overhead_Barbell_Triceps_Extension__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4380,7 +4380,7 @@
       "reviewedAt": "2026-08-12T20:03:11+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Standing_Overhead_Barbell_Triceps_Extension__f1__male": {
+    "Standing_Overhead_Barbell_Triceps_Extension__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4400,7 +4400,7 @@
       "reviewedAt": "2026-08-12T18:49:51+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Standing_Palm-In_One-Arm_Dumbbell_Press__f1__female": {
+    "Standing_Palm-In_One-Arm_Dumbbell_Press__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4430,7 +4430,7 @@
       "reviewedAt": "2026-08-12T19:52:18+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Standing_Palms-In_Dumbbell_Press__f1__female": {
+    "Standing_Palms-In_Dumbbell_Press__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4440,7 +4440,7 @@
       "reviewedAt": "2026-08-12T18:33:42+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Standing_Palms-In_Dumbbell_Press__f1__male": {
+    "Standing_Palms-In_Dumbbell_Press__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4470,7 +4470,7 @@
       "reviewedAt": "2026-08-12T22:26:36+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Standing_Pelvic_Tilt__f1__female": {
+    "Standing_Pelvic_Tilt__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4480,7 +4480,7 @@
       "reviewedAt": "2026-08-12T22:14:59+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Standing_Pelvic_Tilt__f1__male": {
+    "Standing_Pelvic_Tilt__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4500,7 +4500,7 @@
       "reviewedAt": "2026-08-13T00:21:36+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Standing_Soleus_And_Achilles_Stretch__f1__male": {
+    "Standing_Soleus_And_Achilles_Stretch__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4530,7 +4530,7 @@
       "reviewedAt": "2026-08-12T23:47:09+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Star_Jump__f1__female": {
+    "Star_Jump__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4540,7 +4540,7 @@
       "reviewedAt": "2026-08-12T23:47:09+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Star_Jump__f1__male": {
+    "Star_Jump__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4560,7 +4560,7 @@
       "reviewedAt": "2026-08-13T02:24:57+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Stiff-Legged_Barbell_Deadlift__f1__male": {
+    "Stiff-Legged_Barbell_Deadlift__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4590,7 +4590,7 @@
       "reviewedAt": "2026-08-13T02:31:26+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Stiff-Legged_Dumbbell_Deadlift__f1__female": {
+    "Stiff-Legged_Dumbbell_Deadlift__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4600,7 +4600,7 @@
       "reviewedAt": "2026-08-12T18:31:11+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Stiff-Legged_Dumbbell_Deadlift__f1__male": {
+    "Stiff-Legged_Dumbbell_Deadlift__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4640,7 +4640,7 @@
       "reviewedAt": "2026-08-12T15:21:55+00:00",
       "reviewer": "dataset-audit"
     },
-    "Tire_Flip__f1__female": {
+    "Tire_Flip__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4650,7 +4650,7 @@
       "reviewedAt": "2026-08-12T15:59:43+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Tire_Flip__f1__male": {
+    "Tire_Flip__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4680,7 +4680,7 @@
       "reviewedAt": "2026-08-12T21:07:35+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Triceps_Stretch__f1__female": {
+    "Triceps_Stretch__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4690,7 +4690,7 @@
       "reviewedAt": "2026-08-12T21:07:35+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Triceps_Stretch__f1__male": {
+    "Triceps_Stretch__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4710,7 +4710,7 @@
       "reviewedAt": "2026-08-12T23:06:29+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Two-Arm_Kettlebell_Clean__f1__female": {
+    "Two-Arm_Kettlebell_Clean__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4730,7 +4730,7 @@
       "reviewedAt": "2026-08-12T22:54:55+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Two-Arm_Kettlebell_Military_Press__f1__female": {
+    "Two-Arm_Kettlebell_Military_Press__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4740,7 +4740,7 @@
       "reviewedAt": "2026-08-12T22:54:55+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Two-Arm_Kettlebell_Row__f1__female": {
+    "Two-Arm_Kettlebell_Row__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4770,7 +4770,7 @@
       "reviewedAt": "2026-08-12T23:01:23+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Upper_Back_Stretch__f1__female": {
+    "Upper_Back_Stretch__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4780,7 +4780,7 @@
       "reviewedAt": "2026-08-12T22:58:18+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Upper_Back_Stretch__f1__male": {
+    "Upper_Back_Stretch__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4800,7 +4800,7 @@
       "reviewedAt": "2026-08-12T22:50:26+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Upright_Barbell_Row__f1__female": {
+    "Upright_Barbell_Row__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4830,7 +4830,7 @@
       "reviewedAt": "2026-08-12T21:28:01+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Upward_Stretch__f1__female": {
+    "Upward_Stretch__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4840,7 +4840,7 @@
       "reviewedAt": "2026-08-12T21:28:01+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Upward_Stretch__f1__male": {
+    "Upward_Stretch__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4870,7 +4870,7 @@
       "reviewedAt": "2026-08-12T18:31:10+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Wide-Grip_Standing_Barbell_Curl__f1__female": {
+    "Wide-Grip_Standing_Barbell_Curl__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4880,7 +4880,7 @@
       "reviewedAt": "2026-08-12T19:56:34+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Wide-Grip_Standing_Barbell_Curl__f1__male": {
+    "Wide-Grip_Standing_Barbell_Curl__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4890,7 +4890,7 @@
       "reviewedAt": "2026-08-12T18:31:11+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Wrist_Circles__f1__female": {
+    "Wrist_Circles__f5__female": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4900,7 +4900,7 @@
       "reviewedAt": "2026-08-12T16:17:45+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Wrist_Circles__f1__male": {
+    "Wrist_Circles__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4920,7 +4920,7 @@
       "reviewedAt": "2026-08-12T23:36:35+00:00",
       "reviewer": "qa-orchestrator"
     },
-    "Wrist_Rotations_with_Straight_Bar__f1__male": {
+    "Wrist_Rotations_with_Straight_Bar__f5__male": {
       "anatomyApproved": true,
       "artifactFree": true,
       "characterApproved": true,
@@ -4931,5 +4931,5 @@
       "reviewer": "qa-orchestrator"
     }
   },
-  "schemaVersion": 1
+  "schemaVersion": 2
 }

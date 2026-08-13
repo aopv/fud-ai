@@ -71,7 +71,7 @@
       },
       "status": "accepted"
     },
-    "90_90_Hamstring__f1__female": {
+    "90_90_Hamstring__f5__female": {
       "edgeLayoutCosine": 0.477012,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -132,7 +132,7 @@
       },
       "status": "accepted"
     },
-    "90_90_Hamstring__f1__male": {
+    "90_90_Hamstring__f5__male": {
       "edgeLayoutCosine": 0.523013,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -315,7 +315,7 @@
       },
       "status": "accepted"
     },
-    "Advanced_Kettlebell_Windmill__f1__female": {
+    "Advanced_Kettlebell_Windmill__f5__female": {
       "edgeLayoutCosine": 0.662358,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -376,7 +376,7 @@
       },
       "status": "accepted"
     },
-    "Advanced_Kettlebell_Windmill__f1__male": {
+    "Advanced_Kettlebell_Windmill__f5__male": {
       "edgeLayoutCosine": 0.655454,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -559,7 +559,7 @@
       },
       "status": "accepted"
     },
-    "All_Fours_Quad_Stretch__f1__female": {
+    "All_Fours_Quad_Stretch__f5__female": {
       "edgeLayoutCosine": 0.684376,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -620,7 +620,7 @@
       },
       "status": "accepted"
     },
-    "All_Fours_Quad_Stretch__f1__male": {
+    "All_Fours_Quad_Stretch__f5__male": {
       "edgeLayoutCosine": 0.711972,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -803,7 +803,7 @@
       },
       "status": "accepted"
     },
-    "Alternate_Hammer_Curl__f1__female": {
+    "Alternate_Hammer_Curl__f5__female": {
       "edgeLayoutCosine": 0.566826,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -864,7 +864,7 @@
       },
       "status": "accepted"
     },
-    "Alternate_Hammer_Curl__f1__male": {
+    "Alternate_Hammer_Curl__f5__male": {
       "edgeLayoutCosine": 0.624653,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -925,7 +925,7 @@
       },
       "status": "accepted"
     },
-    "Alternate_Heel_Touchers__f1__female": {
+    "Alternate_Heel_Touchers__f5__female": {
       "edgeLayoutCosine": 0.624221,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -986,7 +986,7 @@
       },
       "status": "accepted"
     },
-    "Alternate_Heel_Touchers__f1__male": {
+    "Alternate_Heel_Touchers__f5__male": {
       "edgeLayoutCosine": 0.69215,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -1291,7 +1291,7 @@
       },
       "status": "accepted"
     },
-    "Alternate_Leg_Diagonal_Bound__f1__female": {
+    "Alternate_Leg_Diagonal_Bound__f5__female": {
       "edgeLayoutCosine": 0.520476,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -1343,7 +1343,7 @@
       },
       "status": "auto_failed"
     },
-    "Alternate_Leg_Diagonal_Bound__f1__male": {
+    "Alternate_Leg_Diagonal_Bound__f5__male": {
       "edgeLayoutCosine": 0.65269,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -1526,7 +1526,7 @@
       },
       "status": "accepted"
     },
-    "Alternating_Deltoid_Raise__f1__female": {
+    "Alternating_Deltoid_Raise__f5__female": {
       "edgeLayoutCosine": 0.414441,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -1587,7 +1587,7 @@
       },
       "status": "accepted"
     },
-    "Alternating_Deltoid_Raise__f1__male": {
+    "Alternating_Deltoid_Raise__f5__male": {
       "edgeLayoutCosine": 0.404658,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -1709,7 +1709,7 @@
       },
       "status": "accepted"
     },
-    "Alternating_Kettlebell_Press__f1__female": {
+    "Alternating_Kettlebell_Press__f5__female": {
       "edgeLayoutCosine": 0.660117,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -1831,7 +1831,7 @@
       },
       "status": "accepted"
     },
-    "Alternating_Kettlebell_Row__f1__female": {
+    "Alternating_Kettlebell_Row__f5__female": {
       "edgeLayoutCosine": 0.749713,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -1968,7 +1968,7 @@
       },
       "status": "auto_failed"
     },
-    "Ankle_Circles__f1__female": {
+    "Ankle_Circles__f5__female": {
       "edgeLayoutCosine": 0.675338,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -2006,7 +2006,7 @@
       },
       "status": "auto_failed"
     },
-    "Ankle_Circles__f1__male": {
+    "Ankle_Circles__f5__male": {
       "edgeLayoutCosine": 0.755766,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -2166,7 +2166,7 @@
       },
       "status": "accepted"
     },
-    "Ankle_On_The_Knee__f1__female": {
+    "Ankle_On_The_Knee__f5__female": {
       "edgeLayoutCosine": 0.53431,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -2227,7 +2227,7 @@
       },
       "status": "accepted"
     },
-    "Ankle_On_The_Knee__f1__male": {
+    "Ankle_On_The_Knee__f5__male": {
       "edgeLayoutCosine": 0.52043,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -2410,7 +2410,7 @@
       },
       "status": "accepted"
     },
-    "Arm_Circles__f1__female": {
+    "Arm_Circles__f5__female": {
       "edgeLayoutCosine": 0.621069,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -2471,7 +2471,7 @@
       },
       "status": "accepted"
     },
-    "Arm_Circles__f1__male": {
+    "Arm_Circles__f5__male": {
       "edgeLayoutCosine": 0.701871,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -2654,7 +2654,7 @@
       },
       "status": "accepted"
     },
-    "Arnold_Dumbbell_Press__f1__female": {
+    "Arnold_Dumbbell_Press__f5__female": {
       "edgeLayoutCosine": 0.408124,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -2715,7 +2715,7 @@
       },
       "status": "accepted"
     },
-    "Arnold_Dumbbell_Press__f1__male": {
+    "Arnold_Dumbbell_Press__f5__male": {
       "edgeLayoutCosine": 0.477596,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -2898,7 +2898,7 @@
       },
       "status": "accepted"
     },
-    "Back_Flyes_-_With_Bands__f1__female": {
+    "Back_Flyes_-_With_Bands__f5__female": {
       "edgeLayoutCosine": 0.638774,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -2959,7 +2959,7 @@
       },
       "status": "accepted"
     },
-    "Back_Flyes_-_With_Bands__f1__male": {
+    "Back_Flyes_-_With_Bands__f5__male": {
       "edgeLayoutCosine": 0.659382,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -3133,7 +3133,7 @@
       },
       "status": "accepted"
     },
-    "Backward_Medicine_Ball_Throw__f1__female": {
+    "Backward_Medicine_Ball_Throw__f5__female": {
       "edgeLayoutCosine": 0.653458,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -3194,7 +3194,7 @@
       },
       "status": "accepted"
     },
-    "Backward_Medicine_Ball_Throw__f1__male": {
+    "Backward_Medicine_Ball_Throw__f5__male": {
       "edgeLayoutCosine": 0.660195,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -3316,7 +3316,7 @@
       },
       "status": "accepted"
     },
-    "Ball_Leg_Curl__f1__male": {
+    "Ball_Leg_Curl__f5__male": {
       "edgeLayoutCosine": 0.289396,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -3499,7 +3499,7 @@
       },
       "status": "accepted"
     },
-    "Band_Good_Morning__f1__female": {
+    "Band_Good_Morning__f5__female": {
       "edgeLayoutCosine": 0.593788,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -3560,7 +3560,7 @@
       },
       "status": "accepted"
     },
-    "Band_Good_Morning__f1__male": {
+    "Band_Good_Morning__f5__male": {
       "edgeLayoutCosine": 0.608043,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -3682,7 +3682,7 @@
       },
       "status": "accepted"
     },
-    "Band_Hip_Adductions__f1__female": {
+    "Band_Hip_Adductions__f5__female": {
       "edgeLayoutCosine": 0.381638,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -3743,7 +3743,7 @@
       },
       "status": "accepted"
     },
-    "Band_Pull_Apart__f1__male": {
+    "Band_Pull_Apart__f5__male": {
       "edgeLayoutCosine": 0.594368,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -3926,7 +3926,7 @@
       },
       "status": "accepted"
     },
-    "Barbell_Curl__f1__female": {
+    "Barbell_Curl__f5__female": {
       "edgeLayoutCosine": 0.60949,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -3987,7 +3987,7 @@
       },
       "status": "accepted"
     },
-    "Barbell_Curl__f1__male": {
+    "Barbell_Curl__f5__male": {
       "edgeLayoutCosine": 0.651089,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -4109,7 +4109,7 @@
       },
       "status": "accepted"
     },
-    "Barbell_Deadlift__f1__female": {
+    "Barbell_Deadlift__f5__female": {
       "edgeLayoutCosine": 0.636123,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -4170,7 +4170,7 @@
       },
       "status": "accepted"
     },
-    "Barbell_Deadlift__f1__male": {
+    "Barbell_Deadlift__f5__male": {
       "edgeLayoutCosine": 0.662052,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -4353,7 +4353,7 @@
       },
       "status": "accepted"
     },
-    "Barbell_Shrug_Behind_The_Back__f1__male": {
+    "Barbell_Shrug_Behind_The_Back__f5__male": {
       "edgeLayoutCosine": 0.598392,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -4536,7 +4536,7 @@
       },
       "status": "accepted"
     },
-    "Barbell_Shrug__f1__female": {
+    "Barbell_Shrug__f5__female": {
       "edgeLayoutCosine": 0.60431,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -4597,7 +4597,7 @@
       },
       "status": "accepted"
     },
-    "Barbell_Shrug__f1__male": {
+    "Barbell_Shrug__f5__male": {
       "edgeLayoutCosine": 0.67764,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -4780,7 +4780,7 @@
       },
       "status": "accepted"
     },
-    "Barbell_Side_Bend__f1__female": {
+    "Barbell_Side_Bend__f5__female": {
       "edgeLayoutCosine": 0.561017,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -4841,7 +4841,7 @@
       },
       "status": "accepted"
     },
-    "Barbell_Side_Bend__f1__male": {
+    "Barbell_Side_Bend__f5__male": {
       "edgeLayoutCosine": 0.576875,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -4963,7 +4963,7 @@
       },
       "status": "accepted"
     },
-    "Barbell_Side_Split_Squat__f1__female": {
+    "Barbell_Side_Split_Squat__f5__female": {
       "edgeLayoutCosine": 0.57356,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -5207,7 +5207,7 @@
       },
       "status": "accepted"
     },
-    "Bench_Dips__f1__female": {
+    "Bench_Dips__f5__female": {
       "edgeLayoutCosine": 0.63723,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -5268,7 +5268,7 @@
       },
       "status": "accepted"
     },
-    "Bench_Dips__f1__male": {
+    "Bench_Dips__f5__male": {
       "edgeLayoutCosine": 0.565936,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -5451,7 +5451,7 @@
       },
       "status": "accepted"
     },
-    "Bent_Over_Barbell_Row__f1__female": {
+    "Bent_Over_Barbell_Row__f5__female": {
       "edgeLayoutCosine": 0.494561,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -5512,7 +5512,7 @@
       },
       "status": "accepted"
     },
-    "Bent_Over_Barbell_Row__f1__male": {
+    "Bent_Over_Barbell_Row__f5__male": {
       "edgeLayoutCosine": 0.612793,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -5695,7 +5695,7 @@
       },
       "status": "accepted"
     },
-    "Bent_Over_Two-Dumbbell_Row_With_Palms_In__f1__female": {
+    "Bent_Over_Two-Dumbbell_Row_With_Palms_In__f5__female": {
       "edgeLayoutCosine": 0.676136,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -5756,7 +5756,7 @@
       },
       "status": "accepted"
     },
-    "Bent_Over_Two-Dumbbell_Row_With_Palms_In__f1__male": {
+    "Bent_Over_Two-Dumbbell_Row_With_Palms_In__f5__male": {
       "edgeLayoutCosine": 0.7285,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -5939,7 +5939,7 @@
       },
       "status": "accepted"
     },
-    "Bent_Over_Two-Dumbbell_Row__f1__female": {
+    "Bent_Over_Two-Dumbbell_Row__f5__female": {
       "edgeLayoutCosine": 0.559742,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -6000,7 +6000,7 @@
       },
       "status": "accepted"
     },
-    "Bent_Over_Two-Dumbbell_Row__f1__male": {
+    "Bent_Over_Two-Dumbbell_Row__f5__male": {
       "edgeLayoutCosine": 0.623322,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -6183,7 +6183,7 @@
       },
       "status": "accepted"
     },
-    "Bodyweight_Squat__f1__female": {
+    "Bodyweight_Squat__f5__female": {
       "edgeLayoutCosine": 0.659811,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -6244,7 +6244,7 @@
       },
       "status": "accepted"
     },
-    "Bodyweight_Squat__f1__male": {
+    "Bodyweight_Squat__f5__male": {
       "edgeLayoutCosine": 0.616991,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -6427,7 +6427,7 @@
       },
       "status": "accepted"
     },
-    "Bodyweight_Walking_Lunge__f1__female": {
+    "Bodyweight_Walking_Lunge__f5__female": {
       "edgeLayoutCosine": 0.631701,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -6488,7 +6488,7 @@
       },
       "status": "accepted"
     },
-    "Bodyweight_Walking_Lunge__f1__male": {
+    "Bodyweight_Walking_Lunge__f5__male": {
       "edgeLayoutCosine": 0.610454,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -6671,7 +6671,7 @@
       },
       "status": "accepted"
     },
-    "Butt_Lift_Bridge__f1__female": {
+    "Butt_Lift_Bridge__f5__female": {
       "edgeLayoutCosine": 0.688057,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -6732,7 +6732,7 @@
       },
       "status": "accepted"
     },
-    "Butt_Lift_Bridge__f1__male": {
+    "Butt_Lift_Bridge__f5__male": {
       "edgeLayoutCosine": 0.621273,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -6854,7 +6854,7 @@
       },
       "status": "accepted"
     },
-    "Cable_Crossover__f1__female": {
+    "Cable_Crossover__f5__female": {
       "edgeLayoutCosine": 0.793192,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -6976,7 +6976,7 @@
       },
       "status": "accepted"
     },
-    "Calf_Raises_-_With_Bands__f1__male": {
+    "Calf_Raises_-_With_Bands__f5__male": {
       "edgeLayoutCosine": 0.779511,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -7098,7 +7098,7 @@
       },
       "status": "accepted"
     },
-    "Car_Drivers__f1__male": {
+    "Car_Drivers__f5__male": {
       "edgeLayoutCosine": 0.649271,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -7281,7 +7281,7 @@
       },
       "status": "accepted"
     },
-    "Cat_Stretch__f1__female": {
+    "Cat_Stretch__f5__female": {
       "edgeLayoutCosine": 0.486352,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -7342,7 +7342,7 @@
       },
       "status": "accepted"
     },
-    "Cat_Stretch__f1__male": {
+    "Cat_Stretch__f5__male": {
       "edgeLayoutCosine": 0.449882,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -7525,7 +7525,7 @@
       },
       "status": "accepted"
     },
-    "Chair_Leg_Extended_Stretch__f1__female": {
+    "Chair_Leg_Extended_Stretch__f5__female": {
       "edgeLayoutCosine": 0.496911,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -7586,7 +7586,7 @@
       },
       "status": "auto_failed"
     },
-    "Chair_Leg_Extended_Stretch__f1__male": {
+    "Chair_Leg_Extended_Stretch__f5__male": {
       "edgeLayoutCosine": 0.620362,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -7769,7 +7769,7 @@
       },
       "status": "accepted"
     },
-    "Chair_Lower_Back_Stretch__f1__female": {
+    "Chair_Lower_Back_Stretch__f5__female": {
       "edgeLayoutCosine": 0.520879,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -7830,7 +7830,7 @@
       },
       "status": "accepted"
     },
-    "Chair_Lower_Back_Stretch__f1__male": {
+    "Chair_Lower_Back_Stretch__f5__male": {
       "edgeLayoutCosine": 0.58864,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -8074,7 +8074,7 @@
       },
       "status": "accepted"
     },
-    "Childs_Pose__f1__female": {
+    "Childs_Pose__f5__female": {
       "edgeLayoutCosine": 0.5337,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -8135,7 +8135,7 @@
       },
       "status": "accepted"
     },
-    "Childs_Pose__f1__male": {
+    "Childs_Pose__f5__male": {
       "edgeLayoutCosine": 0.583347,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -8318,7 +8318,7 @@
       },
       "status": "accepted"
     },
-    "Chin_To_Chest_Stretch__f1__male": {
+    "Chin_To_Chest_Stretch__f5__male": {
       "edgeLayoutCosine": 0.578868,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -8440,7 +8440,7 @@
       },
       "status": "accepted"
     },
-    "Close-Grip_EZ_Bar_Curl__f1__male": {
+    "Close-Grip_EZ_Bar_Curl__f5__male": {
       "edgeLayoutCosine": 0.65446,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -8623,7 +8623,7 @@
       },
       "status": "accepted"
     },
-    "Close-Grip_Standing_Barbell_Curl__f1__female": {
+    "Close-Grip_Standing_Barbell_Curl__f5__female": {
       "edgeLayoutCosine": 0.646891,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -8684,7 +8684,7 @@
       },
       "status": "accepted"
     },
-    "Close-Grip_Standing_Barbell_Curl__f1__male": {
+    "Close-Grip_Standing_Barbell_Curl__f5__male": {
       "edgeLayoutCosine": 0.693524,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -8867,7 +8867,7 @@
       },
       "status": "accepted"
     },
-    "Concentration_Curls__f1__female": {
+    "Concentration_Curls__f5__female": {
       "edgeLayoutCosine": 0.640251,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -8928,7 +8928,7 @@
       },
       "status": "accepted"
     },
-    "Concentration_Curls__f1__male": {
+    "Concentration_Curls__f5__male": {
       "edgeLayoutCosine": 0.6514,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -9111,7 +9111,7 @@
       },
       "status": "accepted"
     },
-    "Cross_Body_Hammer_Curl__f1__female": {
+    "Cross_Body_Hammer_Curl__f5__female": {
       "edgeLayoutCosine": 0.573796,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -9172,7 +9172,7 @@
       },
       "status": "accepted"
     },
-    "Cross_Body_Hammer_Curl__f1__male": {
+    "Cross_Body_Hammer_Curl__f5__male": {
       "edgeLayoutCosine": 0.640671,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -9233,7 +9233,7 @@
       },
       "status": "accepted"
     },
-    "Crunch_-_Hands_Overhead__f1__female": {
+    "Crunch_-_Hands_Overhead__f5__female": {
       "edgeLayoutCosine": 0.707658,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -9355,7 +9355,7 @@
       },
       "status": "accepted"
     },
-    "Dancers_Stretch__f1__female": {
+    "Dancers_Stretch__f5__female": {
       "edgeLayoutCosine": 0.492963,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -9416,7 +9416,7 @@
       },
       "status": "accepted"
     },
-    "Dancers_Stretch__f1__male": {
+    "Dancers_Stretch__f5__male": {
       "edgeLayoutCosine": 0.540162,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -9599,7 +9599,7 @@
       },
       "status": "accepted"
     },
-    "Decline_Push-Up__f1__female": {
+    "Decline_Push-Up__f5__female": {
       "edgeLayoutCosine": 0.449504,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -9721,7 +9721,7 @@
       },
       "status": "accepted"
     },
-    "Double_Leg_Butt_Kick__f1__female": {
+    "Double_Leg_Butt_Kick__f5__female": {
       "edgeLayoutCosine": 0.583323,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -9965,7 +9965,7 @@
       },
       "status": "accepted"
     },
-    "Dumbbell_Alternate_Bicep_Curl__f1__female": {
+    "Dumbbell_Alternate_Bicep_Curl__f5__female": {
       "edgeLayoutCosine": 0.574429,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -10026,7 +10026,7 @@
       },
       "status": "accepted"
     },
-    "Dumbbell_Alternate_Bicep_Curl__f1__male": {
+    "Dumbbell_Alternate_Bicep_Curl__f5__male": {
       "edgeLayoutCosine": 0.618304,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -10209,7 +10209,7 @@
       },
       "status": "accepted"
     },
-    "Dumbbell_Bench_Press_with_Neutral_Grip__f1__female": {
+    "Dumbbell_Bench_Press_with_Neutral_Grip__f5__female": {
       "edgeLayoutCosine": 0.403789,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -10392,7 +10392,7 @@
       },
       "status": "accepted"
     },
-    "Dumbbell_Bicep_Curl__f1__female": {
+    "Dumbbell_Bicep_Curl__f5__female": {
       "edgeLayoutCosine": 0.437825,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -10453,7 +10453,7 @@
       },
       "status": "accepted"
     },
-    "Dumbbell_Bicep_Curl__f1__male": {
+    "Dumbbell_Bicep_Curl__f5__male": {
       "edgeLayoutCosine": 0.615476,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -10575,7 +10575,7 @@
       },
       "status": "accepted"
     },
-    "Dumbbell_Floor_Press__f1__female": {
+    "Dumbbell_Floor_Press__f5__female": {
       "edgeLayoutCosine": 0.455565,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -10697,7 +10697,7 @@
       },
       "status": "accepted"
     },
-    "Dumbbell_Flyes__f1__female": {
+    "Dumbbell_Flyes__f5__female": {
       "edgeLayoutCosine": 0.689518,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -10819,7 +10819,7 @@
       },
       "status": "accepted"
     },
-    "Dumbbell_Incline_Row__f1__female": {
+    "Dumbbell_Incline_Row__f5__female": {
       "edgeLayoutCosine": 0.522466,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -10941,7 +10941,7 @@
       },
       "status": "accepted"
     },
-    "Dumbbell_Lunges__f1__female": {
+    "Dumbbell_Lunges__f5__female": {
       "edgeLayoutCosine": 0.593899,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -11185,7 +11185,7 @@
       },
       "status": "accepted"
     },
-    "Dumbbell_One-Arm_Shoulder_Press__f1__female": {
+    "Dumbbell_One-Arm_Shoulder_Press__f5__female": {
       "edgeLayoutCosine": 0.490767,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -11246,7 +11246,7 @@
       },
       "status": "accepted"
     },
-    "Dumbbell_One-Arm_Shoulder_Press__f1__male": {
+    "Dumbbell_One-Arm_Shoulder_Press__f5__male": {
       "edgeLayoutCosine": 0.52678,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -11429,7 +11429,7 @@
       },
       "status": "accepted"
     },
-    "Dumbbell_One-Arm_Upright_Row__f1__female": {
+    "Dumbbell_One-Arm_Upright_Row__f5__female": {
       "edgeLayoutCosine": 0.458676,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -11490,7 +11490,7 @@
       },
       "status": "accepted"
     },
-    "Dumbbell_One-Arm_Upright_Row__f1__male": {
+    "Dumbbell_One-Arm_Upright_Row__f5__male": {
       "edgeLayoutCosine": 0.526136,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -11795,7 +11795,7 @@
       },
       "status": "accepted"
     },
-    "Dumbbell_Scaption__f1__female": {
+    "Dumbbell_Scaption__f5__female": {
       "edgeLayoutCosine": 0.549099,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -11856,7 +11856,7 @@
       },
       "status": "accepted"
     },
-    "Dumbbell_Scaption__f1__male": {
+    "Dumbbell_Scaption__f5__male": {
       "edgeLayoutCosine": 0.563053,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -11978,7 +11978,7 @@
       },
       "status": "accepted"
     },
-    "Dumbbell_Shoulder_Press__f1__female": {
+    "Dumbbell_Shoulder_Press__f5__female": {
       "edgeLayoutCosine": 0.408412,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -12161,7 +12161,7 @@
       },
       "status": "accepted"
     },
-    "Dumbbell_Shrug__f1__female": {
+    "Dumbbell_Shrug__f5__female": {
       "edgeLayoutCosine": 0.635795,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -12222,7 +12222,7 @@
       },
       "status": "accepted"
     },
-    "Dumbbell_Shrug__f1__male": {
+    "Dumbbell_Shrug__f5__male": {
       "edgeLayoutCosine": 0.51385,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -12405,7 +12405,7 @@
       },
       "status": "accepted"
     },
-    "Dumbbell_Side_Bend__f1__female": {
+    "Dumbbell_Side_Bend__f5__female": {
       "edgeLayoutCosine": 0.636487,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -12466,7 +12466,7 @@
       },
       "status": "accepted"
     },
-    "Dumbbell_Side_Bend__f1__male": {
+    "Dumbbell_Side_Bend__f5__male": {
       "edgeLayoutCosine": 0.672954,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -12649,7 +12649,7 @@
       },
       "status": "accepted"
     },
-    "Dumbbell_Squat__f1__male": {
+    "Dumbbell_Squat__f5__male": {
       "edgeLayoutCosine": 0.61246,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -12771,7 +12771,7 @@
       },
       "status": "accepted"
     },
-    "Dumbbell_Step_Ups__f1__female": {
+    "Dumbbell_Step_Ups__f5__female": {
       "edgeLayoutCosine": 0.63508,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -12954,7 +12954,7 @@
       },
       "status": "accepted"
     },
-    "Dynamic_Chest_Stretch__f1__female": {
+    "Dynamic_Chest_Stretch__f5__female": {
       "edgeLayoutCosine": 0.557113,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -13015,7 +13015,7 @@
       },
       "status": "accepted"
     },
-    "Dynamic_Chest_Stretch__f1__male": {
+    "Dynamic_Chest_Stretch__f5__male": {
       "edgeLayoutCosine": 0.617712,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -13198,7 +13198,7 @@
       },
       "status": "accepted"
     },
-    "EZ-Bar_Curl__f1__female": {
+    "EZ-Bar_Curl__f5__female": {
       "edgeLayoutCosine": 0.515702,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -13259,7 +13259,7 @@
       },
       "status": "accepted"
     },
-    "EZ-Bar_Curl__f1__male": {
+    "EZ-Bar_Curl__f5__male": {
       "edgeLayoutCosine": 0.653656,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -13442,7 +13442,7 @@
       },
       "status": "accepted"
     },
-    "Elbow_Circles__f1__female": {
+    "Elbow_Circles__f5__female": {
       "edgeLayoutCosine": 0.59864,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -13503,7 +13503,7 @@
       },
       "status": "accepted"
     },
-    "Elbow_Circles__f1__male": {
+    "Elbow_Circles__f5__male": {
       "edgeLayoutCosine": 0.596245,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -13625,7 +13625,7 @@
       },
       "status": "accepted"
     },
-    "Elbows_Back__f1__female": {
+    "Elbows_Back__f5__female": {
       "edgeLayoutCosine": 0.601792,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -13686,7 +13686,7 @@
       },
       "status": "accepted"
     },
-    "Elbows_Back__f1__male": {
+    "Elbows_Back__f5__male": {
       "edgeLayoutCosine": 0.591332,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -13799,7 +13799,7 @@
       },
       "status": "auto_failed"
     },
-    "Fast_Skipping__f1__male": {
+    "Fast_Skipping__f5__male": {
       "edgeLayoutCosine": 0.349693,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -13912,7 +13912,7 @@
       },
       "status": "accepted"
     },
-    "Flat_Bench_Leg_Pull-In__f1__female": {
+    "Flat_Bench_Leg_Pull-In__f5__female": {
       "edgeLayoutCosine": 0.567783,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -14034,7 +14034,7 @@
       },
       "status": "accepted"
     },
-    "Flat_Bench_Lying_Leg_Raise__f1__female": {
+    "Flat_Bench_Lying_Leg_Raise__f5__female": {
       "edgeLayoutCosine": 0.672856,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -14217,7 +14217,7 @@
       },
       "status": "accepted"
     },
-    "Front_Dumbbell_Raise__f1__male": {
+    "Front_Dumbbell_Raise__f5__male": {
       "edgeLayoutCosine": 0.558493,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -14400,7 +14400,7 @@
       },
       "status": "accepted"
     },
-    "Front_Plate_Raise__f1__female": {
+    "Front_Plate_Raise__f5__female": {
       "edgeLayoutCosine": 0.609631,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -14583,7 +14583,7 @@
       },
       "status": "accepted"
     },
-    "Front_Two-Dumbbell_Raise__f1__female": {
+    "Front_Two-Dumbbell_Raise__f5__female": {
       "edgeLayoutCosine": 0.616588,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -14644,7 +14644,7 @@
       },
       "status": "accepted"
     },
-    "Front_Two-Dumbbell_Raise__f1__male": {
+    "Front_Two-Dumbbell_Raise__f5__male": {
       "edgeLayoutCosine": 0.615243,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -14827,7 +14827,7 @@
       },
       "status": "accepted"
     },
-    "Glute_Kickback__f1__female": {
+    "Glute_Kickback__f5__female": {
       "edgeLayoutCosine": 0.539044,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -14888,7 +14888,7 @@
       },
       "status": "accepted"
     },
-    "Glute_Kickback__f1__male": {
+    "Glute_Kickback__f5__male": {
       "edgeLayoutCosine": 0.504923,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -15010,7 +15010,7 @@
       },
       "status": "accepted"
     },
-    "Goblet_Squat__f1__female": {
+    "Goblet_Squat__f5__female": {
       "edgeLayoutCosine": 0.600018,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -15193,7 +15193,7 @@
       },
       "status": "accepted"
     },
-    "Hammer_Curls__f1__female": {
+    "Hammer_Curls__f5__female": {
       "edgeLayoutCosine": 0.65305,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -15254,7 +15254,7 @@
       },
       "status": "accepted"
     },
-    "Hammer_Curls__f1__male": {
+    "Hammer_Curls__f5__male": {
       "edgeLayoutCosine": 0.655999,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -15437,7 +15437,7 @@
       },
       "status": "accepted"
     },
-    "Hug_Knees_To_Chest__f1__female": {
+    "Hug_Knees_To_Chest__f5__female": {
       "edgeLayoutCosine": 0.491186,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -15498,7 +15498,7 @@
       },
       "status": "accepted"
     },
-    "Hug_Knees_To_Chest__f1__male": {
+    "Hug_Knees_To_Chest__f5__male": {
       "edgeLayoutCosine": 0.554143,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -15620,7 +15620,7 @@
       },
       "status": "accepted"
     },
-    "Inchworm__f1__female": {
+    "Inchworm__f5__female": {
       "edgeLayoutCosine": 0.433264,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -15742,7 +15742,7 @@
       },
       "status": "accepted"
     },
-    "Isometric_Neck_Exercise_-_Front_And_Back__f1__male": {
+    "Isometric_Neck_Exercise_-_Front_And_Back__f5__male": {
       "edgeLayoutCosine": 0.559282,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -15864,7 +15864,7 @@
       },
       "status": "accepted"
     },
-    "Isometric_Neck_Exercise_-_Sides__f1__male": {
+    "Isometric_Neck_Exercise_-_Sides__f5__male": {
       "edgeLayoutCosine": 0.639792,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -15986,7 +15986,7 @@
       },
       "status": "accepted"
     },
-    "Kettlebell_Sumo_High_Pull__f1__female": {
+    "Kettlebell_Sumo_High_Pull__f5__female": {
       "edgeLayoutCosine": 0.497922,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -16108,7 +16108,7 @@
       },
       "status": "accepted"
     },
-    "Knee_Circles__f1__male": {
+    "Knee_Circles__f5__male": {
       "edgeLayoutCosine": 0.567717,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -16291,7 +16291,7 @@
       },
       "status": "accepted"
     },
-    "Knee_Tuck_Jump__f1__female": {
+    "Knee_Tuck_Jump__f5__female": {
       "edgeLayoutCosine": 0.658783,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -16352,7 +16352,7 @@
       },
       "status": "accepted"
     },
-    "Knee_Tuck_Jump__f1__male": {
+    "Knee_Tuck_Jump__f5__male": {
       "edgeLayoutCosine": 0.737159,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -16413,7 +16413,7 @@
       },
       "status": "accepted"
     },
-    "Kneeling_Hip_Flexor__f1__female": {
+    "Kneeling_Hip_Flexor__f5__female": {
       "edgeLayoutCosine": 0.577061,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -16474,7 +16474,7 @@
       },
       "status": "accepted"
     },
-    "Kneeling_Hip_Flexor__f1__male": {
+    "Kneeling_Hip_Flexor__f5__male": {
       "edgeLayoutCosine": 0.580032,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -16596,7 +16596,7 @@
       },
       "status": "accepted"
     },
-    "Lateral_Bound__f1__male": {
+    "Lateral_Bound__f5__male": {
       "edgeLayoutCosine": 0.510347,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -16718,7 +16718,7 @@
       },
       "status": "accepted"
     },
-    "Leg-Up_Hamstring_Stretch__f1__female": {
+    "Leg-Up_Hamstring_Stretch__f5__female": {
       "edgeLayoutCosine": 0.45939,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -16901,7 +16901,7 @@
       },
       "status": "accepted"
     },
-    "Monster_Walk__f1__female": {
+    "Monster_Walk__f5__female": {
       "edgeLayoutCosine": 0.540419,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -16962,7 +16962,7 @@
       },
       "status": "accepted"
     },
-    "Monster_Walk__f1__male": {
+    "Monster_Walk__f5__male": {
       "edgeLayoutCosine": 0.621121,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -17084,7 +17084,7 @@
       },
       "status": "accepted"
     },
-    "Mountain_Climbers__f1__female": {
+    "Mountain_Climbers__f5__female": {
       "edgeLayoutCosine": 0.588967,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -17145,7 +17145,7 @@
       },
       "status": "accepted"
     },
-    "Mountain_Climbers__f1__male": {
+    "Mountain_Climbers__f5__male": {
       "edgeLayoutCosine": 0.594984,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -17267,7 +17267,7 @@
       },
       "status": "auto_failed"
     },
-    "Oblique_Crunches_-_On_The_Floor__f1__female": {
+    "Oblique_Crunches_-_On_The_Floor__f5__female": {
       "edgeLayoutCosine": 0.652215,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -17450,7 +17450,7 @@
       },
       "status": "accepted"
     },
-    "One_Knee_To_Chest__f1__female": {
+    "One_Knee_To_Chest__f5__female": {
       "edgeLayoutCosine": 0.565151,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -17511,7 +17511,7 @@
       },
       "status": "accepted"
     },
-    "One_Knee_To_Chest__f1__male": {
+    "One_Knee_To_Chest__f5__male": {
       "edgeLayoutCosine": 0.599093,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -17633,7 +17633,7 @@
       },
       "status": "accepted"
     },
-    "Plate_Pinch__f1__male": {
+    "Plate_Pinch__f5__male": {
       "edgeLayoutCosine": 0.548528,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -17755,7 +17755,7 @@
       },
       "status": "accepted"
     },
-    "Plie_Dumbbell_Squat__f1__female": {
+    "Plie_Dumbbell_Squat__f5__female": {
       "edgeLayoutCosine": 0.637956,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -17877,7 +17877,7 @@
       },
       "status": "accepted"
     },
-    "Pushups__f1__male": {
+    "Pushups__f5__male": {
       "edgeLayoutCosine": 0.632686,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -17999,7 +17999,7 @@
       },
       "status": "accepted"
     },
-    "Rear_Leg_Raises__f1__female": {
+    "Rear_Leg_Raises__f5__female": {
       "edgeLayoutCosine": 0.563767,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -18182,7 +18182,7 @@
       },
       "status": "accepted"
     },
-    "Reverse_Barbell_Curl__f1__female": {
+    "Reverse_Barbell_Curl__f5__female": {
       "edgeLayoutCosine": 0.614426,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -18243,7 +18243,7 @@
       },
       "status": "accepted"
     },
-    "Reverse_Barbell_Curl__f1__male": {
+    "Reverse_Barbell_Curl__f5__male": {
       "edgeLayoutCosine": 0.678844,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -18365,7 +18365,7 @@
       },
       "status": "accepted"
     },
-    "Reverse_Crunch__f1__male": {
+    "Reverse_Crunch__f5__male": {
       "edgeLayoutCosine": 0.598449,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -18548,7 +18548,7 @@
       },
       "status": "accepted"
     },
-    "Rocket_Jump__f1__female": {
+    "Rocket_Jump__f5__female": {
       "edgeLayoutCosine": 0.549065,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -18609,7 +18609,7 @@
       },
       "status": "accepted"
     },
-    "Rocket_Jump__f1__male": {
+    "Rocket_Jump__f5__male": {
       "edgeLayoutCosine": 0.630122,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -18722,7 +18722,7 @@
       },
       "status": "auto_failed"
     },
-    "Rocking_Standing_Calf_Raise__f1__male": {
+    "Rocking_Standing_Calf_Raise__f5__male": {
       "edgeLayoutCosine": 0.640278,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -18826,7 +18826,7 @@
       },
       "status": "manual_pending"
     },
-    "Romanian_Deadlift__f1__male": {
+    "Romanian_Deadlift__f5__male": {
       "edgeLayoutCosine": 0.705307,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -18939,7 +18939,7 @@
       },
       "status": "accepted"
     },
-    "Rope_Jumping__f1__male": {
+    "Rope_Jumping__f5__male": {
       "edgeLayoutCosine": 0.508583,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -19061,7 +19061,7 @@
       },
       "status": "accepted"
     },
-    "Seated_Bent-Over_Rear_Delt_Raise__f1__female": {
+    "Seated_Bent-Over_Rear_Delt_Raise__f5__female": {
       "edgeLayoutCosine": 0.572458,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -19244,7 +19244,7 @@
       },
       "status": "accepted"
     },
-    "Seated_Dumbbell_Curl__f1__female": {
+    "Seated_Dumbbell_Curl__f5__female": {
       "edgeLayoutCosine": 0.522074,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -19305,7 +19305,7 @@
       },
       "status": "accepted"
     },
-    "Seated_Dumbbell_Curl__f1__male": {
+    "Seated_Dumbbell_Curl__f5__male": {
       "edgeLayoutCosine": 0.572185,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -19427,7 +19427,7 @@
       },
       "status": "accepted"
     },
-    "Seated_Dumbbell_Inner_Biceps_Curl__f1__female": {
+    "Seated_Dumbbell_Inner_Biceps_Curl__f5__female": {
       "edgeLayoutCosine": 0.543695,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -19549,7 +19549,7 @@
       },
       "status": "accepted"
     },
-    "Seated_Side_Lateral_Raise__f1__female": {
+    "Seated_Side_Lateral_Raise__f5__female": {
       "edgeLayoutCosine": 0.404615,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -19732,7 +19732,7 @@
       },
       "status": "accepted"
     },
-    "Shoulder_Circles__f1__female": {
+    "Shoulder_Circles__f5__female": {
       "edgeLayoutCosine": 0.465147,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -19793,7 +19793,7 @@
       },
       "status": "accepted"
     },
-    "Shoulder_Circles__f1__male": {
+    "Shoulder_Circles__f5__male": {
       "edgeLayoutCosine": 0.481821,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -19976,7 +19976,7 @@
       },
       "status": "accepted"
     },
-    "Shoulder_Stretch__f1__female": {
+    "Shoulder_Stretch__f5__female": {
       "edgeLayoutCosine": 0.518373,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -20037,7 +20037,7 @@
       },
       "status": "accepted"
     },
-    "Shoulder_Stretch__f1__male": {
+    "Shoulder_Stretch__f5__male": {
       "edgeLayoutCosine": 0.53274,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -20159,7 +20159,7 @@
       },
       "status": "accepted"
     },
-    "Side_Bridge__f1__female": {
+    "Side_Bridge__f5__female": {
       "edgeLayoutCosine": 0.60703,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -20342,7 +20342,7 @@
       },
       "status": "accepted"
     },
-    "Side_Lateral_Raise__f1__female": {
+    "Side_Lateral_Raise__f5__female": {
       "edgeLayoutCosine": 0.606471,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -20525,7 +20525,7 @@
       },
       "status": "accepted"
     },
-    "Side_Leg_Raises__f1__female": {
+    "Side_Leg_Raises__f5__female": {
       "edgeLayoutCosine": 0.566298,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -20586,7 +20586,7 @@
       },
       "status": "accepted"
     },
-    "Side_Leg_Raises__f1__male": {
+    "Side_Leg_Raises__f5__male": {
       "edgeLayoutCosine": 0.613902,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -20769,7 +20769,7 @@
       },
       "status": "accepted"
     },
-    "Side_Neck_Stretch__f1__female": {
+    "Side_Neck_Stretch__f5__female": {
       "edgeLayoutCosine": 0.547467,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -20830,7 +20830,7 @@
       },
       "status": "accepted"
     },
-    "Side_Neck_Stretch__f1__male": {
+    "Side_Neck_Stretch__f5__male": {
       "edgeLayoutCosine": 0.579662,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -20952,7 +20952,7 @@
       },
       "status": "accepted"
     },
-    "Single_Leg_Glute_Bridge__f1__female": {
+    "Single_Leg_Glute_Bridge__f5__female": {
       "edgeLayoutCosine": 0.596842,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -21065,7 +21065,7 @@
       },
       "status": "auto_failed"
     },
-    "Sit_Squats__f1__female": {
+    "Sit_Squats__f5__female": {
       "edgeLayoutCosine": 0.42562,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -21248,7 +21248,7 @@
       },
       "status": "accepted"
     },
-    "Standing_Alternating_Dumbbell_Press__f1__female": {
+    "Standing_Alternating_Dumbbell_Press__f5__female": {
       "edgeLayoutCosine": 0.345496,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -21309,7 +21309,7 @@
       },
       "status": "accepted"
     },
-    "Standing_Alternating_Dumbbell_Press__f1__male": {
+    "Standing_Alternating_Dumbbell_Press__f5__male": {
       "edgeLayoutCosine": 0.36727,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -21370,7 +21370,7 @@
       },
       "status": "accepted"
     },
-    "Standing_Barbell_Calf_Raise__f1__female": {
+    "Standing_Barbell_Calf_Raise__f5__female": {
       "edgeLayoutCosine": 0.727058,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -21553,7 +21553,7 @@
       },
       "status": "accepted"
     },
-    "Standing_Barbell_Press_Behind_Neck__f1__female": {
+    "Standing_Barbell_Press_Behind_Neck__f5__female": {
       "edgeLayoutCosine": 0.597775,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -21614,7 +21614,7 @@
       },
       "status": "accepted"
     },
-    "Standing_Barbell_Press_Behind_Neck__f1__male": {
+    "Standing_Barbell_Press_Behind_Neck__f5__male": {
       "edgeLayoutCosine": 0.603616,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -21736,7 +21736,7 @@
       },
       "status": "accepted"
     },
-    "Standing_Bent-Over_Two-Arm_Dumbbell_Triceps_Extension__f1__female": {
+    "Standing_Bent-Over_Two-Arm_Dumbbell_Triceps_Extension__f5__female": {
       "edgeLayoutCosine": 0.566493,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -21919,7 +21919,7 @@
       },
       "status": "accepted"
     },
-    "Standing_Biceps_Stretch__f1__female": {
+    "Standing_Biceps_Stretch__f5__female": {
       "edgeLayoutCosine": 0.577679,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -21980,7 +21980,7 @@
       },
       "status": "accepted"
     },
-    "Standing_Biceps_Stretch__f1__male": {
+    "Standing_Biceps_Stretch__f5__male": {
       "edgeLayoutCosine": 0.562664,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -22163,7 +22163,7 @@
       },
       "status": "accepted"
     },
-    "Standing_Dumbbell_Calf_Raise__f1__female": {
+    "Standing_Dumbbell_Calf_Raise__f5__female": {
       "edgeLayoutCosine": 0.715524,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -22224,7 +22224,7 @@
       },
       "status": "accepted"
     },
-    "Standing_Dumbbell_Calf_Raise__f1__male": {
+    "Standing_Dumbbell_Calf_Raise__f5__male": {
       "edgeLayoutCosine": 0.572319,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -22346,7 +22346,7 @@
       },
       "status": "accepted"
     },
-    "Standing_Dumbbell_Press__f1__female": {
+    "Standing_Dumbbell_Press__f5__female": {
       "edgeLayoutCosine": 0.312845,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -22529,7 +22529,7 @@
       },
       "status": "accepted"
     },
-    "Standing_Dumbbell_Reverse_Curl__f1__female": {
+    "Standing_Dumbbell_Reverse_Curl__f5__female": {
       "edgeLayoutCosine": 0.496174,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -22590,7 +22590,7 @@
       },
       "status": "accepted"
     },
-    "Standing_Dumbbell_Reverse_Curl__f1__male": {
+    "Standing_Dumbbell_Reverse_Curl__f5__male": {
       "edgeLayoutCosine": 0.573564,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -22773,7 +22773,7 @@
       },
       "status": "accepted"
     },
-    "Standing_Dumbbell_Straight-Arm_Front_Delt_Raise_Above_Head__f1__female": {
+    "Standing_Dumbbell_Straight-Arm_Front_Delt_Raise_Above_Head__f5__female": {
       "edgeLayoutCosine": 0.546199,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -22834,7 +22834,7 @@
       },
       "status": "accepted"
     },
-    "Standing_Dumbbell_Straight-Arm_Front_Delt_Raise_Above_Head__f1__male": {
+    "Standing_Dumbbell_Straight-Arm_Front_Delt_Raise_Above_Head__f5__male": {
       "edgeLayoutCosine": 0.562563,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -23017,7 +23017,7 @@
       },
       "status": "accepted"
     },
-    "Standing_Dumbbell_Triceps_Extension__f1__female": {
+    "Standing_Dumbbell_Triceps_Extension__f5__female": {
       "edgeLayoutCosine": 0.557838,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -23078,7 +23078,7 @@
       },
       "status": "accepted"
     },
-    "Standing_Dumbbell_Triceps_Extension__f1__male": {
+    "Standing_Dumbbell_Triceps_Extension__f5__male": {
       "edgeLayoutCosine": 0.578804,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -23261,7 +23261,7 @@
       },
       "status": "accepted"
     },
-    "Standing_Dumbbell_Upright_Row__f1__female": {
+    "Standing_Dumbbell_Upright_Row__f5__female": {
       "edgeLayoutCosine": 0.669345,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -23322,7 +23322,7 @@
       },
       "status": "accepted"
     },
-    "Standing_Dumbbell_Upright_Row__f1__male": {
+    "Standing_Dumbbell_Upright_Row__f5__male": {
       "edgeLayoutCosine": 0.703381,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -23505,7 +23505,7 @@
       },
       "status": "accepted"
     },
-    "Standing_Front_Barbell_Raise_Over_Head__f1__female": {
+    "Standing_Front_Barbell_Raise_Over_Head__f5__female": {
       "edgeLayoutCosine": 0.591165,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -23566,7 +23566,7 @@
       },
       "status": "accepted"
     },
-    "Standing_Front_Barbell_Raise_Over_Head__f1__male": {
+    "Standing_Front_Barbell_Raise_Over_Head__f5__male": {
       "edgeLayoutCosine": 0.597061,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -23688,7 +23688,7 @@
       },
       "status": "accepted"
     },
-    "Standing_Hip_Circles__f1__female": {
+    "Standing_Hip_Circles__f5__female": {
       "edgeLayoutCosine": 0.376329,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -23749,7 +23749,7 @@
       },
       "status": "accepted"
     },
-    "Standing_Hip_Circles__f1__male": {
+    "Standing_Hip_Circles__f5__male": {
       "edgeLayoutCosine": 0.39671,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -23932,7 +23932,7 @@
       },
       "status": "accepted"
     },
-    "Standing_Inner-Biceps_Curl__f1__male": {
+    "Standing_Inner-Biceps_Curl__f5__male": {
       "edgeLayoutCosine": 0.660464,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -24237,7 +24237,7 @@
       },
       "status": "accepted"
     },
-    "Standing_Long_Jump__f1__female": {
+    "Standing_Long_Jump__f5__female": {
       "edgeLayoutCosine": 0.265411,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -24298,7 +24298,7 @@
       },
       "status": "accepted"
     },
-    "Standing_Long_Jump__f1__male": {
+    "Standing_Long_Jump__f5__male": {
       "edgeLayoutCosine": 0.339758,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -24481,7 +24481,7 @@
       },
       "status": "accepted"
     },
-    "Standing_Military_Press__f1__female": {
+    "Standing_Military_Press__f5__female": {
       "edgeLayoutCosine": 0.599396,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -24542,7 +24542,7 @@
       },
       "status": "accepted"
     },
-    "Standing_Military_Press__f1__male": {
+    "Standing_Military_Press__f5__male": {
       "edgeLayoutCosine": 0.625679,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -24664,7 +24664,7 @@
       },
       "status": "accepted"
     },
-    "Standing_One-Arm_Dumbbell_Triceps_Extension__f1__female": {
+    "Standing_One-Arm_Dumbbell_Triceps_Extension__f5__female": {
       "edgeLayoutCosine": 0.602511,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -24847,7 +24847,7 @@
       },
       "status": "accepted"
     },
-    "Standing_Overhead_Barbell_Triceps_Extension__f1__female": {
+    "Standing_Overhead_Barbell_Triceps_Extension__f5__female": {
       "edgeLayoutCosine": 0.63996,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -24908,7 +24908,7 @@
       },
       "status": "accepted"
     },
-    "Standing_Overhead_Barbell_Triceps_Extension__f1__male": {
+    "Standing_Overhead_Barbell_Triceps_Extension__f5__male": {
       "edgeLayoutCosine": 0.628104,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -25030,7 +25030,7 @@
       },
       "status": "accepted"
     },
-    "Standing_Palm-In_One-Arm_Dumbbell_Press__f1__female": {
+    "Standing_Palm-In_One-Arm_Dumbbell_Press__f5__female": {
       "edgeLayoutCosine": 0.533681,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -25213,7 +25213,7 @@
       },
       "status": "accepted"
     },
-    "Standing_Palms-In_Dumbbell_Press__f1__female": {
+    "Standing_Palms-In_Dumbbell_Press__f5__female": {
       "edgeLayoutCosine": 0.53706,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -25274,7 +25274,7 @@
       },
       "status": "accepted"
     },
-    "Standing_Palms-In_Dumbbell_Press__f1__male": {
+    "Standing_Palms-In_Dumbbell_Press__f5__male": {
       "edgeLayoutCosine": 0.547982,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -25457,7 +25457,7 @@
       },
       "status": "accepted"
     },
-    "Standing_Pelvic_Tilt__f1__female": {
+    "Standing_Pelvic_Tilt__f5__female": {
       "edgeLayoutCosine": 0.689062,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -25518,7 +25518,7 @@
       },
       "status": "accepted"
     },
-    "Standing_Pelvic_Tilt__f1__male": {
+    "Standing_Pelvic_Tilt__f5__male": {
       "edgeLayoutCosine": 0.639059,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -25640,7 +25640,7 @@
       },
       "status": "accepted"
     },
-    "Standing_Soleus_And_Achilles_Stretch__f1__male": {
+    "Standing_Soleus_And_Achilles_Stretch__f5__male": {
       "edgeLayoutCosine": 0.673923,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -25875,7 +25875,7 @@
       },
       "status": "accepted"
     },
-    "Star_Jump__f1__female": {
+    "Star_Jump__f5__female": {
       "edgeLayoutCosine": 0.51519,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -25936,7 +25936,7 @@
       },
       "status": "accepted"
     },
-    "Star_Jump__f1__male": {
+    "Star_Jump__f5__male": {
       "edgeLayoutCosine": 0.574482,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -26058,7 +26058,7 @@
       },
       "status": "accepted"
     },
-    "Stiff-Legged_Barbell_Deadlift__f1__male": {
+    "Stiff-Legged_Barbell_Deadlift__f5__male": {
       "edgeLayoutCosine": 0.641401,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -26241,7 +26241,7 @@
       },
       "status": "accepted"
     },
-    "Stiff-Legged_Dumbbell_Deadlift__f1__female": {
+    "Stiff-Legged_Dumbbell_Deadlift__f5__female": {
       "edgeLayoutCosine": 0.616037,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -26302,7 +26302,7 @@
       },
       "status": "accepted"
     },
-    "Stiff-Legged_Dumbbell_Deadlift__f1__male": {
+    "Stiff-Legged_Dumbbell_Deadlift__f5__male": {
       "edgeLayoutCosine": 0.663485,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -26546,7 +26546,7 @@
       },
       "status": "accepted"
     },
-    "Tire_Flip__f1__female": {
+    "Tire_Flip__f5__female": {
       "edgeLayoutCosine": 0.478294,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -26607,7 +26607,7 @@
       },
       "status": "accepted"
     },
-    "Tire_Flip__f1__male": {
+    "Tire_Flip__f5__male": {
       "edgeLayoutCosine": 0.395506,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -26790,7 +26790,7 @@
       },
       "status": "accepted"
     },
-    "Triceps_Stretch__f1__female": {
+    "Triceps_Stretch__f5__female": {
       "edgeLayoutCosine": 0.666694,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -26851,7 +26851,7 @@
       },
       "status": "accepted"
     },
-    "Triceps_Stretch__f1__male": {
+    "Triceps_Stretch__f5__male": {
       "edgeLayoutCosine": 0.655205,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -26973,7 +26973,7 @@
       },
       "status": "accepted"
     },
-    "Two-Arm_Kettlebell_Clean__f1__female": {
+    "Two-Arm_Kettlebell_Clean__f5__female": {
       "edgeLayoutCosine": 0.553884,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -27095,7 +27095,7 @@
       },
       "status": "accepted"
     },
-    "Two-Arm_Kettlebell_Military_Press__f1__female": {
+    "Two-Arm_Kettlebell_Military_Press__f5__female": {
       "edgeLayoutCosine": 0.722865,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -27156,7 +27156,7 @@
       },
       "status": "accepted"
     },
-    "Two-Arm_Kettlebell_Row__f1__female": {
+    "Two-Arm_Kettlebell_Row__f5__female": {
       "edgeLayoutCosine": 0.643906,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -27339,7 +27339,7 @@
       },
       "status": "accepted"
     },
-    "Upper_Back_Stretch__f1__female": {
+    "Upper_Back_Stretch__f5__female": {
       "edgeLayoutCosine": 0.438746,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -27400,7 +27400,7 @@
       },
       "status": "accepted"
     },
-    "Upper_Back_Stretch__f1__male": {
+    "Upper_Back_Stretch__f5__male": {
       "edgeLayoutCosine": 0.512671,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -27522,7 +27522,7 @@
       },
       "status": "accepted"
     },
-    "Upright_Barbell_Row__f1__female": {
+    "Upright_Barbell_Row__f5__female": {
       "edgeLayoutCosine": 0.708645,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -27705,7 +27705,7 @@
       },
       "status": "accepted"
     },
-    "Upward_Stretch__f1__female": {
+    "Upward_Stretch__f5__female": {
       "edgeLayoutCosine": 0.673778,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -27766,7 +27766,7 @@
       },
       "status": "accepted"
     },
-    "Upward_Stretch__f1__male": {
+    "Upward_Stretch__f5__male": {
       "edgeLayoutCosine": 0.615161,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -27949,7 +27949,7 @@
       },
       "status": "accepted"
     },
-    "Wide-Grip_Standing_Barbell_Curl__f1__female": {
+    "Wide-Grip_Standing_Barbell_Curl__f5__female": {
       "edgeLayoutCosine": 0.631626,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -28010,7 +28010,7 @@
       },
       "status": "accepted"
     },
-    "Wide-Grip_Standing_Barbell_Curl__f1__male": {
+    "Wide-Grip_Standing_Barbell_Curl__f5__male": {
       "edgeLayoutCosine": 0.705828,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -28071,7 +28071,7 @@
       },
       "status": "accepted"
     },
-    "Wrist_Circles__f1__female": {
+    "Wrist_Circles__f5__female": {
       "edgeLayoutCosine": 0.528347,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -28132,7 +28132,7 @@
       },
       "status": "accepted"
     },
-    "Wrist_Circles__f1__male": {
+    "Wrist_Circles__f5__male": {
       "edgeLayoutCosine": 0.609321,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -28254,7 +28254,7 @@
       },
       "status": "accepted"
     },
-    "Wrist_Rotations_with_Straight_Bar__f1__male": {
+    "Wrist_Rotations_with_Straight_Bar__f5__male": {
       "edgeLayoutCosine": 0.597194,
       "edgeLayoutWarning": false,
       "generationStateValid": true,
@@ -28316,7 +28316,7 @@
       "status": "accepted"
     }
   },
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "statuses": {
     "accepted": 447,
     "auto_failed": 17,

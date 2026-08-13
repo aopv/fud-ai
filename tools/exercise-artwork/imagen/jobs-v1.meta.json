@@ -15,13 +15,13 @@
     }
   },
   "exerciseCount": 875,
-  "framesPerExercise": 2,
+  "framesPerExercise": 6,
   "genders": [
     "male",
     "female"
   ],
-  "jobCount": 3500,
-  "jobsSHA256": "12fd90a337457b2e22ef79b4c1faea3e5f3846fd18b4abc45c85e1df464d84aa",
+  "jobCount": 10500,
+  "jobsSHA256": "96681a142afba857a67f4287e9bc88d59e2652eae357100f32ff0665351b9fdc",
   "pilotExerciseIDs": [
     "3_4_Sit-Up",
     "Barbell_Bench_Press_-_Medium_Grip",
@@ -32,6 +32,6 @@
     "Tire_Flip",
     "Triceps_Pushdown"
   ],
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "style": "fud-flat-raster-v1"
 }
