@@ -11,7 +11,9 @@ from pathlib import Path
 
 from PIL import Image
 
-from SequenceArtworkSchema import required_indices, validate_job_sequences
+from SequenceArtworkSchema import (
+    PLAYBACK_MODE, RUNTIME_SEQUENCE_VERSION, runtime_selection, validate_job_sequences,
+)
 
 
 def sha256(path: Path) -> str:
@@ -66,15 +68,28 @@ def main() -> None:
             raise SystemExit(f"Duplicate packaged pair: {gender}/{exercise_id}")
         indexed_pairs.add(pair_key)
         frames = sorted(entry.get("frames", []), key=lambda frame: frame["frameIndex"])
-        sequence_job = next((job for job in job_list if
-                             (job["gender"], job["exerciseID"]) == pair_key), None)
-        if sequence_job is None or [frame.get("frameIndex") for frame in frames] != required_indices(sequence_job):
+        sequence_jobs = [job for job in job_list if
+                         (job["gender"], job["exerciseID"]) == pair_key]
+        selection = runtime_selection(sequence_jobs, state) if sequence_jobs else None
+        if selection is None or [frame.get("frameIndex") for frame in frames] != list(range(len(selection["jobs"]))):
             raise SystemExit(f"Invalid packaged frame sequence: {gender}/{exercise_id}")
-        for frame in frames:
+        if len(sequence_jobs) == 6 and any((
+            entry.get("sequenceMode") != selection["mode"],
+            entry.get("frameCount") != len(selection["jobs"]),
+            entry.get("frameDurationMs") != selection["frameDurationMs"],
+            entry.get("playback") != PLAYBACK_MODE,
+            entry.get("sequenceVersion") != RUNTIME_SEQUENCE_VERSION,
+        )):
+            raise SystemExit(f"Invalid packaged sequence metadata: {gender}/{exercise_id}")
+        for frame, (_, selected_job) in zip(frames, selection["jobs"]):
             job_id = frame["jobID"]
             job = jobs.get(job_id)
             if not job or job["gender"] != gender or job["exerciseID"] != exercise_id:
                 raise SystemExit(f"Packaged job mismatch: {job_id}")
+            if job_id != selected_job["jobID"]:
+                raise SystemExit(f"Packaged runtime/source mapping mismatch: {job_id}")
+            if len(sequence_jobs) == 6 and frame.get("sourceFrameIndex") != job["frameIndex"]:
+                raise SystemExit(f"Packaged sourceFrameIndex mismatch: {job_id}")
             if not accepted(state.get(job_id, {})):
                 raise SystemExit(f"Packaged frame is no longer accepted: {job_id}")
             source = (repo / frame["path"]).resolve()
@@ -96,14 +111,11 @@ def main() -> None:
             shutil.copy2(source, destination)
         staged += 1
 
-    accepted_indices = {}
-    for job_id, job in jobs.items():
-        if accepted(state.get(job_id, {})):
-            accepted_indices.setdefault((job["gender"], job["exerciseID"]), set()).add(job["frameIndex"])
+    groups = {}
+    for job in job_list:
+        groups.setdefault((job["gender"], job["exerciseID"]), []).append(job)
     complete_accepted_pairs = {
-        pair for pair, indices in accepted_indices.items()
-        if indices == set(required_indices(next(job for job in job_list
-                                                if (job["gender"], job["exerciseID"]) == pair)))
+        pair for pair, sequence_jobs in groups.items() if runtime_selection(sequence_jobs, state)
     }
     if indexed_pairs != complete_accepted_pairs:
         missing = sorted(complete_accepted_pairs - indexed_pairs)

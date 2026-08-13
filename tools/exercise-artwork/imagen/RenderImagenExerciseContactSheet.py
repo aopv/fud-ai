@@ -10,7 +10,7 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
 
-from SequenceArtworkSchema import required_indices, source_references
+from SequenceArtworkSchema import descriptor, required_indices, source_references
 
 
 def sha256(path: Path) -> str:
@@ -72,12 +72,19 @@ def main() -> None:
         for entry in sorted(package_entries, key=lambda item: (item["exerciseID"], item["gender"])):
             exercise_id, gender = entry["exerciseID"], entry["gender"]
             package_frames = sorted(entry["frames"], key=lambda item: item["frameIndex"])
-            first_job = by_key[(exercise_id, package_frames[0]["frameIndex"], gender)]
-            if [frame["frameIndex"] for frame in package_frames] != required_indices(first_job):
+            first_source_index = package_frames[0].get("sourceFrameIndex", package_frames[0]["frameIndex"])
+            first_job = by_key[(exercise_id, first_source_index, gender)]
+            runtime_indices = [frame["frameIndex"] for frame in package_frames]
+            source_indices = [frame.get("sourceFrameIndex", frame["frameIndex"])
+                              for frame in package_frames]
+            allowed_sources = ([0, 5] if descriptor(first_job)["frameCount"] == 6 and len(package_frames) == 2
+                               else required_indices(first_job))
+            if runtime_indices != list(range(len(package_frames))) or source_indices != allowed_sources:
                 raise SystemExit(f"Packaged entry is not a complete sequence: {exercise_id}/{gender}")
             for package_frame in package_frames:
                 frame_index = package_frame["frameIndex"]
-                job = by_key[(exercise_id, frame_index, gender)]
+                source_index = package_frame.get("sourceFrameIndex", frame_index)
+                job = by_key[(exercise_id, source_index, gender)]
                 state = states[job["jobID"]]
                 refs = source_references(job)
                 master = repo / job["outputPath"]
@@ -107,10 +114,12 @@ def main() -> None:
             y = 46 + row * row_height
             draw.text((8, y + 16), exercise_id[:27], fill=(235, 237, 242))
             draw.text((8, y + 34), gender, fill=(255, 104, 132))
-            first_job = by_key[(exercise_id, package_frames[0]["frameIndex"], gender)]
+            first_source_index = package_frames[0].get("sourceFrameIndex", package_frames[0]["frameIndex"])
+            first_job = by_key[(exercise_id, first_source_index, gender)]
             refs = source_references(first_job)
             if len(refs) == 1:
-                refs += source_references(by_key[(exercise_id, package_frames[-1]["frameIndex"], gender)])
+                last_source_index = package_frames[-1].get("sourceFrameIndex", package_frames[-1]["frameIndex"])
+                refs += source_references(by_key[(exercise_id, last_source_index, gender)])
             entries = [
                 *((repo / ref["path"], f"legacy endpoint {ref['frameIndex']}") for ref in refs),
                 *((repo / frame["path"], f"shipped {gender} / {frame['frameIndex']}")

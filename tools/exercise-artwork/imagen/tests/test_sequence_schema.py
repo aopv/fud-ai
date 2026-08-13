@@ -17,7 +17,7 @@ sys.path.insert(0, str(TOOL))
 
 from SequenceArtworkSchema import (  # noqa: E402
     alignment_drift, alignment_metadata, normalized_pose_interpolation,
-    validate_job_sequences,
+    runtime_selection, validate_job_sequences,
 )
 
 
@@ -39,6 +39,17 @@ def job(exercise: str, frame: int, count: int) -> dict:
             ],
         })
     return value
+
+
+def detailed_rgba(seed: int) -> Image.Image:
+    randomizer = random.Random(seed)
+    pixels = bytearray(randomizer.randrange(256) for _ in range(64 * 64 * 3))
+    image = Image.frombytes("RGB", (64, 64), bytes(pixels)).resize(
+        (1024, 1024), Image.Resampling.BILINEAR).convert("RGBA")
+    alpha = Image.new("L", image.size, 255)
+    alpha.paste(0, (0, 0, 128, 128))
+    image.putalpha(alpha)
+    return image
 
 
 class SequenceSchemaTests(unittest.TestCase):
@@ -63,6 +74,11 @@ class SequenceSchemaTests(unittest.TestCase):
         self.assertTrue(alignment_drift(aligned, aligned)["passed"])
         moved = dict(aligned); moved["pelvisAnchor"] = [0.7, 0.6]
         self.assertFalse(alignment_drift(aligned, moved)["passed"])
+
+    def test_one_endpoint_is_not_shippable(self) -> None:
+        jobs = [job("Motion", index, 6) for index in range(6)]
+        state = {jobs[0]["jobID"]: {"status": "complete", "qaStatus": "accepted"}}
+        self.assertIsNone(runtime_selection(jobs, state))
 
 
 class MigrationFixtureTests(unittest.TestCase):
@@ -89,25 +105,28 @@ class MigrationFixtureTests(unittest.TestCase):
                 for gender in ("male", "female"):
                     for frame in range(2):
                         job_id = f"{exercise}__f{frame}__{gender}"
+                        item_status = "qa_failed" if exercise_number == 0 and gender == "male" else status
                         old_jobs.append({"jobID": job_id})
                         state_jobs[job_id] = {
-                            "jobFingerprint": "old", "status": status, "attempts": 1,
-                            "qaStatus": "accepted" if status == "complete" else "rejected" if status == "qa_failed" else None,
+                            "jobFingerprint": "old", "status": item_status, "attempts": 1,
+                            "qaStatus": "accepted" if item_status == "complete" else "rejected" if item_status == "qa_failed" else None,
                             "generatedInputPath": f"{asset.relative_to(repo)}/raw/{gender}/{exercise}/{frame}.png",
                             "outputSHA256": "evidence",
                         }
-                        manual_jobs[job_id] = {"artifactFree": status == "complete", "jobID": job_id}
-                        report_results[job_id] = {"status": status, "jobID": job_id,
+                        manual_jobs[job_id] = {"artifactFree": item_status == "complete", "jobID": job_id}
+                        report_results[job_id] = {"status": item_status, "jobID": job_id,
                                                   "outputPath": f"x/{exercise}/{frame}.png"}
                 # Only one exercise has actual endpoint artifacts; migration must retain exact bytes.
                 if exercise_number == 0:
-                    for tree in ("frames", "raw"):
-                        path = asset / tree / "female" / exercise / "1.png"
-                        path.parent.mkdir(parents=True, exist_ok=True)
-                        Image.new("RGBA", (32, 32), (20, 30, 40, 255)).save(path)
-                        if tree == "frames":
-                            state_jobs[f"{exercise}__f1__female"]["outputSHA256"] = hashlib.sha256(
-                                path.read_bytes()).hexdigest()
+                    for frame in (0, 1):
+                        generated = detailed_rgba(100 + frame)
+                        for tree in ("frames", "raw"):
+                            path = asset / tree / "female" / exercise / f"{frame}.png"
+                            path.parent.mkdir(parents=True, exist_ok=True)
+                            generated.save(path)
+                            if tree == "frames":
+                                state_jobs[f"{exercise}__f{frame}__female"]["outputSHA256"] = hashlib.sha256(
+                                    path.read_bytes()).hexdigest()
             dataset = root / "dataset.json"; dataset.write_text(json.dumps(records))
             jobs_path = root / "jobs.jsonl"
             jobs_path.write_text("".join(json.dumps(value) + "\n" for value in old_jobs))
@@ -150,6 +169,13 @@ class MigrationFixtureTests(unittest.TestCase):
             payload = json.loads(exported.stdout)
             self.assertEqual(len(payload["referencedImagePaths"]), 3)
             self.assertEqual(payload["contract"]["sequence"]["interpolationT"], 0.4)
+            package = root / "migrated-package"; package_index = package / "index.json"
+            subprocess.run([sys.executable, str(TOOL / "PackageAcceptedExerciseArtwork.py"),
+                            "--jobs", str(jobs_path), "--state", str(state),
+                            "--output-root", str(package), "--index", str(package_index)], check=True)
+            migrated_entry = json.loads(package_index.read_text())["entries"][0]
+            self.assertEqual(migrated_entry["sequenceMode"], "endpointsOnly")
+            self.assertEqual([frame["sourceFrameIndex"] for frame in migrated_entry["frames"]], [0, 5])
 
 
 class PackagingFixtureTests(unittest.TestCase):
@@ -165,7 +191,6 @@ class PackagingFixtureTests(unittest.TestCase):
                              "sha256": hashlib.sha256(path.read_bytes()).hexdigest()})
             jobs = []
             states = {}
-            randomizer = random.Random(42)
             for frame in range(6):
                 value = job("Sequence", frame, 6)
                 value.update({
@@ -175,16 +200,11 @@ class PackagingFixtureTests(unittest.TestCase):
                 })
                 master = repo / value["outputPath"]
                 master.parent.mkdir(parents=True, exist_ok=True)
-                pixels = bytearray(randomizer.randrange(256) for _ in range(64 * 64 * 3))
-                generated = Image.frombytes("RGB", (64, 64), bytes(pixels)).resize(
-                    (1024, 1024), Image.Resampling.BILINEAR).convert("RGBA")
-                alpha = Image.new("L", generated.size, 255)
-                alpha.paste(0, (0, 0, 128, 128))
-                generated.putalpha(alpha)
-                generated.save(master)
+                detailed_rgba(42 + frame).save(master)
                 jobs.append(value)
                 states[value["jobID"]] = {
-                    "status": "complete", "qaStatus": "accepted",
+                    "status": "complete" if frame in (0, 5) else "pending",
+                    "qaStatus": "accepted" if frame in (0, 5) else None,
                     "outputSHA256": hashlib.sha256(master.read_bytes()).hexdigest(),
                     "sequenceQA": {
                         "passed": True, "sequenceComplete": True,
@@ -202,11 +222,12 @@ class PackagingFixtureTests(unittest.TestCase):
             subprocess.run([sys.executable, str(TOOL / "VerifyPackagedExerciseArtwork.py"),
                             "--jobs", str(jobs_path), "--state", str(state_path),
                             "--package-root", str(package), "--index", str(index)], check=True)
-            data = json.loads(index.read_text())
-            self.assertEqual([frame["frameIndex"] for frame in data["entries"][0]["frames"]], list(range(6)))
-            self.assertEqual((data["entries"][0]["frameDurationMs"],
-                              data["entries"][0]["playback"],
-                              data["entries"][0]["sequenceVersion"]), (120, "pingPong", 1))
+            endpoint_data = json.loads(index.read_text())
+            endpoint_entry = endpoint_data["entries"][0]
+            self.assertEqual(endpoint_entry["sequenceMode"], "endpointsOnly")
+            self.assertEqual(endpoint_entry["frameDurationMs"], 700)
+            self.assertEqual([frame["frameIndex"] for frame in endpoint_entry["frames"]], [0, 1])
+            self.assertEqual([frame["sourceFrameIndex"] for frame in endpoint_entry["frames"]], [0, 5])
             android = root / "android"
             subprocess.run([sys.executable, str(TOOL / "StageAcceptedAndroidFrames.py"),
                             "--jobs", str(jobs_path), "--state", str(state_path),
@@ -214,10 +235,50 @@ class PackagingFixtureTests(unittest.TestCase):
                             "--destination", str(android)], check=True)
             ios = root / "ios"; ios_index = root / "ios-index.json"
             subprocess.run([sys.executable, str(TOOL / "StageAcceptedIOSFrames.py"),
-                            "--package-index", str(index), "--state", str(state_path),
+                            "--jobs", str(jobs_path), "--package-index", str(index),
+                            "--state", str(state_path), "--destination", str(ios),
+                            "--index", str(ios_index)], check=True)
+            self.assertEqual(len(list(android.rglob("*.webp"))), 2)
+            self.assertEqual(len(list(ios.glob("*.webp"))), 2)
+            sheet = root / "endpoint-sheet.png"
+            subprocess.run([sys.executable, str(TOOL / "RenderImagenExerciseContactSheet.py"),
+                            "--jobs", str(jobs_path), "--state", str(state_path),
+                            "--package-index", str(index), "--accepted-only",
+                            "--output", str(sheet)], check=True)
+            self.assertTrue(sheet.is_file())
+
+            for frame in range(1, 5):
+                states[f"Sequence__f{frame}__female"].update({
+                    "status": "complete", "qaStatus": "accepted",
+                })
+            state_path.write_text(json.dumps({"jobs": states}))
+            subprocess.run([sys.executable, str(TOOL / "PackageAcceptedExerciseArtwork.py"),
+                            "--jobs", str(jobs_path), "--state", str(state_path),
+                            "--output-root", str(package), "--index", str(index)], check=True)
+            subprocess.run([sys.executable, str(TOOL / "VerifyPackagedExerciseArtwork.py"),
+                            "--jobs", str(jobs_path), "--state", str(state_path),
+                            "--package-root", str(package), "--index", str(index)], check=True)
+            data = json.loads(index.read_text())
+            self.assertEqual(data["entries"][0]["sequenceMode"], "completeSequence")
+            self.assertEqual([frame["frameIndex"] for frame in data["entries"][0]["frames"]], list(range(6)))
+            self.assertEqual((data["entries"][0]["frameDurationMs"],
+                              data["entries"][0]["playback"],
+                              data["entries"][0]["sequenceVersion"]), (120, "pingPong", 1))
+            subprocess.run([sys.executable, str(TOOL / "StageAcceptedAndroidFrames.py"),
+                            "--jobs", str(jobs_path), "--state", str(state_path),
+                            "--package-root", str(package), "--index", str(index),
+                            "--destination", str(android)], check=True)
+            subprocess.run([sys.executable, str(TOOL / "StageAcceptedIOSFrames.py"),
+                            "--jobs", str(jobs_path), "--package-index", str(index), "--state", str(state_path),
                             "--destination", str(ios), "--index", str(ios_index)], check=True)
             self.assertEqual(len(list(android.rglob("*.webp"))), 6)
             self.assertEqual(len(list(ios.glob("*.webp"))), 6)
+            full_sheet = root / "full-sheet.png"
+            subprocess.run([sys.executable, str(TOOL / "RenderImagenExerciseContactSheet.py"),
+                            "--jobs", str(jobs_path), "--state", str(state_path),
+                            "--package-index", str(index), "--accepted-only",
+                            "--output", str(full_sheet)], check=True)
+            self.assertTrue(full_sheet.is_file())
 
 
 if __name__ == "__main__":

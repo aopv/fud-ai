@@ -15,11 +15,10 @@ from pathlib import Path
 from PIL import Image, ImageChops, ImageStat
 
 from SequenceArtworkSchema import (
-    DEFAULT_FRAME_DURATION_MS,
     PLAYBACK_MODE,
     RUNTIME_SEQUENCE_VERSION,
     descriptor,
-    required_indices,
+    runtime_selection,
     validate_job_sequences,
 )
 
@@ -70,27 +69,17 @@ def main() -> None:
     accepted_sequences = []
     for key, sequence_jobs in sorted(grouped.items()):
         sequence_jobs.sort(key=lambda item: item["frameIndex"])
-        expected = required_indices(sequence_jobs[0])
-        if ([job["frameIndex"] for job in sequence_jobs] == expected
-                and all(accepted(state[job["jobID"]]) for job in sequence_jobs)):
-            if len(expected) == 6:
-                qa = [state[job["jobID"]].get("sequenceQA", {}) for job in sequence_jobs]
-                ready = (
-                    all(item.get("passed") is True and item.get("sequenceComplete") is True for item in qa)
-                    and qa[0].get("alignment") is not None
-                    and all(item.get("driftFromPrevious", {}).get("passed") is True for item in qa[1:])
-                )
-                if not ready:
-                    raise SystemExit(f"Accepted v2 sequence lacks complete passing sequence QA: {key}")
-            accepted_sequences.append((key, sequence_jobs))
+        selection = runtime_selection(sequence_jobs, state)
+        if selection:
+            accepted_sequences.append((key, sequence_jobs, selection))
     if args.dry_run:
         print(f"Would package {len(accepted_sequences)} complete accepted sequences")
         return
 
     entries = []
-    for (gender, exercise_id), sequence_jobs in accepted_sequences:
+    for (gender, exercise_id), sequence_jobs, selection in accepted_sequences:
         frames = []
-        for job in sequence_jobs:
+        for runtime_index, job in selection["jobs"]:
             master = repo / job["outputPath"]
             if not master.is_file() or sha256(master) != state[job["jobID"]]["outputSHA256"]:
                 raise SystemExit(f"Accepted master missing or changed: {job['jobID']}")
@@ -98,7 +87,7 @@ def main() -> None:
                 source = loaded.convert("RGBA")
             derivative = source.resize((768, 768), Image.Resampling.LANCZOS)
             destination = (args.output_root / "frames" / gender / exercise_id
-                           / f"{job['frameIndex']}.webp")
+                           / f"{runtime_index}.webp")
             destination.parent.mkdir(parents=True, exist_ok=True)
             with tempfile.NamedTemporaryFile(dir=destination.parent, suffix=".webp", delete=False) as temp:
                 temporary = Path(temp.name)
@@ -118,20 +107,22 @@ def main() -> None:
             finally:
                 temporary.unlink(missing_ok=True)
             frames.append({
-                "frameIndex": job["frameIndex"], "jobID": job["jobID"],
+                "frameIndex": runtime_index, "jobID": job["jobID"],
+                **({"sourceFrameIndex": job["frameIndex"]} if len(sequence_jobs) == 6 else {}),
                 "path": str(destination.relative_to(repo)), "sha256": sha256(destination),
                 "bytes": destination.stat().st_size, "masterBytes": master.stat().st_size,
                 "rgbaRMSE": round(rmse, 4),
                 **({"sequenceQA": state[job["jobID"]]["sequenceQA"]}
-                   if len(sequence_jobs) == 6 else {}),
+                   if selection["mode"] == "completeSequence" else {}),
             })
         entry = {"gender": gender, "exerciseID": exercise_id, "frames": frames}
         if len(sequence_jobs) == 6:
             entry.update({
-                "frameCount": 6,
-                "frameDurationMs": DEFAULT_FRAME_DURATION_MS,
+                "frameCount": len(frames),
+                "frameDurationMs": selection["frameDurationMs"],
                 "playback": PLAYBACK_MODE,
                 "sequenceVersion": RUNTIME_SEQUENCE_VERSION,
+                "sequenceMode": selection["mode"],
             })
         entries.append(entry)
     index_schema = 2 if manifest["schemaVersion"] == 2 else 1

@@ -11,6 +11,7 @@ SUPPORTED_FRAME_COUNTS = (2, 6)
 SEQUENCE_SCHEMA_VERSION = 2
 RUNTIME_SEQUENCE_VERSION = 1
 DEFAULT_FRAME_DURATION_MS = 120
+ENDPOINTS_ONLY_FRAME_DURATION_MS = 700
 PLAYBACK_MODE = "pingPong"
 ALIGNMENT_THRESHOLDS = {
     "pelvisAnchorDriftMaximum": 0.08,
@@ -91,6 +92,40 @@ def validate_job_sequences(jobs: list[dict]) -> dict:
         "frameCounts": sorted(frame_counts),
         "schemaVersion": 2 if 6 in frame_counts else 1,
     }
+
+
+def accepted_state(item: dict) -> bool:
+    return item.get("status") == "complete" and item.get("qaStatus") == "accepted"
+
+
+def complete_sequence_qa(sequence_jobs: list[dict], state: dict[str, dict]) -> bool:
+    qa = [state.get(job["jobID"], {}).get("sequenceQA", {}) for job in sequence_jobs]
+    return (
+        len(sequence_jobs) == 6
+        and all(item.get("passed") is True and item.get("sequenceComplete") is True for item in qa)
+        and qa[0].get("alignment") is not None
+        and all(item.get("driftFromPrevious", {}).get("passed") is True for item in qa[1:])
+    )
+
+
+def runtime_selection(sequence_jobs: list[dict], state: dict[str, dict]) -> dict | None:
+    """Choose the deterministic shippable runtime form for one manifest sequence."""
+    ordered = sorted(sequence_jobs, key=lambda job: job["frameIndex"])
+    count = int(descriptor(ordered[0])["frameCount"])
+    if count == 2:
+        if not all(accepted_state(state.get(job["jobID"], {})) for job in ordered):
+            return None
+        return {"mode": "legacyEndpoints", "frameDurationMs": None,
+                "jobs": [(index, job) for index, job in enumerate(ordered)]}
+    endpoints = [ordered[0], ordered[5]]
+    if not all(accepted_state(state.get(job["jobID"], {})) for job in endpoints):
+        return None
+    if (all(accepted_state(state.get(job["jobID"], {})) for job in ordered)
+            and complete_sequence_qa(ordered, state)):
+        return {"mode": "completeSequence", "frameDurationMs": DEFAULT_FRAME_DURATION_MS,
+                "jobs": [(index, job) for index, job in enumerate(ordered)]}
+    return {"mode": "endpointsOnly", "frameDurationMs": ENDPOINTS_ONLY_FRAME_DURATION_MS,
+            "jobs": [(0, endpoints[0]), (1, endpoints[1])]}
 
 
 def normalized_pose_interpolation(first: dict, second: dict, t: float) -> dict:

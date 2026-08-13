@@ -9,10 +9,10 @@ import json
 from pathlib import Path
 
 from SequenceArtworkSchema import (
-    DEFAULT_FRAME_DURATION_MS,
+    DEFAULT_FRAME_DURATION_MS, ENDPOINTS_ONLY_FRAME_DURATION_MS,
     PLAYBACK_MODE,
     RUNTIME_SEQUENCE_VERSION,
-    required_indices,
+    runtime_selection,
     validate_job_sequences,
 )
 
@@ -97,23 +97,33 @@ def main() -> None:
             (job for job in job_list if (job["gender"], job["exerciseID"]) == pair),
             key=lambda job: job["frameIndex"],
         )
-        expected_indices = required_indices(sequence_jobs[0])
+        selection = runtime_selection(sequence_jobs, state)
+        if selection is None:
+            raise SystemExit(f"Indexed sequence is not shippable: {gender}/{exercise_id}")
+        expected_indices = list(range(len(selection["jobs"])))
         if [frame.get("frameIndex") for frame in frames] != expected_indices:
             raise SystemExit(f"Invalid packaged frame sequence: {gender}/{exercise_id}")
-        if len(expected_indices) == 6:
+        if len(sequence_jobs) == 6:
+            expected_mode = selection["mode"]
             expected_contract = {
-                "frameCount": 6,
-                "frameDurationMs": DEFAULT_FRAME_DURATION_MS,
+                "frameCount": len(expected_indices),
+                "frameDurationMs": (DEFAULT_FRAME_DURATION_MS if expected_mode == "completeSequence"
+                                    else ENDPOINTS_ONLY_FRAME_DURATION_MS),
                 "playback": PLAYBACK_MODE,
                 "sequenceVersion": RUNTIME_SEQUENCE_VERSION,
+                "sequenceMode": expected_mode,
             }
             if any(entry.get(key) != value for key, value in expected_contract.items()):
                 raise SystemExit(f"Invalid runtime sequence metadata: {gender}/{exercise_id}")
-        for frame in frames:
+        for frame, (_, selected_job) in zip(frames, selection["jobs"]):
             job_id = frame["jobID"]
             job = jobs.get(job_id)
             if not job or (job["gender"], job["exerciseID"]) != pair:
                 raise SystemExit(f"Packaged job mismatch: {job_id}")
+            if job_id != selected_job["jobID"]:
+                raise SystemExit(f"Packaged runtime/source frame mapping mismatch: {job_id}")
+            if len(sequence_jobs) == 6 and frame.get("sourceFrameIndex") != job["frameIndex"]:
+                raise SystemExit(f"Packaged sourceFrameIndex mismatch: {job_id}")
             if not accepted(state.get(job_id, {})):
                 raise SystemExit(f"Packaged frame is no longer accepted: {job_id}")
             master = (repo / job["outputPath"]).resolve()
@@ -132,7 +142,7 @@ def main() -> None:
                 raise SystemExit(f"Packaged frame missing or hash-drifted: {job_id}")
             if webp_metadata(source) != (768, 768, True):
                 raise SystemExit(f"Packaged frame has wrong size or no alpha: {job_id}")
-            if len(expected_indices) == 6:
+            if selection["mode"] == "completeSequence":
                 state_qa = state[job_id].get("sequenceQA")
                 if (not state_qa or state_qa.get("passed") is not True
                         or state_qa.get("sequenceComplete") is not True
@@ -144,16 +154,11 @@ def main() -> None:
                     raise SystemExit(f"Packaged sequence QA metadata drift: {job_id}")
             indexed_files.add(source)
 
-    accepted_frames: dict[tuple[str, str], set[int]] = {}
-    for job_id, job in jobs.items():
-        if accepted(state.get(job_id, {})):
-            pair = (job["gender"], job["exerciseID"])
-            accepted_frames.setdefault(pair, set()).add(job["frameIndex"])
+    groups = {}
+    for job in job_list:
+        groups.setdefault((job["gender"], job["exerciseID"]), []).append(job)
     complete_accepted_pairs = {
-        pair for pair, indices in accepted_frames.items()
-        if indices == set(required_indices(next(
-            job for job in job_list if (job["gender"], job["exerciseID"]) == pair
-        )))
+        pair for pair, sequence_jobs in groups.items() if runtime_selection(sequence_jobs, state)
     }
     if indexed_pairs != complete_accepted_pairs:
         raise SystemExit(
