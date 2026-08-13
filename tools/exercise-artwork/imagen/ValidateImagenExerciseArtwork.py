@@ -15,6 +15,16 @@ from pathlib import Path
 
 from PIL import Image, ImageFilter, ImageStat
 
+from SequenceArtworkSchema import (
+    ALIGNMENT_THRESHOLDS,
+    alignment_drift,
+    alignment_metadata,
+    descriptor,
+    normalized_pose_interpolation,
+    source_references,
+    validate_job_sequences,
+)
+
 
 BASE_JOINTS = {
     "nose": 0,
@@ -41,20 +51,16 @@ MANUAL_FIELDS = ("characterApproved", "poseEquipmentApproved", "anatomyApproved"
 
 def load_jobs(path: Path, repo: Path) -> tuple[list[dict], dict]:
     jobs = [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
-    if len(jobs) != 3500 or len({job["jobID"] for job in jobs}) != 3500:
-        raise SystemExit("Expected 3,500 unique canonical jobs")
-    combinations = Counter((job["exerciseID"], job["frameIndex"], job["gender"]) for job in jobs)
-    exercise_ids = {job["exerciseID"] for job in jobs}
-    expected = {(exercise_id, frame, gender)
-                for exercise_id in exercise_ids for frame in (0, 1) for gender in ("male", "female")}
-    if len(exercise_ids) != 875 or set(combinations) != expected or any(value != 1 for value in combinations.values()):
-        raise SystemExit("Manifest must contain every 875 x 2 x 2 source/frame/gender combination once")
+    try:
+        sequence_manifest = validate_job_sequences(jobs)
+    except ValueError as error:
+        raise SystemExit(str(error)) from error
     outputs = [job["outputPath"] for job in jobs]
-    if len(set(outputs)) != 3500:
+    if len(set(outputs)) != len(jobs):
         raise SystemExit("Output paths must be unique")
     hash_cache = {}
     for job in jobs:
-        if job.get("schemaVersion") != 1 or job.get("style") != "fud-flat-raster-v1":
+        if job.get("schemaVersion") not in (1, 2) or job.get("style") != "fud-flat-raster-v1":
             raise SystemExit(f"Unsupported schema/style: {job['jobID']}")
         expected_id = f"{job['exerciseID']}__f{job['frameIndex']}__{job['gender']}"
         if job["jobID"] != expected_id:
@@ -63,22 +69,26 @@ def load_jobs(path: Path, repo: Path) -> tuple[list[dict], dict]:
                            f"{job['gender']}/{job['exerciseID']}/{job['frameIndex']}.png")
         if job["outputPath"] != expected_output:
             raise SystemExit(f"Noncanonical output path: {job['jobID']}")
-        for path_key, hash_key in (("sourceImagePath", "sourceImageSHA256"),
-                                   ("characterReferencePath", "characterReferenceSHA256")):
-            candidate = repo / job[path_key]
+        inputs = [(job["characterReferencePath"], job["characterReferenceSHA256"], "characterReferencePath")]
+        inputs.extend((item["path"], item["sha256"], "sourceEndpointReferences")
+                      for item in source_references(job))
+        for input_path, expected_hash, path_key in inputs:
+            candidate = repo / input_path
             if not candidate.is_file():
                 raise SystemExit(f"Missing referenced input: {candidate}")
             cache_key = str(candidate)
             if cache_key not in hash_cache:
                 hash_cache[cache_key] = sha256(candidate)
             actual = hash_cache[cache_key]
-            if actual != job[hash_key]:
+            if actual != expected_hash:
                 raise SystemExit(f"Referenced input hash drift: {job['jobID']} / {path_key}")
         if "exactly ONE" not in job["prompt"] or "do not combine frames" not in job["prompt"]:
             raise SystemExit(f"One-output prompt contract missing: {job['jobID']}")
-    manifest = {"jobCount": 3500, "exerciseCount": 875,
-                "maleJobs": 1750, "femaleJobs": 1750,
-                "uniqueOutputPaths": 3500, "inputHashesVerified": len(hash_cache)}
+    manifest = {**sequence_manifest,
+                "exerciseCount": len({job["exerciseID"] for job in jobs}),
+                "maleJobs": sum(job["gender"] == "male" for job in jobs),
+                "femaleJobs": sum(job["gender"] == "female" for job in jobs),
+                "uniqueOutputPaths": len(outputs), "inputHashesVerified": len(hash_cache)}
     return jobs, manifest
 
 
@@ -300,21 +310,91 @@ def main() -> None:
 
     results = {}
     try:
+        output_poses = {
+            job["jobID"]: extract_pose(landmarker, mp, np, repo / job["outputPath"])
+            for job in available
+        }
+        source_pose_cache = {}
         for job in available:
-            source = repo / job["sourceImagePath"]
+            for reference in source_references(job):
+                path = repo / reference["path"]
+                source_pose_cache.setdefault(
+                    reference["sha256"], extract_pose(landmarker, mp, np, path)
+                )
+        available_by_key = {
+            (job["gender"], job["exerciseID"], job["frameIndex"]): job
+            for job in available
+        }
+        for job in available:
             output = repo / job["outputPath"]
             integrity = image_integrity(output)
-            pose = compare_poses(extract_pose(landmarker, mp, np, source),
-                                 extract_pose(landmarker, mp, np, output))
-            edge_similarity = cosine(edge_signature(source), edge_signature(output))
+            sequence = descriptor(job)
+            references = source_references(job)
+            comparison_references = (
+                references if sequence["frameRole"] == "inbetween"
+                else [next((item for item in references if item["frameIndex"] == job["frameIndex"]),
+                           references[0])]
+            )
+            reference_poses = [source_pose_cache[item["sha256"]] for item in references]
+            expected_pose = None
+            expected_pose_metadata = None
+            if sequence["frameRole"] == "inbetween" and all(reference_poses):
+                expected_joints = normalized_pose_interpolation(
+                    normalize_pose(reference_poses[0]), normalize_pose(reference_poses[1]),
+                    float(sequence["interpolationT"]),
+                )
+                expected_pose = {
+                    "joints": expected_joints,
+                    "confidence": min(item["confidence"] for item in reference_poses),
+                }
+                expected_pose_metadata = {
+                    "method": "linear-normalized-landmarks-v1",
+                    "interpolationT": sequence["interpolationT"],
+                    "endpointReferenceSHA256": [item["sha256"] for item in references],
+                }
+            else:
+                expected_pose = source_pose_cache[comparison_references[0]["sha256"]]
+            pose = compare_poses(expected_pose, output_poses[job["jobID"]])
+            edge_similarity = max(
+                cosine(edge_signature(repo / reference["path"]), edge_signature(output))
+                for reference in comparison_references
+            )
+            alignment = (alignment_metadata(output_poses[job["jobID"]])
+                         if output_poses[job["jobID"]] else None)
+            drift = None
+            sequence_complete = all(
+                (job["gender"], job["exerciseID"], index) in available_by_key
+                for index in range(sequence["frameCount"])
+            )
+            if sequence["frameCount"] == 6 and job["frameIndex"] > 0:
+                previous = available_by_key.get((job["gender"], job["exerciseID"], job["frameIndex"] - 1))
+                previous_pose = output_poses.get(previous["jobID"]) if previous else None
+                drift = (alignment_drift(alignment_metadata(previous_pose), alignment)
+                         if previous_pose and alignment else
+                         {"passed": False, "reason": "previous_frame_not_available"})
+            drift_pass = (drift is None or drift.get("reason") == "previous_frame_not_available"
+                          or drift.get("passed") is True)
+            sequence_qa_pass = pose["passed"] and alignment is not None and drift_pass
+            sequence_qa = {
+                "passed": sequence_qa_pass,
+                "sequenceComplete": sequence_complete,
+                "sequence": sequence,
+                "alignment": alignment,
+                "driftFromPrevious": drift,
+                "expectedPose": expected_pose_metadata,
+            }
             review = manual.get("jobs", {}).get(job["jobID"], {})
-            manual_pass = all(review.get(field) is True for field in MANUAL_FIELDS)
+            manual_fields = list(MANUAL_FIELDS)
+            if sequence["frameRole"] == "inbetween":
+                manual_fields.append("intermediatePoseApproved")
+            manual_pass = all(review.get(field) is True for field in manual_fields)
             state_item = queue_state.get(job["jobID"], {})
             generation_state_valid = (
                 state_item.get("status") in {"completed_pending_qa", "qa_failed", "complete"}
                 and state_item.get("outputSHA256") == integrity["sha256"]
             )
-            auto_pass = integrity["passed"] and pose["passed"] and generation_state_valid
+            auto_pass = (integrity["passed"] and pose["passed"] and generation_state_valid
+                         and (sequence["frameCount"] == 2 or sequence_qa_pass))
             status = "accepted" if auto_pass and manual_pass else (
                 "auto_failed" if not auto_pass else "manual_pending")
             results[job["jobID"]] = {
@@ -323,9 +403,10 @@ def main() -> None:
                 "pose": pose,
                 "edgeLayoutCosine": round(edge_similarity, 6),
                 "edgeLayoutWarning": edge_similarity < 0.18,
-                "manualRequiredFields": list(MANUAL_FIELDS),
+                "manualRequiredFields": manual_fields,
                 "manualReview": review,
                 "generationStateValid": generation_state_valid,
+                "sequenceQA": sequence_qa,
             }
     finally:
         if landmarker is not None:
@@ -333,7 +414,7 @@ def main() -> None:
 
     counts = Counter(result["status"] for result in results.values())
     report = {
-        "schemaVersion": 1,
+        "schemaVersion": 2 if any(descriptor(job)["frameCount"] == 6 for job in jobs) else 1,
         "manifestQA": manifest_qa,
         "evaluated": len(results),
         "missing": len(missing),
@@ -346,6 +427,7 @@ def main() -> None:
             "torsoAngleDegreesMaximum": 32,
             "foregroundOccupancy": [0.08, 0.82],
             "edgeAlphaFractionMaximum": 0.025,
+            "alignment": ALIGNMENT_THRESHOLDS,
         },
         "results": dict(sorted(results.items())),
     }
@@ -364,6 +446,7 @@ def main() -> None:
                     item.update({"status": "qa_failed", "qaStatus": "rejected"})
                 else:
                     item.update({"status": "completed_pending_qa", "qaStatus": "manual_pending"})
+                item["sequenceQA"] = result["sequenceQA"]
             atomic_json(args.state, state)
             fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
     print(json.dumps({"evaluated": len(results), "missing": len(missing),

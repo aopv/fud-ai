@@ -10,6 +10,8 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
 
+from SequenceArtworkSchema import required_indices, source_references
+
 
 def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -48,7 +50,7 @@ def main() -> None:
     parser.add_argument(
         "--accepted-only",
         action="store_true",
-        help="Render only complete, accepted two-frame gender pairs in a compact four-column sheet.",
+        help="Render only complete, accepted sequences with exact endpoint references.",
     )
     parser.add_argument("--limit", type=int, default=24)
     args = parser.parse_args()
@@ -70,19 +72,21 @@ def main() -> None:
         for entry in sorted(package_entries, key=lambda item: (item["exerciseID"], item["gender"])):
             exercise_id, gender = entry["exerciseID"], entry["gender"]
             package_frames = sorted(entry["frames"], key=lambda item: item["frameIndex"])
-            if [frame["frameIndex"] for frame in package_frames] != [0, 1]:
-                raise SystemExit(f"Packaged entry is not a two-frame pair: {exercise_id}/{gender}")
+            first_job = by_key[(exercise_id, package_frames[0]["frameIndex"], gender)]
+            if [frame["frameIndex"] for frame in package_frames] != required_indices(first_job):
+                raise SystemExit(f"Packaged entry is not a complete sequence: {exercise_id}/{gender}")
             for package_frame in package_frames:
                 frame_index = package_frame["frameIndex"]
                 job = by_key[(exercise_id, frame_index, gender)]
                 state = states[job["jobID"]]
-                source = repo / job["sourceImagePath"]
+                refs = source_references(job)
                 master = repo / job["outputPath"]
                 packaged = repo / package_frame["path"]
                 checks = (
                     state.get("status") == "complete",
                     state.get("qaStatus") == "accepted",
-                    source.is_file() and sha256(source) == job["sourceImageSHA256"],
+                    all((repo / ref["path"]).is_file()
+                        and sha256(repo / ref["path"]) == ref["sha256"] for ref in refs),
                     master.is_file() and sha256(master) == state.get("outputSHA256"),
                     packaged.is_file() and sha256(packaged) == package_frame["sha256"],
                 )
@@ -90,10 +94,12 @@ def main() -> None:
                     raise SystemExit(f"Accepted-sheet provenance failed: {job['jobID']}")
             pairs.append((exercise_id, gender, package_frames))
         pairs = pairs[:args.limit]
-        width, row_height, label_width, tile_width = 1010, 210, 190, 205
+        max_frames = max((len(frames) for _, _, frames in pairs), default=2)
+        width, row_height, label_width, tile_width = 190 + (2 + max_frames) * 205, 210, 190, 205
         sheet = Image.new("RGB", (width, 46 + len(pairs) * row_height), (18, 19, 22))
         draw = ImageDraw.Draw(sheet)
-        headers = ("Exact source 0", "Exact source 1", "Accepted 0", "Accepted 1")
+        headers = ["Exact source 0", "Exact source 1", *
+                   [f"Accepted {index}" for index in range(max_frames)]]
         draw.text((10, 14), "Exercise / gender", fill="white")
         for index, header in enumerate(headers):
             draw.text((label_width + index * tile_width + 8, 14), header, fill="white")
@@ -101,13 +107,14 @@ def main() -> None:
             y = 46 + row * row_height
             draw.text((8, y + 16), exercise_id[:27], fill=(235, 237, 242))
             draw.text((8, y + 34), gender, fill=(255, 104, 132))
-            frame0 = by_key[(exercise_id, 0, gender)]
-            frame1 = by_key[(exercise_id, 1, gender)]
+            first_job = by_key[(exercise_id, package_frames[0]["frameIndex"], gender)]
+            refs = source_references(first_job)
+            if len(refs) == 1:
+                refs += source_references(by_key[(exercise_id, package_frames[-1]["frameIndex"], gender)])
             entries = [
-                (repo / frame0["sourceImagePath"], "legacy endpoint 0"),
-                (repo / frame1["sourceImagePath"], "legacy endpoint 1"),
-                (repo / package_frames[0]["path"], f"shipped {gender} / 0"),
-                (repo / package_frames[1]["path"], f"shipped {gender} / 1"),
+                *((repo / ref["path"], f"legacy endpoint {ref['frameIndex']}") for ref in refs),
+                *((repo / frame["path"], f"shipped {gender} / {frame['frameIndex']}")
+                  for frame in package_frames),
             ]
             for column, (path, label) in enumerate(entries):
                 sheet.paste(tile(path, label, (195, 195)), (label_width + column * tile_width, y + 5))
@@ -118,25 +125,29 @@ def main() -> None:
 
     ids = sorted({job["exerciseID"] for job in jobs
                   if (job["pilot"] if args.pilot_only else True)})[:args.limit]
-    width, row_height, label_width, tile_width = 1470, 210, 190, 205
+    frame_count = len(required_indices(by_key[(ids[0], 0, "male")])) if ids else 2
+    width, row_height, label_width, tile_width = 190 + (2 + frame_count * 2) * 205, 210, 190, 205
     sheet = Image.new("RGB", (width, 46 + len(ids) * row_height), (18, 19, 22))
     draw = ImageDraw.Draw(sheet)
-    headers = ("Source 0", "Source 1", "Male 0", "Male 1", "Female 0", "Female 1")
+    headers = ["Source 0", "Source finish",
+               *[f"Male {index}" for index in range(frame_count)],
+               *[f"Female {index}" for index in range(frame_count)]]
     draw.text((10, 14), "Exercise", fill="white")
     for index, header in enumerate(headers):
         draw.text((label_width + index * tile_width + 8, 14), header, fill="white")
     for row, exercise_id in enumerate(ids):
         y = 46 + row * row_height
         draw.text((8, y + 16), exercise_id[:28], fill=(235, 237, 242))
-        source0 = by_key[(exercise_id, 0, "male")]
-        source1 = by_key[(exercise_id, 1, "male")]
+        first_job = by_key[(exercise_id, 0, "male")]
+        refs = source_references(first_job)
+        if len(refs) == 1:
+            refs += source_references(by_key[(exercise_id, frame_count - 1, "male")])
         entries = [
-            (repo / source0["sourceImagePath"], "legacy endpoint 0"),
-            (repo / source1["sourceImagePath"], "legacy endpoint 1"),
-            (repo / by_key[(exercise_id, 0, "male")]["outputPath"], "male / 0"),
-            (repo / by_key[(exercise_id, 1, "male")]["outputPath"], "male / 1"),
-            (repo / by_key[(exercise_id, 0, "female")]["outputPath"], "female / 0"),
-            (repo / by_key[(exercise_id, 1, "female")]["outputPath"], "female / 1"),
+            *((repo / ref["path"], f"legacy endpoint {ref['frameIndex']}") for ref in refs),
+            *((repo / by_key[(exercise_id, index, "male")]["outputPath"], f"male / {index}")
+              for index in range(frame_count)),
+            *((repo / by_key[(exercise_id, index, "female")]["outputPath"], f"female / {index}")
+              for index in range(frame_count)),
         ]
         for column, (path, label) in enumerate(entries):
             sheet.paste(tile(path, label, (195, 195)), (label_width + column * tile_width, y + 5))

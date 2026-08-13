@@ -20,19 +20,22 @@ struct AnimatedExerciseVisual: View {
     @State private var animateFallback = false
 
     var body: some View {
-        let generatedURLs = FudExerciseArtworkLoader.imageURLs(
+        let generatedArtwork = FudExerciseArtworkLoader.artwork(
             for: exerciseID,
             gender: profileStore.profile.gender
         )
+        let generatedURLs = generatedArtwork?.imageURLs ?? []
         let imageURLs = generatedURLs.isEmpty ? resolvedLegacyImageURLs : generatedURLs
         let usesGeneratedArtwork = !generatedURLs.isEmpty
+        let frameDurationMilliseconds = generatedArtwork?.frameDurationMilliseconds ?? 850
 
         ZStack {
             if !imageURLs.isEmpty {
                 ExerciseImageView(
                     urls: imageURLs,
                     animatesFrames: animatesFrames,
-                    usesGeneratedArtwork: usesGeneratedArtwork
+                    usesGeneratedArtwork: usesGeneratedArtwork,
+                    frameDurationMilliseconds: frameDurationMilliseconds
                 )
             } else {
                 fallbackVisual
@@ -119,6 +122,7 @@ private struct ExerciseImageView: View {
     let urls: [URL]
     let animatesFrames: Bool
     let usesGeneratedArtwork: Bool
+    let frameDurationMilliseconds: Int
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var frameIndex = 0
@@ -141,20 +145,50 @@ private struct ExerciseImageView: View {
                 }
             }
         }
-        .task(id: urls) {
+        .task(id: ExerciseImageTaskID(
+            urls: urls,
+            animatesFrames: animatesFrames,
+            reduceMotion: reduceMotion,
+            frameDurationMilliseconds: frameDurationMilliseconds
+        )) {
             let loadedFrames = ExerciseImageCache.shared.images(for: urls)
             frameIndex = 0
             frames = loadedFrames
 
             guard animatesFrames, frames.count > 1, !reduceMotion else { return }
-            let interval: UInt64 = usesGeneratedArtwork ? 700_000_000 : 850_000_000
+            let sequence = usesGeneratedArtwork
+                ? ExerciseArtworkPlayback.pingPongIndices(frameCount: frames.count)
+                : Array(frames.indices)
+            guard sequence.count > 1 else { return }
+            let interval = UInt64(max(frameDurationMilliseconds, 1)) * 1_000_000
+            var playbackIndex = 0
             while !Task.isCancelled {
                 try? await Task.sleep(nanoseconds: interval)
                 guard !Task.isCancelled else { return }
-                frameIndex = (frameIndex + 1) % frames.count
+                playbackIndex = (playbackIndex + 1) % sequence.count
+                frameIndex = sequence[playbackIndex]
             }
         }
     }
+}
+
+struct ExerciseArtworkPlayback {
+    static func pingPongIndices(frameCount: Int) -> [Int] {
+        guard frameCount > 1 else {
+            return frameCount == 1 ? [0] : []
+        }
+
+        let forward = Array(0..<frameCount)
+        guard frameCount > 2 else { return forward }
+        return forward + Array(stride(from: frameCount - 2, through: 1, by: -1))
+    }
+}
+
+private struct ExerciseImageTaskID: Hashable {
+    let urls: [URL]
+    let animatesFrames: Bool
+    let reduceMotion: Bool
+    let frameDurationMilliseconds: Int
 }
 
 private struct ExerciseArtworkScaling: ViewModifier {

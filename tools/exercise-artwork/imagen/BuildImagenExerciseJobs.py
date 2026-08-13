@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the deterministic 3,500-job Imagen exercise-artwork queue."""
+"""Build deterministic two-endpoint or six-frame Imagen exercise-artwork queues."""
 
 from __future__ import annotations
 
@@ -11,6 +11,8 @@ import os
 import re
 import tempfile
 from pathlib import Path
+
+from SequenceArtworkSchema import SEQUENCE_SCHEMA_VERSION
 
 
 STYLE = "fud-flat-raster-v1"
@@ -91,10 +93,15 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         default=repo / "tools/exercise-artwork/imagen/state-v1.json",
     )
+    parser.add_argument("--sequence-frames", type=int, choices=(2, 6), default=2)
+    parser.add_argument(
+        "--expected-exercise-count", type=int, default=875,
+        help="Dataset cardinality gate; override only for isolated dry-run fixtures.",
+    )
     return parser.parse_args()
 
 
-def prompt_for(record: dict, frame_index: int, gender: str) -> str:
+def prompt_for(record: dict, frame_index: int, frame_count: int, gender: str) -> str:
     equipment = record.get("equipment") or "body only"
     identity_lock = (
         "Keep the approved female character's ponytail, coral crop top, navy leggings, and "
@@ -107,14 +114,30 @@ def prompt_for(record: dict, frame_index: int, gender: str) -> str:
         "heel accent. Never add sleeves, leggings, a hat, jewelry, logos, or alternate colors. "
         "Do not redesign, recolor, or restyle him. "
     )
+    reference_order = (
+        "REFERENCE ORDER IS STRICT: the FIRST image is CHARACTER REFERENCE; the SECOND image is "
+        "POSE/EQUIPMENT REFERENCE. Use CHARACTER REFERENCE only for the exact recurring character identity, face, hair, "
+        if frame_count == 2 or frame_index in (0, frame_count - 1)
+        else
+        "REFERENCE ORDER IS STRICT: the FIRST image is CHARACTER REFERENCE; the SECOND image is exact "
+        "endpoint 0; the THIRD image is exact endpoint 5. Use CHARACTER REFERENCE only for the exact "
+        "recurring character identity, face, hair, "
+    )
+    pose_instruction = (
+        "Use POSE/EQUIPMENT REFERENCE only for the exact body pose, camera viewpoint, limb angles, "
+        if frame_count == 2 or frame_index in (0, frame_count - 1)
+        else
+        f"Create only the temporal in-between at t={frame_index / (frame_count - 1):.1f} between the two endpoint references. "
+        "Interpolate body pose while preserving their camera, laterality, equipment, grips, and contacts. "
+        "Do not copy either endpoint pose. "
+    )
     return (
         "Create exactly ONE 1024x1024 full-body flat-vector raster exercise illustration. "
         f"Exercise: {record['name']}. Equipment: {equipment}. Gender: {gender}. "
-        "REFERENCE ORDER IS STRICT: the FIRST image is CHARACTER REFERENCE; the SECOND image is "
-        "POSE/EQUIPMENT REFERENCE. Use CHARACTER REFERENCE only for the exact recurring character identity, face, hair, "
+        + reference_order +
         "body proportions, clothing, palette, line weight, and polished Fud AI flat-vector style. "
         + identity_lock +
-        "Use POSE/EQUIPMENT REFERENCE only for the exact body pose, camera viewpoint, limb angles, "
+        pose_instruction +
         "hand grip, contact points, and the exact visible bench, cable, barbell, dumbbell, machine, "
         "ball, or other equipment. Preserve left/right orientation. Show one character only, with "
         "the whole body and required equipment fully inside the canvas. Use clean filled anatomy, "
@@ -122,7 +145,10 @@ def prompt_for(record: dict, frame_index: int, gender: str) -> str:
         "background. The background must have no shadow, floor, horizon, gradient, texture, reflection, "
         "glow, or color variation. Do not use #00FF00 or any bright green on the character or equipment. "
         "No text, captions, numbers, arrows, borders, panels, "
-        f"logos, signatures, or watermark. This is endpoint frame {frame_index + 1} of 2; do not "
+        f"logos, signatures, or watermark. This is "
+        + (f"endpoint frame {frame_index + 1} of 2" if frame_count == 2
+           else f"frame {frame_index + 1} of {frame_count}")
+        + "; do not "
         "combine frames or show before/after poses."
     )
 
@@ -132,8 +158,8 @@ def main() -> None:
     repo = Path(__file__).resolve().parents[3]
     records = json.loads(args.dataset.read_text())
     ids = [record["id"] for record in records]
-    if len(records) != 875 or len(set(ids)) != 875:
-        raise SystemExit("Expected exactly 875 unique FreeExerciseDB records")
+    if len(records) != args.expected_exercise_count or len(set(ids)) != args.expected_exercise_count:
+        raise SystemExit(f"Expected exactly {args.expected_exercise_count} unique FreeExerciseDB records")
     invalid_ids = sorted(identifier for identifier in ids if not re.fullmatch(r"[A-Za-z0-9_-]+", identifier))
     if invalid_ids:
         raise SystemExit(f"Unsafe source IDs: {invalid_ids}")
@@ -158,15 +184,20 @@ def main() -> None:
             if record["id"] in KNOWN_BAD_SOURCE_REFERENCES
             else {"status": "ready", "reason": None}
         )
-        for frame_index, filename in enumerate(record["images"]):
-            source_path = args.images / filename
-            if not source_path.is_file():
-                raise SystemExit(f"Missing source frame: {source_path}")
+        endpoint_paths = [args.images / filename for filename in record["images"]]
+        if any(not path.is_file() for path in endpoint_paths):
+            raise SystemExit(f"Missing source frame for {record['id']}")
+        endpoint_refs = [
+            {"frameIndex": index * (args.sequence_frames - 1),
+             "path": str(path.relative_to(repo)), "sha256": sha256(path)}
+            for index, path in enumerate(endpoint_paths)
+        ]
+        for frame_index in range(args.sequence_frames):
             for gender in GENDERS:
                 job_id = f"{record['id']}__f{frame_index}__{gender}"
                 output_path = args.asset_root / "frames" / gender / record["id"] / f"{frame_index}.png"
                 job = {
-                    "schemaVersion": 1,
+                    "schemaVersion": 1 if args.sequence_frames == 2 else SEQUENCE_SCHEMA_VERSION,
                     "style": STYLE,
                     "jobID": job_id,
                     "exerciseID": record["id"],
@@ -176,39 +207,57 @@ def main() -> None:
                     "gender": gender,
                     "width": 1024,
                     "height": 1024,
-                    "sourceImagePath": str(source_path.relative_to(repo)),
-                    "sourceImageSHA256": sha256(source_path),
                     "characterReferencePath": str(character_references[gender].relative_to(repo)),
                     "characterReferenceSHA256": reference_hashes[gender],
                     "outputPath": str(output_path.relative_to(repo)),
-                    "prompt": prompt_for(record, frame_index, gender),
+                    "prompt": prompt_for(record, frame_index, args.sequence_frames, gender),
                     "pilot": record["id"] in PILOT_IDS,
                     "sourceReferenceQA": source_qa,
                 }
-                fingerprint_fields = {
-                    key: job[key]
-                    for key in (
-                        "style", "exerciseID", "frameIndex", "gender", "sourceImageSHA256",
-                        "characterReferenceSHA256", "outputPath", "prompt", "width", "height",
-                    )
-                }
+                endpoint_index = 0 if frame_index == 0 else 1
+                if args.sequence_frames == 2:
+                    job["sourceImagePath"] = endpoint_refs[frame_index]["path"]
+                    job["sourceImageSHA256"] = endpoint_refs[frame_index]["sha256"]
+                else:
+                    job["sequence"] = {
+                        "schemaVersion": SEQUENCE_SCHEMA_VERSION,
+                        "frameCount": 6,
+                        "frameIndex": frame_index,
+                        "frameRole": "endpoint" if frame_index in (0, 5) else "inbetween",
+                        "interpolationT": frame_index / 5,
+                        "endpointFrameIndices": [0, 5],
+                    }
+                    job["sourceEndpointReferences"] = endpoint_refs
+                    if frame_index in (0, 5):
+                        job["sourceImagePath"] = endpoint_refs[endpoint_index]["path"]
+                        job["sourceImageSHA256"] = endpoint_refs[endpoint_index]["sha256"]
+                fingerprint_keys = (
+                    "style", "exerciseID", "frameIndex", "gender", "sourceImageSHA256",
+                    "characterReferenceSHA256", "outputPath", "prompt", "width", "height",
+                ) if args.sequence_frames == 2 else (
+                    "style", "exerciseID", "frameIndex", "gender", "sourceImageSHA256",
+                    "sourceEndpointReferences", "sequence", "characterReferenceSHA256",
+                    "outputPath", "prompt", "width", "height",
+                )
+                fingerprint_fields = {key: job.get(key) for key in fingerprint_keys}
                 job["jobFingerprint"] = hashlib.sha256(
                     canonical_json(fingerprint_fields).encode("utf-8")
                 ).hexdigest()
                 jobs.append(job)
 
-    if len(jobs) != 3500 or len({job["jobID"] for job in jobs}) != 3500:
-        raise SystemExit("Job expansion must produce exactly 3,500 unique jobs")
+    expected_jobs = args.expected_exercise_count * args.sequence_frames * len(GENDERS)
+    if len(jobs) != expected_jobs or len({job["jobID"] for job in jobs}) != expected_jobs:
+        raise SystemExit(f"Job expansion must produce exactly {expected_jobs} unique jobs")
     jobs.sort(key=lambda job: job["jobID"])
     jobs_bytes = ("\n".join(canonical_json(job) for job in jobs) + "\n").encode("utf-8")
     manifest_hash = hashlib.sha256(jobs_bytes).hexdigest()
 
     metadata = {
-        "schemaVersion": 1,
+        "schemaVersion": 1 if args.sequence_frames == 2 else SEQUENCE_SCHEMA_VERSION,
         "style": STYLE,
         "jobCount": len(jobs),
         "exerciseCount": len(records),
-        "framesPerExercise": 2,
+        "framesPerExercise": args.sequence_frames,
         "genders": list(GENDERS),
         "jobsSHA256": manifest_hash,
         "characterReferences": {
@@ -246,7 +295,8 @@ def main() -> None:
             old_job = old_job_map.get(job["jobID"], {})
             stable_keys = (
                 "style", "exerciseID", "frameIndex", "gender", "sourceImageSHA256",
-                "characterReferenceSHA256", "outputPath", "width", "height",
+                "sourceEndpointReferences", "sequence", "characterReferenceSHA256",
+                "outputPath", "width", "height",
             )
             raw_path = resolve_repo_path(repo, old.get("generatedInputPath"))
             output_path = repo / job["outputPath"]
@@ -273,7 +323,7 @@ def main() -> None:
                 status = "blocked_reference"
             else:
                 status = "pending"
-            state_jobs[job["jobID"]] = {
+            new_state_item = {
                 "jobFingerprint": job["jobFingerprint"],
                 "status": status,
                 "attempts": 0,
@@ -283,7 +333,12 @@ def main() -> None:
                 "qaStatus": None,
                 "error": None,
             }
+            if args.sequence_frames == 6:
+                new_state_item["sequence"] = job["sequence"]
+            state_jobs[job["jobID"]] = new_state_item
         state = {"schemaVersion": 1, "jobsSHA256": manifest_hash, "jobs": state_jobs}
+        if args.sequence_frames == 6:
+            state.update({"schemaVersion": SEQUENCE_SCHEMA_VERSION, "framesPerExercise": 6})
         atomic_write(args.state, (json.dumps(state, indent=2, sort_keys=True) + "\n").encode())
         fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
     statuses = {}

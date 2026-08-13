@@ -11,6 +11,8 @@ from pathlib import Path
 
 from PIL import Image
 
+from SequenceArtworkSchema import required_indices, validate_job_sequences
+
 
 def sha256(path: Path) -> str:
     digest = hashlib.sha256()
@@ -35,15 +37,20 @@ def main() -> None:
     parser.add_argument("--destination", type=Path, required=True)
     args = parser.parse_args()
 
-    jobs = {
-        job["jobID"]: job
+    job_list = [
+        job
         for line in args.jobs.read_text().splitlines()
         if line.strip()
         for job in [json.loads(line)]
-    }
+    ]
+    try:
+        validate_job_sequences(job_list)
+    except ValueError as error:
+        raise SystemExit(str(error)) from error
+    jobs = {job["jobID"]: job for job in job_list}
     state = json.loads(args.state.read_text()).get("jobs", {})
     index = json.loads(args.index.read_text())
-    if (index.get("schemaVersion"), index.get("size"), index.get("format")) != (1, 768, "webp"):
+    if index.get("schemaVersion") not in (1, 2) or (index.get("size"), index.get("format")) != (768, "webp"):
         raise SystemExit("Unsupported packaged artwork index")
 
     if args.destination.exists():
@@ -59,8 +66,10 @@ def main() -> None:
             raise SystemExit(f"Duplicate packaged pair: {gender}/{exercise_id}")
         indexed_pairs.add(pair_key)
         frames = sorted(entry.get("frames", []), key=lambda frame: frame["frameIndex"])
-        if [frame.get("frameIndex") for frame in frames] != [0, 1]:
-            raise SystemExit(f"Invalid packaged endpoint pair: {gender}/{exercise_id}")
+        sequence_job = next((job for job in job_list if
+                             (job["gender"], job["exerciseID"]) == pair_key), None)
+        if sequence_job is None or [frame.get("frameIndex") for frame in frames] != required_indices(sequence_job):
+            raise SystemExit(f"Invalid packaged frame sequence: {gender}/{exercise_id}")
         for frame in frames:
             job_id = frame["jobID"]
             job = jobs.get(job_id)
@@ -87,20 +96,15 @@ def main() -> None:
             shutil.copy2(source, destination)
         staged += 1
 
-    accepted_pairs = {
-        (job["gender"], job["exerciseID"])
-        for job_id, job in jobs.items()
-        if accepted(state.get(job_id, {}))
+    accepted_indices = {}
+    for job_id, job in jobs.items():
+        if accepted(state.get(job_id, {})):
+            accepted_indices.setdefault((job["gender"], job["exerciseID"]), set()).add(job["frameIndex"])
+    complete_accepted_pairs = {
+        pair for pair, indices in accepted_indices.items()
+        if indices == set(required_indices(next(job for job in job_list
+                                                if (job["gender"], job["exerciseID"]) == pair)))
     }
-    # Each valid pair contributes two accepted endpoint jobs.
-    accepted_pair_counts = {
-        pair: sum(
-            1 for job_id, job in jobs.items()
-            if (job["gender"], job["exerciseID"]) == pair and accepted(state.get(job_id, {}))
-        )
-        for pair in accepted_pairs
-    }
-    complete_accepted_pairs = {pair for pair, count in accepted_pair_counts.items() if count == 2}
     if indexed_pairs != complete_accepted_pairs:
         missing = sorted(complete_accepted_pairs - indexed_pairs)
         stale = sorted(indexed_pairs - complete_accepted_pairs)

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Create 768px alpha-WebP derivatives for complete, QA-accepted frame pairs."""
+"""Create 768px alpha-WebP derivatives for complete, QA-accepted sequences."""
 
 from __future__ import annotations
 
@@ -13,6 +13,15 @@ from collections import defaultdict
 from pathlib import Path
 
 from PIL import Image, ImageChops, ImageStat
+
+from SequenceArtworkSchema import (
+    DEFAULT_FRAME_DURATION_MS,
+    PLAYBACK_MODE,
+    RUNTIME_SEQUENCE_VERSION,
+    descriptor,
+    required_indices,
+    validate_job_sequences,
+)
 
 
 def sha256(path: Path) -> str:
@@ -50,23 +59,38 @@ def main() -> None:
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
     jobs = [json.loads(line) for line in args.jobs.read_text().splitlines() if line.strip()]
+    try:
+        manifest = validate_job_sequences(jobs)
+    except ValueError as error:
+        raise SystemExit(str(error)) from error
     state = json.loads(args.state.read_text())["jobs"]
     grouped = defaultdict(list)
     for job in jobs:
         grouped[(job["gender"], job["exerciseID"])].append(job)
-    accepted_pairs = []
-    for key, pair in sorted(grouped.items()):
-        pair.sort(key=lambda item: item["frameIndex"])
-        if len(pair) == 2 and all(accepted(state[job["jobID"]]) for job in pair):
-            accepted_pairs.append((key, pair))
+    accepted_sequences = []
+    for key, sequence_jobs in sorted(grouped.items()):
+        sequence_jobs.sort(key=lambda item: item["frameIndex"])
+        expected = required_indices(sequence_jobs[0])
+        if ([job["frameIndex"] for job in sequence_jobs] == expected
+                and all(accepted(state[job["jobID"]]) for job in sequence_jobs)):
+            if len(expected) == 6:
+                qa = [state[job["jobID"]].get("sequenceQA", {}) for job in sequence_jobs]
+                ready = (
+                    all(item.get("passed") is True and item.get("sequenceComplete") is True for item in qa)
+                    and qa[0].get("alignment") is not None
+                    and all(item.get("driftFromPrevious", {}).get("passed") is True for item in qa[1:])
+                )
+                if not ready:
+                    raise SystemExit(f"Accepted v2 sequence lacks complete passing sequence QA: {key}")
+            accepted_sequences.append((key, sequence_jobs))
     if args.dry_run:
-        print(f"Would package {len(accepted_pairs)} accepted two-frame pairs")
+        print(f"Would package {len(accepted_sequences)} complete accepted sequences")
         return
 
     entries = []
-    for (gender, exercise_id), pair in accepted_pairs:
+    for (gender, exercise_id), sequence_jobs in accepted_sequences:
         frames = []
-        for job in pair:
+        for job in sequence_jobs:
             master = repo / job["outputPath"]
             if not master.is_file() or sha256(master) != state[job["jobID"]]["outputSHA256"]:
                 raise SystemExit(f"Accepted master missing or changed: {job['jobID']}")
@@ -98,11 +122,24 @@ def main() -> None:
                 "path": str(destination.relative_to(repo)), "sha256": sha256(destination),
                 "bytes": destination.stat().st_size, "masterBytes": master.stat().st_size,
                 "rgbaRMSE": round(rmse, 4),
+                **({"sequenceQA": state[job["jobID"]]["sequenceQA"]}
+                   if len(sequence_jobs) == 6 else {}),
             })
-        entries.append({"gender": gender, "exerciseID": exercise_id, "frames": frames})
-    index = {"schemaVersion": 1, "style": "fud-flat-raster-v1", "size": 768,
+        entry = {"gender": gender, "exerciseID": exercise_id, "frames": frames}
+        if len(sequence_jobs) == 6:
+            entry.update({
+                "frameCount": 6,
+                "frameDurationMs": DEFAULT_FRAME_DURATION_MS,
+                "playback": PLAYBACK_MODE,
+                "sequenceVersion": RUNTIME_SEQUENCE_VERSION,
+            })
+        entries.append(entry)
+    index_schema = 2 if manifest["schemaVersion"] == 2 else 1
+    index = {"schemaVersion": index_schema, "style": "fud-flat-raster-v1", "size": 768,
              "format": "webp", "quality": args.quality, "pairCount": len(entries),
              "entries": entries}
+    if index_schema == 2:
+        index["sequenceCount"] = len(entries)
     args.index.parent.mkdir(parents=True, exist_ok=True)
     args.index.write_text(json.dumps(index, indent=2, sort_keys=True) + "\n")
     os.chmod(args.index, 0o644)

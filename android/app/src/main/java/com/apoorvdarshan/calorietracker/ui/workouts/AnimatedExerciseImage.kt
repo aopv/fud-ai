@@ -1,5 +1,8 @@
 package com.apoorvdarshan.calorietracker.ui.workouts
 
+import android.database.ContentObserver
+import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -12,8 +15,10 @@ import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -32,6 +37,12 @@ import coil.compose.AsyncImage
 import com.apoorvdarshan.calorietracker.data.ExerciseRepository
 import com.apoorvdarshan.calorietracker.models.Gender
 import kotlinx.coroutines.delay
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.intOrNull
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 
 /** Existing DB photographs remain the resilience path until both generated frames are accepted. */
 private val ExerciseImageFilter: ColorFilter = run {
@@ -50,9 +61,14 @@ private val ExerciseImageFilter: ColorFilter = run {
     ColorFilter.colorMatrix(contrastBrightness)
 }
 
+internal data class GeneratedExerciseSequence(
+    val imagePaths: List<String>,
+    val frameDurationMs: Long
+)
+
 /**
- * Displays the two independently generated Imagen endpoints when the complete gender pair is
- * bundled. A partial or rejected pair is never mixed with legacy photography: the untouched
+ * Displays every independently generated Imagen frame listed in the bundled artwork index. An
+ * incomplete or malformed indexed sequence is never mixed with legacy photography: the untouched
  * FreeExerciseDB endpoints remain the safe fallback for that exercise.
  *
  * Android packages optimized WebP derivatives from the canonical accepted-output tree at build
@@ -69,35 +85,32 @@ fun AnimatedExerciseImage(
     fallbackLabel: String? = null
 ) {
     val context = LocalContext.current
-    val animationsEnabled = remember(context) {
-        Settings.Global.getFloat(
-            context.contentResolver,
-            Settings.Global.ANIMATOR_DURATION_SCALE,
-            1f
-        ) != 0f
-    }
+    val animatorDurationScale = rememberAnimatorDurationScale()
     val figureGender = if (gender == Gender.FEMALE) "female" else "male"
     val generatedPaths = remember(context, exerciseId, figureGender) {
         val safeId = safeExerciseArtworkId(exerciseId)
         if (safeId == null) {
             null
         } else {
-            val directory = "frames/$figureGender/$safeId"
-            val names = runCatching {
-                context.assets.list(directory)?.toSet().orEmpty()
-            }.getOrDefault(emptySet())
-            generatedExerciseFramePaths(safeId, figureGender, names)
+            val indexJson = sequenceOf("exercise-artwork-index.json", "index.json")
+                .mapNotNull { assetName ->
+                    runCatching {
+                        context.assets.open(assetName).bufferedReader().use { it.readText() }
+                    }.getOrNull()
+                }
+                .firstOrNull()
+            generatedExerciseSequence(safeId, figureGender, indexJson)
         }
     }
 
     if (generatedPaths != null) {
         FrameSequence(
-            imagePaths = generatedPaths,
+            imagePaths = generatedPaths.imagePaths,
             modifier = modifier,
             contentScale = ContentScale.Fit,
             colorFilter = null,
-            animationsEnabled = animationsEnabled,
-            frameDurationMs = 850L
+            animatorDurationScale = animatorDurationScale,
+            baseFrameDurationMs = generatedPaths.frameDurationMs
         )
     } else {
         LegacyExerciseImage(
@@ -105,7 +118,7 @@ fun AnimatedExerciseImage(
             modifier = modifier,
             contentScale = contentScale,
             fallbackLabel = fallbackLabel,
-            animationsEnabled = animationsEnabled
+            animatorDurationScale = animatorDurationScale
         )
     }
 }
@@ -116,13 +129,91 @@ internal fun safeExerciseArtworkId(exerciseId: String?): String? =
 internal fun generatedExerciseFramePaths(
     exerciseId: String,
     gender: String,
-    availableFilenames: Set<String>
-): List<String>? {
+    indexJson: String?
+): List<String>? = generatedExerciseSequence(exerciseId, gender, indexJson)?.imagePaths
+
+internal fun generatedExerciseSequence(
+    exerciseId: String,
+    gender: String,
+    indexJson: String?
+): GeneratedExerciseSequence? {
     val safeId = safeExerciseArtworkId(exerciseId) ?: return null
     if (gender !in setOf("male", "female")) return null
-    if ("0.webp" !in availableFilenames || "1.webp" !in availableFilenames) return null
-    val directory = "frames/$gender/$safeId"
-    return listOf("$directory/0.webp", "$directory/1.webp")
+    if (indexJson == null) return null
+
+    return runCatching {
+        val entries = Json.parseToJsonElement(indexJson).jsonObject["entries"]?.jsonArray
+            ?: return@runCatching null
+        val entry = entries.firstOrNull { element ->
+            val objectValue = element.jsonObject
+            objectValue["exerciseID"]?.jsonPrimitive?.contentOrNull == safeId &&
+                objectValue["gender"]?.jsonPrimitive?.contentOrNull == gender
+        }?.jsonObject ?: return@runCatching null
+
+        val frames = entry["frames"]?.jsonArray ?: return@runCatching null
+        val indexedPaths = frames.mapNotNull { element ->
+            val frame = element.jsonObject
+            val frameIndex = frame["frameIndex"]?.jsonPrimitive?.intOrNull ?: return@mapNotNull null
+            val packagedPath = frame["path"]?.jsonPrimitive?.contentOrNull ?: return@mapNotNull null
+            val assetPath = if (packagedPath.startsWith("frames/")) {
+                packagedPath
+            } else {
+                packagedPath.substringAfter("/packaged-768/", missingDelimiterValue = "")
+            }
+            val expectedPath = "frames/$gender/$safeId/$frameIndex.webp"
+            if (assetPath == expectedPath) frameIndex to assetPath else null
+        }?.sortedBy { it.first } ?: return@runCatching null
+
+        val frameIndexes = indexedPaths.map { it.first }
+        if (indexedPaths.size != frames.size || frameIndexes.size < 2 ||
+            frameIndexes != frameIndexes.indices.toList()
+        ) {
+            null
+        } else {
+            val frameDurationMs = entry["frameDurationMs"]?.jsonPrimitive?.intOrNull
+                ?.takeIf { it > 0 }?.toLong()
+                ?: generatedFrameDurationMs(indexedPaths.size)
+            GeneratedExerciseSequence(indexedPaths.map { it.second }, frameDurationMs)
+        }
+    }.getOrNull()
+}
+
+/** Existing two-endpoint art retains its calm cadence; interpolated sequences play smoothly. */
+internal fun generatedFrameDurationMs(frameCount: Int): Long = if (frameCount >= 3) 120L else 850L
+
+/** 0,1,2,3,2,1 avoids a visible last-frame-to-first-frame jump. */
+internal fun pingPongFrameIndexes(frameCount: Int): List<Int> = when {
+    frameCount <= 0 -> emptyList()
+    frameCount == 1 -> listOf(0)
+    else -> (0 until frameCount).toList() + (frameCount - 2 downTo 1).toList()
+}
+
+internal fun scaledFrameDurationMs(baseDurationMs: Long, animatorDurationScale: Float): Long =
+    (baseDurationMs * animatorDurationScale.coerceAtLeast(0f)).toLong().coerceAtLeast(1L)
+
+@Composable
+private fun rememberAnimatorDurationScale(): Float {
+    val context = LocalContext.current
+    val resolver = context.contentResolver
+    fun readScale(): Float = runCatching {
+        Settings.Global.getFloat(resolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1f)
+    }.getOrDefault(1f).coerceAtLeast(0f)
+
+    var scale by remember(resolver) { mutableFloatStateOf(readScale()) }
+    DisposableEffect(resolver) {
+        val observer = object : ContentObserver(Handler(Looper.getMainLooper())) {
+            override fun onChange(selfChange: Boolean) {
+                scale = readScale()
+            }
+        }
+        resolver.registerContentObserver(
+            Settings.Global.getUriFor(Settings.Global.ANIMATOR_DURATION_SCALE),
+            false,
+            observer
+        )
+        onDispose { resolver.unregisterContentObserver(observer) }
+    }
+    return scale
 }
 
 @Composable
@@ -131,16 +222,19 @@ private fun FrameSequence(
     modifier: Modifier,
     contentScale: ContentScale,
     colorFilter: ColorFilter?,
-    animationsEnabled: Boolean,
-    frameDurationMs: Long
+    animatorDurationScale: Float,
+    baseFrameDurationMs: Long
 ) {
     var index by remember(imagePaths) { mutableIntStateOf(0) }
-    LaunchedEffect(imagePaths, animationsEnabled, frameDurationMs) {
+    val playbackOrder = remember(imagePaths) { pingPongFrameIndexes(imagePaths.size) }
+    LaunchedEffect(imagePaths, playbackOrder, animatorDurationScale, baseFrameDurationMs) {
         index = 0
-        if (imagePaths.size > 1 && animationsEnabled) {
+        if (playbackOrder.size > 1 && animatorDurationScale > 0f) {
+            var playbackIndex = 0
             while (true) {
-                delay(frameDurationMs)
-                index = (index + 1) % imagePaths.size
+                delay(scaledFrameDurationMs(baseFrameDurationMs, animatorDurationScale))
+                playbackIndex = (playbackIndex + 1) % playbackOrder.size
+                index = playbackOrder[playbackIndex]
             }
         }
     }
@@ -165,7 +259,7 @@ private fun LegacyExerciseImage(
     modifier: Modifier,
     contentScale: ContentScale,
     fallbackLabel: String?,
-    animationsEnabled: Boolean
+    animatorDurationScale: Float
 ) {
     val colors = workoutsColors()
     if (imagePaths.isEmpty()) {
@@ -204,7 +298,7 @@ private fun LegacyExerciseImage(
         modifier = modifier,
         contentScale = contentScale,
         colorFilter = ExerciseImageFilter,
-        animationsEnabled = animationsEnabled,
-        frameDurationMs = 850L
+        animatorDurationScale = animatorDurationScale,
+        baseFrameDurationMs = 850L
     )
 }

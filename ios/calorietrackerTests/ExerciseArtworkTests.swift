@@ -5,80 +5,114 @@ import UIKit
 
 @MainActor
 struct ExerciseArtworkTests {
-    @Test func generatedArtworkRequiresBothEndpointFrames() throws {
-        let bundleURL = FileManager.default.temporaryDirectory
-            .appendingPathComponent(UUID().uuidString, isDirectory: true)
-            .appendingPathExtension("bundle")
-        try FileManager.default.createDirectory(at: bundleURL, withIntermediateDirectories: true)
-        defer { try? FileManager.default.removeItem(at: bundleURL) }
-
-        let info: [String: Any] = [
-            "CFBundleIdentifier": "app.fud.tests.\(UUID().uuidString)",
-            "CFBundleName": "ExerciseArtworkTests",
-            "CFBundleVersion": "1"
-        ]
-        let plist = try PropertyListSerialization.data(
-            fromPropertyList: info,
-            format: .xml,
-            options: 0
+    @Test func generatedArtworkRequiresEveryIndexedFrame() throws {
+        let testBundle = try makeBundle(
+            entries: [indexEntry(exerciseID: "Dumbbell_Curl", gender: "female", frameCount: 2)],
+            filenamesToCreate: ["FudExercise_female_Dumbbell_Curl_0.webp"]
         )
-        try plist.write(to: bundleURL.appendingPathComponent("Info.plist"))
-        let bundle = try #require(Bundle(url: bundleURL))
+        defer { try? FileManager.default.removeItem(at: testBundle.url) }
 
-        let first = bundleURL.appendingPathComponent("FudExercise_female_Dumbbell_Curl_0.webp")
-        try Data("RIFF-test-WEBP".utf8).write(to: first)
         #expect(
-            FudExerciseArtworkLoader.imageURLs(
+            FudExerciseArtworkLoader.artwork(
                 for: "Dumbbell_Curl",
                 gender: .female,
-                bundle: bundle
-            ).isEmpty
+                bundle: testBundle.bundle
+            ) == nil
         )
-
-        let second = bundleURL.appendingPathComponent("FudExercise_female_Dumbbell_Curl_1.webp")
-        try Data("RIFF-test-WEBP".utf8).write(to: second)
-        let pair = FudExerciseArtworkLoader.imageURLs(
-            for: "Dumbbell_Curl",
-            gender: .female,
-            bundle: bundle
-        )
-        #expect(pair.map(\.lastPathComponent) == [first.lastPathComponent, second.lastPathComponent])
     }
 
-    @Test func otherGenderUsesMaleGeneratedArtwork() throws {
-        let bundleURL = FileManager.default.temporaryDirectory
-            .appendingPathComponent(UUID().uuidString, isDirectory: true)
-            .appendingPathExtension("bundle")
-        try FileManager.default.createDirectory(at: bundleURL, withIntermediateDirectories: true)
-        defer { try? FileManager.default.removeItem(at: bundleURL) }
-
-        let plist = try PropertyListSerialization.data(
-            fromPropertyList: [
-                "CFBundleIdentifier": "app.fud.tests.\(UUID().uuidString)",
-                "CFBundleName": "ExerciseArtworkTests",
-                "CFBundleVersion": "1"
-            ],
-            format: .xml,
-            options: 0
+    @Test func sixFrameArtworkUsesIndexOrderAndFastDefaultTiming() throws {
+        var entry = indexEntry(
+            exerciseID: "Dumbbell_Curl",
+            gender: "female",
+            frameCount: 6
         )
-        try plist.write(to: bundleURL.appendingPathComponent("Info.plist"))
-        let bundle = try #require(Bundle(url: bundleURL))
-
-        for frameIndex in 0..<2 {
-            try Data([0x89, 0x50, 0x4E, 0x47]).write(
-                to: bundleURL.appendingPathComponent(
-                    "FudExercise_male_Push-Up_\(frameIndex).webp"
-                )
-            )
+        entry["frames"] = (0..<6).reversed().map {
+            frame(exerciseID: "Dumbbell_Curl", gender: "female", index: $0)
         }
+        let filenames = (0..<6).map {
+            filename(exerciseID: "Dumbbell_Curl", gender: "female", index: $0)
+        }
+        let testBundle = try makeBundle(entries: [entry], filenamesToCreate: filenames)
+        defer { try? FileManager.default.removeItem(at: testBundle.url) }
 
-        let other = FudExerciseArtworkLoader.imageURLs(
+        let artwork = try #require(FudExerciseArtworkLoader.artwork(
+            for: "Dumbbell_Curl",
+            gender: .female,
+            bundle: testBundle.bundle
+        ))
+        #expect(artwork.imageURLs.map(\.lastPathComponent) == filenames)
+        #expect(
+            artwork.frameDurationMilliseconds
+                == FudExerciseArtworkLoader.multiFrameDurationMilliseconds
+        )
+    }
+
+    @Test func twoFrameArtworkKeepsExistingGeneratedTiming() throws {
+        let entry = indexEntry(exerciseID: "Push-Up", gender: "male", frameCount: 2)
+        let filenames = (0..<2).map {
+            filename(exerciseID: "Push-Up", gender: "male", index: $0)
+        }
+        let testBundle = try makeBundle(entries: [entry], filenamesToCreate: filenames)
+        defer { try? FileManager.default.removeItem(at: testBundle.url) }
+
+        let artwork = try #require(FudExerciseArtworkLoader.artwork(
             for: "Push-Up",
             gender: .other,
-            bundle: bundle
+            bundle: testBundle.bundle
+        ))
+        #expect(artwork.imageURLs.count == 2)
+        #expect(artwork.imageURLs.allSatisfy { $0.lastPathComponent.contains("_male_") })
+        #expect(
+            artwork.frameDurationMilliseconds
+                == FudExerciseArtworkLoader.twoFrameDurationMilliseconds
         )
-        #expect(other.count == 2)
-        #expect(other.allSatisfy { $0.lastPathComponent.contains("_male_") })
+    }
+
+    @Test func indexTimingOverridesDefault() throws {
+        var entry = indexEntry(exerciseID: "Push-Up", gender: "female", frameCount: 6)
+        entry["frameDurationMs"] = 165
+        let filenames = (0..<6).map {
+            filename(exerciseID: "Push-Up", gender: "female", index: $0)
+        }
+        let testBundle = try makeBundle(entries: [entry], filenamesToCreate: filenames)
+        defer { try? FileManager.default.removeItem(at: testBundle.url) }
+
+        let artwork = try #require(FudExerciseArtworkLoader.artwork(
+            for: "Push-Up",
+            gender: .female,
+            bundle: testBundle.bundle
+        ))
+        #expect(artwork.frameDurationMilliseconds == 165)
+    }
+
+    @Test func noncontiguousIndexIsRejected() throws {
+        var entry = indexEntry(exerciseID: "Push-Up", gender: "female", frameCount: 2)
+        entry["frames"] = [
+            frame(exerciseID: "Push-Up", gender: "female", index: 0),
+            frame(exerciseID: "Push-Up", gender: "female", index: 2)
+        ]
+        let filenames = [0, 2].map {
+            filename(exerciseID: "Push-Up", gender: "female", index: $0)
+        }
+        let testBundle = try makeBundle(entries: [entry], filenamesToCreate: filenames)
+        defer { try? FileManager.default.removeItem(at: testBundle.url) }
+
+        #expect(FudExerciseArtworkLoader.artwork(
+            for: "Push-Up",
+            gender: .female,
+            bundle: testBundle.bundle
+        ) == nil)
+    }
+
+    @Test func pingPongSequenceDoesNotSnapFromLastFrameToFirst() {
+        #expect(ExerciseArtworkPlayback.pingPongIndices(frameCount: 0) == [])
+        #expect(ExerciseArtworkPlayback.pingPongIndices(frameCount: 1) == [0])
+        #expect(ExerciseArtworkPlayback.pingPongIndices(frameCount: 2) == [0, 1])
+        #expect(
+            ExerciseArtworkPlayback.pingPongIndices(frameCount: 6)
+                == [0, 1, 2, 3, 4, 5, 4, 3, 2, 1]
+        )
     }
 
     @Test func unsafeOrMissingStableIDsNeverResolveGeneratedFiles() {
@@ -99,5 +133,64 @@ struct ExerciseArtworkTests {
             #expect(image.size.width == 768)
             #expect(image.size.height == 768)
         }
+    }
+
+    private func makeBundle(
+        entries: [[String: Any]],
+        filenamesToCreate: [String]
+    ) throws -> (url: URL, bundle: Bundle) {
+        let bundleURL = FileManager.default.temporaryDirectory
+            .appendingPathComponent(UUID().uuidString, isDirectory: true)
+            .appendingPathExtension("bundle")
+        try FileManager.default.createDirectory(at: bundleURL, withIntermediateDirectories: true)
+
+        let plist = try PropertyListSerialization.data(
+            fromPropertyList: [
+                "CFBundleIdentifier": "app.fud.tests.\(UUID().uuidString)",
+                "CFBundleName": "ExerciseArtworkTests",
+                "CFBundleVersion": "1"
+            ],
+            format: .xml,
+            options: 0
+        )
+        try plist.write(to: bundleURL.appendingPathComponent("Info.plist"))
+
+        let index = try JSONSerialization.data(
+            withJSONObject: ["entries": entries],
+            options: [.sortedKeys]
+        )
+        try index.write(to: bundleURL.appendingPathComponent("frames-index.json"))
+        for filename in filenamesToCreate {
+            try Data("RIFF-test-WEBP".utf8).write(
+                to: bundleURL.appendingPathComponent(filename)
+            )
+        }
+
+        return (bundleURL, try #require(Bundle(url: bundleURL)))
+    }
+
+    private func indexEntry(
+        exerciseID: String,
+        gender: String,
+        frameCount: Int
+    ) -> [String: Any] {
+        [
+            "exerciseID": exerciseID,
+            "gender": gender,
+            "frames": (0..<frameCount).map {
+                frame(exerciseID: exerciseID, gender: gender, index: $0)
+            }
+        ]
+    }
+
+    private func frame(exerciseID: String, gender: String, index: Int) -> [String: Any] {
+        [
+            "filename": filename(exerciseID: exerciseID, gender: gender, index: index),
+            "frameIndex": index
+        ]
+    }
+
+    private func filename(exerciseID: String, gender: String, index: Int) -> String {
+        "FudExercise_\(gender)_\(exerciseID)_\(index).webp"
     }
 }

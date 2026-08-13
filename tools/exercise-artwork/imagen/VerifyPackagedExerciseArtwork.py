@@ -8,6 +8,14 @@ import hashlib
 import json
 from pathlib import Path
 
+from SequenceArtworkSchema import (
+    DEFAULT_FRAME_DURATION_MS,
+    PLAYBACK_MODE,
+    RUNTIME_SEQUENCE_VERSION,
+    required_indices,
+    validate_job_sequences,
+)
+
 
 def sha256(path: Path) -> str:
     digest = hashlib.sha256()
@@ -58,16 +66,23 @@ def main() -> None:
     parser.add_argument("--index", type=Path, default=package_root / "index.json")
     args = parser.parse_args()
 
-    jobs = {
-        job["jobID"]: job
+    job_list = [
+        job
         for line in args.jobs.read_text().splitlines()
         if line.strip()
         for job in [json.loads(line)]
-    }
+    ]
+    try:
+        manifest = validate_job_sequences(job_list)
+    except ValueError as error:
+        raise SystemExit(str(error)) from error
+    jobs = {job["jobID"]: job for job in job_list}
     state = json.loads(args.state.read_text()).get("jobs", {})
     index = json.loads(args.index.read_text())
-    if (index.get("schemaVersion"), index.get("size"), index.get("format")) != (1, 768, "webp"):
+    if index.get("schemaVersion") not in (1, 2) or (index.get("size"), index.get("format")) != (768, "webp"):
         raise SystemExit("Unsupported packaged artwork index")
+    if index["schemaVersion"] != manifest["schemaVersion"]:
+        raise SystemExit("Package/manifest schema version mismatch")
 
     indexed_pairs: set[tuple[str, str]] = set()
     indexed_files: set[Path] = set()
@@ -78,8 +93,22 @@ def main() -> None:
             raise SystemExit(f"Duplicate packaged pair: {gender}/{exercise_id}")
         indexed_pairs.add(pair)
         frames = sorted(entry.get("frames", []), key=lambda frame: frame["frameIndex"])
-        if [frame.get("frameIndex") for frame in frames] != [0, 1]:
-            raise SystemExit(f"Invalid packaged endpoint pair: {gender}/{exercise_id}")
+        sequence_jobs = sorted(
+            (job for job in job_list if (job["gender"], job["exerciseID"]) == pair),
+            key=lambda job: job["frameIndex"],
+        )
+        expected_indices = required_indices(sequence_jobs[0])
+        if [frame.get("frameIndex") for frame in frames] != expected_indices:
+            raise SystemExit(f"Invalid packaged frame sequence: {gender}/{exercise_id}")
+        if len(expected_indices) == 6:
+            expected_contract = {
+                "frameCount": 6,
+                "frameDurationMs": DEFAULT_FRAME_DURATION_MS,
+                "playback": PLAYBACK_MODE,
+                "sequenceVersion": RUNTIME_SEQUENCE_VERSION,
+            }
+            if any(entry.get(key) != value for key, value in expected_contract.items()):
+                raise SystemExit(f"Invalid runtime sequence metadata: {gender}/{exercise_id}")
         for frame in frames:
             job_id = frame["jobID"]
             job = jobs.get(job_id)
@@ -103,15 +132,28 @@ def main() -> None:
                 raise SystemExit(f"Packaged frame missing or hash-drifted: {job_id}")
             if webp_metadata(source) != (768, 768, True):
                 raise SystemExit(f"Packaged frame has wrong size or no alpha: {job_id}")
+            if len(expected_indices) == 6:
+                state_qa = state[job_id].get("sequenceQA")
+                if (not state_qa or state_qa.get("passed") is not True
+                        or state_qa.get("sequenceComplete") is not True
+                        or state_qa.get("alignment") is None
+                        or (frame["frameIndex"] > 0
+                            and state_qa.get("driftFromPrevious", {}).get("passed") is not True)):
+                    raise SystemExit(f"Accepted v2 frame lacks passing sequence QA: {job_id}")
+                if frame.get("sequenceQA") != state_qa:
+                    raise SystemExit(f"Packaged sequence QA metadata drift: {job_id}")
             indexed_files.add(source)
 
-    accepted_frame_counts: dict[tuple[str, str], int] = {}
+    accepted_frames: dict[tuple[str, str], set[int]] = {}
     for job_id, job in jobs.items():
         if accepted(state.get(job_id, {})):
             pair = (job["gender"], job["exerciseID"])
-            accepted_frame_counts[pair] = accepted_frame_counts.get(pair, 0) + 1
+            accepted_frames.setdefault(pair, set()).add(job["frameIndex"])
     complete_accepted_pairs = {
-        pair for pair, count in accepted_frame_counts.items() if count == 2
+        pair for pair, indices in accepted_frames.items()
+        if indices == set(required_indices(next(
+            job for job in job_list if (job["gender"], job["exerciseID"]) == pair
+        )))
     }
     if indexed_pairs != complete_accepted_pairs:
         raise SystemExit(
@@ -127,6 +169,8 @@ def main() -> None:
         )
     if index.get("pairCount") != len(indexed_pairs):
         raise SystemExit("Packaged index pairCount mismatch")
+    if index.get("schemaVersion") == 2 and index.get("sequenceCount") != len(indexed_pairs):
+        raise SystemExit("Packaged index sequenceCount mismatch")
     print(f"Verified {len(indexed_pairs)} committed, complete, QA-accepted artwork pairs")
 
 

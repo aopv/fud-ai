@@ -9,6 +9,10 @@ import json
 import shutil
 from pathlib import Path
 
+from SequenceArtworkSchema import (
+    DEFAULT_FRAME_DURATION_MS, PLAYBACK_MODE, RUNTIME_SEQUENCE_VERSION,
+)
+
 
 def sha256(path: Path) -> str:
     digest = hashlib.sha256()
@@ -54,7 +58,7 @@ def main() -> None:
     args = parse_args()
     repo = Path(__file__).resolve().parents[3]
     package = json.loads(args.package_index.read_text())
-    if package.get("size") != 768 or package.get("format") != "webp":
+    if package.get("schemaVersion") not in (1, 2) or package.get("size") != 768 or package.get("format") != "webp":
         raise SystemExit("Expected the canonical 768px WebP package index")
     state = json.loads(args.state.read_text()).get("jobs", {})
     accepted_pairs = []
@@ -62,8 +66,16 @@ def main() -> None:
         if args.gender != "all" and entry["gender"] != args.gender:
             continue
         frames = sorted(entry["frames"], key=lambda frame: frame["frameIndex"])
-        if [frame["frameIndex"] for frame in frames] != [0, 1]:
+        indices = [frame["frameIndex"] for frame in frames]
+        if indices not in ([0, 1], list(range(6))):
             raise SystemExit(f"Unexpected package frame set: {entry['gender']}/{entry['exerciseID']}")
+        if indices == list(range(6)) and any((
+            entry.get("frameCount") != 6,
+            entry.get("frameDurationMs") != DEFAULT_FRAME_DURATION_MS,
+            entry.get("playback") != PLAYBACK_MODE,
+            entry.get("sequenceVersion") != RUNTIME_SEQUENCE_VERSION,
+        )):
+            raise SystemExit(f"Invalid sequence playback metadata: {entry['exerciseID']}")
         if not all(is_accepted(state.get(frame["jobID"], {})) for frame in frames):
             raise SystemExit(f"Package index contains a non-accepted job: {entry['exerciseID']}")
         accepted_pairs.append((entry, frames))
@@ -104,19 +116,25 @@ def main() -> None:
                 "bytes": destination.stat().st_size,
                 "jobID": frame["jobID"],
             })
-        index_entries.append({
+        index_entry = {
             "exerciseID": exercise_id,
             "gender": gender,
             "frames": staged_frames,
-        })
+        }
+        for key in ("frameCount", "frameDurationMs", "playback", "sequenceVersion"):
+            if key in entry:
+                index_entry[key] = entry[key]
+        index_entries.append(index_entry)
 
     index = {
-        "schemaVersion": 1,
+        "schemaVersion": package["schemaVersion"],
         "format": "webp",
         "size": 768,
         "pairCount": len(index_entries),
         "entries": index_entries,
     }
+    if package["schemaVersion"] == 2:
+        index["sequenceCount"] = len(index_entries)
     args.index.write_text(json.dumps(index, indent=2, sort_keys=True) + "\n")
     print(f"Staged {len(index_entries)} accepted exercise pairs into {args.destination}")
 

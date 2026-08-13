@@ -5,6 +5,12 @@ resumable Imagen jobs: two endpoint frames for each exercise, for both male and 
 Each job produces exactly one image. The approved character sheet is supplied first and the exact
 legacy endpoint photo second as two separate references to that one generation call.
 
+Schema v2 optionally expands each gender/exercise into six ordered frames. Frame `0` and frame `5`
+are the exact immutable legacy endpoints; frames `1`-`4` are separately generated in-betweens at
+`t=0.2, 0.4, 0.6, 0.8`. The default builder remains the two-frame v1 mode. A v2 manifest is created
+only with `--sequence-frames 6`, and it must be activated through the explicit endpoint migration
+described below—never by overwriting the current queue directly.
+
 ## Canonical assets and schema
 
 - Character sheets: `shared/exercise-artwork/fud-flat-raster-v1/references/{male|female}.png`
@@ -41,6 +47,13 @@ Every JSONL record has this stable shape:
 }
 ```
 
+Six-frame jobs use `schemaVersion: 2` and add a self-describing `sequence` object with
+`frameCount: 6`, contiguous `frameIndex: 0...5`, role `endpoint` or `inbetween`, interpolation `t`,
+and endpoint indices `[0, 5]`. `sourceEndpointReferences` contains both exact immutable endpoint
+paths and hashes. Endpoint jobs retain `sourceImagePath` for compatibility. In-between worker
+payloads contain three ordered inputs: locked character, exact endpoint 0, exact endpoint 5. Every
+call still produces exactly one output.
+
 IDs are already filesystem-safe (`[A-Za-z0-9_-]+`) and are never renamed or sanitized. Jobs are
 sorted by `jobID`; the builder emits exact input hashes and preserves state only while a job's
 fingerprint is unchanged.
@@ -58,6 +71,20 @@ python3 tools/exercise-artwork/imagen/ExerciseArtworkQueue.py claim \
 python3 tools/exercise-artwork/imagen/ExerciseArtworkQueue.py claim \
   --worker <worker-id> --job-id '<exerciseID>__f0__male'
 ```
+
+Inspect the whole-library endpoint migration without changing canonical files:
+
+```sh
+python3 tools/exercise-artwork/imagen/MigrateEndpointQueueToSequences.py
+```
+
+The default dry-run builds v2 entirely in a temporary directory and reports the plan. After review,
+`--apply` remaps legacy `f0` to v2 `f0`, legacy `f1` to v2 `f5`, and moves canonical raw/master
+`1.png` evidence to `5.png` with unchanged hashes. It recursively updates embedded job IDs in state,
+manual review, and QA report payloads. Frames `1`-`4` start pending. Accepted, rejected, pending,
+orphaned, and blocked endpoint evidence is retained; no endpoint decision is inherited by an
+intermediate. The new manifest/state/review/report becomes visible only after frame-5 evidence is
+materialized and verified.
 
 The claim command prints the complete job JSON. Call Imagen once with `characterReferencePath`
 first and `sourceImagePath` second, and request one output only. Do not merge the two references
@@ -107,6 +134,13 @@ clearance, an output pose confidence of at least 0.55, bounded normalized pose e
 and limb-angle errors, and no left/right swap. Edge-layout similarity is reported as a warning-only
 diagnostic because the source is photography and the output is flat artwork.
 
+For schema v2, endpoints keep every exact-source threshold unchanged. An intermediate is compared
+with those same pose thresholds against deterministic linear interpolation of normalized exact
+endpoint landmarks. Manual review additionally requires `intermediatePoseApproved` for temporal,
+equipment, and contact plausibility. Each frame records a pelvis anchor, torso anchor, and
+shoulder-to-pelvis subject scale. Consecutive gates require pelvis drift `<= 0.08`, torso drift
+`<= 0.08`, and relative scale drift `<= 0.12`; these are additive gates, not threshold weakening.
+
 The chroma-fringe check treats green-dominant contamination at any visible alpha as spill. Its
 separate cyan heuristic applies only to non-opaque antialiased edge pixels (`alpha < 240`), so
 legitimate fully opaque navy/blue mats and equipment are not misclassified as key-color fringe.
@@ -121,7 +155,8 @@ Automation cannot reliably prove equipment correctness, character consistency, a
 absence of small visual artifacts. A reviewer must set all four booleans for a job in
 `manual-reviews-v1.json`: `characterApproved`, `poseEquipmentApproved`, `anatomyApproved`, and
 `artifactFree`. Then rerun validation with `--apply-state`. Only jobs with `status: complete` and
-`qaStatus: accepted` may be packaged, and platform staging must copy complete two-frame pairs only.
+`qaStatus: accepted` may be packaged. V1 continues to package complete two-frame pairs; v2 packages
+only complete accepted contiguous `0...5` sequences whose stored sequence-QA result passes.
 `PackageAcceptedExerciseArtwork.py` verifies accepted PNG master hashes and derives transparent
 768×768 WebPs. Android's `StageAcceptedAndroidFrames.py` then verifies that package index, WebP
 hashes, dimensions, alpha, accepted state, and complete-pair parity before copying it into a
@@ -136,6 +171,24 @@ imagen-accepted-comparison-sheet.png`, a compact evidence sheet containing only 
 gender pairs. It uses the packaged index as the row authority, verifies legacy-source, accepted-master,
 and packaged-WebP hashes, then places the exact legacy endpoints beside the two shipped WebPs.
 Rejected, pending, incomplete, unindexed, or hash-mismatched pairs are excluded or fail rendering.
+
+V2 package and platform indexes add entry-level `frameCount: 6`, `frameDurationMs: 120`,
+`playback: "pingPong"`, and `sequenceVersion: 1`. Existing schema-v1 two-frame entries remain valid
+and may omit these fields. The verifier requires exact index/disk/master/state parity and checks the
+persisted alignment/expected-pose evidence for every shipped v2 frame.
+
+## Isolated verification
+
+All fixtures use temporary manifests, state, masters, packages, and platform staging; they do not
+write the canonical queue or artwork trees:
+
+```sh
+python3 -m unittest discover -s tools/exercise-artwork/imagen/tests -v
+```
+
+Coverage includes v1/v2 shape, interpolation/alignment pass and failure, endpoint migration across
+accepted/rejected/pending/orphan/blocked states, six-frame packaging, strict verification, and both
+platform stagers.
 
 It writes quality-82 alpha WebP derivatives and an index under `shared/exercise-artwork/
 fud-flat-raster-v1/packaged-768/`. Every derivative must pass alpha, dimension, RGBA visual-RMSE,

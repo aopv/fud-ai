@@ -17,6 +17,8 @@ from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 
+from SequenceArtworkSchema import validate_job_sequences
+
 
 def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
@@ -33,8 +35,10 @@ def sha256(path: Path) -> str:
 def load_jobs(path: Path) -> tuple[list[dict], dict[str, dict]]:
     jobs = [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
     by_id = {job["jobID"]: job for job in jobs}
-    if len(jobs) != 3500 or len(by_id) != 3500:
-        raise SystemExit("Expected exactly 3,500 unique jobs")
+    try:
+        validate_job_sequences(jobs)
+    except ValueError as error:
+        raise SystemExit(str(error)) from error
     return jobs, by_id
 
 
