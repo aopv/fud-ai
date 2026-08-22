@@ -19,14 +19,16 @@ struct TextFoodInputView: View {
     private let timer = Timer.publish(every: 2, on: .main, in: .common).autoconnect()
 
     var body: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: 14) {
+            NeoSectionBanner(title: "Describe Meal", detail: "AI INPUT", style: .cobalt)
+
             ZStack(alignment: .topLeading) {
                 if foodDescription.isEmpty {
                     Text(placeholders[placeholderIndex])
-                        .foregroundStyle(.tertiary)
-                        .font(.body)
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 10)
+                        .foregroundStyle(NeoAppColors.mutedInk)
+                        .font(.system(.body, design: .rounded, weight: .medium))
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 14)
                         .transition(.asymmetric(
                             insertion: .move(edge: .bottom).combined(with: .opacity),
                             removal: .move(edge: .top).combined(with: .opacity)
@@ -36,40 +38,65 @@ struct TextFoodInputView: View {
                 }
 
                 TextField("", text: $foodDescription, axis: .vertical)
-                    .font(.body)
+                    .font(.system(.body, design: .rounded, weight: .semibold))
+                    .foregroundStyle(NeoAppColors.ink)
                     .lineLimit(2...5)
                     .textFieldStyle(.plain)
                     .autocorrectionDisabled()
                     .submitLabel(.done)
                     .focused($isFocused)
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 10)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 14)
             }
-            .padding(12)
-            .background(
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(Color(.quaternarySystemFill))
-            )
+            .frame(minHeight: 112, alignment: .topLeading)
+            .background(NeoAppColors.surface)
+            .overlay {
+                Rectangle()
+                    .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+            }
+            .accessibilityIdentifier("quickAdd.text.description")
 
             Button {
                 onSubmit(foodDescription)
             } label: {
                 Text("Analyze")
-                    .font(.headline)
+                    .textCase(.uppercase)
+                    .font(.system(.headline, design: .rounded, weight: .black))
+                    .foregroundStyle(Color.black)
                     .frame(maxWidth: .infinity)
+                    .frame(minHeight: 50)
+                    .background(NeoAppColors.acid)
+                    .overlay {
+                        Rectangle()
+                            .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                    }
             }
-            .buttonStyle(.borderedProminent)
-            .tint(AppColors.calorie)
-            .controlSize(.large)
+            .buttonStyle(.plain)
             .disabled(foodDescription.trimmingCharacters(in: .whitespaces).isEmpty)
+            .opacity(foodDescription.trimmingCharacters(in: .whitespaces).isEmpty ? 0.45 : 1)
+            .accessibilityIdentifier("quickAdd.text.analyze")
 
-            Button("Cancel") {
+            Button {
                 onCancel()
+            } label: {
+                Text("Cancel")
+                    .textCase(.uppercase)
+                    .font(.system(.subheadline, design: .rounded, weight: .black))
+                    .foregroundStyle(NeoAppColors.cobalt)
+                    .frame(maxWidth: .infinity)
+                    .frame(minHeight: 44)
+                    .background(NeoAppColors.surface)
+                    .overlay {
+                        Rectangle()
+                            .stroke(NeoAppColors.cobalt, lineWidth: NeoAppMetrics.rule)
+                    }
             }
-            .foregroundStyle(.secondary)
+            .buttonStyle(.plain)
+            .accessibilityIdentifier("quickAdd.text.cancel")
         }
-        .padding(20)
+        .padding(14)
         .frame(width: 320)
+        .background(NeoAppColors.canvas)
         .onAppear { isFocused = true }
         .onReceive(timer) { _ in
             guard foodDescription.isEmpty else { return }

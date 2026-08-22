@@ -17,33 +17,71 @@ struct ExportDiaryView: View {
 
     var body: some View {
         NavigationStack {
-            Form {
-                Section("Range") {
+            List {
+                Section {
+                    NeoScreenHeader(
+                        eyebrow: "DATA PORTABILITY",
+                        title: "Export Diary",
+                        subtitle: "Choose exactly which meals and file format to share."
+                    )
+                    .listRowInsets(EdgeInsets())
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                }
+
+                Section {
                     Picker("Range", selection: $range) {
                         ForEach(DiaryExportRange.allCases) { Text($0.label).tag($0) }
                     }
                     .pickerStyle(.menu)
                     .tint(NeoAppColors.cobalt)
+                    .font(.system(.body, design: .rounded, weight: .bold))
+                    .padding(12)
+                    .frame(maxWidth: .infinity)
+                    .neoPanel(fill: NeoAppColors.surface)
+                    .listRowInsets(EdgeInsets(top: 4, leading: 14, bottom: 4, trailing: 14))
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
 
                     if range == .custom {
                         DatePicker("From", selection: $customStart, displayedComponents: .date)
                             .tint(NeoAppColors.cobalt)
+                            .font(.system(.body, design: .rounded, weight: .bold))
+                            .padding(12)
+                            .frame(maxWidth: .infinity)
+                            .neoPanel(fill: NeoAppColors.surface)
+                            .listRowInsets(EdgeInsets(top: 4, leading: 14, bottom: 4, trailing: 14))
+                            .listRowBackground(Color.clear)
+                            .listRowSeparator(.hidden)
+
                         DatePicker("To", selection: $customEnd, displayedComponents: .date)
                             .tint(NeoAppColors.cobalt)
+                            .font(.system(.body, design: .rounded, weight: .bold))
+                            .padding(12)
+                            .frame(maxWidth: .infinity)
+                            .neoPanel(fill: NeoAppColors.surface)
+                            .listRowInsets(EdgeInsets(top: 4, leading: 14, bottom: 4, trailing: 14))
+                            .listRowBackground(Color.clear)
+                            .listRowSeparator(.hidden)
                     }
+                } header: {
+                    NeoSectionBanner(title: "Date Range", detail: range.label, style: .cobalt)
                 }
-                .listRowBackground(NeoAppColors.surface)
-                .listRowSeparatorTint(NeoAppColors.ink.opacity(0.35))
 
-                Section("Format") {
+                Section {
                     Picker("Format", selection: $format) {
                         ForEach(DiaryExportFormat.allCases) { Text($0.label).tag($0) }
                     }
                     .pickerStyle(.segmented)
-                    .listRowBackground(NeoAppColors.surface)
+                    .padding(12)
+                    .frame(maxWidth: .infinity)
+                    .neoPanel(fill: NeoAppColors.surface)
+                    .listRowInsets(EdgeInsets(top: 4, leading: 14, bottom: 4, trailing: 14))
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                } header: {
+                    NeoSectionBanner(title: "File Format", detail: format.label, style: .ink)
                 }
-                .listRowBackground(NeoAppColors.surface)
-                .listRowSeparatorTint(NeoAppColors.ink.opacity(0.35))
 
                 Section {
                     Button {
@@ -63,13 +101,19 @@ struct ExportDiaryView: View {
                             }
                     }
                     .buttonStyle(.plain)
-                    .listRowInsets(EdgeInsets())
+                    .listRowInsets(EdgeInsets(top: 4, leading: 14, bottom: 4, trailing: 14))
                     .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
                 } footer: {
                     Text("Exports your logged meals — totals, targets, and each item's macros — as a file you can save or send to another app.")
+                        .font(.system(.footnote, design: .rounded, weight: .bold))
+                        .foregroundStyle(NeoAppColors.mutedInk)
+                        .padding(.top, 6)
                 }
             }
             .scrollContentBackground(.hidden)
+            .listStyle(.plain)
+            .listSectionSpacing(NeoAppMetrics.sectionSpacing)
             .background(NeoAppColors.canvas)
             .tint(NeoAppColors.cobalt)
             .navigationTitle("Export Food Diary")

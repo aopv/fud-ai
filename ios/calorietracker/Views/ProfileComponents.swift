@@ -765,12 +765,11 @@ struct MealTimeSettingsView: View {
                     allowedMinutes: validRange(dinnerStartMinutes + 15, 1439)
                 )
             } header: {
-                Text("Automatic Meal Selection")
+                NeoSectionBanner(title: "Automatic Meal Selection", detail: "Daily schedule", style: .cobalt)
             } footer: {
                 Text("Each meal continues until the next one starts. Late Snack continues overnight until Breakfast starts. You can still change the meal manually before logging.")
             }
-            .listRowBackground(NeoAppColors.surface)
-            .listRowSeparatorTint(NeoAppColors.ink.opacity(0.35))
+            .neoListRow()
 
             Section {
                 Button("Restore Default Times") {
@@ -1232,6 +1231,8 @@ struct NotificationSettingsView: View {
                         notificationManager.cancelAllNotifications()
                     }
                 }
+            } header: {
+                NeoSectionBanner(title: "Notifications", detail: "Master control", style: .cobalt)
             } footer: {
                 if notificationManager.authorizationStatus == .denied {
                     Button {
@@ -1245,12 +1246,11 @@ struct NotificationSettingsView: View {
                     }
                 }
             }
-            .listRowBackground(NeoAppColors.surface)
-            .listRowSeparatorTint(NeoAppColors.ink.opacity(0.35))
+            .neoListRow()
 
             if notificationsEnabled {
                 // Meal Reminders
-                Section("Meal Reminders") {
+                Section {
                     NotificationTimeRow(
                         label: "Breakfast",
                         icon: "sunrise.fill",
@@ -1283,12 +1283,13 @@ struct NotificationSettingsView: View {
                     .onChange(of: dinnerEnabled) { _, _ in applyMealReminders() }
                     .onChange(of: dinnerHour) { _, _ in applyMealReminders() }
                     .onChange(of: dinnerMinute) { _, _ in applyMealReminders() }
+                } header: {
+                    NeoSectionBanner(title: "Meal Reminders", detail: "Breakfast · lunch · dinner", style: .acid)
                 }
-                .listRowBackground(NeoAppColors.surface)
-                .listRowSeparatorTint(NeoAppColors.ink.opacity(0.35))
+                .neoListRow()
 
                 if waterTrackingEnabled {
-                    Section("Water") {
+                    Section {
                         NotificationTimeRow(
                             label: "Water Reminder",
                             icon: "drop.fill",
@@ -1299,9 +1300,10 @@ struct NotificationSettingsView: View {
                         .onChange(of: waterReminderEnabled) { _, _ in applyWaterReminder() }
                         .onChange(of: waterReminderHour) { _, _ in applyWaterReminder() }
                         .onChange(of: waterReminderMinute) { _, _ in applyWaterReminder() }
+                    } header: {
+                        NeoSectionBanner(title: "Water", detail: "Hydration", style: .cobalt)
                     }
-                    .listRowBackground(NeoAppColors.surface)
-                    .listRowSeparatorTint(NeoAppColors.ink.opacity(0.35))
+                    .neoListRow()
                 }
 
                 if fastingTrackingEnabled {
@@ -1319,13 +1321,12 @@ struct NotificationSettingsView: View {
                             applyFastingGoalNotification()
                         }
                     } header: {
-                        Text("Fasting")
+                        NeoSectionBanner(title: "Fasting", detail: "Goal alert", style: .cobalt)
                     } footer: {
                         Text("Notifies you once when the active fast reaches its goal. The timer continues until you end it.")
                             .font(.system(.caption, design: .rounded))
                     }
-                    .listRowBackground(NeoAppColors.surface)
-                    .listRowSeparatorTint(NeoAppColors.ink.opacity(0.35))
+                    .neoListRow()
                 }
 
                 // Smart Notifications
@@ -1362,13 +1363,12 @@ struct NotificationSettingsView: View {
                         minute: $bodyFatLogMinute
                     )
                 } header: {
-                    Text("Smart Notifications")
+                    NeoSectionBanner(title: "Smart Notifications", detail: "Context aware", style: .acid)
                 } footer: {
                     Text("All four reminders are smart — they skip firing on days you've already logged. Body fat default is off since most users don't measure daily.")
                         .font(.system(.caption, design: .rounded))
                 }
-                .listRowBackground(NeoAppColors.surface)
-                .listRowSeparatorTint(NeoAppColors.ink.opacity(0.35))
+                .neoListRow()
 
                 // App Updates
                 Section {
@@ -1382,13 +1382,12 @@ struct NotificationSettingsView: View {
                     }
                     .tint(NeoAppColors.cobalt)
                 } header: {
-                    Text("App")
+                    NeoSectionBanner(title: "App", detail: "Release alerts", style: .ink)
                 } footer: {
                     Text("Get notified when a new version is available. Tap the notification to open the App Store.")
                         .font(.system(.caption, design: .rounded))
                 }
-                .listRowBackground(NeoAppColors.surface)
-                .listRowSeparatorTint(NeoAppColors.ink.opacity(0.35))
+                .neoListRow()
             }
         }
         .neoSettingsListChrome()

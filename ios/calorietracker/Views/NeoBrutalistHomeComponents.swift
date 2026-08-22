@@ -966,9 +966,16 @@ struct NeoAddFoodLabel: View {
         .foregroundStyle(.black)
         .padding(.horizontal, 16)
         .frame(maxWidth: .infinity, minHeight: 62)
-        .background(NeoHomeColors.acidYellow)
+        .background {
+            ZStack {
+                Rectangle()
+                    .fill(Color.black.opacity(0.85))
+                    .offset(x: 4, y: 4)
+                Rectangle()
+                    .fill(NeoHomeColors.acidYellow)
+            }
+        }
         .neoHomeOutline(.black)
-        .shadow(color: .black.opacity(0.85), radius: 0, x: 4, y: 4)
         .contentShape(Rectangle())
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Add Food")

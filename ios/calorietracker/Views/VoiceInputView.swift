@@ -44,7 +44,9 @@ struct VoiceInputView: View {
     }
 
     var body: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: 14) {
+            NeoSectionBanner(title: "Voice Log", detail: "LIVE INPUT", style: .cobalt)
+
             // Provider badge
             HStack(spacing: 6) {
                 Image(systemName: provider.icon)
@@ -52,19 +54,25 @@ struct VoiceInputView: View {
                 Text(provider.rawValue)
                     .font(.system(.caption2, design: .rounded, weight: .medium))
             }
-            .foregroundStyle(AppColors.calorie)
+            .textCase(.uppercase)
+            .fontWeight(.black)
+            .foregroundStyle(NeoAppColors.onCobalt)
             .padding(.horizontal, 10)
-            .padding(.vertical, 4)
-            .background(Capsule().fill(AppColors.calorie.opacity(0.12)))
+            .padding(.vertical, 7)
+            .background(NeoAppColors.cobalt)
+            .overlay {
+                Rectangle()
+                    .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+            }
 
             // Transcription area
             ZStack(alignment: .topLeading) {
                 if transcription.isEmpty && !isTranscribing {
                     Text(isRecording ? "Listening…" : "Tap the mic to start")
-                        .foregroundStyle(.tertiary)
-                        .font(.body)
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 10)
+                        .foregroundStyle(NeoAppColors.mutedInk)
+                        .font(.system(.body, design: .rounded, weight: .medium))
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 14)
                         .allowsHitTesting(false)
                 }
 
@@ -73,24 +81,26 @@ struct VoiceInputView: View {
                         ProgressView()
                         Text("Transcribing via \(provider.rawValue)…")
                             .font(.footnote)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(NeoAppColors.mutedInk)
                     }
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 10)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 14)
                 }
 
                 Text(transcription)
-                    .font(.body)
+                    .font(.system(.body, design: .rounded, weight: .semibold))
+                    .foregroundStyle(NeoAppColors.ink)
                     .frame(maxWidth: .infinity, alignment: .topLeading)
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 10)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 14)
             }
-            .padding(12)
             .frame(minHeight: 100, alignment: .topLeading)
-            .background(
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(Color(.quaternarySystemFill))
-            )
+            .background(NeoAppColors.surface)
+            .overlay {
+                Rectangle()
+                    .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+            }
+            .accessibilityIdentifier("quickAdd.voice.transcription")
 
             // Mic button
             Button {
@@ -101,16 +111,21 @@ struct VoiceInputView: View {
                 }
             } label: {
                 Image(systemName: isRecording ? "mic.fill" : "mic")
-                    .font(.system(size: 28))
-                    .foregroundStyle(.white)
+                    .font(.system(size: 28, weight: .black))
+                    .foregroundStyle(isRecording ? Color.white : Color.black)
                     .frame(width: 72, height: 72)
-                    .background(
-                        Circle()
-                            .fill(isRecording ? Color.red : AppColors.calorie)
-                    )
+                    .background(isRecording ? NeoAppColors.warning : NeoAppColors.acid)
+                    .overlay {
+                        Rectangle()
+                            .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                    }
                     .scaleEffect(pulseScale)
             }
+            .buttonStyle(.plain)
             .disabled(isTranscribing)
+            .accessibilityLabel(isRecording ? "Stop recording" : "Start recording")
+            .accessibilityValue(isTranscribing ? "Transcribing" : (isRecording ? "Recording" : "Idle"))
+            .accessibilityIdentifier("quickAdd.voice.microphone")
             .onChange(of: isRecording) { _, recording in
                 if recording {
                     withAnimation(.easeInOut(duration: 0.8).repeatForever(autoreverses: true)) {
@@ -126,14 +141,23 @@ struct VoiceInputView: View {
             if let error = permissionError {
                 Text(error)
                     .font(.caption)
-                    .foregroundStyle(.red)
+                    .fontWeight(.bold)
+                    .foregroundStyle(NeoAppColors.warning)
                     .multilineTextAlignment(.center)
+                    .padding(10)
+                    .frame(maxWidth: .infinity)
+                    .background(NeoAppColors.warning.opacity(0.12))
+                    .overlay {
+                        Rectangle()
+                            .stroke(NeoAppColors.warning, lineWidth: NeoAppMetrics.compactRule)
+                    }
             }
 
             if let notice = remoteNotice {
                 Text(notice)
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .fontWeight(.bold)
+                    .foregroundStyle(NeoAppColors.mutedInk)
                     .multilineTextAlignment(.center)
             }
 
@@ -147,22 +171,43 @@ struct VoiceInputView: View {
                 onSubmit(transcription)
             } label: {
                 Text(analyzeButtonLabel)
-                    .font(.headline)
+                    .textCase(.uppercase)
+                    .font(.system(.headline, design: .rounded, weight: .black))
+                    .foregroundStyle(Color.black)
                     .frame(maxWidth: .infinity)
+                    .frame(minHeight: 50)
+                    .background(NeoAppColors.acid)
+                    .overlay {
+                        Rectangle()
+                            .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                    }
             }
-            .buttonStyle(.borderedProminent)
-            .tint(AppColors.calorie)
-            .controlSize(.large)
+            .buttonStyle(.plain)
             .disabled(analyzeButtonDisabled)
+            .opacity(analyzeButtonDisabled ? 0.45 : 1)
+            .accessibilityIdentifier("quickAdd.voice.analyze")
 
-            Button("Cancel") {
-                stopRecording()
-                onCancel()
+            Button {
+                cancel()
+            } label: {
+                Text("Cancel")
+                    .textCase(.uppercase)
+                    .font(.system(.subheadline, design: .rounded, weight: .black))
+                    .foregroundStyle(NeoAppColors.cobalt)
+                    .frame(maxWidth: .infinity)
+                    .frame(minHeight: 44)
+                    .background(NeoAppColors.surface)
+                    .overlay {
+                        Rectangle()
+                            .stroke(NeoAppColors.cobalt, lineWidth: NeoAppMetrics.rule)
+                    }
             }
-            .foregroundStyle(.secondary)
+            .buttonStyle(.plain)
+            .accessibilityIdentifier("quickAdd.voice.cancel")
         }
-        .padding(20)
+        .padding(14)
         .frame(width: 320)
+        .background(NeoAppColors.canvas)
         .onAppear { startRecording() }
         .onDisappear { stopRecording() }
     }
@@ -190,6 +235,11 @@ struct VoiceInputView: View {
         } else {
             stopRemoteRecording()
         }
+    }
+
+    private func cancel() {
+        stopRecording()
+        onCancel()
     }
 
     // MARK: - Native (streaming, on-device)

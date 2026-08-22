@@ -6,20 +6,54 @@ struct QuickActionsSettingsView: View {
     @AppStorage(QuickActionSettings.storageKeys[2]) private var thirdRaw = QuickActionSettings.defaults[2].rawValue
 
     var body: some View {
-        Form {
+        List {
+            Section {
+                NeoScreenHeader(
+                    eyebrow: "SYSTEM SHORTCUTS",
+                    title: "Quick Actions",
+                    subtitle: "Choose the three actions available from the app icon."
+                )
+                .listRowInsets(EdgeInsets())
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
+            }
+
             Section {
                 quickActionPicker(title: "Quick Action 1", selection: $firstRaw)
+                    .padding(12)
+                    .frame(maxWidth: .infinity)
+                    .neoPanel(fill: NeoAppColors.surface)
+                    .listRowInsets(EdgeInsets(top: 4, leading: 14, bottom: 4, trailing: 14))
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+
                 quickActionPicker(title: "Quick Action 2", selection: $secondRaw)
+                    .padding(12)
+                    .frame(maxWidth: .infinity)
+                    .neoPanel(fill: NeoAppColors.surface)
+                    .listRowInsets(EdgeInsets(top: 4, leading: 14, bottom: 4, trailing: 14))
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+
                 quickActionPicker(title: "Quick Action 3", selection: $thirdRaw)
+                    .padding(12)
+                    .frame(maxWidth: .infinity)
+                    .neoPanel(fill: NeoAppColors.surface)
+                    .listRowInsets(EdgeInsets(top: 4, leading: 14, bottom: 4, trailing: 14))
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
             } header: {
-                Text("App Icon Shortcuts")
+                NeoSectionBanner(title: "App Icon Shortcuts", detail: "1–3", style: .cobalt)
             } footer: {
                 Text("Hold the Fud AI app icon to use these shortcuts. On iPhone, Quick Action 1–3 can also be assigned in Shortcuts to the Action Button or Back Tap.")
+                    .font(.system(.footnote, design: .rounded, weight: .bold))
+                    .foregroundStyle(NeoAppColors.mutedInk)
+                    .padding(.top, 6)
             }
-            .listRowBackground(NeoAppColors.surface)
-            .listRowSeparatorTint(NeoAppColors.ink.opacity(0.35))
         }
         .scrollContentBackground(.hidden)
+        .listStyle(.plain)
+        .listSectionSpacing(NeoAppMetrics.sectionSpacing)
         .background(NeoAppColors.canvas)
         .tint(NeoAppColors.cobalt)
         .navigationTitle("Quick Actions")
@@ -49,7 +83,7 @@ struct QuickActionsSettingsView: View {
     }
 
     private func numberIcon(for title: String) -> String {
-        title.hasSuffix("1") ? "1.circle.fill" : title.hasSuffix("2") ? "2.circle.fill" : "3.circle.fill"
+        title.hasSuffix("1") ? "1.square.fill" : title.hasSuffix("2") ? "2.square.fill" : "3.square.fill"
     }
 
     private func refreshShortcuts() {

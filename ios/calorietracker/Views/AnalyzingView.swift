@@ -5,34 +5,65 @@ struct AnalyzingView: View {
     var message: String = "Analyzing your food..."
 
     var body: some View {
-        VStack(spacing: 24) {
-            Spacer()
+        VStack(spacing: NeoAppMetrics.sectionSpacing) {
+            NeoScreenHeader(
+                eyebrow: "FUD AI VISION",
+                title: "Analyzing",
+                subtitle: message
+            )
 
-            if let image {
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(maxWidth: 250, maxHeight: 250)
-                    .clipShape(RoundedRectangle(cornerRadius: 16))
-                    .shadow(radius: 8)
-            } else {
-                Image(systemName: "text.magnifyingglass")
-                    .font(.system(size: 64))
-                    .foregroundStyle(AppColors.calorie)
-                    .frame(maxWidth: 250, maxHeight: 250)
+            Spacer(minLength: 8)
+
+            ZStack {
+                if let image {
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(maxWidth: 250, maxHeight: 250)
+                        .compositingGroup()
+                        .clipShape(Rectangle())
+                } else {
+                    NeoAppColors.subtleSurface
+
+                    Image(systemName: "text.magnifyingglass")
+                        .font(.system(size: 64, weight: .black))
+                        .foregroundStyle(NeoAppColors.cobalt)
+                }
             }
+            .frame(maxWidth: 250, minHeight: 220, maxHeight: 250)
+            .background(NeoAppColors.surface)
+            .overlay {
+                Rectangle()
+                    .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+            }
+            .accessibilityHidden(true)
 
-            ProgressView()
-                .controlSize(.large)
-                .tint(AppColors.calorie)
+            VStack(spacing: 12) {
+                ProgressView()
+                    .controlSize(.large)
+                    .tint(NeoAppColors.cobalt)
 
-            Text(message)
-                .font(.headline)
-                .foregroundStyle(AppColors.calorie)
+                Text(message)
+                    .textCase(.uppercase)
+                    .font(.system(.headline, design: .rounded, weight: .black))
+                    .foregroundStyle(NeoAppColors.ink)
+                    .multilineTextAlignment(.center)
+            }
+            .padding(16)
+            .frame(maxWidth: 250)
+            .background(NeoAppColors.acid)
+            .overlay {
+                Rectangle()
+                    .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+            }
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel(message)
+            .accessibilityValue("In progress")
 
-            Spacer()
+            Spacer(minLength: 8)
         }
+        .padding(NeoAppMetrics.screenInset)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.background)
+        .background(NeoAppColors.canvas.ignoresSafeArea())
     }
 }

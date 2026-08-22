@@ -253,16 +253,52 @@ struct FastingSessionEditorView: View {
 
     var body: some View {
         NavigationStack {
-            Form {
-                Section("Fast") {
+            List {
+                Section {
+                    NeoScreenHeader(
+                        eyebrow: "FASTING SESSION",
+                        title: session.isActive ? "Active Fast" : "Edit Fast",
+                        subtitle: session.isActive
+                            ? "Adjust the start and target, or finish the fast now."
+                            : "Correct the timing and target without changing its history."
+                    )
+                    .listRowInsets(EdgeInsets())
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                }
+
+                Section {
                     DatePicker("Started", selection: $startedAt)
+                        .font(.system(.body, design: .rounded, weight: .bold))
+                        .padding(12)
+                        .frame(maxWidth: .infinity)
+                        .neoPanel(fill: NeoAppColors.surface)
+                        .listRowInsets(EdgeInsets(top: 4, leading: 14, bottom: 4, trailing: 14))
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
+
                     if !session.isActive {
                         DatePicker("Ended", selection: $endedAt, in: startedAt...)
+                            .font(.system(.body, design: .rounded, weight: .bold))
+                            .padding(12)
+                            .frame(maxWidth: .infinity)
+                            .neoPanel(fill: NeoAppColors.surface)
+                            .listRowInsets(EdgeInsets(top: 4, leading: 14, bottom: 4, trailing: 14))
+                            .listRowBackground(Color.clear)
+                            .listRowSeparator(.hidden)
                     }
+
                     Stepper("Goal: \(goalHours) hours", value: $goalHours, in: 1...168)
+                        .font(.system(.body, design: .rounded, weight: .bold))
+                        .padding(12)
+                        .frame(maxWidth: .infinity)
+                        .neoPanel(fill: NeoAppColors.surface)
+                        .listRowInsets(EdgeInsets(top: 4, leading: 14, bottom: 4, trailing: 14))
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
+                } header: {
+                    NeoSectionBanner(title: "Session", detail: "\(goalHours) H GOAL", style: .cobalt)
                 }
-                .listRowBackground(NeoAppColors.surface)
-                .listRowSeparatorTint(NeoAppColors.ink.opacity(0.35))
 
                 Section {
                     if session.isActive {
@@ -274,21 +310,52 @@ struct FastingSessionEditorView: View {
                             dismiss()
                         } label: {
                             Label("End Fast Now", systemImage: "stop.fill")
+                                .font(.system(.body, design: .rounded, weight: .black))
+                                .textCase(.uppercase)
+                                .foregroundStyle(Color.black)
                                 .frame(maxWidth: .infinity)
+                                .frame(minHeight: 52)
+                                .background(NeoAppColors.acid)
+                                .overlay {
+                                    Rectangle()
+                                        .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                                        .allowsHitTesting(false)
+                                }
                         }
+                        .buttonStyle(.plain)
+                        .listRowInsets(EdgeInsets(top: 4, leading: 14, bottom: 4, trailing: 14))
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
                     }
+
                     Button(role: .destructive) {
                         onDelete(session)
                         dismiss()
                     } label: {
                         Label(session.isActive ? "Cancel Fast" : "Delete Fast", systemImage: "trash")
+                            .font(.system(.body, design: .rounded, weight: .black))
+                            .textCase(.uppercase)
+                            .foregroundStyle(NeoAppColors.warning)
                             .frame(maxWidth: .infinity)
+                            .frame(minHeight: 52)
+                            .background(NeoAppColors.surface)
+                            .overlay {
+                                Rectangle()
+                                    .stroke(NeoAppColors.warning, lineWidth: NeoAppMetrics.rule)
+                                    .allowsHitTesting(false)
+                            }
                     }
+                    .buttonStyle(.plain)
+                    .listRowInsets(EdgeInsets(top: 4, leading: 14, bottom: 4, trailing: 14))
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                } header: {
+                    NeoSectionBanner(title: "Actions", detail: session.isActive ? "LIVE" : "HISTORY", style: .ink)
                 }
-                .listRowBackground(NeoAppColors.surface)
-                .listRowSeparatorTint(NeoAppColors.ink.opacity(0.35))
             }
             .scrollContentBackground(.hidden)
+            .listStyle(.plain)
+            .listSectionSpacing(NeoAppMetrics.sectionSpacing)
             .background(NeoAppColors.canvas)
             .tint(NeoAppColors.cobalt)
             .navigationTitle(session.isActive ? "Active Fast" : "Edit Fast")
@@ -296,6 +363,7 @@ struct FastingSessionEditorView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
+                        .tint(NeoAppColors.cobalt)
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
@@ -306,6 +374,7 @@ struct FastingSessionEditorView: View {
                         onSave(updated)
                         dismiss()
                     }
+                    .tint(NeoAppColors.cobalt)
                 }
             }
         }

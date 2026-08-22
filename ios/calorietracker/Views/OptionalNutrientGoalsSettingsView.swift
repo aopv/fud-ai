@@ -39,12 +39,11 @@ struct OptionalNutrientGoalsSettingsView: View {
                     .buttonStyle(.plain)
                 }
             } header: {
-                Text("Other Nutrients")
+                NeoSectionBanner(title: "Other Nutrients", detail: "Daily targets", style: .cobalt)
             } footer: {
                 Text("Separate from calorie, protein, carb, and fat goals.")
             }
-            .listRowBackground(NeoAppColors.surface)
-            .listRowSeparatorTint(NeoAppColors.ink.opacity(0.35))
+            .neoListRow()
         }
         .listStyle(.plain)
         .listSectionSpacing(NeoAppMetrics.sectionSpacing)

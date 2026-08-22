@@ -116,6 +116,7 @@ struct ContentView: View {
     @State private var appUpdateState: AppUpdateState = .idle
     @State private var selectedTab: NeoAppTab = .home
     @State private var quickActionRequest: QuickActionRequest?
+    @State private var isKeyboardPresented = false
 
     private var workoutsTabIcon: String {
         WorkoutTabMode.mode(for: workoutTabModeRaw).tabIcon
@@ -131,6 +132,12 @@ struct ContentView: View {
             .onReceive(NotificationCenter.default.publisher(for: .quickActionRequested)) { _ in
                 consumePendingQuickAction()
             }
+            .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { _ in
+                isKeyboardPresented = true
+            }
+            .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in
+                isKeyboardPresented = false
+            }
             .onChange(of: scenePhase) { _, newPhase in
                 if newPhase == .active {
                     consumePendingQuickAction()
@@ -139,19 +146,19 @@ struct ContentView: View {
     }
 
     private var appShell: some View {
-        HStack(spacing: 0) {
-            standardTabView
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-
-            NeoAppNavigationRail(
-                selection: $selectedTab,
-                workoutsIcon: workoutsTabIcon,
-                updateAvailable: appUpdateState.isUpdateAvailable,
-                onQuickAdd: presentQuickAdd
-            )
-            .ignoresSafeArea(.keyboard, edges: .bottom)
-        }
-        .background(Color.black)
+        standardTabView
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .safeAreaInset(edge: .bottom, spacing: 0) {
+                if !isKeyboardPresented {
+                    NeoAppBottomNavigationBar(
+                        selection: $selectedTab,
+                        workoutsIcon: workoutsTabIcon,
+                        updateAvailable: appUpdateState.isUpdateAvailable,
+                        onQuickAdd: presentQuickAdd
+                    )
+                }
+            }
+            .background(NeoAppColors.canvas)
     }
 
     private var standardTabView: some View {
@@ -256,7 +263,7 @@ private struct AboutSettingsSections: View {
 
     var body: some View {
         Group {
-            Section("About") {
+            Section {
                 updateRow
 
                 // Rate the App
@@ -386,8 +393,10 @@ private struct AboutSettingsSections: View {
                     }
                 }
                 .tint(.primary)
+            } header: {
+                NeoSectionBanner(title: "About", detail: "FÜD AI", style: .cobalt)
             }
-            .listRowBackground(AppColors.appCard)
+            .neoListRow()
 
             Section {
                 // Privacy Policy
@@ -411,8 +420,10 @@ private struct AboutSettingsSections: View {
                     }
                 }
                 .tint(.primary)
+            } header: {
+                NeoSectionBanner(title: "Legal", detail: "Privacy + terms", style: .ink)
             }
-            .listRowBackground(AppColors.appCard)
+            .neoListRow()
 
             Section {
                 VStack(spacing: 4) {
@@ -970,7 +981,7 @@ struct HomeView: View {
             .environment(\.defaultMinListRowHeight, 1)
             .listSectionSpacing(10)
             .animation(.snappy, value: selectedDate)
-            .contentMargins(.bottom, 104, for: .scrollContent)
+            .contentMargins(.bottom, NeoAppMetrics.bottomBarHeight + 104, for: .scrollContent)
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
             .overlay(alignment: .bottom) {
@@ -1156,7 +1167,7 @@ struct HomeView: View {
                     .presentationCompactAdaptation(.popover)
                 }
                 .padding(.horizontal, NeoHomeMetrics.horizontalInset)
-                .padding(.bottom, 10)
+                .padding(.bottom, NeoAppMetrics.bottomBarHeight + 18)
             }
             .fullScreenCover(isPresented: $showCamera) {
                 CameraView(
@@ -1747,30 +1758,87 @@ private struct SiriPhrasesSettingsView: View {
     var body: some View {
         List {
             Section {
-                Label {
-                    Text("Say these phrases to Siri to use Fud AI hands-free.")
-                        .foregroundStyle(.secondary)
-                } icon: {
+                NeoScreenHeader(
+                    eyebrow: "Hands-free",
+                    title: "Siri Phrases",
+                    subtitle: "Say a phrase below to log or review your nutrition"
+                ) {
                     Image(systemName: "waveform.circle.fill")
-                        .foregroundStyle(AppColors.calorie)
+                        .font(.system(size: 24, weight: .black))
+                        .foregroundStyle(Color.black)
+                        .frame(width: 48, height: 48)
+                        .background(NeoAppColors.acid)
+                        .overlay {
+                            Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                        }
                 }
+                .listRowInsets(EdgeInsets(top: 10, leading: NeoAppMetrics.screenInset, bottom: 4, trailing: NeoAppMetrics.screenInset))
+                .listRowSeparator(.hidden)
+                .listRowBackground(Color.clear)
+
+                HStack(spacing: 12) {
+                    Image(systemName: "quote.bubble.fill")
+                        .font(.system(size: 18, weight: .black))
+                        .foregroundStyle(NeoAppColors.onCobalt)
+                        .frame(width: 38, height: 38)
+                        .background(NeoAppColors.cobalt)
+                        .overlay {
+                            Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                        }
+
+                    Text("Start with “Hey Siri,” then use any phrase exactly as shown.")
+                        .font(.system(.subheadline, design: .rounded, weight: .bold))
+                        .foregroundStyle(NeoAppColors.ink)
+                }
+                .padding(.vertical, 6)
             }
-            .listRowBackground(AppColors.appCard)
+            .neoListRow()
 
             ForEach(groups) { group in
-                Section(group.title) {
+                Section {
+                    HStack(spacing: 10) {
+                        Image(systemName: group.icon)
+                            .font(.system(size: 16, weight: .black))
+                        Text(group.title.uppercased())
+                            .font(.system(.headline, design: .rounded, weight: .black).width(.condensed))
+                        Spacer()
+                        Text("\(group.phrases.count)")
+                            .font(.system(.caption, design: .rounded, weight: .black))
+                    }
+                    .foregroundStyle(NeoAppColors.onCobalt)
+                    .padding(.horizontal, 12)
+                    .frame(minHeight: 42)
+                    .background(NeoAppColors.cobalt)
+                    .overlay {
+                        Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                    }
+                    .listRowInsets(EdgeInsets())
+                    .listRowSeparator(.hidden)
+
                     ForEach(group.phrases, id: \.self) { phrase in
-                        Text("Hey Siri, \(phrase)")
-                            .foregroundStyle(.primary)
+                        HStack(alignment: .firstTextBaseline, spacing: 10) {
+                            Image(systemName: "mic.fill")
+                                .font(.caption.weight(.black))
+                                .foregroundStyle(NeoAppColors.cobalt)
+                                .frame(width: 24)
+                            Text("Hey Siri, \(phrase)")
+                                .font(.system(.body, design: .rounded, weight: .bold))
+                                .foregroundStyle(NeoAppColors.ink)
+                            Spacer(minLength: 0)
+                        }
+                        .padding(.vertical, 5)
                     }
                 }
-                .listRowBackground(AppColors.appCard)
+                .neoListRow()
             }
         }
-        .scrollContentBackground(.hidden)
-        .background(AppColors.appBackground)
-        .navigationTitle("Siri Phrases")
+        .listStyle(.plain)
+        .listSectionSpacing(NeoAppMetrics.sectionSpacing)
+        .neoScreen()
+        .tint(NeoAppColors.cobalt)
+        .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(NeoAppColors.surface, for: .navigationBar)
     }
 }
 
@@ -1815,50 +1883,131 @@ private struct CopyFromDaySheet: View {
         NavigationStack {
             List {
                 Section {
-                    DatePicker("Copy From", selection: $sourceDate, displayedComponents: .date)
-                        .tint(AppColors.calorie)
+                    NeoScreenHeader(
+                        eyebrow: "Food Log",
+                        title: "Copy from Day",
+                        subtitle: "Reuse a meal or an entire day without changing the original"
+                    ) {
+                        Image(systemName: "calendar.badge.plus")
+                            .font(.system(size: 22, weight: .black))
+                            .foregroundStyle(Color.black)
+                            .frame(width: 48, height: 48)
+                            .background(NeoAppColors.acid)
+                            .overlay {
+                                Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                            }
+                    }
+                    .listRowInsets(EdgeInsets(top: 10, leading: NeoAppMetrics.screenInset, bottom: 4, trailing: NeoAppMetrics.screenInset))
+                    .listRowSeparator(.hidden)
+                    .listRowBackground(Color.clear)
+
+                    HStack(spacing: 12) {
+                        Image(systemName: "calendar")
+                            .font(.system(size: 17, weight: .black))
+                            .foregroundStyle(NeoAppColors.onCobalt)
+                            .frame(width: 38, height: 38)
+                            .background(NeoAppColors.cobalt)
+                            .overlay {
+                                Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                            }
+
+                        DatePicker("Copy From", selection: $sourceDate, displayedComponents: .date)
+                            .font(.system(.body, design: .rounded, weight: .black))
+                            .tint(NeoAppColors.cobalt)
+                    }
                 } footer: {
                     Text("Foods will be copied to \(targetDateText). The original entries stay unchanged.")
+                        .font(.system(.caption, design: .rounded, weight: .bold))
+                        .foregroundStyle(NeoAppColors.mutedInk)
                 }
-                .listRowBackground(AppColors.appCard)
+                .neoListRow()
 
                 if sourceEntries.isEmpty {
                     Section {
                         VStack(spacing: 12) {
                             Image(systemName: "calendar.badge.exclamationmark")
-                                .font(.system(size: 32))
-                                .foregroundStyle(AppColors.calorie.opacity(0.45))
+                                .font(.system(size: 28, weight: .black))
+                                .foregroundStyle(Color.black)
+                                .frame(width: 54, height: 54)
+                                .background(NeoAppColors.acid)
+                                .overlay {
+                                    Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                                }
                             Text("No foods logged on this day")
-                                .font(.system(.subheadline, design: .rounded))
-                                .foregroundStyle(.secondary)
+                                .textCase(.uppercase)
+                                .font(.system(.subheadline, design: .rounded, weight: .black).width(.condensed))
+                                .foregroundStyle(NeoAppColors.ink)
                         }
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 24)
                     }
-                    .listRowBackground(AppColors.appCard)
+                    .neoListRow()
                 } else {
                     Section {
                         Button {
                             copy(sourceEntries)
                         } label: {
-                            Label("Copy All Foods", systemImage: "plus.circle.fill")
-                                .font(.system(.body, design: .rounded, weight: .semibold))
+                            HStack(spacing: 10) {
+                                Image(systemName: "plus")
+                                    .font(.system(size: 18, weight: .black))
+                                Text("Copy All Foods")
+                                    .textCase(.uppercase)
+                                    .font(.system(.headline, design: .rounded, weight: .black).width(.condensed))
+                                Spacer()
+                                Text("\(sourceEntries.count)")
+                                    .font(.system(.subheadline, design: .rounded, weight: .black))
+                            }
+                            .foregroundStyle(Color.black)
+                            .padding(.horizontal, 14)
+                            .frame(maxWidth: .infinity, minHeight: 50)
+                            .background(NeoAppColors.acid)
+                            .overlay {
+                                Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                            }
                         }
-                        .tint(AppColors.calorie)
+                        .buttonStyle(.plain)
+                        .listRowInsets(EdgeInsets())
                     } footer: {
                         Text("\(sourceEntries.count) food\(sourceEntries.count == 1 ? "" : "s") will be added to \(targetDateText).")
+                            .font(.system(.caption, design: .rounded, weight: .bold))
+                            .foregroundStyle(NeoAppColors.mutedInk)
                     }
-                    .listRowBackground(AppColors.appCard)
+                    .neoListRow()
 
                     ForEach(mealGroups) { group in
                         Section {
+                            HStack(spacing: 10) {
+                                Image(systemName: group.meal.icon)
+                                    .font(.system(size: 16, weight: .black))
+                                Text(group.meal.displayName.uppercased())
+                                    .font(.system(.headline, design: .rounded, weight: .black).width(.condensed))
+                                Spacer()
+                                Text("\(group.entries.reduce(0) { $0 + $1.calories }) KCAL")
+                                    .font(.system(.caption, design: .rounded, weight: .black).width(.condensed))
+                            }
+                            .foregroundStyle(NeoAppColors.onCobalt)
+                            .padding(.horizontal, 12)
+                            .frame(minHeight: 42)
+                            .background(NeoAppColors.cobalt)
+                            .overlay {
+                                Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                            }
+                            .listRowInsets(EdgeInsets())
+                            .listRowSeparator(.hidden)
+
                             Button {
                                 copy(group.entries)
                             } label: {
-                                Label("Copy \(group.meal.displayName)", systemImage: "plus.circle")
-                                    .font(.system(.subheadline, design: .rounded, weight: .semibold))
+                                HStack(spacing: 8) {
+                                    Image(systemName: "plus.square.fill")
+                                    Text("Copy \(group.meal.displayName)")
+                                    Spacer()
+                                }
+                                .textCase(.uppercase)
+                                .font(.system(.subheadline, design: .rounded, weight: .black).width(.condensed))
+                                .foregroundStyle(NeoAppColors.cobalt)
                             }
-                            .tint(AppColors.calorie)
+                            .buttonStyle(.plain)
 
                             ForEach(group.entries) { entry in
                                 Button {
@@ -1868,17 +2017,18 @@ private struct CopyFromDaySheet: View {
                                 }
                                 .buttonStyle(.plain)
                             }
-                        } header: {
-                            Label(group.meal.displayName, systemImage: group.meal.icon)
                         }
-                        .listRowBackground(AppColors.appCard)
+                        .neoListRow()
                     }
                 }
             }
-            .scrollContentBackground(.hidden)
-            .background(AppColors.appBackground)
-            .navigationTitle("Copy from Day")
+            .listStyle(.plain)
+            .listSectionSpacing(NeoAppMetrics.sectionSpacing)
+            .neoScreen()
+            .tint(NeoAppColors.cobalt)
+            .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(NeoAppColors.surface, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
@@ -2220,35 +2370,73 @@ struct NutritionDetailView: View {
         return NavigationStack {
             List {
                 Section {
+                    NeoScreenHeader(
+                        eyebrow: date.formatted(.dateTime.weekday(.wide)),
+                        title: "Nutrition",
+                        subtitle: date.formatted(.dateTime.month(.wide).day().year())
+                    ) {
+                        Image(systemName: "chart.bar.xaxis")
+                            .font(.system(size: 22, weight: .black))
+                            .foregroundStyle(Color.black)
+                            .frame(width: 48, height: 48)
+                            .background(NeoAppColors.acid)
+                            .overlay {
+                                Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                            }
+                    }
+                    .listRowInsets(EdgeInsets(top: 10, leading: NeoAppMetrics.screenInset, bottom: 4, trailing: NeoAppMetrics.screenInset))
+                    .listRowSeparator(.hidden)
+                    .listRowBackground(Color.clear)
+
                     Button {
                         showHomeNutrientPicker = true
                     } label: {
                         HStack(spacing: 12) {
-                            Label("Home Nutrient Cards", systemImage: "square.grid.3x1.fill")
-                                .foregroundStyle(.primary)
+                            Image(systemName: "square.grid.3x1.fill")
+                                .font(.system(size: 17, weight: .black))
+                                .foregroundStyle(NeoAppColors.onCobalt)
+                                .frame(width: 38, height: 38)
+                                .background(NeoAppColors.cobalt)
+                                .overlay {
+                                    Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                                }
+                            VStack(alignment: .leading, spacing: 3) {
+                                Text("Home Nutrient Cards")
+                                    .textCase(.uppercase)
+                                    .font(.system(.subheadline, design: .rounded, weight: .black).width(.condensed))
+                                    .foregroundStyle(NeoAppColors.ink)
+                                Text(homeTopNutrientNames)
+                                    .font(.system(.caption, design: .rounded, weight: .bold))
+                                    .foregroundStyle(NeoAppColors.mutedInk)
+                                    .lineLimit(1)
+                            }
                             Spacer()
-                            Text(homeTopNutrientNames)
-                                .font(.system(.footnote, design: .rounded))
-                                .foregroundStyle(.secondary)
-                                .lineLimit(1)
                             Image(systemName: "chevron.right")
-                                .font(.caption2)
-                                .foregroundStyle(.tertiary)
+                                .font(.caption.weight(.black))
+                                .foregroundStyle(NeoAppColors.cobalt)
                         }
                     }
                     .buttonStyle(.plain)
                 }
-                .listRowBackground(AppColors.appCard)
+                .neoListRow()
 
-                Section("Macros") {
+                Section {
+                    NeoSectionBanner(title: "Macros", detail: "Daily total")
+                        .listRowInsets(EdgeInsets())
+                        .listRowSeparator(.hidden)
+
                     NutritionDetailRow(icon: "flame.fill", label: "Calories", value: "\(foodStore.calories(for: date))", unit: "kcal", goal: "\(userProfile.effectiveCalories)")
                     NutritionDetailRow(icon: "p.circle.fill", label: "Protein", value: MacroValueFormatter.string(foodStore.protein(for: date)), unit: "g", goal: "\(userProfile.effectiveProtein)")
                     NutritionDetailRow(icon: "c.circle.fill", label: "Carbs", value: MacroValueFormatter.string(foodStore.carbs(for: date)), unit: "g", goal: "\(userProfile.effectiveCarbs)")
                     NutritionDetailRow(icon: "f.circle.fill", label: "Fat", value: MacroValueFormatter.string(foodStore.fat(for: date)), unit: "g", goal: "\(userProfile.effectiveFat)")
                 }
-                .listRowBackground(AppColors.appCard)
+                .neoListRow()
 
-                Section("Detailed Nutrition") {
+                Section {
+                    NeoSectionBanner(title: "Detailed Nutrition", detail: "Micros + goals", style: .acid)
+                        .listRowInsets(EdgeInsets())
+                        .listRowSeparator(.hidden)
+
                     optionalNutritionRow(.sugar, value: foodStore.sugar(for: date))
                     optionalNutritionRow(.addedSugar, value: foodStore.addedSugar(for: date))
                     optionalNutritionRow(.fiber, value: foodStore.fiber(for: date))
@@ -2279,12 +2467,15 @@ struct NutritionDetailView: View {
                         )
                     }
                 }
-                .listRowBackground(AppColors.appCard)
+                .neoListRow()
             }
-            .scrollContentBackground(.hidden)
-            .background(AppColors.appBackground)
-            .navigationTitle("Nutrition Details")
+            .listStyle(.plain)
+            .listSectionSpacing(NeoAppMetrics.sectionSpacing)
+            .neoScreen()
+            .tint(NeoAppColors.cobalt)
+            .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(NeoAppColors.surface, for: .navigationBar)
             .sheet(isPresented: $showHomeNutrientPicker) {
                 HomeNutrientPickerSheet(selectionRawValue: $homeTopNutrientsRaw)
             }
@@ -2297,7 +2488,7 @@ struct NutritionDetailView: View {
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
-                        .tint(AppColors.calorie)
+                        .tint(NeoAppColors.cobalt)
                 }
             }
         }
@@ -2333,30 +2524,40 @@ struct NutritionDetailRow: View {
         HStack(spacing: 12) {
             if let icon {
                 Image(systemName: icon)
-                    .font(.system(size: 15, weight: .semibold))
-                    .foregroundStyle(
-                        LinearGradient(colors: AppColors.calorieGradient, startPoint: .topLeading, endPoint: .bottomTrailing)
-                    )
-                    .frame(width: 24)
+                    .font(.system(size: 15, weight: .black))
+                    .foregroundStyle(NeoAppColors.onCobalt)
+                    .frame(width: 34, height: 34)
+                    .background(NeoAppColors.cobalt)
+                    .overlay {
+                        Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                    }
             }
             Text(LocalizedDisplayText.text(label))
-                .font(.system(.body, design: .rounded))
+                .font(.system(.body, design: .rounded, weight: .black).width(.condensed))
+                .foregroundStyle(NeoAppColors.ink)
             Spacer()
             HStack(alignment: .firstTextBaseline, spacing: 3) {
                 Text(value)
-                    .font(.system(.body, design: .rounded, weight: .semibold))
-                    .foregroundStyle(AppColors.calorie)
+                    .font(.system(.body, design: .rounded, weight: .black))
+                    .foregroundStyle(NeoAppColors.cobalt)
                     .contentTransition(.numericText())
                 Text(unit)
-                    .font(.system(.footnote, design: .rounded))
-                    .foregroundStyle(.secondary)
+                    .font(.system(.footnote, design: .rounded, weight: .bold))
+                    .foregroundStyle(NeoAppColors.mutedInk)
             }
             if let goal {
                 Text("/ \(goal)")
-                    .font(.system(.caption, design: .rounded))
-                    .foregroundStyle(.tertiary)
+                    .font(.system(.caption, design: .rounded, weight: .black).width(.condensed))
+                    .foregroundStyle(Color.black)
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 4)
+                    .background(NeoAppColors.acid)
+                    .overlay {
+                        Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                    }
             }
         }
+        .padding(.vertical, 3)
     }
 }
 
@@ -2374,9 +2575,9 @@ private struct NativeSheetToolbarButton: View {
         Button(action: action) {
             Text(title)
                 .fixedSize()
-                .foregroundStyle(AppColors.calorie)
+                .foregroundStyle(NeoAppColors.cobalt)
         }
-        .fontWeight(isEmphasized ? .semibold : .regular)
+        .font(.system(.body, design: .rounded, weight: isEmphasized ? .black : .bold))
         .disabled(isDisabled)
     }
 }
@@ -2399,9 +2600,20 @@ struct MultiPhotoCaptureSheet: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
-                    Text("\(images.count) of 10 photos")
-                        .font(.system(.subheadline, design: .rounded, weight: .semibold))
-                        .foregroundStyle(.secondary)
+                    NeoScreenHeader(
+                        eyebrow: "Food Analysis",
+                        title: "Meal Photos",
+                        subtitle: "\(images.count) of 10 photos ready"
+                    ) {
+                        Image(systemName: "camera.fill")
+                            .font(.system(size: 22, weight: .black))
+                            .foregroundStyle(Color.black)
+                            .frame(width: 48, height: 48)
+                            .background(NeoAppColors.acid)
+                            .overlay {
+                                Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                            }
+                    }
 
                     ScrollView(.horizontal, showsIndicators: false) {
                         LazyHStack(spacing: 12) {
@@ -2410,26 +2622,38 @@ struct MultiPhotoCaptureSheet: View {
                                     .resizable()
                                     .scaledToFill()
                                     .frame(width: 240, height: 260)
-                                    .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+                                    .clipShape(Rectangle())
+                                    .overlay {
+                                        Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                                    }
                                     .overlay(alignment: .topTrailing) {
                                         Button {
                                             onRemove(index)
                                         } label: {
                                             Image(systemName: "xmark")
-                                                .font(.caption.weight(.bold))
-                                                .foregroundStyle(.white)
-                                                .frame(width: 30, height: 30)
-                                                .background(.black.opacity(0.6), in: Circle())
+                                                .font(.caption.weight(.black))
+                                                .foregroundStyle(NeoAppColors.onCobalt)
+                                                .frame(width: 34, height: 34)
+                                                .background(NeoAppColors.cobalt.opacity(0.78))
+                                                .overlay {
+                                                    Rectangle().stroke(Color.white.opacity(0.8), lineWidth: NeoAppMetrics.compactRule)
+                                                }
                                         }
+                                        .buttonStyle(.plain)
+                                        .neoInteractiveSurface(cornerRadius: NeoAppMetrics.cornerRadius)
                                         .padding(10)
                                     }
                                     .overlay(alignment: .bottomLeading) {
                                         Text("Photo \(index + 1)")
-                                            .font(.caption.weight(.semibold))
-                                            .foregroundStyle(.white)
+                                            .textCase(.uppercase)
+                                            .font(.system(.caption, design: .rounded, weight: .black).width(.condensed))
+                                            .foregroundStyle(Color.black)
                                             .padding(.horizontal, 10)
                                             .padding(.vertical, 6)
-                                            .background(.black.opacity(0.55), in: Capsule())
+                                            .background(NeoAppColors.acid)
+                                            .overlay {
+                                                Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                                            }
                                             .padding(10)
                                     }
                             }
@@ -2439,75 +2663,94 @@ struct MultiPhotoCaptureSheet: View {
                     .scrollTargetBehavior(.viewAligned)
 
                     if images.count < 10 {
-                        HStack {
-                            Spacer()
-                            Button {
-                                if isImportingPhotos {
-                                    showAdditionalPhotoPicker = true
-                                } else {
-                                    onAddPhoto()
-                                }
-                            } label: {
+                        Button {
+                            if isImportingPhotos {
+                                showAdditionalPhotoPicker = true
+                            } else {
+                                onAddPhoto()
+                            }
+                        } label: {
+                            HStack(spacing: 10) {
                                 Label(
                                     isImportingPhotos ? "Add Photos" : "Add Photo",
                                     systemImage: isImportingPhotos ? "photo.on.rectangle" : "camera.fill"
                                 )
+                                Spacer()
+                                Text("\(10 - images.count) LEFT")
+                                    .font(.system(.caption, design: .rounded, weight: .black).width(.condensed))
                             }
-                            .buttonStyle(.bordered)
-                            .tint(AppColors.calorie)
+                            .textCase(.uppercase)
+                            .font(.system(.headline, design: .rounded, weight: .black).width(.condensed))
+                            .foregroundStyle(NeoAppColors.onCobalt)
+                            .padding(.horizontal, 14)
+                            .frame(maxWidth: .infinity, minHeight: 50)
+                            .background(NeoAppColors.cobalt)
+                            .overlay {
+                                Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                            }
                         }
+                        .buttonStyle(.plain)
                     }
 
-                    HStack(spacing: 12) {
-                        VStack(alignment: .leading, spacing: 5) {
-                            HStack(spacing: 6) {
-                                Text("Progressive Meal")
-                                    .font(.system(.body, design: .rounded, weight: .semibold))
-                                Button {
-                                    showProgressiveInfo = true
-                                } label: {
-                                    Image(systemName: "info.circle.fill")
-                                        .foregroundStyle(AppColors.calorie)
+                    NeoOutlinedPanel {
+                        HStack(spacing: 12) {
+                            VStack(alignment: .leading, spacing: 5) {
+                                HStack(spacing: 8) {
+                                    Text("Progressive Meal")
+                                        .textCase(.uppercase)
+                                        .font(.system(.body, design: .rounded, weight: .black).width(.condensed))
+                                        .foregroundStyle(NeoAppColors.ink)
+                                    Button {
+                                        showProgressiveInfo = true
+                                    } label: {
+                                        Image(systemName: "info.circle.fill")
+                                            .font(.system(size: 17, weight: .black))
+                                            .foregroundStyle(NeoAppColors.cobalt)
+                                    }
+                                    .buttonStyle(.plain)
+                                    .accessibilityLabel("How Progressive Meal works")
                                 }
-                                .buttonStyle(.plain)
-                                .accessibilityLabel("How Progressive Meal works")
+                                Text("Photo 1 → 2 → 3 follows each ingredient added to the same plate. Visible scale differences become ingredient weights.")
+                                    .font(.system(.caption, design: .rounded, weight: .bold))
+                                    .foregroundStyle(NeoAppColors.mutedInk)
+                                    .fixedSize(horizontal: false, vertical: true)
                             }
-                            Text("Photo 1 → 2 → 3 follows each ingredient added to the same plate. Visible scale differences become ingredient weights.")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                                .fixedSize(horizontal: false, vertical: true)
+                            Spacer(minLength: 8)
+                            Toggle("", isOn: $progressiveMeal)
+                                .labelsHidden()
+                                .tint(NeoAppColors.cobalt)
+                                .disabled(images.count < 2)
                         }
-                        Spacer(minLength: 8)
-                        Toggle("", isOn: $progressiveMeal)
-                            .labelsHidden()
-                            .tint(AppColors.calorie)
-                            .disabled(images.count < 2)
                     }
-                    .padding(14)
-                    .background(
-                        Color(.secondarySystemGroupedBackground),
-                        in: RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    )
 
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Note for food analysis (optional)")
-                            .font(.system(.subheadline, design: .rounded, weight: .semibold))
-                            .foregroundStyle(.secondary)
-                        TextField(
-                            "e.g. chicken is 180g, rice is 220g, use half the sauce",
-                            text: $description,
-                            axis: .vertical
-                        )
-                        .lineLimit(3...6)
-                        .padding(14)
-                        .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 14))
+                    NeoOutlinedPanel {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Analysis Note · Optional")
+                                .textCase(.uppercase)
+                                .font(.system(.subheadline, design: .rounded, weight: .black).width(.condensed))
+                                .foregroundStyle(NeoAppColors.cobalt)
+                            TextField(
+                                "e.g. chicken is 180g, rice is 220g, use half the sauce",
+                                text: $description,
+                                axis: .vertical
+                            )
+                            .font(.system(.body, design: .rounded, weight: .bold))
+                            .lineLimit(3...6)
+                            .padding(12)
+                            .background(NeoAppColors.subtleSurface)
+                            .overlay {
+                                Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                            }
+                        }
                     }
                 }
-                .padding()
+                .padding(NeoAppMetrics.screenInset)
             }
-            .background(Color(.systemGroupedBackground))
-            .navigationTitle("Meal Photos")
+            .background(NeoAppColors.canvas)
+            .tint(NeoAppColors.cobalt)
+            .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(NeoAppColors.surface, for: .navigationBar)
             .photosPicker(
                 isPresented: $showAdditionalPhotoPicker,
                 selection: $selectedPhotoItems,
@@ -2554,54 +2797,73 @@ struct ContextDescriptionSheet: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 20) {
+                VStack(alignment: .leading, spacing: 20) {
+                    NeoScreenHeader(
+                        eyebrow: "Food Analysis",
+                        title: "Add Context",
+                        subtitle: "Give the AI details the photo cannot show"
+                    ) {
+                        Image(systemName: "text.bubble.fill")
+                            .font(.system(size: 22, weight: .black))
+                            .foregroundStyle(Color.black)
+                            .frame(width: 48, height: 48)
+                            .background(NeoAppColors.acid)
+                            .overlay {
+                                Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                            }
+                    }
+
                     if let image {
                         Image(uiImage: image)
                             .resizable()
                             .scaledToFit()
                             .frame(maxHeight: 240)
-                            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 16, style: .continuous)
-                                    .strokeBorder(AppColors.calorie.opacity(0.15), lineWidth: 1)
-                            )
+                            .frame(maxWidth: .infinity)
+                            .clipShape(Rectangle())
+                            .overlay {
+                                Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                            }
                     }
 
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Note for food analysis (optional)")
-                            .font(.system(.subheadline, design: .rounded, weight: .semibold))
-                            .foregroundStyle(.secondary)
+                    NeoOutlinedPanel {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Analysis Note · Optional")
+                                .textCase(.uppercase)
+                                .font(.system(.subheadline, design: .rounded, weight: .black).width(.condensed))
+                                .foregroundStyle(NeoAppColors.cobalt)
 
-                        ZStack(alignment: .topLeading) {
-                            if description.isEmpty {
-                                Text("e.g. \"This is a half portion\" or \"Cooked in olive oil\"")
-                                    .foregroundStyle(.tertiary)
-                                    .font(.body)
+                            ZStack(alignment: .topLeading) {
+                                if description.isEmpty {
+                                    Text("e.g. \"This is a half portion\" or \"Cooked in olive oil\"")
+                                        .foregroundStyle(NeoAppColors.mutedInk)
+                                        .font(.system(.body, design: .rounded, weight: .bold))
+                                        .padding(.horizontal, 6)
+                                        .padding(.vertical, 10)
+                                        .allowsHitTesting(false)
+                                }
+                                TextField("", text: $description, axis: .vertical)
+                                    .font(.system(.body, design: .rounded, weight: .bold))
+                                    .lineLimit(3...6)
+                                    .textFieldStyle(.plain)
+                                    .focused($isFocused)
                                     .padding(.horizontal, 6)
                                     .padding(.vertical, 10)
-                                    .allowsHitTesting(false)
                             }
-                            TextField("", text: $description, axis: .vertical)
-                                .font(.body)
-                                .lineLimit(3...6)
-                                .textFieldStyle(.plain)
-                                .focused($isFocused)
-                                .padding(.horizontal, 6)
-                                .padding(.vertical, 10)
+                            .padding(12)
+                            .background(NeoAppColors.subtleSurface)
+                            .overlay {
+                                Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                            }
                         }
-                        .padding(12)
-                        .background(
-                            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                .fill(Color(.secondarySystemGroupedBackground))
-                        )
                     }
-
                 }
-                .padding()
+                .padding(NeoAppMetrics.screenInset)
             }
-            .background(Color(.systemGroupedBackground))
-            .navigationTitle("Add Description")
+            .background(NeoAppColors.canvas)
+            .tint(NeoAppColors.cobalt)
+            .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(NeoAppColors.surface, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     NativeSheetToolbarButton(title: "Cancel", action: onCancel)
@@ -2661,21 +2923,25 @@ struct CameraView: UIViewControllerRepresentable {
         overlay.backgroundColor = .clear
 
         let bottomBar = UIView()
-        bottomBar.backgroundColor = UIColor.black.withAlphaComponent(0.6)
+        bottomBar.backgroundColor = UIColor(NeoAppColors.surface).withAlphaComponent(0.92)
+        bottomBar.layer.borderColor = UIColor(NeoAppColors.cobalt).cgColor
+        bottomBar.layer.borderWidth = NeoAppMetrics.rule
         bottomBar.translatesAutoresizingMaskIntoConstraints = false
         overlay.addSubview(bottomBar)
 
         let shutterOuter = UIView()
-        shutterOuter.backgroundColor = .white
-        shutterOuter.layer.cornerRadius = 37
+        shutterOuter.backgroundColor = UIColor(NeoAppColors.acid)
+        shutterOuter.layer.cornerRadius = NeoAppMetrics.cornerRadius
+        shutterOuter.layer.borderColor = UIColor.black.cgColor
+        shutterOuter.layer.borderWidth = NeoAppMetrics.rule
         shutterOuter.translatesAutoresizingMaskIntoConstraints = false
         bottomBar.addSubview(shutterOuter)
 
         let shutterInner = UIView()
-        shutterInner.backgroundColor = .white
-        shutterInner.layer.cornerRadius = 32
+        shutterInner.backgroundColor = UIColor(NeoAppColors.cobalt)
+        shutterInner.layer.cornerRadius = NeoAppMetrics.cornerRadius
         shutterInner.layer.borderWidth = 2
-        shutterInner.layer.borderColor = UIColor.black.withAlphaComponent(0.15).cgColor
+        shutterInner.layer.borderColor = UIColor.black.cgColor
         shutterInner.translatesAutoresizingMaskIntoConstraints = false
         shutterOuter.addSubview(shutterInner)
 
@@ -2685,9 +2951,20 @@ struct CameraView: UIViewControllerRepresentable {
         shutterOuter.addSubview(shutterButton)
 
         let cancelButton = UIButton(type: .system)
-        cancelButton.setTitle("Cancel", for: .normal)
-        cancelButton.setTitleColor(.white, for: .normal)
-        cancelButton.titleLabel?.font = .systemFont(ofSize: 17)
+        var cancelConfiguration = UIButton.Configuration.plain()
+        cancelConfiguration.title = "CANCEL"
+        cancelConfiguration.baseForegroundColor = UIColor(NeoAppColors.onCobalt)
+        cancelConfiguration.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 14, bottom: 10, trailing: 14)
+        cancelConfiguration.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { attributes in
+            var transformed = attributes
+            transformed.font = .systemFont(ofSize: 15, weight: .black)
+            return transformed
+        }
+        cancelButton.configuration = cancelConfiguration
+        cancelButton.backgroundColor = UIColor(NeoAppColors.cobalt)
+        cancelButton.layer.cornerRadius = NeoAppMetrics.cornerRadius
+        cancelButton.layer.borderColor = UIColor.black.cgColor
+        cancelButton.layer.borderWidth = NeoAppMetrics.rule
         cancelButton.translatesAutoresizingMaskIntoConstraints = false
         cancelButton.addTarget(context.coordinator, action: #selector(Coordinator.cancel), for: .touchUpInside)
         bottomBar.addSubview(cancelButton)
@@ -2695,9 +2972,9 @@ struct CameraView: UIViewControllerRepresentable {
         var titleLabel: UILabel?
         if let title {
             let label = UILabel()
-            label.text = title
-            label.textColor = .white
-            label.font = .systemFont(ofSize: 17, weight: .semibold)
+            label.text = title.uppercased()
+            label.textColor = UIColor(NeoAppColors.ink)
+            label.font = .systemFont(ofSize: 17, weight: .black)
             label.translatesAutoresizingMaskIntoConstraints = false
             bottomBar.addSubview(label)
             titleLabel = label
@@ -2903,25 +3180,36 @@ final class BarcodeScannerViewController: UIViewController, AVCaptureMetadataOut
 
     private func buildOverlay() {
         let closeButton = UIButton(type: .system)
-        closeButton.setTitle("Cancel", for: .normal)
-        closeButton.setTitleColor(.white, for: .normal)
-        closeButton.titleLabel?.font = .systemFont(ofSize: 17, weight: .semibold)
+        var closeConfiguration = UIButton.Configuration.plain()
+        closeConfiguration.title = "CANCEL"
+        closeConfiguration.baseForegroundColor = UIColor(NeoAppColors.onCobalt)
+        closeConfiguration.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 14, bottom: 10, trailing: 14)
+        closeConfiguration.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { attributes in
+            var transformed = attributes
+            transformed.font = .systemFont(ofSize: 15, weight: .black)
+            return transformed
+        }
+        closeButton.configuration = closeConfiguration
+        closeButton.backgroundColor = UIColor(NeoAppColors.cobalt).withAlphaComponent(0.88)
+        closeButton.layer.cornerRadius = NeoAppMetrics.cornerRadius
+        closeButton.layer.borderColor = UIColor.white.withAlphaComponent(0.85).cgColor
+        closeButton.layer.borderWidth = NeoAppMetrics.rule
         closeButton.translatesAutoresizingMaskIntoConstraints = false
         closeButton.addTarget(self, action: #selector(cancelTapped), for: .touchUpInside)
         view.addSubview(closeButton)
 
         let scanBox = UIView()
-        scanBox.layer.borderColor = UIColor.white.withAlphaComponent(0.9).cgColor
-        scanBox.layer.borderWidth = 3
-        scanBox.layer.cornerRadius = 22
+        scanBox.layer.borderColor = UIColor(NeoAppColors.acid).cgColor
+        scanBox.layer.borderWidth = 4
+        scanBox.layer.cornerRadius = NeoAppMetrics.cornerRadius
         scanBox.backgroundColor = UIColor.clear
         scanBox.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(scanBox)
 
         let label = UILabel()
-        label.text = "Point the camera at the barcode"
-        label.textColor = .white
-        label.font = .systemFont(ofSize: 18, weight: .semibold)
+        label.text = "POINT THE CAMERA AT THE BARCODE"
+        label.textColor = UIColor(NeoAppColors.acid)
+        label.font = .systemFont(ofSize: 18, weight: .black)
         label.textAlignment = .center
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -2929,8 +3217,8 @@ final class BarcodeScannerViewController: UIViewController, AVCaptureMetadataOut
 
         let hint = UILabel()
         hint.text = "If the product is not found, scan the nutrition label instead."
-        hint.textColor = UIColor.white.withAlphaComponent(0.72)
-        hint.font = .systemFont(ofSize: 14, weight: .medium)
+        hint.textColor = UIColor.white.withAlphaComponent(0.86)
+        hint.font = .systemFont(ofSize: 14, weight: .bold)
         hint.textAlignment = .center
         hint.numberOfLines = 0
         hint.translatesAutoresizingMaskIntoConstraints = false
@@ -2958,8 +3246,8 @@ final class BarcodeScannerViewController: UIViewController, AVCaptureMetadataOut
     private func showCameraUnavailable(_ message: String) {
         let label = UILabel()
         label.text = message
-        label.textColor = .white
-        label.font = .systemFont(ofSize: 18, weight: .semibold)
+        label.textColor = UIColor(NeoAppColors.acid)
+        label.font = .systemFont(ofSize: 18, weight: .black)
         label.textAlignment = .center
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -3025,19 +3313,21 @@ struct FoodRow: View {
                     .resizable()
                     .scaledToFill()
                     .frame(width: 56, height: 56)
-                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 12, style: .continuous)
-                            .strokeBorder(AppColors.calorie.opacity(0.15), lineWidth: 1)
-                    )
+                    .clipShape(Rectangle())
+                    .overlay {
+                        Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                    }
                     .overlay(alignment: .bottomTrailing) {
                         if !entry.additionalImageData.isEmpty {
                             Text("+\(entry.additionalImageData.count)")
-                                .font(.caption2.weight(.bold))
-                                .foregroundStyle(.white)
+                                .font(.system(.caption2, design: .rounded, weight: .black))
+                                .foregroundStyle(Color.black)
                                 .padding(.horizontal, 6)
                                 .padding(.vertical, 3)
-                                .background(.black.opacity(0.65), in: Capsule())
+                                .background(NeoAppColors.acid)
+                                .overlay {
+                                    Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                                }
                                 .padding(4)
                         }
                     }
@@ -3045,13 +3335,19 @@ struct FoodRow: View {
                 Text(emoji)
                     .font(.system(size: 28))
                     .frame(width: 56, height: 56)
-                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .background(NeoAppColors.subtleSurface)
+                    .overlay {
+                        Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                    }
             } else {
                 Image(systemName: "fork.knife")
-                    .font(.title3)
-                    .foregroundStyle(AppColors.calorie)
+                    .font(.title3.weight(.black))
+                    .foregroundStyle(NeoAppColors.onCobalt)
                     .frame(width: 56, height: 56)
-                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .background(NeoAppColors.cobalt)
+                    .overlay {
+                        Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                    }
             }
 
             // Info
@@ -3059,31 +3355,32 @@ struct FoodRow: View {
                 HStack {
                     HStack(spacing: 4) {
                         Text(entry.name)
-                            .font(.system(.body, design: .rounded, weight: .medium))
+                            .font(.system(.body, design: .rounded, weight: .black).width(.condensed))
+                            .foregroundStyle(NeoAppColors.ink)
                             .fixedSize(horizontal: false, vertical: true)
                         if foodStore.isFavorite(entry) {
                             Image(systemName: "heart.fill")
                                 .font(.caption2)
-                                .foregroundStyle(AppColors.calorie)
+                                .foregroundStyle(NeoAppColors.cobalt)
                         }
                     }
                     Spacer()
                     Text(entry.timeString)
-                        .font(.system(.caption, design: .rounded))
-                        .foregroundStyle(.tertiary)
+                        .font(.system(.caption, design: .rounded, weight: .bold))
+                        .foregroundStyle(NeoAppColors.mutedInk)
                 }
 
                 HStack(spacing: 6) {
                     Text("\(entry.calories) kcal")
-                        .font(.system(.subheadline, design: .rounded, weight: .semibold))
-                        .foregroundStyle(AppColors.calorie)
+                        .font(.system(.subheadline, design: .rounded, weight: .black))
+                        .foregroundStyle(NeoAppColors.cobalt)
 
                     if let serving = servingText {
                         Text("·")
                             .foregroundStyle(.tertiary)
                         Text(serving)
-                            .font(.system(.caption, design: .rounded))
-                            .foregroundStyle(.secondary)
+                            .font(.system(.caption, design: .rounded, weight: .bold))
+                            .foregroundStyle(NeoAppColors.mutedInk)
                     }
                 }
 
@@ -3104,11 +3401,14 @@ struct MacroPill: View {
 
     var body: some View {
         Text("\(label) \(MacroValueFormatter.withUnit(value))")
-            .font(.system(.caption2, design: .rounded, weight: .medium))
-            .foregroundStyle(.secondary)
+            .font(.system(.caption2, design: .rounded, weight: .black).width(.condensed))
+            .foregroundStyle(NeoAppColors.cobalt)
             .padding(.horizontal, 6)
-            .padding(.vertical, 2)
-            .background(AppColors.calorie.opacity(0.08), in: Capsule())
+            .padding(.vertical, 3)
+            .background(NeoAppColors.subtleSurface)
+            .overlay {
+                Rectangle().stroke(NeoAppColors.cobalt, lineWidth: NeoAppMetrics.compactRule)
+            }
     }
 }
 
@@ -3525,7 +3825,7 @@ struct ProfileView: View {
                 .listRowBackground(NeoAppColors.canvas)
 
                 // Section 1: Personal Info
-                Section("Personal Info") {
+                Section {
                     Picker(selection: profileBinding.gender) {
                         Text("Male").tag(Gender.male)
                         Text("Female").tag(Gender.female)
@@ -3593,11 +3893,13 @@ struct ProfileView: View {
                                 .foregroundStyle(AppColors.calorie)
                         }
                     }
+                } header: {
+                    NeoSectionBanner(title: "Personal Info", detail: "Profile", style: .cobalt)
                 }
-                .listRowBackground(AppColors.appCard)
+                .neoListRow()
 
                 // Section 2: Goals & Nutrition
-                Section("Goals & Nutrition") {
+                Section {
                     Picker(selection: profileBinding.goal) {
                         ForEach(WeightGoal.allCases, id: \.self) { goal in
                             Text(goal.displayName).tag(goal)
@@ -3804,11 +4106,13 @@ struct ProfileView: View {
                         }
                     }
                     .tint(.primary)
+                } header: {
+                    NeoSectionBanner(title: "Goals & Nutrition", detail: "Daily targets", style: .acid)
                 }
-                .listRowBackground(AppColors.appCard)
+                .neoListRow()
 
                 // Section 3: App Settings
-                Section("App Settings") {
+                Section {
                     Picker(selection: $appearanceMode) {
                         Text("System").tag("system")
                         Text("Light").tag("light")
@@ -4028,12 +4332,14 @@ struct ProfileView: View {
                         .buttonStyle(.plain)
                     }
 
+                } header: {
+                    NeoSectionBanner(title: "App Settings", detail: "Preferences", style: .cobalt)
                 }
-                .listRowBackground(AppColors.appCard)
+                .neoListRow()
 
                 Group {
                     // Section 4: AI Provider
-                    Section("AI Provider") {
+                    Section {
                         Picker(selection: $selectedProvider) {
                             ForEach(AIProvider.allCases) { provider in
                                 Label(provider.rawValue, systemImage: provider.icon).tag(provider)
@@ -4207,8 +4513,10 @@ struct ProfileView: View {
                                 maxResponseTokensInput
                             }
                         }
+                    } header: {
+                        NeoSectionBanner(title: "AI Provider", detail: "Primary", style: .ink)
                     }
-                        .listRowBackground(AppColors.appCard)
+                        .neoListRow()
                 }
 
                 // Custom AI Instructions (User Context) — prepended to every AI request when non-empty
@@ -4239,11 +4547,11 @@ struct ProfileView: View {
                     }
                     .disabled(customAIInstructions == savedAIInstructions)
                 } header: {
-                    Text("Custom AI Instructions")
+                    NeoSectionBanner(title: "Custom AI Instructions", detail: "Optional context", style: .acid)
                 } footer: {
                     Text("Optional context sent with every AI request — region, diet, athletic goals, anything you'd otherwise repeat each time. Leave empty to disable.")
                 }
-                .listRowBackground(AppColors.appCard)
+                .neoListRow()
 
                 Group {
                     // Fallback Provider — retry on a second provider when the primary fails
@@ -4433,11 +4741,11 @@ struct ProfileView: View {
                             }
                         }
                     } header: {
-                        Text("Fallback Provider")
+                        NeoSectionBanner(title: "Fallback Provider", detail: "Backup", style: .cobalt)
                     } footer: {
                         Text("If your primary provider fails (overloaded, no credits, network error), the request automatically retries on this fallback. Same provider as primary is allowed — just pick a different model.")
                     }
-                        .listRowBackground(AppColors.appCard)
+                        .neoListRow()
 
                         // Speech-to-Text Provider
                         Section {
@@ -4518,17 +4826,17 @@ struct ProfileView: View {
                             }
                         }
                     } header: {
-                        Text("Speech-to-Text")
+                        NeoSectionBanner(title: "Speech-to-Text", detail: "Voice logging", style: .cobalt)
                     } footer: {
                         Text("Used when you tap the voice icon to log a meal. Each provider remembers its own language. Provider Auto keeps the provider default; Use iPhone Language sends your current iPhone language when supported.")
                     }
-                        .listRowBackground(AppColors.appCard)
+                        .neoListRow()
                 }
 
                 WorkoutLoggingSettingsSection()
 
                 // Section 5: Health & Data
-                Section("Health & Data") {
+                Section {
                     // Apple Health
                     HStack {
                         Label {
@@ -4595,8 +4903,10 @@ struct ProfileView: View {
                         .foregroundStyle(.red)
                     }
                     .buttonStyle(.plain)
+                } header: {
+                    NeoSectionBanner(title: "Health & Data", detail: "Privacy + sync", style: .acid)
                 }
-                .listRowBackground(AppColors.appCard)
+                .neoListRow()
 
                 // Support stays separate and immediately visible before About. App Review
                 // treats external developer-donation links as digital payments (guideline
@@ -4627,38 +4937,66 @@ struct ProfileView: View {
                 switch sheet {
                 case .editBirthday:
                     NavigationStack {
-                        VStack(spacing: 20) {
-                            Text("Birthday")
-                                .font(.system(.title2, design: .rounded, weight: .bold))
+                        ScrollView {
+                            VStack(spacing: NeoAppMetrics.sectionSpacing) {
+                                NeoScreenHeader(
+                                    eyebrow: "Profile",
+                                    title: "Birthday",
+                                    subtitle: "Used for accurate daily energy targets"
+                                ) {
+                                    Image(systemName: "birthday.cake.fill")
+                                        .font(.system(size: 22, weight: .black))
+                                        .foregroundStyle(Color.black)
+                                        .frame(width: 48, height: 48)
+                                        .background(NeoAppColors.acid)
+                                        .overlay {
+                                            Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                                        }
+                                }
 
-                            DatePicker(
-                                "Birthday",
-                                selection: profileBinding.birthday,
-                                in: ...Date.now,
-                                displayedComponents: .date
-                            )
-                            .datePickerStyle(.wheel)
-                            .labelsHidden()
-
-                            Button {
-                                saveProfile()
-                                activeSheet = nil
-                            } label: {
-                                Text("Save")
-                                    .font(.system(.headline, design: .rounded, weight: .semibold))
+                                NeoOutlinedPanel(padding: 0) {
+                                    DatePicker(
+                                        "Birthday",
+                                        selection: profileBinding.birthday,
+                                        in: ...Date.now,
+                                        displayedComponents: .date
+                                    )
+                                    .datePickerStyle(.wheel)
+                                    .labelsHidden()
+                                    .tint(NeoAppColors.cobalt)
                                     .frame(maxWidth: .infinity)
-                                    .padding(.vertical, 14)
+                                }
+
+                                Button {
+                                    saveProfile()
+                                    activeSheet = nil
+                                } label: {
+                                    HStack(spacing: 10) {
+                                        Image(systemName: "checkmark.square.fill")
+                                            .font(.system(size: 18, weight: .black))
+                                        Text("Save Birthday")
+                                            .textCase(.uppercase)
+                                            .font(.system(.headline, design: .rounded, weight: .black).width(.condensed))
+                                        Spacer()
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.horizontal, 14)
+                                    .frame(minHeight: 50)
                                     .background(NeoAppColors.acid)
                                     .foregroundStyle(Color.black)
                                     .overlay {
                                         Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
                                     }
+                                }
+                                .buttonStyle(.plain)
                             }
-                            .padding(.horizontal, 24)
-
-                            Spacer()
+                            .padding(NeoAppMetrics.screenInset)
                         }
-                        .padding(.top, 24)
+                        .background(NeoAppColors.canvas)
+                        .tint(NeoAppColors.cobalt)
+                        .navigationTitle("")
+                        .navigationBarTitleDisplayMode(.inline)
+                        .toolbarBackground(NeoAppColors.surface, for: .navigationBar)
                         .toolbar {
                             ToolbarItem(placement: .cancellationAction) {
                                 Button("Cancel") { activeSheet = nil }

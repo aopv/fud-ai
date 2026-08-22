@@ -12,7 +12,18 @@ struct ImportDiaryView: View {
 
     var body: some View {
         NavigationStack {
-            Form {
+            List {
+                Section {
+                    NeoScreenHeader(
+                        eyebrow: "DATA PORTABILITY",
+                        title: "Import Diary",
+                        subtitle: "Validate an exported diary before anything changes."
+                    )
+                    .listRowInsets(EdgeInsets())
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                }
+
                 Section {
                     Button {
                         isPickingFile = true
@@ -31,19 +42,44 @@ struct ImportDiaryView: View {
                             }
                     }
                     .buttonStyle(.plain)
-                    .listRowInsets(EdgeInsets())
+                    .listRowInsets(EdgeInsets(top: 4, leading: 14, bottom: 4, trailing: 14))
                     .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                } header: {
+                    NeoSectionBanner(title: "Select Source", detail: "JSON", style: .cobalt)
                 } footer: {
                     Text("Choose a JSON file previously exported by Fud AI. The file is validated before any food log is changed.")
+                        .font(.system(.footnote, design: .rounded, weight: .bold))
+                        .foregroundStyle(NeoAppColors.mutedInk)
+                        .padding(.top, 6)
                 }
 
                 if let preview {
-                    Section("Import Preview") {
+                    Section {
                         LabeledContent("Food entries", value: "\(preview.entryCount)")
+                            .font(.system(.body, design: .rounded, weight: .bold))
+                            .padding(12)
+                            .frame(maxWidth: .infinity)
+                            .neoPanel(fill: NeoAppColors.surface)
+                            .listRowInsets(EdgeInsets(top: 4, leading: 14, bottom: 4, trailing: 14))
+                            .listRowBackground(Color.clear)
+                            .listRowSeparator(.hidden)
+
                         LabeledContent("Date range", value: rangeText(preview))
+                            .font(.system(.body, design: .rounded, weight: .bold))
+                            .padding(12)
+                            .frame(maxWidth: .infinity)
+                            .neoPanel(fill: NeoAppColors.surface)
+                            .listRowInsets(EdgeInsets(top: 4, leading: 14, bottom: 4, trailing: 14))
+                            .listRowBackground(Color.clear)
+                            .listRowSeparator(.hidden)
+                    } header: {
+                        NeoSectionBanner(
+                            title: "Import Preview",
+                            detail: "\(preview.entryCount) ITEMS",
+                            style: .ink
+                        )
                     }
-                    .listRowBackground(NeoAppColors.surface)
-                    .listRowSeparatorTint(NeoAppColors.ink.opacity(0.35))
 
                     Section {
                         Button {
@@ -63,8 +99,9 @@ struct ImportDiaryView: View {
                                 }
                         }
                         .buttonStyle(.plain)
-                        .listRowInsets(EdgeInsets())
+                        .listRowInsets(EdgeInsets(top: 4, leading: 14, bottom: 4, trailing: 14))
                         .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
 
                         Button {
                             apply(preview, mode: .addAsNew)
@@ -83,14 +120,22 @@ struct ImportDiaryView: View {
                                 }
                         }
                         .buttonStyle(.plain)
-                        .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 0, trailing: 0))
+                        .listRowInsets(EdgeInsets(top: 4, leading: 14, bottom: 4, trailing: 14))
                         .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
+                    } header: {
+                        NeoSectionBanner(title: "Import Mode", detail: "CHOOSE ONE", style: .acid)
                     } footer: {
                         Text("Replace removes existing food logs only within the exported date range, then recreates that range from this file. Matching entries keep their photos. Add keeps the current diary and creates duplicates as new entries.")
+                            .font(.system(.footnote, design: .rounded, weight: .bold))
+                            .foregroundStyle(NeoAppColors.mutedInk)
+                            .padding(.top, 6)
                     }
                 }
             }
             .scrollContentBackground(.hidden)
+            .listStyle(.plain)
+            .listSectionSpacing(NeoAppMetrics.sectionSpacing)
             .background(NeoAppColors.canvas)
             .tint(NeoAppColors.cobalt)
             .navigationTitle("Import Food Diary")

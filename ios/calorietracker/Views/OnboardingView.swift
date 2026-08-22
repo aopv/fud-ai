@@ -99,59 +99,92 @@ struct OnboardingView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-                if step > 0 && step < totalSteps - 1 {
-                    HStack(spacing: 16) {
-                        Button {
-                            withAnimation(.snappy) { step -= 1 }
-                        } label: {
-                            Image(systemName: "chevron.left")
-                                .font(.system(size: 18, weight: .semibold))
-                                .foregroundStyle(.primary)
+            if step > 0 && step < totalSteps - 1 {
+                HStack(spacing: 10) {
+                    Button {
+                        withAnimation(.snappy) { step -= 1 }
+                    } label: {
+                        Image(systemName: "chevron.left")
+                            .font(.system(size: 18, weight: .black))
+                            .foregroundStyle(NeoAppColors.onCobalt)
+                            .frame(width: 44, height: 44)
+                            .background(NeoAppColors.cobalt)
+                            .overlay {
+                                Rectangle()
+                                    .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                            }
+                    }
+                    .buttonStyle(.plain)
+                    .neoInteractiveSurface(cornerRadius: NeoAppMetrics.cornerRadius)
+                    .accessibilityLabel("Back")
+                    .accessibilityIdentifier("onboarding.back")
+
+                    VStack(alignment: .leading, spacing: 6) {
+                        HStack {
+                            Text("PROFILE SETUP")
+                            Spacer(minLength: 8)
+                            Text("\(step) / \(totalSteps - 1)")
                         }
+                        .font(.system(size: 10, weight: .black, design: .rounded).width(.condensed))
+                        .foregroundStyle(NeoAppColors.ink)
 
                         GeometryReader { geo in
                             ZStack(alignment: .leading) {
-                                Capsule()
-                                    .fill(Color.primary.opacity(0.08))
-                                Capsule()
-                                    .fill(Color.primary)
+                                Rectangle()
+                                    .fill(NeoAppColors.subtleSurface)
+                                Rectangle()
+                                    .fill(NeoAppColors.acid)
                                     .frame(width: geo.size.width * CGFloat(step) / CGFloat(totalSteps - 1))
                                     .animation(.snappy, value: step)
                             }
+                            .overlay {
+                                Rectangle()
+                                    .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                            }
                         }
-                        .frame(height: 4)
+                        .frame(height: 8)
                     }
-                    .padding(.horizontal, 24)
-                    .padding(.top, 12)
-                    .padding(.bottom, 8)
-                }
-
-                ZStack {
-                    switch step {
-                    case 0: welcomeStep
-                    case 1: genderStep
-                    case 2: birthdayStep
-                    case 3: heightWeightStep
-                    case 4: bodyFatStep
-                    case 5: activityStep
-                    case 6: goalStep
-                    case 7: desiredWeightStep
-                    case 8: goalSpeedStep
-                    case 9: notificationsStep
-                    case 10: appleHealthStep
-                    case 11: aiProviderStep
-                    case 12: buildingPlanStep
-                    case 13: planReadyStep
-                    default: EmptyView()
+                    .padding(.horizontal, 10)
+                    .frame(height: 44)
+                    .background(NeoAppColors.surface)
+                    .overlay {
+                        Rectangle()
+                            .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
                     }
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .transition(.asymmetric(
-                    insertion: .move(edge: .trailing).combined(with: .opacity),
-                    removal: .move(edge: .leading).combined(with: .opacity)
-                ))
-                .animation(.snappy, value: step)
+                .padding(.horizontal, NeoAppMetrics.screenInset)
+                .padding(.top, 12)
+                .padding(.bottom, 8)
             }
+
+            ZStack {
+                switch step {
+                case 0: welcomeStep
+                case 1: genderStep
+                case 2: birthdayStep
+                case 3: heightWeightStep
+                case 4: bodyFatStep
+                case 5: activityStep
+                case 6: goalStep
+                case 7: desiredWeightStep
+                case 8: goalSpeedStep
+                case 9: notificationsStep
+                case 10: appleHealthStep
+                case 11: aiProviderStep
+                case 12: buildingPlanStep
+                case 13: planReadyStep
+                default: EmptyView()
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .transition(.asymmetric(
+                insertion: .move(edge: .trailing).combined(with: .opacity),
+                removal: .move(edge: .leading).combined(with: .opacity)
+            ))
+            .animation(.snappy, value: step)
+        }
+        .neoScreen()
+        .accessibilityIdentifier("onboarding.flow")
     }
 
     // MARK: - Continue Button
@@ -161,14 +194,13 @@ struct OnboardingView: View {
             action()
             withAnimation(.snappy) { step += 1 }
         } label: {
-            Text(title)
-                .font(.system(.body, design: .rounded, weight: .semibold))
-                .foregroundStyle(Color(.systemBackground))
+            Label(title.uppercased(), systemImage: "arrow.right")
+                .font(.system(.body, design: .rounded, weight: .black).width(.condensed))
                 .frame(maxWidth: .infinity)
-                .frame(height: 54)
-                .background(Color.primary, in: Capsule())
         }
-        .padding(.horizontal, 24)
+        .buttonStyle(NeoOnboardingPrimaryButtonStyle())
+        .accessibilityIdentifier("onboarding.continue")
+        .padding(.horizontal, NeoAppMetrics.screenInset)
         .padding(.bottom, 36)
     }
 
@@ -177,51 +209,66 @@ struct OnboardingView: View {
     private var welcomeStep: some View {
         VStack(spacing: 0) {
             Spacer()
-            VStack(spacing: 20) {
-                Image("onboardingLogo")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 120, height: 120)
+            VStack(spacing: 0) {
+                NeoSectionBanner(title: "FÜD AI", detail: "NUTRITION OS", style: .cobalt)
 
-                VStack(spacing: 8) {
-                    Text("Eat Smart,")
-                        .font(.system(size: 32, weight: .bold, design: .rounded))
-                    Text("Live Better")
-                        .font(.system(size: 32, weight: .bold, design: .rounded))
-                        .foregroundStyle(
-                            LinearGradient(colors: AppColors.calorieGradient, startPoint: .leading, endPoint: .trailing)
-                        )
-                }
-                Text("Just snap, track, and thrive.\nYour nutrition, simplified.")
-                    .font(.system(.callout, design: .rounded))
-                    .foregroundStyle(.secondary)
+                VStack(spacing: 18) {
+                    Image("onboardingLogo")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 104, height: 104)
+                        .padding(10)
+                        .background(NeoAppColors.acid)
+                        .overlay {
+                            Rectangle()
+                                .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                        }
+
+                    VStack(spacing: 2) {
+                        Text("EAT SMART.")
+                        Text("LIVE BETTER.")
+                            .foregroundStyle(NeoAppColors.cobalt)
+                    }
+                    .font(.system(size: 34, weight: .black, design: .rounded).width(.condensed))
                     .multilineTextAlignment(.center)
 
-                // Quick feature tour — everything is free and already unlocked.
-                VStack(alignment: .leading, spacing: 12) {
-                    welcomeFeatureRow(icon: "camera.fill", text: "Snap a photo — AI logs it")
-                    welcomeFeatureRow(icon: "bubble.left.and.bubble.right.fill", text: "Coach that knows your data")
-                    welcomeFeatureRow(icon: "dumbbell.fill", text: "870+ exercise library")
-                    welcomeFeatureRow(icon: "applewatch", text: "Widgets & Apple Watch")
+                    Text("Just snap, track, and thrive.\nYour nutrition, simplified.")
+                        .font(.system(.callout, design: .rounded, weight: .bold))
+                        .foregroundStyle(NeoAppColors.mutedInk)
+                        .multilineTextAlignment(.center)
+
+                    VStack(alignment: .leading, spacing: 0) {
+                        welcomeFeatureRow(icon: "camera.fill", text: "Snap a photo — AI logs it")
+                        welcomeFeatureRow(icon: "bubble.left.and.bubble.right.fill", text: "Coach that knows your data")
+                        welcomeFeatureRow(icon: "dumbbell.fill", text: "870+ exercise library")
+                        welcomeFeatureRow(icon: "applewatch", text: "Widgets & Apple Watch")
+                    }
+                    .overlay {
+                        Rectangle()
+                            .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                    }
                 }
-                .padding(.top, 8)
+                .padding(18)
+                .background(NeoAppColors.surface)
+                .overlay(alignment: .bottom) {
+                    Rectangle()
+                        .fill(NeoAppColors.ink)
+                        .frame(height: NeoAppMetrics.rule)
+                }
             }
+            .padding(.horizontal, NeoAppMetrics.screenInset)
             Spacer()
 
             Button {
                 withAnimation(.snappy) { step += 1 }
             } label: {
-                Text("Get Started")
-                    .font(.system(.headline, design: .rounded, weight: .semibold))
+                Label("GET STARTED", systemImage: "bolt.fill")
+                    .font(.system(.headline, design: .rounded, weight: .black).width(.condensed))
                     .frame(maxWidth: .infinity)
-                    .padding(.vertical, 16)
-                    .background(
-                        LinearGradient(colors: AppColors.calorieGradient, startPoint: .leading, endPoint: .trailing)
-                    )
-                    .foregroundStyle(.white)
-                    .clipShape(RoundedRectangle(cornerRadius: 14))
             }
-            .padding(.horizontal, 24)
+            .buttonStyle(NeoOnboardingPrimaryButtonStyle())
+            .accessibilityIdentifier("onboarding.getStarted")
+            .padding(.horizontal, NeoAppMetrics.screenInset)
             .padding(.bottom, 36)
         }
     }
@@ -239,7 +286,7 @@ struct OnboardingView: View {
                     }
                 }
             }
-            .padding(.horizontal, 24)
+            .padding(.horizontal, NeoAppMetrics.screenInset)
             Spacer()
             continueButton()
         }
@@ -251,10 +298,13 @@ struct OnboardingView: View {
         VStack(alignment: .leading, spacing: 0) {
             stepHeader(title: "When's your birthday?", subtitle: "Used to calculate your daily needs")
             Spacer()
-            DatePicker("Birthday", selection: $birthday, in: ...Date(), displayedComponents: .date)
-                .datePickerStyle(.wheel)
-                .labelsHidden()
-                .padding(.horizontal, 24)
+            NeoOutlinedPanel(padding: 0) {
+                DatePicker("Birthday", selection: $birthday, in: ...Date(), displayedComponents: .date)
+                    .datePickerStyle(.wheel)
+                    .labelsHidden()
+                    .tint(NeoAppColors.cobalt)
+            }
+            .padding(.horizontal, NeoAppMetrics.screenInset)
             Spacer()
             continueButton()
         }
@@ -270,8 +320,11 @@ struct OnboardingView: View {
                 Text("Metric").tag(true)
             }
             .pickerStyle(.segmented)
-            .padding(.horizontal, 24)
-            .padding(.top, 16)
+            .tint(NeoAppColors.cobalt)
+            .padding(10)
+            .neoPanel()
+            .padding(.horizontal, NeoAppMetrics.screenInset)
+            .padding(.top, 12)
             .onChange(of: isMetric) { _, newValue in
                 heightUnitRaw = newValue ? "cm" : "ftin"
                 weightUnitRaw = newValue ? "kg" : "lbs"
@@ -285,41 +338,55 @@ struct OnboardingView: View {
             // values like 152 alongside the decimal column.
             // Each wheel reads its own split unit pref, so mixed configurations
             // (e.g. ft/in + kg) render correctly when re-entering onboarding.
-            VStack(spacing: 8) {
-                if isHeightMetric {
-                    VStack(spacing: 4) {
-                        Text("Height").font(.system(.caption, design: .rounded, weight: .medium)).foregroundStyle(.secondary)
-                        Picker("cm", selection: $heightCm) {
-                            ForEach(100...250, id: \.self) { cm in Text("\(cm) cm").tag(cm) }
-                        }.pickerStyle(.wheel).frame(height: 130)
-                    }
-                } else {
-                    HStack(spacing: 8) {
+            NeoOutlinedPanel {
+                VStack(spacing: 8) {
+                    if isHeightMetric {
                         VStack(spacing: 4) {
-                            Text("Feet").font(.system(.caption, design: .rounded, weight: .medium)).foregroundStyle(.secondary)
-                            Picker("ft", selection: $heightFeet) {
-                                ForEach(3...8, id: \.self) { ft in Text("\(ft) ft").tag(ft) }
+                            Text("HEIGHT")
+                                .font(.system(.caption, design: .rounded, weight: .black).width(.condensed))
+                                .foregroundStyle(NeoAppColors.cobalt)
+                            Picker("cm", selection: $heightCm) {
+                                ForEach(100...250, id: \.self) { cm in Text("\(cm) cm").tag(cm) }
                             }.pickerStyle(.wheel).frame(height: 130)
                         }
-                        VStack(spacing: 4) {
-                            Text("Inches").font(.system(.caption, design: .rounded, weight: .medium)).foregroundStyle(.secondary)
-                            Picker("in", selection: $heightInches) {
-                                ForEach(0...11, id: \.self) { inch in Text("\(inch) in").tag(inch) }
-                            }.pickerStyle(.wheel).frame(height: 130)
-                        }
-                    }
-                }
-                VStack(spacing: 4) {
-                    Text(LocalizedDisplayText.text("Weight")).font(.system(.caption, design: .rounded, weight: .medium)).foregroundStyle(.secondary)
-                    if isWeightMetric {
-                        decimalWeightWheel(whole: $weightKgWhole, tenth: $weightKgTenth, range: 30...250, unit: "kg")
-                            .frame(height: 130)
                     } else {
-                        decimalWeightWheel(whole: $weightLbsWhole, tenth: $weightLbsTenth, range: 60...500, unit: "lbs")
-                            .frame(height: 130)
+                        HStack(spacing: 8) {
+                            VStack(spacing: 4) {
+                                Text("FEET")
+                                    .font(.system(.caption, design: .rounded, weight: .black).width(.condensed))
+                                    .foregroundStyle(NeoAppColors.cobalt)
+                                Picker("ft", selection: $heightFeet) {
+                                    ForEach(3...8, id: \.self) { ft in Text("\(ft) ft").tag(ft) }
+                                }.pickerStyle(.wheel).frame(height: 130)
+                            }
+                            VStack(spacing: 4) {
+                                Text("INCHES")
+                                    .font(.system(.caption, design: .rounded, weight: .black).width(.condensed))
+                                    .foregroundStyle(NeoAppColors.cobalt)
+                                Picker("in", selection: $heightInches) {
+                                    ForEach(0...11, id: \.self) { inch in Text("\(inch) in").tag(inch) }
+                                }.pickerStyle(.wheel).frame(height: 130)
+                            }
+                        }
+                    }
+                    Rectangle()
+                        .fill(NeoAppColors.ink)
+                        .frame(height: NeoAppMetrics.compactRule)
+                    VStack(spacing: 4) {
+                        Text(LocalizedDisplayText.text("WEIGHT"))
+                            .font(.system(.caption, design: .rounded, weight: .black).width(.condensed))
+                            .foregroundStyle(NeoAppColors.cobalt)
+                        if isWeightMetric {
+                            decimalWeightWheel(whole: $weightKgWhole, tenth: $weightKgTenth, range: 30...250, unit: "kg")
+                                .frame(height: 130)
+                        } else {
+                            decimalWeightWheel(whole: $weightLbsWhole, tenth: $weightLbsTenth, range: 60...500, unit: "lbs")
+                                .frame(height: 130)
+                        }
                     }
                 }
-            }.padding(.horizontal, 24)
+            }
+            .padding(.horizontal, NeoAppMetrics.screenInset)
             Spacer()
             continueButton()
         }
@@ -332,94 +399,93 @@ struct OnboardingView: View {
             stepHeader(title: "Do you know your\nbody fat %?", subtitle: "Helps us calculate your metabolism more accurately")
             Spacer()
             VStack(spacing: 12) {
-                selectionCard(icon: "checkmark.circle", title: "Yes", isSelected: knowsBodyFat) {
+                selectionCard(icon: "checkmark.square", title: "Yes", isSelected: knowsBodyFat) {
                     withAnimation(.spring(response: 0.3)) { knowsBodyFat = true }
                 }
-                selectionCard(icon: "xmark.circle", title: "No", isSelected: !knowsBodyFat) {
+                selectionCard(icon: "xmark.square", title: "No", isSelected: !knowsBodyFat) {
                     withAnimation(.spring(response: 0.3)) { knowsBodyFat = false }
                 }
             }
-            .padding(.horizontal, 24)
+            .padding(.horizontal, NeoAppMetrics.screenInset)
             if knowsBodyFat {
                 ScrollView {
                     VStack(spacing: 16) {
-                        VStack(spacing: 4) {
-                            Text("Current")
-                                .font(.system(.subheadline, design: .rounded, weight: .semibold))
-                                .foregroundStyle(.secondary)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.horizontal, 24)
-                            Picker("Body Fat %", selection: $bodyFatPercentage) {
-                                ForEach(3...60, id: \.self) { pct in Text("\(pct)%").tag(pct) }
-                            }
-                            .pickerStyle(.wheel)
-                            .frame(height: 130)
-                            .padding(.horizontal, 24)
-                            Text("Common ranges: Men 10–25%, Women 18–35%")
-                                .font(.system(.caption, design: .rounded))
-                                .foregroundStyle(.secondary)
-                                .frame(maxWidth: .infinity)
-                        }
-
-                        // Optional goal sub-section. Skip is the default — keeping it
-                        // off-by-default avoids surprising users who don't have a
-                        // body-recomp goal in mind. Goal body fat % is display-only
-                        // (drives the Progress tab chart line) — it does NOT
-                        // participate in BMR / TDEE / macro math.
-                        VStack(spacing: 4) {
-                            HStack {
-                                Text("Goal (optional)")
-                                    .font(.system(.subheadline, design: .rounded, weight: .semibold))
-                                    .foregroundStyle(.secondary)
-                                Spacer()
-                                Toggle("", isOn: Binding(
-                                    get: { goalBodyFatPercentInt != nil },
-                                    set: { isOn in
-                                        // Default the goal to the current value
-                                        // when toggled on — gives the user a sane
-                                        // starting point to scroll up/down from.
-                                        goalBodyFatPercentInt = isOn ? bodyFatPercentage : nil
-                                    }
-                                ))
-                                .labelsHidden()
-                                .tint(AppColors.calorie)
-                            }
-                            .padding(.horizontal, 24)
-
-                            if let _ = goalBodyFatPercentInt {
-                                Picker("Goal Body Fat %", selection: Binding(
-                                    get: { goalBodyFatPercentInt ?? bodyFatPercentage },
-                                    set: { goalBodyFatPercentInt = $0 }
-                                )) {
+                        NeoOutlinedPanel {
+                            VStack(spacing: 4) {
+                                Text("CURRENT BODY FAT")
+                                    .font(.system(.subheadline, design: .rounded, weight: .black).width(.condensed))
+                                    .foregroundStyle(NeoAppColors.cobalt)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                Picker("Body Fat %", selection: $bodyFatPercentage) {
                                     ForEach(3...60, id: \.self) { pct in Text("\(pct)%").tag(pct) }
                                 }
                                 .pickerStyle(.wheel)
-                                .frame(height: 110)
-                                .padding(.horizontal, 24)
-                            } else {
-                                Text("You can set this later in Settings.")
-                                    .font(.system(.caption, design: .rounded))
-                                    .foregroundStyle(.tertiary)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    .padding(.horizontal, 24)
-                                    .padding(.top, 4)
+                                .frame(height: 130)
+                                Text("COMMON RANGES: MEN 10–25% • WOMEN 18–35%")
+                                    .font(.system(.caption, design: .rounded, weight: .bold).width(.condensed))
+                                    .foregroundStyle(NeoAppColors.mutedInk)
+                                    .frame(maxWidth: .infinity)
                             }
                         }
+                        .padding(.horizontal, NeoAppMetrics.screenInset)
+
+                        NeoOutlinedPanel {
+                            VStack(spacing: 4) {
+                                HStack {
+                                    Text("GOAL (OPTIONAL)")
+                                        .font(.system(.subheadline, design: .rounded, weight: .black).width(.condensed))
+                                        .foregroundStyle(NeoAppColors.cobalt)
+                                    Spacer()
+                                    Toggle("", isOn: Binding(
+                                        get: { goalBodyFatPercentInt != nil },
+                                        set: { isOn in
+                                            // Default the goal to the current value
+                                            // when toggled on — gives the user a sane
+                                            // starting point to scroll up/down from.
+                                            goalBodyFatPercentInt = isOn ? bodyFatPercentage : nil
+                                        }
+                                    ))
+                                    .labelsHidden()
+                                    .tint(NeoAppColors.cobalt)
+                                }
+
+                                if let _ = goalBodyFatPercentInt {
+                                    Picker("Goal Body Fat %", selection: Binding(
+                                        get: { goalBodyFatPercentInt ?? bodyFatPercentage },
+                                        set: { goalBodyFatPercentInt = $0 }
+                                    )) {
+                                        ForEach(3...60, id: \.self) { pct in Text("\(pct)%").tag(pct) }
+                                    }
+                                    .pickerStyle(.wheel)
+                                    .frame(height: 110)
+                                } else {
+                                    Text("You can set this later in Settings.")
+                                        .font(.system(.caption, design: .rounded, weight: .bold))
+                                        .foregroundStyle(NeoAppColors.mutedInk)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .padding(.top, 4)
+                                }
+                            }
+                        }
+                        .padding(.horizontal, NeoAppMetrics.screenInset)
                     }
                     .padding(.vertical, 8)
                 }
             } else {
                 VStack(spacing: 8) {
                     Image(systemName: "function")
-                        .font(.system(size: 28))
-                        .foregroundStyle(.secondary)
+                        .font(.system(size: 28, weight: .black))
+                        .foregroundStyle(NeoAppColors.cobalt)
                     Text("No worries! We'll use a standard formula\nbased on your height, weight, and age.")
-                        .font(.system(.callout, design: .rounded))
-                        .foregroundStyle(.secondary)
+                        .font(.system(.callout, design: .rounded, weight: .bold))
+                        .foregroundStyle(NeoAppColors.mutedInk)
                         .multilineTextAlignment(.center)
                 }
-                .padding(.top, 24)
+                .padding(18)
                 .frame(maxWidth: .infinity)
+                .neoPanel()
+                .padding(.horizontal, NeoAppMetrics.screenInset)
+                .padding(.top, 24)
             }
             Spacer()
             continueButton()
@@ -445,7 +511,7 @@ struct OnboardingView: View {
                         }
                     }
                 }
-                .padding(.horizontal, 24)
+                .padding(.horizontal, NeoAppMetrics.screenInset)
                 .padding(.vertical, 16)
             }
             continueButton()
@@ -465,7 +531,7 @@ struct OnboardingView: View {
                     }
                 }
             }
-            .padding(.horizontal, 24)
+            .padding(.horizontal, NeoAppMetrics.screenInset)
             Spacer()
             continueButton {
                 // Seed the desired-weight wheels from the current weight + a
@@ -498,11 +564,17 @@ struct OnboardingView: View {
             stepHeader(title: "What's your\ndesired weight?", subtitle: goal.displayName)
             Spacer()
             if isWeightMetric {
-                decimalWeightWheel(whole: $targetWeightKgWhole, tenth: $targetWeightKgTenth, range: 30...250, unit: "kg")
-                    .frame(height: 150).padding(.horizontal, 24)
+                NeoOutlinedPanel {
+                    decimalWeightWheel(whole: $targetWeightKgWhole, tenth: $targetWeightKgTenth, range: 30...250, unit: "kg")
+                        .frame(height: 150)
+                }
+                .padding(.horizontal, NeoAppMetrics.screenInset)
             } else {
-                decimalWeightWheel(whole: $targetWeightLbsWhole, tenth: $targetWeightLbsTenth, range: 60...500, unit: "lbs")
-                    .frame(height: 150).padding(.horizontal, 24)
+                NeoOutlinedPanel {
+                    decimalWeightWheel(whole: $targetWeightLbsWhole, tenth: $targetWeightLbsTenth, range: 60...500, unit: "lbs")
+                        .frame(height: 150)
+                }
+                .padding(.horizontal, NeoAppMetrics.screenInset)
             }
             Spacer()
             continueButton()
@@ -523,9 +595,9 @@ struct OnboardingView: View {
             .clipped()
 
             Text(".")
-                .font(.system(size: 24, weight: .bold, design: .rounded))
+                .font(.system(size: 24, weight: .black, design: .rounded))
                 .offset(y: -1)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(NeoAppColors.cobalt)
 
             Picker("tenth", selection: tenth) {
                 ForEach(0...9, id: \.self) { n in Text("\(n)").tag(n) }
@@ -535,8 +607,8 @@ struct OnboardingView: View {
             .clipped()
 
             Text(unit)
-                .font(.system(.caption, design: .rounded))
-                .foregroundStyle(.secondary)
+                .font(.system(.caption, design: .rounded, weight: .black).width(.condensed))
+                .foregroundStyle(NeoAppColors.mutedInk)
                 .padding(.leading, 4)
         }
     }
@@ -562,62 +634,79 @@ struct OnboardingView: View {
                 Spacer()
                 VStack(spacing: 12) {
                     Image(systemName: "checkmark.seal.fill")
-                        .font(.system(size: 48)).foregroundStyle(AppColors.protein)
-                    Text("Balanced pace set")
-                        .font(.system(.title3, design: .rounded, weight: .semibold))
+                        .font(.system(size: 48, weight: .black))
+                        .foregroundStyle(NeoAppColors.cobalt)
+                    Text("BALANCED PACE SET")
+                        .font(.system(.title3, design: .rounded, weight: .black).width(.condensed))
                     Text("We'll keep your calories steady\nto maintain your current weight.")
-                        .font(.system(.callout, design: .rounded)).foregroundStyle(.secondary).multilineTextAlignment(.center)
-                }.frame(maxWidth: .infinity)
+                        .font(.system(.callout, design: .rounded, weight: .bold))
+                        .foregroundStyle(NeoAppColors.mutedInk)
+                        .multilineTextAlignment(.center)
+                }
+                .padding(20)
+                .frame(maxWidth: .infinity)
+                .neoPanel()
+                .padding(.horizontal, NeoAppMetrics.screenInset)
                 Spacer()
             } else {
                 Spacer()
                 VStack(spacing: 24) {
                     VStack(spacing: 4) {
                         Text("\(WeightDisplayFormatter.weeklyChangeValue(kilograms: weeklyChangeKg, useMetric: isWeightMetric)) \(weightUnit)")
-                            .font(.system(size: 40, weight: .bold, design: .rounded))
+                            .font(.system(size: 40, weight: .black, design: .rounded).width(.condensed))
+                            .foregroundStyle(NeoAppColors.cobalt)
                             .contentTransition(.numericText()).animation(.snappy, value: goalSpeed)
-                        Text("per week").font(.system(.callout, design: .rounded)).foregroundStyle(.secondary)
+                        Text("PER WEEK")
+                            .font(.system(.callout, design: .rounded, weight: .black).width(.condensed))
+                            .foregroundStyle(NeoAppColors.mutedInk)
                     }
                     HStack(spacing: 0) {
                         VStack(spacing: 6) {
                             Image(systemName: "tortoise.fill").font(.system(size: 24))
-                                .foregroundStyle(goalSpeed == 0 ? AppColors.calorie : Color.secondary.opacity(0.4))
-                            Text("Slow").font(.system(.caption, design: .rounded, weight: .medium))
-                                .foregroundStyle(goalSpeed == 0 ? AppColors.calorie : .secondary)
+                                .foregroundStyle(goalSpeed == 0 ? NeoAppColors.cobalt : NeoAppColors.mutedInk.opacity(0.4))
+                            Text("SLOW").font(.system(.caption, design: .rounded, weight: .black).width(.condensed))
+                                .foregroundStyle(goalSpeed == 0 ? NeoAppColors.cobalt : NeoAppColors.mutedInk)
                         }.frame(maxWidth: .infinity)
                         VStack(spacing: 6) {
                             Image(systemName: "hare.fill").font(.system(size: 24))
-                                .foregroundStyle(goalSpeed == 1 ? AppColors.calorie : Color.secondary.opacity(0.4))
-                            Text("Recommended").font(.system(.caption, design: .rounded, weight: .medium))
-                                .foregroundStyle(goalSpeed == 1 ? AppColors.calorie : .secondary)
+                                .foregroundStyle(goalSpeed == 1 ? NeoAppColors.cobalt : NeoAppColors.mutedInk.opacity(0.4))
+                            Text("RECOMMENDED").font(.system(.caption, design: .rounded, weight: .black).width(.condensed))
+                                .foregroundStyle(goalSpeed == 1 ? NeoAppColors.cobalt : NeoAppColors.mutedInk)
                         }.frame(maxWidth: .infinity)
                         VStack(spacing: 6) {
                             Image(systemName: "bolt.fill").font(.system(size: 24))
-                                .foregroundStyle(goalSpeed == 2 ? AppColors.calorie : Color.secondary.opacity(0.4))
-                            Text("Fast").font(.system(.caption, design: .rounded, weight: .medium))
-                                .foregroundStyle(goalSpeed == 2 ? AppColors.calorie : .secondary)
+                                .foregroundStyle(goalSpeed == 2 ? NeoAppColors.cobalt : NeoAppColors.mutedInk.opacity(0.4))
+                            Text("FAST").font(.system(.caption, design: .rounded, weight: .black).width(.condensed))
+                                .foregroundStyle(goalSpeed == 2 ? NeoAppColors.cobalt : NeoAppColors.mutedInk)
                         }.frame(maxWidth: .infinity)
-                    }.padding(.horizontal, 24)
+                    }
+                    .padding(12)
+                    .neoPanel()
+                    .padding(.horizontal, NeoAppMetrics.screenInset)
                     Slider(value: Binding(
                         get: { Double(goalSpeed) },
                         set: { goalSpeed = Int($0.rounded()) }
-                    ), in: 0...2, step: 1).tint(AppColors.calorie).padding(.horizontal, 40)
+                    ), in: 0...2, step: 1)
+                    .tint(NeoAppColors.cobalt)
+                    .padding(.horizontal, 40)
                     VStack(alignment: .leading, spacing: 6) {
                         HStack(spacing: 0) {
                             Text("You'll reach your goal in ")
-                                .font(.system(.subheadline, design: .rounded, weight: .medium))
-                            Text("\(estimatedDays) days")
                                 .font(.system(.subheadline, design: .rounded, weight: .bold))
-                                .foregroundStyle(AppColors.calorie)
+                            Text("\(estimatedDays) days")
+                                .font(.system(.subheadline, design: .rounded, weight: .black))
+                                .foregroundStyle(NeoAppColors.cobalt)
                         }
                         Text(goalSpeed == 1 ? "The most balanced pace, motivating and sustainable."
                              : goalSpeed == 0 ? "Gentle and sustainable. Great for long-term habits."
                              : "Aggressive but doable. Requires strong discipline.")
-                            .font(.system(.caption, design: .rounded)).foregroundStyle(.secondary)
+                            .font(.system(.caption, design: .rounded, weight: .bold))
+                            .foregroundStyle(NeoAppColors.mutedInk)
                     }
-                    .padding(16).frame(maxWidth: .infinity, alignment: .leading)
-                    .background(AppColors.appCard, in: RoundedRectangle(cornerRadius: 14))
-                    .padding(.horizontal, 24)
+                    .padding(16)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .neoPanel()
+                    .padding(.horizontal, NeoAppMetrics.screenInset)
                 }
                 Spacer()
             }
@@ -631,38 +720,58 @@ struct OnboardingView: View {
 
     private var notificationsStep: some View {
         VStack(spacing: 0) {
+            stepHeader(title: "Meal reminders", subtitle: "Choose whether Füd AI can keep your logging routine on track")
             Spacer()
 
-            VStack(spacing: 24) {
+            VStack(spacing: 18) {
                 Image(systemName: "bell.badge.fill")
-                    .font(.system(size: 56))
-                    .foregroundStyle(AppColors.calorie)
+                    .font(.system(size: 42, weight: .black))
+                    .foregroundStyle(NeoAppColors.onCobalt)
+                    .frame(width: 88, height: 88)
+                    .background(NeoAppColors.cobalt)
+                    .overlay {
+                        Rectangle()
+                            .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                    }
 
-                Text("Be reminded to\nlog meals")
-                    .font(.system(size: 28, weight: .bold, design: .rounded))
+                Text("BE REMINDED TO\nLOG MEALS")
+                    .font(.system(size: 28, weight: .black, design: .rounded).width(.condensed))
+                    .foregroundStyle(NeoAppColors.ink)
                     .multilineTextAlignment(.center)
 
                 Text("Get gentle reminders at meal times\nso you never forget to track.")
-                    .font(.system(.callout, design: .rounded))
-                    .foregroundStyle(.secondary)
+                    .font(.system(.callout, design: .rounded, weight: .bold))
+                    .foregroundStyle(NeoAppColors.mutedInk)
                     .multilineTextAlignment(.center)
 
-                VStack(spacing: 12) {
-                    Text("Fud AI would like to send you Notifications")
-                        .font(.system(.subheadline, design: .rounded, weight: .medium))
+                VStack(spacing: 0) {
+                    NeoSectionBanner(title: "NOTIFICATIONS", detail: "OPTIONAL", style: .cobalt)
+                    Text("FÜD AI WOULD LIKE TO SEND YOU NOTIFICATIONS")
+                        .font(.system(.subheadline, design: .rounded, weight: .black).width(.condensed))
+                        .foregroundStyle(NeoAppColors.ink)
                         .multilineTextAlignment(.center)
-                    Divider()
-                    HStack {
+                        .padding(14)
+                        .frame(maxWidth: .infinity)
+                        .background(NeoAppColors.surface)
+                    Rectangle()
+                        .fill(NeoAppColors.ink)
+                        .frame(height: NeoAppMetrics.compactRule)
+                    HStack(spacing: 0) {
                         Button {
                             notificationsEnabled = false
                             withAnimation(.snappy) { step += 1 }
                         } label: {
-                            Text("Don't Allow")
-                                .font(.system(.subheadline, design: .rounded, weight: .medium))
-                                .foregroundStyle(.secondary)
+                            Text("DON'T ALLOW")
+                                .font(.system(.subheadline, design: .rounded, weight: .black).width(.condensed))
+                                .foregroundStyle(NeoAppColors.ink)
                                 .frame(maxWidth: .infinity)
+                                .frame(height: 48)
+                                .background(NeoAppColors.surface)
                         }
-                        Divider().frame(height: 30)
+                        .buttonStyle(.plain)
+                        Rectangle()
+                            .fill(NeoAppColors.ink)
+                            .frame(width: NeoAppMetrics.compactRule, height: 48)
                         Button {
                             Task {
                                 let granted = await notificationManager.requestAuthorization()
@@ -677,16 +786,21 @@ struct OnboardingView: View {
                                 withAnimation(.snappy) { step += 1 }
                             }
                         } label: {
-                            Text("Allow")
-                                .font(.system(.subheadline, design: .rounded, weight: .semibold))
-                                .foregroundStyle(.primary)
+                            Text("ALLOW")
+                                .font(.system(.subheadline, design: .rounded, weight: .black).width(.condensed))
+                                .foregroundStyle(Color.black)
                                 .frame(maxWidth: .infinity)
+                                .frame(height: 48)
+                                .background(NeoAppColors.acid)
                         }
+                        .buttonStyle(.plain)
                     }
                 }
-                .padding(16)
-                .background(AppColors.appCard, in: RoundedRectangle(cornerRadius: 16))
-                .padding(.horizontal, 24)
+                .overlay {
+                    Rectangle()
+                        .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                }
+                .padding(.horizontal, NeoAppMetrics.screenInset)
             }
 
             Spacer()
@@ -695,10 +809,12 @@ struct OnboardingView: View {
                 notificationsEnabled = false
                 withAnimation(.snappy) { step += 1 }
             } label: {
-                Text("Skip")
-                    .font(.system(.body, design: .rounded, weight: .medium))
-                    .foregroundStyle(.secondary)
+                Text("SKIP FOR NOW")
+                    .font(.system(.body, design: .rounded, weight: .black).width(.condensed))
+                    .frame(maxWidth: .infinity)
             }
+            .buttonStyle(NeoOnboardingSecondaryButtonStyle())
+            .padding(.horizontal, NeoAppMetrics.screenInset)
             .padding(.bottom, 36)
         }
     }
@@ -707,29 +823,29 @@ struct OnboardingView: View {
 
     private var appleHealthStep: some View {
         VStack(spacing: 0) {
+            stepHeader(title: "Apple Health", subtitle: "Keep body measurements and nutrition in sync")
             Spacer()
 
             VStack(spacing: 20) {
-                ZStack {
-                    Circle()
-                        .fill(Color.secondary.opacity(0.06))
-                        .frame(width: 120, height: 120)
-
-                    Image(systemName: "heart.fill")
-                        .font(.system(size: 48))
-                        .foregroundStyle(
-                            LinearGradient(colors: [.pink, .red], startPoint: .topLeading, endPoint: .bottomTrailing)
-                        )
-                }
+                Image(systemName: "heart.text.square.fill")
+                    .font(.system(size: 48, weight: .black))
+                    .foregroundStyle(NeoAppColors.onCobalt)
+                    .frame(width: 104, height: 104)
+                    .background(NeoAppColors.cobalt)
+                    .overlay {
+                        Rectangle()
+                            .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                    }
 
                 VStack(spacing: 8) {
-                    Text("Connect to\nApple Health")
-                        .font(.system(size: 28, weight: .bold, design: .rounded))
+                    Text("CONNECT TO\nAPPLE HEALTH")
+                        .font(.system(size: 28, weight: .black, design: .rounded).width(.condensed))
+                        .foregroundStyle(NeoAppColors.ink)
                         .multilineTextAlignment(.center)
 
                     Text("Keep your nutrition and body\nmeasurements in sync automatically.")
-                        .font(.system(.callout, design: .rounded))
-                        .foregroundStyle(.secondary)
+                        .font(.system(.callout, design: .rounded, weight: .bold))
+                        .foregroundStyle(NeoAppColors.mutedInk)
                         .multilineTextAlignment(.center)
                 }
 
@@ -739,7 +855,7 @@ struct OnboardingView: View {
                     healthFeatureRow(icon: "scalemass.fill", label: "Weight Sync")
                     healthFeatureRow(icon: "figure.stand", label: "Body Measurements")
                 }
-                .padding(.horizontal, 40)
+                .padding(.horizontal, NeoAppMetrics.screenInset)
             }
 
             Spacer()
@@ -775,14 +891,13 @@ struct OnboardingView: View {
                         withAnimation(.snappy) { step += 1 }
                     }
                 } label: {
-                    Text("Continue")
-                        .font(.system(.body, design: .rounded, weight: .semibold))
-                        .foregroundStyle(.white)
+                    Label("CONNECT & CONTINUE", systemImage: "heart.fill")
+                        .font(.system(.body, design: .rounded, weight: .black).width(.condensed))
                         .frame(maxWidth: .infinity)
-                        .frame(height: 54)
-                        .background(AppColors.calorie, in: RoundedRectangle(cornerRadius: 16))
                 }
-                .padding(.horizontal, 24)
+                .buttonStyle(NeoOnboardingPrimaryButtonStyle())
+                .accessibilityIdentifier("onboarding.health.continue")
+                .padding(.horizontal, NeoAppMetrics.screenInset)
                 .padding(.bottom, 20)
             }
         }
@@ -792,103 +907,115 @@ struct OnboardingView: View {
 
     private var aiProviderStep: some View {
         VStack(spacing: 0) {
+            stepHeader(title: "Set up your AI", subtitle: "Connect the provider you trust with your own key")
+
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 18) {
-                    ZStack {
-                        Circle()
-                            .fill(.ultraThinMaterial)
-                            .frame(width: 104, height: 104)
-
-                        Image(systemName: "sparkles")
-                            .font(.system(size: 42))
-                            .foregroundStyle(
-                                LinearGradient(colors: AppColors.calorieGradient, startPoint: .topLeading, endPoint: .bottomTrailing)
-                            )
-                    }
+                    Image(systemName: "sparkles")
+                        .font(.system(size: 42, weight: .black))
+                        .foregroundStyle(Color.black)
+                        .frame(width: 96, height: 96)
+                        .background(NeoAppColors.acid)
+                        .overlay {
+                            Rectangle()
+                                .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                        }
 
                     VStack(spacing: 8) {
-                        Text("Set Up Your AI")
-                            .font(.system(size: 28, weight: .bold, design: .rounded))
+                        Text("BRING YOUR OWN AI")
+                            .font(.system(size: 28, weight: .black, design: .rounded).width(.condensed))
+                            .foregroundStyle(NeoAppColors.ink)
                             .multilineTextAlignment(.center)
 
                         Text("Add your own AI provider key — Gemini, OpenAI, Groq, and more are supported. The app stays free.")
-                            .font(.system(.callout, design: .rounded))
-                            .foregroundStyle(.secondary)
+                            .font(.system(.callout, design: .rounded, weight: .bold))
+                            .foregroundStyle(NeoAppColors.mutedInk)
                             .multilineTextAlignment(.center)
-                            .padding(.horizontal, 24)
+                            .padding(.horizontal, NeoAppMetrics.screenInset)
                     }
 
                     byokConfigSection
-                        .padding(.horizontal, 24)
+                        .padding(.horizontal, NeoAppMetrics.screenInset)
 
-                    VStack(alignment: .leading, spacing: 12) {
-                        aiNoticeRow(
-                            icon: "photo.fill",
-                            title: "AI analysis",
-                            text: "Food photos, voice transcripts, and typed meals are sent directly to your selected AI provider."
-                        )
-                        aiNoticeRow(
-                            icon: "lock.shield.fill",
-                            title: "Local data",
-                            text: "Your food log, weight history, body-fat history, and BYOK API keys stay on this device."
-                        )
+                    VStack(spacing: 0) {
+                        NeoSectionBanner(title: "DATA & PRIVACY", detail: "READ THIS", style: .cobalt)
+                        VStack(alignment: .leading, spacing: 12) {
+                            aiNoticeRow(
+                                icon: "photo.fill",
+                                title: "AI analysis",
+                                text: "Food photos, voice transcripts, and typed meals are sent directly to your selected AI provider."
+                            )
+                            aiNoticeRow(
+                                icon: "lock.shield.fill",
+                                title: "Local data",
+                                text: "Your food log, weight history, body-fat history, and BYOK API keys stay on this device."
+                            )
+                        }
+                        .padding(14)
+                        .background(NeoAppColors.surface)
                     }
-                    .padding(16)
-                    .background(AppColors.appCard, in: RoundedRectangle(cornerRadius: 16))
-                    .padding(.horizontal, 24)
+                    .overlay {
+                        Rectangle()
+                            .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                    }
+                    .padding(.horizontal, NeoAppMetrics.screenInset)
 
-                    VStack(alignment: .leading, spacing: 12) {
+                    VStack(alignment: .leading, spacing: 14) {
                         Button {
                             hasAcceptedTerms.toggle()
                         } label: {
                             HStack(alignment: .top, spacing: 10) {
                                 Image(systemName: hasAcceptedTerms ? "checkmark.square.fill" : "square")
-                                    .font(.system(size: 22, weight: .semibold))
-                                    .foregroundStyle(hasAcceptedTerms ? AppColors.calorie : .secondary)
+                                    .font(.system(size: 22, weight: .black))
+                                    .foregroundStyle(hasAcceptedTerms ? Color.black : NeoAppColors.mutedInk)
                                     .frame(width: 26, height: 26)
 
                                 Text("I accept the Terms of Service and Privacy Policy, including AI provider data sharing described above.")
-                                    .font(.system(.footnote, design: .rounded, weight: .medium))
-                                    .foregroundStyle(.primary)
+                                    .font(.system(.footnote, design: .rounded, weight: .bold))
+                                    .foregroundStyle(hasAcceptedTerms ? Color.black : NeoAppColors.ink)
                                     .fixedSize(horizontal: false, vertical: true)
+                            }
+                            .padding(12)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(hasAcceptedTerms ? NeoAppColors.acid : NeoAppColors.surface)
+                            .overlay {
+                                Rectangle()
+                                    .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
                             }
                         }
                         .buttonStyle(.plain)
+                        .accessibilityAddTraits(hasAcceptedTerms ? .isSelected : [])
 
                         HStack(spacing: 6) {
                             Link("Privacy Policy", destination: URL(string: "https://fud-ai.app/privacy.html")!)
                             Text("and")
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(NeoAppColors.mutedInk)
                             Link("Terms of Service", destination: URL(string: "https://fud-ai.app/terms.html")!)
                         }
-                        .font(.system(.footnote, design: .rounded, weight: .semibold))
-                        .foregroundStyle(AppColors.calorie)
+                        .font(.system(.footnote, design: .rounded, weight: .black))
+                        .foregroundStyle(NeoAppColors.cobalt)
+                        .frame(maxWidth: .infinity)
                     }
-                    .padding(16)
-                    .background(AppColors.appCard, in: RoundedRectangle(cornerRadius: 16))
-                    .padding(.horizontal, 24)
+                    .padding(14)
+                    .neoPanel()
+                    .padding(.horizontal, NeoAppMetrics.screenInset)
                 }
-                .padding(.top, 24)
+                .padding(.top, 16)
                 .padding(.bottom, 20)
             }
 
             Button {
                 completeAIChoiceAndAdvance()
             } label: {
-                Text("Accept & Continue")
-                    .font(.system(.body, design: .rounded, weight: .semibold))
-                    .foregroundStyle(.white)
+                Label("ACCEPT & CONTINUE", systemImage: "lock.shield.fill")
+                    .font(.system(.body, design: .rounded, weight: .black).width(.condensed))
                     .frame(maxWidth: .infinity)
-                    .frame(height: 54)
-                    .background(
-                        LinearGradient(colors: AppColors.calorieGradient, startPoint: .leading, endPoint: .trailing),
-                        in: RoundedRectangle(cornerRadius: 16)
-                    )
-                    .shadow(color: AppColors.calorie.opacity(0.3), radius: 8, y: 4)
             }
+            .buttonStyle(NeoOnboardingPrimaryButtonStyle())
             .disabled(!canAdvanceAI)
             .opacity(canAdvanceAI ? 1 : 0.45)
-            .padding(.horizontal, 24)
+            .accessibilityIdentifier("onboarding.ai.accept")
+            .padding(.horizontal, NeoAppMetrics.screenInset)
             .padding(.bottom, 36)
         }
     }
@@ -905,122 +1032,134 @@ struct OnboardingView: View {
 
     @ViewBuilder
     private var byokConfigSection: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            // Provider
-            HStack {
-                Label { Text("Provider") } icon: {
-                    Image(systemName: "cpu").foregroundStyle(AppColors.calorie)
-                }
-                Spacer()
-                Picker("", selection: $byokProvider) {
-                    ForEach(AIProvider.allCases) { provider in
-                        Text(provider.rawValue).tag(provider)
+        VStack(spacing: 0) {
+            NeoSectionBanner(title: "AI CONNECTION", detail: "BYOK", style: .acid)
+
+            VStack(alignment: .leading, spacing: 14) {
+                // Provider
+                HStack {
+                    Label { Text("Provider") } icon: {
+                        Image(systemName: "cpu").foregroundStyle(NeoAppColors.cobalt)
+                    }
+                    Spacer()
+                    Picker("", selection: $byokProvider) {
+                        ForEach(AIProvider.allCases) { provider in
+                            Text(provider.rawValue).tag(provider)
+                        }
+                    }
+                    .labelsHidden()
+                    .pickerStyle(.menu)
+                    .tint(NeoAppColors.cobalt)
+                    .onChange(of: byokProvider) { _, newProvider in
+                        AIProviderSettings.selectedProvider = newProvider
+                        byokModel = newProvider.defaultModel
+                        AIProviderSettings.selectedModel = newProvider.defaultModel
+                        byokApiKey = AIProviderSettings.apiKey(for: newProvider) ?? ""
+                        byokBaseURL = AIProviderSettings.customBaseURL(for: newProvider) ?? ""
                     }
                 }
-                .labelsHidden()
-                .pickerStyle(.menu)
-                .tint(.secondary)
-                .onChange(of: byokProvider) { _, newProvider in
-                    AIProviderSettings.selectedProvider = newProvider
-                    byokModel = newProvider.defaultModel
-                    AIProviderSettings.selectedModel = newProvider.defaultModel
-                    byokApiKey = AIProviderSettings.apiKey(for: newProvider) ?? ""
-                    byokBaseURL = AIProviderSettings.customBaseURL(for: newProvider) ?? ""
-                }
-            }
 
-            Divider()
+                Divider()
+                    .overlay(NeoAppColors.ink)
 
-            // Model
-            HStack {
-                Label { Text("Model") } icon: {
-                    Image(systemName: "brain").foregroundStyle(AppColors.calorie)
+                // Model
+                HStack {
+                    Label { Text("Model") } icon: {
+                        Image(systemName: "brain").foregroundStyle(NeoAppColors.cobalt)
+                    }
+                    Spacer()
+                    if byokProvider.supportsCustomModelName {
+                        TextField("e.g. gpt-4o-mini", text: $byokModel)
+                            .textFieldStyle(.plain)
+                            .multilineTextAlignment(.trailing)
+                            .autocorrectionDisabled()
+                            .textInputAutocapitalization(.never)
+                            .onChange(of: byokModel) { _, m in AIProviderSettings.selectedModel = m }
+                        if !byokProvider.models.isEmpty {
+                            Menu {
+                                ForEach(byokProvider.models, id: \.self) { model in
+                                    Button(model) { byokModel = model; AIProviderSettings.selectedModel = model }
+                                }
+                            } label: {
+                                Image(systemName: "list.bullet.square").foregroundStyle(NeoAppColors.cobalt)
+                            }
+                        }
+                    } else {
+                        Picker("", selection: $byokModel) {
+                            ForEach(byokProvider.models, id: \.self) { model in Text(model).tag(model) }
+                        }
+                        .labelsHidden()
+                        .pickerStyle(.menu)
+                        .tint(NeoAppColors.cobalt)
+                        .onChange(of: byokModel) { _, m in AIProviderSettings.selectedModel = m }
+                    }
                 }
-                Spacer()
-                if byokProvider.supportsCustomModelName {
-                    TextField("e.g. gpt-4o-mini", text: $byokModel)
+
+                // API Key
+                if byokProvider.requiresAPIKey {
+                    Divider()
+                        .overlay(NeoAppColors.ink)
+                    HStack {
+                        Label { Text("API Key") } icon: {
+                            Image(systemName: "key.fill").foregroundStyle(NeoAppColors.cobalt)
+                        }
+                        Spacer()
+                        Group {
+                            if showByokKey {
+                                TextField(byokProvider.apiKeyPlaceholder, text: $byokApiKey)
+                            } else {
+                                SecureField(byokProvider.apiKeyPlaceholder, text: $byokApiKey)
+                            }
+                        }
                         .textFieldStyle(.plain)
                         .multilineTextAlignment(.trailing)
                         .autocorrectionDisabled()
                         .textInputAutocapitalization(.never)
-                        .onChange(of: byokModel) { _, m in AIProviderSettings.selectedModel = m }
-                    if !byokProvider.models.isEmpty {
-                        Menu {
-                            ForEach(byokProvider.models, id: \.self) { model in
-                                Button(model) { byokModel = model; AIProviderSettings.selectedModel = model }
-                            }
-                        } label: {
-                            Image(systemName: "list.bullet.circle").foregroundStyle(AppColors.calorie)
+                        .onChange(of: byokApiKey) { _, k in
+                            let t = k.trimmingCharacters(in: .whitespacesAndNewlines)
+                            AIProviderSettings.setAPIKey(t.isEmpty ? nil : t, for: byokProvider)
+                        }
+                        Button { showByokKey.toggle() } label: {
+                            Image(systemName: showByokKey ? "eye.fill" : "eye.slash.fill")
+                                .foregroundStyle(NeoAppColors.cobalt).font(.system(size: 14, weight: .bold))
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+
+                // Base / Server URL
+                if byokProvider == .ollama || byokProvider.requiresCustomEndpoint {
+                    Divider()
+                        .overlay(NeoAppColors.ink)
+                    HStack {
+                        Label { Text(byokProvider.requiresCustomEndpoint ? "Base URL" : "Server URL") } icon: {
+                            Image(systemName: "link").foregroundStyle(NeoAppColors.cobalt)
+                        }
+                        Spacer()
+                        TextField(
+                            byokProvider.requiresCustomEndpoint ? "https://your-endpoint.com/v1" : byokProvider.baseURL,
+                            text: $byokBaseURL
+                        )
+                        .textFieldStyle(.plain)
+                        .multilineTextAlignment(.trailing)
+                        .autocorrectionDisabled()
+                        .textInputAutocapitalization(.never)
+                        .keyboardType(.URL)
+                        .onChange(of: byokBaseURL) { _, u in
+                            let t = u.trimmingCharacters(in: .whitespacesAndNewlines)
+                            AIProviderSettings.setCustomBaseURL(t.isEmpty ? nil : t, for: byokProvider)
                         }
                     }
-                } else {
-                    Picker("", selection: $byokModel) {
-                        ForEach(byokProvider.models, id: \.self) { model in Text(model).tag(model) }
-                    }
-                    .labelsHidden()
-                    .pickerStyle(.menu)
-                    .tint(.secondary)
-                    .onChange(of: byokModel) { _, m in AIProviderSettings.selectedModel = m }
                 }
             }
-
-            // API Key
-            if byokProvider.requiresAPIKey {
-                Divider()
-                HStack {
-                    Label { Text("API Key") } icon: {
-                        Image(systemName: "key.fill").foregroundStyle(AppColors.calorie)
-                    }
-                    Spacer()
-                    Group {
-                        if showByokKey {
-                            TextField(byokProvider.apiKeyPlaceholder, text: $byokApiKey)
-                        } else {
-                            SecureField(byokProvider.apiKeyPlaceholder, text: $byokApiKey)
-                        }
-                    }
-                    .textFieldStyle(.plain)
-                    .multilineTextAlignment(.trailing)
-                    .autocorrectionDisabled()
-                    .textInputAutocapitalization(.never)
-                    .onChange(of: byokApiKey) { _, k in
-                        let t = k.trimmingCharacters(in: .whitespacesAndNewlines)
-                        AIProviderSettings.setAPIKey(t.isEmpty ? nil : t, for: byokProvider)
-                    }
-                    Button { showByokKey.toggle() } label: {
-                        Image(systemName: showByokKey ? "eye.fill" : "eye.slash.fill")
-                            .foregroundStyle(.secondary).font(.system(size: 14))
-                    }
-                    .buttonStyle(.plain)
-                }
-            }
-
-            // Base / Server URL
-            if byokProvider == .ollama || byokProvider.requiresCustomEndpoint {
-                Divider()
-                HStack {
-                    Label { Text(byokProvider.requiresCustomEndpoint ? "Base URL" : "Server URL") } icon: {
-                        Image(systemName: "link").foregroundStyle(AppColors.calorie)
-                    }
-                    Spacer()
-                    TextField(
-                        byokProvider.requiresCustomEndpoint ? "https://your-endpoint.com/v1" : byokProvider.baseURL,
-                        text: $byokBaseURL
-                    )
-                    .textFieldStyle(.plain)
-                    .multilineTextAlignment(.trailing)
-                    .autocorrectionDisabled()
-                    .textInputAutocapitalization(.never)
-                    .keyboardType(.URL)
-                    .onChange(of: byokBaseURL) { _, u in
-                        let t = u.trimmingCharacters(in: .whitespacesAndNewlines)
-                        AIProviderSettings.setCustomBaseURL(t.isEmpty ? nil : t, for: byokProvider)
-                    }
-                }
-            }
+            .font(.system(.subheadline, design: .rounded, weight: .bold))
+            .padding(14)
+            .background(NeoAppColors.surface)
         }
-        .padding(16)
-        .background(AppColors.appCard, in: RoundedRectangle(cornerRadius: 16))
+        .overlay {
+            Rectangle()
+                .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+        }
     }
 
     private func completeAIChoiceAndAdvance() {
@@ -1033,15 +1172,21 @@ struct OnboardingView: View {
         HStack(alignment: .top, spacing: 12) {
             Image(systemName: icon)
                 .font(.system(size: 16, weight: .semibold))
-                .foregroundStyle(AppColors.calorie)
-                .frame(width: 24, height: 24)
+                .foregroundStyle(NeoAppColors.onCobalt)
+                .frame(width: 32, height: 32)
+                .background(NeoAppColors.cobalt)
+                .overlay {
+                    Rectangle()
+                        .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                }
 
             VStack(alignment: .leading, spacing: 3) {
                 Text(LocalizedDisplayText.text(title))
-                    .font(.system(.subheadline, design: .rounded, weight: .semibold))
+                    .textCase(.uppercase)
+                    .font(.system(.subheadline, design: .rounded, weight: .black).width(.condensed))
                 Text(LocalizedDisplayText.text(text))
-                    .font(.system(.caption, design: .rounded))
-                    .foregroundStyle(.secondary)
+                    .font(.system(.caption, design: .rounded, weight: .bold))
+                    .foregroundStyle(NeoAppColors.mutedInk)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
@@ -1050,13 +1195,17 @@ struct OnboardingView: View {
     private func aiSetupRow(number: String, text: String) -> some View {
         HStack(spacing: 12) {
             Text(number)
-                .font(.system(.caption, design: .rounded, weight: .bold))
-                .foregroundStyle(.white)
-                .frame(width: 22, height: 22)
-                .background(AppColors.calorie, in: Circle())
+                .font(.system(.caption, design: .rounded, weight: .black))
+                .foregroundStyle(NeoAppColors.onCobalt)
+                .frame(width: 26, height: 26)
+                .background(NeoAppColors.cobalt)
+                .overlay {
+                    Rectangle()
+                        .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                }
             Text(text)
-                .font(.system(.subheadline, design: .rounded))
-                .foregroundStyle(.primary)
+                .font(.system(.subheadline, design: .rounded, weight: .bold))
+                .foregroundStyle(NeoAppColors.ink)
             Spacer(minLength: 0)
         }
     }
@@ -1100,11 +1249,18 @@ struct OnboardingView: View {
             ScrollView {
                 VStack(spacing: 20) {
                     // Adaptive Goals is on by default for new installs — say so up front.
-                    Text("Your plan auto-adjusts weekly as you log — turn off Adaptive Goals in Settings to keep it fixed.")
-                        .font(.system(.footnote, design: .rounded))
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 32)
+                    NeoOutlinedPanel(fill: NeoAppColors.cobalt) {
+                        HStack(spacing: 10) {
+                            Image(systemName: "arrow.triangle.2.circlepath")
+                                .font(.system(size: 18, weight: .black))
+                                .foregroundStyle(NeoAppColors.acid)
+                            Text("Your plan auto-adjusts weekly as you log — turn off Adaptive Goals in Settings to keep it fixed.")
+                                .font(.system(.footnote, design: .rounded, weight: .bold))
+                                .foregroundStyle(NeoAppColors.onCobalt)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                    }
+                    .padding(.horizontal, NeoAppMetrics.screenInset)
 
                     // Calorie display - tappable
                     Button {
@@ -1112,25 +1268,41 @@ struct OnboardingView: View {
                             editingField = editingField == .calories ? nil : .calories
                         }
                     } label: {
-                        VStack(spacing: 4) {
-                            Text("\(planCalories)")
-                                .font(.system(size: 64, weight: .bold, design: .rounded))
-                                .foregroundStyle(
-                                    LinearGradient(colors: AppColors.calorieGradient, startPoint: .topLeading, endPoint: .bottomTrailing)
-                                )
-                                .contentTransition(.numericText())
-                                .animation(.snappy, value: planCalories)
-                            HStack(spacing: 4) {
-                                Text("daily calories")
-                                    .font(.system(.callout, design: .rounded, weight: .medium))
-                                    .foregroundStyle(.secondary)
-                                Image(systemName: "pencil.circle.fill")
-                                    .font(.system(size: 14))
-                                    .foregroundStyle(.tertiary)
+                        VStack(spacing: 0) {
+                            NeoSectionBanner(
+                                title: "DAILY CALORIES",
+                                detail: editingField == .calories ? "EDITING" : "TAP TO EDIT",
+                                style: editingField == .calories ? .acid : .cobalt
+                            )
+                            VStack(spacing: 4) {
+                                Text("\(planCalories)")
+                                    .font(.system(size: 64, weight: .black, design: .rounded).width(.condensed))
+                                    .foregroundStyle(editingField == .calories ? Color.black : NeoAppColors.cobalt)
+                                    .contentTransition(.numericText())
+                                    .animation(.snappy, value: planCalories)
+                                HStack(spacing: 6) {
+                                    Text("KCAL / DAY")
+                                        .font(.system(.callout, design: .rounded, weight: .black).width(.condensed))
+                                        .foregroundStyle(editingField == .calories ? Color.black.opacity(0.72) : NeoAppColors.mutedInk)
+                                    Image(systemName: editingField == .calories ? "checkmark.square.fill" : "pencil")
+                                        .font(.system(size: 14, weight: .black))
+                                        .foregroundStyle(editingField == .calories ? Color.black : NeoAppColors.cobalt)
+                                }
                             }
+                            .padding(16)
+                            .frame(maxWidth: .infinity)
+                            .background(editingField == .calories ? NeoAppColors.acid : NeoAppColors.surface)
+                        }
+                        .overlay {
+                            Rectangle()
+                                .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
                         }
                     }
                     .buttonStyle(.plain)
+                    .padding(.horizontal, NeoAppMetrics.screenInset)
+                    .accessibilityLabel("Daily calorie target")
+                    .accessibilityValue("\(planCalories) calories")
+                    .accessibilityAddTraits(editingField == .calories ? .isSelected : [])
 
                     if editingField == .calories {
                         Picker(LocalizedDisplayText.text("Calories"), selection: Binding(
@@ -1147,17 +1319,19 @@ struct OnboardingView: View {
                         }
                         .pickerStyle(.wheel)
                         .frame(height: 150)
-                        .padding(.horizontal, 24)
+                        .padding(10)
+                        .neoPanel()
+                        .padding(.horizontal, NeoAppMetrics.screenInset)
                         .transition(.opacity.combined(with: .move(edge: .top)))
                     }
 
                     // Macro cards - tappable
                     HStack(spacing: 12) {
-                        editableMacroCard(label: "Protein", value: planProtein, unit: "g", gradientColors: AppColors.proteinGradient, field: .protein)
-                        editableMacroCard(label: "Carbs", value: planCarbs, unit: "g", gradientColors: AppColors.carbsGradient, field: .carbs)
-                        editableMacroCard(label: "Fat", value: planFat, unit: "g", gradientColors: AppColors.fatGradient, field: .fat)
+                        editableMacroCard(label: "Protein", value: planProtein, unit: "g", gradientColors: [NeoAppColors.cobalt], field: .protein)
+                        editableMacroCard(label: "Carbs", value: planCarbs, unit: "g", gradientColors: [NeoAppColors.cobalt], field: .carbs)
+                        editableMacroCard(label: "Fat", value: planFat, unit: "g", gradientColors: [NeoAppColors.cobalt], field: .fat)
                     }
-                    .padding(.horizontal, 24)
+                    .padding(.horizontal, NeoAppMetrics.screenInset)
 
                     if editingField == .protein {
                         Picker(LocalizedDisplayText.text("Protein"), selection: Binding(
@@ -1172,7 +1346,9 @@ struct OnboardingView: View {
                         }
                         .pickerStyle(.wheel)
                         .frame(height: 150)
-                        .padding(.horizontal, 24)
+                        .padding(10)
+                        .neoPanel()
+                        .padding(.horizontal, NeoAppMetrics.screenInset)
                         .transition(.opacity.combined(with: .move(edge: .top)))
                     }
 
@@ -1189,7 +1365,9 @@ struct OnboardingView: View {
                         }
                         .pickerStyle(.wheel)
                         .frame(height: 150)
-                        .padding(.horizontal, 24)
+                        .padding(10)
+                        .neoPanel()
+                        .padding(.horizontal, NeoAppMetrics.screenInset)
                         .transition(.opacity.combined(with: .move(edge: .top)))
                     }
 
@@ -1206,26 +1384,34 @@ struct OnboardingView: View {
                         }
                         .pickerStyle(.wheel)
                         .frame(height: 150)
-                        .padding(.horizontal, 24)
+                        .padding(10)
+                        .neoPanel()
+                        .padding(.horizontal, NeoAppMetrics.screenInset)
                         .transition(.opacity.combined(with: .move(edge: .top)))
                     }
 
                     if planCalories < 1200 {
                         HStack(spacing: 10) {
                             Image(systemName: "exclamationmark.triangle.fill")
-                                .foregroundStyle(.orange)
+                                .foregroundStyle(Color.black)
+                                .frame(width: 36, height: 36)
+                                .background(NeoAppColors.warning)
+                                .overlay {
+                                    Rectangle()
+                                        .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                                }
                             VStack(alignment: .leading, spacing: 2) {
-                                Text("Please consult with a doctor")
-                                    .font(.system(.subheadline, design: .rounded, weight: .semibold))
+                                Text("PLEASE CONSULT WITH A DOCTOR")
+                                    .font(.system(.subheadline, design: .rounded, weight: .black).width(.condensed))
                                 Text("The minimum recommendation is 1,200 calories per day.")
-                                    .font(.system(.caption, design: .rounded))
-                                    .foregroundStyle(.secondary)
+                                    .font(.system(.caption, design: .rounded, weight: .bold))
+                                    .foregroundStyle(NeoAppColors.mutedInk)
                             }
                         }
                         .padding(14)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(Color.orange.opacity(0.1), in: RoundedRectangle(cornerRadius: 12))
-                        .padding(.horizontal, 24)
+                        .neoPanel(fill: NeoAppColors.warning.opacity(0.12))
+                        .padding(.horizontal, NeoAppMetrics.screenInset)
                     }
                     // Citations link (Apple Guideline 1.4.1 — medical info needs sources)
                     Button {
@@ -1234,15 +1420,16 @@ struct OnboardingView: View {
                         HStack(spacing: 6) {
                             Image(systemName: "book.fill")
                                 .font(.system(size: 11))
-                            Text("How is this calculated?")
-                                .font(.system(.footnote, design: .rounded, weight: .medium))
+                            Text("HOW IS THIS CALCULATED?")
+                                .font(.system(.footnote, design: .rounded, weight: .black).width(.condensed))
                             Image(systemName: "chevron.right")
                                 .font(.system(size: 10, weight: .semibold))
                         }
-                        .foregroundStyle(AppColors.calorie)
+                        .frame(maxWidth: .infinity)
                     }
+                    .buttonStyle(NeoOnboardingSecondaryButtonStyle())
                     .padding(.top, 8)
-                    .padding(.horizontal, 24)
+                    .padding(.horizontal, NeoAppMetrics.screenInset)
                 }
                 .padding(.top, 16)
                 .padding(.bottom, 100)
@@ -1261,14 +1448,13 @@ struct OnboardingView: View {
                 editedProfile.save()
                 hasCompletedOnboarding = true
             } label: {
-                Text("Let's get started!")
-                    .font(.system(.body, design: .rounded, weight: .semibold))
-                    .foregroundStyle(Color(.systemBackground))
+                Label("LET'S GET STARTED", systemImage: "bolt.fill")
+                    .font(.system(.body, design: .rounded, weight: .black).width(.condensed))
                     .frame(maxWidth: .infinity)
-                    .frame(height: 54)
-                    .background(Color.primary, in: Capsule())
             }
-            .padding(.horizontal, 24)
+            .buttonStyle(NeoOnboardingPrimaryButtonStyle())
+            .accessibilityIdentifier("onboarding.complete")
+            .padding(.horizontal, NeoAppMetrics.screenInset)
             .padding(.bottom, 36)
         }
         .onAppear { initPlanValues() }
@@ -1278,78 +1464,140 @@ struct OnboardingView: View {
     }
 
     private func editableMacroCard(label: String, value: Int, unit: String, gradientColors: [Color], field: EditableField) -> some View {
-        Button {
+        let accent = gradientColors.first ?? NeoAppColors.cobalt
+
+        return Button {
             withAnimation(.snappy) {
                 editingField = editingField == field ? nil : field
             }
         } label: {
             VStack(spacing: 6) {
                 Text(LocalizedDisplayText.text(label))
-                    .font(.system(.caption, design: .rounded, weight: .medium))
-                    .foregroundStyle(.secondary)
+                    .textCase(.uppercase)
+                    .font(.system(.caption, design: .rounded, weight: .black).width(.condensed))
+                    .foregroundStyle(editingField == field ? Color.black : NeoAppColors.mutedInk)
                 HStack(spacing: 2) {
                     Text("\(value)")
-                        .font(.system(.title2, design: .rounded, weight: .bold))
-                        .foregroundStyle(
-                            LinearGradient(colors: gradientColors, startPoint: .topLeading, endPoint: .bottomTrailing)
-                        )
+                        .font(.system(.title2, design: .rounded, weight: .black).width(.condensed))
+                        .foregroundStyle(editingField == field ? Color.black : accent)
                         .contentTransition(.numericText())
                         .animation(.snappy, value: value)
                     Text(unit)
-                        .font(.system(.caption, design: .rounded, weight: .medium))
-                        .foregroundStyle(.secondary)
+                        .font(.system(.caption, design: .rounded, weight: .black))
+                        .foregroundStyle(editingField == field ? Color.black.opacity(0.72) : NeoAppColors.mutedInk)
                 }
-                Image(systemName: "pencil.circle.fill")
-                    .font(.system(size: 12))
-                    .foregroundStyle(.tertiary)
+                Image(systemName: editingField == field ? "checkmark.square.fill" : "pencil")
+                    .font(.system(size: 12, weight: .black))
+                    .foregroundStyle(editingField == field ? Color.black : NeoAppColors.cobalt)
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 12)
-            .background(AppColors.appCard, in: RoundedRectangle(cornerRadius: 14))
+            .background(editingField == field ? NeoAppColors.acid : NeoAppColors.surface)
             .overlay(
-                RoundedRectangle(cornerRadius: 14)
-                    .strokeBorder(editingField == field ? gradientColors.first ?? .clear : .clear, lineWidth: 2)
+                Rectangle()
+                    .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
             )
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(LocalizedDisplayText.text(label))
+        .accessibilityValue("\(value) \(unit)")
+        .accessibilityAddTraits(editingField == field ? .isSelected : [])
     }
 
     private func stepHeader(title: String, subtitle: String) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text(title).font(.system(size: 28, weight: .bold, design: .rounded))
-            if !subtitle.isEmpty {
-                Text(subtitle).font(.system(.callout, design: .rounded)).foregroundStyle(.secondary)
+        VStack(spacing: 0) {
+            NeoSectionBanner(
+                title: "PROFILE SETUP",
+                detail: "STEP \(step) OF \(totalSteps - 1)",
+                style: .cobalt
+            )
+
+            VStack(alignment: .leading, spacing: 6) {
+                Text(title)
+                    .textCase(.uppercase)
+                    .font(.system(size: 29, weight: .black, design: .rounded).width(.condensed))
+                    .foregroundStyle(NeoAppColors.ink)
+                    .fixedSize(horizontal: false, vertical: true)
+                if !subtitle.isEmpty {
+                    Text(subtitle)
+                        .font(.system(.callout, design: .rounded, weight: .bold))
+                        .foregroundStyle(NeoAppColors.mutedInk)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(14)
+            .background(NeoAppColors.surface)
+            .overlay {
+                Rectangle()
+                    .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, 24).padding(.top, 24)
+        .padding(.horizontal, NeoAppMetrics.screenInset)
+        .padding(.top, 12)
     }
 
     private func selectionCard(icon: String, title: String, subtitle: String? = nil, isSelected: Bool, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            HStack(spacing: 16) {
-                Image(systemName: icon).font(.system(size: 22))
-                    .foregroundStyle(isSelected ? Color.primary : .secondary).frame(width: 40)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(title).font(.system(.body, design: .rounded, weight: .semibold)).foregroundStyle(.primary)
+            HStack(spacing: 12) {
+                Image(systemName: icon)
+                    .font(.system(size: 20, weight: .black))
+                    .foregroundStyle(isSelected ? Color.black : NeoAppColors.onCobalt)
+                    .frame(width: 42, height: 42)
+                    .background(isSelected ? NeoAppColors.acid : NeoAppColors.cobalt)
+                    .overlay {
+                        Rectangle()
+                            .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                    }
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(title)
+                        .textCase(.uppercase)
+                        .font(.system(.body, design: .rounded, weight: .black).width(.condensed))
+                        .foregroundStyle(isSelected ? NeoAppColors.onCobalt : NeoAppColors.ink)
                     if let subtitle {
-                        Text(subtitle).font(.system(.caption, design: .rounded)).foregroundStyle(.secondary)
+                        Text(subtitle)
+                            .font(.system(.caption, design: .rounded, weight: .bold))
+                            .foregroundStyle(isSelected ? NeoAppColors.onCobalt.opacity(0.82) : NeoAppColors.mutedInk)
                     }
                 }
                 Spacer()
-                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle").font(.system(size: 22))
-                    .foregroundStyle(isSelected ? Color.primary : Color.secondary.opacity(0.3))
+                Image(systemName: isSelected ? "checkmark.square.fill" : "square")
+                    .font(.system(size: 22, weight: .black))
+                    .foregroundStyle(isSelected ? NeoAppColors.acid : NeoAppColors.mutedInk)
             }
-            .padding(16)
-            .background(AppColors.appCard, in: RoundedRectangle(cornerRadius: 16))
-            .overlay(RoundedRectangle(cornerRadius: 16).strokeBorder(isSelected ? Color.primary : Color.clear, lineWidth: 2))
-        }.buttonStyle(.plain)
+            .padding(12)
+            .background(isSelected ? NeoAppColors.cobalt : NeoAppColors.surface)
+            .overlay {
+                Rectangle()
+                    .stroke(NeoAppColors.ink, lineWidth: isSelected ? 3 : NeoAppMetrics.rule)
+            }
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 
     private func healthFeatureRow(icon: String, label: String) -> some View {
         HStack(spacing: 14) {
-            Image(systemName: icon).font(.system(size: 18)).foregroundStyle(.secondary).frame(width: 28)
-            Text(LocalizedDisplayText.text(label)).font(.system(.body, design: .rounded)).foregroundStyle(.primary)
+            Image(systemName: icon)
+                .font(.system(size: 18, weight: .black))
+                .foregroundStyle(NeoAppColors.onCobalt)
+                .frame(width: 38, height: 38)
+                .background(NeoAppColors.cobalt)
+                .overlay {
+                    Rectangle()
+                        .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                }
+            Text(LocalizedDisplayText.text(label))
+                .textCase(.uppercase)
+                .font(.system(.body, design: .rounded, weight: .black).width(.condensed))
+                .foregroundStyle(NeoAppColors.ink)
+            Spacer(minLength: 0)
+        }
+        .padding(10)
+        .background(NeoAppColors.surface)
+        .overlay {
+            Rectangle()
+                .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
         }
     }
 
@@ -1363,10 +1611,25 @@ struct OnboardingView: View {
         HStack(spacing: 12) {
             Image(systemName: icon)
                 .font(.system(size: 15, weight: .semibold))
-                .foregroundStyle(AppColors.calorie)
-                .frame(width: 26)
+                .foregroundStyle(NeoAppColors.onCobalt)
+                .frame(width: 34, height: 34)
+                .background(NeoAppColors.cobalt)
+                .overlay {
+                    Rectangle()
+                        .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                }
             Text(LocalizedDisplayText.text(text))
-                .font(.system(.subheadline, design: .rounded, weight: .medium))
+                .font(.system(.subheadline, design: .rounded, weight: .black))
+                .foregroundStyle(NeoAppColors.ink)
+            Spacer(minLength: 0)
+        }
+        .padding(.horizontal, 10)
+        .frame(minHeight: 50)
+        .background(NeoAppColors.surface)
+        .overlay(alignment: .bottom) {
+            Rectangle()
+                .fill(NeoAppColors.ink)
+                .frame(height: NeoAppMetrics.compactRule)
         }
     }
 }
@@ -1395,69 +1658,98 @@ struct BuildingPlanStepView: View {
     ]
 
     var body: some View {
-        VStack(spacing: 32) {
+        VStack(spacing: 22) {
+            NeoSectionBanner(title: "BUILDING YOUR PLAN", detail: "AI + FORMULAS", style: .cobalt)
+                .padding(.horizontal, NeoAppMetrics.screenInset)
+                .padding(.top, 12)
+
             Spacer()
 
-            VStack(spacing: 8) {
-                Text("\(percent)%")
-                    .font(.system(size: 56, weight: .bold, design: .rounded))
-                    .contentTransition(.numericText())
-                    .animation(.easeInOut(duration: 0.3), value: percent)
+            NeoOutlinedPanel(fill: NeoAppColors.surface, padding: 18) {
+                VStack(spacing: 8) {
+                    Text("\(percent)%")
+                        .font(.system(size: 60, weight: .black, design: .rounded).width(.condensed))
+                        .foregroundStyle(NeoAppColors.cobalt)
+                        .contentTransition(.numericText())
+                        .animation(.easeInOut(duration: 0.3), value: percent)
 
-                Text("We're setting everything\nup for you")
-                    .font(.system(size: 22, weight: .bold, design: .rounded))
-                    .multilineTextAlignment(.center)
+                    Text("WE'RE SETTING EVERYTHING\nUP FOR YOU")
+                        .font(.system(size: 22, weight: .black, design: .rounded).width(.condensed))
+                        .foregroundStyle(NeoAppColors.ink)
+                        .multilineTextAlignment(.center)
+                }
             }
+            .padding(.horizontal, NeoAppMetrics.screenInset)
 
             // Progress bar
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
-                    Capsule().fill(Color.primary.opacity(0.08))
-                    Capsule()
-                        .fill(
-                            // Mono-pink to match the rest of the brand surface
-                            // (macro rings, home + button, PlanReady calorie
-                            // number) — earlier 3-stop gradient ended in blue
-                            // and read as off-brand against the otherwise
-                            // pink-only palette.
-                            LinearGradient(colors: AppColors.calorieGradient, startPoint: .leading, endPoint: .trailing)
-                        )
+                    Rectangle()
+                        .fill(NeoAppColors.subtleSurface)
+                    Rectangle()
+                        .fill(NeoAppColors.acid)
                         .frame(width: geo.size.width * progress)
                         .animation(.easeInOut(duration: 0.4), value: progress)
                 }
-            }
-            .frame(height: 10)
-            .padding(.horizontal, 40)
-
-            Text("Finalizing results...")
-                .font(.system(.subheadline, design: .rounded))
-                .foregroundStyle(.secondary)
-
-            // Checklist
-            VStack(alignment: .leading, spacing: 14) {
-                Text("Daily recommendation for")
-                    .font(.system(.subheadline, design: .rounded, weight: .semibold))
-                ForEach(0..<items.count, id: \.self) { index in
-                    HStack(spacing: 10) {
-                        Text("\u{2022}")
-                            .foregroundStyle(.secondary)
-                        Text(items[index].0)
-                            .font(.system(.body, design: .rounded))
-                        Spacer()
-                        if index < checkItem {
-                            Image(systemName: "checkmark.circle.fill")
-                                .font(.system(size: 20))
-                                .foregroundStyle(.primary)
-                                .transition(.scale.combined(with: .opacity))
-                        }
-                    }
-                    .animation(.spring(response: 0.4), value: checkItem)
+                .overlay {
+                    Rectangle()
+                        .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
                 }
             }
-            .padding(.horizontal, 40)
+            .frame(height: 16)
+            .padding(.horizontal, NeoAppMetrics.screenInset)
+
+            Text("FINALIZING RESULTS…")
+                .font(.system(.subheadline, design: .rounded, weight: .black).width(.condensed))
+                .foregroundStyle(NeoAppColors.mutedInk)
+
+            // Checklist
+            VStack(spacing: 0) {
+                NeoSectionBanner(title: "DAILY TARGETS", detail: "5 CHECKS", style: .acid)
+                VStack(alignment: .leading, spacing: 0) {
+                    ForEach(0..<items.count, id: \.self) { index in
+                        HStack(spacing: 10) {
+                            Image(systemName: items[index].1)
+                                .font(.system(size: 14, weight: .black))
+                                .foregroundStyle(NeoAppColors.onCobalt)
+                                .frame(width: 30, height: 30)
+                                .background(NeoAppColors.cobalt)
+                                .overlay {
+                                    Rectangle()
+                                        .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                                }
+                            Text(items[index].0.uppercased())
+                                .font(.system(.body, design: .rounded, weight: .black).width(.condensed))
+                            Spacer()
+                            if index < checkItem {
+                                Image(systemName: "checkmark.square.fill")
+                                    .font(.system(size: 20, weight: .black))
+                                    .foregroundStyle(NeoAppColors.cobalt)
+                                    .transition(.scale.combined(with: .opacity))
+                            }
+                        }
+                        .padding(.horizontal, 12)
+                        .frame(minHeight: 48)
+                        .background(NeoAppColors.surface)
+                        .overlay(alignment: .bottom) {
+                            Rectangle()
+                                .fill(NeoAppColors.ink.opacity(0.38))
+                                .frame(height: NeoAppMetrics.compactRule)
+                        }
+                        .animation(.spring(response: 0.4), value: checkItem)
+                    }
+                }
+            }
+            .overlay {
+                Rectangle()
+                    .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+            }
+            .padding(.horizontal, NeoAppMetrics.screenInset)
 
             Spacer()
         }
+        .neoScreen()
+        .accessibilityIdentifier("onboarding.buildingPlan")
         .onAppear {
             startAnimation()
             startAICalc()
@@ -1496,5 +1788,53 @@ struct BuildingPlanStepView: View {
     private func finishIfReady() {
         guard animationDone, aiDone else { return }
         onComplete(aiResult)
+    }
+}
+
+// MARK: - Onboarding Neo-Brutalist controls
+
+private struct NeoOnboardingPrimaryButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .foregroundStyle(Color.black)
+            .frame(maxWidth: .infinity)
+            .frame(height: 54)
+            .background {
+                ZStack {
+                    Rectangle()
+                        .fill(Color.black)
+                        .offset(
+                            x: configuration.isPressed ? 0 : 3,
+                            y: configuration.isPressed ? 0 : 3
+                        )
+                    Rectangle()
+                        .fill(NeoAppColors.acid)
+                }
+            }
+            .overlay {
+                Rectangle()
+                    .stroke(Color.black, lineWidth: NeoAppMetrics.rule)
+            }
+            .offset(
+                x: configuration.isPressed ? 3 : 0,
+                y: configuration.isPressed ? 3 : 0
+            )
+            .animation(.easeOut(duration: 0.1), value: configuration.isPressed)
+    }
+}
+
+private struct NeoOnboardingSecondaryButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .foregroundStyle(NeoAppColors.ink)
+            .frame(maxWidth: .infinity)
+            .frame(height: 48)
+            .background(NeoAppColors.surface)
+            .overlay {
+                Rectangle()
+                    .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+            }
+            .opacity(configuration.isPressed ? 0.65 : 1)
+            .animation(.easeOut(duration: 0.1), value: configuration.isPressed)
     }
 }

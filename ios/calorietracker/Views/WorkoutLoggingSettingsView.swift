@@ -23,10 +23,9 @@ struct WorkoutLoggingSettingsSection: View {
 
             rpeScaleGuide
         } header: {
-            Text("Workout")
+            NeoSectionBanner(title: "Workout", detail: "Training preferences", style: .cobalt)
         }
-        .listRowBackground(NeoAppColors.surface)
-        .listRowSeparatorTint(NeoAppColors.ink.opacity(0.35))
+        .neoListRow()
         .tint(NeoAppColors.cobalt)
         .onAppear(perform: loadPreferences)
         .onChange(of: draft) { _, newValue in

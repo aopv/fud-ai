@@ -182,6 +182,17 @@ struct EditFoodEntryView: View {
         NavigationStack {
             ScrollViewReader { scrollProxy in
                 List {
+                    Section {
+                        NeoScreenHeader(
+                            eyebrow: "FOOD LOG",
+                            title: "EDIT ENTRY",
+                            subtitle: "Adjust the serving, nutrition, meal, or timestamp."
+                        )
+                    }
+                    .listRowInsets(EdgeInsets(top: 12, leading: 14, bottom: 2, trailing: 14))
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+
                     let entryImages = entry.allImageData.compactMap(UIImage.init(data:))
                     if !entryImages.isEmpty {
                         Section {
@@ -192,14 +203,22 @@ struct EditFoodEntryView: View {
                                             .resizable()
                                             .scaledToFill()
                                             .frame(width: 220, height: 200)
-                                            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                                            .clipShape(Rectangle())
+                                            .overlay {
+                                                Rectangle()
+                                                    .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                                            }
                                             .overlay(alignment: .bottomTrailing) {
                                                 if entryImages.count > 1 {
                                                     Text("\(index + 1)/\(entryImages.count)")
-                                                        .font(.caption2.weight(.semibold))
+                                                        .font(.system(.caption2, design: .rounded, weight: .black))
+                                                        .foregroundStyle(Color.black)
                                                         .padding(.horizontal, 8)
                                                         .padding(.vertical, 5)
-                                                        .background(.ultraThinMaterial, in: Capsule())
+                                                        .background(NeoAppColors.acid)
+                                                        .overlay {
+                                                            Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                                                        }
                                                         .padding(8)
                                                 }
                                             }
@@ -208,32 +227,46 @@ struct EditFoodEntryView: View {
                                 .scrollTargetLayout()
                             }
                             .scrollTargetBehavior(.viewAligned)
-                            .listRowBackground(Color.clear)
                         }
+                        .listRowInsets(EdgeInsets(top: 0, leading: 14, bottom: 0, trailing: 14))
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
                     } else if let emoji = emoji {
                         Section {
                             HStack {
                                 Spacer()
                                 Text(emoji)
                                     .font(.system(size: 80))
+                                    .frame(width: 140, height: 120)
+                                    .background(NeoAppColors.subtleSurface)
+                                    .overlay {
+                                        Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                                    }
                                 Spacer()
                             }
-                            .listRowBackground(Color.clear)
                         }
+                        .listRowInsets(EdgeInsets(top: 0, leading: 14, bottom: 0, trailing: 14))
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
                     }
 
-                    Section("Food Details") {
+                    Section {
                         HStack {
                             Text("Name")
+                                .font(.system(.body, design: .rounded, weight: .black))
                             Spacer()
                             TextField("Food name", text: $name)
                                 .multilineTextAlignment(.trailing)
                         }
+                    } header: {
+                        NeoSectionBanner(title: "Food Details", style: .cobalt)
                     }
+                    .neoEditSectionRows()
 
-                    Section("Serving") {
+                    Section {
                         HStack {
                             Text("Quantity")
+                                .font(.system(.body, design: .rounded, weight: .black))
                             Spacer()
                             ServingUnitEditor(
                                 quantityText: $servingSizeText,
@@ -254,19 +287,26 @@ struct EditFoodEntryView: View {
                         if !selectedServingOption.isGramUnit {
                             HStack {
                                 Text("Total")
+                                    .font(.system(.body, design: .rounded, weight: .black))
                                 Spacer()
                                 Text("~\(Self.formatGrams(servingSizeGrams)) g")
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(NeoAppColors.mutedInk)
                             }
                         }
+                    } header: {
+                        NeoSectionBanner(title: "Serving", style: .acid)
                     }
+                    .neoEditSectionRows()
 
-                    Section("Nutrition") {
+                    Section {
                         NutritionDisplayRow(label: "Calories", value: "\(scaledCalories)", unit: "kcal")
                         NutritionDisplayRow(label: "Protein", value: MacroValueFormatter.string(scaledProtein), unit: "g")
                         NutritionDisplayRow(label: "Carbs", value: MacroValueFormatter.string(scaledCarbs), unit: "g")
                         NutritionDisplayRow(label: "Fat", value: MacroValueFormatter.string(scaledFat), unit: "g")
+                    } header: {
+                        NeoSectionBanner(title: "Nutrition", detail: "Scaled", style: .cobalt)
                     }
+                    .neoEditSectionRows()
 
                     MealIngredientsSection(
                         ingredients: scaledIngredients,
@@ -314,30 +354,43 @@ struct EditFoodEntryView: View {
                                 )
                             }
                         }
-                        .tint(AppColors.calorie)
+                        .font(.system(.body, design: .rounded, weight: .bold))
+                        .tint(NeoAppColors.cobalt)
+                    } header: {
+                        NeoSectionBanner(title: "Nutrient Detail", style: .ink)
                     }
+                    .neoEditSectionRows()
 
-                    Section("Reprocess with AI") {
+                    Section {
                         ZStack(alignment: .topLeading) {
                             if customNote.isEmpty {
                                 Text("Add a note to refine this entry — e.g. “large bowl, extra olive oil” — then tap Reprocess.")
-                                    .foregroundStyle(.tertiary)
+                                    .foregroundStyle(NeoAppColors.mutedInk)
                                     .padding(.top, 8)
                                     .padding(.leading, 5)
                                     .allowsHitTesting(false)
                             }
                             TextEditor(text: $customNote)
                                 .frame(minHeight: 80)
+                                .scrollContentBackground(.hidden)
+                                .padding(8)
+                                .background(NeoAppColors.subtleSurface)
+                                .overlay {
+                                    Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                                }
                         }
 
                         if let errorMsg = reprocessingError {
                             Text(errorMsg)
                                 .font(.caption)
-                                .foregroundStyle(.red)
+                                .foregroundStyle(NeoAppColors.warning)
                         }
+                    } header: {
+                        NeoSectionBanner(title: "Reprocess with AI", detail: "Optional", style: .acid)
                     }
+                    .neoEditSectionRows()
 
-                    Section("Meal") {
+                    Section {
                         Picker("Meal Type", selection: $mealType) {
                             ForEach(MealType.allCases, id: \.self) { meal in
                                 Label(meal.displayName, systemImage: meal.icon)
@@ -345,15 +398,21 @@ struct EditFoodEntryView: View {
                             }
                         }
                         .pickerStyle(.menu)
-                        .tint(AppColors.calorie)
+                        .tint(NeoAppColors.cobalt)
+                    } header: {
+                        NeoSectionBanner(title: "Meal", style: .cobalt)
                     }
+                    .neoEditSectionRows()
 
-                    Section("Date & Time") {
+                    Section {
                         DatePicker("Date", selection: $loggedAt, displayedComponents: .date)
-                            .tint(AppColors.calorie)
+                            .tint(NeoAppColors.cobalt)
                         DatePicker("Time", selection: $loggedAt, displayedComponents: .hourAndMinute)
-                            .tint(AppColors.calorie)
+                            .tint(NeoAppColors.cobalt)
+                    } header: {
+                        NeoSectionBanner(title: "Date & Time", style: .ink)
                     }
+                    .neoEditSectionRows()
 
                     // Share this meal as a fudai://add-meal link (issue #107)
                     Section {
@@ -361,16 +420,23 @@ struct EditFoodEntryView: View {
                             MealShare.presentShareSheet(for: [entry])
                         } label: {
                             Label("Share Meal", systemImage: "square.and.arrow.up")
-                                .font(.system(.body, design: .rounded, weight: .medium))
+                                .font(.system(.body, design: .rounded, weight: .black))
+                                .foregroundStyle(NeoAppColors.cobalt)
                         }
-                        .tint(AppColors.calorie)
+                        .accessibilityIdentifier("editFood.share")
+                    } header: {
+                        NeoSectionBanner(title: "Share", style: .acid)
                     } footer: {
                         Text("Send this meal to a friend — they can add it to their Fud AI in one tap.")
+                            .font(.system(.caption, design: .rounded, weight: .bold))
+                            .foregroundStyle(NeoAppColors.mutedInk)
                     }
+                    .neoEditSectionRows()
 
                 }
-                .scrollContentBackground(.hidden)
-                .background(AppColors.appBackground)
+                .listStyle(.plain)
+                .listSectionSpacing(NeoAppMetrics.sectionSpacing)
+                .neoScreen()
                 .background(KeyboardDismissTapInstaller())
                 .safeAreaInset(edge: .bottom) {
                     if isQuantityEditing {
@@ -384,6 +450,7 @@ struct EditFoodEntryView: View {
                 .disabled(isReprocessing)
                 .navigationTitle("Edit Food")
                 .navigationBarTitleDisplayMode(.inline)
+                .tint(NeoAppColors.cobalt)
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
                         Button("Cancel") { dismiss() }
@@ -394,11 +461,13 @@ struct EditFoodEntryView: View {
                         } else if noteChanged {
                             Button("Reprocess", action: reprocess)
                                 .font(.system(.body, design: .rounded, weight: .semibold))
-                                .tint(AppColors.calorie)
+                                .tint(NeoAppColors.cobalt)
+                                .accessibilityIdentifier("editFood.reprocess")
                         } else {
                             Button("Save", action: saveChanges)
                                 .font(.system(.body, design: .rounded, weight: .semibold))
-                                .tint(AppColors.calorie)
+                                .tint(NeoAppColors.cobalt)
+                                .accessibilityIdentifier("editFood.save")
                         }
                     }
                 }
@@ -555,5 +624,14 @@ struct EditFoodEntryView: View {
         )
         foodStore.updateEntry(updated)
         dismiss()
+    }
+}
+
+private extension View {
+    func neoEditSectionRows() -> some View {
+        self
+            .listRowInsets(EdgeInsets(top: 11, leading: 14, bottom: 11, trailing: 14))
+            .listRowBackground(NeoAppColors.surface)
+            .listRowSeparatorTint(NeoAppColors.ink.opacity(0.34))
     }
 }

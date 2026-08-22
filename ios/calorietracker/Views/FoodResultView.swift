@@ -277,6 +277,30 @@ struct FoodResultView: View {
         NavigationStack {
             ScrollViewReader { scrollProxy in
                 List {
+                    Section {
+                        NeoScreenHeader(
+                            eyebrow: "Food analysis",
+                            title: "Review Food",
+                            subtitle: "Confirm the serving and nutrition before adding it to your day"
+                        ) {
+                            VStack(spacing: 1) {
+                                Text(scaledCalories.formatted())
+                                    .font(.system(.title2, design: .rounded, weight: .black))
+                                    .monospacedDigit()
+                                Text("KCAL")
+                                    .font(.system(size: 9, weight: .black, design: .rounded).width(.condensed))
+                            }
+                            .foregroundStyle(Color.black)
+                            .frame(minWidth: 66, minHeight: 54)
+                            .padding(.horizontal, 8)
+                            .background(NeoAppColors.acid)
+                            .overlay {
+                                Rectangle().stroke(Color.black, lineWidth: NeoAppMetrics.rule)
+                            }
+                        }
+                        .neoReviewBareRow()
+                    }
+
                     if !images.isEmpty {
                         Section {
                             ScrollView(.horizontal, showsIndicators: false) {
@@ -286,14 +310,21 @@ struct FoodResultView: View {
                                             .resizable()
                                             .scaledToFill()
                                             .frame(width: 220, height: 200)
-                                            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                                            .clipShape(Rectangle())
+                                            .overlay {
+                                                Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                                            }
                                             .overlay(alignment: .bottomTrailing) {
                                                 if images.count > 1 {
                                                     Text("\(index + 1)/\(images.count)")
-                                                        .font(.caption2.weight(.semibold))
+                                                        .font(.system(.caption2, design: .rounded, weight: .black))
+                                                        .foregroundStyle(Color.black)
                                                         .padding(.horizontal, 8)
                                                         .padding(.vertical, 5)
-                                                        .background(.ultraThinMaterial, in: Capsule())
+                                                        .background(NeoAppColors.acid)
+                                                        .overlay {
+                                                            Rectangle().stroke(Color.black, lineWidth: NeoAppMetrics.compactRule)
+                                                        }
                                                         .padding(8)
                                                 }
                                             }
@@ -302,32 +333,46 @@ struct FoodResultView: View {
                                 .scrollTargetLayout()
                             }
                             .scrollTargetBehavior(.viewAligned)
-                            .listRowBackground(Color.clear)
+                            .neoReviewRow(padding: 10)
                         }
                     } else if let emoji {
                         Section {
-                            HStack {
-                                Spacer()
-                                Text(emoji)
-                                    .font(.system(size: 80))
-                                Spacer()
-                            }
-                            .listRowBackground(Color.clear)
+                            Text(emoji)
+                                .font(.system(size: 76))
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 14)
+                                .neoReviewRow(padding: 0)
                         }
                     }
 
-                    Section("Food Details") {
+                    Section {
+                        NeoSectionBanner(title: "Food Details", detail: "Confirm")
+                            .neoReviewBareRow()
+
                         HStack {
                             Text("Name")
+                                .neoReviewFieldLabel()
                             Spacer()
                             TextField("Food name", text: $name)
                                 .multilineTextAlignment(.trailing)
+                                .font(.system(.body, design: .rounded, weight: .bold))
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 7)
+                                .background(NeoAppColors.subtleSurface)
+                                .overlay {
+                                    Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                                }
                         }
+                        .neoReviewRow()
                     }
 
-                    Section("Serving") {
+                    Section {
+                        NeoSectionBanner(title: "Serving", detail: "Scale")
+                            .neoReviewBareRow()
+
                         HStack {
                             Text("Quantity")
+                                .neoReviewFieldLabel()
                             Spacer()
                             ServingUnitEditor(
                                 quantityText: $servingSizeText,
@@ -345,17 +390,24 @@ struct FoodResultView: View {
                             )
                         }
                         .id(ScrollTarget.quantity)
+                        .neoReviewRow()
                         if !selectedServingOption.isGramUnit {
                             HStack {
                                 Text("Total")
+                                    .neoReviewFieldLabel()
                                 Spacer()
                                 Text("~\(Self.formatGrams(servingSizeGrams)) g")
-                                    .foregroundStyle(.secondary)
+                                    .font(.system(.body, design: .rounded, weight: .black))
+                                    .foregroundStyle(NeoAppColors.cobalt)
                             }
+                            .neoReviewRow()
                         }
                     }
 
                     Section {
+                        NeoReviewNutritionBanner(isUnlocked: nutritionUnlocked, action: toggleNutritionLock)
+                            .neoReviewBareRow()
+
                         ReviewNutritionValueRow(
                             label: "Calories",
                             displayValue: "\(scaledCalories)",
@@ -364,6 +416,7 @@ struct FoodResultView: View {
                             isUnlocked: nutritionUnlocked,
                             onEdit: updateBaseCalories
                         )
+                        .neoReviewRow()
                         ReviewNutritionValueRow(
                             label: "Protein",
                             displayValue: MacroValueFormatter.string(scaledProtein),
@@ -372,6 +425,7 @@ struct FoodResultView: View {
                             isUnlocked: nutritionUnlocked,
                             onEdit: { updateBaseDouble(from: $0) { editableProtein = $0 } }
                         )
+                        .neoReviewRow()
                         ReviewNutritionValueRow(
                             label: "Carbs",
                             displayValue: MacroValueFormatter.string(scaledCarbs),
@@ -380,6 +434,7 @@ struct FoodResultView: View {
                             isUnlocked: nutritionUnlocked,
                             onEdit: { updateBaseDouble(from: $0) { editableCarbs = $0 } }
                         )
+                        .neoReviewRow()
                         ReviewNutritionValueRow(
                             label: "Fat",
                             displayValue: MacroValueFormatter.string(scaledFat),
@@ -388,18 +443,7 @@ struct FoodResultView: View {
                             isUnlocked: nutritionUnlocked,
                             onEdit: { updateBaseDouble(from: $0) { editableFat = $0 } }
                         )
-                    } header: {
-                        HStack {
-                            Text("Nutrition")
-                            Spacer()
-                            Button(action: toggleNutritionLock) {
-                                Image(systemName: nutritionUnlocked ? "lock.open.fill" : "lock.fill")
-                                    .font(.system(size: 14, weight: .semibold))
-                            }
-                            .buttonStyle(.borderless)
-                            .foregroundStyle(nutritionUnlocked ? AppColors.calorie : .secondary)
-                            .accessibilityLabel(nutritionUnlocked ? "Lock nutrition editing" : "Unlock nutrition editing")
-                        }
+                        .neoReviewRow()
                     }
 
                     MealIngredientsSection(
@@ -461,10 +505,15 @@ struct FoodResultView: View {
                                 )
                             }
                         }
-                        .tint(AppColors.calorie)
+                        .font(.system(.body, design: .rounded, weight: .black))
+                        .tint(NeoAppColors.cobalt)
+                        .neoReviewRow()
                     }
 
-                    Section("Meal") {
+                    Section {
+                        NeoSectionBanner(title: "Meal", detail: "Destination", style: .acid)
+                            .neoReviewBareRow()
+
                         Picker("Meal Type", selection: $mealType) {
                             ForEach(MealType.allCases, id: \.self) { meal in
                                 Label(meal.displayName, systemImage: meal.icon)
@@ -472,13 +521,18 @@ struct FoodResultView: View {
                             }
                         }
                         .pickerStyle(.menu)
-                        .tint(AppColors.calorie)
+                        .font(.system(.body, design: .rounded, weight: .black))
+                        .tint(NeoAppColors.cobalt)
+                        .neoReviewRow()
                     }
 
                 }
-                .scrollContentBackground(.hidden)
-                .background(AppColors.appBackground)
+                .listStyle(.plain)
+                .listSectionSpacing(10)
+                .environment(\.defaultMinListRowHeight, 1)
+                .neoScreen()
                 .background(KeyboardDismissTapInstaller())
+                .accessibilityIdentifier("neo.reviewFood.screen")
                 .safeAreaInset(edge: .bottom) {
                     if isQuantityEditing {
                         Color.clear.frame(height: 12)
@@ -488,20 +542,21 @@ struct FoodResultView: View {
                     guard editing else { return }
                     scrollQuantityIntoView(scrollProxy)
                 }
-                .navigationTitle("Review Food")
+                .navigationTitle("")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
                         Button("Cancel") { dismiss() }
+                            .tint(NeoAppColors.cobalt)
                     }
                     ToolbarItemGroup(placement: .confirmationAction) {
                         Button("What if?") { showWhatIfSheet = true }
                             .font(.system(.body, design: .rounded, weight: .semibold))
-                            .tint(AppColors.protein)
+                            .tint(NeoAppColors.cobalt)
 
                         Button("Log", action: logFood)
-                            .font(.system(.body, design: .rounded, weight: .semibold))
-                            .tint(AppColors.calorie)
+                            .font(.system(.body, design: .rounded, weight: .black))
+                            .tint(NeoAppColors.cobalt)
                     }
                 }
                 .sheet(isPresented: $showWhatIfSheet) {
@@ -600,6 +655,77 @@ struct FoodResultView: View {
 
 }
 
+private struct NeoReviewNutritionBanner: View {
+    let isUnlocked: Bool
+    let action: () -> Void
+
+    var body: some View {
+        HStack(spacing: 8) {
+            NeoSectionBanner(
+                title: "Nutrition",
+                detail: isUnlocked ? "Editing" : "Locked"
+            )
+
+            Button(action: action) {
+                Image(systemName: isUnlocked ? "lock.open.fill" : "lock.fill")
+                    .font(.system(size: 16, weight: .black))
+                    .foregroundStyle(Color.black)
+                    .frame(width: 44, height: 42)
+                    .background(NeoAppColors.acid)
+                    .overlay {
+                        Rectangle().stroke(Color.black, lineWidth: NeoAppMetrics.rule)
+                    }
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(isUnlocked ? "Lock nutrition editing" : "Unlock nutrition editing")
+        }
+    }
+}
+
+private extension View {
+    func neoReviewRow(
+        padding: CGFloat = 12,
+        fill: Color = NeoAppColors.surface
+    ) -> some View {
+        NeoOutlinedPanel(fill: fill, padding: padding) {
+            self
+        }
+            .neoListRow()
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
+            .listRowInsets(
+                EdgeInsets(
+                    top: 0,
+                    leading: NeoAppMetrics.screenInset,
+                    bottom: 0,
+                    trailing: NeoAppMetrics.screenInset
+                )
+            )
+    }
+
+    func neoReviewBareRow() -> some View {
+        self
+            .neoListRow()
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
+            .listRowInsets(
+                EdgeInsets(
+                    top: 0,
+                    leading: NeoAppMetrics.screenInset,
+                    bottom: 0,
+                    trailing: NeoAppMetrics.screenInset
+                )
+            )
+    }
+
+    func neoReviewFieldLabel() -> some View {
+        self
+            .textCase(.uppercase)
+            .font(.system(.caption, design: .rounded, weight: .black).width(.condensed))
+            .foregroundStyle(NeoAppColors.mutedInk)
+    }
+}
+
 struct IngredientEditorTarget: Identifiable {
     let id = UUID()
     let index: Int?
@@ -613,10 +739,18 @@ struct MealIngredientsSection: View {
 
     var body: some View {
         Section {
+            NeoSectionBanner(
+                title: "Ingredients",
+                detail: ingredients.isEmpty ? "Optional" : "\(ingredients.count) items"
+            )
+            .neoReviewBareRow()
+
             if ingredients.isEmpty {
                 Text("No ingredient breakdown yet")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .font(.system(.subheadline, design: .rounded, weight: .bold))
+                    .foregroundStyle(NeoAppColors.mutedInk)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .neoReviewRow()
             } else {
                 ForEach(Array(ingredients.enumerated()), id: \.element.id) { index, ingredient in
                     Button {
@@ -625,44 +759,57 @@ struct MealIngredientsSection: View {
                         VStack(alignment: .leading, spacing: 6) {
                             HStack {
                                 Text(ingredient.name)
-                                    .font(.system(.body, design: .rounded, weight: .semibold))
-                                    .foregroundStyle(.primary)
+                                    .textCase(.uppercase)
+                                    .font(.system(.body, design: .rounded, weight: .black).width(.condensed))
+                                    .foregroundStyle(NeoAppColors.ink)
                                 Spacer()
                                 Text("\(MacroValueFormatter.string(ingredient.grams))g · \(ingredient.calories) kcal")
-                                    .font(.subheadline)
-                                    .foregroundStyle(.secondary)
+                                    .font(.system(.caption, design: .rounded, weight: .bold))
+                                    .foregroundStyle(NeoAppColors.cobalt)
                                 Image(systemName: "chevron.right")
-                                    .font(.caption.weight(.semibold))
-                                    .foregroundStyle(.tertiary)
+                                    .font(.caption.weight(.black))
+                                    .foregroundStyle(NeoAppColors.ink)
                             }
-                            HStack(spacing: 14) {
-                                macro("P", ingredient.protein, AppColors.protein)
-                                macro("C", ingredient.carbs, AppColors.carbs)
-                                macro("F", ingredient.fat, AppColors.fat)
+                            HStack(spacing: 6) {
+                                macro("P", ingredient.protein, NeoAppColors.cobalt)
+                                macro("C", ingredient.carbs, NeoAppColors.cobalt)
+                                macro("F", ingredient.fat, NeoAppColors.cobalt)
                             }
                         }
                         .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
+                    .neoReviewRow()
                 }
             }
 
             Button(action: onAdd) {
-                Label("Add Ingredient", systemImage: "plus.circle.fill")
-                    .font(.system(.body, design: .rounded, weight: .semibold))
+                Label("Add Ingredient", systemImage: "plus")
+                    .textCase(.uppercase)
+                    .font(.system(.body, design: .rounded, weight: .black).width(.condensed))
+                    .foregroundStyle(Color.black)
+                    .frame(maxWidth: .infinity)
             }
-            .tint(AppColors.calorie)
-        } header: {
-            Text("Ingredients")
-        } footer: {
+            .buttonStyle(.plain)
+            .neoReviewRow(fill: NeoAppColors.acid)
+
             Text("Ingredient changes update the meal's calorie and macro totals automatically.")
+                .font(.system(.caption, design: .rounded, weight: .bold))
+                .foregroundStyle(NeoAppColors.mutedInk)
+                .neoReviewRow(fill: NeoAppColors.subtleSurface)
         }
     }
 
     private func macro(_ label: String, _ value: Double, _ color: Color) -> some View {
         Text("\(label) \(MacroValueFormatter.string(value))g")
-            .font(.caption.weight(.semibold))
-            .foregroundStyle(color)
+            .font(.system(.caption2, design: .rounded, weight: .black))
+            .foregroundStyle(NeoAppColors.onCobalt)
+            .padding(.horizontal, 7)
+            .padding(.vertical, 4)
+            .background(color)
+            .overlay {
+                Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+            }
     }
 }
 
@@ -713,16 +860,54 @@ struct IngredientEditorSheet: View {
 
     var body: some View {
         NavigationStack {
-            Form {
-                Section("Ingredient") {
-                    TextField("Name", text: $name)
-                    valueRow("Weight", text: $grams, unit: "g")
-                    valueRow("Calories", text: $calories, unit: "kcal")
+            List {
+                Section {
+                    NeoScreenHeader(
+                        eyebrow: "Meal builder",
+                        title: target.index == nil ? "Add Ingredient" : "Edit Ingredient",
+                        subtitle: "Ingredient changes recalculate the meal totals"
+                    ) {
+                        Image(systemName: target.index == nil ? "plus" : "square.and.pencil")
+                            .font(.system(size: 22, weight: .black))
+                            .foregroundStyle(Color.black)
+                            .frame(width: 48, height: 48)
+                            .background(NeoAppColors.acid)
+                            .overlay {
+                                Rectangle().stroke(Color.black, lineWidth: NeoAppMetrics.rule)
+                            }
+                    }
+                    .neoReviewBareRow()
                 }
-                Section("Macros") {
+
+                Section {
+                    NeoSectionBanner(title: "Ingredient", detail: "Details")
+                        .neoReviewBareRow()
+
+                    HStack {
+                        Text("Name")
+                            .neoReviewFieldLabel()
+                        Spacer()
+                        TextField("Name", text: $name)
+                            .multilineTextAlignment(.trailing)
+                            .font(.system(.body, design: .rounded, weight: .bold))
+                    }
+                    .neoReviewRow()
+                    valueRow("Weight", text: $grams, unit: "g")
+                        .neoReviewRow()
+                    valueRow("Calories", text: $calories, unit: "kcal")
+                        .neoReviewRow()
+                }
+
+                Section {
+                    NeoSectionBanner(title: "Macros", detail: "Per ingredient", style: .acid)
+                        .neoReviewBareRow()
+
                     valueRow("Protein", text: $protein, unit: "g")
+                        .neoReviewRow()
                     valueRow("Carbs", text: $carbs, unit: "g")
+                        .neoReviewRow()
                     valueRow("Fat", text: $fat, unit: "g")
+                        .neoReviewRow()
                 }
                 if let onDelete {
                     Section {
@@ -730,16 +915,24 @@ struct IngredientEditorSheet: View {
                             onDelete()
                             dismiss()
                         }
+                        .textCase(.uppercase)
+                        .font(.system(.body, design: .rounded, weight: .black).width(.condensed))
+                        .frame(maxWidth: .infinity)
+                        .neoReviewRow(fill: NeoAppColors.warning.opacity(0.14))
                     }
                 }
             }
-            .scrollContentBackground(.hidden)
-            .background(AppColors.appBackground)
-            .navigationTitle(target.index == nil ? "Add Ingredient" : "Edit Ingredient")
+            .listStyle(.plain)
+            .listSectionSpacing(10)
+            .environment(\.defaultMinListRowHeight, 1)
+            .neoScreen()
+            .accessibilityIdentifier("neo.ingredientEditor.screen")
+            .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
+                        .tint(NeoAppColors.cobalt)
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
@@ -748,8 +941,8 @@ struct IngredientEditorSheet: View {
                         dismiss()
                     }
                     .disabled(parsedIngredient == nil)
-                    .font(.system(.body, design: .rounded, weight: .semibold))
-                    .tint(AppColors.calorie)
+                    .font(.system(.body, design: .rounded, weight: .black))
+                    .tint(NeoAppColors.cobalt)
                 }
             }
         }
@@ -758,13 +951,22 @@ struct IngredientEditorSheet: View {
     private func valueRow(_ label: String, text: Binding<String>, unit: String) -> some View {
         HStack {
             Text(label)
+                .neoReviewFieldLabel()
             Spacer()
             TextField("0", text: text)
                 .keyboardType(.decimalPad)
                 .multilineTextAlignment(.trailing)
+                .font(.system(.body, design: .rounded, weight: .black))
+                .padding(.horizontal, 8)
+                .padding(.vertical, 6)
+                .background(NeoAppColors.subtleSurface)
+                .overlay {
+                    Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                }
                 .frame(maxWidth: 110)
             Text(unit)
-                .foregroundStyle(.secondary)
+                .font(.system(.caption, design: .rounded, weight: .black))
+                .foregroundStyle(NeoAppColors.cobalt)
         }
     }
 
@@ -826,79 +1028,123 @@ private struct WhatIfMealImpactSheet: View {
         NavigationStack {
             List {
                 Section {
+                    NeoScreenHeader(
+                        eyebrow: "Meal simulation",
+                        title: "What if?",
+                        subtitle: "Preview this meal against today's goals without logging it"
+                    ) {
+                        Image(systemName: "scope")
+                            .font(.system(size: 23, weight: .black))
+                            .foregroundStyle(Color.black)
+                            .frame(width: 48, height: 48)
+                            .background(NeoAppColors.acid)
+                            .overlay {
+                                Rectangle().stroke(Color.black, lineWidth: NeoAppMetrics.rule)
+                            }
+                    }
+                    .neoReviewBareRow()
+                }
+
+                Section {
+                    NeoSectionBanner(title: "Impact on Today", detail: "After meal")
+                        .neoReviewBareRow()
+
                     WhatIfImpactRow(
                         label: "Calories",
                         added: "+\(entry.calories) kcal",
                         after: "\(afterTotals.calories) / \(goals.calories) kcal",
                         remaining: remainingCaloriesText,
                         isOver: afterTotals.calories > goals.calories,
-                        tint: AppColors.calorie
+                        tint: NeoAppColors.cobalt
                     )
+                    .neoReviewRow()
                     WhatIfImpactRow(
                         label: "Protein",
                         added: "+\(MacroValueFormatter.withUnit(entry.protein))",
                         after: "\(MacroValueFormatter.string(afterTotals.protein)) / \(profile.effectiveProtein)g",
                         remaining: remainingMacroText(afterTotals.protein, goal: Double(profile.effectiveProtein)),
                         isOver: false,
-                        tint: AppColors.protein
+                        tint: NeoAppColors.cobalt
                     )
+                    .neoReviewRow()
                     WhatIfImpactRow(
                         label: "Carbs",
                         added: "+\(MacroValueFormatter.withUnit(entry.carbs))",
                         after: "\(MacroValueFormatter.string(afterTotals.carbs)) / \(profile.effectiveCarbs)g",
                         remaining: remainingMacroText(afterTotals.carbs, goal: Double(profile.effectiveCarbs)),
                         isOver: afterTotals.carbs > Double(profile.effectiveCarbs),
-                        tint: AppColors.carbs
+                        tint: NeoAppColors.cobalt
                     )
+                    .neoReviewRow()
                     WhatIfImpactRow(
                         label: "Fat",
                         added: "+\(MacroValueFormatter.withUnit(entry.fat))",
                         after: "\(MacroValueFormatter.string(afterTotals.fat)) / \(profile.effectiveFat)g",
                         remaining: remainingMacroText(afterTotals.fat, goal: Double(profile.effectiveFat)),
                         isOver: afterTotals.fat > Double(profile.effectiveFat),
-                        tint: AppColors.fat
+                        tint: NeoAppColors.cobalt
                     )
-                } header: {
-                    Text("Impact on Today")
-                } footer: {
+                    .neoReviewRow()
+
                     Text("This does not log the meal. It shows what today would look like if you logged \(entry.name).")
+                        .font(.system(.caption, design: .rounded, weight: .bold))
+                        .foregroundStyle(NeoAppColors.mutedInk)
+                        .neoReviewRow(fill: NeoAppColors.subtleSurface)
                 }
 
-                Section("AI Suggestion") {
+                Section {
+                    NeoSectionBanner(title: "AI Suggestion", detail: "Goal fit", style: .acid)
+                        .neoReviewBareRow()
+
                     if isLoadingSuggestion {
                         HStack(spacing: 12) {
                             ProgressView()
+                                .tint(NeoAppColors.cobalt)
                             Text("Checking fit with your goals...")
-                                .foregroundStyle(.secondary)
+                                .font(.system(.body, design: .rounded, weight: .bold))
+                                .foregroundStyle(NeoAppColors.mutedInk)
                         }
-                        .padding(.vertical, 4)
+                        .neoReviewRow()
                     } else if let suggestion {
                         Text(suggestion)
-                            .font(.body)
-                            .foregroundStyle(.primary)
+                            .font(.system(.body, design: .rounded, weight: .medium))
+                            .foregroundStyle(NeoAppColors.ink)
                             .textSelection(.enabled)
+                            .neoReviewRow()
                     } else if let suggestionError {
                         VStack(alignment: .leading, spacing: 10) {
                             Text(suggestionError)
-                                .foregroundStyle(.secondary)
+                                .font(.system(.body, design: .rounded, weight: .bold))
+                                .foregroundStyle(NeoAppColors.mutedInk)
                             Button("Retry") {
                                 Task { await loadSuggestion() }
                             }
-                            .font(.system(.body, design: .rounded, weight: .semibold))
-                            .tint(AppColors.calorie)
+                            .textCase(.uppercase)
+                            .font(.system(.body, design: .rounded, weight: .black).width(.condensed))
+                            .foregroundStyle(Color.black)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 10)
+                            .background(NeoAppColors.acid)
+                            .overlay {
+                                Rectangle().stroke(Color.black, lineWidth: NeoAppMetrics.rule)
+                            }
                         }
+                        .neoReviewRow()
                     }
                 }
             }
-            .scrollContentBackground(.hidden)
-            .background(AppColors.appBackground)
-            .navigationTitle("What if?")
+            .listStyle(.plain)
+            .listSectionSpacing(10)
+            .environment(\.defaultMinListRowHeight, 1)
+            .neoScreen()
+            .accessibilityIdentifier("neo.reviewFood.whatIf")
+            .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
-                        .font(.system(.body, design: .rounded, weight: .semibold))
-                        .tint(AppColors.calorie)
+                        .font(.system(.body, design: .rounded, weight: .black))
+                        .tint(NeoAppColors.cobalt)
                 }
             }
             .task(id: suggestionTaskID) {
@@ -955,34 +1201,35 @@ private struct WhatIfImpactRow: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            Circle()
-                .fill(tint.opacity(0.18))
-                .frame(width: 30, height: 30)
+            Rectangle()
+                .fill(tint)
+                .frame(width: 7, height: 52)
                 .overlay {
-                    Circle()
-                        .fill(tint)
-                        .frame(width: 10, height: 10)
+                    Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
                 }
 
             VStack(alignment: .leading, spacing: 3) {
                 Text(LocalizedDisplayText.text(label))
-                    .font(.system(.body, design: .rounded, weight: .semibold))
+                    .textCase(.uppercase)
+                    .font(.system(.body, design: .rounded, weight: .black).width(.condensed))
+                    .foregroundStyle(NeoAppColors.ink)
                 Text(after)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(.system(.caption, design: .rounded, weight: .bold))
+                    .foregroundStyle(NeoAppColors.mutedInk)
             }
 
             Spacer()
 
             VStack(alignment: .trailing, spacing: 3) {
                 Text(added)
-                    .font(.system(.body, design: .rounded, weight: .semibold))
+                    .font(.system(.body, design: .rounded, weight: .black))
+                    .foregroundStyle(NeoAppColors.cobalt)
                 Text(remaining)
-                    .font(.caption)
-                    .foregroundStyle(isOver ? Color.red : .secondary)
+                    .font(.system(.caption, design: .rounded, weight: .bold))
+                    .foregroundStyle(isOver ? NeoAppColors.warning : NeoAppColors.mutedInk)
             }
         }
-        .padding(.vertical, 2)
+        .accessibilityElement(children: .combine)
     }
 }
 
@@ -1165,7 +1412,7 @@ struct EndEditingDecimalTextField: UIViewRepresentable {
             }
 
             let doneItem = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(doneTapped))
-            doneItem.tintColor = Self.calorieTint
+            doneItem.tintColor = Self.cobaltTint
 
             let toolbar = UIToolbar()
             toolbar.items = [flexibleSpace(), doneItem]
@@ -1182,14 +1429,14 @@ struct EndEditingDecimalTextField: UIViewRepresentable {
             let material: UIVisualEffect
             if #available(iOS 26.0, *) {
                 let glass = UIGlassEffect(style: .regular)
-                glass.tintColor = Self.calorieTint.withAlphaComponent(0.08)
+                glass.tintColor = Self.cobaltTint.withAlphaComponent(0.10)
                 material = glass
             } else {
                 material = UIBlurEffect(style: .systemChromeMaterial)
             }
             let glassSurface = UIVisualEffectView(effect: material)
             glassSurface.clipsToBounds = true
-            glassSurface.layer.cornerRadius = 16
+            glassSurface.layer.cornerRadius = 2
             glassSurface.layer.cornerCurve = .continuous
             glassSurface.translatesAutoresizingMaskIntoConstraints = false
             accessory.addSubview(glassSurface)
@@ -1290,12 +1537,14 @@ struct EndEditingDecimalTextField: UIViewRepresentable {
         ) -> UIButton {
             let button = UIButton(type: .system)
             button.setTitle(title, for: .normal)
-            button.setTitleColor(emphasized ? .white : Self.calorieTint, for: .normal)
-            button.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
+            button.setTitleColor(emphasized ? .black : Self.cobaltTint, for: .normal)
+            button.titleLabel?.font = .systemFont(ofSize: 16, weight: .black)
             button.titleLabel?.adjustsFontSizeToFitWidth = true
             button.titleLabel?.minimumScaleFactor = 0.72
-            button.backgroundColor = emphasized ? Self.calorieTint : .clear
-            button.layer.cornerRadius = 10
+            button.backgroundColor = emphasized ? Self.acidTint : .clear
+            button.layer.cornerRadius = 2
+            button.layer.borderWidth = 1
+            button.layer.borderColor = (emphasized ? UIColor.black : Self.cobaltTint).cgColor
             button.accessibilityLabel = accessibilityLabel
             button.addTarget(self, action: action, for: .touchUpInside)
             return button
@@ -1305,7 +1554,12 @@ struct EndEditingDecimalTextField: UIViewRepresentable {
             UIBarButtonItem(systemItem: .flexibleSpace)
         }
 
-        private static let calorieTint = UIColor(red: 1.0, green: 55.0 / 255.0, blue: 95.0 / 255.0, alpha: 1.0)
+        private static let cobaltTint = UIColor { traits in
+            traits.userInterfaceStyle == .dark
+                ? UIColor(red: 0.30, green: 0.47, blue: 1.0, alpha: 1.0)
+                : UIColor(red: 0.024, green: 0.231, blue: 0.922, alpha: 1.0)
+        }
+        private static let acidTint = UIColor(red: 238.0 / 255.0, green: 1.0, blue: 0, alpha: 1.0)
     }
 }
 
@@ -1337,7 +1591,9 @@ private struct ReviewNutritionValueRow: View {
     var body: some View {
         HStack {
             Text(LocalizedDisplayText.text(label))
-                .foregroundStyle(dim ? .secondary : .primary)
+                .textCase(.uppercase)
+                .font(.system(.caption, design: .rounded, weight: .black).width(.condensed))
+                .foregroundStyle(dim ? NeoAppColors.mutedInk : NeoAppColors.ink)
             Spacer()
             if isUnlocked {
                 TextField("0", text: Binding(
@@ -1350,11 +1606,15 @@ private struct ReviewNutritionValueRow: View {
                 .focused($isFocused)
                 .keyboardType(.decimalPad)
                 .multilineTextAlignment(.trailing)
-                .fontWeight(.medium)
+                .font(.system(.body, design: .rounded, weight: .black))
+                .foregroundStyle(NeoAppColors.ink)
                 .frame(minWidth: 76, maxWidth: 118)
                 .padding(.horizontal, 10)
                 .padding(.vertical, 5)
-                .background(AppColors.calorie.opacity(0.10), in: RoundedRectangle(cornerRadius: 9))
+                .background(NeoAppColors.subtleSurface)
+                .overlay {
+                    Rectangle().stroke(NeoAppColors.cobalt, lineWidth: NeoAppMetrics.compactRule)
+                }
                 .onAppear { draft = editValue }
                 .onChange(of: editValue) { _, newValue in
                     if !isFocused {
@@ -1370,10 +1630,13 @@ private struct ReviewNutritionValueRow: View {
                 }
             } else {
                 Text(displayValue)
-                    .fontWeight(.medium)
+                    .font(.system(.body, design: .rounded, weight: .black))
+                    .foregroundStyle(NeoAppColors.cobalt)
+                    .monospacedDigit()
             }
             Text(unit)
-                .foregroundStyle(.secondary)
+                .font(.system(.caption, design: .rounded, weight: .black))
+                .foregroundStyle(NeoAppColors.mutedInk)
                 .frame(width: 36, alignment: .leading)
         }
     }
@@ -1387,11 +1650,17 @@ struct NutritionDisplayRow: View {
     var body: some View {
         HStack {
             Text(LocalizedDisplayText.text(label))
+                .textCase(.uppercase)
+                .font(.system(.caption, design: .rounded, weight: .black).width(.condensed))
+                .foregroundStyle(NeoAppColors.ink)
             Spacer()
             Text(value)
-                .fontWeight(.medium)
+                .font(.system(.body, design: .rounded, weight: .black))
+                .foregroundStyle(NeoAppColors.cobalt)
+                .monospacedDigit()
             Text(unit)
-                .foregroundStyle(.secondary)
+                .font(.system(.caption, design: .rounded, weight: .black))
+                .foregroundStyle(NeoAppColors.mutedInk)
                 .frame(width: 36, alignment: .leading)
         }
     }
@@ -1405,12 +1674,17 @@ struct OptionalNutritionDisplayRow: View {
     var body: some View {
         HStack {
             Text(LocalizedDisplayText.text(label))
-                .foregroundStyle(.secondary)
+                .textCase(.uppercase)
+                .font(.system(.caption, design: .rounded, weight: .black).width(.condensed))
+                .foregroundStyle(NeoAppColors.mutedInk)
             Spacer()
             Text(value.map { String(format: "%.1f", $0) } ?? "—")
-                .fontWeight(.medium)
+                .font(.system(.body, design: .rounded, weight: .black))
+                .foregroundStyle(NeoAppColors.cobalt)
+                .monospacedDigit()
             Text(unit)
-                .foregroundStyle(.secondary)
+                .font(.system(.caption, design: .rounded, weight: .black))
+                .foregroundStyle(NeoAppColors.mutedInk)
                 .frame(width: 36, alignment: .leading)
         }
     }

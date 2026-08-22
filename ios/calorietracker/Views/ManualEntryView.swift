@@ -31,10 +31,8 @@ struct ManualEntryView: View {
     }
 
     var body: some View {
-        VStack(spacing: 16) {
-            Text("Manual Entry")
-                .font(.headline)
-                .frame(maxWidth: .infinity, alignment: .leading)
+        VStack(spacing: 14) {
+            NeoSectionBanner(title: "Manual Entry", detail: "FOOD LOG", style: .cobalt)
 
             field(label: "Name", text: $name, placeholder: "e.g. Homemade salad", keyboard: .default, focus: .name)
 
@@ -59,10 +57,13 @@ struct ManualEntryView: View {
             // (defaults to whatever currentMeal returns for the time of day).
             VStack(alignment: .leading, spacing: 4) {
                 Text("Meal")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .textCase(.uppercase)
+                    .font(.system(.caption, design: .rounded, weight: .black))
+                    .foregroundStyle(NeoAppColors.cobalt)
                 HStack {
                     Text("Meal Type")
+                        .font(.system(.body, design: .rounded, weight: .bold))
+                        .foregroundStyle(NeoAppColors.ink)
                     Spacer()
                     Picker("Meal Type", selection: $mealType) {
                         ForEach(MealType.allCases, id: \.self) { meal in
@@ -70,11 +71,15 @@ struct ManualEntryView: View {
                         }
                     }
                     .pickerStyle(.menu)
-                    .tint(AppColors.calorie)
+                    .tint(NeoAppColors.cobalt)
                     .labelsHidden()
                 }
-                .padding(10)
-                .background(RoundedRectangle(cornerRadius: 10).fill(Color(.quaternarySystemFill)))
+                .padding(12)
+                .background(NeoAppColors.surface)
+                .overlay {
+                    Rectangle()
+                        .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                }
             }
 
             Button {
@@ -92,19 +97,41 @@ struct ManualEntryView: View {
                 onSave(entry)
             } label: {
                 Text("Save")
-                    .font(.headline)
+                    .textCase(.uppercase)
+                    .font(.system(.headline, design: .rounded, weight: .black))
+                    .foregroundStyle(Color.black)
                     .frame(maxWidth: .infinity)
+                    .frame(minHeight: 50)
+                    .background(NeoAppColors.acid)
+                    .overlay {
+                        Rectangle()
+                            .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                    }
             }
-            .buttonStyle(.borderedProminent)
-            .tint(AppColors.calorie)
-            .controlSize(.large)
+            .buttonStyle(.plain)
             .disabled(!canSave)
+            .opacity(canSave ? 1 : 0.45)
+            .accessibilityIdentifier("quickAdd.manual.save")
 
-            Button("Cancel") { onCancel() }
-                .foregroundStyle(.secondary)
+            Button(action: onCancel) {
+                Text("Cancel")
+                    .textCase(.uppercase)
+                    .font(.system(.subheadline, design: .rounded, weight: .black))
+                    .foregroundStyle(NeoAppColors.cobalt)
+                    .frame(maxWidth: .infinity)
+                    .frame(minHeight: 44)
+                    .background(NeoAppColors.surface)
+                    .overlay {
+                        Rectangle()
+                            .stroke(NeoAppColors.cobalt, lineWidth: NeoAppMetrics.rule)
+                    }
+            }
+            .buttonStyle(.plain)
+            .accessibilityIdentifier("quickAdd.manual.cancel")
         }
-        .padding(20)
+        .padding(14)
         .frame(width: 340)
+        .background(NeoAppColors.canvas)
         .onAppear { focused = .name }
     }
 
@@ -112,15 +139,22 @@ struct ManualEntryView: View {
     private func field(label: String, text: Binding<String>, placeholder: String, keyboard: UIKeyboardType, focus: Field) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(LocalizedDisplayText.text(label))
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                .textCase(.uppercase)
+                .font(.system(.caption, design: .rounded, weight: .black))
+                .foregroundStyle(NeoAppColors.cobalt)
             TextField(placeholder, text: text)
                 .keyboardType(keyboard)
                 .textFieldStyle(.plain)
+                .font(.system(.body, design: .rounded, weight: .semibold))
+                .foregroundStyle(NeoAppColors.ink)
                 .autocorrectionDisabled()
                 .focused($focused, equals: focus)
-                .padding(10)
-                .background(RoundedRectangle(cornerRadius: 10).fill(Color(.quaternarySystemFill)))
+                .padding(12)
+                .background(NeoAppColors.surface)
+                .overlay {
+                    Rectangle()
+                        .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                }
         }
     }
 
@@ -128,14 +162,21 @@ struct ManualEntryView: View {
     private func numberField(label: String, text: Binding<String>, focus: Field) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(LocalizedDisplayText.text(label))
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                .textCase(.uppercase)
+                .font(.system(.caption, design: .rounded, weight: .black))
+                .foregroundStyle(NeoAppColors.cobalt)
             TextField("0", text: text)
                 .keyboardType(focus == .calories ? .numberPad : .decimalPad)
                 .textFieldStyle(.plain)
+                .font(.system(.body, design: .rounded, weight: .semibold))
+                .foregroundStyle(NeoAppColors.ink)
                 .focused($focused, equals: focus)
-                .padding(10)
-                .background(RoundedRectangle(cornerRadius: 10).fill(Color(.quaternarySystemFill)))
+                .padding(12)
+                .background(NeoAppColors.surface)
+                .overlay {
+                    Rectangle()
+                        .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                }
         }
     }
 }

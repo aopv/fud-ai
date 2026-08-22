@@ -35,9 +35,9 @@ enum NeoAppMetrics {
     static let cornerRadius: CGFloat = 2
     static let screenInset: CGFloat = 14
     static let sectionSpacing: CGFloat = 14
-    /// The rail follows the reference's ~16% screen share while leaving enough
-    /// room for Home's four-column nutrient grid on a 375-point iPhone.
-    static let railWidth: CGFloat = 64
+    static let bottomBarHeight: CGFloat = 64
+    static let bottomBarCornerRadius: CGFloat = 18
+    static let quickActionSize: CGFloat = 56
 }
 
 enum NeoAppTab: String, CaseIterable, Identifiable, Hashable {
@@ -70,131 +70,169 @@ enum NeoAppTab: String, CaseIterable, Identifiable, Hashable {
     }
 }
 
-struct NeoAppNavigationRail: View {
+struct NeoAppBottomNavigationBar: View {
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Binding var selection: NeoAppTab
     let workoutsIcon: String
     let updateAvailable: Bool
     let onQuickAdd: () -> Void
+    @State private var selectionFeedbackTrigger = 0
 
     var body: some View {
-        VStack(spacing: 0) {
-            brand
+        bottomNavigation
+            .padding(.horizontal, 10)
+            .padding(.top, 8)
+            .padding(.bottom, 6)
+            .sensoryFeedback(.selection, trigger: selectionFeedbackTrigger)
+            .accessibilityElement(children: .contain)
+            .accessibilityLabel("App navigation")
+            .accessibilityAddTraits(.isTabBar)
+    }
 
+    @ViewBuilder
+    private var bottomNavigation: some View {
+        if #available(iOS 26.0, *) {
+            GlassEffectContainer(spacing: 10) {
+                HStack(spacing: 10) {
+                    navigationStrip
+                        .glassEffect(
+                            .regular
+                                .tint(NeoAppColors.cobalt.opacity(colorScheme == .dark ? 0.44 : 0.32)),
+                            in: .rect(cornerRadius: NeoAppMetrics.bottomBarCornerRadius)
+                        )
+
+                    quickActionButton
+                        .glassEffect(
+                            .regular
+                                .tint(NeoAppColors.acid.opacity(colorScheme == .dark ? 0.58 : 0.72))
+                                .interactive(),
+                            in: .rect(cornerRadius: NeoAppMetrics.bottomBarCornerRadius)
+                        )
+                }
+            }
+        } else {
+            HStack(spacing: 10) {
+                navigationStrip
+                    .background(.ultraThinMaterial, in: bottomBarShape)
+
+                quickActionButton
+                    .background(.ultraThinMaterial, in: bottomBarShape)
+            }
+        }
+    }
+
+    private var navigationStrip: some View {
+        HStack(spacing: 2) {
             ForEach(NeoAppTab.allCases) { tab in
                 navigationButton(for: tab)
             }
-
-            Spacer(minLength: 8)
-
-            Text("TRACK.\nLEARN.\nWIN.")
-                .font(.system(size: 9, weight: .black, design: .rounded).width(.condensed))
-                .tracking(0.6)
-                .foregroundStyle(Color.white)
-                .multilineTextAlignment(.leading)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 10)
-                .accessibilityHidden(true)
-
-            Spacer(minLength: 8)
-
-            Button(action: onQuickAdd) {
-                Image(systemName: "bolt.fill")
-                    .font(.system(size: 28, weight: .black))
-                    .foregroundStyle(NeoAppColors.acid)
-                    .frame(width: 52, height: 52)
-                    .neoInteractiveSurface(cornerRadius: 2)
-            }
-            .buttonStyle(NeoRailButtonStyle())
-            .accessibilityLabel("Camera and note")
-            .accessibilityIdentifier("nav.quickAdd")
-            .padding(.bottom, 10)
         }
-        .frame(width: NeoAppMetrics.railWidth)
-        .background(Color.black)
-        .overlay(alignment: .leading) {
-            Rectangle()
-                .fill(Color.white.opacity(0.82))
-                .frame(width: NeoAppMetrics.compactRule)
+        .padding(5)
+        .frame(maxWidth: .infinity)
+        .frame(height: NeoAppMetrics.bottomBarHeight)
+        .background(NeoAppColors.cobalt.opacity(colorScheme == .dark ? 0.18 : 0.10), in: bottomBarShape)
+        .overlay {
+            bottomBarShape
+                .stroke(NeoAppColors.cobalt, lineWidth: NeoAppMetrics.rule)
         }
-        .accessibilityElement(children: .contain)
-        .accessibilityLabel("App navigation")
     }
 
-    private var brand: some View {
-        VStack(spacing: -3) {
-            Text("FÜD")
-            Text("AI")
+    private var quickActionButton: some View {
+        Button(action: onQuickAdd) {
+            VStack(spacing: 2) {
+                Image(systemName: "bolt.fill")
+                    .font(.system(size: 22, weight: .black))
+                if !dynamicTypeSize.isAccessibilitySize {
+                    Text("ADD")
+                        .font(.caption2.weight(.black).width(.condensed))
+                }
+            }
+            .foregroundStyle(Color.black)
+            .frame(width: NeoAppMetrics.quickActionSize, height: NeoAppMetrics.bottomBarHeight)
+            .background(NeoAppColors.acid.opacity(quickActionFillOpacity), in: bottomBarShape)
+            .overlay {
+                bottomBarShape
+                    .stroke(Color.black, lineWidth: NeoAppMetrics.rule)
+            }
+            .accessibilityHidden(true)
         }
-        .font(.system(size: 22, weight: .black, design: .rounded).width(.condensed))
-        .foregroundStyle(Color.white)
-        .frame(maxWidth: .infinity)
-        .frame(height: 82)
-        .background(NeoAppColors.cobalt)
-        .overlay(alignment: .bottom) {
-            Rectangle()
-                .fill(Color.white.opacity(0.82))
-                .frame(height: NeoAppMetrics.compactRule)
-        }
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Fud AI")
+        .buttonStyle(NeoNavigationButtonStyle())
+        .accessibilityLabel("Camera and note")
+        .accessibilityIdentifier("nav.quickAdd")
     }
 
     private func navigationButton(for tab: NeoAppTab) -> some View {
         let isSelected = selection == tab
         let icon = tab == .workouts ? workoutsIcon : tab.systemImage
+        let badgeFill = isSelected ? NeoAppColors.cobalt : NeoAppColors.acid
 
         return Button {
             guard !isSelected else { return }
-            UISelectionFeedbackGenerator().selectionChanged()
             selection = tab
+            selectionFeedbackTrigger += 1
         } label: {
-            VStack(spacing: 6) {
+            VStack(spacing: 3) {
                 ZStack(alignment: .topTrailing) {
                     Image(systemName: icon)
-                        .font(.system(size: 22, weight: .bold))
-                        .frame(width: 32, height: 26)
+                        .font(.system(size: 20, weight: .bold))
+                        .frame(width: 28, height: 23)
 
                     if tab == .settings && updateAvailable {
                         Text("!")
                             .font(.system(size: 9, weight: .black, design: .rounded))
-                            .foregroundStyle(Color.black)
+                            .foregroundStyle(isSelected ? NeoAppColors.onCobalt : Color.black)
                             .frame(width: 15, height: 15)
-                            .background(NeoAppColors.acid)
+                            .background(badgeFill)
                             .clipShape(Circle())
-                            .offset(x: 6, y: -6)
+                            .offset(x: 7, y: -5)
+                            .accessibilityHidden(true)
                     }
                 }
 
-                Text(tab.title)
-                    .textCase(.uppercase)
-                    .font(.system(size: 8, weight: .black, design: .rounded).width(.condensed))
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.72)
+                if !dynamicTypeSize.isAccessibilitySize {
+                    Text(tab.title)
+                        .textCase(.uppercase)
+                        .font(.caption2.weight(.black).width(.condensed))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.72)
+                }
             }
-            .foregroundStyle(isSelected ? NeoAppColors.cobalt : Color.white)
+            .foregroundStyle(isSelected ? Color.black : NeoAppColors.ink)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.black)
-            .overlay(alignment: .leading) {
-                Rectangle()
-                    .fill(isSelected ? NeoAppColors.cobalt : Color.clear)
-                    .frame(width: 4)
+            .background(isSelected ? NeoAppColors.acid : Color.clear, in: selectedTabShape)
+            .overlay {
+                selectedTabShape
+                    .stroke(isSelected ? Color.black : Color.clear, lineWidth: NeoAppMetrics.compactRule)
             }
-            .overlay(alignment: .bottom) {
-                Rectangle()
-                    .fill(Color.white.opacity(0.22))
-                    .frame(height: NeoAppMetrics.compactRule)
-            }
+            .accessibilityHidden(true)
         }
-        .buttonStyle(NeoRailButtonStyle())
-        .frame(height: 82)
+        .buttonStyle(NeoNavigationButtonStyle())
+        .frame(maxWidth: .infinity)
+        .frame(height: NeoAppMetrics.bottomBarHeight - 10)
         .accessibilityLabel(Text(tab.title))
         .accessibilityValue(tab == .settings && updateAvailable ? "Update available" : "")
         .accessibilityAddTraits(isSelected ? .isSelected : [])
         .accessibilityIdentifier("nav.\(tab.rawValue)")
     }
+
+    private var bottomBarShape: RoundedRectangle {
+        RoundedRectangle(cornerRadius: NeoAppMetrics.bottomBarCornerRadius, style: .continuous)
+    }
+
+    private var selectedTabShape: RoundedRectangle {
+        RoundedRectangle(cornerRadius: 12, style: .continuous)
+    }
+
+    private var quickActionFillOpacity: Double {
+        if #available(iOS 26.0, *) {
+            return colorScheme == .dark ? 0.24 : 0.32
+        }
+        return colorScheme == .dark ? 0.78 : 0.88
+    }
 }
 
-private struct NeoRailButtonStyle: ButtonStyle {
+private struct NeoNavigationButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .opacity(configuration.isPressed ? 0.68 : 1)
