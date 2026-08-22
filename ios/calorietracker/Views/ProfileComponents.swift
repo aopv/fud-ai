@@ -1,5 +1,34 @@
 import SwiftUI
 
+private extension View {
+    func neoSettingsPrimaryAction() -> some View {
+        font(.system(.headline, design: .rounded, weight: .black))
+            .textCase(.uppercase)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 14)
+            .foregroundStyle(Color.black)
+            .background(NeoAppColors.acid)
+            .overlay {
+                Rectangle()
+                    .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                    .allowsHitTesting(false)
+            }
+    }
+
+    func neoSettingsPickerPanel() -> some View {
+        padding(.horizontal, 14)
+            .neoPanel(fill: NeoAppColors.surface)
+    }
+
+    func neoSettingsListChrome() -> some View {
+        listStyle(.plain)
+            .listSectionSpacing(NeoAppMetrics.sectionSpacing)
+            .scrollContentBackground(.hidden)
+            .background(NeoAppColors.canvas)
+            .tint(NeoAppColors.cobalt)
+    }
+}
+
 // MARK: - Profile Header Section
 
 struct ProfileHeaderSection: View {
@@ -8,24 +37,23 @@ struct ProfileHeaderSection: View {
     var body: some View {
         VStack(spacing: 12) {
             ZStack {
-                Circle()
-                    .fill(
-                        LinearGradient(
-                            colors: AppColors.calorieGradient,
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
+                Rectangle()
+                    .fill(NeoAppColors.cobalt)
                     .frame(width: 80, height: 80)
-                    .shadow(color: AppColors.calorie.opacity(0.3), radius: 8, y: 4)
+                    .overlay {
+                        Rectangle()
+                            .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                            .allowsHitTesting(false)
+                    }
 
                 Text(profile.initials)
                     .font(.system(size: 32, weight: .bold, design: .rounded))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(NeoAppColors.onCobalt)
             }
 
             Text(profile.displayName)
-                .font(.system(.title2, design: .rounded, weight: .bold))
+                .font(.system(.title2, design: .rounded, weight: .black))
+                .fontWidth(.condensed)
 
             Text("\(profile.effectiveCalories) kcal / day")
                 .font(.system(.subheadline, design: .rounded, weight: .medium))
@@ -33,6 +61,7 @@ struct ProfileHeaderSection: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 16)
+        .neoPanel(fill: NeoAppColors.surface)
     }
 }
 
@@ -53,7 +82,7 @@ struct ProfileInfoRow: View {
                     Text(LocalizedDisplayText.text(label))
                 } icon: {
                     Image(systemName: icon)
-                        .foregroundStyle(AppColors.calorie)
+                        .foregroundStyle(NeoAppColors.cobalt)
                 }
                 Spacer()
                 Text(value)
@@ -64,6 +93,8 @@ struct ProfileInfoRow: View {
                         .foregroundStyle(.tertiary)
                 }
             }
+            .padding(.vertical, 4)
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
         .disabled(action == nil)
@@ -98,14 +129,17 @@ struct HeightPickerSheet: View {
         NavigationStack {
             VStack(spacing: 20) {
                 Text("Height")
-                    .font(.system(.title2, design: .rounded, weight: .bold))
+                    .font(.system(.title2, design: .rounded, weight: .black))
+                    .fontWidth(.condensed)
+                    .textCase(.uppercase)
 
                 Picker("Unit", selection: $heightUnitRaw) {
                     Text("cm").tag("cm")
                     Text("ft / in").tag("ftin")
                 }
                 .pickerStyle(.segmented)
-                .padding(.horizontal, 24)
+                .padding(8)
+                .neoSettingsPickerPanel()
                 .onChange(of: heightUnitRaw) { _, newValue in
                     // Convert the currently selected value so toggling mid-edit keeps it,
                     // clamped into the destination wheel's rows (100...250 cm / 3'0"...8'11")
@@ -136,6 +170,7 @@ struct HeightPickerSheet: View {
                             .foregroundStyle(.secondary)
                             .padding(.leading, 4)
                     }
+                    .neoSettingsPickerPanel()
                 } else {
                     HStack(spacing: 0) {
                         Picker("Feet", selection: $feet) {
@@ -166,6 +201,7 @@ struct HeightPickerSheet: View {
                             .font(.system(.title3, design: .rounded))
                             .foregroundStyle(.secondary)
                     }
+                    .neoSettingsPickerPanel()
                 }
 
                 Button {
@@ -179,20 +215,16 @@ struct HeightPickerSheet: View {
                     dismiss()
                 } label: {
                     Text("Save")
-                        .font(.system(.headline, design: .rounded, weight: .semibold))
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 14)
-                        .background(
-                            LinearGradient(colors: AppColors.calorieGradient, startPoint: .leading, endPoint: .trailing)
-                        )
-                        .foregroundStyle(.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 14))
+                        .neoSettingsPrimaryAction()
                 }
+                .buttonStyle(.plain)
                 .padding(.horizontal, 24)
 
                 Spacer()
             }
             .padding(.top, 24)
+            .background(NeoAppColors.canvas)
+            .tint(NeoAppColors.cobalt)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
@@ -233,14 +265,17 @@ struct WeightPickerSheet: View {
         NavigationStack {
             VStack(spacing: 20) {
                 Text(LocalizedDisplayText.text("Weight"))
-                    .font(.system(.title2, design: .rounded, weight: .bold))
+                    .font(.system(.title2, design: .rounded, weight: .black))
+                    .fontWidth(.condensed)
+                    .textCase(.uppercase)
 
                 Picker("Unit", selection: $weightUnitRaw) {
                     Text("kg").tag("kg")
                     Text("lbs").tag("lbs")
                 }
                 .pickerStyle(.segmented)
-                .padding(.horizontal, 24)
+                .padding(8)
+                .neoSettingsPickerPanel()
                 .onChange(of: weightUnitRaw) { _, newValue in
                     // Convert the currently selected value so toggling mid-edit keeps it,
                     // clamped into the destination wheel's rows (30...300 kg / 50...500 lbs)
@@ -284,6 +319,7 @@ struct WeightPickerSheet: View {
                         .foregroundStyle(.secondary)
                         .padding(.leading, 4)
                 }
+                .neoSettingsPickerPanel()
 
                 Button {
                     let value = Double(wholeNumber) + Double(decimal) / 10.0
@@ -292,20 +328,16 @@ struct WeightPickerSheet: View {
                     dismiss()
                 } label: {
                     Text("Save")
-                        .font(.system(.headline, design: .rounded, weight: .semibold))
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 14)
-                        .background(
-                            LinearGradient(colors: AppColors.calorieGradient, startPoint: .leading, endPoint: .trailing)
-                        )
-                        .foregroundStyle(.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 14))
+                        .neoSettingsPrimaryAction()
                 }
+                .buttonStyle(.plain)
                 .padding(.horizontal, 24)
 
                 Spacer()
             }
             .padding(.top, 24)
+            .background(NeoAppColors.canvas)
+            .tint(NeoAppColors.cobalt)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
@@ -335,7 +367,9 @@ struct BodyFatPickerSheet: View {
         NavigationStack {
             VStack(spacing: 20) {
                 Text("Body Fat %")
-                    .font(.system(.title2, design: .rounded, weight: .bold))
+                    .font(.system(.title2, design: .rounded, weight: .black))
+                    .fontWidth(.condensed)
+                    .textCase(.uppercase)
 
                 HStack(spacing: 0) {
                     Picker("Percentage", selection: $percentage) {
@@ -353,21 +387,16 @@ struct BodyFatPickerSheet: View {
                         .foregroundStyle(.secondary)
                         .padding(.leading, 4)
                 }
+                .neoSettingsPickerPanel()
 
                 Button {
                     onSave(Double(percentage) / 100.0)
                     dismiss()
                 } label: {
                     Text("Save")
-                        .font(.system(.headline, design: .rounded, weight: .semibold))
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 14)
-                        .background(
-                            LinearGradient(colors: AppColors.calorieGradient, startPoint: .leading, endPoint: .trailing)
-                        )
-                        .foregroundStyle(.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 14))
+                        .neoSettingsPrimaryAction()
                 }
+                .buttonStyle(.plain)
                 .padding(.horizontal, 24)
 
                 Button {
@@ -382,6 +411,8 @@ struct BodyFatPickerSheet: View {
                 Spacer()
             }
             .padding(.top, 24)
+            .background(NeoAppColors.canvas)
+            .tint(NeoAppColors.cobalt)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
@@ -419,7 +450,9 @@ struct GoalBodyFatPickerSheet: View {
         NavigationStack {
             VStack(spacing: 16) {
                 Text("Body Fat Goal")
-                    .font(.system(.title2, design: .rounded, weight: .bold))
+                    .font(.system(.title2, design: .rounded, weight: .black))
+                    .fontWidth(.condensed)
+                    .textCase(.uppercase)
 
                 if let bf = currentBodyFat {
                     Text("Currently \(Int(bf * 100))%")
@@ -443,21 +476,16 @@ struct GoalBodyFatPickerSheet: View {
                         .foregroundStyle(.secondary)
                         .padding(.leading, 4)
                 }
+                .neoSettingsPickerPanel()
 
                 Button {
                     onSave(Double(percentage) / 100.0)
                     dismiss()
                 } label: {
                     Text("Save")
-                        .font(.system(.headline, design: .rounded, weight: .semibold))
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 14)
-                        .background(
-                            LinearGradient(colors: AppColors.calorieGradient, startPoint: .leading, endPoint: .trailing)
-                        )
-                        .foregroundStyle(.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 14))
+                        .neoSettingsPrimaryAction()
                 }
+                .buttonStyle(.plain)
                 .padding(.horizontal, 24)
 
                 Button {
@@ -472,6 +500,8 @@ struct GoalBodyFatPickerSheet: View {
                 Spacer()
             }
             .padding(.top, 24)
+            .background(NeoAppColors.canvas)
+            .tint(NeoAppColors.cobalt)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
@@ -498,7 +528,7 @@ struct ActivityLevelSelectionView: View {
                     HStack(spacing: 14) {
                         Image(systemName: level.icon)
                             .font(.title2)
-                            .foregroundStyle(AppColors.calorie)
+                            .foregroundStyle(NeoAppColors.cobalt)
                             .frame(width: 32)
 
                         VStack(alignment: .leading, spacing: 2) {
@@ -514,16 +544,23 @@ struct ActivityLevelSelectionView: View {
 
                         if level == selected {
                             Image(systemName: "checkmark")
-                                .foregroundStyle(AppColors.calorie)
+                                .foregroundStyle(Color.black)
                                 .fontWeight(.semibold)
+                                .frame(width: 28, height: 28)
+                                .background(NeoAppColors.acid)
+                                .overlay {
+                                    Rectangle()
+                                        .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                                        .allowsHitTesting(false)
+                                }
                         }
                     }
                 }
-                .listRowBackground(AppColors.appCard)
+                .listRowBackground(NeoAppColors.surface)
+                .listRowSeparatorTint(NeoAppColors.ink.opacity(0.35))
             }
         }
-        .scrollContentBackground(.hidden)
-        .background(AppColors.appBackground)
+        .neoSettingsListChrome()
         .navigationTitle("Activity Level")
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -545,7 +582,7 @@ struct WeightGoalSelectionView: View {
                     HStack(spacing: 14) {
                         Image(systemName: goal.icon)
                             .font(.title2)
-                            .foregroundStyle(AppColors.calorie)
+                            .foregroundStyle(NeoAppColors.cobalt)
                             .frame(width: 32)
 
                         Text(goal.displayName)
@@ -556,16 +593,23 @@ struct WeightGoalSelectionView: View {
 
                         if goal == selected {
                             Image(systemName: "checkmark")
-                                .foregroundStyle(AppColors.calorie)
+                                .foregroundStyle(Color.black)
                                 .fontWeight(.semibold)
+                                .frame(width: 28, height: 28)
+                                .background(NeoAppColors.acid)
+                                .overlay {
+                                    Rectangle()
+                                        .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                                        .allowsHitTesting(false)
+                                }
                         }
                     }
                 }
-                .listRowBackground(AppColors.appCard)
+                .listRowBackground(NeoAppColors.surface)
+                .listRowSeparatorTint(NeoAppColors.ink.opacity(0.35))
             }
         }
-        .scrollContentBackground(.hidden)
-        .background(AppColors.appBackground)
+        .neoSettingsListChrome()
         .navigationTitle("Weight Goal")
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -587,7 +631,7 @@ struct GenderSelectionView: View {
                     HStack(spacing: 14) {
                         Image(systemName: gender.icon)
                             .font(.title2)
-                            .foregroundStyle(AppColors.calorie)
+                            .foregroundStyle(NeoAppColors.cobalt)
                             .frame(width: 32)
 
                         Text(gender.displayName)
@@ -598,16 +642,23 @@ struct GenderSelectionView: View {
 
                         if gender == selected {
                             Image(systemName: "checkmark")
-                                .foregroundStyle(AppColors.calorie)
+                                .foregroundStyle(Color.black)
                                 .fontWeight(.semibold)
+                                .frame(width: 28, height: 28)
+                                .background(NeoAppColors.acid)
+                                .overlay {
+                                    Rectangle()
+                                        .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                                        .allowsHitTesting(false)
+                                }
                         }
                     }
                 }
-                .listRowBackground(AppColors.appCard)
+                .listRowBackground(NeoAppColors.surface)
+                .listRowSeparatorTint(NeoAppColors.ink.opacity(0.35))
             }
         }
-        .scrollContentBackground(.hidden)
-        .background(AppColors.appBackground)
+        .neoSettingsListChrome()
         .navigationTitle("Gender")
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -652,16 +703,23 @@ struct GoalSpeedSelectionView: View {
 
                         if selected == option.value {
                             Image(systemName: "checkmark")
-                                .foregroundStyle(AppColors.calorie)
+                                .foregroundStyle(Color.black)
                                 .fontWeight(.semibold)
+                                .frame(width: 28, height: 28)
+                                .background(NeoAppColors.acid)
+                                .overlay {
+                                    Rectangle()
+                                        .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                                        .allowsHitTesting(false)
+                                }
                         }
                     }
                 }
-                .listRowBackground(AppColors.appCard)
+                .listRowBackground(NeoAppColors.surface)
+                .listRowSeparatorTint(NeoAppColors.ink.opacity(0.35))
             }
         }
-        .scrollContentBackground(.hidden)
-        .background(AppColors.appBackground)
+        .neoSettingsListChrome()
         .navigationTitle("Weekly Change")
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -711,7 +769,8 @@ struct MealTimeSettingsView: View {
             } footer: {
                 Text("Each meal continues until the next one starts. Late Snack continues overnight until Breakfast starts. You can still change the meal manually before logging.")
             }
-            .listRowBackground(AppColors.appCard)
+            .listRowBackground(NeoAppColors.surface)
+            .listRowSeparatorTint(NeoAppColors.ink.opacity(0.35))
 
             Section {
                 Button("Restore Default Times") {
@@ -721,12 +780,21 @@ struct MealTimeSettingsView: View {
                     dinnerStartMinutes = defaults.dinnerStartMinutes
                     snackStartMinutes = defaults.snackStartMinutes
                 }
-                .foregroundStyle(AppColors.calorie)
+                .font(.system(.body, design: .rounded, weight: .black))
+                .textCase(.uppercase)
+                .frame(maxWidth: .infinity)
+                .foregroundStyle(Color.black)
+                .padding(.vertical, 10)
+                .background(NeoAppColors.acid)
+                .overlay {
+                    Rectangle()
+                        .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                        .allowsHitTesting(false)
+                }
             }
-            .listRowBackground(AppColors.appCard)
+            .listRowBackground(Color.clear)
         }
-        .scrollContentBackground(.hidden)
-        .background(AppColors.appBackground)
+        .neoSettingsListChrome()
         .navigationTitle("Meal Times")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear(perform: repairInvalidScheduleIfNeeded)
@@ -748,10 +816,10 @@ struct MealTimeSettingsView: View {
                 Text(title)
             } icon: {
                 Image(systemName: icon)
-                    .foregroundStyle(AppColors.calorie)
+                    .foregroundStyle(NeoAppColors.cobalt)
             }
         }
-        .tint(AppColors.calorie)
+        .tint(NeoAppColors.cobalt)
     }
 
     private func dateBinding(_ minutes: Binding<Int>) -> Binding<Date> {
@@ -966,7 +1034,9 @@ struct NutritionPickerSheet: View {
         NavigationStack {
             VStack(spacing: 20) {
                 Text(LocalizedDisplayText.text(label))
-                    .font(.system(.title2, design: .rounded, weight: .bold))
+                    .font(.system(.title2, design: .rounded, weight: .black))
+                    .fontWidth(.condensed)
+                    .textCase(.uppercase)
 
                 if isEnteringCustomValue {
                     VStack(spacing: 10) {
@@ -992,7 +1062,7 @@ struct NutritionPickerSheet: View {
                         }
                         .padding(.horizontal, 18)
                         .padding(.vertical, 14)
-                        .background(AppColors.appCard, in: RoundedRectangle(cornerRadius: 16))
+                        .neoPanel(fill: NeoAppColors.surface)
 
                         if let customValue, let detail = customValueDetail?(customValue) {
                             Text(detail)
@@ -1033,6 +1103,7 @@ struct NutritionPickerSheet: View {
                             .foregroundStyle(.secondary)
                             .padding(.leading, 4)
                     }
+                    .neoSettingsPickerPanel()
                 }
 
                 if allowsCustomValue {
@@ -1046,7 +1117,7 @@ struct NutritionPickerSheet: View {
                         }
                     }
                     .font(.system(.subheadline, design: .rounded, weight: .semibold))
-                    .foregroundStyle(AppColors.calorie)
+                    .foregroundStyle(NeoAppColors.cobalt)
                 }
 
                 Button {
@@ -1055,15 +1126,9 @@ struct NutritionPickerSheet: View {
                     dismiss()
                 } label: {
                     Text("Save")
-                        .font(.system(.headline, design: .rounded, weight: .semibold))
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 14)
-                        .background(
-                            LinearGradient(colors: AppColors.calorieGradient, startPoint: .leading, endPoint: .trailing)
-                        )
-                        .foregroundStyle(.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 14))
+                        .neoSettingsPrimaryAction()
                 }
+                .buttonStyle(.plain)
                 .padding(.horizontal, 24)
                 .disabled(valueToSave == nil)
                 .opacity(valueToSave == nil ? 0.45 : 1)
@@ -1083,6 +1148,8 @@ struct NutritionPickerSheet: View {
                 Spacer()
             }
             .padding(.top, 24)
+            .background(NeoAppColors.canvas)
+            .tint(NeoAppColors.cobalt)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
@@ -1145,10 +1212,10 @@ struct NotificationSettingsView: View {
                         Text("Notifications")
                     } icon: {
                         Image(systemName: "bell.fill")
-                            .foregroundStyle(AppColors.calorie)
+                            .foregroundStyle(NeoAppColors.cobalt)
                     }
                 }
-                .tint(AppColors.calorie)
+                .tint(NeoAppColors.cobalt)
                 .onChange(of: notificationsEnabled) { _, enabled in
                     if enabled {
                         Task {
@@ -1174,11 +1241,12 @@ struct NotificationSettingsView: View {
                     } label: {
                         Text("Notifications are disabled in system settings. Tap to open Settings.")
                             .font(.system(.caption, design: .rounded))
-                            .foregroundStyle(AppColors.calorie)
+                            .foregroundStyle(NeoAppColors.cobalt)
                     }
                 }
             }
-            .listRowBackground(AppColors.appCard)
+            .listRowBackground(NeoAppColors.surface)
+            .listRowSeparatorTint(NeoAppColors.ink.opacity(0.35))
 
             if notificationsEnabled {
                 // Meal Reminders
@@ -1216,7 +1284,8 @@ struct NotificationSettingsView: View {
                     .onChange(of: dinnerHour) { _, _ in applyMealReminders() }
                     .onChange(of: dinnerMinute) { _, _ in applyMealReminders() }
                 }
-                .listRowBackground(AppColors.appCard)
+                .listRowBackground(NeoAppColors.surface)
+                .listRowSeparatorTint(NeoAppColors.ink.opacity(0.35))
 
                 if waterTrackingEnabled {
                     Section("Water") {
@@ -1231,7 +1300,8 @@ struct NotificationSettingsView: View {
                         .onChange(of: waterReminderHour) { _, _ in applyWaterReminder() }
                         .onChange(of: waterReminderMinute) { _, _ in applyWaterReminder() }
                     }
-                    .listRowBackground(AppColors.appCard)
+                    .listRowBackground(NeoAppColors.surface)
+                    .listRowSeparatorTint(NeoAppColors.ink.opacity(0.35))
                 }
 
                 if fastingTrackingEnabled {
@@ -1241,10 +1311,10 @@ struct NotificationSettingsView: View {
                                 Text("Goal Reached")
                             } icon: {
                                 Image(systemName: "timer")
-                                    .foregroundStyle(AppColors.calorie)
+                                    .foregroundStyle(NeoAppColors.cobalt)
                             }
                         }
-                        .tint(AppColors.calorie)
+                        .tint(NeoAppColors.cobalt)
                         .onChange(of: fastingGoalNotificationEnabled) { _, _ in
                             applyFastingGoalNotification()
                         }
@@ -1254,7 +1324,8 @@ struct NotificationSettingsView: View {
                         Text("Notifies you once when the active fast reaches its goal. The timer continues until you end it.")
                             .font(.system(.caption, design: .rounded))
                     }
-                    .listRowBackground(AppColors.appCard)
+                    .listRowBackground(NeoAppColors.surface)
+                    .listRowSeparatorTint(NeoAppColors.ink.opacity(0.35))
                 }
 
                 // Smart Notifications
@@ -1296,7 +1367,8 @@ struct NotificationSettingsView: View {
                     Text("All four reminders are smart — they skip firing on days you've already logged. Body fat default is off since most users don't measure daily.")
                         .font(.system(.caption, design: .rounded))
                 }
-                .listRowBackground(AppColors.appCard)
+                .listRowBackground(NeoAppColors.surface)
+                .listRowSeparatorTint(NeoAppColors.ink.opacity(0.35))
 
                 // App Updates
                 Section {
@@ -1305,21 +1377,21 @@ struct NotificationSettingsView: View {
                             Text("App Updates")
                         } icon: {
                             Image(systemName: "arrow.down.circle.fill")
-                                .foregroundStyle(AppColors.calorie)
+                                .foregroundStyle(NeoAppColors.cobalt)
                         }
                     }
-                    .tint(AppColors.calorie)
+                    .tint(NeoAppColors.cobalt)
                 } header: {
                     Text("App")
                 } footer: {
                     Text("Get notified when a new version is available. Tap the notification to open the App Store.")
                         .font(.system(.caption, design: .rounded))
                 }
-                .listRowBackground(AppColors.appCard)
+                .listRowBackground(NeoAppColors.surface)
+                .listRowSeparatorTint(NeoAppColors.ink.opacity(0.35))
             }
         }
-        .scrollContentBackground(.hidden)
-        .background(AppColors.appBackground)
+        .neoSettingsListChrome()
         .navigationTitle("Notifications")
         .navigationBarTitleDisplayMode(.inline)
         .task {
@@ -1380,10 +1452,10 @@ struct NotificationTimeRow: View {
                     Text(LocalizedDisplayText.text(label))
                 } icon: {
                     Image(systemName: icon)
-                        .foregroundStyle(AppColors.calorie)
+                        .foregroundStyle(NeoAppColors.cobalt)
                 }
             }
-            .tint(AppColors.calorie)
+            .tint(NeoAppColors.cobalt)
 
             if isEnabled {
                 DatePicker(
@@ -1413,16 +1485,20 @@ struct ComingSoonRow: View {
                     Text(LocalizedDisplayText.text(label))
                 } icon: {
                     Image(systemName: icon)
-                        .foregroundStyle(AppColors.calorie)
+                        .foregroundStyle(NeoAppColors.cobalt)
                 }
                 Spacer()
                 Text("Coming Soon")
                     .font(.system(.caption, design: .rounded, weight: .medium))
                     .padding(.horizontal, 8)
                     .padding(.vertical, 3)
-                    .background(AppColors.calorie.opacity(0.12))
-                    .foregroundStyle(AppColors.calorie)
-                    .clipShape(Capsule())
+                    .background(NeoAppColors.acid)
+                    .foregroundStyle(Color.black)
+                    .overlay {
+                        Rectangle()
+                            .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                            .allowsHitTesting(false)
+                    }
             }
         }
         .buttonStyle(.plain)

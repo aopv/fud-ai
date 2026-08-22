@@ -134,13 +134,23 @@ struct WeightChartSection: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Text("Weight")
-                    .font(.system(.headline, design: .rounded, weight: .semibold))
+                    .font(.system(.headline, design: .rounded, weight: .black).width(.condensed))
+                    .textCase(.uppercase)
+                    .foregroundStyle(NeoAppColors.ink)
                 Spacer()
                 Button(action: onLogWeight) {
                     Label("Log Weight", systemImage: "plus.circle.fill")
-                        .font(.system(.subheadline, design: .rounded, weight: .medium))
-                        .foregroundStyle(AppColors.calorie)
+                        .font(.system(.caption, design: .rounded, weight: .black).width(.condensed))
+                        .textCase(.uppercase)
+                        .foregroundStyle(Color.black)
+                        .padding(.horizontal, 9)
+                        .padding(.vertical, 7)
+                        .background(NeoAppColors.acid)
+                        .overlay {
+                            Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                        }
                 }
+                .buttonStyle(.plain)
             }
 
             if weightEntries.isEmpty {
@@ -165,7 +175,7 @@ struct WeightChartSection: View {
                             x: .value("Date", point.date, unit: .day),
                             y: .value("Weight", point.value)
                         )
-                        .foregroundStyle(AppColors.calorie)
+                        .foregroundStyle(NeoAppColors.cobalt)
                         .interpolationMethod(.catmullRom)
                         .lineStyle(StrokeStyle(lineWidth: 2))
 
@@ -174,20 +184,20 @@ struct WeightChartSection: View {
                                 x: .value("Date", point.date, unit: .day),
                                 y: .value("Weight", point.value)
                             )
-                            .foregroundStyle(AppColors.calorie)
+                            .foregroundStyle(NeoAppColors.cobalt)
                             .symbolSize(30)
                         }
                     }
 
                     if let goalKg = goalWeightKg {
                         RuleMark(y: .value("Goal", displayWeight(goalKg)))
-                            .foregroundStyle(.green.opacity(0.7))
+                            .foregroundStyle(NeoAppColors.success.opacity(0.9))
                             .lineStyle(StrokeStyle(lineWidth: 1.5, dash: [6, 4]))
                     }
 
                     if let inspectedPoint {
                         RuleMark(x: .value("Selected date", inspectedPoint.date))
-                            .foregroundStyle(AppColors.calorie.opacity(0.6))
+                            .foregroundStyle(NeoAppColors.ink.opacity(0.55))
                             .lineStyle(StrokeStyle(lineWidth: 1.25, dash: [3, 3]))
 
                         PointMark(
@@ -201,7 +211,7 @@ struct WeightChartSection: View {
                             x: .value("Selected date", inspectedPoint.date, unit: .day),
                             y: .value("Selected weight", inspectedPoint.value)
                         )
-                        .foregroundStyle(AppColors.calorie)
+                        .foregroundStyle(NeoAppColors.cobalt)
                         .symbolSize(52)
                     }
                 }
@@ -257,8 +267,7 @@ struct WeightChartSection: View {
             }
         }
         .padding()
-        .background(AppColors.appCard)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .neoPanel()
     }
 
     /// What actually gets drawn: every entry for short ranges, bucket
@@ -321,19 +330,18 @@ struct WeightChartSection: View {
         VStack(spacing: 1) {
             Text(point.date.formatted(date: .abbreviated, time: .omitted))
                 .font(.system(.caption2, design: .rounded, weight: .medium))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.black.opacity(0.68))
             Text(String(format: "%.1f %@", point.value, unit))
                 .font(.system(.subheadline, design: .rounded, weight: .bold))
-                .foregroundStyle(.primary)
+                .foregroundStyle(Color.black)
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 6)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+        .background(NeoAppColors.acid)
         .overlay {
-            RoundedRectangle(cornerRadius: 10, style: .continuous)
-                .stroke(AppColors.calorie.opacity(0.22), lineWidth: 0.75)
+            Rectangle()
+                .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
         }
-        .shadow(color: .black.opacity(0.12), radius: 8, y: 3)
     }
 }
 
@@ -347,13 +355,21 @@ struct CalorieChartSection: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Text("Calories")
-                    .font(.system(.headline, design: .rounded, weight: .semibold))
+                    .font(.system(.headline, design: .rounded, weight: .black).width(.condensed))
+                    .textCase(.uppercase)
+                    .foregroundStyle(NeoAppColors.ink)
                 Spacer()
                 if !dailyCalories.isEmpty {
                     let avg = dailyCalories.reduce(0) { $0 + $1.calories } / max(dailyCalories.count, 1)
                     Text("Avg: \(avg) kcal")
-                        .font(.system(.subheadline, design: .rounded, weight: .medium))
-                        .foregroundStyle(.secondary)
+                        .font(.system(.caption, design: .rounded, weight: .black).width(.condensed))
+                        .foregroundStyle(Color.black)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 5)
+                        .background(NeoAppColors.acid)
+                        .overlay {
+                            Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                        }
                 }
             }
 
@@ -366,14 +382,12 @@ struct CalorieChartSection: View {
                             x: .value("Date", item.date, unit: .day),
                             y: .value("Calories", item.calories)
                         )
-                        .foregroundStyle(
-                            LinearGradient(colors: AppColors.calorieGradient, startPoint: .bottom, endPoint: .top)
-                        )
-                        .cornerRadius(4)
+                        .foregroundStyle(NeoAppColors.cobalt)
+                        .cornerRadius(0)
                     }
 
                     RuleMark(y: .value("Goal", calorieGoal))
-                        .foregroundStyle(AppColors.calorie.opacity(0.6))
+                        .foregroundStyle(NeoAppColors.ink.opacity(0.7))
                         .lineStyle(StrokeStyle(lineWidth: 1.5, dash: [6, 4]))
                 }
                 .chartXAxis {
@@ -386,8 +400,7 @@ struct CalorieChartSection: View {
             }
         }
         .padding()
-        .background(AppColors.appCard)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .neoPanel()
     }
 
     private var calorieXStride: Int {
@@ -413,15 +426,16 @@ struct MacroAveragesSection: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Macro Averages")
-                .font(.system(.headline, design: .rounded, weight: .semibold))
+                .font(.system(.headline, design: .rounded, weight: .black).width(.condensed))
+                .textCase(.uppercase)
+                .foregroundStyle(NeoAppColors.ink)
 
-            MacroProgressRow(label: "Protein", current: avgProtein, goal: proteinGoal, color: AppColors.protein, gradientColors: AppColors.proteinGradient)
-            MacroProgressRow(label: "Carbs", current: avgCarbs, goal: carbsGoal, color: AppColors.carbs, gradientColors: AppColors.carbsGradient)
-            MacroProgressRow(label: "Fat", current: avgFat, goal: fatGoal, color: AppColors.fat, gradientColors: AppColors.fatGradient)
+            MacroProgressRow(label: "Protein", current: avgProtein, goal: proteinGoal, color: NeoAppColors.cobalt, gradientColors: [NeoAppColors.cobalt, NeoAppColors.cobaltDeep])
+            MacroProgressRow(label: "Carbs", current: avgCarbs, goal: carbsGoal, color: NeoAppColors.acid, gradientColors: [NeoAppColors.acid, NeoAppColors.acid])
+            MacroProgressRow(label: "Fat", current: avgFat, goal: fatGoal, color: NeoAppColors.cobaltDeep, gradientColors: [NeoAppColors.cobaltDeep, NeoAppColors.cobalt])
         }
         .padding()
-        .background(AppColors.appCard)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .neoPanel()
     }
 }
 
@@ -440,25 +454,29 @@ struct MacroProgressRow: View {
         VStack(alignment: .leading, spacing: 6) {
             HStack {
                 Text(LocalizedDisplayText.text(label))
-                    .font(.system(.subheadline, design: .rounded, weight: .medium))
+                    .font(.system(.caption, design: .rounded, weight: .black).width(.condensed))
+                    .textCase(.uppercase)
+                    .foregroundStyle(NeoAppColors.ink)
                 Spacer()
                 Text("\(MacroValueFormatter.withUnit(current)) / \(goal)g")
-                    .font(.system(.subheadline, design: .rounded))
-                    .foregroundStyle(.secondary)
+                    .font(.system(.caption, design: .rounded, weight: .bold))
+                    .foregroundStyle(NeoAppColors.mutedInk)
             }
 
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
-                    Capsule()
-                        .fill(color.opacity(0.12))
+                    Rectangle()
+                        .fill(NeoAppColors.subtleSurface)
 
-                    Capsule()
+                    Rectangle()
                         .fill(LinearGradient(colors: gradientColors, startPoint: .leading, endPoint: .trailing))
-                        .frame(width: max(6, geo.size.width * progress))
-                        .shadow(color: color.opacity(0.3), radius: 4, y: 2)
+                        .frame(width: max(4, geo.size.width * progress))
+                }
+                .overlay {
+                    Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
                 }
             }
-            .frame(height: 8)
+            .frame(height: 10)
         }
     }
 }
@@ -474,7 +492,8 @@ struct StatsSection: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Streaks & Stats")
-                .font(.system(.headline, design: .rounded, weight: .semibold))
+                .font(.system(.headline, design: .rounded, weight: .black).width(.condensed))
+                .textCase(.uppercase)
 
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
                 StatTile(icon: "flame.fill", label: "Current Streak", value: "\(streak) days", color: AppColors.calorie)
@@ -484,8 +503,7 @@ struct StatsSection: View {
             }
         }
         .padding()
-        .background(AppColors.appCard)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .neoPanel()
     }
 }
 
@@ -499,7 +517,7 @@ struct StatTile: View {
         VStack(spacing: 6) {
             Image(systemName: icon)
                 .font(.title2)
-                .foregroundStyle(color)
+                .foregroundStyle(NeoAppColors.cobalt)
 
             Text(value)
                 .font(.system(.title3, design: .rounded, weight: .bold))
@@ -511,8 +529,10 @@ struct StatTile: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 12)
-        .background(color.opacity(0.08))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .background(NeoAppColors.subtleSurface)
+        .overlay {
+            Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+        }
     }
 }
 
@@ -523,16 +543,24 @@ struct StatBadge: View {
     var body: some View {
         VStack(spacing: 2) {
             Text(value)
-                .font(.system(.subheadline, design: .rounded, weight: .semibold))
+                .font(.system(.subheadline, design: .rounded, weight: .black).width(.condensed))
+                .foregroundStyle(NeoAppColors.ink)
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
             Text(LocalizedDisplayText.text(label))
-                .font(.system(.caption2, design: .rounded))
-                .foregroundStyle(.secondary)
+                .font(.system(.caption2, design: .rounded, weight: .bold).width(.condensed))
+                .textCase(.uppercase)
+                .foregroundStyle(NeoAppColors.mutedInk)
                 .lineLimit(1)
                 .minimumScaleFactor(0.75)
         }
         .frame(maxWidth: .infinity)
+        .padding(.horizontal, 4)
+        .padding(.vertical, 6)
+        .background(NeoAppColors.subtleSurface)
+        .overlay {
+            Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+        }
     }
 }
 
@@ -576,13 +604,16 @@ struct LogWeightSheet: View {
         NavigationStack {
             VStack(spacing: 20) {
                 Text("Log Weight")
-                    .font(.system(.title2, design: .rounded, weight: .bold))
+                    .font(.system(.title2, design: .rounded, weight: .black).width(.condensed))
+                    .textCase(.uppercase)
+                    .foregroundStyle(NeoAppColors.ink)
 
                 Picker("Unit", selection: $weightUnitRaw) {
                     Text("kg").tag("kg")
                     Text("lbs").tag("lbs")
                 }
                 .pickerStyle(.segmented)
+                .tint(NeoAppColors.cobalt)
                 .padding(.horizontal, 24)
                 .onChange(of: weightUnitRaw) { _, newValue in
                     // Convert the currently selected value so toggling mid-edit keeps it,
@@ -625,7 +656,7 @@ struct LogWeightSheet: View {
 
                     Text(unit)
                         .font(.system(.title3, design: .rounded))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(NeoAppColors.mutedInk)
                         .padding(.leading, 4)
                 }
 
@@ -634,23 +665,28 @@ struct LogWeightSheet: View {
                     dismiss()
                 } label: {
                     Text("Save")
-                        .font(.system(.headline, design: .rounded, weight: .semibold))
+                        .font(.system(.headline, design: .rounded, weight: .black).width(.condensed))
+                        .textCase(.uppercase)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
-                        .background(
-                            LinearGradient(colors: AppColors.calorieGradient, startPoint: .leading, endPoint: .trailing)
-                        )
-                        .foregroundStyle(.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 14))
+                        .background(NeoAppColors.cobalt)
+                        .foregroundStyle(NeoAppColors.onCobalt)
+                        .overlay {
+                            Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                        }
                 }
+                .buttonStyle(.plain)
                 .padding(.horizontal, 24)
 
                 Spacer()
             }
             .padding(.top, 24)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(NeoAppColors.canvas)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
+                        .foregroundStyle(NeoAppColors.cobalt)
                 }
             }
         }
@@ -669,24 +705,29 @@ struct WeightHistoryLink: View {
             HStack(spacing: 12) {
                 Image(systemName: "list.bullet.rectangle")
                     .font(.system(size: 16, weight: .medium))
-                    .foregroundStyle(AppColors.calorie)
+                    .foregroundStyle(NeoAppColors.onCobalt)
                     .frame(width: 28, height: 28)
+                    .background(NeoAppColors.cobalt)
+                    .overlay {
+                        Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                    }
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Weight History")
-                        .font(.system(.body, design: .rounded, weight: .medium))
-                        .foregroundStyle(.primary)
+                        .font(.system(.body, design: .rounded, weight: .black).width(.condensed))
+                        .textCase(.uppercase)
+                        .foregroundStyle(NeoAppColors.ink)
                     Text("\(totalCount) \(totalCount == 1 ? "entry" : "entries") · tap to view or delete")
                         .font(.system(.caption, design: .rounded))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(NeoAppColors.mutedInk)
                 }
                 Spacer()
                 Image(systemName: "chevron.right")
                     .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(.tertiary)
+                    .foregroundStyle(NeoAppColors.cobalt)
             }
             .padding(.vertical, 12)
             .padding(.horizontal, 14)
-            .background(AppColors.appCard, in: RoundedRectangle(cornerRadius: 14))
+            .neoPanel()
         }
         .buttonStyle(.plain)
     }
@@ -711,10 +752,11 @@ struct AllWeightHistoryView: View {
                     HStack {
                         VStack(alignment: .leading, spacing: 2) {
                             Text(displayWeight(entry.weightKg, useMetric: useMetric))
-                                .font(.system(.body, design: .rounded, weight: .medium))
+                                .font(.system(.body, design: .rounded, weight: .black).width(.condensed))
+                                .foregroundStyle(NeoAppColors.ink)
                             Text(weightHistoryFormatter.string(from: entry.date))
                                 .font(.system(.caption, design: .rounded))
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(NeoAppColors.mutedInk)
                         }
                         Spacer()
                     }
@@ -725,14 +767,18 @@ struct AllWeightHistoryView: View {
                             Label("Delete", systemImage: "trash")
                         }
                     }
+                    .neoListRow()
                 }
             }
-            .listStyle(.insetGrouped)
+            .listStyle(.plain)
+            .neoScreen()
             .navigationTitle("Weight History")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(NeoAppColors.surface, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
+                        .foregroundStyle(NeoAppColors.cobalt)
                 }
             }
         }
@@ -783,24 +829,29 @@ struct BodyFatHistoryLink: View {
             HStack(spacing: 12) {
                 Image(systemName: "list.bullet.rectangle")
                     .font(.system(size: 16, weight: .medium))
-                    .foregroundStyle(AppColors.calorie)
+                    .foregroundStyle(Color.black)
                     .frame(width: 28, height: 28)
+                    .background(NeoAppColors.acid)
+                    .overlay {
+                        Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                    }
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Body Fat History")
-                        .font(.system(.body, design: .rounded, weight: .medium))
-                        .foregroundStyle(.primary)
+                        .font(.system(.body, design: .rounded, weight: .black).width(.condensed))
+                        .textCase(.uppercase)
+                        .foregroundStyle(NeoAppColors.ink)
                     Text("\(totalCount) \(totalCount == 1 ? "entry" : "entries") · tap to view or delete")
                         .font(.system(.caption, design: .rounded))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(NeoAppColors.mutedInk)
                 }
                 Spacer()
                 Image(systemName: "chevron.right")
                     .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(.tertiary)
+                    .foregroundStyle(NeoAppColors.cobalt)
             }
             .padding(.vertical, 12)
             .padding(.horizontal, 14)
-            .background(AppColors.appCard, in: RoundedRectangle(cornerRadius: 14))
+            .neoPanel()
         }
         .buttonStyle(.plain)
     }
@@ -822,10 +873,11 @@ struct AllBodyFatHistoryView: View {
                     HStack {
                         VStack(alignment: .leading, spacing: 2) {
                             Text(displayBodyFat(entry.bodyFatFraction))
-                                .font(.system(.body, design: .rounded, weight: .medium))
+                                .font(.system(.body, design: .rounded, weight: .black).width(.condensed))
+                                .foregroundStyle(NeoAppColors.ink)
                             Text(weightHistoryFormatter.string(from: entry.date))
                                 .font(.system(.caption, design: .rounded))
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(NeoAppColors.mutedInk)
                         }
                         Spacer()
                     }
@@ -836,14 +888,18 @@ struct AllBodyFatHistoryView: View {
                             Label("Delete", systemImage: "trash")
                         }
                     }
+                    .neoListRow()
                 }
             }
-            .listStyle(.insetGrouped)
+            .listStyle(.plain)
+            .neoScreen()
             .navigationTitle("Body Fat History")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(NeoAppColors.surface, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
+                        .foregroundStyle(NeoAppColors.cobalt)
                 }
             }
         }
@@ -916,6 +972,7 @@ struct BodyMetricsSection: View {
                     }
                 }
                 .pickerStyle(.segmented)
+                .tint(NeoAppColors.cobalt)
             }
 
             // Render the active metric. Both children carry their own card
@@ -979,13 +1036,23 @@ struct BodyFatChartSection: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Text("Body Fat")
-                    .font(.system(.headline, design: .rounded, weight: .semibold))
+                    .font(.system(.headline, design: .rounded, weight: .black).width(.condensed))
+                    .textCase(.uppercase)
+                    .foregroundStyle(NeoAppColors.ink)
                 Spacer()
                 Button(action: onLogBodyFat) {
                     Label("Log Body Fat", systemImage: "plus.circle.fill")
-                        .font(.system(.subheadline, design: .rounded, weight: .medium))
-                        .foregroundStyle(AppColors.calorie)
+                        .font(.system(.caption, design: .rounded, weight: .black).width(.condensed))
+                        .textCase(.uppercase)
+                        .foregroundStyle(Color.black)
+                        .padding(.horizontal, 9)
+                        .padding(.vertical, 7)
+                        .background(NeoAppColors.acid)
+                        .overlay {
+                            Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                        }
                 }
+                .buttonStyle(.plain)
             }
 
             if entries.isEmpty {
@@ -1008,7 +1075,7 @@ struct BodyFatChartSection: View {
                             x: .value("Date", point.date, unit: .day),
                             y: .value("Body Fat", point.value)
                         )
-                        .foregroundStyle(AppColors.calorie)
+                        .foregroundStyle(NeoAppColors.cobalt)
                         .interpolationMethod(.catmullRom)
                         .lineStyle(StrokeStyle(lineWidth: 2))
 
@@ -1017,14 +1084,14 @@ struct BodyFatChartSection: View {
                                 x: .value("Date", point.date, unit: .day),
                                 y: .value("Body Fat", point.value)
                             )
-                            .foregroundStyle(AppColors.calorie)
+                            .foregroundStyle(NeoAppColors.cobalt)
                             .symbolSize(30)
                         }
                     }
 
                     if let goalFraction = goalBodyFatFraction {
                         RuleMark(y: .value("Goal", displayPercent(goalFraction)))
-                            .foregroundStyle(.green.opacity(0.7))
+                            .foregroundStyle(NeoAppColors.success.opacity(0.9))
                             .lineStyle(StrokeStyle(lineWidth: 1.5, dash: [6, 4]))
                     }
                 }
@@ -1040,8 +1107,7 @@ struct BodyFatChartSection: View {
             }
         }
         .padding()
-        .background(AppColors.appCard)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .neoPanel()
     }
 
     /// Same plotting policy as WeightChartSection — raw entries for short
@@ -1113,7 +1179,9 @@ struct LogBodyFatSheet: View {
         NavigationStack {
             VStack(spacing: 20) {
                 Text("Log Body Fat")
-                    .font(.system(.title2, design: .rounded, weight: .bold))
+                    .font(.system(.title2, design: .rounded, weight: .black).width(.condensed))
+                    .textCase(.uppercase)
+                    .foregroundStyle(NeoAppColors.ink)
 
                 HStack(spacing: 0) {
                     Picker("Percentage", selection: $percentage) {
@@ -1128,7 +1196,7 @@ struct LogBodyFatSheet: View {
 
                     Text("%")
                         .font(.system(.title3, design: .rounded))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(NeoAppColors.mutedInk)
                         .padding(.leading, 4)
                 }
 
@@ -1137,23 +1205,28 @@ struct LogBodyFatSheet: View {
                     dismiss()
                 } label: {
                     Text("Save")
-                        .font(.system(.headline, design: .rounded, weight: .semibold))
+                        .font(.system(.headline, design: .rounded, weight: .black).width(.condensed))
+                        .textCase(.uppercase)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
-                        .background(
-                            LinearGradient(colors: AppColors.calorieGradient, startPoint: .leading, endPoint: .trailing)
-                        )
-                        .foregroundStyle(.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 14))
+                        .background(NeoAppColors.cobalt)
+                        .foregroundStyle(NeoAppColors.onCobalt)
+                        .overlay {
+                            Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                        }
                 }
+                .buttonStyle(.plain)
                 .padding(.horizontal, 24)
 
                 Spacer()
             }
             .padding(.top, 24)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(NeoAppColors.canvas)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
+                        .foregroundStyle(NeoAppColors.cobalt)
                 }
             }
         }
@@ -1165,9 +1238,13 @@ struct LogBodyFatSheet: View {
 
 private func emptyState(_ message: String) -> some View {
     Text(message)
-        .font(.system(.subheadline, design: .rounded))
-        .foregroundStyle(.secondary)
+        .font(.system(.subheadline, design: .rounded, weight: .bold))
+        .foregroundStyle(NeoAppColors.mutedInk)
         .frame(maxWidth: .infinity, minHeight: 80)
+        .background(NeoAppColors.subtleSurface)
+        .overlay {
+            Rectangle().stroke(NeoAppColors.ink.opacity(0.4), lineWidth: NeoAppMetrics.compactRule)
+        }
 }
 
 // MARK: - Body Measurements
@@ -1241,16 +1318,17 @@ struct BodyMeasurementsDetailView: View {
                     } label: {
                         HStack(spacing: 12) {
                             Image(systemName: "ruler")
-                                .foregroundStyle(AppColors.calorie)
+                                .foregroundStyle(NeoAppColors.cobalt)
                                 .frame(width: 22)
                             Text(site.label)
-                                .foregroundStyle(.primary)
+                                .font(.system(.body, design: .rounded, weight: .bold))
+                                .foregroundStyle(NeoAppColors.ink)
                             Spacer()
                             Text(displayValue(site))
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(NeoAppColors.mutedInk)
                             Image(systemName: "chevron.right")
                                 .font(.caption)
-                                .foregroundStyle(.tertiary)
+                                .foregroundStyle(NeoAppColors.cobalt)
                         }
                     }
                     .buttonStyle(.plain)
@@ -1260,7 +1338,7 @@ struct BodyMeasurementsDetailView: View {
             } footer: {
                 Text("Optional. Fud AI turns these into waist-to-hip, waist-to-height, body-fat %, and frame size, and reads them when it recalculates your goals and in Coach.")
             }
-            .listRowBackground(AppColors.appCard)
+            .neoListRow()
 
             if let latest {
                 let chips = derivedMetricChips(latest, gender: gender, heightCm: heightCm)
@@ -1271,12 +1349,12 @@ struct BodyMeasurementsDetailView: View {
                                 Text(chip.label)
                                 Spacer()
                                 Text(chip.value)
-                                    .foregroundStyle(AppColors.calorie)
+                                    .foregroundStyle(NeoAppColors.cobalt)
                                     .fontWeight(.semibold)
                             }
                         }
                     }
-                    .listRowBackground(AppColors.appCard)
+                    .neoListRow()
                 }
             }
 
@@ -1287,24 +1365,26 @@ struct BodyMeasurementsDetailView: View {
                     } label: {
                         HStack {
                             Text("Measurement History")
-                                .foregroundStyle(.primary)
+                                .font(.system(.body, design: .rounded, weight: .bold))
+                                .foregroundStyle(NeoAppColors.ink)
                             Spacer()
                             Text("\(store.entries.count)")
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(NeoAppColors.mutedInk)
                             Image(systemName: "chevron.right")
                                 .font(.caption)
-                                .foregroundStyle(.tertiary)
+                                .foregroundStyle(NeoAppColors.cobalt)
                         }
                     }
                     .buttonStyle(.plain)
                 }
-                .listRowBackground(AppColors.appCard)
+                .neoListRow()
             }
         }
-        .scrollContentBackground(.hidden)
-        .background(AppColors.appBackground)
+        .listStyle(.plain)
+        .neoScreen()
         .navigationTitle("Body Measurements")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(NeoAppColors.surface, for: .navigationBar)
         .sheet(item: $editingSite) { site in
             MeasurementEditSheet(
                 site: site,
@@ -1379,6 +1459,7 @@ private struct MeasurementEditSheet: View {
                 Text("in").tag("ftin")
             }
             .pickerStyle(.segmented)
+            .tint(NeoAppColors.cobalt)
             .padding(.horizontal, 24)
             .padding(.top, 20)
 
@@ -1397,6 +1478,8 @@ private struct MeasurementEditSheet: View {
             // converted above (its selection state is set once, in init).
             .id(heightUnitRaw)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(NeoAppColors.canvas)
     }
 }
 
@@ -1418,10 +1501,11 @@ struct AllBodyMeasurementsHistoryView: View {
                 ForEach(visibleEntries) { entry in
                     VStack(alignment: .leading, spacing: 4) {
                         Text(weightHistoryFormatter.string(from: entry.date))
-                            .font(.system(.subheadline, design: .rounded, weight: .semibold))
+                            .font(.system(.subheadline, design: .rounded, weight: .black).width(.condensed))
+                            .foregroundStyle(NeoAppColors.ink)
                         Text(summary(entry))
                             .font(.system(.caption, design: .rounded))
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(NeoAppColors.mutedInk)
                     }
                     .swipeActions(edge: .trailing) {
                         Button(role: .destructive) {
@@ -1430,14 +1514,18 @@ struct AllBodyMeasurementsHistoryView: View {
                             Label("Delete", systemImage: "trash")
                         }
                     }
+                    .neoListRow()
                 }
             }
-            .listStyle(.insetGrouped)
+            .listStyle(.plain)
+            .neoScreen()
             .navigationTitle("Measurement History")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(NeoAppColors.surface, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
+                        .foregroundStyle(NeoAppColors.cobalt)
                 }
             }
         }

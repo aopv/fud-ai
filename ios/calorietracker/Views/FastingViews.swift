@@ -11,7 +11,7 @@ struct ActiveFastingRow: View {
                 HStack(spacing: 12) {
                     Image(systemName: "timer")
                         .font(.system(.title3, design: .rounded, weight: .semibold))
-                        .foregroundStyle(AppColors.calorie)
+                        .foregroundStyle(NeoAppColors.cobalt)
                         .frame(width: 30)
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Fast in progress")
@@ -24,7 +24,7 @@ struct ActiveFastingRow: View {
                     VStack(alignment: .trailing, spacing: 2) {
                         Text(FastingDurationFormatter.compact(seconds: elapsed))
                             .font(.system(.headline, design: .rounded, weight: .bold))
-                            .foregroundStyle(AppColors.calorie)
+                            .foregroundStyle(NeoAppColors.cobalt)
                             .monospacedDigit()
                         Text("\(FastingDurationFormatter.goal(minutes: session.goalMinutes)) goal")
                             .font(.system(.caption2, design: .rounded))
@@ -37,13 +37,18 @@ struct ActiveFastingRow: View {
 
                 GeometryReader { proxy in
                     ZStack(alignment: .leading) {
-                        Capsule().fill(AppColors.calorie.opacity(0.16))
-                        Capsule()
-                            .fill(AppColors.calorie)
+                        Rectangle().fill(NeoAppColors.ink.opacity(0.14))
+                        Rectangle()
+                            .fill(NeoAppColors.cobalt)
                             .frame(width: proxy.size.width * progress)
                     }
                 }
-                .frame(height: 5)
+                .frame(height: 8)
+                .overlay {
+                    Rectangle()
+                        .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                        .allowsHitTesting(false)
+                }
             }
             .padding(.vertical, 4)
         }
@@ -57,7 +62,7 @@ struct CompletedFastingRow: View {
         HStack(spacing: 12) {
             Image(systemName: "timer.circle.fill")
                 .font(.system(.title2, design: .rounded))
-                .foregroundStyle(AppColors.calorie)
+                .foregroundStyle(NeoAppColors.cobalt)
                 .frame(width: 34)
             VStack(alignment: .leading, spacing: 3) {
                 Text("\(FastingDurationFormatter.compact(seconds: session.duration())) fast")
@@ -97,7 +102,9 @@ struct FastingStartSheet: View {
             VStack(spacing: 22) {
                 Image(systemName: "timer")
                     .font(.system(size: 42, weight: .semibold))
-                    .foregroundStyle(AppColors.calorie)
+                    .foregroundStyle(NeoAppColors.cobalt)
+                    .frame(width: 72, height: 72)
+                    .neoPanel(fill: NeoAppColors.surface)
 
                 Text("Choose a fasting goal")
                     .font(.system(.title2, design: .rounded, weight: .bold))
@@ -115,26 +122,33 @@ struct FastingStartSheet: View {
                         .font(.system(.title3, design: .rounded))
                         .foregroundStyle(.secondary)
                 }
+                .padding(.horizontal, 16)
+                .neoPanel(fill: NeoAppColors.surface)
 
                 Button {
                     onStart(selectedHours * 60)
                     dismiss()
                 } label: {
                     Label("Start Fast", systemImage: "play.fill")
-                        .font(.system(.headline, design: .rounded, weight: .semibold))
+                        .font(.system(.headline, design: .rounded, weight: .black))
+                        .textCase(.uppercase)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
-                        .foregroundStyle(.white)
-                        .background(
-                            LinearGradient(colors: AppColors.calorieGradient, startPoint: .leading, endPoint: .trailing),
-                            in: RoundedRectangle(cornerRadius: 14)
-                        )
+                        .foregroundStyle(Color.black)
+                        .background(NeoAppColors.acid)
+                        .overlay {
+                            Rectangle()
+                                .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                                .allowsHitTesting(false)
+                        }
                 }
+                .buttonStyle(.plain)
                 .padding(.horizontal, 24)
                 Spacer()
             }
             .padding(.top, 24)
-            .background(AppColors.appBackground)
+            .background(NeoAppColors.canvas)
+            .tint(NeoAppColors.cobalt)
             .navigationTitle("Start Fast")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -175,25 +189,32 @@ struct FastingGoalPickerSheet: View {
                         .font(.system(.title3, design: .rounded))
                         .foregroundStyle(.secondary)
                 }
+                .padding(.horizontal, 16)
+                .neoPanel(fill: NeoAppColors.surface)
                 Button {
                     onSave(selectedHours * 60)
                     dismiss()
                 } label: {
                     Text("Save")
-                        .font(.system(.headline, design: .rounded, weight: .semibold))
+                        .font(.system(.headline, design: .rounded, weight: .black))
+                        .textCase(.uppercase)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
-                        .background(
-                            LinearGradient(colors: AppColors.calorieGradient, startPoint: .leading, endPoint: .trailing)
-                        )
-                        .foregroundStyle(.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 14))
+                        .background(NeoAppColors.acid)
+                        .foregroundStyle(Color.black)
+                        .overlay {
+                            Rectangle()
+                                .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                                .allowsHitTesting(false)
+                        }
                 }
+                .buttonStyle(.plain)
                 .padding(.horizontal, 24)
                 Spacer()
             }
             .padding(.top, 24)
-            .background(AppColors.appBackground)
+            .background(NeoAppColors.canvas)
+            .tint(NeoAppColors.cobalt)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
@@ -240,7 +261,8 @@ struct FastingSessionEditorView: View {
                     }
                     Stepper("Goal: \(goalHours) hours", value: $goalHours, in: 1...168)
                 }
-                .listRowBackground(AppColors.appCard)
+                .listRowBackground(NeoAppColors.surface)
+                .listRowSeparatorTint(NeoAppColors.ink.opacity(0.35))
 
                 Section {
                     if session.isActive {
@@ -263,10 +285,12 @@ struct FastingSessionEditorView: View {
                             .frame(maxWidth: .infinity)
                     }
                 }
-                .listRowBackground(AppColors.appCard)
+                .listRowBackground(NeoAppColors.surface)
+                .listRowSeparatorTint(NeoAppColors.ink.opacity(0.35))
             }
             .scrollContentBackground(.hidden)
-            .background(AppColors.appBackground)
+            .background(NeoAppColors.canvas)
+            .tint(NeoAppColors.cobalt)
             .navigationTitle(session.isActive ? "Active Fast" : "Edit Fast")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

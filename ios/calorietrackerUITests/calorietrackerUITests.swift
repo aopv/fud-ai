@@ -36,9 +36,15 @@ final class calorietrackerUITests: XCTestCase {
         XCTAssertTrue(app.otherElements["neo.home.nutrientGrid"].exists)
         XCTAssertTrue(app.buttons["Choose date"].exists)
 
-        for tab in ["Home", "Progress", "Coach", "Settings", "Workouts"] {
-            XCTAssertTrue(app.tabBars.buttons[tab].exists, "Missing preserved \(tab) tab")
+        for tab in ["home", "progress", "coach", "settings", "workouts"] {
+            let destination = app.buttons["nav.\(tab)"]
+            XCTAssertTrue(destination.exists, "Missing right-rail \(tab) destination")
+            destination.tap()
+            XCTAssertTrue(destination.isSelected, "Right rail did not select \(tab)")
         }
+
+        app.buttons["nav.home"].tap()
+        XCTAssertTrue(calorieSummary.waitForExistence(timeout: 3))
 
         let addFood = app.buttons["neo.home.addFood"]
         XCTAssertTrue(addFood.exists)

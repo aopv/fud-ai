@@ -37,6 +37,17 @@ struct ChatView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
+                NeoScreenHeader(
+                    eyebrow: String(localized: "Personal guidance"),
+                    title: String(localized: "AI Coach"),
+                    subtitle: String(localized: "Answers grounded in your data")
+                ) {
+                    resetButton
+                }
+                .padding(.horizontal, NeoAppMetrics.screenInset)
+                .padding(.top, 10)
+                .padding(.bottom, 8)
+
                 Group {
                     if messages.isEmpty {
                         emptyState
@@ -53,20 +64,10 @@ struct ChatView: View {
 
                 inputArea
             }
-            .background(AppColors.appBackground)
+            .background(NeoAppColors.canvas)
             .navigationTitle("Coach")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        if !messages.isEmpty { showResetConfirmation = true }
-                    } label: {
-                        Image(systemName: "arrow.counterclockwise")
-                            .foregroundStyle(messages.isEmpty ? Color.secondary : AppColors.calorie)
-                    }
-                    .disabled(messages.isEmpty)
-                }
-            }
+            .toolbar(.hidden, for: .navigationBar)
             .alert("Reset Chat", isPresented: $showResetConfirmation) {
                 Button("Cancel", role: .cancel) { }
                 Button("Reset", role: .destructive) {
@@ -111,41 +112,76 @@ struct ChatView: View {
         }
     }
 
+    private var resetButton: some View {
+        Button {
+            if !messages.isEmpty { showResetConfirmation = true }
+        } label: {
+            Image(systemName: "arrow.counterclockwise")
+                .font(.system(size: 17, weight: .black))
+                .foregroundStyle(messages.isEmpty ? NeoAppColors.mutedInk : Color.black)
+                .frame(width: 46, height: 46)
+                .background(messages.isEmpty ? NeoAppColors.subtleSurface : NeoAppColors.acid)
+                .overlay {
+                    Rectangle()
+                        .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                }
+        }
+        .buttonStyle(.plain)
+        .disabled(messages.isEmpty)
+        .accessibilityLabel("Reset chat")
+    }
+
     // MARK: - Sections
 
     private var emptyState: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: 14) {
             Spacer()
-            ZStack {
-                Circle()
-                    .fill(.ultraThinMaterial)
-                    .frame(width: 108, height: 108)
-                    .overlay(
-                        Circle().stroke(
-                            LinearGradient(
-                                colors: [Color.white.opacity(0.35), Color.white.opacity(0.05)],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            ),
-                            lineWidth: 0.8
-                        )
-                    )
-                    .shadow(color: AppColors.calorie.opacity(0.18), radius: 24, x: 0, y: 10)
+            ZStack(alignment: .bottomTrailing) {
+                Rectangle()
+                    .fill(NeoAppColors.cobalt)
+                    .frame(width: 104, height: 104)
                 Image(systemName: "bubble.left.and.bubble.right.fill")
-                    .font(.system(size: 44))
-                    .foregroundStyle(
-                        LinearGradient(colors: AppColors.calorieGradient, startPoint: .topLeading, endPoint: .bottomTrailing)
-                    )
+                    .font(.system(size: 42, weight: .black))
+                    .foregroundStyle(NeoAppColors.onCobalt)
+                    .frame(width: 104, height: 104)
+
+                Text("AI")
+                    .font(.system(size: 13, weight: .black, design: .rounded).width(.condensed))
+                    .foregroundStyle(Color.black)
+                    .padding(.horizontal, 8)
+                    .frame(height: 28)
+                    .background(NeoAppColors.acid)
+                    .overlay {
+                        Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                    }
+                    .offset(x: 8, y: 8)
+            }
+            .overlay {
+                Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
             }
             Text("Ask your Coach")
-                .font(.system(.title2, design: .rounded, weight: .semibold))
+                .font(.system(.title2, design: .rounded, weight: .black).width(.condensed))
+                .textCase(.uppercase)
+                .foregroundStyle(NeoAppColors.ink)
             Text("Your coach can see your nutrition, goals, and workout diary. Ask about food, progress, recovery, or your training plan.")
-                .font(.system(.subheadline, design: .rounded))
-                .foregroundStyle(.secondary)
+                .font(.system(.subheadline, design: .rounded, weight: .semibold))
+                .foregroundStyle(NeoAppColors.mutedInk)
                 .multilineTextAlignment(.center)
-                .padding(.horizontal, 32)
+                .padding(.horizontal, 20)
+
+            Text("TRACK  •  LEARN  •  WIN")
+                .font(.system(size: 10, weight: .black, design: .rounded).width(.condensed))
+                .tracking(1.2)
+                .foregroundStyle(Color.black)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+                .background(NeoAppColors.acid)
+                .overlay {
+                    Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                }
             Spacer()
         }
+        .padding(.horizontal, NeoAppMetrics.screenInset)
     }
 
     private var messageList: some View {
@@ -161,10 +197,10 @@ struct ChatView: View {
                             TypingIndicator()
                                 .padding(.horizontal, 14)
                                 .padding(.vertical, 10)
-                                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                                .background(NeoAppColors.surface)
                                 .overlay(
-                                    RoundedRectangle(cornerRadius: 18, style: .continuous)
-                                        .stroke(Color.white.opacity(0.15), lineWidth: 0.5)
+                                    Rectangle()
+                                        .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
                                 )
                                 .padding(.leading, 4)
                             Spacer()
@@ -174,14 +210,14 @@ struct ChatView: View {
                     }
                     if let err = errorMessage {
                         Text(err)
-                            .font(.system(.caption, design: .rounded))
-                            .foregroundStyle(.red)
+                            .font(.system(.caption, design: .rounded, weight: .bold))
+                            .foregroundStyle(NeoAppColors.ink)
                             .padding(.horizontal, 14)
                             .padding(.vertical, 8)
-                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                            .background(NeoAppColors.warning.opacity(0.20))
                             .overlay(
-                                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                    .stroke(Color.red.opacity(0.25), lineWidth: 0.5)
+                                Rectangle()
+                                    .stroke(NeoAppColors.warning, lineWidth: NeoAppMetrics.rule)
                             )
                             .padding(.horizontal)
                     }
@@ -262,28 +298,16 @@ struct ChatView: View {
                         send()
                     } label: {
                         Text(chip)
-                            .font(.system(.footnote, design: .rounded, weight: .medium))
-                            .padding(.horizontal, 14)
+                            .font(.system(.footnote, design: .rounded, weight: .black).width(.condensed))
+                            .textCase(.uppercase)
+                            .padding(.horizontal, 12)
                             .padding(.vertical, 9)
-                            .foregroundStyle(AppColors.calorie)
-                            .background(
-                                Capsule().fill(.ultraThinMaterial)
-                            )
-                            .overlay(
-                                Capsule()
-                                    .fill(AppColors.calorie.opacity(0.10))
-                            )
-                            .overlay(
-                                Capsule()
-                                    .stroke(
-                                        LinearGradient(
-                                            colors: [AppColors.calorie.opacity(0.35), AppColors.calorie.opacity(0.10)],
-                                            startPoint: .topLeading,
-                                            endPoint: .bottomTrailing
-                                        ),
-                                        lineWidth: 0.6
-                                    )
-                            )
+                            .foregroundStyle(Color.black)
+                            .background(NeoAppColors.acid)
+                            .overlay {
+                                Rectangle()
+                                    .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                            }
                     }
                     .buttonStyle(.plain)
                     .disabled(isSending)
@@ -318,18 +342,20 @@ struct ChatView: View {
                 .resizable()
                 .scaledToFill()
                 .frame(width: 62, height: 62)
-                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .clipShape(Rectangle())
                 .overlay(
-                    RoundedRectangle(cornerRadius: 14, style: .continuous)
-                        .stroke(Color.white.opacity(0.18), lineWidth: 0.6)
+                    Rectangle()
+                        .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
                 )
 
             VStack(alignment: .leading, spacing: 3) {
                 Text("Image attached")
-                    .font(.system(.subheadline, design: .rounded, weight: .semibold))
+                    .font(.system(.subheadline, design: .rounded, weight: .black).width(.condensed))
+                    .textCase(.uppercase)
+                    .foregroundStyle(NeoAppColors.ink)
                 Text("Send with your Coach message")
-                    .font(.system(.caption, design: .rounded))
-                    .foregroundStyle(.secondary)
+                    .font(.system(.caption, design: .rounded, weight: .semibold))
+                    .foregroundStyle(NeoAppColors.mutedInk)
             }
 
             Spacer()
@@ -339,18 +365,21 @@ struct ChatView: View {
             } label: {
                 Image(systemName: "xmark")
                     .font(.system(size: 12, weight: .bold))
-                    .foregroundStyle(.secondary)
-                    .frame(width: 30, height: 30)
-                    .background(.ultraThinMaterial, in: Circle())
+                    .foregroundStyle(Color.black)
+                    .frame(width: 44, height: 44)
+                    .background(NeoAppColors.acid)
+                    .overlay {
+                        Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                    }
             }
             .buttonStyle(.plain)
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 9)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .background(NeoAppColors.surface)
         .overlay(
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .stroke(AppColors.calorie.opacity(0.18), lineWidth: 0.7)
+            Rectangle()
+                .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
         )
         .padding(.horizontal, 12)
     }
@@ -363,7 +392,8 @@ struct ChatView: View {
                     HStack(spacing: 8) {
                         attachMenu
                         TextField("Ask Coach…", text: $draft, axis: .vertical)
-                            .font(.system(.body, design: .rounded))
+                            .font(.system(.body, design: .rounded, weight: .semibold))
+                            .foregroundStyle(NeoAppColors.ink)
                             .lineLimit(1...5)
                             .padding(.horizontal, 8)
                             .padding(.vertical, 12)
@@ -378,21 +408,11 @@ struct ChatView: View {
             // Trailing control (kept as the stable last child).
             trailingControl
         }
-        .background(
-            Capsule(style: .continuous).fill(.ultraThinMaterial)
-        )
-        .overlay(
-            Capsule(style: .continuous)
-                .stroke(
-                    LinearGradient(
-                        colors: [Color.white.opacity(0.25), Color.white.opacity(0.05)],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    ),
-                    lineWidth: 0.8
-                )
-        )
-        .shadow(color: Color.black.opacity(0.18), radius: 14, x: 0, y: 6)
+        .background(NeoAppColors.surface)
+        .overlay {
+            Rectangle()
+                .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+        }
         .padding(.horizontal, 12)
         .padding(.bottom, 10)
         .padding(.top, 4)
@@ -405,8 +425,8 @@ struct ChatView: View {
         } label: {
             Image(systemName: attachedImage == nil ? "plus.circle.fill" : "photo.fill")
                 .font(.system(size: 24, weight: .semibold))
-                .foregroundStyle(AppColors.calorie)
-                .frame(width: 34, height: 34)
+                .foregroundStyle(NeoAppColors.cobalt)
+                .frame(width: 44, height: 44)
         }
         .disabled(isSending)
         .padding(.leading, 8)
@@ -440,16 +460,12 @@ struct ChatView: View {
         } label: {
             Image(systemName: "arrow.up")
                 .font(.system(size: 16, weight: .bold))
-                .foregroundStyle(.white)
-                .frame(width: 34, height: 34)
-                .background(
-                    canSend
-                        ? AnyShapeStyle(LinearGradient(colors: AppColors.calorieGradient, startPoint: .topLeading, endPoint: .bottomTrailing))
-                        : AnyShapeStyle(Color.secondary.opacity(0.35)),
-                    in: Circle()
-                )
-                .overlay(Circle().stroke(Color.white.opacity(canSend ? 0.25 : 0.10), lineWidth: 0.6))
-                .shadow(color: canSend ? AppColors.calorie.opacity(0.35) : .clear, radius: 8, x: 0, y: 4)
+                .foregroundStyle(canSend ? NeoAppColors.onCobalt : NeoAppColors.mutedInk)
+                .frame(width: 44, height: 44)
+                .background(canSend ? NeoAppColors.cobalt : NeoAppColors.subtleSurface)
+                .overlay {
+                    Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                }
         }
         .disabled(!canSend)
     }
@@ -458,15 +474,15 @@ struct ChatView: View {
         let holding = voice.phase == .holding
         return Image(systemName: "mic.fill")
             .font(.system(size: 16, weight: .bold))
-            .foregroundStyle(holding ? .white : AppColors.calorie)
-            .frame(width: 34, height: 34)
-            .background(
-                holding ? AnyShapeStyle(Color.red) : AnyShapeStyle(AppColors.calorie.opacity(0.14)),
-                in: Circle()
-            )
+            .foregroundStyle(holding ? Color.white : NeoAppColors.cobalt)
+            .frame(width: 44, height: 44)
+            .background(holding ? NeoAppColors.warning : NeoAppColors.subtleSurface)
+            .overlay {
+                Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+            }
             .scaleEffect(holding ? 1.25 : 1.0)
             .animation(.easeInOut(duration: 0.15), value: holding)
-            .contentShape(Circle())
+            .contentShape(Rectangle())
             .gesture(micGesture)
             .id("coachMic")
     }
@@ -500,13 +516,12 @@ struct ChatView: View {
         } label: {
             Image(systemName: "arrow.up")
                 .font(.system(size: 16, weight: .bold))
-                .foregroundStyle(.white)
-                .frame(width: 34, height: 34)
-                .background(
-                    LinearGradient(colors: AppColors.calorieGradient, startPoint: .topLeading, endPoint: .bottomTrailing),
-                    in: Circle()
-                )
-                .shadow(color: AppColors.calorie.opacity(0.35), radius: 8, x: 0, y: 4)
+                .foregroundStyle(NeoAppColors.onCobalt)
+                .frame(width: 44, height: 44)
+                .background(NeoAppColors.cobalt)
+                .overlay {
+                    Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                }
         }
     }
 
@@ -516,9 +531,12 @@ struct ChatView: View {
         } label: {
             Image(systemName: "trash")
                 .font(.system(size: 15, weight: .semibold))
-                .foregroundStyle(.red)
-                .frame(width: 34, height: 34)
-                .background(Color.secondary.opacity(0.14), in: Circle())
+                .foregroundStyle(NeoAppColors.warning)
+                .frame(width: 44, height: 44)
+                .background(NeoAppColors.subtleSurface)
+                .overlay {
+                    Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                }
         }
         .buttonStyle(.plain)
     }
@@ -528,8 +546,8 @@ struct ChatView: View {
             if voice.phase == .transcribing {
                 ProgressView().controlSize(.small)
                 Text("Transcribing…")
-                    .font(.system(.callout, design: .rounded))
-                    .foregroundStyle(.secondary)
+                    .font(.system(.callout, design: .rounded, weight: .bold))
+                    .foregroundStyle(NeoAppColors.mutedInk)
             } else {
                 Circle()
                     .fill(Color.red)
@@ -542,11 +560,12 @@ struct ChatView: View {
                     }
                     .onDisappear { voicePulse = false }
                 Text(formatVoiceElapsed(voice.elapsed))
-                    .font(.system(.callout, design: .rounded, weight: .medium))
+                    .font(.system(.callout, design: .rounded, weight: .black))
+                    .foregroundStyle(NeoAppColors.ink)
                     .monospacedDigit()
                 Text(voiceHint)
-                    .font(.system(.callout, design: .rounded))
-                    .foregroundStyle(voice.cancelArmed ? .red : .secondary)
+                    .font(.system(.callout, design: .rounded, weight: .semibold))
+                    .foregroundStyle(voice.cancelArmed ? NeoAppColors.warning : NeoAppColors.mutedInk)
                     .lineLimit(1)
             }
         }
@@ -660,7 +679,7 @@ private struct MarkdownMessageText: View {
                 switch block.kind {
                 case .heading(let level):
                     Text(inline(block.text))
-                        .font(.system(headingStyle(level), design: .rounded, weight: .bold))
+                        .font(.system(headingStyle(level), design: .rounded, weight: .black).width(.condensed))
                 case .bullet:
                     HStack(alignment: .firstTextBaseline, spacing: 8) {
                         Text("•").font(.system(.body, design: .rounded))
@@ -676,7 +695,10 @@ private struct MarkdownMessageText: View {
                         .font(.system(.callout, design: .monospaced))
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(10)
-                        .background(Color.secondary.opacity(0.12), in: RoundedRectangle(cornerRadius: 8))
+                        .background(NeoAppColors.subtleSurface)
+                        .overlay {
+                            Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                        }
                 case .paragraph:
                     Text(inline(block.text)).font(.system(.body, design: .rounded))
                 }
@@ -784,15 +806,15 @@ private struct MessageBubble: View {
 
     private var assistantBadge: some View {
         ZStack {
-            Circle()
-                .fill(.ultraThinMaterial)
-                .frame(width: 26, height: 26)
-                .overlay(Circle().stroke(Color.white.opacity(0.18), lineWidth: 0.5))
+            Rectangle()
+                .fill(NeoAppColors.acid)
+                .frame(width: 28, height: 28)
+                .overlay {
+                    Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                }
             Image(systemName: "sparkles")
                 .font(.system(size: 11, weight: .semibold))
-                .foregroundStyle(
-                    LinearGradient(colors: AppColors.calorieGradient, startPoint: .topLeading, endPoint: .bottomTrailing)
-                )
+                .foregroundStyle(Color.black)
         }
         .padding(.top, 8)
     }
@@ -805,76 +827,46 @@ private struct MessageBubble: View {
                     .resizable()
                     .scaledToFill()
                     .frame(width: 196, height: 140)
-                    .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                    .clipShape(Rectangle())
                     .overlay(
-                        RoundedRectangle(cornerRadius: 14, style: .continuous)
-                            .stroke(Color.white.opacity(isUser ? 0.25 : 0.12), lineWidth: 0.7)
+                        Rectangle()
+                            .stroke(isUser ? NeoAppColors.onCobalt : NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
                     )
             }
 
             if isUser {
                 // User's own typed text — show verbatim, no markdown.
                 Text(message.content)
-                    .font(.system(.body, design: .rounded))
+                    .font(.system(.body, design: .rounded, weight: .semibold))
                     .textSelection(.enabled)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(NeoAppColors.onCobalt)
             } else {
                 // Coach replies often use markdown — render it.
                 MarkdownMessageText(text: message.content)
                     .textSelection(.enabled)
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(NeoAppColors.ink)
             }
         }
             .padding(.horizontal, 16)
             .padding(.vertical, 11)
             .background(bubbleBackground)
             .overlay(bubbleStroke)
-            .overlay(alignment: .top) {
-                if isUser { bubbleHighlight }
-            }
-            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-            .shadow(color: isUser ? AppColors.calorie.opacity(0.28) : Color.black.opacity(0.12),
-                    radius: isUser ? 10 : 6, x: 0, y: isUser ? 6 : 3)
+            .clipShape(Rectangle())
             .fixedSize(horizontal: false, vertical: true)
     }
 
     @ViewBuilder
     private var bubbleBackground: some View {
         if isUser {
-            LinearGradient(colors: AppColors.calorieGradient, startPoint: .topLeading, endPoint: .bottomTrailing)
+            NeoAppColors.cobalt
         } else {
-            ZStack {
-                RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .fill(.ultraThinMaterial)
-                RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .fill(AppColors.calorie.opacity(0.035))
-            }
+            NeoAppColors.surface
         }
     }
 
     private var bubbleStroke: some View {
-        RoundedRectangle(cornerRadius: 20, style: .continuous)
-            .stroke(
-                LinearGradient(
-                    colors: isUser
-                        ? [Color.white.opacity(0.45), Color.white.opacity(0.05)]
-                        : [Color.white.opacity(0.22), Color.white.opacity(0.04)],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                ),
-                lineWidth: 0.7
-            )
-    }
-
-    /// Glassy top highlight on user bubbles — makes the gradient read as polished glass, not flat paint.
-    private var bubbleHighlight: some View {
-        LinearGradient(
-            colors: [Color.white.opacity(0.35), Color.white.opacity(0)],
-            startPoint: .top,
-            endPoint: .center
-        )
-        .blendMode(.plusLighter)
-        .allowsHitTesting(false)
+        Rectangle()
+            .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
     }
 }
 
@@ -884,9 +876,7 @@ private struct TypingIndicator: View {
         HStack(spacing: 5) {
             ForEach(0..<3) { i in
                 Circle()
-                    .fill(
-                        LinearGradient(colors: AppColors.calorieGradient, startPoint: .topLeading, endPoint: .bottomTrailing)
-                    )
+                    .fill(NeoAppColors.cobalt)
                     .frame(width: 7, height: 7)
                     .opacity(phase == i ? 1 : 0.3)
                     .scaleEffect(phase == i ? 1.15 : 1.0)

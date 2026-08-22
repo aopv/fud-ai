@@ -112,10 +112,9 @@ private enum AppUpdateChecker {
 struct ContentView: View {
     @Environment(NotificationManager.self) private var notificationManager
     @Environment(\.scenePhase) private var scenePhase
-    @AppStorage(AppThemeColor.storageKey) private var appThemeColorRaw = AppThemeColor.defaultColor.rawValue
     @AppStorage(WorkoutTabMode.storageKey) private var workoutTabModeRaw = WorkoutTabMode.defaultMode.rawValue
     @State private var appUpdateState: AppUpdateState = .idle
-    @State private var selectedTab: AppTab = .home
+    @State private var selectedTab: NeoAppTab = .home
     @State private var quickActionRequest: QuickActionRequest?
 
     private var workoutsTabIcon: String {
@@ -123,8 +122,8 @@ struct ContentView: View {
     }
 
     var body: some View {
-        standardTabView
-            .tint(AppThemeColor.color(for: appThemeColorRaw).color)
+        appShell
+            .tint(NeoAppColors.cobalt)
             .task {
                 consumePendingQuickAction()
                 await refreshAppUpdateState()
@@ -139,6 +138,22 @@ struct ContentView: View {
             }
     }
 
+    private var appShell: some View {
+        HStack(spacing: 0) {
+            standardTabView
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+            NeoAppNavigationRail(
+                selection: $selectedTab,
+                workoutsIcon: workoutsTabIcon,
+                updateAvailable: appUpdateState.isUpdateAvailable,
+                onQuickAdd: presentQuickAdd
+            )
+            .ignoresSafeArea(.keyboard, edges: .bottom)
+        }
+        .background(Color.black)
+    }
+
     private var standardTabView: some View {
         TabView(selection: $selectedTab) {
             HomeView(
@@ -147,21 +162,24 @@ struct ContentView: View {
                     if quickActionRequest?.id == requestID { quickActionRequest = nil }
                 }
             )
-                .tag(AppTab.home)
+                .toolbar(.hidden, for: .tabBar)
+                .tag(NeoAppTab.home)
                 .tabItem {
                     Image(systemName: "house.fill")
                     Text("Home")
                 }
 
             ProgressTabView()
-                .tag(AppTab.progress)
+                .toolbar(.hidden, for: .tabBar)
+                .tag(NeoAppTab.progress)
                 .tabItem {
                     Image(systemName: "chart.bar.fill")
                     Text("Progress")
                 }
 
             ChatView()
-                .tag(AppTab.coach)
+                .toolbar(.hidden, for: .tabBar)
+                .tag(NeoAppTab.coach)
                 .tabItem {
                     Image(systemName: "bubble.left.and.bubble.right.fill")
                     Text("Coach")
@@ -173,7 +191,8 @@ struct ContentView: View {
                     await refreshAppUpdateState(force: true)
                 }
             )
-                .tag(AppTab.settings)
+                .toolbar(.hidden, for: .tabBar)
+                .tag(NeoAppTab.settings)
                 .tabItem {
                     Image(systemName: "gearshape.fill")
                     Text("Settings")
@@ -181,20 +200,19 @@ struct ContentView: View {
                 .badge(appUpdateState.isUpdateAvailable ? "!" : nil)
 
             WorkoutsView()
-                .tag(AppTab.workouts)
+                .toolbar(.hidden, for: .tabBar)
+                .tag(NeoAppTab.workouts)
                 .tabItem {
                     Image(systemName: workoutsTabIcon)
                     Text("Workouts")
                 }
         }
+        .toolbar(.hidden, for: .tabBar)
     }
 
-    private enum AppTab: String, Hashable {
-        case home
-        case progress
-        case coach
-        case settings
-        case workouts
+    private func presentQuickAdd() {
+        selectedTab = .home
+        quickActionRequest = QuickActionRequest(action: .camera)
     }
 
     private func consumePendingQuickAction() {
@@ -3172,15 +3190,33 @@ struct ProgressTabView: View {
         let _ = profileStore.profile
         return NavigationStack {
             ScrollView {
-                VStack(spacing: 16) {
-                    // Segmented Picker
-                    Picker("Time Range", selection: $timeRange) {
-                        ForEach(TimeRange.allCases, id: \.self) { range in
-                            Text(range.rawValue).tag(range)
-                        }
+                VStack(spacing: NeoAppMetrics.sectionSpacing) {
+                    NeoScreenHeader(
+                        eyebrow: "Your data",
+                        title: "Progress",
+                        subtitle: "Trends, targets, and training history"
+                    ) {
+                        Image(systemName: "chart.xyaxis.line")
+                            .font(.system(size: 24, weight: .black))
+                            .foregroundStyle(NeoAppColors.onCobalt)
+                            .frame(width: 48, height: 48)
+                            .background(NeoAppColors.cobalt)
+                            .overlay {
+                                Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                            }
                     }
-                    .pickerStyle(.segmented)
-                    .padding(.horizontal)
+                    .padding(.horizontal, NeoAppMetrics.screenInset)
+
+                    // Segmented Picker
+                    NeoOutlinedPanel(padding: 8) {
+                        Picker("Time Range", selection: $timeRange) {
+                            ForEach(TimeRange.allCases, id: \.self) { range in
+                                Text(range.rawValue.uppercased()).tag(range)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+                    }
+                    .padding(.horizontal, NeoAppMetrics.screenInset)
 
                     // Weight / Body Fat Trend — single card with a segmented
                     // toggle (when the user has opted into body-fat tracking)
@@ -3197,7 +3233,7 @@ struct ProgressTabView: View {
                         onLogBodyFat: { showLogBodyFat = true },
                         bodyFatAvailable: showsBodyFatSection
                     )
-                    .padding(.horizontal)
+                    .padding(.horizontal, NeoAppMetrics.screenInset)
 
                     // Weight History — tap to view/delete entries
                     if !weightStore.entries.isEmpty {
@@ -3205,7 +3241,7 @@ struct ProgressTabView: View {
                             totalCount: weightStore.entries.count,
                             onTap: { showAllWeights = true }
                         )
-                        .padding(.horizontal)
+                        .padding(.horizontal, NeoAppMetrics.screenInset)
                     }
 
                     // Body Fat History — tap to view/delete entries
@@ -3214,7 +3250,7 @@ struct ProgressTabView: View {
                             totalCount: bodyFatStore.entries.count,
                             onTap: { showAllBodyFat = true }
                         )
-                        .padding(.horizontal)
+                        .padding(.horizontal, NeoAppMetrics.screenInset)
                     }
 
                     // Workout History — calculated burns with exercise/set detail.
@@ -3223,7 +3259,7 @@ struct ProgressTabView: View {
                             sessions: workoutCalorieSessions,
                             onTap: { showWorkoutHistory = true }
                         )
-                        .padding(.horizontal)
+                        .padding(.horizontal, NeoAppMetrics.screenInset)
                     }
 
                     // Calorie Trend
@@ -3231,7 +3267,7 @@ struct ProgressTabView: View {
                         dailyCalories: dailyCalories,
                         calorieGoal: userProfile.effectiveCalories
                     )
-                    .padding(.horizontal)
+                    .padding(.horizontal, NeoAppMetrics.screenInset)
 
                     // Macro Averages
                     MacroAveragesSection(
@@ -3242,12 +3278,12 @@ struct ProgressTabView: View {
                         carbsGoal: userProfile.effectiveCarbs,
                         fatGoal: userProfile.effectiveFat
                     )
-                    .padding(.horizontal)
+                    .padding(.horizontal, NeoAppMetrics.screenInset)
 
                 }
                 .padding(.vertical)
             }
-            .background(AppColors.appBackground)
+            .background(NeoAppColors.canvas)
             .navigationBarHidden(true)
             .sheet(isPresented: $showLogWeight) {
                 LogWeightSheet(
@@ -3470,6 +3506,24 @@ struct ProfileView: View {
     var body: some View {
         NavigationStack {
             List {
+                NeoScreenHeader(
+                    eyebrow: "Control center",
+                    title: "Settings",
+                    subtitle: "Profile, goals, integrations, and app preferences"
+                ) {
+                    Image(systemName: "slider.horizontal.3")
+                        .font(.system(size: 23, weight: .black))
+                        .foregroundStyle(Color.black)
+                        .frame(width: 48, height: 48)
+                        .background(NeoAppColors.acid)
+                        .overlay {
+                            Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                        }
+                }
+                .listRowInsets(EdgeInsets(top: 12, leading: 12, bottom: 4, trailing: 12))
+                .listRowSeparator(.hidden)
+                .listRowBackground(NeoAppColors.canvas)
+
                 // Section 1: Personal Info
                 Section("Personal Info") {
                     Picker(selection: profileBinding.gender) {
@@ -4557,8 +4611,11 @@ struct ProfileView: View {
                 )
             }
             .scrollContentBackground(.hidden)
+            .listStyle(.plain)
+            .listSectionSpacing(14)
+            .listRowSeparatorTint(NeoAppColors.ink.opacity(0.38))
             .modifier(SettingsKeyboardDismissalModifier())
-            .background(AppColors.appBackground)
+            .background(NeoAppColors.canvas)
             .navigationBarHidden(true)
             .sheet(isPresented: $showExportDiary) {
                 ExportDiaryView()
@@ -4591,11 +4648,11 @@ struct ProfileView: View {
                                     .font(.system(.headline, design: .rounded, weight: .semibold))
                                     .frame(maxWidth: .infinity)
                                     .padding(.vertical, 14)
-                                    .background(
-                                        LinearGradient(colors: AppColors.calorieGradient, startPoint: .leading, endPoint: .trailing)
-                                    )
-                                    .foregroundStyle(.white)
-                                    .clipShape(RoundedRectangle(cornerRadius: 14))
+                                    .background(NeoAppColors.acid)
+                                    .foregroundStyle(Color.black)
+                                    .overlay {
+                                        Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                                    }
                             }
                             .padding(.horizontal, 24)
 

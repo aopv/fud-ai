@@ -163,10 +163,18 @@ private struct ExerciseLibraryBrowserView: View {
         // Search, filter chips, and the results header stay pinned; only the
         // exercise list scrolls beneath them.
         VStack(alignment: .leading, spacing: 0) {
+            NeoScreenHeader(
+                eyebrow: String(localized: "Training database"),
+                title: String(localized: "Workouts"),
+                subtitle: String(localized: "Find exercises, build your day, and track every set")
+            )
+            .padding(.horizontal, NeoAppMetrics.screenInset)
+            .padding(.top, 10)
+
             filters
-                .padding(.horizontal, 20)
-                .padding(.top, 18)
-                .padding(.bottom, 18)
+                .padding(.horizontal, NeoAppMetrics.screenInset)
+                .padding(.top, 10)
+                .padding(.bottom, 10)
 
             ResultsHeader(
                 count: items.count,
@@ -180,8 +188,8 @@ private struct ExerciseLibraryBrowserView: View {
                     }
                 }
             )
-            .padding(.horizontal, 20)
-            .padding(.bottom, 4)
+            .padding(.horizontal, NeoAppMetrics.screenInset)
+            .padding(.bottom, 8)
 
             scrollingList
         }
@@ -206,7 +214,7 @@ private struct ExerciseLibraryBrowserView: View {
 
     private var scrollingList: some View {
         ScrollView {
-            LazyVStack(alignment: .leading, spacing: 0) {
+            LazyVStack(alignment: .leading, spacing: 10) {
                 if items.isEmpty {
                     ContentUnavailableView {
                         Label("No exercises match", systemImage: "line.3.horizontal.decrease")
@@ -223,17 +231,11 @@ private struct ExerciseLibraryBrowserView: View {
                             ExerciseLibraryRow(item: item)
                         }
                         .buttonStyle(.plain)
-                        .padding(.horizontal, 20)
-
-                        if item.id != items.last?.id {
-                            Divider()
-                                .overlay(Color.workoutHairline.opacity(0.28))
-                                .padding(.leading, 144)
-                                .padding(.horizontal, 20)
-                        }
+                        .padding(.horizontal, NeoAppMetrics.screenInset)
                     }
                 }
             }
+            .padding(.top, 2)
             .padding(.bottom, 112)
         }
         .contentMargins(.bottom, 104, for: .scrollContent)
@@ -249,13 +251,16 @@ private struct ExerciseLibraryBrowserView: View {
                     Button(action: onShowWorkoutLog) {
                         Image(systemName: "figure.strengthtraining.traditional")
                             .font(.system(size: 18, weight: .bold))
-                            .foregroundStyle(Color.workoutAccent)
+                            .foregroundStyle(Color.black)
                             .frame(width: 50, height: 50)
-                            .contentShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+                            .background(NeoAppColors.acid)
+                            .overlay {
+                                Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                            }
+                            .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
                     .workoutPressable()
-                    .workoutLiquidBarSurface(cornerRadius: 22)
                     .accessibilityLabel("Workout log")
                     .accessibilityHint("Opens your workout diary")
                 }
@@ -538,11 +543,11 @@ private struct WorkoutsSearchPill: View {
         HStack(spacing: 8) {
             Image(systemName: "magnifyingglass")
                 .font(.system(size: 14, weight: .bold))
-                .foregroundStyle(searchText.isEmpty ? Color.workoutSecondaryAccent : Color.workoutAccent)
+                .foregroundStyle(Color.workoutAccent)
 
             TextField("Search", text: $searchText)
                 .textFieldStyle(.plain)
-                .font(.subheadline.weight(.semibold))
+                .font(.system(.subheadline, design: .rounded, weight: .black).width(.condensed))
                 .foregroundStyle(Color.workoutCharcoal)
                 .lineLimit(1)
                 .frame(maxWidth: .infinity)
@@ -562,7 +567,10 @@ private struct WorkoutsSearchPill: View {
         }
         .padding(.horizontal, 14)
         .frame(maxWidth: .infinity, minHeight: 50, alignment: .leading)
-        .workoutLiquidBarSurface(cornerRadius: 22)
+        .background(Color.workoutCard)
+        .overlay {
+            Rectangle().stroke(Color.workoutHairline, lineWidth: NeoAppMetrics.rule)
+        }
     }
 }
 
@@ -580,42 +588,36 @@ private struct FilterMenuPill: View {
         HStack(spacing: 9) {
             Image(systemName: systemImage)
                 .font(.system(size: 14, weight: .bold))
-                .foregroundStyle(isDefaultValue ? Color.workoutSecondaryAccent : Color.workoutAccent)
+                .foregroundStyle(isDefaultValue ? Color.workoutSecondaryAccent : Color.black)
                 .frame(width: 18)
 
             VStack(alignment: .leading, spacing: 1) {
                 Text(title)
-                    .font(.caption2.weight(.bold))
-                    .foregroundStyle(Color.workoutMutedText)
+                    .font(.system(size: 10, weight: .black, design: .rounded).width(.condensed))
+                    .foregroundStyle(isDefaultValue ? Color.workoutMutedText : Color.black.opacity(0.72))
                     .textCase(.uppercase)
                     .lineLimit(1)
 
                 Text(value)
-                    .font(.subheadline.weight(.bold))
-                    .foregroundStyle(Color.workoutCharcoal)
+                    .font(.system(.subheadline, design: .rounded, weight: .black).width(.condensed))
+                    .foregroundStyle(isDefaultValue ? Color.workoutCharcoal : Color.black)
                     .lineLimit(1)
                     .minimumScaleFactor(0.78)
             }
 
             Image(systemName: "chevron.down")
                 .font(.caption2.weight(.bold))
-                .foregroundStyle(Color.workoutMutedText)
+                .foregroundStyle(isDefaultValue ? Color.workoutMutedText : Color.black)
                 .padding(.leading, 1)
         }
         .padding(.horizontal, 12)
         .frame(minWidth: 112, minHeight: 46, alignment: .leading)
-        .background(
-            Color.workoutPanel.opacity(isDefaultValue ? 0.30 : 0.46),
-            in: RoundedRectangle(cornerRadius: 17, style: .continuous)
-        )
+        .background(isDefaultValue ? Color.workoutCard : NeoAppColors.acid)
         .overlay {
-            RoundedRectangle(cornerRadius: 17, style: .continuous)
-                .stroke(
-                    (isDefaultValue ? Color.workoutHairline : Color.workoutAccent).opacity(isDefaultValue ? 0.30 : 0.42),
-                    lineWidth: 0.5
-                )
+            Rectangle()
+                .stroke(Color.workoutHairline, lineWidth: NeoAppMetrics.compactRule)
         }
-        .contentShape(RoundedRectangle(cornerRadius: 17, style: .continuous))
+        .contentShape(Rectangle())
     }
 }
 
@@ -631,11 +633,11 @@ private struct ResultsHeader: View {
         HStack(alignment: .firstTextBaseline) {
             VStack(alignment: .leading, spacing: 2) {
                 Text("\(count) \(count == 1 ? noun : String(localized: "\(noun)s"))")
-                    .font(.headline.weight(.semibold))
+                    .font(.system(.headline, design: .rounded, weight: .black).width(.condensed))
                     .foregroundStyle(Color.workoutCharcoal)
-                    .textCase(nil)
+                    .textCase(.uppercase)
                 Text(subtitle)
-                    .font(.caption)
+                    .font(.system(.caption, design: .rounded, weight: .bold))
                     .foregroundStyle(Color.workoutMutedText)
                     .textCase(nil)
             }
@@ -647,15 +649,15 @@ private struct ResultsHeader: View {
                     onReset()
                 } label: {
                     Label("Reset", systemImage: "arrow.counterclockwise")
-                        .font(.caption.weight(.bold))
+                        .font(.system(.caption, design: .rounded, weight: .black).width(.condensed))
                         .foregroundStyle(canReset ? Color.workoutInferno : Color.workoutMutedText)
                         .lineLimit(1)
                         .padding(.horizontal, 11)
                         .frame(height: 34)
-                        .background((canReset ? Color.workoutInferno : Color.workoutPanel).opacity(canReset ? 0.10 : 0.22), in: Capsule())
+                        .background(canReset ? Color.workoutInferno.opacity(0.16) : Color.workoutPanel)
                         .overlay {
-                            Capsule()
-                                .stroke((canReset ? Color.workoutInferno : Color.workoutHairline).opacity(canReset ? 0.28 : 0.24), lineWidth: 0.5)
+                            Rectangle()
+                                .stroke(canReset ? Color.workoutInferno : Color.workoutHairline, lineWidth: NeoAppMetrics.compactRule)
                         }
                 }
                 .disabled(!canReset)
@@ -676,15 +678,15 @@ private struct ResultsHeader: View {
                     }
                 } label: {
                     Label("Sort", systemImage: "arrow.up.arrow.down")
-                        .font(.caption.weight(.bold))
-                        .foregroundStyle(count == 0 ? Color.workoutMutedText : (selectedSort == .name ? Color.workoutMutedText : Color.workoutAccent))
+                        .font(.system(.caption, design: .rounded, weight: .black).width(.condensed))
+                        .foregroundStyle(count == 0 ? Color.workoutMutedText : (selectedSort == .name ? Color.workoutMutedText : Color.black))
                         .lineLimit(1)
                         .padding(.horizontal, 11)
                         .frame(height: 34)
-                        .background(Color.workoutPanel.opacity(selectedSort == .name ? 0.30 : 0.46), in: Capsule())
+                        .background(selectedSort == .name ? Color.workoutPanel : NeoAppColors.acid)
                         .overlay {
-                            Capsule()
-                                .stroke((selectedSort == .name ? Color.workoutHairline : Color.workoutAccent).opacity(0.32), lineWidth: 0.5)
+                            Rectangle()
+                                .stroke(Color.workoutHairline, lineWidth: NeoAppMetrics.compactRule)
                         }
                 }
                 .buttonStyle(.plain)
@@ -692,7 +694,11 @@ private struct ResultsHeader: View {
                 .disabled(count == 0)
             }
         }
-        .padding(.top, 6)
+        .padding(10)
+        .background(Color.workoutCard)
+        .overlay {
+            Rectangle().stroke(Color.workoutHairline, lineWidth: NeoAppMetrics.rule)
+        }
     }
 }
 
@@ -705,8 +711,9 @@ private struct ExerciseLibraryRow: View {
 
             VStack(alignment: .leading, spacing: 9) {
                 Text(item.name)
-                    .font(.headline.weight(.semibold))
+                    .font(.system(.headline, design: .rounded, weight: .black).width(.condensed))
                     .foregroundStyle(Color.workoutCharcoal)
+                    .textCase(.uppercase)
                     .lineLimit(2)
                     .minimumScaleFactor(0.82)
 
@@ -734,9 +741,13 @@ private struct ExerciseLibraryRow: View {
 
             Image(systemName: "chevron.right")
                 .font(.footnote.weight(.semibold))
-                .foregroundStyle(Color.workoutHairline)
+                .foregroundStyle(Color.workoutAccent)
         }
-        .padding(.vertical, 15)
+        .padding(10)
+        .background(Color.workoutCard)
+        .overlay {
+            Rectangle().stroke(Color.workoutHairline, lineWidth: NeoAppMetrics.rule)
+        }
         .contentShape(Rectangle())
         .accessibilityElement(children: .combine)
     }
@@ -750,11 +761,11 @@ private struct ExerciseLibraryRow: View {
             allowsDerivedImageLookup: false
         )
         .frame(width: 104, height: 104)
-        .background(Color.workoutPanel.opacity(0.32), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .background(Color.workoutPanel)
+        .clipShape(Rectangle())
         .overlay {
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .stroke(Color.workoutHairline.opacity(0.38), lineWidth: 0.5)
+            Rectangle()
+                .stroke(Color.workoutHairline, lineWidth: NeoAppMetrics.compactRule)
         }
         .accessibilityHidden(true)
     }
@@ -768,16 +779,16 @@ private struct LibraryTag: View {
 
     var body: some View {
         Label(title, systemImage: systemImage)
-            .font(.caption2.weight(.bold))
+            .font(.system(.caption2, design: .rounded, weight: .black).width(.condensed))
             .labelStyle(.titleAndIcon)
             .foregroundStyle(tint)
             .lineLimit(1)
             .minimumScaleFactor(0.78)
             .padding(.horizontal, 9)
             .padding(.vertical, 4)
-            .background(Color.workoutPanel.opacity(0.28), in: Capsule())
+            .background(Color.workoutPanel)
             .overlay {
-                Capsule().stroke(Color.workoutHairline.opacity(0.22), lineWidth: 0.5)
+                Rectangle().stroke(Color.workoutHairline, lineWidth: NeoAppMetrics.compactRule)
             }
             .accessibilityElement(children: .combine)
     }
@@ -856,12 +867,12 @@ struct ExerciseLibraryDetailView: View {
             } label: {
                 Image(systemName: "info.circle.fill")
                     .font(.system(size: 20, weight: .bold))
-                    .foregroundStyle(Color.workoutAccent)
+                    .foregroundStyle(Color.black)
                     .frame(width: 44, height: 44)
-                    .background(Color.workoutBackground.opacity(0.78), in: Circle())
+                    .background(NeoAppColors.acid)
                     .overlay {
-                        Circle()
-                            .stroke(Color.workoutHairline.opacity(0.42), lineWidth: 0.7)
+                        Rectangle()
+                            .stroke(Color.workoutHairline, lineWidth: NeoAppMetrics.rule)
                     }
             }
             .buttonStyle(.plain)
@@ -873,6 +884,9 @@ struct ExerciseLibraryDetailView: View {
         .frame(width: width, height: 294)
         .animation(.snappy(duration: 0.28), value: isMetricsPresented)
         .clipped()
+        .overlay {
+            Rectangle().stroke(Color.workoutHairline, lineWidth: NeoAppMetrics.rule)
+        }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(Text("\(item.name) exercise visual"))
     }
@@ -905,8 +919,8 @@ private struct ExerciseHeroMetricOverlay: View {
     private func metricButton(title: String, value: String, systemImage: String, compact: Bool = true, valueLineLimit: Int = 1) -> some View {
         let valueFontSize: CGFloat = compact ? 15 : (valueLineLimit > 2 ? 13 : 14)
         let labelColor = colorScheme == .light ? Color.workoutSecondaryAccent : Color.workoutAccent
-        let fillColor = colorScheme == .light ? Color.workoutBackground.opacity(0.92) : Color.workoutBackground.opacity(0.55)
-        let strokeColor = colorScheme == .light ? Color.workoutHairline.opacity(0.45) : Color.workoutHairline.opacity(0.32)
+        let fillColor = Color.workoutCard
+        let strokeColor = Color.workoutHairline
 
         return VStack(alignment: .leading, spacing: 3) {
             Label(title, systemImage: systemImage)
@@ -925,21 +939,11 @@ private struct ExerciseHeroMetricOverlay: View {
         .padding(.horizontal, 12)
         .padding(.vertical, compact ? 6 : 5)
         .frame(maxWidth: .infinity, minHeight: compact ? 44 : (valueLineLimit > 2 ? 50 : 42), alignment: .leading)
-        .background {
-            if colorScheme == .light {
-                RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .fill(fillColor)
-            } else {
-                RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .fill(fillColor)
-                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
-            }
-        }
+        .background(fillColor)
         .overlay {
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .stroke(strokeColor, lineWidth: 0.6)
+            Rectangle()
+                .stroke(strokeColor, lineWidth: NeoAppMetrics.compactRule)
         }
-        .shadow(color: Color.black.opacity(colorScheme == .light ? 0.12 : 0.32), radius: 9, x: 0, y: 4)
     }
 }
 
@@ -951,12 +955,16 @@ private struct DetailInstructionSection: View {
             HStack(spacing: 10) {
                 Image(systemName: "list.number")
                     .font(.subheadline.weight(.bold))
-                    .foregroundStyle(Color.workoutAccent)
+                    .foregroundStyle(Color.black)
                     .frame(width: 30, height: 30)
-                    .background(Color.workoutAccent.opacity(0.12), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                    .background(NeoAppColors.acid)
+                    .overlay {
+                        Rectangle().stroke(Color.workoutHairline, lineWidth: NeoAppMetrics.compactRule)
+                    }
 
                 Text("Instructions")
-                    .font(.title3.weight(.bold))
+                    .font(.system(.title3, design: .rounded, weight: .black).width(.condensed))
+                    .textCase(.uppercase)
                     .foregroundStyle(Color.workoutCharcoal)
 
                 Spacer(minLength: 0)
@@ -964,10 +972,13 @@ private struct DetailInstructionSection: View {
                 Text("\(instructions.count)")
                     .font(.caption.weight(.bold))
                     .monospacedDigit()
-                    .foregroundStyle(Color.workoutSecondaryAccent)
+                    .foregroundStyle(Color.black)
                     .padding(.horizontal, 9)
                     .padding(.vertical, 4)
-                    .background(Color.workoutSecondaryAccent.opacity(0.12), in: Capsule())
+                    .background(NeoAppColors.acid)
+                    .overlay {
+                        Rectangle().stroke(Color.workoutHairline, lineWidth: NeoAppMetrics.compactRule)
+                    }
             }
 
             VStack(alignment: .leading, spacing: 10) {
@@ -978,8 +989,7 @@ private struct DetailInstructionSection: View {
                             .monospacedDigit()
                             .foregroundStyle(Color.workoutOnAccent)
                             .frame(width: 27, height: 27)
-                            .background(Color.workoutAccent, in: Circle())
-                            .shadow(color: Color.workoutAccent.opacity(0.35), radius: 6, y: 2)
+                            .background(Color.workoutAccent)
 
                         Text(instruction)
                             .font(.callout)
@@ -989,10 +999,10 @@ private struct DetailInstructionSection: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     .padding(14)
-                    .background(Color.workoutPanel.opacity(0.16), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                    .background(Color.workoutCard)
                     .overlay {
-                        RoundedRectangle(cornerRadius: 18, style: .continuous)
-                            .stroke(Color.workoutHairline.opacity(0.20), lineWidth: 0.5)
+                        Rectangle()
+                            .stroke(Color.workoutHairline, lineWidth: NeoAppMetrics.compactRule)
                     }
                 }
             }

@@ -76,11 +76,12 @@ struct CalculationMethodsView: View {
 
                     Spacer(minLength: 16)
                 }
-                .padding(.horizontal, 20)
+                .padding(.horizontal, NeoAppMetrics.screenInset)
                 .padding(.top, 8)
                 .padding(.bottom, 24)
             }
-            .background(AppColors.appBackground)
+            .background(NeoAppColors.canvas)
+            .tint(NeoAppColors.cobalt)
             .navigationTitle("Calculation Methods")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -101,13 +102,16 @@ struct CalculationMethodsView: View {
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
         }
-        .padding(.top, 4)
+        .padding(14)
+        .neoPanel(fill: NeoAppColors.surface)
     }
 
     private var disclaimer: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text("Not medical advice")
-                .font(.system(.subheadline, design: .rounded, weight: .semibold))
+                .font(.system(.subheadline, design: .rounded, weight: .black))
+                .fontWidth(.condensed)
+                .textCase(.uppercase)
             Text("Fud AI is an estimation tool, not a clinical instrument. Predictive equations carry inherent error (typically ±10% for BMR). Consult a registered dietitian, physician, or sports medicine professional before significant diet changes — especially if you have a medical condition, are pregnant or breastfeeding, are under 18, or are managing an eating disorder.")
                 .font(.system(.footnote, design: .rounded))
                 .foregroundStyle(.secondary)
@@ -115,14 +119,29 @@ struct CalculationMethodsView: View {
         }
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.orange.opacity(0.08), in: RoundedRectangle(cornerRadius: 12))
+        .foregroundStyle(Color.black)
+        .background(NeoAppColors.acid)
+        .overlay {
+            Rectangle()
+                .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                .allowsHitTesting(false)
+        }
     }
 
     private func section<Content: View>(title: String, @ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(title)
-                .font(.system(.headline, design: .rounded, weight: .bold))
-                .padding(.horizontal, 4)
+            Text(title.uppercased())
+                .font(.system(.headline, design: .rounded, weight: .black))
+                .fontWidth(.condensed)
+                .foregroundStyle(Color.black)
+                .padding(.horizontal, 10)
+                .frame(maxWidth: .infinity, minHeight: 40, alignment: .leading)
+                .background(NeoAppColors.acid)
+                .overlay {
+                    Rectangle()
+                        .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                        .allowsHitTesting(false)
+                }
             content()
         }
     }
@@ -130,7 +149,9 @@ struct CalculationMethodsView: View {
     private func formulaCard(name: String, usedWhen: String, formula: String?, citation: String, url: URL?) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             Text(name)
-                .font(.system(.subheadline, design: .rounded, weight: .semibold))
+                .font(.system(.headline, design: .rounded, weight: .black))
+                .fontWidth(.condensed)
+                .textCase(.uppercase)
 
             Text(usedWhen)
                 .font(.system(.footnote, design: .rounded))
@@ -143,7 +164,13 @@ struct CalculationMethodsView: View {
                     .foregroundStyle(.primary.opacity(0.85))
                     .padding(10)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(Color.secondary.opacity(0.08), in: RoundedRectangle(cornerRadius: 8))
+                    .foregroundStyle(NeoAppColors.paper)
+                    .background(Color.black)
+                    .overlay {
+                        Rectangle()
+                            .stroke(NeoAppColors.cobalt, lineWidth: NeoAppMetrics.compactRule)
+                            .allowsHitTesting(false)
+                    }
             }
 
             VStack(alignment: .leading, spacing: 6) {
@@ -163,14 +190,14 @@ struct CalculationMethodsView: View {
                             Text("Open source")
                                 .font(.system(.caption, design: .rounded, weight: .medium))
                         }
-                        .foregroundStyle(AppColors.calorie)
+                        .foregroundStyle(NeoAppColors.cobalt)
                     }
                 }
             }
         }
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(AppColors.appCard, in: RoundedRectangle(cornerRadius: 12))
+        .neoPanel(fill: NeoAppColors.surface)
     }
 }
 

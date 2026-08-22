@@ -14,8 +14,10 @@ struct WaterProgressRow: View {
         VStack(alignment: .leading, spacing: 7) {
             HStack {
                 Label("Water", systemImage: "drop.fill")
-                    .font(.system(.subheadline, design: .rounded, weight: .semibold))
-                    .foregroundStyle(AppColors.calorie)
+                    .font(.system(.subheadline, design: .rounded, weight: .black))
+                    .fontWidth(.condensed)
+                    .textCase(.uppercase)
+                    .foregroundStyle(NeoAppColors.cobalt)
                 Spacer()
                 Text("\(unit.displayValue(forMilliliters: current)) / \(unit.formatted(milliliters: goal))")
                     .font(.system(.caption, design: .rounded, weight: .medium))
@@ -23,14 +25,19 @@ struct WaterProgressRow: View {
             }
             GeometryReader { proxy in
                 ZStack(alignment: .leading) {
-                    Capsule()
-                        .fill(AppColors.calorie.opacity(0.16))
-                    Capsule()
-                        .fill(AppColors.calorie)
+                    Rectangle()
+                        .fill(NeoAppColors.ink.opacity(0.14))
+                    Rectangle()
+                        .fill(NeoAppColors.cobalt)
                         .frame(width: proxy.size.width * progress)
                 }
             }
-            .frame(height: 5)
+            .frame(height: 8)
+            .overlay {
+                Rectangle()
+                    .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                    .allowsHitTesting(false)
+            }
         }
         .padding(.vertical, 2)
         .accessibilityElement(children: .combine)
@@ -71,8 +78,7 @@ struct WaterCustomAmountSheet: View {
                         .foregroundStyle(.secondary)
                 }
                 .padding()
-                .background(AppColors.appCard)
-                .clipShape(RoundedRectangle(cornerRadius: 14))
+                .neoPanel(fill: NeoAppColors.surface)
 
                 Button {
                     guard let selectedAmountMl else { return }
@@ -80,18 +86,26 @@ struct WaterCustomAmountSheet: View {
                     dismiss()
                 } label: {
                     Label("Add Water", systemImage: "drop.fill")
-                        .font(.system(.headline, design: .rounded, weight: .semibold))
+                        .font(.system(.headline, design: .rounded, weight: .black))
+                        .textCase(.uppercase)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
-                        .foregroundStyle(.white)
-                        .background(AppColors.calorie, in: RoundedRectangle(cornerRadius: 14))
+                        .foregroundStyle(Color.black)
+                        .background(NeoAppColors.acid)
+                        .overlay {
+                            Rectangle()
+                                .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                                .allowsHitTesting(false)
+                        }
                 }
+                .buttonStyle(.plain)
                 .disabled(selectedAmountMl == nil)
 
                 Spacer()
             }
             .padding(20)
-            .background(AppColors.appBackground)
+            .background(NeoAppColors.canvas)
+            .tint(NeoAppColors.cobalt)
             .navigationTitle("Custom Water Amount")
             .navigationBarTitleDisplayMode(.inline)
             .onAppear { customFocused = true }
@@ -145,26 +159,34 @@ struct WaterGoalPickerSheet: View {
                         .font(.system(.title3, design: .rounded))
                         .foregroundStyle(.secondary)
                 }
+                .padding(.horizontal, 16)
+                .neoPanel(fill: NeoAppColors.surface)
 
                 Button {
                     onSave(unit.milliliters(fromDisplayedValue: Double(selectedGoalDisplay)))
                     dismiss()
                 } label: {
                     Text("Save")
-                        .font(.system(.headline, design: .rounded, weight: .semibold))
+                        .font(.system(.headline, design: .rounded, weight: .black))
+                        .textCase(.uppercase)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
-                        .background(
-                            LinearGradient(colors: AppColors.calorieGradient, startPoint: .leading, endPoint: .trailing)
-                        )
-                        .foregroundStyle(.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 14))
+                        .background(NeoAppColors.acid)
+                        .foregroundStyle(Color.black)
+                        .overlay {
+                            Rectangle()
+                                .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                                .allowsHitTesting(false)
+                        }
                 }
+                .buttonStyle(.plain)
                 .padding(.horizontal, 24)
 
                 Spacer()
             }
             .padding(.top, 24)
+            .background(NeoAppColors.canvas)
+            .tint(NeoAppColors.cobalt)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }

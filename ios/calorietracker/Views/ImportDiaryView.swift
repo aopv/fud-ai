@@ -19,10 +19,18 @@ struct ImportDiaryView: View {
                     } label: {
                         Label("Choose JSON File", systemImage: "doc.badge.plus")
                             .frame(maxWidth: .infinity)
-                            .font(.system(.body, design: .rounded, weight: .semibold))
+                            .font(.system(.body, design: .rounded, weight: .black))
+                            .textCase(.uppercase)
+                            .foregroundStyle(Color.black)
+                            .padding(.vertical, 14)
+                            .background(NeoAppColors.acid)
+                            .overlay {
+                                Rectangle()
+                                    .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                                    .allowsHitTesting(false)
+                            }
                     }
-                    .buttonStyle(.borderedProminent)
-                    .tint(AppColors.calorie)
+                    .buttonStyle(.plain)
                     .listRowInsets(EdgeInsets())
                     .listRowBackground(Color.clear)
                 } footer: {
@@ -34,6 +42,8 @@ struct ImportDiaryView: View {
                         LabeledContent("Food entries", value: "\(preview.entryCount)")
                         LabeledContent("Date range", value: rangeText(preview))
                     }
+                    .listRowBackground(NeoAppColors.surface)
+                    .listRowSeparatorTint(NeoAppColors.ink.opacity(0.35))
 
                     Section {
                         Button {
@@ -41,10 +51,18 @@ struct ImportDiaryView: View {
                         } label: {
                             Label("Replace This Date Range", systemImage: "arrow.triangle.2.circlepath")
                                 .frame(maxWidth: .infinity)
-                                .font(.system(.body, design: .rounded, weight: .semibold))
+                                .font(.system(.body, design: .rounded, weight: .black))
+                                .textCase(.uppercase)
+                                .foregroundStyle(Color.black)
+                                .padding(.vertical, 14)
+                                .background(NeoAppColors.acid)
+                                .overlay {
+                                    Rectangle()
+                                        .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                                        .allowsHitTesting(false)
+                                }
                         }
-                        .buttonStyle(.borderedProminent)
-                        .tint(AppColors.calorie)
+                        .buttonStyle(.plain)
                         .listRowInsets(EdgeInsets())
                         .listRowBackground(Color.clear)
 
@@ -53,10 +71,18 @@ struct ImportDiaryView: View {
                         } label: {
                             Label("Add as New Entries", systemImage: "plus.circle")
                                 .frame(maxWidth: .infinity)
-                                .font(.system(.body, design: .rounded, weight: .semibold))
+                                .font(.system(.body, design: .rounded, weight: .black))
+                                .textCase(.uppercase)
+                                .foregroundStyle(NeoAppColors.cobalt)
+                                .padding(.vertical, 13)
+                                .background(NeoAppColors.surface)
+                                .overlay {
+                                    Rectangle()
+                                        .stroke(NeoAppColors.cobalt, lineWidth: NeoAppMetrics.rule)
+                                        .allowsHitTesting(false)
+                                }
                         }
-                        .buttonStyle(.bordered)
-                        .tint(AppColors.calorie)
+                        .buttonStyle(.plain)
                         .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 0, trailing: 0))
                         .listRowBackground(Color.clear)
                     } footer: {
@@ -65,7 +91,8 @@ struct ImportDiaryView: View {
                 }
             }
             .scrollContentBackground(.hidden)
-            .background(AppColors.appBackground)
+            .background(NeoAppColors.canvas)
+            .tint(NeoAppColors.cobalt)
             .navigationTitle("Import Food Diary")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

@@ -16,7 +16,12 @@ struct QuickActionsSettingsView: View {
             } footer: {
                 Text("Hold the Fud AI app icon to use these shortcuts. On iPhone, Quick Action 1–3 can also be assigned in Shortcuts to the Action Button or Back Tap.")
             }
+            .listRowBackground(NeoAppColors.surface)
+            .listRowSeparatorTint(NeoAppColors.ink.opacity(0.35))
         }
+        .scrollContentBackground(.hidden)
+        .background(NeoAppColors.canvas)
+        .tint(NeoAppColors.cobalt)
         .navigationTitle("Quick Actions")
         .navigationBarTitleDisplayMode(.inline)
         .onChange(of: firstRaw) { _, _ in refreshShortcuts() }
@@ -31,10 +36,16 @@ struct QuickActionsSettingsView: View {
                     .tag(action.rawValue)
             }
         } label: {
-            Label(title, systemImage: numberIcon(for: title))
+            Label {
+                Text(title)
+                    .font(.system(.body, design: .rounded, weight: .bold))
+            } icon: {
+                Image(systemName: numberIcon(for: title))
+                    .foregroundStyle(NeoAppColors.cobalt)
+            }
         }
         .pickerStyle(.menu)
-        .tint(.secondary)
+        .tint(NeoAppColors.cobalt)
     }
 
     private func numberIcon(for title: String) -> String {

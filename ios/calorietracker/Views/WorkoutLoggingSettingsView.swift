@@ -25,7 +25,9 @@ struct WorkoutLoggingSettingsSection: View {
         } header: {
             Text("Workout")
         }
-        .listRowBackground(AppColors.appCard)
+        .listRowBackground(NeoAppColors.surface)
+        .listRowSeparatorTint(NeoAppColors.ink.opacity(0.35))
+        .tint(NeoAppColors.cobalt)
         .onAppear(perform: loadPreferences)
         .onChange(of: draft) { _, newValue in
             guard hasLoaded else { return }
@@ -49,8 +51,8 @@ struct WorkoutLoggingSettingsSection: View {
         .foregroundStyle(.secondary)
         .lineSpacing(1)
         .fixedSize(horizontal: false, vertical: true)
-        .padding(.leading, 32)
-        .padding(.vertical, 4)
+        .padding(10)
+        .neoPanel(fill: NeoAppColors.subtleSurface, lineWidth: NeoAppMetrics.compactRule)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(
             "RPE scale guide. Strength 1 to 10 measures lifting effort by reps left. "

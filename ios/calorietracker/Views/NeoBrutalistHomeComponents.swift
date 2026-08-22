@@ -328,7 +328,7 @@ struct NeoNutrientGrid: View {
 
     private var columns: [GridItem] {
         let count = dynamicTypeSize.isAccessibilitySize ? 2 : 4
-        return Array(repeating: GridItem(.flexible(minimum: 72), spacing: 0), count: count)
+        return Array(repeating: GridItem(.flexible(minimum: 54), spacing: 0), count: count)
     }
 
     var body: some View {

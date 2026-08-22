@@ -177,9 +177,12 @@ enum AppThemeColor: String, CaseIterable, Identifiable {
 }
 
 enum AppColors {
-    // Calorie: Red → Pink
-    static var calorieGradient: [Color] { AppThemeColor.current.gradientColors }
-    static var calorie: Color { AppThemeColor.current.color }
+    // Version 7 uses cobalt consistently for data emphasis and interactive UI.
+    // The saved AppThemeColor remains intact for alternate icons, widgets, Watch,
+    // and migration compatibility; no preference or persisted value is removed.
+    static var calorieGradient: [Color] { [NeoHomeColors.cobaltDeep, NeoHomeColors.cobalt] }
+    static var calorie: Color { NeoHomeColors.cobalt }
+    static var userAccent: Color { AppThemeColor.current.color }
 
     // Protein
     static var proteinGradient: [Color] { calorieGradient }
@@ -193,9 +196,11 @@ enum AppColors {
     static var fatGradient: [Color] { calorieGradient }
     static var fat: Color { calorie }
 
-    // Background: warm cream in light, system dark in dark
-    static let appBackground = Color("appBackground")
-    static let appCard = Color("appCard")
+    // App-wide surfaces follow the 7.0 Neo-Brutalist system. Keeping these
+    // semantic entry points means every legacy/secondary screen inherits the
+    // redesign without changing its storage or behavior wiring.
+    static let appBackground = NeoHomeColors.canvas
+    static let appCard = NeoHomeColors.surface
 }
 
 /// Semantic colors for the Home screen's Neo-Brutalist presentation. These are

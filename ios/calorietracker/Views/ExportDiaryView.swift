@@ -23,22 +23,27 @@ struct ExportDiaryView: View {
                         ForEach(DiaryExportRange.allCases) { Text($0.label).tag($0) }
                     }
                     .pickerStyle(.menu)
-                    .tint(AppColors.calorie)
+                    .tint(NeoAppColors.cobalt)
 
                     if range == .custom {
                         DatePicker("From", selection: $customStart, displayedComponents: .date)
-                            .tint(AppColors.calorie)
+                            .tint(NeoAppColors.cobalt)
                         DatePicker("To", selection: $customEnd, displayedComponents: .date)
-                            .tint(AppColors.calorie)
+                            .tint(NeoAppColors.cobalt)
                     }
                 }
+                .listRowBackground(NeoAppColors.surface)
+                .listRowSeparatorTint(NeoAppColors.ink.opacity(0.35))
 
                 Section("Format") {
                     Picker("Format", selection: $format) {
                         ForEach(DiaryExportFormat.allCases) { Text($0.label).tag($0) }
                     }
                     .pickerStyle(.segmented)
+                    .listRowBackground(NeoAppColors.surface)
                 }
+                .listRowBackground(NeoAppColors.surface)
+                .listRowSeparatorTint(NeoAppColors.ink.opacity(0.35))
 
                 Section {
                     Button {
@@ -46,16 +51,27 @@ struct ExportDiaryView: View {
                     } label: {
                         Label("Export", systemImage: "square.and.arrow.up")
                             .frame(maxWidth: .infinity)
-                            .font(.system(.body, design: .rounded, weight: .semibold))
+                            .font(.system(.body, design: .rounded, weight: .black))
+                            .textCase(.uppercase)
+                            .foregroundStyle(Color.black)
+                            .padding(.vertical, 14)
+                            .background(NeoAppColors.acid)
+                            .overlay {
+                                Rectangle()
+                                    .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                                    .allowsHitTesting(false)
+                            }
                     }
-                    .buttonStyle(.borderedProminent)
-                    .tint(AppColors.calorie)
+                    .buttonStyle(.plain)
                     .listRowInsets(EdgeInsets())
                     .listRowBackground(Color.clear)
                 } footer: {
                     Text("Exports your logged meals — totals, targets, and each item's macros — as a file you can save or send to another app.")
                 }
             }
+            .scrollContentBackground(.hidden)
+            .background(NeoAppColors.canvas)
+            .tint(NeoAppColors.cobalt)
             .navigationTitle("Export Food Diary")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
