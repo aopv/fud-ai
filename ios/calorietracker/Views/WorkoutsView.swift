@@ -272,130 +272,67 @@ private struct ExerciseLibraryBrowserView: View {
                         title: bodyPartFilterTitle,
                         value: selectionTitle(selectedSplitGroupTitles),
                         systemImage: "square.grid.2x2",
-                        isActive: !selectedSplitGroupTitles.isEmpty
-                    ) {
-                        menuChoice(
-                            String(localized: "All \(bodyPartFilterTitle)"),
-                            isSelected: selectedSplitGroupTitles.isEmpty
-                        ) {
-                            selectedSplitGroupTitles.removeAll()
-                        }
-                        ForEach(splitGroups) { group in
-                            muscleMenuChoice(
-                                group.title,
-                                muscles: group.muscles,
-                                isSelected: selectedSplitGroupTitles.contains(group.title)
-                            ) {
-                                selectedSplitGroupTitles = [group.title]
-                            }
-                        }
-                    }
+                        isActive: !selectedSplitGroupTitles.isEmpty,
+                        items: splitGroupFilterItems
+                    )
 
                     if shouldShowPrimaryFilter {
                         filterMenuPill(
                             title: String(localized: "Primary"),
                             value: primaryFilterTitle,
                             systemImage: "scope",
-                            isActive: !selectedPrimaryMuscles.isEmpty
-                        ) {
-                            menuChoice(allPrimaryMenuTitle, isSelected: selectedPrimaryMuscles.isEmpty) {
-                                selectedPrimaryMuscles.removeAll()
-                            }
-                            ForEach(primaryFilterOptions, id: \.self) { muscle in
-                                muscleMenuChoice(muscle, muscles: [muscle], isSelected: selectedPrimaryMuscles.contains(muscle)) {
-                                    selectedPrimaryMuscles = [muscle]
-                                }
-                            }
-                        }
+                            isActive: !selectedPrimaryMuscles.isEmpty,
+                            items: primaryFilterItems
+                        )
                     }
 
                     filterMenuPill(
                         title: String(localized: "Secondary"),
                         value: selectionTitle(selectedSecondaryMuscles),
                         systemImage: "scope",
-                        isActive: !selectedSecondaryMuscles.isEmpty
-                    ) {
-                        menuChoice(String(localized: "All Secondary"), isSelected: selectedSecondaryMuscles.isEmpty) {
-                            selectedSecondaryMuscles.removeAll()
-                        }
-                        ForEach(service.availableSecondaryMuscles, id: \.self) { muscle in
-                            muscleMenuChoice(muscle, muscles: [muscle], isSelected: selectedSecondaryMuscles.contains(muscle)) {
-                                selectedSecondaryMuscles = [muscle]
-                            }
-                        }
-                    }
+                        isActive: !selectedSecondaryMuscles.isEmpty,
+                        items: secondaryFilterItems
+                    )
 
                     filterMenuPill(
                         title: String(localized: "Equipment"),
                         value: equipmentFilterTitle,
                         systemImage: "dumbbell.fill",
-                        isActive: !selectedRawEquipment.isEmpty
-                    ) {
-                        menuChoice(allEquipmentMenuTitle, isSelected: selectedRawEquipment.isEmpty) {
-                            selectedRawEquipment.removeAll()
-                        }
-                        ForEach(profileRawEquipmentOptions, id: \.self) { equipment in
-                            menuChoice(equipment, isSelected: selectedRawEquipment.contains(equipment)) {
-                                selectedRawEquipment = [equipment]
-                            }
-                        }
-                    }
+                        isActive: !selectedRawEquipment.isEmpty,
+                        items: equipmentFilterItems
+                    )
 
                     filterMenuPill(
                         title: String(localized: "Level"),
                         value: selectionTitle(selectedLevels),
                         systemImage: "chart.bar.fill",
-                        isActive: !selectedLevels.isEmpty
-                    ) {
-                        menuChoice(String(localized: "All Levels"), isSelected: selectedLevels.isEmpty) { selectedLevels.removeAll() }
-                        ForEach(service.availableLevels, id: \.self) { level in
-                            menuChoice(level, isSelected: selectedLevels.contains(level)) {
-                                selectedLevels = [level]
-                            }
-                        }
-                    }
+                        isActive: !selectedLevels.isEmpty,
+                        items: levelFilterItems
+                    )
 
                     filterMenuPill(
                         title: String(localized: "Force"),
                         value: selectionTitle(selectedForces),
                         systemImage: "arrow.left.arrow.right",
-                        isActive: !selectedForces.isEmpty
-                    ) {
-                        menuChoice(String(localized: "All Forces"), isSelected: selectedForces.isEmpty) { selectedForces.removeAll() }
-                        ForEach(service.availableForces, id: \.self) { force in
-                            menuChoice(force, isSelected: selectedForces.contains(force)) {
-                                selectedForces = [force]
-                            }
-                        }
-                    }
+                        isActive: !selectedForces.isEmpty,
+                        items: forceFilterItems
+                    )
 
                     filterMenuPill(
                         title: String(localized: "Mechanic"),
                         value: selectionTitle(selectedMechanics),
                         systemImage: "gearshape",
-                        isActive: !selectedMechanics.isEmpty
-                    ) {
-                        menuChoice(String(localized: "All Mechanics"), isSelected: selectedMechanics.isEmpty) { selectedMechanics.removeAll() }
-                        ForEach(service.availableMechanics, id: \.self) { mechanic in
-                            menuChoice(mechanic, isSelected: selectedMechanics.contains(mechanic)) {
-                                selectedMechanics = [mechanic]
-                            }
-                        }
-                    }
+                        isActive: !selectedMechanics.isEmpty,
+                        items: mechanicFilterItems
+                    )
 
                     filterMenuPill(
                         title: String(localized: "Category"),
                         value: categoryFilterTitle,
                         systemImage: "tag",
-                        isActive: !selectedCategories.isEmpty
-                    ) {
-                        menuChoice(String(localized: "All Categories"), isSelected: selectedCategories.isEmpty) { selectedCategories.removeAll() }
-                        ForEach(service.availableCategoryCounts) { categoryCount in
-                            menuChoice(categoryMenuTitle(categoryCount), isSelected: selectedCategories.contains(categoryCount.category)) {
-                                selectedCategories = [categoryCount.category]
-                            }
-                        }
-                    }
+                        isActive: !selectedCategories.isEmpty,
+                        items: categoryFilterItems
+                    )
                 }
                 .padding(.vertical, 1)
             }
@@ -495,44 +432,119 @@ private struct ExerciseLibraryBrowserView: View {
         return [value]
     }
 
-    private func filterMenuPill<Content: View>(
+    private func filterMenuPill(
         title: String,
         value: String,
         systemImage: String,
         isActive: Bool,
-        @ViewBuilder content: () -> Content
+        items: [NeoGlassChoiceItem]
     ) -> some View {
-        Menu {
-            content()
-        } label: {
+        NeoGlassChoiceMenu(title: title, items: items) {
             FilterMenuPill(title: title, value: value, systemImage: systemImage, isActive: isActive)
         }
         .workoutPressable()
     }
 
-    private func menuChoice(_ title: String, isSelected: Bool, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            if isSelected {
-                Label(title, systemImage: "checkmark")
-            } else {
-                Text(title)
+    private var splitGroupFilterItems: [NeoGlassChoiceItem] {
+        [choiceItem(
+            id: "split.all",
+            title: String(localized: "All \(bodyPartFilterTitle)"),
+            systemImage: "square.grid.2x2",
+            isSelected: selectedSplitGroupTitles.isEmpty
+        ) { selectedSplitGroupTitles.removeAll() }] + splitGroups.map { group in
+            choiceItem(
+                id: "split.\(group.id)",
+                title: group.title,
+                systemImage: "figure.strengthtraining.traditional",
+                isSelected: selectedSplitGroupTitles.contains(group.title)
+            ) { selectedSplitGroupTitles = [group.title] }
+        }
+    }
+
+    private var primaryFilterItems: [NeoGlassChoiceItem] {
+        [choiceItem(id: "primary.all", title: allPrimaryMenuTitle, systemImage: "scope", isSelected: selectedPrimaryMuscles.isEmpty) {
+            selectedPrimaryMuscles.removeAll()
+        }] + primaryFilterOptions.map { muscle in
+            choiceItem(id: "primary.\(muscle)", title: muscle, systemImage: "figure.strengthtraining.traditional", isSelected: selectedPrimaryMuscles.contains(muscle)) {
+                selectedPrimaryMuscles = [muscle]
             }
         }
     }
 
-    private func muscleMenuChoice(
-        _ title: String,
-        muscles: Set<String>,
-        isSelected: Bool,
-        action: @escaping () -> Void
-    ) -> some View {
-        Button(action: action) {
-            if isSelected {
-                Label(title, systemImage: "checkmark")
-            } else {
-                Label(title, image: MuscleGlyphAsset.name(title: title, muscles: muscles))
+    private var secondaryFilterItems: [NeoGlassChoiceItem] {
+        [choiceItem(id: "secondary.all", title: String(localized: "All Secondary"), systemImage: "scope", isSelected: selectedSecondaryMuscles.isEmpty) {
+            selectedSecondaryMuscles.removeAll()
+        }] + service.availableSecondaryMuscles.map { muscle in
+            choiceItem(id: "secondary.\(muscle)", title: muscle, systemImage: "figure.strengthtraining.traditional", isSelected: selectedSecondaryMuscles.contains(muscle)) {
+                selectedSecondaryMuscles = [muscle]
             }
         }
+    }
+
+    private var equipmentFilterItems: [NeoGlassChoiceItem] {
+        [choiceItem(id: "equipment.all", title: allEquipmentMenuTitle, systemImage: "dumbbell.fill", isSelected: selectedRawEquipment.isEmpty) {
+            selectedRawEquipment.removeAll()
+        }] + profileRawEquipmentOptions.map { equipment in
+            choiceItem(id: "equipment.\(equipment)", title: equipment, systemImage: "dumbbell", isSelected: selectedRawEquipment.contains(equipment)) {
+                selectedRawEquipment = [equipment]
+            }
+        }
+    }
+
+    private var levelFilterItems: [NeoGlassChoiceItem] {
+        [choiceItem(id: "level.all", title: String(localized: "All Levels"), systemImage: "chart.bar.fill", isSelected: selectedLevels.isEmpty) {
+            selectedLevels.removeAll()
+        }] + service.availableLevels.map { level in
+            choiceItem(id: "level.\(level)", title: level, systemImage: "chart.bar", isSelected: selectedLevels.contains(level)) {
+                selectedLevels = [level]
+            }
+        }
+    }
+
+    private var forceFilterItems: [NeoGlassChoiceItem] {
+        [choiceItem(id: "force.all", title: String(localized: "All Forces"), systemImage: "arrow.left.arrow.right", isSelected: selectedForces.isEmpty) {
+            selectedForces.removeAll()
+        }] + service.availableForces.map { force in
+            choiceItem(id: "force.\(force)", title: force, systemImage: "arrow.left.arrow.right", isSelected: selectedForces.contains(force)) {
+                selectedForces = [force]
+            }
+        }
+    }
+
+    private var mechanicFilterItems: [NeoGlassChoiceItem] {
+        [choiceItem(id: "mechanic.all", title: String(localized: "All Mechanics"), systemImage: "gearshape", isSelected: selectedMechanics.isEmpty) {
+            selectedMechanics.removeAll()
+        }] + service.availableMechanics.map { mechanic in
+            choiceItem(id: "mechanic.\(mechanic)", title: mechanic, systemImage: "gearshape.2", isSelected: selectedMechanics.contains(mechanic)) {
+                selectedMechanics = [mechanic]
+            }
+        }
+    }
+
+    private var categoryFilterItems: [NeoGlassChoiceItem] {
+        [choiceItem(id: "category.all", title: String(localized: "All Categories"), systemImage: "tag", isSelected: selectedCategories.isEmpty) {
+            selectedCategories.removeAll()
+        }] + service.availableCategoryCounts.map { categoryCount in
+            choiceItem(id: "category.\(categoryCount.category)", title: categoryMenuTitle(categoryCount), systemImage: "tag.fill", isSelected: selectedCategories.contains(categoryCount.category)) {
+                selectedCategories = [categoryCount.category]
+            }
+        }
+    }
+
+    private func choiceItem(
+        id: String,
+        title: String,
+        systemImage: String,
+        isSelected: Bool,
+        action: @escaping () -> Void
+    ) -> NeoGlassChoiceItem {
+        NeoGlassChoiceItem(
+            id: "workout.filter.\(id)",
+            title: title,
+            systemImage: systemImage,
+            isSelected: isSelected,
+            action: action
+        )
     }
 }
 
@@ -664,19 +676,17 @@ private struct ResultsHeader: View {
                 .buttonStyle(.plain)
                 .workoutPressable()
 
-                Menu {
-                    ForEach(ExerciseLibrarySort.allCases) { sort in
-                        Button {
-                            selectedSort = sort
-                        } label: {
-                            if selectedSort == sort {
-                                Label(sort.title, systemImage: "checkmark")
-                            } else {
-                                Text(sort.title)
-                            }
-                        }
+                NeoGlassChoiceMenu(
+                    title: String(localized: "Sort Exercises"),
+                    items: ExerciseLibrarySort.allCases.map { sort in
+                        NeoGlassChoiceItem(
+                            id: "workout.results.sort.\(sort.id)",
+                            title: sort.title,
+                            systemImage: "arrow.up.arrow.down",
+                            isSelected: selectedSort == sort
+                        ) { selectedSort = sort }
                     }
-                } label: {
+                ) {
                     Label("Sort", systemImage: "arrow.up.arrow.down")
                         .font(.system(.caption, design: .rounded, weight: .black).width(.condensed))
                         .foregroundStyle(count == 0 ? Color.workoutMutedText : (selectedSort == .name ? Color.workoutMutedText : Color.black))

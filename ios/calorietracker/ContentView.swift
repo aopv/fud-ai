@@ -568,6 +568,24 @@ struct ActivityShareSheet: UIViewControllerRepresentable {
 
 // MARK: - Home View (Main Dashboard)
 struct HomeView: View {
+    private enum AddFoodMenuPage {
+        case root
+        case photoAndScan
+        case describeMeal
+        case reuseMeal
+        case wellness
+
+        var title: String {
+            switch self {
+            case .root: String(localized: "Add Food")
+            case .photoAndScan: String(localized: "Photo & Scan")
+            case .describeMeal: String(localized: "Describe Meal")
+            case .reuseMeal: String(localized: "Reuse Meal")
+            case .wellness: String(localized: "Quick Wellness")
+            }
+        }
+    }
+
     let quickActionRequest: QuickActionRequest?
     let onQuickActionHandled: (UUID) -> Void
     @Environment(FoodStore.self) private var foodStore
@@ -620,6 +638,8 @@ struct HomeView: View {
     @State private var showCustomWaterLog = false
     @State private var showFastingStart = false
     @State private var editingFastingSession: FastingSession?
+    @State private var showAddFoodMenu = false
+    @State private var addFoodMenuPage: AddFoodMenuPage = .root
     @State private var hasPresentedFoodDestination = false
     @State private var didPrewarmFoodDestinations = false
     // Bumped each time the app is opened (cold launch = 1, then +1 on every
@@ -760,30 +780,238 @@ struct HomeView: View {
         }
     }
 
+    private func dismissAddFoodMenuAndPresent(_ updates: @escaping () -> Void) {
+        showAddFoodMenu = false
+        addFoodMenuPage = .root
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.18) {
+            presentFoodDestination(updates)
+        }
+    }
+
+    private func dismissAddFoodMenuAndRun(_ action: @escaping () -> Void) {
+        showAddFoodMenu = false
+        addFoodMenuPage = .root
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.18, execute: action)
+    }
+
+    private var addFoodMenuHasBackButton: Bool {
+        addFoodMenuPage != .root
+    }
+
     @ViewBuilder
-    private var waterQuickMenuItems: some View {
-        Button {
-            presentFoodDestination {
-                showCustomWaterLog = true
+    private var addFoodMenuRows: some View {
+        switch addFoodMenuPage {
+        case .root:
+            NeoGlassActionRow(item: .init(
+                id: "addFood.photoScan",
+                title: "Photo & Scan",
+                subtitle: "Camera, photos, or barcode",
+                systemImage: "camera.viewfinder",
+                showsDisclosure: true,
+                action: { addFoodMenuPage = .photoAndScan }
+            ))
+            NeoGlassActionRow(item: .init(
+                id: "addFood.describe",
+                title: "Describe Meal",
+                subtitle: "Type, speak, or enter it manually",
+                systemImage: "text.bubble.fill",
+                showsDisclosure: true,
+                action: { addFoodMenuPage = .describeMeal }
+            ))
+            NeoGlassActionRow(item: .init(
+                id: "addFood.reuse",
+                title: "Reuse Meal",
+                subtitle: "Favorites, recent, and past days",
+                systemImage: "arrow.clockwise",
+                showsDisclosure: true,
+                action: { addFoodMenuPage = .reuseMeal }
+            ))
+            if waterTrackingEnabled || fastingTrackingEnabled {
+                NeoGlassActionRow(item: .init(
+                    id: "addFood.wellness",
+                    title: "Water & Fasting",
+                    subtitle: "Quick-log your enabled trackers",
+                    systemImage: "bolt.heart.fill",
+                    showsDisclosure: true,
+                    action: { addFoodMenuPage = .wellness }
+                ))
             }
-        } label: {
-            Label("Custom", systemImage: "slider.horizontal.3")
+
+        case .photoAndScan:
+            NeoGlassActionRow(item: .init(
+                id: "addFood.camera",
+                title: "Camera",
+                subtitle: "Take a photo with optional flash",
+                systemImage: "camera.fill",
+                action: {
+                    dismissAddFoodMenuAndPresent {
+                        cameraMode = .snapFoodWithContext
+                        isImportingPhotos = false
+                        captureImages = []
+                        contextDescription = ""
+                        showCamera = true
+                    }
+                }
+            ))
+            NeoGlassActionRow(item: .init(
+                id: "addFood.photos",
+                title: "Photos",
+                subtitle: "Choose one or more food photos",
+                systemImage: "photo.on.rectangle",
+                action: {
+                    dismissAddFoodMenuAndPresent {
+                        cameraMode = .snapFoodWithContext
+                        isImportingPhotos = true
+                        captureImages = []
+                        contextDescription = ""
+                        selectedPhotoItems = []
+                        showPhotoPicker = true
+                    }
+                }
+            ))
+            NeoGlassActionRow(item: .init(
+                id: "addFood.barcode",
+                title: "Barcode",
+                subtitle: "Scan a packaged food label",
+                systemImage: "barcode.viewfinder",
+                action: {
+                    dismissAddFoodMenuAndPresent {
+                        showBarcodeScanner = true
+                    }
+                }
+            ))
+
+        case .describeMeal:
+            NeoGlassActionRow(item: .init(
+                id: "addFood.manual",
+                title: "Manual Entry",
+                subtitle: "Enter nutrition values yourself",
+                systemImage: "square.and.pencil",
+                action: {
+                    dismissAddFoodMenuAndPresent { showManualPopover = true }
+                }
+            ))
+            NeoGlassActionRow(item: .init(
+                id: "addFood.voice",
+                title: "Voice",
+                subtitle: "Describe your meal out loud",
+                systemImage: "mic.fill",
+                action: {
+                    dismissAddFoodMenuAndPresent { showVoicePopover = true }
+                }
+            ))
+            NeoGlassActionRow(item: .init(
+                id: "addFood.text",
+                title: "Text Input",
+                subtitle: "Describe the food in your own words",
+                systemImage: "character.cursor.ibeam",
+                action: {
+                    dismissAddFoodMenuAndPresent { showTextPopover = true }
+                }
+            ))
+            NeoGlassActionRow(item: .init(
+                id: "addFood.siri",
+                title: "Siri Phrases",
+                subtitle: "View supported hands-free phrases",
+                systemImage: "waveform.circle.fill",
+                action: {
+                    dismissAddFoodMenuAndPresent { showSiriPhrases = true }
+                }
+            ))
+
+        case .reuseMeal:
+            NeoGlassActionRow(item: .init(
+                id: "addFood.copyDay",
+                title: "Copy from Day",
+                subtitle: "Copy a meal from another date",
+                systemImage: "calendar",
+                action: {
+                    dismissAddFoodMenuAndPresent { showCopyFromDaySheet = true }
+                }
+            ))
+            NeoGlassActionRow(item: .init(
+                id: "addFood.favorites",
+                title: "Favorites",
+                systemImage: "heart.fill",
+                action: {
+                    dismissAddFoodMenuAndPresent { savedMealsMode = .favorites }
+                }
+            ))
+            NeoGlassActionRow(item: .init(
+                id: "addFood.frequent",
+                title: "Frequent",
+                systemImage: "repeat",
+                action: {
+                    dismissAddFoodMenuAndPresent { savedMealsMode = .frequent }
+                }
+            ))
+            NeoGlassActionRow(item: .init(
+                id: "addFood.recent",
+                title: "Recent",
+                systemImage: "clock.fill",
+                action: {
+                    dismissAddFoodMenuAndPresent { savedMealsMode = .recent }
+                }
+            ))
+
+        case .wellness:
+            if waterTrackingEnabled {
+                NeoGlassActionRow(item: .init(
+                    id: "addFood.waterCustom",
+                    title: "Custom Water",
+                    systemImage: "slider.horizontal.3",
+                    action: {
+                        dismissAddFoodMenuAndPresent { showCustomWaterLog = true }
+                    }
+                ))
+                waterChoiceRow(milliliters: 750, glasses: 3)
+                waterChoiceRow(milliliters: 500, glasses: 2)
+                waterChoiceRow(milliliters: 250, glasses: 1)
+            }
+            if fastingTrackingEnabled {
+                if fastingStore.activeSession != nil {
+                    NeoGlassActionRow(item: .init(
+                        id: "addFood.fastEnd",
+                        title: "End Fast",
+                        systemImage: "stop.fill",
+                        action: { dismissAddFoodMenuAndRun(endFast) }
+                    ))
+                    NeoGlassActionRow(item: .init(
+                        id: "addFood.fastCancel",
+                        title: "Cancel Fast",
+                        systemImage: "trash",
+                        isDestructive: true,
+                        action: {
+                            dismissAddFoodMenuAndRun {
+                                fastingStore.cancelActive()
+                                notificationManager.cancelFastingGoal()
+                            }
+                        }
+                    ))
+                } else {
+                    NeoGlassActionRow(item: .init(
+                        id: "addFood.fastStart",
+                        title: "Start Fast",
+                        systemImage: "timer",
+                        action: {
+                            dismissAddFoodMenuAndPresent { showFastingStart = true }
+                        }
+                    ))
+                }
+            }
         }
-        Button {
-            logWater(750)
-        } label: {
-            Label("3 Glasses (~\(waterUnit.formatted(milliliters: 750)))", systemImage: "drop.fill")
-        }
-        Button {
-            logWater(500)
-        } label: {
-            Label("2 Glasses (~\(waterUnit.formatted(milliliters: 500)))", systemImage: "drop.fill")
-        }
-        Button {
-            logWater(250)
-        } label: {
-            Label("1 Glass (~\(waterUnit.formatted(milliliters: 250)))", systemImage: "drop.fill")
-        }
+    }
+
+    private func waterChoiceRow(milliliters: Int, glasses: Int) -> some View {
+        NeoGlassActionRow(item: .init(
+            id: "addFood.water.\(milliliters)",
+            title: glasses == 1 ? "1 Glass" : "\(glasses) Glasses",
+            subtitle: "~\(waterUnit.formatted(milliliters: milliliters))",
+            systemImage: "drop.fill",
+            action: {
+                dismissAddFoodMenuAndRun { logWater(milliliters) }
+            }
+        ))
     }
 
     var body: some View {
@@ -985,143 +1213,28 @@ struct HomeView: View {
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
             .overlay(alignment: .bottom) {
-                Menu {
-                    if fastingTrackingEnabled {
-                        if fastingStore.activeSession != nil {
-                            Menu {
-                                Button {
-                                    endFast()
-                                } label: {
-                                    Label("End Fast", systemImage: "stop.fill")
-                                }
-                                Button(role: .destructive) {
-                                    fastingStore.cancelActive()
-                                    notificationManager.cancelFastingGoal()
-                                } label: {
-                                    Label("Cancel Fast", systemImage: "trash")
-                                }
-                            } label: {
-                                Label("Fasting", systemImage: "timer")
-                            }
-                        } else {
-                            Button {
-                                presentFoodDestination {
-                                    showFastingStart = true
-                                }
-                            } label: {
-                                Label("Start Fast", systemImage: "timer")
-                            }
-                        }
-                    }
-                    if waterTrackingEnabled {
-                        Menu {
-                            waterQuickMenuItems
-                        } label: {
-                            Label("Water", systemImage: "drop.fill")
-                        }
-                    }
-                    Menu {
-                        Button {
-                            presentFoodDestination {
-                                showCopyFromDaySheet = true
-                            }
-                        } label: {
-                            Label("Copy from Day", systemImage: "calendar")
-                        }
-                        Button {
-                            presentFoodDestination {
-                                savedMealsMode = .favorites
-                            }
-                        } label: {
-                            Label("Favorites", systemImage: "heart.fill")
-                        }
-                        Button {
-                            presentFoodDestination {
-                                savedMealsMode = .frequent
-                            }
-                        } label: {
-                            Label("Frequent", systemImage: "repeat")
-                        }
-                        Button {
-                            presentFoodDestination {
-                                savedMealsMode = .recent
-                            }
-                        } label: {
-                            Label("Recent", systemImage: "clock.fill")
-                        }
-                    } label: {
-                        Label("Reuse Meal", systemImage: "arrow.clockwise")
-                    }
-
-                    Menu {
-                        Button {
-                            presentFoodDestination {
-                                showManualPopover = true
-                            }
-                        } label: {
-                            Label("Manual Entry", systemImage: "square.and.pencil")
-                        }
-                        Button {
-                            presentFoodDestination {
-                                showSiriPhrases = true
-                            }
-                        } label: {
-                            Label("Siri Phrases", systemImage: "waveform.circle.fill")
-                        }
-                        Button {
-                            presentFoodDestination {
-                                showVoicePopover = true
-                            }
-                        } label: {
-                            Label("Voice", systemImage: "mic.fill")
-                        }
-                        Button {
-                            presentFoodDestination {
-                                showTextPopover = true
-                            }
-                        } label: {
-                            Label("Text Input", systemImage: "character.cursor.ibeam")
-                        }
-                    } label: {
-                        Label("Describe Meal", systemImage: "text.bubble.fill")
-                    }
-
-                    Menu {
-                        Button {
-                            presentFoodDestination {
-                                showBarcodeScanner = true
-                            }
-                        } label: {
-                            Label("Barcode", systemImage: "barcode.viewfinder")
-                        }
-                        Button(action: {
-                            presentFoodDestination {
-                                cameraMode = .snapFoodWithContext
-                                isImportingPhotos = true
-                                captureImages = []
-                                contextDescription = ""
-                                selectedPhotoItems = []
-                                showPhotoPicker = true
-                            }
-                        }) {
-                            Label("Photos", systemImage: "photo.on.rectangle")
-                        }
-                        Button(action: {
-                            presentFoodDestination {
-                                cameraMode = .snapFoodWithContext
-                                isImportingPhotos = false
-                                captureImages = []
-                                contextDescription = ""
-                                showCamera = true
-                            }
-                        }) {
-                            Label("Camera", systemImage: "camera.fill")
-                        }
-                    } label: {
-                        Label("Photo & Scan", systemImage: "camera.viewfinder")
-                    }
+                Button {
+                    addFoodMenuPage = .root
+                    showAddFoodMenu = true
                 } label: {
                     NeoAddFoodLabel()
+                }
+                .buttonStyle(.plain)
+                .popover(isPresented: $showAddFoodMenu) {
+                    NeoGlassChoicePanel(
+                        title: addFoodMenuPage.title,
+                        eyebrow: addFoodMenuPage == .root ? String(localized: "Quick Add") : String(localized: "Add Food"),
+                        onBack: addFoodMenuHasBackButton ? { addFoodMenuPage = .root } : nil,
+                        onClose: {
+                            showAddFoodMenu = false
+                            addFoodMenuPage = .root
+                        }
+                    ) {
+                        addFoodMenuRows
+                    }
+                    .presentationCompactAdaptation(.popover)
+                    .presentationBackground(.clear)
+                    .accessibilityIdentifier("neo.glassChoice.addFood")
                 }
                 .popover(isPresented: $showTextPopover) {
                     TextFoodInputView(
@@ -2906,6 +3019,7 @@ struct CameraView: UIViewControllerRepresentable {
         picker.modalPresentationStyle = .fullScreen
         picker.edgesForExtendedLayout = .all
         picker.showsCameraControls = false
+        picker.cameraDevice = .rear
 
         // Keep the complete 4:3 camera frame visible so the preview matches the
         // original image delivered after capture. Tall screens intentionally
@@ -2969,6 +3083,24 @@ struct CameraView: UIViewControllerRepresentable {
         cancelButton.addTarget(context.coordinator, action: #selector(Coordinator.cancel), for: .touchUpInside)
         bottomBar.addSubview(cancelButton)
 
+        let flashButton = UIButton(type: .system)
+        flashButton.layer.cornerRadius = NeoAppMetrics.cornerRadius
+        flashButton.layer.borderColor = UIColor.black.cgColor
+        flashButton.layer.borderWidth = NeoAppMetrics.rule
+        flashButton.translatesAutoresizingMaskIntoConstraints = false
+        flashButton.addTarget(context.coordinator, action: #selector(Coordinator.toggleFlash), for: .touchUpInside)
+        bottomBar.addSubview(flashButton)
+
+        let isFlashAvailable = UIImagePickerController.isFlashAvailable(for: picker.cameraDevice)
+        flashButton.isHidden = !isFlashAvailable
+        flashButton.isEnabled = isFlashAvailable
+        if isFlashAvailable {
+            picker.cameraFlashMode = .off
+        }
+        context.coordinator.flashButton = flashButton
+        context.coordinator.isFlashEnabled = false
+        context.coordinator.updateFlashButtonAppearance()
+
         var titleLabel: UILabel?
         if let title {
             let label = UILabel()
@@ -3003,6 +3135,11 @@ struct CameraView: UIViewControllerRepresentable {
 
             cancelButton.leadingAnchor.constraint(equalTo: bottomBar.leadingAnchor, constant: 20),
             cancelButton.centerYAnchor.constraint(equalTo: shutterOuter.centerYAnchor),
+
+            flashButton.trailingAnchor.constraint(equalTo: bottomBar.trailingAnchor, constant: -20),
+            flashButton.centerYAnchor.constraint(equalTo: shutterOuter.centerYAnchor),
+            flashButton.widthAnchor.constraint(equalToConstant: 100),
+            flashButton.heightAnchor.constraint(equalToConstant: 58),
         ])
         if let titleLabel {
             NSLayoutConstraint.activate([
@@ -3026,6 +3163,8 @@ struct CameraView: UIViewControllerRepresentable {
     class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
         let parent: CameraView
         weak var picker: UIImagePickerController?
+        weak var flashButton: UIButton?
+        var isFlashEnabled = false
 
         init(_ parent: CameraView) {
             self.parent = parent
@@ -3033,6 +3172,49 @@ struct CameraView: UIViewControllerRepresentable {
 
         @objc func capture() {
             picker?.takePicture()
+        }
+
+        @objc func toggleFlash() {
+            guard let picker,
+                  UIImagePickerController.isFlashAvailable(for: picker.cameraDevice) else { return }
+
+            isFlashEnabled.toggle()
+            picker.cameraFlashMode = isFlashEnabled ? .on : .off
+            updateFlashButtonAppearance()
+        }
+
+        func updateFlashButtonAppearance() {
+            guard let flashButton else { return }
+
+            var configuration = UIButton.Configuration.plain()
+            configuration.title = isFlashEnabled
+                ? String(localized: "Flash On").uppercased()
+                : String(localized: "Flash Off").uppercased()
+            configuration.image = UIImage(systemName: isFlashEnabled ? "bolt.fill" : "bolt.slash.fill")
+            configuration.imagePlacement = .top
+            configuration.imagePadding = 1
+            configuration.baseForegroundColor = isFlashEnabled
+                ? .black
+                : UIColor(NeoAppColors.onCobalt)
+            configuration.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 8, bottom: 5, trailing: 8)
+            configuration.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { attributes in
+                var transformed = attributes
+                transformed.font = .systemFont(ofSize: 12, weight: .black)
+                return transformed
+            }
+
+            flashButton.configuration = configuration
+            flashButton.backgroundColor = isFlashEnabled
+                ? UIColor(NeoAppColors.acid)
+                : UIColor(NeoAppColors.cobalt)
+            flashButton.accessibilityLabel = String(localized: "Camera flash")
+            flashButton.accessibilityValue = isFlashEnabled
+                ? String(localized: "On")
+                : String(localized: "Off")
+            flashButton.accessibilityHint = isFlashEnabled
+                ? String(localized: "Turns the camera flash off")
+                : String(localized: "Turns the camera flash on")
+            flashButton.accessibilityTraits = isFlashEnabled ? [.button, .selected] : .button
         }
 
         @objc func cancel() {
@@ -4383,16 +4565,22 @@ struct ProfileView: View {
                                     .textInputAutocapitalization(.never)
                                     .onChange(of: selectedModel) { _, newModel in
                                         AIProviderSettings.selectedModel = newModel
-                                    }
+                                }
                                 if !selectedProvider.models.isEmpty {
-                                    Menu {
-                                        ForEach(selectedProvider.models, id: \.self) { model in
-                                            Button(model) {
+                                    NeoGlassChoiceMenu(
+                                        title: String(localized: "Choose Model"),
+                                        items: selectedProvider.models.map { model in
+                                            NeoGlassChoiceItem(
+                                                id: "settings.primaryModel.\(model)",
+                                                title: model,
+                                                systemImage: "brain",
+                                                isSelected: selectedModel == model
+                                            ) {
                                                 selectedModel = model
                                                 AIProviderSettings.selectedModel = model
                                             }
                                         }
-                                    } label: {
+                                    ) {
                                         Image(systemName: "list.bullet.circle")
                                             .foregroundStyle(AppColors.calorie)
                                     }
@@ -4615,14 +4803,20 @@ struct ProfileView: View {
                                         AIProviderSettings.selectedFallbackModel = newModel
                                     }
                                     if !fallbackModelPresetOptions.isEmpty {
-                                        Menu {
-                                            ForEach(fallbackModelPresetOptions, id: \.self) { model in
-                                                Button(model) {
+                                        NeoGlassChoiceMenu(
+                                            title: String(localized: "Choose Fallback Model"),
+                                            items: fallbackModelPresetOptions.map { model in
+                                                NeoGlassChoiceItem(
+                                                    id: "settings.fallbackModel.\(model)",
+                                                    title: model,
+                                                    systemImage: "arrow.triangle.branch",
+                                                    isSelected: selectedFallbackModel == model
+                                                ) {
                                                     selectedFallbackModel = model
                                                     AIProviderSettings.selectedFallbackModel = model
                                                 }
                                             }
-                                        } label: {
+                                        ) {
                                             Image(systemName: "list.bullet.circle")
                                                 .foregroundStyle(AppColors.calorie)
                                         }

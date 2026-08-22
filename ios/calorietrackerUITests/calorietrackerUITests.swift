@@ -58,9 +58,18 @@ final class calorietrackerUITests: XCTestCase {
         XCTAssertTrue(addFood.exists)
         addFood.tap()
 
-        XCTAssertTrue(app.descendants(matching: .any)["Photo & Scan"].waitForExistence(timeout: 3))
-        XCTAssertTrue(app.descendants(matching: .any)["Describe Meal"].exists)
-        XCTAssertTrue(app.descendants(matching: .any)["Reuse Meal"].exists)
+        let addFoodPanel = app.descendants(matching: .any)["neo.glassChoice.addFood"]
+        XCTAssertTrue(addFoodPanel.waitForExistence(timeout: 3))
+
+        let photoAndScan = app.buttons["neo.glassChoice.addFood.photoScan"]
+        XCTAssertTrue(photoAndScan.exists)
+        XCTAssertTrue(app.buttons["neo.glassChoice.addFood.describe"].exists)
+        XCTAssertTrue(app.buttons["neo.glassChoice.addFood.reuse"].exists)
+
+        photoAndScan.tap()
+        XCTAssertTrue(app.buttons["neo.glassChoice.addFood.camera"].waitForExistence(timeout: 3))
+        XCTAssertTrue(app.buttons["neo.glassChoice.addFood.photos"].exists)
+        XCTAssertTrue(app.buttons["neo.glassChoice.addFood.barcode"].exists)
     }
 
     @MainActor

@@ -385,6 +385,273 @@ struct NeoMetricTag: View {
     }
 }
 
+// MARK: - Themed native glass choices
+
+/// A reusable action description for app-owned choice surfaces. The destination
+/// behavior stays at the call site, so swapping a system `Menu` for this themed
+/// presentation never changes the underlying feature or stored data.
+struct NeoGlassChoiceItem: Identifiable {
+    let id: String
+    let title: String
+    var subtitle: String? = nil
+    let systemImage: String
+    var isSelected = false
+    var isDestructive = false
+    var showsDisclosure = false
+    let action: () -> Void
+}
+
+struct NeoGlassChoicePanel<Content: View>: View {
+    let title: String
+    var eyebrow = String(localized: "Choose")
+    var onBack: (() -> Void)?
+    let onClose: () -> Void
+    @ViewBuilder let content: () -> Content
+    @Environment(\.colorScheme) private var colorScheme
+
+    var body: some View {
+        themedGlass {
+            VStack(spacing: 0) {
+                header
+
+                ScrollView {
+                    LazyVStack(spacing: 8) {
+                        content()
+                    }
+                    .padding(10)
+                }
+                .scrollIndicators(.hidden)
+                .frame(maxHeight: 420)
+            }
+            .background(NeoAppColors.cobalt.opacity(colorScheme == .dark ? 0.16 : 0.10))
+            .clipShape(panelShape)
+            .overlay {
+                panelShape
+                    .stroke(NeoAppColors.cobalt, lineWidth: NeoAppMetrics.rule)
+            }
+        }
+        .padding(6)
+        .frame(minWidth: 300, idealWidth: 340, maxWidth: 370)
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("neo.glassChoice.panel")
+    }
+
+    private var header: some View {
+        HStack(spacing: 10) {
+            if let onBack {
+                Button(action: onBack) {
+                    Image(systemName: "chevron.left")
+                        .font(.system(size: 15, weight: .black))
+                        .frame(width: 38, height: 38)
+                        .background(NeoAppColors.acid)
+                        .foregroundStyle(Color.black)
+                        .overlay {
+                            Rectangle().stroke(Color.black, lineWidth: NeoAppMetrics.compactRule)
+                        }
+                }
+                .buttonStyle(NeoGlassChoiceButtonStyle())
+                .accessibilityLabel("Back")
+            }
+
+            VStack(alignment: .leading, spacing: 1) {
+                Text(LocalizedStringKey(eyebrow))
+                    .font(.system(size: 10, weight: .black, design: .rounded).width(.condensed))
+                    .textCase(.uppercase)
+                    .foregroundStyle(NeoAppColors.onCobalt.opacity(0.82))
+
+                Text(LocalizedStringKey(title))
+                    .font(.system(size: 22, weight: .black, design: .rounded).width(.condensed))
+                    .textCase(.uppercase)
+                    .foregroundStyle(NeoAppColors.onCobalt)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.72)
+            }
+
+            Spacer(minLength: 4)
+
+            Button(action: onClose) {
+                Image(systemName: "xmark")
+                    .font(.system(size: 14, weight: .black))
+                    .frame(width: 38, height: 38)
+                    .background(Color.black.opacity(0.20))
+                    .foregroundStyle(NeoAppColors.onCobalt)
+                    .overlay {
+                        Rectangle().stroke(NeoAppColors.onCobalt, lineWidth: NeoAppMetrics.compactRule)
+                    }
+            }
+            .buttonStyle(NeoGlassChoiceButtonStyle())
+            .accessibilityLabel("Close")
+        }
+        .padding(10)
+        .background(NeoAppColors.cobalt.opacity(colorScheme == .dark ? 0.88 : 0.94))
+        .overlay(alignment: .bottom) {
+            Rectangle()
+                .fill(NeoAppColors.ink)
+                .frame(height: NeoAppMetrics.rule)
+        }
+    }
+
+    private var panelShape: RoundedRectangle {
+        RoundedRectangle(cornerRadius: 24, style: .continuous)
+    }
+
+    @ViewBuilder
+    private func themedGlass<GlassContent: View>(@ViewBuilder content: () -> GlassContent) -> some View {
+        let glassContent = content()
+        if #available(iOS 26.0, *) {
+            glassContent
+                .glassEffect(
+                    .regular.tint(NeoAppColors.cobalt.opacity(colorScheme == .dark ? 0.44 : 0.32)),
+                    in: panelShape
+                )
+        } else {
+            glassContent
+                .background(.ultraThinMaterial, in: panelShape)
+        }
+    }
+}
+
+struct NeoGlassActionRow: View {
+    let item: NeoGlassChoiceItem
+
+    var body: some View {
+        Button(role: item.isDestructive ? .destructive : nil, action: item.action) {
+            HStack(spacing: 12) {
+                Image(systemName: item.systemImage)
+                    .font(.system(size: 18, weight: .black))
+                    .symbolRenderingMode(.monochrome)
+                    .foregroundStyle(iconColor)
+                    .frame(width: 38, height: 38)
+                    .background(iconBackground)
+                    .overlay {
+                        Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                    }
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(LocalizedStringKey(item.title))
+                        .font(.system(.body, design: .rounded, weight: .black).width(.condensed))
+                        .textCase(.uppercase)
+                        .foregroundStyle(titleColor)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.76)
+
+                    if let subtitle = item.subtitle {
+                        Text(LocalizedStringKey(subtitle))
+                            .font(.system(.caption, design: .rounded, weight: .bold))
+                            .foregroundStyle(NeoAppColors.mutedInk)
+                            .lineLimit(2)
+                    }
+                }
+
+                Spacer(minLength: 4)
+
+                if item.isSelected {
+                    Image(systemName: "checkmark")
+                        .font(.system(size: 14, weight: .black))
+                        .foregroundStyle(Color.black)
+                } else if item.showsDisclosure {
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 13, weight: .black))
+                        .foregroundStyle(NeoAppColors.cobalt)
+                }
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 8)
+            .frame(maxWidth: .infinity, minHeight: 56, alignment: .leading)
+            .background(rowBackground)
+            .overlay {
+                Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+            }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(NeoGlassChoiceButtonStyle())
+        .accessibilityLabel(Text(LocalizedStringKey(item.title)))
+        .accessibilityValue(item.isSelected ? "Selected" : "")
+        .accessibilityAddTraits(item.isSelected ? .isSelected : [])
+        .accessibilityIdentifier("neo.glassChoice.\(item.id)")
+    }
+
+    private var rowBackground: Color {
+        if item.isSelected { return NeoAppColors.acid }
+        if item.isDestructive { return NeoAppColors.warning.opacity(0.16) }
+        return NeoAppColors.surface.opacity(0.90)
+    }
+
+    private var iconBackground: Color {
+        if item.isSelected { return NeoAppColors.cobalt }
+        if item.isDestructive { return NeoAppColors.warning }
+        return NeoAppColors.acid
+    }
+
+    private var iconColor: Color {
+        item.isSelected ? NeoAppColors.onCobalt : Color.black
+    }
+
+    private var titleColor: Color {
+        item.isDestructive ? NeoAppColors.warning : NeoAppColors.ink
+    }
+}
+
+struct NeoGlassChoiceMenu<Label: View>: View {
+    let title: String
+    var eyebrow = String(localized: "Choose")
+    let items: [NeoGlassChoiceItem]
+    var dismissOnSelection = true
+    @ViewBuilder let label: () -> Label
+    @State private var isPresented = false
+
+    var body: some View {
+        Button {
+            isPresented = true
+        } label: {
+            label()
+        }
+        .popover(isPresented: $isPresented) {
+            NeoGlassChoicePanel(
+                title: title,
+                eyebrow: eyebrow,
+                onClose: { isPresented = false }
+            ) {
+                ForEach(items) { item in
+                    NeoGlassActionRow(item: presentedItem(item))
+                }
+            }
+            .presentationCompactAdaptation(.popover)
+            .presentationBackground(.clear)
+        }
+    }
+
+    private func presentedItem(_ item: NeoGlassChoiceItem) -> NeoGlassChoiceItem {
+        NeoGlassChoiceItem(
+            id: item.id,
+            title: item.title,
+            subtitle: item.subtitle,
+            systemImage: item.systemImage,
+            isSelected: item.isSelected,
+            isDestructive: item.isDestructive,
+            showsDisclosure: item.showsDisclosure
+        ) {
+            if dismissOnSelection {
+                isPresented = false
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.16) {
+                    item.action()
+                }
+            } else {
+                item.action()
+            }
+        }
+    }
+}
+
+private struct NeoGlassChoiceButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .opacity(configuration.isPressed ? 0.72 : 1)
+            .scaleEffect(configuration.isPressed ? 0.985 : 1)
+            .animation(.easeOut(duration: 0.12), value: configuration.isPressed)
+    }
+}
+
 extension View {
     func neoScreen() -> some View {
         background(NeoAppColors.canvas)

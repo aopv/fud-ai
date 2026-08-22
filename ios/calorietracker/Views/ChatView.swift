@@ -427,10 +427,26 @@ struct ChatView: View {
     }
 
     private var attachMenu: some View {
-        Menu {
-            Button { openCamera() } label: { Label("Camera", systemImage: "camera.fill") }
-            Button { showPhotoPicker = true } label: { Label("Photo Library", systemImage: "photo.on.rectangle") }
-        } label: {
+        NeoGlassChoiceMenu(
+            title: "Add to Message",
+            eyebrow: "AI Coach",
+            items: [
+                NeoGlassChoiceItem(
+                    id: "coachAttachment.camera",
+                    title: "Camera",
+                    subtitle: "Take a new photo",
+                    systemImage: "camera.fill",
+                    action: openCamera
+                ),
+                NeoGlassChoiceItem(
+                    id: "coachAttachment.library",
+                    title: "Photo Library",
+                    subtitle: "Choose an existing image",
+                    systemImage: "photo.on.rectangle",
+                    action: { showPhotoPicker = true }
+                )
+            ]
+        ) {
             Image(systemName: attachedImage == nil ? "plus.circle.fill" : "photo.fill")
                 .font(.system(size: 24, weight: .semibold))
                 .foregroundStyle(NeoAppColors.cobalt)

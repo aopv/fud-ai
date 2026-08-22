@@ -58,15 +58,18 @@ struct ServingUnitEditor: View {
             }
 
             if pickerOptions.count > 1 {
-                Menu {
-                    ForEach(pickerOptions) { option in
-                        Button {
-                            selectedUnitID = option.id
-                        } label: {
-                            Text(option.displayUnit(for: option.id == selectedUnitID ? selectedQuantity : nil))
-                        }
+                NeoGlassChoiceMenu(
+                    title: "Serving Unit",
+                    items: pickerOptions.map { option in
+                        NeoGlassChoiceItem(
+                            id: "servingUnit.\(option.id)",
+                            title: option.displayUnit(for: option.id == selectedUnitID ? selectedQuantity : nil),
+                            systemImage: option.isGramUnit ? "scalemass.fill" : "fork.knife",
+                            isSelected: option.id == selectedUnitID,
+                            action: { selectedUnitID = option.id }
+                        )
                     }
-                } label: {
+                ) {
                     HStack(spacing: 3) {
                         Text(selectedUnitLabel)
                             .lineLimit(1)

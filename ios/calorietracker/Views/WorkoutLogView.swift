@@ -467,42 +467,7 @@ struct WorkoutLogView: View {
         }
 
     private var addExerciseMenu: some View {
-        Menu {
-            Section {
-                Button {
-                    pickerRequest = WorkoutLogPickerRequest(context: .saved, initialSource: .saved)
-                } label: {
-                    WorkoutLogPickerContextMenuLabel(context: .saved)
-                }
-
-                Button {
-                    isCopySheetPresented = true
-                } label: {
-                    Label("Copy from day", systemImage: "calendar.badge.plus")
-                }
-
-                if splitGroups.isEmpty {
-                    Button {
-                        pickerRequest = WorkoutLogPickerRequest(context: .all, initialSource: .dataset)
-                    } label: {
-                        WorkoutLogPickerContextMenuLabel(context: .all)
-                    }
-                } else {
-                    ForEach(splitGroups) { group in
-                        Button {
-                            pickerRequest = WorkoutLogPickerRequest(
-                                context: WorkoutLogPickerContext(title: group.title, muscles: group.muscles),
-                                initialSource: .dataset
-                            )
-                        } label: {
-                            WorkoutLogPickerContextMenuLabel(
-                                context: WorkoutLogPickerContext(title: group.title, muscles: group.muscles)
-                            )
-                        }
-                    }
-                }
-            }
-        } label: {
+        NeoGlassChoiceMenu(title: String(localized: "Add Workout"), items: addExerciseItems) {
             Label("Add workout", systemImage: "plus")
                 .textCase(.uppercase)
                 .font(.system(size: 16, weight: .black, design: .rounded).width(.condensed))
@@ -518,6 +483,54 @@ struct WorkoutLogView: View {
         .tint(NeoAppColors.cobalt)
         .buttonStyle(WorkoutPressableButtonStyle())
         .accessibilityLabel("Add workout")
+    }
+
+    private var addExerciseItems: [NeoGlassChoiceItem] {
+        var items = [
+            NeoGlassChoiceItem(
+                id: "workout.add.saved",
+                title: String(localized: "Saved Exercises"),
+                subtitle: String(localized: "Choose from your saved workout list"),
+                systemImage: "bookmark.fill"
+            ) {
+                pickerRequest = WorkoutLogPickerRequest(context: .saved, initialSource: .saved)
+            },
+            NeoGlassChoiceItem(
+                id: "workout.add.copyDay",
+                title: String(localized: "Copy from Day"),
+                subtitle: String(localized: "Reuse a previous workout plan"),
+                systemImage: "calendar.badge.plus"
+            ) {
+                isCopySheetPresented = true
+            }
+        ]
+
+        if splitGroups.isEmpty {
+            items.append(
+                NeoGlassChoiceItem(
+                    id: "workout.add.all",
+                    title: String(localized: "All Exercises"),
+                    systemImage: "figure.strengthtraining.traditional"
+                ) {
+                    pickerRequest = WorkoutLogPickerRequest(context: .all, initialSource: .dataset)
+                }
+            )
+        } else {
+            items.append(contentsOf: splitGroups.map { group in
+                NeoGlassChoiceItem(
+                    id: "workout.add.group.\(group.id)",
+                    title: group.title,
+                    systemImage: "figure.strengthtraining.traditional"
+                ) {
+                    pickerRequest = WorkoutLogPickerRequest(
+                        context: WorkoutLogPickerContext(title: group.title, muscles: group.muscles),
+                        initialSource: .dataset
+                    )
+                }
+            })
+        }
+
+        return items
     }
 
     private var selectedDateTitle: String {
@@ -1657,13 +1670,17 @@ private struct WorkoutLogExercisePickerSheet: View {
             .buttonStyle(.plain)
             .workoutPressable()
 
-            Menu {
-                ForEach(ExerciseLibrarySort.allCases) { sort in
-                    menuChoice(sort.title, isSelected: selectedSort == sort) {
-                        selectedSort = sort
-                    }
+            NeoGlassChoiceMenu(
+                title: String(localized: "Sort Exercises"),
+                items: ExerciseLibrarySort.allCases.map { sort in
+                    NeoGlassChoiceItem(
+                        id: "workout.log.sort.\(sort.id)",
+                        title: sort.title,
+                        systemImage: "arrow.up.arrow.down",
+                        isSelected: selectedSort == sort
+                    ) { selectedSort = sort }
                 }
-            } label: {
+            ) {
                 Label("Sort", systemImage: "arrow.up.arrow.down")
                     .textCase(.uppercase)
                     .font(.system(size: 10, weight: .black, design: .rounded).width(.condensed))

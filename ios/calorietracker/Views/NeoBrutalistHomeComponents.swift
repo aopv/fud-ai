@@ -95,10 +95,11 @@ struct NeoHomeDateHeader: View {
 private extension View {
     func datePickerPopover(isPresented: Binding<Bool>, selection: Binding<Date>) -> some View {
         popover(isPresented: isPresented, arrowEdge: .top) {
-            VStack(alignment: .leading, spacing: 12) {
-                Text("Choose Date")
-                    .font(.headline.weight(.black))
-                    .fontWidth(.condensed)
+            NeoGlassChoicePanel(
+                title: "Choose Date",
+                eyebrow: "Food Log",
+                onClose: { isPresented.wrappedValue = false }
+            ) {
                 DatePicker(
                     "Date",
                     selection: selection,
@@ -107,10 +108,15 @@ private extension View {
                 )
                 .datePickerStyle(.graphical)
                 .labelsHidden()
+                .tint(NeoAppColors.cobalt)
+                .padding(8)
+                .background(NeoAppColors.surface.opacity(0.92))
+                .overlay {
+                    Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                }
             }
-            .padding(16)
-            .frame(idealWidth: 330)
             .presentationCompactAdaptation(.popover)
+            .presentationBackground(.clear)
         }
     }
 }
@@ -716,13 +722,18 @@ struct NeoMealHeader: View {
     @ViewBuilder
     private var sortControl: some View {
         if showsSort {
-            Menu {
-                Picker("Food Log Order", selection: $sortOrderRaw) {
-                    ForEach(FoodLogSortOrder.allCases) { order in
-                        Text(order.displayName).tag(order.rawValue)
-                    }
+            NeoGlassChoiceMenu(
+                title: "Sort Food",
+                items: FoodLogSortOrder.allCases.map { order in
+                    NeoGlassChoiceItem(
+                        id: "foodSort.\(order.rawValue)",
+                        title: order.displayName,
+                        systemImage: "arrow.up.arrow.down",
+                        isSelected: order.rawValue == sortOrderRaw,
+                        action: { sortOrderRaw = order.rawValue }
+                    )
                 }
-            } label: {
+            ) {
                 Label("Sort", systemImage: "arrow.up.arrow.down")
                     .labelStyle(.iconOnly)
                     .font(.system(.subheadline, weight: .black))

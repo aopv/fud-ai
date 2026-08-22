@@ -1076,11 +1076,20 @@ struct OnboardingView: View {
                             .textInputAutocapitalization(.never)
                             .onChange(of: byokModel) { _, m in AIProviderSettings.selectedModel = m }
                         if !byokProvider.models.isEmpty {
-                            Menu {
-                                ForEach(byokProvider.models, id: \.self) { model in
-                                    Button(model) { byokModel = model; AIProviderSettings.selectedModel = model }
+                            NeoGlassChoiceMenu(
+                                title: String(localized: "Choose Model"),
+                                items: byokProvider.models.map { model in
+                                    NeoGlassChoiceItem(
+                                        id: "onboarding.model.\(model)",
+                                        title: model,
+                                        systemImage: "brain",
+                                        isSelected: byokModel == model
+                                    ) {
+                                        byokModel = model
+                                        AIProviderSettings.selectedModel = model
+                                    }
                                 }
-                            } label: {
+                            ) {
                                 Image(systemName: "list.bullet.square").foregroundStyle(NeoAppColors.cobalt)
                             }
                         }
