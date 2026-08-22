@@ -106,29 +106,40 @@ struct WeekEnergyStrip: View {
                 selectedDate = date
             }
         } label: {
-            VStack(spacing: 6) {
+            VStack(spacing: 5) {
                 Text(date.formatted(.dateTime.weekday(.narrow)))
-                    .font(.system(.caption2, design: .rounded, weight: .medium))
-                    .foregroundStyle(isSelected ? AppColors.calorie : Color.secondary.opacity(0.6))
+                    .font(.system(.caption2, design: .default, weight: .black))
+                    .fontWidth(.condensed)
+                    .foregroundStyle(isSelected ? NeoHomeColors.ink : NeoHomeColors.mutedInk)
 
                 Text(date.formatted(.dateTime.day()))
-                    .font(.system(.body, design: .rounded, weight: .semibold))
-                    .foregroundStyle(isSelected ? .white : (isToday ? AppColors.calorie : .primary))
-                    .frame(width: 36, height: 36)
+                    .font(.system(.body, design: .default, weight: .black))
+                    .fontWidth(.condensed)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.65)
+                    .foregroundStyle(isSelected ? Color.black : (isToday ? NeoHomeColors.cobalt : NeoHomeColors.ink))
+                    .frame(width: 38, height: 36)
                     .background {
                         if isSelected {
-                            Circle()
-                                .fill(LinearGradient(colors: AppColors.calorieGradient, startPoint: .topLeading, endPoint: .bottomTrailing))
-                                .shadow(color: AppColors.calorie.opacity(0.35), radius: 6, y: 3)
+                            Rectangle()
+                                .fill(NeoHomeColors.acidYellow)
+                                .overlay {
+                                    Rectangle().strokeBorder(.black, lineWidth: NeoHomeMetrics.compactRule)
+                                }
                         } else if isToday {
-                            Circle()
-                                .strokeBorder(AppColors.calorie.opacity(0.35), lineWidth: 1.5)
+                            Rectangle()
+                                .strokeBorder(NeoHomeColors.cobalt, lineWidth: NeoHomeMetrics.rule)
                         }
                     }
             }
+            .padding(.vertical, 5)
         }
         .buttonStyle(.plain)
         .frame(maxWidth: .infinity)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(date.formatted(.dateTime.weekday(.wide).month(.wide).day()))
+        .accessibilityValue("\(caloriesForDate(date)) calories")
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }
 

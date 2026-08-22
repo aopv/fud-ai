@@ -198,6 +198,57 @@ enum AppColors {
     static let appCard = Color("appCard")
 }
 
+/// Semantic colors for the Home screen's Neo-Brutalist presentation. These are
+/// intentionally independent from the user's saved accent color: the poster-like
+/// cobalt and acid-yellow surfaces define this layout, while native navigation,
+/// settings, widgets, and app-icon theming continue to honor `AppThemeColor`.
+enum NeoHomeColors {
+    static let canvas = Color(uiColor: UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 0.005, green: 0.005, blue: 0.008, alpha: 1)
+            : UIColor(red: 0.975, green: 0.965, blue: 0.925, alpha: 1)
+    })
+
+    static let surface = Color(uiColor: UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 0.025, green: 0.025, blue: 0.03, alpha: 1)
+            : UIColor(red: 1.0, green: 0.995, blue: 0.975, alpha: 1)
+    })
+
+    static let ink = Color(uiColor: UIColor { traits in
+        traits.userInterfaceStyle == .dark ? .white : .black
+    })
+
+    static let mutedInk = Color(uiColor: UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(white: 0.68, alpha: 1)
+            : UIColor(white: 0.28, alpha: 1)
+    })
+
+    static let cobalt = Color(uiColor: UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 0.30, green: 0.47, blue: 1.0, alpha: 1)
+            : UIColor(red: 0.024, green: 0.231, blue: 0.922, alpha: 1)
+    })
+    static let onCobalt = Color(uiColor: UIColor { traits in
+        traits.userInterfaceStyle == .dark ? .black : .white
+    })
+    static let cobaltDeep = Color(uiColor: UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 0.055, green: 0.22, blue: 0.74, alpha: 1)
+            : UIColor(red: 0.0, green: 0.15, blue: 0.72, alpha: 1)
+    })
+    static let acidYellow = Color(hex: 0xEEFF00)
+    static let paperWhite = Color(hex: 0xFFFDF7)
+}
+
+enum NeoHomeMetrics {
+    static let rule: CGFloat = 2
+    static let compactRule: CGFloat = 1
+    static let cornerRadius: CGFloat = 2
+    static let horizontalInset: CGFloat = 14
+}
+
 extension Color {
     init(hex: UInt, opacity: Double = 1.0) {
         self.init(

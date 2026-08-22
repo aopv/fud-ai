@@ -24,11 +24,29 @@ final class calorietrackerUITests: XCTestCase {
 
     @MainActor
     func testExample() throws {
-        // UI tests must launch the application that they test.
         let app = XCUIApplication()
+        app.launchArguments += [
+            "-hasCompletedOnboarding", "YES",
+            "-appearanceMode", "light"
+        ]
         app.launch()
 
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        let calorieSummary = app.descendants(matching: .any)["neo.home.calorieSummary"]
+        XCTAssertTrue(calorieSummary.waitForExistence(timeout: 8))
+        XCTAssertTrue(app.otherElements["neo.home.nutrientGrid"].exists)
+        XCTAssertTrue(app.buttons["Choose date"].exists)
+
+        for tab in ["Home", "Progress", "Coach", "Settings", "Workouts"] {
+            XCTAssertTrue(app.tabBars.buttons[tab].exists, "Missing preserved \(tab) tab")
+        }
+
+        let addFood = app.buttons["neo.home.addFood"]
+        XCTAssertTrue(addFood.exists)
+        addFood.tap()
+
+        XCTAssertTrue(app.buttons["Photo & Scan"].waitForExistence(timeout: 3))
+        XCTAssertTrue(app.buttons["Describe Meal"].exists)
+        XCTAssertTrue(app.buttons["Reuse Meal"].exists)
     }
 
     @MainActor

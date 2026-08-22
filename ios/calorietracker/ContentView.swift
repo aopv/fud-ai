@@ -763,76 +763,80 @@ struct HomeView: View {
         let _ = profileStore.profile
         return NavigationStack {
             List {
-                // Week energy strip
+                // Poster header + existing 53-week selector. The selector keeps its original
+                // paging, Monday/Sunday preference, date binding, and haptics.
                 Section {
+                    NeoHomeDateHeader(selectedDate: $selectedDate)
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
+                        .listRowInsets(EdgeInsets(top: 8, leading: NeoHomeMetrics.horizontalInset, bottom: 5, trailing: NeoHomeMetrics.horizontalInset))
+
                     WeekEnergyStrip(
                         selectedDate: $selectedDate,
                         caloriesForDate: { foodStore.calories(for: $0) },
                         calorieGoal: calorieGoal
                     )
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 5)
+                    .background(NeoHomeColors.surface)
+                    .overlay {
+                        Rectangle()
+                            .strokeBorder(NeoHomeColors.ink, lineWidth: NeoHomeMetrics.rule)
+                            .allowsHitTesting(false)
+                    }
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
-                    .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
+                    .listRowInsets(EdgeInsets(top: 0, leading: NeoHomeMetrics.horizontalInset, bottom: 5, trailing: NeoHomeMetrics.horizontalInset))
                 }
 
-                // Calorie hero (semicircle gauge)
+                // Calorie and target values retain the same selected-day calculations and
+                // launch fill animation; only their presentation changes.
                 Section {
-                    CalorieGauge(eaten: selectedCalories, goal: calorieGoal, launchFillEpoch: launchFillEpoch)
+                    NeoCalorieSummary(eaten: selectedCalories, goal: calorieGoal, launchFillEpoch: launchFillEpoch)
                         .frame(maxWidth: .infinity)
-                        .padding(.top, 8)
-                        .padding(.bottom, 4)
+                        .contentShape(Rectangle())
+                        .simultaneousGesture(daySwipeGesture)
+                        .accessibilityIdentifier("neo.home.calorieSummary")
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
+                        .listRowInsets(EdgeInsets(top: 5, leading: NeoHomeMetrics.horizontalInset, bottom: 5, trailing: NeoHomeMetrics.horizontalInset))
+                }
+
+                // The saved four-nutrient selection remains the source of this adaptive grid,
+                // including custom micronutrients and supplement goals.
+                let nutrientStats = homeTopNutrients.map { nutrient in
+                    NeoNutrientStat(
+                        id: nutrient.id,
+                        label: nutrient.displayName,
+                        iconName: nutrient.iconName,
+                        current: nutrient.value(from: foodStore, on: selectedDate),
+                        goal: nutrient.goal(for: userProfile, optionalGoals: optionalNutrientGoals),
+                        unit: nutrient.unit
+                    )
+                }
+                Section {
+                    NeoNutrientGrid(stats: nutrientStats, launchFillEpoch: launchFillEpoch)
                         .contentShape(Rectangle())
                         .simultaneousGesture(daySwipeGesture)
                         .listRowBackground(Color.clear)
                         .listRowSeparator(.hidden)
-                }
-
-                // Top nutrient row (vertical bars)
-                Section {
-                    HStack(alignment: .top, spacing: 4) {
-                        ForEach(homeTopNutrients) { nutrient in
-                            MacroVerticalBar(
-                                label: nutrient.displayName,
-                                current: nutrient.value(from: foodStore, on: selectedDate),
-                                goal: nutrient.goal(for: userProfile, optionalGoals: optionalNutrientGoals),
-                                unit: nutrient.unit,
-                                gradient: nutrient.gradientColors,
-                                launchFillEpoch: launchFillEpoch
-                            )
-                        }
-                    }
-                    .padding(.vertical, 8)
-                    .contentShape(Rectangle())
-                    .simultaneousGesture(daySwipeGesture)
-                    .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
+                        .listRowInsets(EdgeInsets(top: 5, leading: NeoHomeMetrics.horizontalInset, bottom: 5, trailing: NeoHomeMetrics.horizontalInset))
 
                     if waterTrackingEnabled {
-                        WaterProgressRow(
+                        NeoWaterProgressPanel(
                             current: waterStore.total(on: selectedDate),
                             goal: waterDailyGoal,
                             unit: waterUnit
                         )
                         .listRowBackground(Color.clear)
                         .listRowSeparator(.hidden)
-                        .listRowInsets(EdgeInsets(top: 2, leading: 20, bottom: 2, trailing: 20))
+                        .listRowInsets(EdgeInsets(top: 5, leading: NeoHomeMetrics.horizontalInset, bottom: 5, trailing: NeoHomeMetrics.horizontalInset))
                     }
 
-                    Button {
-                        showNutritionDetail = true
-                    } label: {
-                        HStack {
-                            Spacer()
-                            Text("View More")
-                                .font(.system(.subheadline, design: .rounded, weight: .medium))
-                            Image(systemName: "chevron.right")
-                                .font(.caption2)
-                            Spacer()
-                        }
-                        .foregroundStyle(AppColors.calorie.opacity(0.6))
-                    }
-                    .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
+                    NeoHomeDetailsButton { showNutritionDetail = true }
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
+                        .listRowInsets(EdgeInsets(top: 5, leading: NeoHomeMetrics.horizontalInset, bottom: 5, trailing: NeoHomeMetrics.horizontalInset))
                 }
 
                 // Fasting timeline. Stored separately from nutrition so these rows never
@@ -840,18 +844,34 @@ struct HomeView: View {
                 let completedFasts = fastingStore.completed(on: selectedDate)
                 let activeFast = isToday ? fastingStore.activeSession : nil
                 if fastingTrackingEnabled && (activeFast != nil || !completedFasts.isEmpty) {
-                    Section("Fasting") {
+                    Section {
+                        NeoHomeSectionBanner(title: "Fasting", iconName: "timer")
+                            .listRowBackground(Color.clear)
+                            .listRowSeparator(.hidden)
+                            .listRowInsets(EdgeInsets(top: 8, leading: NeoHomeMetrics.horizontalInset, bottom: 0, trailing: NeoHomeMetrics.horizontalInset))
                         if let activeFast {
-                            ActiveFastingRow(session: activeFast)
-                                .listRowBackground(AppColors.appCard)
+                            NeoFramedModule(title: "Active") {
+                                NeoActiveFastingRow(session: activeFast)
+                            }
+                                .listRowBackground(Color.clear)
+                                .listRowSeparator(.hidden)
+                                .listRowInsets(EdgeInsets(top: 0, leading: NeoHomeMetrics.horizontalInset, bottom: 5, trailing: NeoHomeMetrics.horizontalInset))
                                 .contentShape(Rectangle())
                                 .onTapGesture { editingFastingSession = activeFast }
+                                .accessibilityAddTraits(.isButton)
+                                .accessibilityAction { editingFastingSession = activeFast }
                         }
                         ForEach(completedFasts) { session in
-                            CompletedFastingRow(session: session)
-                                .listRowBackground(AppColors.appCard)
+                            NeoFramedModule(title: "Completed") {
+                                NeoCompletedFastingRow(session: session)
+                            }
+                                .listRowBackground(Color.clear)
+                                .listRowSeparator(.hidden)
+                                .listRowInsets(EdgeInsets(top: 0, leading: NeoHomeMetrics.horizontalInset, bottom: 5, trailing: NeoHomeMetrics.horizontalInset))
                                 .contentShape(Rectangle())
                                 .onTapGesture { editingFastingSession = session }
+                                .accessibilityAddTraits(.isButton)
+                                .accessibilityAction { editingFastingSession = session }
                                 .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                                     Button(role: .destructive) {
                                         fastingStore.delete(id: session.id)
@@ -866,19 +886,46 @@ struct HomeView: View {
                 // Food list
                 let mealGroups = foodStore.entriesByMeal(for: selectedDate, order: foodLogSortOrder)
                 if mealGroups.isEmpty {
-                    Section(isToday ? "Today's Food" : "Food Log") {
-                        Text("No foods logged")
-                            .foregroundStyle(.secondary)
-                            .listRowBackground(AppColors.appCard)
+                    Section {
+                        NeoHomeSectionBanner(title: isToday ? "Today's Food" : "Food Log", iconName: "fork.knife")
+                            .listRowBackground(Color.clear)
+                            .listRowSeparator(.hidden)
+                            .listRowInsets(EdgeInsets(top: 8, leading: NeoHomeMetrics.horizontalInset, bottom: 0, trailing: NeoHomeMetrics.horizontalInset))
+                        NeoEmptyFoodPanel(isToday: isToday)
+                            .listRowBackground(Color.clear)
+                            .listRowSeparator(.hidden)
+                            .listRowInsets(EdgeInsets(top: 0, leading: NeoHomeMetrics.horizontalInset, bottom: 5, trailing: NeoHomeMetrics.horizontalInset))
                     }
                 } else {
                     ForEach(mealGroups) { group in
                         Section {
-                            ForEach(group.entries) { entry in
-                                FoodRow(entry: entry)
-                                    .listRowBackground(AppColors.appCard)
+                            NeoMealHeader(
+                                title: group.meal.displayName,
+                                iconName: group.meal.icon,
+                                totalCalories: group.totalCalories,
+                                totalProtein: group.totalProtein,
+                                totalCarbs: group.totalCarbs,
+                                totalFat: group.totalFat,
+                                showsSort: group.id == mealGroups.first?.id,
+                                sortOrderRaw: $foodLogSortOrderRaw,
+                                onShare: { MealShare.presentShareSheet(for: group.entries) }
+                            )
+                            .listRowBackground(Color.clear)
+                            .listRowSeparator(.hidden)
+                            .listRowInsets(EdgeInsets(top: 8, leading: NeoHomeMetrics.horizontalInset, bottom: 0, trailing: NeoHomeMetrics.horizontalInset))
+
+                            ForEach(Array(group.entries.enumerated()), id: \.element.id) { index, entry in
+                                NeoFoodRow(entry: entry, position: index + 1)
+                                    .listRowBackground(Color.clear)
+                                    .listRowSeparator(.hidden)
+                                    .listRowInsets(EdgeInsets(top: 0, leading: NeoHomeMetrics.horizontalInset, bottom: 0, trailing: NeoHomeMetrics.horizontalInset))
                                     .contentShape(Rectangle())
                                     .onTapGesture {
+                                        editingEntry = entry
+                                        activeSheet = .editFood
+                                    }
+                                    .accessibilityAddTraits(.isButton)
+                                    .accessibilityAction {
                                         editingEntry = entry
                                         activeSheet = .editFood
                                     }
@@ -893,65 +940,22 @@ struct HomeView: View {
                                         } label: {
                                             Label(foodStore.isFavorite(entry) ? "Unfavorite" : "Favorite", systemImage: foodStore.isFavorite(entry) ? "heart.slash.fill" : "heart.fill")
                                         }
-                                        .tint(AppColors.calorie)
+                                        .tint(NeoHomeColors.cobalt)
                                     }
-                            }
-                        } header: {
-                            HStack(alignment: .center) {
-                                Label(group.meal.displayName, systemImage: group.meal.icon)
-                                if group.id == mealGroups.first?.id {
-                                    Menu {
-                                        Picker("Food Log Order", selection: $foodLogSortOrderRaw) {
-                                            ForEach(FoodLogSortOrder.allCases) { order in
-                                                Text(order.displayName).tag(order.rawValue)
-                                            }
-                                        }
-                                    } label: {
-                                        HStack(spacing: 6) {
-                                            Image(systemName: "arrow.up.arrow.down")
-                                                .font(.system(.caption2, design: .rounded, weight: .semibold))
-                                            Text("Sort")
-                                                .font(.system(.subheadline, design: .rounded, weight: .semibold))
-                                        }
-                                    }
-                                    .tint(AppColors.calorie)
-                                    .textCase(nil)
-                                    .padding(.leading, 8)
-                                }
-                                Spacer()
-                                // Share the whole meal as a fudai://add-meal link (issue #107)
-                                Button {
-                                    MealShare.presentShareSheet(for: group.entries)
-                                } label: {
-                                    Image(systemName: "square.and.arrow.up")
-                                        .font(.system(.subheadline, design: .rounded, weight: .semibold))
-                                        .foregroundStyle(AppColors.calorie)
-                                }
-                                .buttonStyle(.plain)
-                                .padding(.trailing, 12)
-                                .textCase(nil)
-                                // Combined nutrients for this meal (issue #103: chicken + pasta + sauce = one total)
-                                VStack(alignment: .trailing, spacing: 1) {
-                                    Text("\(group.totalCalories) kcal")
-                                        .font(.system(.subheadline, design: .rounded, weight: .semibold))
-                                        .foregroundStyle(AppColors.calorie)
-                                    Text("\(Int(group.totalProtein.rounded()))P · \(Int(group.totalCarbs.rounded()))C · \(Int(group.totalFat.rounded()))F")
-                                        .font(.system(.caption2, design: .rounded, weight: .medium))
-                                        .foregroundStyle(.secondary)
-                                }
-                                .textCase(nil)
                             }
                         }
                     }
                 }
             }
             .scrollContentBackground(.hidden)
-            .background(AppColors.appBackground)
+            .background(NeoHomeColors.canvas)
+            .environment(\.defaultMinListRowHeight, 1)
+            .listSectionSpacing(10)
             .animation(.snappy, value: selectedDate)
-            .contentMargins(.bottom, 96, for: .scrollContent)
+            .contentMargins(.bottom, 104, for: .scrollContent)
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
-            .overlay(alignment: .bottomTrailing) {
+            .overlay(alignment: .bottom) {
                 Menu {
                     if fastingTrackingEnabled {
                         if fastingStore.activeSession != nil {
@@ -1088,56 +1092,53 @@ struct HomeView: View {
                         Label("Photo & Scan", systemImage: "camera.viewfinder")
                     }
                 } label: {
-                            Image(systemName: "plus")
-                                .font(.system(size: 26, weight: .semibold))
-                                .foregroundStyle(.white)
-                                .frame(width: 60, height: 60)
-                                .background(AppColors.calorie, in: Circle())
+                    NeoAddFoodLabel()
+                }
+                .popover(isPresented: $showTextPopover) {
+                    TextFoodInputView(
+                        onCancel: {
+                            showTextPopover = false
+                        },
+                        onSubmit: { description in
+                            showTextPopover = false
+                            currentImage = nil
+                            currentImages = []
+                            currentEmoji = nil
+                            currentFoodSource = .textInput
+                            startTextAnalysis(description)
                         }
-                        .popover(isPresented: $showTextPopover) {
-                            TextFoodInputView(
-                                onCancel: {
-                                    showTextPopover = false
-                                },
-                                onSubmit: { description in
-                                    showTextPopover = false
-                                    currentImage = nil
-                                    currentImages = []
-                                    currentEmoji = nil
-                                    currentFoodSource = .textInput
-                                    startTextAnalysis(description)
-                                }
-                            )
-                            .presentationCompactAdaptation(.popover)
+                    )
+                    .presentationCompactAdaptation(.popover)
+                }
+                .popover(isPresented: $showVoicePopover) {
+                    VoiceInputView(
+                        onCancel: {
+                            showVoicePopover = false
+                        },
+                        onSubmit: { description in
+                            showVoicePopover = false
+                            currentImage = nil
+                            currentImages = []
+                            currentEmoji = nil
+                            currentFoodSource = .textInput
+                            startTextAnalysis(description)
                         }
-                        .popover(isPresented: $showVoicePopover) {
-                            VoiceInputView(
-                                onCancel: {
-                                    showVoicePopover = false
-                                },
-                                onSubmit: { description in
-                                    showVoicePopover = false
-                                    currentImage = nil
-                                    currentImages = []
-                                    currentEmoji = nil
-                                    currentFoodSource = .textInput
-                                    startTextAnalysis(description)
-                                }
-                            )
-                            .presentationCompactAdaptation(.popover)
+                    )
+                    .presentationCompactAdaptation(.popover)
+                }
+                .popover(isPresented: $showManualPopover) {
+                    ManualEntryView(
+                        logDate: logDateForSelectedDay,
+                        onCancel: { showManualPopover = false },
+                        onSave: { entry in
+                            showManualPopover = false
+                            foodStore.addEntry(entry)
                         }
-                        .popover(isPresented: $showManualPopover) {
-                            ManualEntryView(
-                                logDate: logDateForSelectedDay,
-                                onCancel: { showManualPopover = false },
-                                onSave: { entry in
-                                    showManualPopover = false
-                                    foodStore.addEntry(entry)
-                                }
-                            )
-                            .presentationCompactAdaptation(.popover)
-                        }
-                        .padding(24)
+                    )
+                    .presentationCompactAdaptation(.popover)
+                }
+                .padding(.horizontal, NeoHomeMetrics.horizontalInset)
+                .padding(.bottom, 10)
             }
             .fullScreenCover(isPresented: $showCamera) {
                 CameraView(
