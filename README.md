@@ -18,7 +18,7 @@
   <img src="https://img.shields.io/badge/privacy-local--first-brightgreen" alt="Local-first privacy">
   <img src="https://img.shields.io/badge/languages-iOS%2016%20%2F%20Android%2015-blue" alt="iOS 16 languages / Android 15 languages">
   <img src="https://img.shields.io/badge/license-MIT-green" alt="License">
-  <a href="https://github.com/apoorvdarshan/fud-ai/stargazers"><img src="https://img.shields.io/github/stars/apoorvdarshan/fud-ai?style=flat&logo=github&color=yellow" alt="GitHub stars"></a>
+  <a href="https://github.com/aopv/fud-ai/stargazers"><img src="https://img.shields.io/github/stars/aopv/fud-ai?style=flat&logo=github&color=yellow" alt="GitHub stars"></a>
   <a href="https://apps.apple.com/us/app/fud-ai-calorie-tracker/id6758935726"><img src="https://img.shields.io/badge/App%20Store-Download-black?logo=apple" alt="App Store"></a>
   <a href="https://play.google.com/store/apps/details?id=com.apoorvdarshan.calorietracker"><img src="https://img.shields.io/badge/Google%20Play-Download-414141?logo=googleplay" alt="Google Play"></a>
 </p>
@@ -31,7 +31,7 @@ iOS and Android 6.1 (build/versionCode 34) add an optional intermittent-fasting 
 
 The app also includes faster Saved Meal reuse, current-time meal copying, export of every stored nutrient, selectable water units, water progress on Apple Watch, current AI model presets, configurable timeouts for Ollama/custom endpoints, and reliability fixes across widgets, settings, images, and provider responses. Normal updates preserve existing local and Health data.
 
-[App Store](https://apps.apple.com/us/app/fud-ai-calorie-tracker/id6758935726) · [Google Play](https://play.google.com/store/apps/details?id=com.apoorvdarshan.calorietracker) · [Website](https://fud-ai.app) · [Report an Issue](https://github.com/apoorvdarshan/fud-ai/issues/new?labels=bug&title=Bug:%20) · [Request a Feature](https://github.com/apoorvdarshan/fud-ai/issues/new?labels=enhancement&title=Feature:%20)
+[App Store](https://apps.apple.com/us/app/fud-ai-calorie-tracker/id6758935726) · [Google Play](https://play.google.com/store/apps/details?id=com.apoorvdarshan.calorietracker) · [Website](https://fud-ai.app) · [Report an Issue](https://github.com/aopv/fud-ai/issues/new?labels=bug&title=Bug:%20) · [Request a Feature](https://github.com/aopv/fud-ai/issues/new?labels=enhancement&title=Feature:%20)
 
 ---
 
@@ -319,7 +319,7 @@ ios/
 
 ```bash
 # Clone
-git clone https://github.com/apoorvdarshan/fud-ai.git
+git clone https://github.com/aopv/fud-ai.git
 cd fud-ai
 ```
 
@@ -355,7 +355,7 @@ Adding a new translation? Open `ios/calorietracker/Localizable.xcstrings` in Xco
 
 ## Security
 
-See [SECURITY.md](SECURITY.md). Use [private vulnerability reporting](https://github.com/apoorvdarshan/fud-ai/security/advisories/new) for sensitive issues.
+See [SECURITY.md](SECURITY.md). Use [private vulnerability reporting](https://github.com/aopv/fud-ai/security/advisories/new) for sensitive issues.
 
 ## Privacy
 
@@ -373,8 +373,8 @@ MIT License. See [LICENSE](LICENSE).
 - **Follow on Instagram:** [@fudai.app](https://www.instagram.com/fudai.app/)
 - **Follow on LinkedIn:** [Fud AI](https://www.linkedin.com/company/fud-ai-app)
 - **View on TrustMRR:** [Fud AI - Calorie Tracker](https://trustmrr.com/startup/fud-ai-calorie-tracker)
-- **Report an Issue:** [github.com/apoorvdarshan/fud-ai/issues/new?labels=bug&title=Bug:%20](https://github.com/apoorvdarshan/fud-ai/issues/new?labels=bug&title=Bug:%20)
-- **Request a Feature:** [github.com/apoorvdarshan/fud-ai/issues/new?labels=enhancement&title=Feature:%20](https://github.com/apoorvdarshan/fud-ai/issues/new?labels=enhancement&title=Feature:%20)
+- **Report an Issue:** [github.com/aopv/fud-ai/issues/new?labels=bug&title=Bug:%20](https://github.com/aopv/fud-ai/issues/new?labels=bug&title=Bug:%20)
+- **Request a Feature:** [github.com/aopv/fud-ai/issues/new?labels=enhancement&title=Feature:%20](https://github.com/aopv/fud-ai/issues/new?labels=enhancement&title=Feature:%20)
 
 ## Support the Project
 
@@ -383,11 +383,11 @@ Fud AI is fully free, open source, and privacy-first — no ads, no subscription
 [![Ko-fi](https://img.shields.io/badge/Ko--fi-Support-ff5e5b?logo=kofi)](https://ko-fi.com/apoorvdarshan)
 [![Product Hunt](https://img.shields.io/badge/Product%20Hunt-Vote-orange?logo=producthunt)](https://www.producthunt.com/products/fud-ai-calorie-tracker)
 
-You can also help by [voting on Product Hunt](https://www.producthunt.com/products/fud-ai-calorie-tracker), [starring the repo](https://github.com/apoorvdarshan/fud-ai), [filing bugs](https://github.com/apoorvdarshan/fud-ai/issues/new?labels=bug&title=Bug:%20), or [requesting features](https://github.com/apoorvdarshan/fud-ai/issues/new?labels=enhancement&title=Feature:%20).
+You can also help by [voting on Product Hunt](https://www.producthunt.com/products/fud-ai-calorie-tracker), [starring the repo](https://github.com/aopv/fud-ai), [filing bugs](https://github.com/aopv/fud-ai/issues/new?labels=bug&title=Bug:%20), or [requesting features](https://github.com/aopv/fud-ai/issues/new?labels=enhancement&title=Feature:%20).
 
 ## Star History
 
-<a href="https://github.com/apoorvdarshan/fud-ai/stargazers">
+<a href="https://github.com/aopv/fud-ai/stargazers">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://fud-ai.app/star-history.svg?theme=dark&amp;v=doodle-20260724" />
     <source media="(prefers-color-scheme: light)" srcset="https://fud-ai.app/star-history.svg?v=doodle-20260724" />
@@ -399,8 +399,8 @@ You can also help by [voting on Product Hunt](https://www.producthunt.com/produc
 
 Thanks to everyone who has contributed to making Fud AI better:
 
-<a href="https://github.com/apoorvdarshan/fud-ai/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=apoorvdarshan/fud-ai&amp;max=100&amp;columns=12" alt="Contributors" />
+<a href="https://github.com/aopv/fud-ai/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=aopv/fud-ai&amp;max=100&amp;columns=12" alt="Contributors" />
 </a>
 
 ## Credits

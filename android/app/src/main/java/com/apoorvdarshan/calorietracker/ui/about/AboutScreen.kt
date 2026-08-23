@@ -131,17 +131,17 @@ fun AboutSettingsRows(container: AppContainer) {
         Hairline()
         AboutRow(Icons.Filled.Share, stringResource(R.string.about_share), onClick = ::share)
         Hairline()
-        AboutRow(Icons.Filled.Code, stringResource(R.string.about_open_source)) { open("https://github.com/apoorvdarshan/fud-ai") }
+        AboutRow(Icons.Filled.Code, stringResource(R.string.about_open_source)) { open("https://github.com/aopv/fud-ai") }
         Hairline()
-        AboutRow(Icons.Filled.StarRate, stringResource(R.string.about_star_github)) { open("https://github.com/apoorvdarshan/fud-ai") }
+        AboutRow(Icons.Filled.StarRate, stringResource(R.string.about_star_github)) { open("https://github.com/aopv/fud-ai") }
         Hairline()
         AboutRow(Icons.Filled.ThumbUp, stringResource(R.string.about_vote_ph)) { open("https://www.producthunt.com/products/fud-ai-calorie-tracker") }
         Hairline()
         AboutRow(Icons.Filled.Favorite, stringResource(R.string.about_support)) { open("https://ko-fi.com/apoorvdarshan") }
         Hairline()
-        AboutRow(Icons.Filled.BugReport, stringResource(R.string.about_report_issue)) { open("https://github.com/apoorvdarshan/fud-ai/issues/new?labels=bug&title=Bug:%20") }
+        AboutRow(Icons.Filled.BugReport, stringResource(R.string.about_report_issue)) { open("https://github.com/aopv/fud-ai/issues/new?labels=bug&title=Bug:%20") }
         Hairline()
-        AboutRow(Icons.Filled.Lightbulb, stringResource(R.string.about_request_feature)) { open("https://github.com/apoorvdarshan/fud-ai/issues/new?labels=enhancement&title=Feature:%20") }
+        AboutRow(Icons.Filled.Lightbulb, stringResource(R.string.about_request_feature)) { open("https://github.com/aopv/fud-ai/issues/new?labels=enhancement&title=Feature:%20") }
         Hairline()
         AboutRow(Icons.Filled.Email, stringResource(R.string.about_contact), onClick = ::email)
         Hairline()

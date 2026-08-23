@@ -97,7 +97,7 @@ NOTE: Not medical advice. Estimates are AI-generated; consult a healthcare profe
 
 Terms: https://fud-ai.app/terms.html
 Privacy: https://fud-ai.app/privacy.html
-Source: https://github.com/apoorvdarshan/fud-ai
+Source: https://github.com/aopv/fud-ai
 
 ```
 

@@ -81,7 +81,7 @@ Fud AI is not medical advice — consult a healthcare professional before signif
 
 Terms: https://fud-ai.app/terms.html
 Privacy: https://fud-ai.app/privacy.html
-Source: https://github.com/apoorvdarshan/fud-ai
+Source: https://github.com/aopv/fud-ai
 
 ```
 

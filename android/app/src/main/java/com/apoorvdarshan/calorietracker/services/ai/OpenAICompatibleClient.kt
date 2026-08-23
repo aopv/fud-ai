@@ -76,7 +76,7 @@ object OpenAICompatibleClient {
                 .post(body.toString().toRequestBody(jsonMedia))
             if (!apiKey.isNullOrEmpty()) builder.addHeader("Authorization", "Bearer $apiKey")
             if (provider == AIProvider.OPENROUTER) {
-                builder.addHeader("HTTP-Referer", "https://github.com/apoorvdarshan/fud-ai")
+                builder.addHeader("HTTP-Referer", "https://github.com/aopv/fud-ai")
                 builder.addHeader("X-Title", "Fud AI")
             }
 
@@ -128,7 +128,7 @@ object OpenAICompatibleClient {
             .post(body.toString().toRequestBody(jsonMedia))
         if (!apiKey.isNullOrEmpty()) builder.addHeader("Authorization", "Bearer $apiKey")
         if (provider == AIProvider.OPENROUTER) {
-            builder.addHeader("HTTP-Referer", "https://github.com/apoorvdarshan/fud-ai")
+            builder.addHeader("HTTP-Referer", "https://github.com/aopv/fud-ai")
             builder.addHeader("X-Title", "Fud AI")
         }
 
