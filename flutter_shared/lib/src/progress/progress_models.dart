@@ -120,6 +120,9 @@ class ProgressSnapshot {
     required this.carbsGoal,
     required this.fatGoal,
     required this.strings,
+    this.isDark,
+    this.safeAreaTop = true,
+    this.bottomContentInset = 0,
   });
 
   factory ProgressSnapshot.fromJson(Map<Object?, Object?> json) {
@@ -157,6 +160,9 @@ class ProgressSnapshot {
       carbsGoal: (json['carbsGoal'] as num?)?.toInt() ?? 0,
       fatGoal: (json['fatGoal'] as num?)?.toInt() ?? 0,
       strings: ProgressStrings.fromJson(json['strings']),
+      isDark: json['isDark'] as bool?,
+      safeAreaTop: json['safeAreaTop'] as bool? ?? true,
+      bottomContentInset: (json['bottomContentInset'] as num?)?.toDouble() ?? 0,
     );
   }
 
@@ -181,4 +187,7 @@ class ProgressSnapshot {
   final int carbsGoal;
   final int fatGoal;
   final ProgressStrings strings;
+  final bool? isDark;
+  final bool safeAreaTop;
+  final double bottomContentInset;
 }

@@ -148,7 +148,7 @@ enum class TimeRange(@StringRes val labelRes: Int, val days: Int) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProgressScreen(container: AppContainer) {
+fun NativeProgressScreen(container: AppContainer) {
     val vm: ProgressViewModel = viewModel(factory = ProgressViewModel.Factory(container))
     val ui by vm.ui.collectAsState()
     val foods by container.foodRepository.entries.collectAsState(initial = emptyList())
@@ -343,14 +343,14 @@ fun ProgressScreen(container: AppContainer) {
         AllWeightHistorySheet(
             entries = ui.entries.sortedByDescending { it.date },
             useMetric = weightMetric,
-            onDelete = vm::deleteWeight,
+            onDelete = { vm.deleteWeight(it) },
             onDismiss = { showAllWeights = false }
         )
     }
     if (showAllBodyFats) {
         AllBodyFatHistorySheet(
             entries = ui.bodyFatEntries.sortedByDescending { it.date },
-            onDelete = vm::deleteBodyFat,
+            onDelete = { vm.deleteBodyFat(it) },
             onDismiss = { showAllBodyFats = false }
         )
     }
@@ -1227,7 +1227,7 @@ private fun MacroProgressRow(label: String, current: Double, goal: Int) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun AllWeightHistorySheet(
+internal fun AllWeightHistorySheet(
     entries: List<WeightEntry>,
     useMetric: Boolean,
     onDelete: (java.util.UUID) -> Unit,
@@ -1291,7 +1291,7 @@ private fun AllWeightHistorySheet(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun AllBodyFatHistorySheet(
+internal fun AllBodyFatHistorySheet(
     entries: List<BodyFatEntry>,
     onDelete: (java.util.UUID) -> Unit,
     onDismiss: () -> Unit
@@ -1354,7 +1354,7 @@ private fun AllBodyFatHistorySheet(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun AllWorkoutHistorySheet(
+internal fun AllWorkoutHistorySheet(
     entries: List<WorkoutSession>,
     onRequestDelete: (WorkoutSession) -> Unit,
     onDismiss: () -> Unit
@@ -1434,7 +1434,7 @@ private fun AllWorkoutHistorySheet(
 }
 
 @Composable
-private fun AddWeightDialog(
+internal fun AddWeightDialog(
     useMetric: Boolean,
     initialKg: Double,
     onUnitChange: (Boolean) -> Unit,
@@ -1727,7 +1727,7 @@ private fun formatPercentTick(value: Double): String {
 }
 
 @Composable
-private fun AddBodyFatDialog(
+internal fun AddBodyFatDialog(
     initialFraction: Double,
     onDismiss: () -> Unit,
     onSubmit: (Double) -> Unit

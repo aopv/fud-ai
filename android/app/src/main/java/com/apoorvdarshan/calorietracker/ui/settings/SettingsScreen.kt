@@ -135,6 +135,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
@@ -235,6 +236,7 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
     var showAdaptiveGoalsInfo by remember { mutableStateOf(false) }
     var pendingHealthPermissionAction by remember { mutableStateOf<HealthConnectPermissionAction?>(null) }
     val activityContext = LocalContext.current
+    val resources = LocalResources.current
     val settingsScope = rememberCoroutineScope()
     val importReadFailedMessage = stringResource(R.string.import_read_failed)
 
@@ -1003,7 +1005,10 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                             showImportSheet = false
                             importPreview = null
                             importError = null
-                            permissionDeniedMessage = activityContext.getString(R.string.import_success, selected.entries.size)
+                            permissionDeniedMessage = resources.getString(
+                                R.string.import_success,
+                                selected.entries.size
+                            )
                         }.onFailure { error ->
                             importError = error.localizedMessage ?: importReadFailedMessage
                         }

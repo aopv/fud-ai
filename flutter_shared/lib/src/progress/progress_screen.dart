@@ -1,7 +1,10 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' show Icons;
+import 'package:flutter/services.dart';
 
 import '../native/progress_channel.dart';
 import '../theme/neo_theme.dart';
@@ -24,11 +27,35 @@ class _ProgressScreenState extends State<ProgressScreen> {
   ProgressSnapshot? _snapshot;
   Object? _error;
   int _requestEpoch = 0;
+  StreamSubscription<void>? _changeSubscription;
 
   @override
   void initState() {
     super.initState();
+    _listenForNativeChanges();
     _load(_range);
+  }
+
+  @override
+  void didUpdateWidget(covariant ProgressScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.repository != widget.repository) {
+      _changeSubscription?.cancel();
+      _listenForNativeChanges();
+      _load(_range);
+    }
+  }
+
+  void _listenForNativeChanges() {
+    _changeSubscription = widget.repository.changes.listen((_) {
+      if (mounted) _load(_range);
+    });
+  }
+
+  @override
+  void dispose() {
+    _changeSubscription?.cancel();
+    super.dispose();
   }
 
   Future<void> _load(ProgressRange range) async {
@@ -55,14 +82,30 @@ class _ProgressScreenState extends State<ProgressScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = NeoColors.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
     final snapshot = _snapshot;
+    final platformBrightness = MediaQuery.platformBrightnessOf(context);
+    final brightness = snapshot?.isDark == null
+        ? platformBrightness
+        : snapshot!.isDark!
+        ? Brightness.dark
+        : Brightness.light;
+    final colors = NeoColors.forBrightness(brightness);
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      final iconBrightness = brightness == Brightness.dark
+          ? Brightness.light
+          : Brightness.dark;
+      SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle(
+          statusBarIconBrightness: iconBrightness,
+          systemNavigationBarIconBrightness: iconBrightness,
+        ),
+      );
+    }
 
     return ColoredBox(
       color: colors.canvas,
       child: SafeArea(
+        top: snapshot?.safeAreaTop ?? true,
         bottom: false,
         child: snapshot == null
             ? _LoadingState(
@@ -78,11 +121,11 @@ class _ProgressScreenState extends State<ProgressScreen> {
                 slivers: [
                   CupertinoSliverRefreshControl(onRefresh: () => _load(_range)),
                   SliverPadding(
-                    padding: const EdgeInsets.fromLTRB(
+                    padding: EdgeInsets.fromLTRB(
                       NeoMetrics.screenInset,
                       16,
                       NeoMetrics.screenInset,
-                      24,
+                      24 + snapshot.bottomContentInset,
                     ),
                     sliver: SliverList.list(
                       children: [

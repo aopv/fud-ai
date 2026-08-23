@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fud_ai_shared/main.dart';
@@ -7,9 +9,19 @@ import 'package:fud_ai_shared/src/progress/progress_models.dart';
 class _FakeProgressRepository implements ProgressRepository {
   ProgressRange lastRange = ProgressRange.week;
   String? lastAction;
+  int loadCount = 0;
+  final _changes = StreamController<void>.broadcast();
+
+  @override
+  Stream<void> get changes => _changes.stream;
+
+  void notifyChanged() => _changes.add(null);
+
+  Future<void> dispose() => _changes.close();
 
   @override
   Future<ProgressSnapshot> load(ProgressRange range) async {
+    loadCount += 1;
     lastRange = range;
     return ProgressSnapshot(
       range: range,
@@ -39,6 +51,9 @@ class _FakeProgressRepository implements ProgressRepository {
       carbsGoal: 240,
       fatGoal: 70,
       strings: const ProgressStrings(values: {}),
+      isDark: false,
+      safeAreaTop: false,
+      bottomContentInset: 132,
     );
   }
 
@@ -47,6 +62,14 @@ class _FakeProgressRepository implements ProgressRepository {
 }
 
 void main() {
+  test('native presentation options stay backward-compatible', () {
+    final snapshot = ProgressSnapshot.fromJson(const <Object?, Object?>{});
+
+    expect(snapshot.isDark, isNull);
+    expect(snapshot.safeAreaTop, isTrue);
+    expect(snapshot.bottomContentInset, 0);
+  });
+
   testWidgets('renders the shared neo Progress screen and changes range', (
     tester,
   ) async {
@@ -84,5 +107,19 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('progress.range.month')));
     await tester.pumpAndSettle();
     expect(repository.lastRange, ProgressRange.month);
+    await repository.dispose();
+  });
+
+  testWidgets('reloads when the native snapshot changes', (tester) async {
+    final repository = _FakeProgressRepository();
+    await tester.pumpWidget(FudAiSharedApp(progressRepository: repository));
+    await tester.pumpAndSettle();
+
+    expect(repository.loadCount, 1);
+    repository.notifyChanged();
+    await tester.pumpAndSettle();
+
+    expect(repository.loadCount, 2);
+    await repository.dispose();
   });
 }
