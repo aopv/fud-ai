@@ -73,6 +73,34 @@ final class calorietrackerUITests: XCTestCase {
     }
 
     @MainActor
+    func testFlutterProgressUsesNativeLogSheet() throws {
+        let app = XCUIApplication()
+        app.launchArguments += [
+            "-hasCompletedOnboarding", "YES",
+            "-appearanceMode", "light",
+            "--progress-tab"
+        ]
+        app.launch()
+
+        let progressTab = app.buttons["nav.progress"]
+        XCTAssertTrue(progressTab.waitForExistence(timeout: 8))
+        XCTAssertTrue(progressTab.isSelected)
+
+        let month = app.buttons["progress.range.month"]
+        XCTAssertTrue(month.waitForExistence(timeout: 8))
+        month.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+
+        let logWeight = app.buttons["progress.logWeight"]
+        XCTAssertTrue(logWeight.waitForExistence(timeout: 3))
+        logWeight.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+
+        let save = app.buttons["SAVE"]
+        XCTAssertTrue(save.waitForExistence(timeout: 3))
+        XCTAssertTrue(app.buttons["Cancel"].exists)
+        app.buttons["Cancel"].tap()
+    }
+
+    @MainActor
     func testLaunchPerformance() throws {
         // This measures how long it takes to launch your application.
         measure(metrics: [XCTApplicationLaunchMetric()]) {

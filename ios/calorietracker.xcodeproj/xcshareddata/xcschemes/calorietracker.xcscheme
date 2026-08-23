@@ -6,6 +6,24 @@
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES"
       buildArchitectures = "Automatic">
+      <PreActions>
+         <ExecutionAction
+            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
+            <ActionContent
+               title = "Prepare Flutter package"
+               scriptText = "/bin/sh &quot;$FLUTTER_SWIFT_PACKAGE_OUTPUT/Scripts/flutter_integration.sh&quot; prebuild">
+               <EnvironmentBuildable>
+                  <BuildableReference
+                     BuildableIdentifier = "primary"
+                     BlueprintIdentifier = "BA8E0DF22F33F197007DD537"
+                     BuildableName = "calorietracker.app"
+                     BlueprintName = "calorietracker"
+                     ReferencedContainer = "container:calorietracker.xcodeproj">
+                  </BuildableReference>
+               </EnvironmentBuildable>
+            </ActionContent>
+         </ExecutionAction>
+      </PreActions>
       <BuildActionEntries>
          <BuildActionEntry
             buildForTesting = "YES"

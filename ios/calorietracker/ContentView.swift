@@ -114,7 +114,7 @@ struct ContentView: View {
     @Environment(\.scenePhase) private var scenePhase
     @AppStorage(WorkoutTabMode.storageKey) private var workoutTabModeRaw = WorkoutTabMode.defaultMode.rawValue
     @State private var appUpdateState: AppUpdateState = .idle
-    @State private var selectedTab: NeoAppTab = .home
+    @State private var selectedTab: NeoAppTab = CommandLine.arguments.contains("--progress-tab") ? .progress : .home
     @State private var quickActionRequest: QuickActionRequest?
     @State private var isKeyboardPresented = false
 
@@ -3595,7 +3595,7 @@ struct MacroPill: View {
 }
 
 // MARK: - Progress Tab
-struct ProgressTabView: View {
+struct NativeProgressTabView: View {
     @Environment(FoodStore.self) private var foodStore
     @Environment(WeightStore.self) private var weightStore
     @Environment(BodyFatStore.self) private var bodyFatStore
