@@ -12,7 +12,6 @@
 		F00D10000000000000000001 /* FudAIWatchApp.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = F00D10000000000000000007 /* FudAIWatchApp.app */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F00D10000000000000000002 /* FudAIWatchWidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F00D10000000000000000008 /* FudAIWatchWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F00DAD000000000000000011 /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = F00DAD000000000000000013 /* RevenueCat */; };
-		F00DF1000000000000000001 /* FlutterNativeIntegration in Frameworks */ = {isa = PBXBuildFile; productRef = F00DF1000000000000000003 /* FlutterNativeIntegration */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -203,7 +202,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F00DF1000000000000000001 /* FlutterNativeIntegration in Frameworks */,
 				F00DAD000000000000000011 /* RevenueCat in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -291,7 +289,6 @@
 				BA8E0DEF2F33F197007DD537 /* Sources */,
 				BA8E0DF02F33F197007DD537 /* Frameworks */,
 				BA8E0DF12F33F197007DD537 /* Resources */,
-				F00DF1000000000000000004 /* Assemble Flutter */,
 				BA8E0E2C2F33F198007DD537 /* Embed Foundation Extensions */,
 				F00D10000000000000000005 /* Embed Watch Content */,
 			);
@@ -308,7 +305,6 @@
 			name = calorietracker;
 			packageProductDependencies = (
 				F00DAD000000000000000013 /* RevenueCat */,
-				F00DF1000000000000000003 /* FlutterNativeIntegration */,
 			);
 			productName = calorietracker;
 			productReference = BA8E0DF32F33F197007DD537 /* calorietracker.app */;
@@ -511,7 +507,6 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				F00DAD000000000000000012 /* XCRemoteSwiftPackageReference "purchases-ios" */,
-				F00DF1000000000000000002 /* XCLocalSwiftPackageReference "FlutterNativeIntegration" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = BA8E0DF42F33F197007DD537 /* Products */;
@@ -580,30 +575,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		F00DF1000000000000000004 /* Assemble Flutter */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"$(FLUTTER_SWIFT_PACKAGE_OUTPUT)/Scripts/FlutterAssembleInputs.xcfilelist",
-			);
-			inputPaths = (
-			);
-			name = "Assemble Flutter";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "/bin/sh \"$FLUTTER_SWIFT_PACKAGE_OUTPUT/Scripts/flutter_integration.sh\" assemble";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		BA8E0DEF2F33F197007DD537 /* Sources */ = {
@@ -705,10 +676,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 34;
 				DEVELOPMENT_TEAM = 23RV7FYH36;
-				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				ENABLE_PREVIEWS = YES;
-				FLUTTER_APPLICATION_PATH = "$(SRCROOT)/../flutter_shared";
-				FLUTTER_SWIFT_PACKAGE_OUTPUT = "$(FLUTTER_APPLICATION_PATH)/build/ios/SwiftPackages";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = calorietracker/Info.plist;
 				INFOPLIST_KEY_AppGroupIdentifier = "$(APP_GROUP_IDENTIFIER)";
@@ -759,10 +727,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 34;
 				DEVELOPMENT_TEAM = 23RV7FYH36;
-				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				ENABLE_PREVIEWS = YES;
-				FLUTTER_APPLICATION_PATH = "$(SRCROOT)/../flutter_shared";
-				FLUTTER_SWIFT_PACKAGE_OUTPUT = "$(FLUTTER_APPLICATION_PATH)/build/ios/SwiftPackages";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = calorietracker/Info.plist;
 				INFOPLIST_KEY_AppGroupIdentifier = "$(APP_GROUP_IDENTIFIER)";
@@ -1400,13 +1365,6 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCLocalSwiftPackageReference section */
-		F00DF1000000000000000002 /* XCLocalSwiftPackageReference "FlutterNativeIntegration" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = ../flutter_shared/build/ios/SwiftPackages/FlutterNativeIntegration;
-		};
-/* End XCLocalSwiftPackageReference section */
-
 /* Begin XCRemoteSwiftPackageReference section */
 		F00DAD000000000000000012 /* XCRemoteSwiftPackageReference "purchases-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -1419,11 +1377,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		F00DF1000000000000000003 /* FlutterNativeIntegration */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = F00DF1000000000000000002 /* XCLocalSwiftPackageReference "FlutterNativeIntegration" */;
-			productName = FlutterNativeIntegration;
-		};
 		F00DAD000000000000000013 /* RevenueCat */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = F00DAD000000000000000012 /* XCRemoteSwiftPackageReference "purchases-ios" */;

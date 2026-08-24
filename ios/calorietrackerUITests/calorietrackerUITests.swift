@@ -38,18 +38,18 @@ final class calorietrackerUITests: XCTestCase {
 
         for tab in ["home", "progress", "coach", "settings", "workouts"] {
             let destination = app.buttons["nav.\(tab)"]
-            XCTAssertTrue(destination.exists, "Missing navigation-rail \(tab) destination")
+            XCTAssertTrue(destination.exists, "Missing bottom-bar \(tab) destination")
             destination.tap()
-            XCTAssertTrue(destination.isSelected, "Navigation rail did not select \(tab)")
+            XCTAssertTrue(destination.isSelected, "Bottom bar did not select \(tab)")
         }
         let quickAdd = app.buttons["nav.quickAdd"]
-        XCTAssertTrue(quickAdd.exists, "Missing navigation-rail quick action")
-        XCTAssertTrue(quickAdd.isHittable, "Navigation-rail quick action is obstructed")
+        XCTAssertTrue(quickAdd.exists, "Missing bottom-bar quick action")
+        XCTAssertTrue(quickAdd.isHittable, "Bottom-bar quick action is obstructed")
 
         app.buttons["nav.coach"].tap()
         let coachInput = app.textFields.firstMatch
         XCTAssertTrue(coachInput.waitForExistence(timeout: 3))
-        XCTAssertTrue(coachInput.isHittable, "Coach composer is obstructed by app navigation")
+        XCTAssertTrue(coachInput.isHittable, "Coach composer is obstructed by bottom navigation")
 
         app.buttons["nav.home"].tap()
         XCTAssertTrue(calorieSummary.waitForExistence(timeout: 3))
@@ -70,34 +70,6 @@ final class calorietrackerUITests: XCTestCase {
         XCTAssertTrue(app.buttons["neo.glassChoice.addFood.camera"].waitForExistence(timeout: 3))
         XCTAssertTrue(app.buttons["neo.glassChoice.addFood.photos"].exists)
         XCTAssertTrue(app.buttons["neo.glassChoice.addFood.barcode"].exists)
-    }
-
-    @MainActor
-    func testFlutterProgressUsesNativeLogSheet() throws {
-        let app = XCUIApplication()
-        app.launchArguments += [
-            "-hasCompletedOnboarding", "YES",
-            "-appearanceMode", "light",
-            "--progress-tab"
-        ]
-        app.launch()
-
-        let progressTab = app.buttons["nav.progress"]
-        XCTAssertTrue(progressTab.waitForExistence(timeout: 8))
-        XCTAssertTrue(progressTab.isSelected)
-
-        let month = app.buttons["progress.range.month"]
-        XCTAssertTrue(month.waitForExistence(timeout: 8))
-        month.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
-
-        let logWeight = app.buttons["progress.logWeight"]
-        XCTAssertTrue(logWeight.waitForExistence(timeout: 3))
-        logWeight.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
-
-        let save = app.buttons["SAVE"]
-        XCTAssertTrue(save.waitForExistence(timeout: 3))
-        XCTAssertTrue(app.buttons["Cancel"].exists)
-        app.buttons["Cancel"].tap()
     }
 
     @MainActor
