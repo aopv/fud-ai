@@ -35,9 +35,10 @@ enum NeoAppMetrics {
     static let cornerRadius: CGFloat = 2
     static let screenInset: CGFloat = 14
     static let sectionSpacing: CGFloat = 14
-    static let bottomBarHeight: CGFloat = 64
-    static let bottomBarCornerRadius: CGFloat = 18
-    static let quickActionSize: CGFloat = 56
+    static let railWidth: CGFloat = 72
+    static let railCornerRadius: CGFloat = 18
+    static let railTabHeight: CGFloat = 70
+    static let quickActionHeight: CGFloat = 64
 }
 
 enum NeoAppTab: String, CaseIterable, Identifiable, Hashable {
@@ -70,7 +71,7 @@ enum NeoAppTab: String, CaseIterable, Identifiable, Hashable {
     }
 }
 
-struct NeoAppBottomNavigationBar: View {
+struct NeoAppNavigationRail: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Binding var selection: NeoAppTab
@@ -80,10 +81,10 @@ struct NeoAppBottomNavigationBar: View {
     @State private var selectionFeedbackTrigger = 0
 
     var body: some View {
-        bottomNavigation
-            .padding(.horizontal, 10)
-            .padding(.top, 8)
-            .padding(.bottom, 6)
+        railNavigation
+            .padding(.leading, 6)
+            .padding(.trailing, 8)
+            .padding(.vertical, 8)
             .sensoryFeedback(.selection, trigger: selectionFeedbackTrigger)
             .accessibilityElement(children: .contain)
             .accessibilityLabel("App navigation")
@@ -91,15 +92,16 @@ struct NeoAppBottomNavigationBar: View {
     }
 
     @ViewBuilder
-    private var bottomNavigation: some View {
+    private var railNavigation: some View {
         if #available(iOS 26.0, *) {
             GlassEffectContainer(spacing: 10) {
-                HStack(spacing: 10) {
+                VStack(spacing: 10) {
                     navigationStrip
                         .glassEffect(
                             .regular
-                                .tint(NeoAppColors.cobalt.opacity(colorScheme == .dark ? 0.44 : 0.32)),
-                            in: .rect(cornerRadius: NeoAppMetrics.bottomBarCornerRadius)
+                                .tint(NeoAppColors.cobalt.opacity(colorScheme == .dark ? 0.40 : 0.28))
+                                .interactive(),
+                            in: .rect(cornerRadius: NeoAppMetrics.railCornerRadius)
                         )
 
                     quickActionButton
@@ -107,35 +109,68 @@ struct NeoAppBottomNavigationBar: View {
                             .regular
                                 .tint(NeoAppColors.acid.opacity(colorScheme == .dark ? 0.58 : 0.72))
                                 .interactive(),
-                            in: .rect(cornerRadius: NeoAppMetrics.bottomBarCornerRadius)
+                            in: .rect(cornerRadius: NeoAppMetrics.railCornerRadius)
                         )
                 }
             }
         } else {
-            HStack(spacing: 10) {
+            VStack(spacing: 10) {
                 navigationStrip
-                    .background(.ultraThinMaterial, in: bottomBarShape)
+                    .background(.ultraThinMaterial, in: railShape)
 
                 quickActionButton
-                    .background(.ultraThinMaterial, in: bottomBarShape)
+                    .background(.ultraThinMaterial, in: railShape)
             }
         }
     }
 
     private var navigationStrip: some View {
-        HStack(spacing: 2) {
+        VStack(spacing: 0) {
+            brand
+
             ForEach(NeoAppTab.allCases) { tab in
                 navigationButton(for: tab)
             }
+
+            Spacer(minLength: 8)
+
+            Text("TRACK.\nLEARN.\nWIN.")
+                .font(.system(size: 9, weight: .black, design: .rounded).width(.condensed))
+                .tracking(0.6)
+                .foregroundStyle(Color.white)
+                .multilineTextAlignment(.leading)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 10)
+                .padding(.bottom, 10)
+                .accessibilityHidden(true)
         }
-        .padding(5)
-        .frame(maxWidth: .infinity)
-        .frame(height: NeoAppMetrics.bottomBarHeight)
-        .background(NeoAppColors.cobalt.opacity(colorScheme == .dark ? 0.18 : 0.10), in: bottomBarShape)
+        .padding(4)
+        .frame(width: NeoAppMetrics.railWidth)
+        .frame(maxHeight: .infinity)
+        .background(Color.black.opacity(colorScheme == .dark ? 0.62 : 0.80), in: railShape)
         .overlay {
-            bottomBarShape
+            railShape
                 .stroke(NeoAppColors.cobalt, lineWidth: NeoAppMetrics.rule)
         }
+    }
+
+    private var brand: some View {
+        VStack(spacing: -3) {
+            Text("FÜD")
+            Text("AI")
+        }
+        .font(.system(size: 21, weight: .black, design: .rounded).width(.condensed))
+        .foregroundStyle(Color.white)
+        .frame(maxWidth: .infinity)
+        .frame(height: 72)
+        .background(NeoAppColors.cobalt)
+        .overlay(alignment: .bottom) {
+            Rectangle()
+                .fill(Color.white.opacity(0.72))
+                .frame(height: NeoAppMetrics.compactRule)
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Fud AI")
     }
 
     private var quickActionButton: some View {
@@ -149,10 +184,10 @@ struct NeoAppBottomNavigationBar: View {
                 }
             }
             .foregroundStyle(Color.black)
-            .frame(width: NeoAppMetrics.quickActionSize, height: NeoAppMetrics.bottomBarHeight)
-            .background(NeoAppColors.acid.opacity(quickActionFillOpacity), in: bottomBarShape)
+            .frame(width: NeoAppMetrics.railWidth, height: NeoAppMetrics.quickActionHeight)
+            .background(NeoAppColors.acid.opacity(quickActionFillOpacity), in: railShape)
             .overlay {
-                bottomBarShape
+                railShape
                     .stroke(Color.black, lineWidth: NeoAppMetrics.rule)
             }
             .accessibilityHidden(true)
@@ -165,7 +200,6 @@ struct NeoAppBottomNavigationBar: View {
     private func navigationButton(for tab: NeoAppTab) -> some View {
         let isSelected = selection == tab
         let icon = tab == .workouts ? workoutsIcon : tab.systemImage
-        let badgeFill = isSelected ? NeoAppColors.cobalt : NeoAppColors.acid
 
         return Button {
             guard !isSelected else { return }
@@ -181,9 +215,9 @@ struct NeoAppBottomNavigationBar: View {
                     if tab == .settings && updateAvailable {
                         Text("!")
                             .font(.system(size: 9, weight: .black, design: .rounded))
-                            .foregroundStyle(isSelected ? NeoAppColors.onCobalt : Color.black)
+                            .foregroundStyle(Color.black)
                             .frame(width: 15, height: 15)
-                            .background(badgeFill)
+                            .background(NeoAppColors.acid)
                             .clipShape(Circle())
                             .offset(x: 7, y: -5)
                             .accessibilityHidden(true)
@@ -198,30 +232,35 @@ struct NeoAppBottomNavigationBar: View {
                         .minimumScaleFactor(0.72)
                 }
             }
-            .foregroundStyle(isSelected ? Color.black : NeoAppColors.ink)
+            .foregroundStyle(isSelected ? NeoAppColors.cobalt : Color.white)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(isSelected ? NeoAppColors.acid : Color.clear, in: selectedTabShape)
-            .overlay {
-                selectedTabShape
-                    .stroke(isSelected ? Color.black : Color.clear, lineWidth: NeoAppMetrics.compactRule)
+            .background(isSelected ? NeoAppColors.cobalt.opacity(0.18) : Color.clear, in: selectedTabShape)
+            .overlay(alignment: .leading) {
+                Rectangle()
+                    .fill(isSelected ? NeoAppColors.cobalt : Color.clear)
+                    .frame(width: 4)
+            }
+            .overlay(alignment: .bottom) {
+                Rectangle()
+                    .fill(Color.white.opacity(0.20))
+                    .frame(height: NeoAppMetrics.compactRule)
             }
             .accessibilityHidden(true)
         }
         .buttonStyle(NeoNavigationButtonStyle())
-        .frame(maxWidth: .infinity)
-        .frame(height: NeoAppMetrics.bottomBarHeight - 10)
+        .frame(width: NeoAppMetrics.railWidth - 8, height: NeoAppMetrics.railTabHeight)
         .accessibilityLabel(Text(tab.title))
         .accessibilityValue(tab == .settings && updateAvailable ? "Update available" : "")
         .accessibilityAddTraits(isSelected ? .isSelected : [])
         .accessibilityIdentifier("nav.\(tab.rawValue)")
     }
 
-    private var bottomBarShape: RoundedRectangle {
-        RoundedRectangle(cornerRadius: NeoAppMetrics.bottomBarCornerRadius, style: .continuous)
+    private var railShape: RoundedRectangle {
+        RoundedRectangle(cornerRadius: NeoAppMetrics.railCornerRadius, style: .continuous)
     }
 
     private var selectedTabShape: RoundedRectangle {
-        RoundedRectangle(cornerRadius: 12, style: .continuous)
+        RoundedRectangle(cornerRadius: 10, style: .continuous)
     }
 
     private var quickActionFillOpacity: Double {

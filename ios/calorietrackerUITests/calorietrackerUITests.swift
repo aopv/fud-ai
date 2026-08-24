@@ -38,18 +38,18 @@ final class calorietrackerUITests: XCTestCase {
 
         for tab in ["home", "progress", "coach", "settings", "workouts"] {
             let destination = app.buttons["nav.\(tab)"]
-            XCTAssertTrue(destination.exists, "Missing bottom-bar \(tab) destination")
+            XCTAssertTrue(destination.exists, "Missing navigation-rail \(tab) destination")
             destination.tap()
-            XCTAssertTrue(destination.isSelected, "Bottom bar did not select \(tab)")
+            XCTAssertTrue(destination.isSelected, "Navigation rail did not select \(tab)")
         }
         let quickAdd = app.buttons["nav.quickAdd"]
-        XCTAssertTrue(quickAdd.exists, "Missing bottom-bar quick action")
-        XCTAssertTrue(quickAdd.isHittable, "Bottom-bar quick action is obstructed")
+        XCTAssertTrue(quickAdd.exists, "Missing navigation-rail quick action")
+        XCTAssertTrue(quickAdd.isHittable, "Navigation-rail quick action is obstructed")
 
         app.buttons["nav.coach"].tap()
         let coachInput = app.textFields.firstMatch
         XCTAssertTrue(coachInput.waitForExistence(timeout: 3))
-        XCTAssertTrue(coachInput.isHittable, "Coach composer is obstructed by bottom navigation")
+        XCTAssertTrue(coachInput.isHittable, "Coach composer is obstructed by app navigation")
 
         app.buttons["nav.home"].tap()
         XCTAssertTrue(calorieSummary.waitForExistence(timeout: 3))

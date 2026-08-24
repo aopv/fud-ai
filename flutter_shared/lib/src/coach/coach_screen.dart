@@ -131,7 +131,7 @@ class _SharedCoachScreenState extends State<SharedCoachScreen> {
                 ),
               ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 10, 16, 122),
+              padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
               child: NeoFrame(
                 padding: const EdgeInsets.fromLTRB(8, 5, 5, 5),
                 child: Row(

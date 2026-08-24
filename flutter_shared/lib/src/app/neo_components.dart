@@ -33,7 +33,7 @@ class NeoPage extends StatelessWidget {
   const NeoPage({
     required this.children,
     this.controller,
-    this.padding = const EdgeInsets.fromLTRB(16, 16, 16, 132),
+    this.padding = const EdgeInsets.fromLTRB(16, 16, 16, 24),
     super.key,
   });
 

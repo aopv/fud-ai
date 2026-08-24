@@ -31,7 +31,7 @@ internal fun buildAppShellSnapshot(
     "isDark" to isDark,
     "usesNativeNavigation" to false,
     "selectedTab" to selectedTab,
-    "bottomContentInset" to 112.0,
+    "bottomContentInset" to 0.0,
     "workoutsLabel" to if (workoutMode == WorkoutTabMode.LOG) "Workouts" else "Exercises",
     "updateAvailable" to updateAvailable
 )

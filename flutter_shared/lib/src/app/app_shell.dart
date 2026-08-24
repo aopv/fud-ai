@@ -108,27 +108,33 @@ class _SharedAppShellState extends State<SharedAppShell> {
     await _load(tab);
   }
 
+  Future<void> _quickAdd() async {
+    if (_selectedTab != FudAppTab.home) {
+      setState(() => _selectedTab = FudAppTab.home);
+      await widget.repository.selectTab(FudAppTab.home);
+    }
+    await widget.repository.perform(
+      'home.quickAction',
+      arguments: const {'quickAction': 'CAMERA'},
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final bottomBarHeight = _shell.usesNativeNavigation ? 0.0 : 102.0;
     return Material(
       color: NeoColors.canvas(context),
-      child: Stack(
+      child: Row(
         children: [
-          Positioned.fill(child: _page(bottomBarHeight)),
+          Expanded(child: _page()),
           if (!_shell.usesNativeNavigation)
-            Positioned(
-              left: 12,
-              right: 12,
-              bottom: 8,
-              child: SafeArea(
-                top: false,
-                child: NeoBottomNavigation(
-                  selection: _selectedTab,
-                  workoutsLabel: _shell.workoutsLabel,
-                  updateAvailable: _shell.updateAvailable,
-                  onSelect: _select,
-                ),
+            SafeArea(
+              left: false,
+              child: NeoRightNavigation(
+                selection: _selectedTab,
+                workoutsLabel: _shell.workoutsLabel,
+                updateAvailable: _shell.updateAvailable,
+                onSelect: _select,
+                onQuickAdd: _quickAdd,
               ),
             ),
         ],
@@ -136,7 +142,7 @@ class _SharedAppShellState extends State<SharedAppShell> {
     );
   }
 
-  Widget _page(double bottomBarHeight) {
+  Widget _page() {
     if (_selectedTab == FudAppTab.progress) {
       return ProgressScreen(repository: widget.progressRepository);
     }
@@ -200,12 +206,13 @@ class _SharedAppShellState extends State<SharedAppShell> {
   }
 }
 
-class NeoBottomNavigation extends StatelessWidget {
-  const NeoBottomNavigation({
+class NeoRightNavigation extends StatelessWidget {
+  const NeoRightNavigation({
     required this.selection,
     required this.workoutsLabel,
     required this.updateAvailable,
     required this.onSelect,
+    required this.onQuickAdd,
     super.key,
   });
 
@@ -213,6 +220,7 @@ class NeoBottomNavigation extends StatelessWidget {
   final String workoutsLabel;
   final bool updateAvailable;
   final ValueChanged<FudAppTab> onSelect;
+  final VoidCallback onQuickAdd;
 
   @override
   Widget build(BuildContext context) {
@@ -224,83 +232,164 @@ class NeoBottomNavigation extends StatelessWidget {
       (FudAppTab.workouts, workoutsLabel.toUpperCase(), Icons.fitness_center),
     ];
     return Container(
-      height: 76,
-      padding: const EdgeInsets.all(5),
+      key: const ValueKey('navigation.rail'),
+      width: 82,
       decoration: BoxDecoration(
-        color: NeoColors.cobalt,
-        border: Border.all(color: NeoColors.ink(context), width: 2),
-        borderRadius: BorderRadius.circular(22),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.28),
-            blurRadius: 18,
-            offset: const Offset(0, 8),
-          ),
-        ],
+        color: Colors.black,
+        border: Border(left: BorderSide(color: Colors.white70, width: 1)),
       ),
-      child: Row(
-        children: tabs.map((item) {
-          final selected = item.$1 == selection;
-          final badge = updateAvailable && item.$1 == FudAppTab.settings;
-          return Expanded(
-            child: Semantics(
-              selected: selected,
-              button: true,
-              label: item.$2,
-              child: Material(
-                color: selected ? NeoColors.acid : Colors.transparent,
-                borderRadius: BorderRadius.circular(17),
+      child: Column(
+        children: [
+          Container(
+            height: 80,
+            width: double.infinity,
+            color: NeoColors.cobalt,
+            alignment: Alignment.center,
+            child: const Text(
+              'FÜD\nAI',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 22,
+                height: 0.9,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
+          ...tabs.map((item) {
+            final selected = item.$1 == selection;
+            final badge = updateAvailable && item.$1 == FudAppTab.settings;
+            return SizedBox(
+              height: 72,
+              child: Semantics(
+                selected: selected,
+                button: true,
+                label: item.$2,
                 child: InkWell(
-                  borderRadius: BorderRadius.circular(17),
+                  key: ValueKey('navigation.${item.$1.name}'),
                   onTap: () => onSelect(item.$1),
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              item.$3,
-                              color: selected ? Colors.black : Colors.white,
-                              size: 25,
-                            ),
-                            const SizedBox(height: 3),
-                            FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: Text(
-                                item.$2,
-                                maxLines: 1,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: selected
+                          ? NeoColors.cobalt.withValues(alpha: 0.18)
+                          : Colors.transparent,
+                      border: Border(
+                        left: BorderSide(
+                          color: selected
+                              ? NeoColors.cobalt
+                              : Colors.transparent,
+                          width: 4,
+                        ),
+                        bottom: BorderSide(
+                          color: Colors.white.withValues(alpha: 0.20),
+                        ),
+                      ),
+                    ),
+                    child: Stack(
+                      children: [
+                        Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                item.$3,
+                                color: selected
+                                    ? NeoColors.cobalt
+                                    : Colors.white,
+                                size: 25,
+                              ),
+                              const SizedBox(height: 5),
+                              FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(
+                                  item.$2,
+                                  maxLines: 1,
+                                  style: TextStyle(
+                                    color: selected
+                                        ? NeoColors.cobalt
+                                        : Colors.white,
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.w900,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        if (badge)
+                          Positioned(
+                            right: 8,
+                            top: 8,
+                            child: Container(
+                              width: 14,
+                              height: 14,
+                              alignment: Alignment.center,
+                              color: NeoColors.acid,
+                              child: const Text(
+                                '!',
                                 style: TextStyle(
-                                  color: selected ? Colors.black : Colors.white,
-                                  fontSize: 9.5,
+                                  color: Colors.black,
+                                  fontSize: 9,
                                   fontWeight: FontWeight.w900,
                                 ),
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                      if (badge)
-                        Positioned(
-                          right: 7,
-                          top: 3,
-                          child: Container(
-                            width: 8,
-                            height: 8,
-                            decoration: const BoxDecoration(
-                              color: Colors.red,
-                              shape: BoxShape.circle,
-                            ),
                           ),
-                        ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
+            );
+          }),
+          const Spacer(),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'TRACK.\nLEARN.\nWIN.',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 9,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 0.5,
+                ),
+              ),
             ),
-          );
-        }).toList(),
+          ),
+          const Spacer(),
+          Semantics(
+            button: true,
+            label: 'Camera and note',
+            child: InkWell(
+              key: const ValueKey('navigation.quickAdd'),
+              onTap: onQuickAdd,
+              child: Container(
+                margin: const EdgeInsets.fromLTRB(7, 6, 7, 6),
+                height: 60,
+                decoration: BoxDecoration(
+                  color: NeoColors.acid,
+                  border: Border.all(color: NeoColors.cobalt, width: 2),
+                ),
+                child: const Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.bolt, color: Colors.black, size: 29),
+                    Text(
+                      'ADD',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

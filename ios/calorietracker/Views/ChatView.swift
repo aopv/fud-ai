@@ -29,7 +29,6 @@ struct ChatView: View {
     @State private var voice = CoachVoiceRecorder()
     @State private var voicePressStart: Date?
     @State private var voicePulse = false
-    @State private var isKeyboardPresented = false
     @FocusState private var isInputFocused: Bool
 
     private var userProfile: UserProfile { profileStore.profile }
@@ -64,7 +63,6 @@ struct ChatView: View {
                 promptChips
 
                 inputArea
-                    .padding(.bottom, isKeyboardPresented ? 0 : NeoAppMetrics.bottomBarHeight + 14)
             }
             .background(NeoAppColors.canvas)
             .navigationTitle("Coach")
@@ -110,12 +108,6 @@ struct ChatView: View {
                         }
                     }
                 }
-            }
-            .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { _ in
-                isKeyboardPresented = true
-            }
-            .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in
-                isKeyboardPresented = false
             }
         }
     }

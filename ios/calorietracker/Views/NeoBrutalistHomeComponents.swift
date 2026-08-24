@@ -213,13 +213,18 @@ struct NeoCalorieSummary: View {
             .foregroundStyle(.white)
 
             VStack(spacing: 0) {
-                HStack(alignment: .lastTextBaseline, spacing: 8) {
+                HStack(alignment: .lastTextBaseline, spacing: 4) {
                     Text(delta.formatted())
                         .font(.system(.title2, design: .default, weight: .black))
                         .fontWidth(.condensed)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.65)
+                        .layoutPriority(1)
                     Text(deltaLabel)
                         .font(.system(.subheadline, design: .default, weight: .black))
                         .fontWidth(.condensed)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.75)
                     Spacer(minLength: 0)
                 }
                 .foregroundStyle(NeoHomeColors.ink)

@@ -116,7 +116,6 @@ struct ContentView: View {
     @State private var appUpdateState: AppUpdateState = .idle
     @State private var selectedTab: NeoAppTab = CommandLine.arguments.contains("--progress-tab") ? .progress : .home
     @State private var quickActionRequest: QuickActionRequest?
-    @State private var isKeyboardPresented = false
 
     private var workoutsTabIcon: String {
         WorkoutTabMode.mode(for: workoutTabModeRaw).tabIcon
@@ -132,12 +131,6 @@ struct ContentView: View {
             .onReceive(NotificationCenter.default.publisher(for: .quickActionRequested)) { _ in
                 consumePendingQuickAction()
             }
-            .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { _ in
-                isKeyboardPresented = true
-            }
-            .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in
-                isKeyboardPresented = false
-            }
             .onChange(of: scenePhase) { _, newPhase in
                 if newPhase == .active {
                     consumePendingQuickAction()
@@ -146,19 +139,19 @@ struct ContentView: View {
     }
 
     private var appShell: some View {
-        standardTabView
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .safeAreaInset(edge: .bottom, spacing: 0) {
-                if !isKeyboardPresented {
-                    NeoAppBottomNavigationBar(
-                        selection: $selectedTab,
-                        workoutsIcon: workoutsTabIcon,
-                        updateAvailable: appUpdateState.isUpdateAvailable,
-                        onQuickAdd: presentQuickAdd
-                    )
-                }
-            }
-            .background(NeoAppColors.canvas)
+        HStack(spacing: 0) {
+            standardTabView
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+            NeoAppNavigationRail(
+                selection: $selectedTab,
+                workoutsIcon: workoutsTabIcon,
+                updateAvailable: appUpdateState.isUpdateAvailable,
+                onQuickAdd: presentQuickAdd
+            )
+            .ignoresSafeArea(.keyboard, edges: .bottom)
+        }
+        .background(NeoAppColors.canvas)
     }
 
     private var standardTabView: some View {
@@ -1209,7 +1202,7 @@ struct HomeView: View {
             .environment(\.defaultMinListRowHeight, 1)
             .listSectionSpacing(10)
             .animation(.snappy, value: selectedDate)
-            .contentMargins(.bottom, NeoAppMetrics.bottomBarHeight + 104, for: .scrollContent)
+            .contentMargins(.bottom, 104, for: .scrollContent)
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
             .overlay(alignment: .bottom) {
@@ -1280,7 +1273,7 @@ struct HomeView: View {
                     .presentationCompactAdaptation(.popover)
                 }
                 .padding(.horizontal, NeoHomeMetrics.horizontalInset)
-                .padding(.bottom, NeoAppMetrics.bottomBarHeight + 18)
+                .padding(.bottom, 10)
             }
             .fullScreenCover(isPresented: $showCamera) {
                 CameraView(

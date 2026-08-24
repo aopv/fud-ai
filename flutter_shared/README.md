@@ -3,7 +3,7 @@
 This Flutter module is embedded in the existing native apps without moving
 durable data or platform capabilities out of Swift/Kotlin. Android uses the
 shared neo-brutalist shell for Home, Progress, Coach, Settings, Workouts, and
-the themed bottom navigation. iOS currently uses the shared Progress renderer
+the themed right-side navigation rail. iOS currently uses the shared Progress renderer
 inside its native SwiftUI shell.
 
 Flutter receives serializable display snapshots over

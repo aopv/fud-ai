@@ -453,7 +453,10 @@ class _TargetCard extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(10, 14, 10, 14),
       child: Column(
         children: [
-          const NeoSectionLabel('Target', color: Colors.white),
+          const FittedBox(
+            fit: BoxFit.scaleDown,
+            child: NeoSectionLabel('Target', color: Colors.white),
+          ),
           const Spacer(),
           Icon(Icons.gps_fixed, color: NeoColors.cobalt, size: 58),
           const Spacer(),

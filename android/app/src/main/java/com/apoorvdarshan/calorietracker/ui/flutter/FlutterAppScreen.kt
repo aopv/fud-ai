@@ -192,7 +192,7 @@ internal fun FlutterAppScreen(
             weightUnit = weightUnit,
             isDark = isDark,
             strings = localizedProgressStrings,
-            bottomContentInset = 112.0,
+            bottomContentInset = 0.0,
             safeAreaTop = true
         )
     }

@@ -382,7 +382,7 @@ struct WorkoutLogView: View {
                 .background(NeoAppColors.canvas.ignoresSafeArea())
                 .listSectionSpacing(NeoAppMetrics.sectionSpacing)
                 .scrollDismissesKeyboard(.interactively)
-                .contentMargins(.bottom, NeoAppMetrics.bottomBarHeight + 96, for: .scrollContent)
+                .contentMargins(.bottom, 96, for: .scrollContent)
                 .animation(.snappy, value: selectedDate)
                 .onPreferenceChange(WorkoutLogCardFramePreferenceKey.self) { frames in
                     workoutCardFrames = frames
@@ -413,10 +413,7 @@ struct WorkoutLogView: View {
                 .overlay(alignment: .bottomTrailing) {
                     addExerciseMenu
                         .padding(.horizontal, NeoAppMetrics.screenInset)
-                        .padding(
-                            .bottom,
-                            focusedSetField == nil ? NeoAppMetrics.bottomBarHeight + 32 : 24
-                        )
+                        .padding(.bottom, 24)
                         .simultaneousGesture(
                             TapGesture().onEnded(dismissSetKeyboard)
                         )
