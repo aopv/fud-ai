@@ -915,7 +915,7 @@ struct GeminiService {
             headers["Authorization"] = "Bearer \(apiKey)"
         }
         if provider == .openrouter {
-            headers["HTTP-Referer"] = "https://github.com/aopv/fud-ai"
+            headers["HTTP-Referer"] = "https://github.com/apoorvdarshan/fud-ai"
             headers["X-Title"] = "Fud AI"
         }
 

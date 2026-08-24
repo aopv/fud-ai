@@ -289,7 +289,7 @@ private struct AboutSettingsSections: View {
                 .tint(.primary)
 
                 // Open Source
-                Link(destination: URL(string: "https://github.com/aopv/fud-ai")!) {
+                Link(destination: URL(string: "https://github.com/apoorvdarshan/fud-ai")!) {
                     Label {
                         Text("Open Source (MIT)")
                     } icon: {
@@ -300,7 +300,7 @@ private struct AboutSettingsSections: View {
                 .tint(.primary)
 
                 // Star the Repo
-                Link(destination: URL(string: "https://github.com/aopv/fud-ai")!) {
+                Link(destination: URL(string: "https://github.com/apoorvdarshan/fud-ai")!) {
                     Label {
                         Text("Star on GitHub")
                     } icon: {
@@ -322,7 +322,7 @@ private struct AboutSettingsSections: View {
                 .tint(.primary)
 
                 // Report an Issue
-                Link(destination: URL(string: "https://github.com/aopv/fud-ai/issues/new?labels=bug&title=Bug:%20")!) {
+                Link(destination: URL(string: "https://github.com/apoorvdarshan/fud-ai/issues/new?labels=bug&title=Bug:%20")!) {
                     Label {
                         Text("Report an Issue")
                     } icon: {
@@ -333,7 +333,7 @@ private struct AboutSettingsSections: View {
                 .tint(.primary)
 
                 // Request a Feature
-                Link(destination: URL(string: "https://github.com/aopv/fud-ai/issues/new?labels=enhancement&title=Feature:%20")!) {
+                Link(destination: URL(string: "https://github.com/apoorvdarshan/fud-ai/issues/new?labels=enhancement&title=Feature:%20")!) {
                     Label {
                         Text("Request a Feature")
                     } icon: {

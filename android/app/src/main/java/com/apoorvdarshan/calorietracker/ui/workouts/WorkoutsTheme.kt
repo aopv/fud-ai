@@ -7,7 +7,7 @@ import com.apoorvdarshan.calorietracker.ui.theme.AppColors
 
 /**
  * Workouts theme bridge — the exercise library is ported from Delts
- * (github.com/aopv/delts), whose screens read a small resolved palette
+ * (github.com/apoorvdarshan/delts), whose screens read a small resolved palette
  * (`LocalDeltsColors.current`). This file re-implements that exact field surface
  * on top of Fud AI's theme (AppColors + the user-selectable accent), so the ported
  * screens render with Fud AI's default look while keeping their code unchanged.

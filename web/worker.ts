@@ -1,4 +1,4 @@
-const REPOSITORY = "aopv/fud-ai";
+const REPOSITORY = "apoorvdarshan/fud-ai";
 const HISTORY_KEY = "github-star-history-v1";
 const GITHUB_GRAPHQL_URL = "https://api.github.com/graphql";
 

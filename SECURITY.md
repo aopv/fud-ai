@@ -4,7 +4,7 @@
 
 If you discover a security vulnerability in Fud AI, please report it **privately** so it can be addressed before public disclosure.
 
-**Preferred:** Use GitHub's [private vulnerability reporting](https://github.com/aopv/fud-ai/security/advisories/new) — it's end-to-end private and routes directly to the maintainer.
+**Preferred:** Use GitHub's [private vulnerability reporting](https://github.com/apoorvdarshan/fud-ai/security/advisories/new) — it's end-to-end private and routes directly to the maintainer.
 
 **Alternative:** Email either of:
 

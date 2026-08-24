@@ -89,7 +89,7 @@ For a codebase overview, start with the Architecture and Source Layout sections 
 
 ## Reporting Issues
 
-Open a bug at [github.com/aopv/fud-ai/issues/new?labels=bug](https://github.com/aopv/fud-ai/issues/new?labels=bug&title=Bug:%20) with:
+Open a bug at [github.com/apoorvdarshan/fud-ai/issues/new?labels=bug](https://github.com/apoorvdarshan/fud-ai/issues/new?labels=bug&title=Bug:%20) with:
 - Steps to reproduce
 - Expected vs actual behavior
 - Device model + OS version (iPhone model + iOS version, or Android model + OS / OEM skin like OriginOS / One UI / HyperOS)
@@ -97,7 +97,7 @@ Open a bug at [github.com/aopv/fud-ai/issues/new?labels=bug](https://github.com/
 - For Siri/App Intent bugs, the exact phrase used and whether the issue happened from Siri, Shortcuts, or the in-app phrase guide
 - Screenshots or a short screen recording if relevant
 
-For feature ideas, use [the enhancement label](https://github.com/aopv/fud-ai/issues/new?labels=enhancement&title=Feature:%20).
+For feature ideas, use [the enhancement label](https://github.com/apoorvdarshan/fud-ai/issues/new?labels=enhancement&title=Feature:%20).
 
 ## Adding an AI Provider
 
@@ -134,7 +134,7 @@ If you want to chat before opening a big PR, or you hit a wall and need help:
 - **Email:** **apoorv@fud-ai.app** or **ad13dtu@gmail.com**
 - **X (Twitter):** [@apoorvdarshan](https://x.com/apoorvdarshan)
 - **Instagram:** [@fudai.app](https://www.instagram.com/fudai.app/)
-- **GitHub Issues:** [github.com/aopv/fud-ai/issues](https://github.com/aopv/fud-ai/issues)
+- **GitHub Issues:** [github.com/apoorvdarshan/fud-ai/issues](https://github.com/apoorvdarshan/fud-ai/issues)
 
 ## License
 
