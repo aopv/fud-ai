@@ -32,10 +32,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import com.apoorvdarshan.calorietracker.AppContainer
 import com.apoorvdarshan.calorietracker.services.update.AndroidUpdateChecker
 import com.apoorvdarshan.calorietracker.services.update.AndroidUpdateState
 import com.apoorvdarshan.calorietracker.ui.coach.CoachScreen
+import com.apoorvdarshan.calorietracker.ui.flutter.FlutterAppScreen
+import com.apoorvdarshan.calorietracker.ui.flutter.NativeFlutterDestination
 import com.apoorvdarshan.calorietracker.ui.home.HomeScreen
 import com.apoorvdarshan.calorietracker.ui.onboarding.OnboardingScreen
 import com.apoorvdarshan.calorietracker.ui.progress.BodyMeasurementsScreen
@@ -92,7 +96,9 @@ fun FudAINavHost(
     // Match iOS's versioned AppStorage key: reset the former library-first
     // default once, then keep every user switch persistent after that.
     val workoutMode = if (workoutModeV2Initialized) persistedWorkoutMode else WorkoutTabMode.LOG
-    val showTabs = currentRoute in FudAIRoutes.bottomTabs && !analyzing
+    // The shared Flutter shell owns the themed five-tab navigation. Native
+    // destinations are feature-preserving drill-ins and never add a second bar.
+    val showTabs = false
     val currentVersion = remember(context) { AndroidUpdateChecker.currentVersion(context) }
     var updateAvailable by remember { mutableStateOf(false) }
 
@@ -107,14 +113,10 @@ fun FudAINavHost(
     }
 
     LaunchedEffect(quickActionRequest?.id, currentRoute) {
-        if (quickActionRequest != null &&
-            currentRoute != FudAIRoutes.HOME &&
-            currentRoute != FudAIRoutes.ONBOARDING
+        if (quickActionRequest != null && currentRoute != FudAIRoutes.ONBOARDING &&
+            currentRoute != NativeFlutterDestination.HOME
         ) {
-            nav.navigate(FudAIRoutes.HOME) {
-                popUpTo(FudAIRoutes.HOME) { inclusive = false }
-                launchSingleTop = true
-            }
+            nav.navigate(NativeFlutterDestination.HOME) { launchSingleTop = true }
         }
     }
 
@@ -203,13 +205,13 @@ fun FudAINavHost(
                     })
                 }
                 composable(FudAIRoutes.HOME) {
-                    TabInset {
-                        HomeScreen(
-                            container = container,
-                            quickActionRequest = quickActionRequest,
-                            onQuickActionHandled = onQuickActionHandled
-                        )
-                    }
+                    FlutterAppScreen(
+                        container = container,
+                        activity = context as com.apoorvdarshan.calorietracker.MainActivity,
+                        settingsViewModel = settingsViewModel,
+                        updateAvailable = updateAvailable,
+                        onOpenNative = { destination -> nav.navigate(destination) }
+                    )
                 }
                 composable(FudAIRoutes.PROGRESS) { TabInset { ProgressScreen(container = container) } }
                 composable(FudAIRoutes.COACH) { TabInset { CoachScreen(container = container) } }
@@ -231,6 +233,118 @@ fun FudAINavHost(
                     BodyMeasurementsScreen(container = container, onBack = { nav.popBackStack() })
                 }
                 composable(FudAIRoutes.WORKOUTS) { TabInset { WorkoutsScreen(container = container) } }
+                composable(NativeFlutterDestination.HOME) {
+                    TabInset {
+                        HomeScreen(
+                            container = container,
+                            quickActionRequest = quickActionRequest,
+                            onQuickActionHandled = onQuickActionHandled
+                        )
+                    }
+                }
+                composable(
+                    route = NativeFlutterDestination.HOME_ACTION,
+                    arguments = listOf(navArgument("action") { type = NavType.StringType })
+                ) { entry ->
+                    val action = entry.arguments?.getString("action")
+                        ?.let { runCatching { com.apoorvdarshan.calorietracker.models.QuickAction.valueOf(it) }.getOrNull() }
+                    TabInset {
+                        HomeScreen(
+                            container = container,
+                            quickActionRequest = action?.let(::QuickActionRequest),
+                            capabilityOnly = true,
+                            onCapabilityClose = { nav.popBackStack() }
+                        )
+                    }
+                }
+                composable(
+                    route = NativeFlutterDestination.HOME_ENTRY,
+                    arguments = listOf(navArgument("entryId") { type = NavType.StringType })
+                ) { entry ->
+                    TabInset {
+                        HomeScreen(
+                            container = container,
+                            initialEntryId = entry.arguments?.getString("entryId"),
+                            capabilityOnly = true,
+                            onCapabilityClose = { nav.popBackStack() }
+                        )
+                    }
+                }
+                composable(NativeFlutterDestination.PROGRESS) {
+                    TabInset { ProgressScreen(container = container) }
+                }
+                composable(
+                    route = NativeFlutterDestination.PROGRESS_ACTION,
+                    arguments = listOf(navArgument("action") { type = NavType.StringType })
+                ) { entry ->
+                    val action = entry.arguments?.getString("action")
+                        ?.let { runCatching { com.apoorvdarshan.calorietracker.ui.progress.FlutterProgressAction.valueOf(it) }.getOrNull() }
+                    TabInset {
+                        ProgressScreen(
+                            container = container,
+                            initialAction = action,
+                            onActionFinished = { nav.popBackStack() }
+                        )
+                    }
+                }
+                composable(NativeFlutterDestination.COACH) {
+                    TabInset { CoachScreen(container = container) }
+                }
+                composable(
+                    route = NativeFlutterDestination.COACH_ACTION,
+                    arguments = listOf(navArgument("action") { type = NavType.StringType })
+                ) { entry ->
+                    TabInset {
+                        CoachScreen(
+                            container = container,
+                            initialAction = entry.arguments?.getString("action")
+                        )
+                    }
+                }
+                composable(NativeFlutterDestination.SETTINGS) {
+                    TabInset {
+                        SettingsScreen(container = container, nav = nav, vm = settingsViewModel)
+                    }
+                }
+                composable(
+                    route = NativeFlutterDestination.SETTINGS_ROW,
+                    arguments = listOf(navArgument("rowId") { type = NavType.StringType })
+                ) { entry ->
+                    TabInset {
+                        SettingsScreen(
+                            container = container,
+                            nav = nav,
+                            vm = settingsViewModel,
+                            initialRow = entry.arguments?.getString("rowId"),
+                            onInitialActionFinished = { nav.popBackStack() }
+                        )
+                    }
+                }
+                composable(NativeFlutterDestination.WORKOUTS) {
+                    TabInset { WorkoutsScreen(container = container) }
+                }
+                composable(
+                    route = NativeFlutterDestination.WORKOUTS_ACTION,
+                    arguments = listOf(navArgument("action") { type = NavType.StringType })
+                ) { entry ->
+                    TabInset {
+                        WorkoutsScreen(
+                            container = container,
+                            initialAction = entry.arguments?.getString("action")
+                        )
+                    }
+                }
+                composable(
+                    route = NativeFlutterDestination.WORKOUT_EXERCISE,
+                    arguments = listOf(navArgument("itemId") { type = NavType.StringType })
+                ) { entry ->
+                    TabInset {
+                        WorkoutsScreen(
+                            container = container,
+                            initialExerciseItemId = entry.arguments?.getString("itemId")
+                        )
+                    }
+                }
             }
         }
     }

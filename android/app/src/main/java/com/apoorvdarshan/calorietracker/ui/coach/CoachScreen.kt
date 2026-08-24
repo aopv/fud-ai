@@ -131,7 +131,7 @@ import kotlinx.coroutines.delay
  */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-fun CoachScreen(container: AppContainer) {
+fun CoachScreen(container: AppContainer, initialAction: String? = null) {
     val vm: CoachViewModel = viewModel(factory = CoachViewModel.Factory(container))
     val ui by vm.ui.collectAsState()
     var input by remember { mutableStateOf("") }
@@ -139,6 +139,7 @@ fun CoachScreen(container: AppContainer) {
     var showCameraCapture by remember { mutableStateOf(false) }
     val listState = rememberLazyListState()
     var showResetConfirm by remember { mutableStateOf(false) }
+    var handledInitialAction by remember { mutableStateOf<String?>(null) }
     val ctx = LocalContext.current
     val focusManager = LocalFocusManager.current
     val keyboard = LocalSoftwareKeyboardController.current
@@ -206,6 +207,18 @@ fun CoachScreen(container: AppContainer) {
     LaunchedEffect(voiceProvider, voiceLanguage) {
         voice.provider = voiceProvider
         voice.nativeLocale = voiceLanguage.nativeLocaleTag()
+    }
+
+    LaunchedEffect(initialAction, voice) {
+        if (initialAction == null || handledInitialAction == initialAction) return@LaunchedEffect
+        handledInitialAction = initialAction
+        when (initialAction) {
+            "camera" -> openCamera()
+            "photos" -> photoPicker.launch(
+                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+            )
+            "voice" -> voice.begin()
+        }
     }
 
     LaunchedEffect(ui.messages.size, ui.sending) {

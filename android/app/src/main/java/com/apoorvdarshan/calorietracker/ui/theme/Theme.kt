@@ -7,11 +7,11 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 
 private fun lightColors(themeColor: AppThemeColor) = lightColorScheme(
-    primary = themeColor.start,
+    primary = AppColors.NeoCobalt,
     onPrimary = AppColors.OnDark,
-    secondary = themeColor.start,
-    onSecondary = AppColors.OnDark,
-    tertiary = themeColor.start,
+    secondary = AppColors.NeoAcid,
+    onSecondary = AppColors.NeoInk,
+    tertiary = AppColors.NeoCobalt,
     onTertiary = AppColors.OnDark,
     background = AppColors.AppBackgroundLight,
     onBackground = AppColors.OnLight,
@@ -23,11 +23,11 @@ private fun lightColors(themeColor: AppThemeColor) = lightColorScheme(
 )
 
 private fun darkColors(themeColor: AppThemeColor) = darkColorScheme(
-    primary = themeColor.start,
+    primary = AppColors.NeoCobalt,
     onPrimary = AppColors.OnDark,
-    secondary = themeColor.start,
-    onSecondary = AppColors.OnDark,
-    tertiary = themeColor.start,
+    secondary = AppColors.NeoAcid,
+    onSecondary = AppColors.NeoInk,
+    tertiary = AppColors.NeoCobalt,
     onTertiary = AppColors.OnDark,
     background = AppColors.AppBackgroundDark,
     onBackground = AppColors.OnDark,

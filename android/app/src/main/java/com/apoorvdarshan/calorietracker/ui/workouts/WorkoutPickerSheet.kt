@@ -28,7 +28,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
@@ -228,7 +227,7 @@ internal fun WorkoutPickerSheet(
         },
         sheetState = sheetState,
         sheetGesturesEnabled = previewItem == null,
-        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
+        shape = RoundedCornerShape(0.dp),
         containerColor = MaterialTheme.colorScheme.background,
         dragHandle = null,
         properties = ModalBottomSheetProperties(
@@ -399,10 +398,10 @@ internal fun WorkoutPickerSheet(
                                         Box(
                                             modifier = Modifier
                                                 .size(34.dp)
-                                                .clip(CircleShape)
+                                                .clip(RoundedCornerShape(0.dp))
                                                 .background(
-                                                    if (item.id in selectedExerciseIds) AppColors.Calorie
-                                                    else workoutsColors().panel.copy(alpha = 0.52f)
+                                                    if (item.id in selectedExerciseIds) AppColors.NeoAcid
+                                                    else AppColors.NeoInk
                                                 )
                                                 .clickable { onToggleExercise(item) },
                                             contentAlignment = Alignment.Center
@@ -410,7 +409,7 @@ internal fun WorkoutPickerSheet(
                                             Icon(
                                                 if (item.id in selectedExerciseIds) Icons.Filled.Check else Icons.Filled.AddCircle,
                                                 contentDescription = if (item.id in selectedExerciseIds) "Remove from day" else "Add to day",
-                                                tint = if (item.id in selectedExerciseIds) androidx.compose.ui.graphics.Color.White else workoutsColors().mutedText,
+                                                tint = if (item.id in selectedExerciseIds) AppColors.NeoInk else androidx.compose.ui.graphics.Color.White,
                                                 modifier = Modifier.size(if (item.id in selectedExerciseIds) 18.dp else 23.dp)
                                             )
                                         }
@@ -467,14 +466,14 @@ private fun ExercisePickerPreview(
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp, vertical = 18.dp),
-            cornerRadius = 30.dp,
+            cornerRadius = 0.dp,
             padding = 6.dp
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(CircleShape)
-                    .background(if (isSelected) colors.panel else AppColors.Calorie)
+                    .clip(RoundedCornerShape(0.dp))
+                    .background(if (isSelected) colors.panel else AppColors.NeoAcid)
                     .clickable { onToggle() }
                     .padding(horizontal = 20.dp, vertical = 14.dp),
                 verticalAlignment = Alignment.CenterVertically,
@@ -483,13 +482,13 @@ private fun ExercisePickerPreview(
                 Icon(
                     if (isSelected) Icons.Filled.Check else Icons.Filled.AddCircle,
                     contentDescription = null,
-                    tint = if (isSelected) colors.accent else androidx.compose.ui.graphics.Color.White,
+                    tint = if (isSelected) colors.accent else AppColors.NeoInk,
                     modifier = Modifier.size(21.dp)
                 )
                 Spacer(Modifier.size(8.dp))
                 Text(
                     if (isSelected) "Remove from day" else "Add exercise",
-                    color = if (isSelected) colors.charcoal else androidx.compose.ui.graphics.Color.White,
+                    color = if (isSelected) colors.charcoal else AppColors.NeoInk,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.ExtraBold
                 )
@@ -530,7 +529,7 @@ private fun PickerSourceControl(
     onSelect: (WorkoutPickerSource) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    FudGlassSurface(modifier = modifier.fillMaxWidth(), cornerRadius = 18.dp, padding = 4.dp) {
+    FudGlassSurface(modifier = modifier.fillMaxWidth(), cornerRadius = 0.dp, padding = 4.dp) {
         Row(Modifier.fillMaxWidth()) {
             listOf(
                 WorkoutPickerSource.DATASET to "Dataset",
@@ -540,8 +539,8 @@ private fun PickerSourceControl(
                 Row(
                     modifier = Modifier
                         .weight(1f)
-                        .clip(RoundedCornerShape(14.dp))
-                        .background(if (selected) AppColors.Calorie.copy(alpha = 0.14f) else androidx.compose.ui.graphics.Color.Transparent)
+                        .clip(RoundedCornerShape(0.dp))
+                        .background(if (selected) AppColors.NeoAcid else androidx.compose.ui.graphics.Color.Transparent)
                         .clickable { onSelect(option) }
                         .padding(vertical = 10.dp),
                     verticalAlignment = Alignment.CenterVertically,
@@ -550,13 +549,13 @@ private fun PickerSourceControl(
                     Icon(
                         if (option == WorkoutPickerSource.DATASET) Icons.Filled.Storage else Icons.Filled.Bookmark,
                         contentDescription = null,
-                        tint = if (selected) AppColors.Calorie else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.48f),
+                        tint = if (selected) AppColors.NeoInk else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.48f),
                         modifier = Modifier.size(17.dp)
                     )
                     Spacer(Modifier.width(7.dp))
                     Text(
                         label,
-                        color = if (selected) AppColors.Calorie else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.62f),
+                        color = if (selected) AppColors.NeoInk else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.62f),
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -608,7 +607,7 @@ internal fun WorkoutCopySheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
+        shape = RoundedCornerShape(0.dp),
         containerColor = MaterialTheme.colorScheme.background
     ) {
         Column(
@@ -645,7 +644,7 @@ internal fun WorkoutCopySheet(
                     items(days, key = { it.date }) { day ->
                         FudGlassSurface(
                             modifier = Modifier.fillMaxWidth().clickable { onCopy(day.date) },
-                            cornerRadius = 18.dp,
+                        cornerRadius = 0.dp,
                             padding = 13.dp
                         ) {
                             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(11.dp)) {

@@ -46,10 +46,14 @@ import java.util.Locale
  * repositories, and all durable data remain native.
  */
 @Composable
-fun ProgressScreen(container: AppContainer) {
+internal fun ProgressScreen(
+    container: AppContainer,
+    initialAction: FlutterProgressAction? = null,
+    onActionFinished: (() -> Unit)? = null
+) {
     val activity = LocalContext.current.findMainActivity()
-    if (activity == null || activity.intent.getBooleanExtra(NATIVE_PROGRESS_EXTRA, false)) {
-        NativeProgressScreen(container)
+    if (initialAction != null || activity == null || activity.intent.getBooleanExtra(NATIVE_PROGRESS_EXTRA, false)) {
+        NativeProgressScreen(container, initialAction, onActionFinished)
         return
     }
     FlutterProgressScreen(container = container, activity = activity)
@@ -290,7 +294,7 @@ private fun FlutterProgressScreen(container: AppContainer, activity: MainActivit
     }
 }
 
-private fun progressStrings(context: Context): Map<String, String> {
+internal fun progressStrings(context: Context): Map<String, String> {
     val locale = context.resources.configuration.locales[0] ?: Locale.getDefault()
     fun upper(resource: Int): String = context.getString(resource).uppercase(locale)
     return mapOf(

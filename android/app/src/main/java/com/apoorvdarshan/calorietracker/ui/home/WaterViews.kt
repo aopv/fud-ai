@@ -90,7 +90,7 @@ fun WaterCustomAmountSheet(unit: WaterUnit, onDismiss: () -> Unit, onAdd: (Int) 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)
+        shape = RoundedCornerShape(0.dp)
     ) {
         Column(
             Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp),

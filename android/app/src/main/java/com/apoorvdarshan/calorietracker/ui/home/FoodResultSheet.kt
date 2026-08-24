@@ -169,7 +169,7 @@ fun FoodResultSheet(
     var mealMenuExpanded by remember { mutableStateOf(false) }
     var servingMenuExpanded by remember { mutableStateOf(false) }
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
-    val sheetSurface = if (isDark) MaterialTheme.colorScheme.surface else Color(0xFFFAF3EE)
+    val sheetSurface = if (isDark) AppColors.NeoInk else AppColors.NeoPaper
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
     val dismissKeyboard = {
@@ -281,7 +281,7 @@ fun FoodResultSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = state,
-        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
+        shape = RoundedCornerShape(0.dp),
         containerColor = sheetSurface
     ) {
         SheetReviewToolbar(

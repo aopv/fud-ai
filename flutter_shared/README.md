@@ -1,15 +1,17 @@
 # Fud AI shared presentation
 
-This Flutter module is embedded in the existing native apps one screen at a
-time. SwiftUI and Compose remain the production shells: they own native
-navigation, health integrations, widgets, camera flows, and every persisted
-store.
+This Flutter module is embedded in the existing native apps without moving
+durable data or platform capabilities out of Swift/Kotlin. Android uses the
+shared neo-brutalist shell for Home, Progress, Coach, Settings, Workouts, and
+the themed bottom navigation. iOS currently uses the shared Progress renderer
+inside its native SwiftUI shell.
 
-The first migrated surface is **Progress**. Flutter receives a serializable
-display snapshot over `com.apoorvdarshan.fudai/progress`. Log, history, and
-delete actions return to the existing SwiftUI or Compose sheets and repository
-methods. The module never writes preferences, files, health data, or backend
-state itself.
+Flutter receives serializable display snapshots over
+`com.apoorvdarshan.fudai/app` and `com.apoorvdarshan.fudai/progress`. Actions
+return to the existing Swift/Kotlin repositories and narrowly targeted native
+capability screens for camera, voice, health permissions, file import/export,
+and other OS-owned flows. The module never writes preferences, files, health
+data, or backend state itself.
 
 ## Prepare the iOS package
 
@@ -36,8 +38,8 @@ FUD_AI_FLUTTER_BIN=/absolute/path/to/flutter \
 ```
 
 The Android app resolves the generated Debug or Release AAR while retaining
-its Compose shell, native bottom navigation, DataStore, repositories, and
-Health Connect behavior.
+DataStore, repositories, Health Connect, camera/media integrations, and all
+existing user data. Native capability sheets use the same v7 visual tokens.
 
 ## Verify
 

@@ -149,7 +149,7 @@ fun EditFoodEntrySheet(
     var showDatePicker by remember { mutableStateOf(false) }
     var showTimePicker by remember { mutableStateOf(false) }
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
-    val sheetSurface = if (isDark) MaterialTheme.colorScheme.surface else Color(0xFFFAF3EE)
+    val sheetSurface = if (isDark) AppColors.NeoInk else AppColors.NeoPaper
     val context = LocalContext.current
     val reprocessingFailed = stringResource(R.string.edit_reprocessing_failed)
     val dateFormatter = remember { DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.US) }
@@ -277,7 +277,7 @@ fun EditFoodEntrySheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = state,
-        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
+        shape = RoundedCornerShape(0.dp),
         containerColor = sheetSurface
     ) {
         // While the note differs from what's saved, the primary button becomes

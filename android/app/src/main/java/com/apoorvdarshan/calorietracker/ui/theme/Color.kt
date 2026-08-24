@@ -39,6 +39,12 @@ enum class AppThemeColor(
 }
 
 object AppColors {
+    /** Fixed brand colors for the v7 neo-brutalist presentation. */
+    val NeoCobalt = Color(0xFF3F66E8)
+    val NeoAcid = Color(0xFFEFFF00)
+    val NeoInk = Color(0xFF050505)
+    val NeoPaper = Color(0xFFF8F8F2)
+
     private var activeThemeColor: AppThemeColor = AppThemeColor.FUD_PINK
 
     fun setThemeColor(themeColor: AppThemeColor) {
@@ -49,10 +55,10 @@ object AppColors {
         get() = activeThemeColor
 
     val CalorieStart: Color
-        get() = activeThemeColor.start
+        get() = NeoCobalt
 
     val CalorieEnd: Color
-        get() = activeThemeColor.end
+        get() = NeoCobalt
 
     val Calorie: Color
         get() = CalorieStart
@@ -69,11 +75,11 @@ object AppColors {
     val CalorieGradient: Brush
         get() = Brush.linearGradient(listOf(CalorieStart, CalorieEnd))
 
-    val AppBackgroundLight = Color(0xFFF3ECE6)
-    val AppBackgroundDark = Color(0xFF0C0C0C)
+    val AppBackgroundLight = NeoPaper
+    val AppBackgroundDark = NeoInk
 
     val AppCardLight = Color(0xFFFFFFFF)
-    val AppCardDark = Color(0xFF1C1C1E)
+    val AppCardDark = Color(0xFF101010)
 
     val OnLight = Color(0xFF1C1C1E)
     val OnDark = Color(0xFFF2F2F7)

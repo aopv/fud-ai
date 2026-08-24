@@ -122,10 +122,13 @@ internal fun WorkoutDiaryScreen(
     viewModel: WorkoutsViewModel,
     modifier: Modifier = Modifier,
     weekStartsOnMonday: Boolean = true,
+    initialSheet: String? = null,
     onShowLibrary: () -> Unit
 ) {
-    var pickerRequest by remember { mutableStateOf<WorkoutPickerRequest?>(null) }
-    var copySheetVisible by remember { mutableStateOf(false) }
+    var pickerRequest by remember(initialSheet) {
+        mutableStateOf(if (initialSheet == "add") WorkoutPickerRequest.all() else null)
+    }
+    var copySheetVisible by remember(initialSheet) { mutableStateOf(initialSheet == "copy") }
     var addMenuExpanded by remember { mutableStateOf(false) }
     val listState = rememberLazyListState()
     val focusManager = LocalFocusManager.current
@@ -456,7 +459,7 @@ private fun WorkoutBurnHero(
 
         FudGlassSurface(
             modifier = Modifier.fillMaxWidth(),
-            cornerRadius = 26.dp,
+            cornerRadius = 0.dp,
             padding = 10.dp
         ) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
@@ -657,7 +660,7 @@ private fun WorkoutEmptyState(
         modifier = modifier
             .fillMaxWidth()
             .clickable(onClick = onAdd),
-        cornerRadius = 20.dp,
+        cornerRadius = 0.dp,
         padding = 14.dp
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -697,7 +700,7 @@ private fun WorkoutExerciseCard(
 ) {
     FudGlassSurface(
         modifier = modifier.fillMaxWidth(),
-        cornerRadius = 24.dp,
+        cornerRadius = 0.dp,
         padding = 0.dp
     ) {
         Column(
@@ -714,12 +717,12 @@ private fun WorkoutExerciseCard(
                 Box(
                     modifier = Modifier
                         .size(64.dp)
-                        .clip(RoundedCornerShape(16.dp))
+                        .clip(RoundedCornerShape(0.dp))
                         .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.42f))
                         .border(
-                            0.7.dp,
-                            MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.55f),
-                            RoundedCornerShape(16.dp)
+                            2.dp,
+                            AppColors.NeoInk,
+                            RoundedCornerShape(0.dp)
                         )
                 ) {
                     AnimatedExerciseImage(exercise.imagePaths, Modifier.fillMaxSize())
@@ -889,7 +892,7 @@ private fun WorkoutSetField(
     modifier: Modifier = Modifier,
     keyboardActions: KeyboardActions = KeyboardActions.Default
 ) {
-    val shape = RoundedCornerShape(11.dp)
+    val shape = RoundedCornerShape(0.dp)
     BasicTextField(
         value = value,
         onValueChange = onValueChange,
@@ -910,7 +913,7 @@ private fun WorkoutSetField(
             .height(39.dp)
             .clip(shape)
             .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.62f))
-            .border(0.6.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f), shape)
+            .border(2.dp, AppColors.NeoInk, shape)
             .padding(horizontal = 7.dp),
         decorationBox = { inner ->
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

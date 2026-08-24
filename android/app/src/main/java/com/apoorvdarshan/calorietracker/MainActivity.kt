@@ -24,6 +24,7 @@ import com.apoorvdarshan.calorietracker.services.MealShare
 import com.apoorvdarshan.calorietracker.services.QuickActionShortcutManager
 import com.apoorvdarshan.calorietracker.services.ReviewPrompter
 import com.apoorvdarshan.calorietracker.ui.home.ImportSharedMealSheet
+import com.apoorvdarshan.calorietracker.ui.flutter.AppFlutterBridge
 import com.apoorvdarshan.calorietracker.ui.navigation.FudAINavHost
 import com.apoorvdarshan.calorietracker.ui.progress.ProgressFlutterBridge
 import com.apoorvdarshan.calorietracker.ui.theme.AppThemeColor
@@ -41,13 +42,16 @@ import io.flutter.embedding.engine.FlutterEngine
 
 open class MainActivity : FragmentActivity(), FlutterEngineConfigurator {
     internal val progressFlutterBridge = ProgressFlutterBridge()
+    internal val appFlutterBridge = AppFlutterBridge()
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         progressFlutterBridge.attach(flutterEngine)
+        appFlutterBridge.attach(flutterEngine)
     }
 
     override fun cleanUpFlutterEngine(flutterEngine: FlutterEngine) {
         progressFlutterBridge.detach(flutterEngine)
+        appFlutterBridge.detach(flutterEngine)
     }
 
     // Shared-meal deep link (issue #107). Non-empty -> the confirm sheet is shown over the app.

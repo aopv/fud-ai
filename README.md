@@ -27,7 +27,7 @@
 
 Open-source, privacy-first calorie tracker for iOS and Android. Bring your own AI provider — 13 supported including Gemini, OpenAI, Claude, Grok, Groq, Hugging Face, Fireworks AI, DeepInfra, Mistral, and any custom OpenAI-compatible endpoint. Capture or import up to 10 food photos with an optional note, scan a barcode, ask your AI coach how to hit your goal, speak your lunch, or use Siri Shortcuts on iOS to log food and weight. On supported iPhones, food-description analysis for text, voice-transcribed, and Siri food logs can use Apple Intelligence on-device as the final fallback after BYOK provider/fallback attempts fail. No accounts, Fud AI cloud sync, tracking, or ads — completely free.
 
-iOS 7.0 (build 34) and Android 7.0 (versionCode 35) introduce the neo-brutalist visual system and a shared Flutter Progress surface inside the existing native apps. SwiftUI and Compose still own navigation, platform integrations, dialogs, and every persisted store, so normal updates preserve existing local and Health data. The optional intermittent-fasting tracker remains available alongside the existing nutrition and workout tools.
+iOS 7.0 (build 34) and Android 7.0 (versionCode 35) introduce the neo-brutalist visual system. Android's five main surfaces and themed bottom navigation use the shared Flutter presentation, while targeted Kotlin screens retain camera, voice, Health Connect, import/export, and other OS-owned flows. iOS retains its SwiftUI shell and shared Progress renderer. Every persisted store remains native, so normal updates preserve existing local and Health data.
 
 The app also includes faster Saved Meal reuse, current-time meal copying, export of every stored nutrient, selectable water units, water progress on Apple Watch, current AI model presets, configurable timeouts for Ollama/custom endpoints, and reliability fixes across widgets, settings, images, and provider responses. Normal updates preserve existing local and Health data.
 
@@ -264,7 +264,7 @@ All values can be manually overridden in Settings, with a **Recalculate Goals** 
 fud-ai/
 ├── ios/            # SwiftUI iOS app (v7.0 build 34)
 ├── android/        # Kotlin + Jetpack Compose app (Android 8.0+, v7.0 / versionCode 35)
-├── flutter_shared/ # Shared presentation module, currently used by the Progress tab
+├── flutter_shared/ # Shared neo presentation (full Android shell + Progress on iOS)
 ├── web/            # Marketing site — https://fud-ai.app (static HTML/CSS, Cloudflare Workers)
 ├── APPSTORE.md   # App Store Connect listing copy (iOS)
 ├── PLAYSTORE.md  # Google Play Console listing copy (Android)

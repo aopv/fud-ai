@@ -67,7 +67,7 @@ fun MultiPhotoCaptureSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = state,
-        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
+        shape = RoundedCornerShape(0.dp),
         containerColor = MaterialTheme.colorScheme.surface
     ) {
         SheetReviewToolbar(

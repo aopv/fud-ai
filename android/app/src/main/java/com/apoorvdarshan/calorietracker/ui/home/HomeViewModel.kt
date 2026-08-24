@@ -386,7 +386,8 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
         mealType: MealType = MealType.currentMeal,
         selectedServingUnit: String? = null,
         selectedServingQuantity: Double? = null,
-        editedAnalysis: FoodAnalysis? = null
+        editedAnalysis: FoodAnalysis? = null,
+        onComplete: () -> Unit = {}
     ) {
         val analysis = editedAnalysis ?: _ui.value.pendingAnalysis ?: return
         val reviewSource = _ui.value.pendingReviewSource
@@ -467,6 +468,7 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
                 pendingDraftAdditionalImageFilenames = emptyList(),
                 pendingReviewSource = null
             )
+            onComplete()
         }
     }
 
@@ -541,9 +543,10 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
         }
     }
 
-    fun updateEntry(entry: FoodEntry) {
+    fun updateEntry(entry: FoodEntry, onComplete: () -> Unit = {}) {
         viewModelScope.launch {
             container.foodRepository.updateEntry(entry)
+            onComplete()
         }
     }
 
@@ -574,7 +577,8 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
         carbs: Double,
         fat: Double,
         fiber: Double?,
-        mealType: MealType = MealType.currentMeal
+        mealType: MealType = MealType.currentMeal,
+        onComplete: () -> Unit = {}
     ) {
         viewModelScope.launch {
             container.foodRepository.addEntry(
@@ -590,6 +594,7 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
                     mealType = mealType
                 )
             )
+            onComplete()
         }
     }
 

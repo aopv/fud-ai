@@ -186,6 +186,9 @@ private enum class AddMenuGroup {
 fun HomeScreen(
     container: AppContainer,
     quickActionRequest: QuickActionRequest? = null,
+    initialEntryId: String? = null,
+    capabilityOnly: Boolean = false,
+    onCapabilityClose: (() -> Unit)? = null,
     onQuickActionHandled: (Long) -> Unit = {}
 ) {
     val vm: HomeViewModel = viewModel(factory = HomeViewModel.Factory(container))
@@ -204,6 +207,7 @@ fun HomeScreen(
     var addMenuGroup by remember { mutableStateOf<AddMenuGroup?>(null) }
     var showSortMenu by remember { mutableStateOf(false) }
     var editingEntry by remember { mutableStateOf<FoodEntry?>(null) }
+    var handledInitialEntryId by remember { mutableStateOf<String?>(null) }
     var showNutritionDetail by remember { mutableStateOf(false) }
     var showCustomWaterLog by remember { mutableStateOf(false) }
     var showFastingStart by remember { mutableStateOf(false) }
@@ -213,6 +217,18 @@ fun HomeScreen(
     var showMultiPhotoCapture by remember { mutableStateOf(false) }
     var pendingCaptureImageBytes by remember { mutableStateOf<List<ByteArray>>(emptyList()) }
     var isImportingPhotos by remember { mutableStateOf(false) }
+    val finishCapability = {
+        if (capabilityOnly) onCapabilityClose?.invoke()
+    }
+
+    LaunchedEffect(initialEntryId, allEntries) {
+        if (initialEntryId != null && handledInitialEntryId != initialEntryId) {
+            allEntries.firstOrNull { it.id.toString() == initialEntryId }?.let {
+                editingEntry = it
+                handledInitialEntryId = initialEntryId
+            }
+        }
+    }
 
     val photoPicker = rememberLauncherForActivityResult(
         ActivityResultContracts.PickMultipleVisualMedia(maxItems = 10)
@@ -225,6 +241,7 @@ fun HomeScreen(
             pendingCaptureImageBytes = (pendingCaptureImageBytes + imported).take(10)
         }
         if (pendingCaptureImageBytes.isNotEmpty()) showMultiPhotoCapture = true
+        else finishCapability()
     }
 
     val cameraPermission = rememberLauncherForActivityResult(
@@ -233,7 +250,7 @@ fun HomeScreen(
         if (granted) {
             pendingCaptureImageBytes = emptyList()
             showCameraCapture = true
-        }
+        } else finishCapability()
     }
 
     fun openCamera() {
@@ -251,7 +268,7 @@ fun HomeScreen(
     val barcodePermission = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
-        if (granted) showBarcodeScanner = true
+        if (granted) showBarcodeScanner = true else finishCapability()
     }
 
     fun openBarcodeScanner() {
@@ -324,6 +341,43 @@ fun HomeScreen(
         }.sortedByDescending { it.endedAt }
     }
 
+    // Targeted native capability routes keep a minimal v7 backdrop behind the
+    // camera/editor sheet instead of flashing the retired native Home layout.
+    if (capabilityOnly) {
+        Box(
+            Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(24.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            FudGlassSurface(modifier = Modifier.fillMaxWidth(), padding = 22.dp) {
+                Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+                    Text(
+                        "FÜD AI",
+                        color = AppColors.NeoCobalt,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Black
+                    )
+                    Text(
+                        if (initialEntryId != null) "EDIT FOOD" else "ADD FOOD",
+                        fontSize = 34.sp,
+                        fontWeight = FontWeight.Black
+                    )
+                    Text(
+                        "Complete the native capability, then return to your shared diary.",
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.66f)
+                    )
+                    if (onCapabilityClose != null) {
+                        FudGlassPrimaryButton(
+                            text = "Back to Füd AI",
+                            onClick = onCapabilityClose
+                        )
+                    }
+                }
+            }
+        }
+    } else {
     // No topBar: the empty TopAppBar used to act as the status-bar spacer, but the
     // ad strip above this screen (TabWithBanner) now owns that inset.
     Scaffold(
@@ -614,10 +668,14 @@ fun HomeScreen(
         }
         }
     }
+    }
 
     if (showText) {
         TextInputDialog(
-            onDismiss = { showText = false },
+            onDismiss = {
+                showText = false
+                finishCapability()
+            },
             onSubmit = { showText = false; vm.analyzeText(it) }
         )
     }
@@ -666,17 +724,23 @@ fun HomeScreen(
     if (showVoice) {
         VoiceInputSheet(
             container = container,
-            onDismiss = { showVoice = false },
+            onDismiss = {
+                showVoice = false
+                finishCapability()
+            },
             onSubmit = { showVoice = false; vm.analyzeText(it) }
         )
     }
 
     if (showManual) {
         ManualEntryDialog(
-            onDismiss = { showManual = false },
+            onDismiss = {
+                showManual = false
+                finishCapability()
+            },
             onSave = { name, kcal, p, c, f, fiber, meal ->
                 showManual = false
-                vm.saveManualEntry(name, kcal, p, c, f, fiber, meal)
+                vm.saveManualEntry(name, kcal, p, c, f, fiber, meal, finishCapability)
             }
         )
     }
@@ -710,7 +774,10 @@ fun HomeScreen(
                 showBarcodeScanner = false
                 vm.lookupBarcode(barcode)
             },
-            onDismiss = { showBarcodeScanner = false }
+            onDismiss = {
+                showBarcodeScanner = false
+                finishCapability()
+            }
         )
     }
 
@@ -725,7 +792,7 @@ fun HomeScreen(
                 showCameraCapture = false
                 if (pendingCaptureImageBytes.isNotEmpty()) {
                     showMultiPhotoCapture = true
-                }
+                } else finishCapability()
             }
         )
     }
@@ -757,6 +824,7 @@ fun HomeScreen(
             onDismiss = {
                 showMultiPhotoCapture = false
                 pendingCaptureImageBytes = emptyList()
+                finishCapability()
             }
         )
     }
@@ -769,10 +837,13 @@ fun HomeScreen(
                 vm.reprocessFoodEntry(entry, updatedNote)
             },
             onSave = { updated ->
-                vm.updateEntry(updated)
                 editingEntry = null
+                vm.updateEntry(updated, finishCapability)
             },
-            onDismiss = { editingEntry = null }
+            onDismiss = {
+                editingEntry = null
+                finishCapability()
+            }
         )
     }
 
@@ -807,22 +878,32 @@ fun HomeScreen(
                     mealType = mealType,
                     selectedServingUnit = selectedServingUnit,
                     selectedServingQuantity = selectedServingQuantity,
-                    editedAnalysis = editedAnalysis
+                    editedAnalysis = editedAnalysis,
+                    onComplete = finishCapability
                 )
             },
-            onDismiss = { vm.dismissPending() }
+            onDismiss = {
+                vm.dismissPending()
+                finishCapability()
+            }
         )
     }
 
     ui.error?.let { err ->
-        FudGlassDialog(onDismissRequest = { vm.dismissPending() }) {
+        FudGlassDialog(onDismissRequest = {
+            vm.dismissPending()
+            finishCapability()
+        }) {
             Text(stringResource(R.string.error_title), fontSize = 21.sp, fontWeight = FontWeight.Bold)
             Text(err, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.68f))
             FudGlassDialogActions(
                 primaryText = stringResource(R.string.action_retry),
                 onPrimary = { vm.retryPendingAnalysis() },
                 dismissText = stringResource(R.string.action_cancel),
-                onDismiss = { vm.dismissPending() }
+                onDismiss = {
+                    vm.dismissPending()
+                    finishCapability()
+                }
             )
         }
     }
@@ -1858,7 +1939,7 @@ private fun CopyFromDaySheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = state,
-        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
+        shape = RoundedCornerShape(0.dp),
         containerColor = MaterialTheme.colorScheme.background
     ) {
         SheetReviewToolbar(

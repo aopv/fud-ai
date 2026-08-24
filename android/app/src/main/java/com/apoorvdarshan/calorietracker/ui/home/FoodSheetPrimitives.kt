@@ -16,8 +16,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
@@ -117,7 +117,7 @@ private fun SheetToolbarPill(
     compact: Boolean = false,
     onClick: () -> Unit
 ) {
-    val shape = CircleShape
+    val shape = RoundedCornerShape(0.dp)
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
     val horizontalPadding = when {
         compact && bold -> 12.dp
@@ -127,22 +127,15 @@ private fun SheetToolbarPill(
     val modifier = if (bold) {
         Modifier
             .clip(shape)
-            .background(Brush.linearGradient(listOf(AppColors.CalorieStart, AppColors.CalorieEnd)))
+            .background(AppColors.NeoAcid)
+            .border(2.dp, AppColors.NeoInk, shape)
     } else {
         Modifier
             .clip(shape)
-            .background(if (isDark) MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.42f) else Color(0xFFEDE3DD).copy(alpha = 0.82f))
-            .background(
-                Brush.verticalGradient(
-                    listOf(
-                        Color.White.copy(alpha = if (isDark) 0.08f else 0.24f),
-                        Color.White.copy(alpha = if (isDark) 0.02f else 0.06f)
-                    )
-                )
-            )
+            .background(if (isDark) AppColors.NeoInk else Color.White)
             .border(
-                0.7.dp,
-                Color.White.copy(alpha = if (isDark) 0.10f else 0.48f),
+                2.dp,
+                if (isDark) Color.White else AppColors.NeoInk,
                 shape
             )
     }
@@ -153,9 +146,9 @@ private fun SheetToolbarPill(
     ) {
         Text(
             label,
-            color = if (bold) Color.White else AppColors.Calorie,
+            color = if (bold) AppColors.NeoInk else AppColors.NeoCobalt,
             fontSize = if (compact) 15.sp else 16.sp,
-            fontWeight = if (bold) FontWeight.SemiBold else FontWeight.Medium
+            fontWeight = FontWeight.Black
         )
     }
 }
@@ -166,7 +159,7 @@ internal fun SheetSectionHeader(title: String) {
         title,
         fontSize = 14.sp,
         fontWeight = FontWeight.SemiBold,
-        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
+        color = AppColors.NeoCobalt,
         modifier = Modifier.padding(start = 18.dp, top = 8.dp, bottom = 4.dp)
     )
 }
@@ -176,32 +169,19 @@ internal fun SheetPillRow(
     onClick: (() -> Unit)? = null,
     content: @Composable RowScope.() -> Unit
 ) {
-    val shape = RoundedCornerShape(24.dp)
+    val shape = RoundedCornerShape(0.dp)
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
     val rowFill = if (isDark) {
-        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.38f)
+        AppColors.NeoInk
     } else {
-        Color(0xFFE9DCD5).copy(alpha = 0.82f)
+        Color.White
     }
-    val rowSheen = Brush.verticalGradient(
-        listOf(
-            Color.White.copy(alpha = if (isDark) 0.075f else 0.18f),
-            Color.White.copy(alpha = if (isDark) 0.018f else 0.04f),
-            AppColors.Calorie.copy(alpha = if (isDark) 0.022f else 0.060f)
-        )
-    )
-    val rowBorder = Brush.linearGradient(
-        listOf(
-            Color.White.copy(alpha = if (isDark) 0.14f else 0.50f),
-            AppColors.Calorie.copy(alpha = if (isDark) 0.07f else 0.18f)
-        )
-    )
+    val rowBorder = if (isDark) Color.White else AppColors.NeoInk
     val base = Modifier
         .fillMaxWidth()
         .clip(shape)
         .background(rowFill)
-        .background(rowSheen)
-        .border(0.7.dp, rowBorder, shape)
+        .border(2.dp, rowBorder, shape)
     val withClick = if (onClick != null) base.clickable(onClick = onClick) else base
     Row(
         withClick.padding(horizontal = 18.dp, vertical = 15.dp),
@@ -212,33 +192,20 @@ internal fun SheetPillRow(
 
 @Composable
 internal fun SheetPillCard(content: @Composable ColumnScope.() -> Unit) {
-    val shape = RoundedCornerShape(24.dp)
+    val shape = RoundedCornerShape(0.dp)
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
     val cardFill = if (isDark) {
-        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.38f)
+        AppColors.NeoInk
     } else {
-        Color(0xFFE9DCD5).copy(alpha = 0.82f)
+        Color.White
     }
-    val cardSheen = Brush.verticalGradient(
-        listOf(
-            Color.White.copy(alpha = if (isDark) 0.075f else 0.18f),
-            Color.White.copy(alpha = if (isDark) 0.018f else 0.04f),
-            AppColors.Calorie.copy(alpha = if (isDark) 0.022f else 0.060f)
-        )
-    )
-    val cardBorder = Brush.linearGradient(
-        listOf(
-            Color.White.copy(alpha = if (isDark) 0.14f else 0.50f),
-            AppColors.Calorie.copy(alpha = if (isDark) 0.07f else 0.18f)
-        )
-    )
+    val cardBorder = if (isDark) Color.White else AppColors.NeoInk
     Column(
         Modifier
             .fillMaxWidth()
             .clip(shape)
             .background(cardFill)
-            .background(cardSheen)
-            .border(0.7.dp, cardBorder, shape)
+            .border(2.dp, cardBorder, shape)
             .padding(vertical = 4.dp),
         content = content
     )

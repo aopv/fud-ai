@@ -93,7 +93,12 @@ import com.apoorvdarshan.calorietracker.data.ExerciseSort
 import com.apoorvdarshan.calorietracker.ui.workouts.WorkoutsViewModel
 
 @Composable
-fun WorkoutsScreen(container: AppContainer, modifier: Modifier = Modifier) {
+fun WorkoutsScreen(
+    container: AppContainer,
+    modifier: Modifier = Modifier,
+    initialAction: String? = null,
+    initialExerciseItemId: String? = null
+) {
     val context = LocalContext.current
     val repo = remember { ExerciseRepository.get(context) }
     val vm: WorkoutsViewModel = viewModel()
@@ -110,6 +115,17 @@ fun WorkoutsScreen(container: AppContainer, modifier: Modifier = Modifier) {
             currentBodyWeightKg = bodyWeightKg,
             weightUnit = weightUnit
         )
+    }
+
+    LaunchedEffect(initialAction) {
+        if (initialAction == "add" || initialAction == "copy") {
+            vm.setMode(WorkoutTabMode.LOG)
+        }
+    }
+    LaunchedEffect(initialExerciseItemId) {
+        if (!initialExerciseItemId.isNullOrBlank()) {
+            vm.openExerciseId = initialExerciseItemId
+        }
     }
 
     val openItem = vm.openExerciseSnapshot
@@ -132,6 +148,7 @@ fun WorkoutsScreen(container: AppContainer, modifier: Modifier = Modifier) {
             exerciseRepository = repo,
             viewModel = vm,
             weekStartsOnMonday = weekStartsOnMonday,
+            initialSheet = initialAction,
             onShowLibrary = toggleMode,
             modifier = modifier
         )
@@ -292,13 +309,14 @@ private fun WorkoutLibraryScreen(
 @Composable
 internal fun SearchPill(value: String, onValueChange: (String) -> Unit, modifier: Modifier = Modifier) {
     val colors = workoutsColors()
+    val shape = RoundedCornerShape(0.dp)
     Row(
         modifier = modifier
             .fillMaxWidth()
             .heightIn(min = 50.dp)
-            .clip(RoundedCornerShape(22.dp))
-            .background(colors.panel.copy(alpha = 0.62f))
-            .border(0.5.dp, colors.hairline.copy(alpha = 0.52f), RoundedCornerShape(22.dp))
+            .clip(shape)
+            .background(MaterialTheme.colorScheme.surface)
+            .border(2.dp, AppColors.NeoInk, shape)
             .padding(horizontal = 14.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -420,37 +438,38 @@ internal fun FilterPill(
     val active = selected.isNotEmpty()
     val value = if (active) selected.first() else emptyDisplay
     val clearLabel = "${stringResource(R.string.filter_all)} $title"
+    val shape = RoundedCornerShape(0.dp)
 
     Box {
         Row(
             modifier = Modifier
                 .heightIn(min = 46.dp)
                 .widthIn(min = 112.dp)
-                .clip(RoundedCornerShape(17.dp))
-                .background(colors.panel.copy(alpha = if (active) 0.46f else 0.30f))
+                .clip(shape)
+                .background(if (active) AppColors.NeoAcid else MaterialTheme.colorScheme.surface)
                 .border(
-                    0.5.dp,
-                    (if (active) colors.accent else colors.hairline).copy(alpha = if (active) 0.42f else 0.30f),
-                    RoundedCornerShape(17.dp)
+                    2.dp,
+                    AppColors.NeoInk,
+                    shape
                 )
                 .clickable { expanded = true }
                 .padding(horizontal = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(9.dp)
         ) {
-            Icon(icon, null, tint = if (active) colors.accent else colors.secondaryAccent, modifier = Modifier.size(18.dp))
+            Icon(icon, null, tint = if (active) AppColors.NeoInk else colors.secondaryAccent, modifier = Modifier.size(18.dp))
             Column {
-                Text(title.uppercase(), color = colors.mutedText, fontSize = 10.sp, fontWeight = FontWeight.Bold, maxLines = 1)
-                Text(value, color = colors.charcoal, fontSize = 14.sp, fontWeight = FontWeight.Bold, maxLines = 1)
+                Text(title.uppercase(), color = if (active) AppColors.NeoInk else colors.mutedText, fontSize = 10.sp, fontWeight = FontWeight.Black, maxLines = 1)
+                Text(value, color = if (active) AppColors.NeoInk else colors.charcoal, fontSize = 14.sp, fontWeight = FontWeight.Black, maxLines = 1)
             }
-            Icon(Icons.Filled.KeyboardArrowDown, null, tint = colors.mutedText, modifier = Modifier.size(16.dp))
+            Icon(Icons.Filled.KeyboardArrowDown, null, tint = if (active) AppColors.NeoInk else colors.mutedText, modifier = Modifier.size(16.dp))
         }
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
             modifier = Modifier.heightIn(max = 340.dp),
             containerColor = colors.card,
-            shape = RoundedCornerShape(16.dp)
+            shape = RoundedCornerShape(0.dp)
         ) {
             DropdownMenuItem(
                 text = { Text(clearLabel, color = if (!active) colors.accent else colors.charcoal, fontWeight = if (!active) FontWeight.Bold else FontWeight.Normal) },
@@ -519,7 +538,7 @@ internal fun ResultsHeader(
                     expanded = sortExpanded,
                     onDismissRequest = { sortExpanded = false },
                     containerColor = colors.card,
-                    shape = RoundedCornerShape(16.dp)
+                    shape = RoundedCornerShape(0.dp)
                 ) {
                     ExerciseSort.entries.forEach { sort ->
                         val isSel = selectedSort == sort
@@ -540,20 +559,20 @@ internal fun ResultsHeader(
 @Composable
 internal fun CapsuleButton(text: String, icon: ImageVector, tint: Color, enabled: Boolean, active: Boolean = false, onClick: () -> Unit) {
     val colors = workoutsColors()
-    val bg = if (active) tint.copy(alpha = 0.12f) else colors.panel.copy(alpha = 0.30f)
-    val border = if (active) tint.copy(alpha = 0.32f) else colors.hairline.copy(alpha = 0.30f)
+    val shape = RoundedCornerShape(0.dp)
+    val bg = if (active) AppColors.NeoAcid else MaterialTheme.colorScheme.surface
     Row(
         modifier = Modifier
-            .clip(CircleShape)
+            .clip(shape)
             .background(bg)
-            .border(0.5.dp, border, CircleShape)
+            .border(2.dp, AppColors.NeoInk, shape)
             .then(if (enabled) Modifier.clickable { onClick() } else Modifier)
             .padding(horizontal = 11.dp, vertical = 7.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(5.dp)
     ) {
-        Icon(icon, null, tint = tint, modifier = Modifier.size(15.dp))
-        Text(text, color = tint, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+        Icon(icon, null, tint = if (active) AppColors.NeoInk else tint, modifier = Modifier.size(15.dp))
+        Text(text.uppercase(), color = if (active) AppColors.NeoInk else tint, fontSize = 12.sp, fontWeight = FontWeight.Black)
     }
 }
 
@@ -582,9 +601,9 @@ internal fun ExerciseRow(
         Box(
             Modifier
                 .size(104.dp)
-                .clip(RoundedCornerShape(18.dp))
+                .clip(RoundedCornerShape(0.dp))
                 .background(colors.panel.copy(alpha = 0.32f))
-                .border(0.5.dp, colors.hairline.copy(alpha = 0.38f), RoundedCornerShape(18.dp))
+                .border(2.dp, AppColors.NeoInk, RoundedCornerShape(0.dp))
         ) {
             AnimatedExerciseImage(item.imagePaths, Modifier.fillMaxSize())
         }
@@ -612,9 +631,9 @@ private fun Tag(title: String, icon: ImageVector) {
     val colors = workoutsColors()
     Row(
         modifier = Modifier
-            .clip(CircleShape)
-            .background(colors.panel.copy(alpha = 0.28f))
-            .border(0.5.dp, colors.hairline.copy(alpha = 0.22f), CircleShape)
+            .clip(RoundedCornerShape(0.dp))
+            .background(MaterialTheme.colorScheme.surface)
+            .border(1.dp, AppColors.NeoInk, RoundedCornerShape(0.dp))
             .padding(horizontal = 9.dp, vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(4.dp)

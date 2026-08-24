@@ -118,6 +118,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -212,7 +213,13 @@ private enum class HealthConnectPermissionAction {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: SettingsViewModel) {
+fun SettingsScreen(
+    container: AppContainer,
+    nav: NavHostController,
+    vm: SettingsViewModel,
+    initialRow: String? = null,
+    onInitialActionFinished: (() -> Unit)? = null
+) {
     val ui by vm.ui.collectAsState()
     val profile = ui.profile
     val latestMeasurement by container.bodyMeasurementRepository.latest.collectAsState(initial = null)
@@ -235,6 +242,10 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
     var showHealthEnergyGoalsInfo by remember { mutableStateOf(false) }
     var showAdaptiveGoalsInfo by remember { mutableStateOf(false) }
     var pendingHealthPermissionAction by remember { mutableStateOf<HealthConnectPermissionAction?>(null) }
+    var handledInitialRow by remember { mutableStateOf<String?>(null) }
+    val finishInitialAction = {
+        if (initialRow != null) onInitialActionFinished?.invoke()
+    }
     val activityContext = LocalContext.current
     val resources = LocalResources.current
     val settingsScope = rememberCoroutineScope()
@@ -243,7 +254,10 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
     val importFileLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument()
     ) { uri ->
-        if (uri == null) return@rememberLauncherForActivityResult
+        if (uri == null) {
+            finishInitialAction()
+            return@rememberLauncherForActivityResult
+        }
         settingsScope.launch {
             val result = runCatching {
                 withContext(Dispatchers.IO) {
@@ -282,6 +296,7 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
     ) { granted ->
         if (granted) vm.setNotificationsEnabled(true)
         else permissionDeniedMessage = notifDeniedMsg
+        finishInitialAction()
     }
 
     // Health Connect honors partial grants: any granted permission connects the app, and
@@ -301,6 +316,7 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
         } else {
             showHealthPermissionHelp = true
         }
+        if (!showHealthPermissionHelp) finishInitialAction()
     }
 
     fun openHealthConnectAccess() {
@@ -371,6 +387,38 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
         healthConnectLauncher.launch(container.health.permissions)
     }
 
+    LaunchedEffect(initialRow) {
+        if (initialRow == null || handledInitialRow == initialRow) return@LaunchedEffect
+        handledInitialRow = initialRow
+        sheet = when (initialRow) {
+            "profile.gender" -> SettingsSheet.GENDER
+            "profile.birthday" -> SettingsSheet.BIRTHDAY
+            "profile.height" -> SettingsSheet.HEIGHT
+            "profile.weight" -> SettingsSheet.WEIGHT
+            "profile.goal" -> SettingsSheet.GOAL
+            "targets.calories" -> SettingsSheet.CALORIES
+            "targets.protein" -> SettingsSheet.PROTEIN
+            "targets.carbs" -> SettingsSheet.CARBS
+            "targets.fat" -> SettingsSheet.FAT
+            "food.mealSchedule" -> SettingsSheet.MEAL_TIMES
+            "ai.apiKey" -> SettingsSheet.API_KEY
+            "workout.split" -> SettingsSheet.WORKOUT_SPLIT
+            "workout.rpe" -> SettingsSheet.WORKOUT_RPE
+            else -> null
+        }
+        when (initialRow) {
+            "targets.recalculate" -> vm.recalculateGoals()
+            "notifications.master" -> onNotificationsToggle(true)
+            "notifications.summary" -> onDailySummaryToggle(true)
+            "health.connect" -> onHealthConnectToggle(true)
+            "health.energy" -> onHealthEnergyGoalsToggle(true)
+            "data.export" -> showExportSheet = true
+            "data.import" -> importFileLauncher.launch(arrayOf("application/json", "text/plain"))
+            "data.clearFood" -> showClearFoodDialog = true
+            "data.deleteAll" -> showDeleteDialog = true
+        }
+    }
+
     fun openBatteryOptimizationSettings() {
         val intents = listOf(
             Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
@@ -384,8 +432,40 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
         }
     }
 
-    // iOS Settings: bare List, no NavigationBar visible. Match that — no TopAppBar.
-    Scaffold(containerColor = MaterialTheme.colorScheme.background) { padding ->
+    // Targeted native routes only host a platform picker, permission prompt, or
+    // import/export flow. Keep the shared v7 identity behind that control rather
+    // than briefly exposing the retired native Settings list.
+    if (initialRow != null) {
+        Box(
+            Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(24.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            FudGlassSurface(modifier = Modifier.fillMaxWidth(), padding = 22.dp) {
+                Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+                    Text(
+                        "FÜD AI",
+                        color = AppColors.NeoCobalt,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Black
+                    )
+                    Text("SETTINGS", fontSize = 34.sp, fontWeight = FontWeight.Black)
+                    Text(
+                        "Complete this native control, then return to your shared settings.",
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.66f)
+                    )
+                    onInitialActionFinished?.let { onFinish ->
+                        FudGlassPrimaryButton(text = "Back to Füd AI", onClick = onFinish)
+                    }
+                }
+            }
+        }
+    } else {
+        // The legacy full-page implementation remains available for deep links
+        // that have not yet been promoted to the shared shell.
+        Scaffold(containerColor = MaterialTheme.colorScheme.background) { padding ->
         Column(
             Modifier
                 .fillMaxSize()
@@ -970,6 +1050,7 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
             }
 
             Spacer(Modifier.height(BottomNavScrollPadding))
+            }
         }
     }
 
@@ -977,7 +1058,10 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
         ExportDiarySheet(
             container = container,
             profile = profile,
-            onDismiss = { showExportSheet = false },
+            onDismiss = {
+                showExportSheet = false
+                finishInitialAction()
+            },
         )
     }
 
@@ -990,6 +1074,7 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                 showImportSheet = false
                 importPreview = null
                 importError = null
+                finishInitialAction()
             },
             onImport = { mode: DiaryImportMode ->
                 importPreview?.let { selected ->
@@ -1009,6 +1094,7 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                                 R.string.import_success,
                                 selected.entries.size
                             )
+                            finishInitialAction()
                         }.onFailure { error ->
                             importError = error.localizedMessage ?: importReadFailedMessage
                         }
@@ -1024,14 +1110,20 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
             sheet = s,
             ui = ui,
             vm = vm,
-            onDismiss = { sheet = null },
+            onDismiss = {
+                sheet = null
+                finishInitialAction()
+            },
             onInvalidGoalWeight = { invalidGoalWeightMessage = it },
             onRebalanceBlocked = { showRebalanceBlockedAlert = true }
         )
     }
 
     if (showClearFoodDialog) {
-        FudGlassDialog(onDismissRequest = { showClearFoodDialog = false }) {
+        FudGlassDialog(onDismissRequest = {
+            showClearFoodDialog = false
+            finishInitialAction()
+        }) {
             Text(stringResource(R.string.settings_clear_food_title), fontSize = 21.sp, fontWeight = FontWeight.Bold)
             Text(
                 stringResource(R.string.settings_clear_food_message),
@@ -1042,9 +1134,13 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                 onPrimary = {
                     vm.clearFoodLog()
                     showClearFoodDialog = false
+                    finishInitialAction()
                 },
                 dismissText = stringResource(R.string.action_cancel),
-                onDismiss = { showClearFoodDialog = false },
+                onDismiss = {
+                    showClearFoodDialog = false
+                    finishInitialAction()
+                },
                 destructive = true
             )
         }
@@ -1052,7 +1148,10 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
 
     if (showDeleteDialog) {
         val context = LocalContext.current
-        FudGlassDialog(onDismissRequest = { showDeleteDialog = false }) {
+        FudGlassDialog(onDismissRequest = {
+            showDeleteDialog = false
+            finishInitialAction()
+        }) {
             Text(stringResource(R.string.settings_delete_all_title), fontSize = 21.sp, fontWeight = FontWeight.Bold)
             Text(
                 stringResource(R.string.settings_delete_all_message),
@@ -1063,11 +1162,15 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                 onPrimary = {
                     vm.deleteAllData {
                         showDeleteDialog = false
+                        finishInitialAction()
                         (context as? android.app.Activity)?.recreate()
                     }
                 },
                 dismissText = stringResource(R.string.action_cancel),
-                onDismiss = { showDeleteDialog = false },
+                onDismiss = {
+                    showDeleteDialog = false
+                    finishInitialAction()
+                },
                 destructive = true
             )
         }
@@ -1212,7 +1315,10 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
     }
 
     if (showHealthPermissionHelp) {
-        FudGlassDialog(onDismissRequest = { showHealthPermissionHelp = false }) {
+        FudGlassDialog(onDismissRequest = {
+            showHealthPermissionHelp = false
+            finishInitialAction()
+        }) {
             Text(stringResource(R.string.settings_permission_title), fontSize = 21.sp, fontWeight = FontWeight.Bold)
             Text(healthDeniedMsg, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.68f))
             FudGlassDialogActions(
@@ -1220,9 +1326,13 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                 onPrimary = {
                     showHealthPermissionHelp = false
                     openHealthConnectAccess()
+                    finishInitialAction()
                 },
                 dismissText = stringResource(R.string.action_cancel),
-                onDismiss = { showHealthPermissionHelp = false }
+                onDismiss = {
+                    showHealthPermissionHelp = false
+                    finishInitialAction()
+                }
             )
         }
     }
@@ -1780,7 +1890,7 @@ private fun SettingsSheets(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = state,
-        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
+        shape = RoundedCornerShape(0.dp),
         containerColor = if (isDark) Color(0xF2141416) else Color(0xFFFAF3EE)
     ) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp)) {
@@ -2309,40 +2419,30 @@ private fun <T> ListSheet(
     customField: ((String) -> Unit)? = null
 ) {
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
-    Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+    Text(
+        title.uppercase(),
+        style = MaterialTheme.typography.titleLarge,
+        fontWeight = FontWeight.Black
+    )
     Spacer(Modifier.height(12.dp))
     LazyColumn(Modifier.fillMaxWidth().heightIn(max = 420.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         items(items) { item ->
             val isSel = selected(item)
             val rowIcon = icon?.invoke(item)
             val sub = subtitle?.invoke(item)
-            val shape = RoundedCornerShape(16.dp)
+            val shape = RoundedCornerShape(0.dp)
             Row(
                 Modifier
                     .fillMaxWidth()
                     .clip(shape)
                     .background(
-                        if (isSel) AppColors.Calorie.copy(alpha = 0.13f)
-                        else if (isDark) MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.38f)
-                        else Color(0xFFEDE3DD).copy(alpha = 0.76f)
-                    )
-                    .background(
-                        Brush.verticalGradient(
-                            listOf(
-                                Color.White.copy(alpha = if (isDark) 0.08f else 0.18f),
-                                Color.White.copy(alpha = if (isDark) 0.02f else 0.04f),
-                                AppColors.Calorie.copy(alpha = if (isSel) 0.065f else if (isDark) 0.025f else 0.050f)
-                            )
-                        )
+                        if (isSel) AppColors.NeoAcid
+                        else if (isDark) AppColors.NeoInk
+                        else Color.White
                     )
                     .border(
-                        0.7.dp,
-                        Brush.linearGradient(
-                            listOf(
-                                Color.White.copy(alpha = if (isDark) 0.16f else 0.46f),
-                                AppColors.Calorie.copy(alpha = if (isSel) 0.22f else if (isDark) 0.08f else 0.16f)
-                            )
-                        ),
+                        2.dp,
+                        if (isDark && !isSel) Color.White else AppColors.NeoInk,
                         shape
                     )
                     .clickable { onSelect(item) }
@@ -2355,9 +2455,10 @@ private fun <T> ListSheet(
                 }
                 Column(Modifier.weight(1f)) {
                     Text(
-                        label(item),
+                        label(item).uppercase(),
                         style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Medium
+                        color = if (isSel) AppColors.NeoInk else MaterialTheme.colorScheme.onSurface,
+                        fontWeight = FontWeight.Black
                     )
                     if (!sub.isNullOrBlank()) {
                         Spacer(Modifier.height(2.dp))
@@ -2372,7 +2473,7 @@ private fun <T> ListSheet(
                     Icon(
                         Icons.Filled.Check,
                         contentDescription = stringResource(R.string.sheet_selected_a11y),
-                        tint = AppColors.Calorie,
+                        tint = if (isSel) AppColors.NeoInk else AppColors.NeoCobalt,
                         modifier = Modifier.size(20.dp)
                     )
                 }

@@ -68,11 +68,15 @@ fun <T> OptionPickerSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = state,
-        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
-        containerColor = if (isDark) Color(0xF2141416) else Color(0xFFFAF3EE)
+        shape = RoundedCornerShape(0.dp),
+        containerColor = if (isDark) AppColors.NeoInk else AppColors.NeoPaper
     ) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp)) {
-            Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+            Text(
+                title.uppercase(),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Black
+            )
             Spacer(Modifier.height(12.dp))
             LazyColumn(
                 Modifier.fillMaxWidth().heightIn(max = 420.dp),
@@ -125,33 +129,19 @@ private fun OptionPickerRow(
     isDark: Boolean,
     onClick: () -> Unit
 ) {
-    val shape = RoundedCornerShape(16.dp)
+    val shape = RoundedCornerShape(0.dp)
     Row(
         Modifier
             .fillMaxWidth()
             .clip(shape)
             .background(
-                if (isSelected) AppColors.Calorie.copy(alpha = 0.13f)
-                else if (isDark) MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.38f)
-                else Color(0xFFEDE3DD).copy(alpha = 0.76f)
-            )
-            .background(
-                Brush.verticalGradient(
-                    listOf(
-                        Color.White.copy(alpha = if (isDark) 0.08f else 0.18f),
-                        Color.White.copy(alpha = if (isDark) 0.02f else 0.04f),
-                        AppColors.Calorie.copy(alpha = if (isSelected) 0.065f else if (isDark) 0.025f else 0.050f)
-                    )
-                )
+                if (isSelected) AppColors.NeoAcid
+                else if (isDark) AppColors.NeoInk
+                else Color.White
             )
             .border(
-                0.7.dp,
-                Brush.linearGradient(
-                    listOf(
-                        Color.White.copy(alpha = if (isDark) 0.16f else 0.46f),
-                        AppColors.Calorie.copy(alpha = if (isSelected) 0.22f else if (isDark) 0.08f else 0.16f)
-                    )
-                ),
+                2.dp,
+                if (isDark && !isSelected) Color.White else AppColors.NeoInk,
                 shape
             )
             .clickable(onClick = onClick)
@@ -160,9 +150,10 @@ private fun OptionPickerRow(
     ) {
         Column(Modifier.weight(1f)) {
             Text(
-                label,
+                label.uppercase(),
                 style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Medium
+                color = if (isSelected) AppColors.NeoInk else MaterialTheme.colorScheme.onSurface,
+                fontWeight = FontWeight.Black
             )
             if (!subtitle.isNullOrBlank()) {
                 Spacer(Modifier.height(2.dp))
@@ -178,7 +169,7 @@ private fun OptionPickerRow(
             Icon(
                 Icons.Filled.Check,
                 contentDescription = stringResource(R.string.sheet_selected_a11y),
-                tint = AppColors.Calorie,
+                tint = if (isSelected) AppColors.NeoInk else AppColors.NeoCobalt,
                 modifier = Modifier.size(20.dp)
             )
         }

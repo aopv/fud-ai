@@ -148,7 +148,11 @@ enum class TimeRange(@StringRes val labelRes: Int, val days: Int) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NativeProgressScreen(container: AppContainer) {
+internal fun NativeProgressScreen(
+    container: AppContainer,
+    initialAction: FlutterProgressAction? = null,
+    onActionFinished: (() -> Unit)? = null
+) {
     val vm: ProgressViewModel = viewModel(factory = ProgressViewModel.Factory(container))
     val ui by vm.ui.collectAsState()
     val foods by container.foodRepository.entries.collectAsState(initial = emptyList())
@@ -156,11 +160,21 @@ fun NativeProgressScreen(container: AppContainer) {
     val weightMetric = weightUnit == "kg"
 
     var range by remember { mutableStateOf(TimeRange.WEEK) }
-    var showAddDialog by remember { mutableStateOf(false) }
-    var showAddBodyFatDialog by remember { mutableStateOf(false) }
-    var showAllWeights by remember { mutableStateOf(false) }
-    var showAllBodyFats by remember { mutableStateOf(false) }
-    var showAllWorkouts by remember { mutableStateOf(false) }
+    var showAddDialog by remember(initialAction) {
+        mutableStateOf(initialAction == FlutterProgressAction.LOG_WEIGHT)
+    }
+    var showAddBodyFatDialog by remember(initialAction) {
+        mutableStateOf(initialAction == FlutterProgressAction.LOG_BODY_FAT)
+    }
+    var showAllWeights by remember(initialAction) {
+        mutableStateOf(initialAction == FlutterProgressAction.WEIGHT_HISTORY)
+    }
+    var showAllBodyFats by remember(initialAction) {
+        mutableStateOf(initialAction == FlutterProgressAction.BODY_FAT_HISTORY)
+    }
+    var showAllWorkouts by remember(initialAction) {
+        mutableStateOf(initialAction == FlutterProgressAction.WORKOUT_HISTORY)
+    }
     var workoutPendingDelete by remember { mutableStateOf<WorkoutSession?>(null) }
     var bodyMetric by remember { mutableStateOf(BodyMetric.WEIGHT) }
 
@@ -325,9 +339,14 @@ fun NativeProgressScreen(container: AppContainer) {
             onUnitChange = { metric ->
                 scope.launch { container.prefs.setWeightUnit(if (metric) "kg" else "lbs") }
             },
-            onDismiss = { showAddDialog = false }
+            onDismiss = {
+                showAddDialog = false
+                onActionFinished?.invoke()
+            }
         ) { kg ->
-            vm.addWeight(kg); showAddDialog = false
+            vm.addWeight(kg)
+            showAddDialog = false
+            onActionFinished?.invoke()
         }
     }
     if (showAddBodyFatDialog) {
@@ -335,8 +354,13 @@ fun NativeProgressScreen(container: AppContainer) {
         val seedFraction = ui.bodyFatEntries.maxByOrNull { it.date }?.bodyFatFraction
             ?: ui.profile?.bodyFatPercentage
             ?: 0.20
-        AddBodyFatDialog(initialFraction = seedFraction, onDismiss = { showAddBodyFatDialog = false }) { fraction ->
-            vm.addBodyFat(fraction); showAddBodyFatDialog = false
+        AddBodyFatDialog(initialFraction = seedFraction, onDismiss = {
+            showAddBodyFatDialog = false
+            onActionFinished?.invoke()
+        }) { fraction ->
+            vm.addBodyFat(fraction)
+            showAddBodyFatDialog = false
+            onActionFinished?.invoke()
         }
     }
     if (showAllWeights) {
@@ -344,21 +368,30 @@ fun NativeProgressScreen(container: AppContainer) {
             entries = ui.entries.sortedByDescending { it.date },
             useMetric = weightMetric,
             onDelete = { vm.deleteWeight(it) },
-            onDismiss = { showAllWeights = false }
+            onDismiss = {
+                showAllWeights = false
+                onActionFinished?.invoke()
+            }
         )
     }
     if (showAllBodyFats) {
         AllBodyFatHistorySheet(
             entries = ui.bodyFatEntries.sortedByDescending { it.date },
             onDelete = { vm.deleteBodyFat(it) },
-            onDismiss = { showAllBodyFats = false }
+            onDismiss = {
+                showAllBodyFats = false
+                onActionFinished?.invoke()
+            }
         )
     }
     if (showAllWorkouts) {
         AllWorkoutHistorySheet(
             entries = ui.workoutBurnSessions,
             onRequestDelete = { workoutPendingDelete = it },
-            onDismiss = { showAllWorkouts = false }
+            onDismiss = {
+                showAllWorkouts = false
+                onActionFinished?.invoke()
+            }
         )
     }
     workoutPendingDelete?.let { session ->
@@ -1240,7 +1273,7 @@ internal fun AllWeightHistorySheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = state,
-        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
+        shape = RoundedCornerShape(0.dp),
         containerColor = sheetSurface
     ) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 10.dp)) {
@@ -1303,7 +1336,7 @@ internal fun AllBodyFatHistorySheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = state,
-        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
+        shape = RoundedCornerShape(0.dp),
         containerColor = sheetSurface
     ) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 10.dp)) {
@@ -1366,7 +1399,7 @@ internal fun AllWorkoutHistorySheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = state,
-        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
+        shape = RoundedCornerShape(0.dp),
         containerColor = sheetSurface
     ) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 10.dp)) {
@@ -1824,7 +1857,7 @@ private fun BodyMeasurementsHistorySheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = state,
-        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
+        shape = RoundedCornerShape(0.dp),
         containerColor = sheetSurface
     ) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 10.dp)) {

@@ -25,7 +25,8 @@ internal fun buildProgressSnapshot(
     strings: Map<String, String>,
     today: LocalDate = LocalDate.now(),
     zone: ZoneId = ZoneId.systemDefault(),
-    bottomContentInset: Double = 132.0
+    bottomContentInset: Double = 132.0,
+    safeAreaTop: Boolean = false
 ): Map<String, Any?> {
     val range = rangeSpec(rangeName)
     val startDate = today.minusDays((range.days - 1).toLong())
@@ -110,7 +111,7 @@ internal fun buildProgressSnapshot(
         "fatGoal" to (profile?.effectiveFat ?: 70),
         "strings" to strings,
         "isDark" to isDark,
-        "safeAreaTop" to false,
+        "safeAreaTop" to safeAreaTop,
         "bottomContentInset" to bottomContentInset
     )
 

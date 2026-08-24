@@ -63,12 +63,11 @@ android {
             signingConfigs.findByName("release")?.let { signingConfig = it }
         }
         debug {
-            // Suffix the package + version so the debug build installs side-by-side
+            // Suffix the package so the debug build installs side-by-side
             // with the production app pulled from Play Store. Launcher label stays
             // "Fud AI" (same as release) — distinguish the two by the install order
             // / icon position rather than a separate label.
             applicationIdSuffix = ".debug"
-            versionNameSuffix = "-debug"
         }
         create("debug2") {
             initWith(getByName("debug"))
