@@ -42,7 +42,7 @@ enum SpeechProvider: String, CaseIterable, Codable, Identifiable {
         case .openai: "gpt-4o-mini-transcribe"    // same $/min as whisper-1, better accuracy
         case .groq: "whisper-large-v3"
         case .deepgram: "nova-3"
-        case .assemblyai: "universal"
+        case .assemblyai: "universal-3-pro"
         }
     }
 
@@ -75,8 +75,8 @@ enum SpeechProvider: String, CaseIterable, Codable, Identifiable {
             )
         case .assemblyai:
             LocalizedDisplayText.text(
-                "AssemblyAI Universal model. Strong accuracy, free tier available.",
-                polish: "Model AssemblyAI Universal. Wysoka dokładność, dostępny darmowy limit."
+                "AssemblyAI Universal-3 Pro with Universal-2 fallback for broader language support.",
+                polish: "AssemblyAI Universal-3 Pro z modelem Universal-2 jako rezerwowym dla szerszej obsługi języków."
             )
         }
     }

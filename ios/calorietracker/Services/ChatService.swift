@@ -468,6 +468,24 @@ struct ChatService {
         return ["functionDeclarations": declarations]
     }
 
+    /// Gemini 3 models attach an identifier to every function call. The matching
+    /// response must echo that identifier so parallel and multi-round calls are
+    /// associated with the correct result.
+    static func geminiFunctionResponsePart(
+        for call: [String: Any],
+        result: Any
+    ) -> [String: Any]? {
+        guard let name = call["name"] as? String, !name.isEmpty else { return nil }
+        var functionResponse: [String: Any] = [
+            "name": name,
+            "response": ["content": result],
+        ]
+        if let id = call["id"] as? String, !id.isEmpty {
+            functionResponse["id"] = id
+        }
+        return ["functionResponse": functionResponse]
+    }
+
     private static func callGemini(baseURL: String, model: String, systemPrompt: String, history: [ChatMessage], newUserMessage: String, imageData: Data?, tools: CoachTools) async throws -> String {
         let apiKey = AIProviderSettings.currentAPIKey
         if apiKey == nil {
@@ -520,12 +538,9 @@ struct ChatService {
                     let args = (call["args"] as? [String: Any]) ?? [:]
                     let resultString = tools.execute(name: name, arguments: args)
                     let resultObj = (try? JSONSerialization.jsonObject(with: Data(resultString.utf8))) ?? [:]
-                    responseParts.append([
-                        "functionResponse": [
-                            "name": name,
-                            "response": ["content": resultObj],
-                        ],
-                    ])
+                    if let responsePart = geminiFunctionResponsePart(for: call, result: resultObj) {
+                        responseParts.append(responsePart)
+                    }
                 }
                 contents.append(["role": "user", "parts": responseParts])
                 continue
