@@ -57,7 +57,10 @@ class FudAIApp : Application() {
         container.notifications.createChannels()
         WidgetRefreshScheduler.onAppStarted(this)
         container.widgetSnapshotWriter.observe().launchIn(appScope)
-        appScope.launch { container.prefs.migrateLegacyGeminiModels() }
+        appScope.launch {
+            container.prefs.migrateLegacyGeminiModels()
+            container.prefs.migrateFallbackBaseUrls()
+        }
         // Older Android builds removed food rows without removing their JPEGs.
         // Prune only unreferenced files; logged foods, saved meals, and pending
         // analysis drafts remain untouched.
