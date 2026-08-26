@@ -232,7 +232,11 @@
     <string name="onboarding_pace_recommended">Recommandé</string>
     <string name="onboarding_pace_fast">Rapide</string>
     <string name="onboarding_pace_reach_prefix">Vous atteindrez votre objectif dans </string>
-    <string name="onboarding_pace_days_format">%1$d jours</string>
+    <plurals name="onboarding_pace_days_format">
+        <item quantity="one">%1$d jour</item>
+        <item quantity="many">%1$d de jours</item>
+        <item quantity="other">%1$d jours</item>
+    </plurals>
     <string name="onboarding_pace_caption_slow">Doux et durable. Idéal pour des habitudes à long terme.</string>
     <string name="onboarding_pace_caption_fast">Agressif mais réalisable. Demande une grande discipline.</string>
     <string name="onboarding_pace_caption_recommended">Le rythme le plus équilibré, motivant et durable.</string>
@@ -655,4 +659,5 @@
     <string name="whats_new_v30_adaptive">Objectifs adaptatifs et Énergie brûlée sortent de l\'expérimental et sont activés par défaut pour les nouvelles installations.</string>
     <string name="whats_new_v30_widgets">Refonte des widgets : le style tachymètre de l\'accueil, dessiné à la taille réelle de chaque widget.</string>
     <string name="whats_new_v30_restore">Réinstallation ou nouveau téléphone ? Ton journal alimentaire, ton poids et ta masse grasse se restaurent désormais automatiquement depuis Health Connect.</string>
+    <string name="settings_other_nutrients_note">Distinct des objectifs de calories, protéines, glucides et lipides.</string>
 </resources>

@@ -232,7 +232,9 @@
     <string name="onboarding_pace_recommended">추천</string>
     <string name="onboarding_pace_fast">빠름</string>
     <string name="onboarding_pace_reach_prefix">목표 달성까지 </string>
-    <string name="onboarding_pace_days_format">%1$d일</string>
+    <plurals name="onboarding_pace_days_format">
+        <item quantity="other">%1$d일</item>
+    </plurals>
     <string name="onboarding_pace_caption_slow">부드럽고 지속 가능합니다. 장기적인 습관에 적합해요.</string>
     <string name="onboarding_pace_caption_fast">공격적이지만 가능합니다. 강한 절제가 필요해요.</string>
     <string name="onboarding_pace_caption_recommended">가장 균형 잡힌 속도로 동기부여가 되고 지속 가능합니다.</string>
@@ -655,4 +657,5 @@
     <string name="whats_new_v30_adaptive">적응형 목표와 에너지 소모가 실험 단계를 졸업하고 새 설치에서 기본으로 켜집니다.</string>
     <string name="whats_new_v30_widgets">위젯 개편: 홈의 속도계 스타일을 각 위젯의 실제 크기로 그립니다.</string>
     <string name="whats_new_v30_restore">재설치했거나 휴대폰을 바꿨나요? 이제 음식 기록, 체중, 체지방이 Health Connect에서 자동으로 복원됩니다.</string>
+    <string name="settings_other_nutrients_note">칼로리, 단백질, 탄수화물, 지방 목표와 별개입니다.</string>
 </resources>

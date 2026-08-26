@@ -96,6 +96,7 @@ enum SpeechLanguage: String, CaseIterable, Codable, Identifiable {
     case japanese
     case chinese
     case korean
+    case czech
 
     var id: String { rawValue }
 
@@ -114,6 +115,7 @@ enum SpeechLanguage: String, CaseIterable, Codable, Identifiable {
         case .japanese: LocalizedDisplayText.text("Japanese", polish: "Japoński")
         case .chinese: LocalizedDisplayText.text("Chinese", polish: "Chiński")
         case .korean: LocalizedDisplayText.text("Korean", polish: "Koreański")
+        case .czech: LocalizedDisplayText.text("Czech", polish: "Czeski")
         }
     }
 
@@ -145,6 +147,8 @@ enum SpeechLanguage: String, CaseIterable, Codable, Identifiable {
             "zh"
         case .korean:
             "ko"
+        case .czech:
+            "cs"
         }
     }
 
@@ -174,6 +178,8 @@ enum SpeechLanguage: String, CaseIterable, Codable, Identifiable {
             Locale(identifier: "zh-Hans")
         case .korean:
             Locale(identifier: "ko-KR")
+        case .czech:
+            Locale(identifier: "cs-CZ")
         }
     }
 }

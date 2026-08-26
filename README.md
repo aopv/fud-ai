@@ -16,7 +16,7 @@
   <img src="https://img.shields.io/badge/kotlin-2.2-7F52FF?logo=kotlin" alt="Kotlin">
   <img src="https://img.shields.io/badge/UI-SwiftUI%20%2F%20Compose%20%2F%20Flutter-purple" alt="UI">
   <img src="https://img.shields.io/badge/privacy-local--first-brightgreen" alt="Local-first privacy">
-  <img src="https://img.shields.io/badge/languages-iOS%2016%20%2F%20Android%2015-blue" alt="iOS 16 languages / Android 15 languages">
+  <img src="https://img.shields.io/badge/languages-iOS%2017%20%2F%20Android%2016-blue" alt="iOS 17 languages / Android 16 languages">
   <img src="https://img.shields.io/badge/license-MIT-green" alt="License">
   <a href="https://github.com/apoorvdarshan/fud-ai/stargazers"><img src="https://img.shields.io/github/stars/apoorvdarshan/fud-ai?style=flat&logo=github&color=yellow" alt="GitHub stars"></a>
   <a href="https://apps.apple.com/us/app/fud-ai-calorie-tracker/id6758935726"><img src="https://img.shields.io/badge/App%20Store-Download-black?logo=apple" alt="App Store"></a>

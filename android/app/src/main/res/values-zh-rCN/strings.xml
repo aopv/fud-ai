@@ -232,7 +232,9 @@
     <string name="onboarding_pace_recommended">推荐</string>
     <string name="onboarding_pace_fast">快速</string>
     <string name="onboarding_pace_reach_prefix">你将达成目标，所需时间为 </string>
-    <string name="onboarding_pace_days_format">%1$d 天</string>
+    <plurals name="onboarding_pace_days_format">
+        <item quantity="other">%1$d 天</item>
+    </plurals>
     <string name="onboarding_pace_caption_slow">温和且可持续。适合养成长期习惯。</string>
     <string name="onboarding_pace_caption_fast">激进但可行。需要较强的自律。</string>
     <string name="onboarding_pace_caption_recommended">最平衡的节奏，既有动力又可持续。</string>
@@ -655,4 +657,5 @@
     <string name="whats_new_v30_adaptive">自适应目标和能量消耗已结束实验阶段，新安装默认开启。</string>
     <string name="whats_new_v30_widgets">小组件焕新：主页的仪表盘风格，按每个小组件的实际尺寸绘制。</string>
     <string name="whats_new_v30_restore">重新安装或更换手机后，你的饮食记录、体重和体脂现在会从 Health Connect 自动恢复。</string>
+    <string name="settings_other_nutrients_note">与卡路里、蛋白质、碳水化合物和脂肪目标分开。</string>
 </resources>
