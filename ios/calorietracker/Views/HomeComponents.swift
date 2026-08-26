@@ -7,6 +7,7 @@ struct WeekEnergyStrip: View {
     let caloriesForDate: (Date) -> Int
     let calorieGoal: Int
     @AppStorage("weekStartsOnMonday") private var weekStartsOnMonday = true
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     /// Two-way scroll position (the visible week's index). Driven programmatically when the selected
     /// day moves to another week, and updated by the user's own paging.
     @State private var scrolledWeek: Int?
@@ -81,7 +82,7 @@ struct WeekEnergyStrip: View {
         .onChange(of: selectedDate) { _, newValue in
             let target = weekIndex(for: newValue)
             if scrolledWeek != target {
-                withAnimation(.snappy) { scrolledWeek = target }
+                withAnimation(reduceMotion ? nil : .snappy) { scrolledWeek = target }
             }
         }
     }
@@ -121,13 +122,14 @@ struct WeekEnergyStrip: View {
                     .frame(width: 38, height: 36)
                     .background {
                         if isSelected {
-                            Rectangle()
+                            RoundedRectangle(cornerRadius: 11, style: .continuous)
                                 .fill(NeoHomeColors.acidYellow)
                                 .overlay {
-                                    Rectangle().strokeBorder(.black, lineWidth: NeoHomeMetrics.compactRule)
+                                    RoundedRectangle(cornerRadius: 11, style: .continuous)
+                                        .strokeBorder(KitchenTablePalette.brassDeep, lineWidth: NeoHomeMetrics.compactRule)
                                 }
                         } else if isToday {
-                            Rectangle()
+                            RoundedRectangle(cornerRadius: 11, style: .continuous)
                                 .strokeBorder(NeoHomeColors.cobalt, lineWidth: NeoHomeMetrics.rule)
                         }
                     }

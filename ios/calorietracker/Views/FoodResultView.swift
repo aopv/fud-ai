@@ -290,12 +290,13 @@ struct FoodResultView: View {
                                 Text("KCAL")
                                     .font(.system(size: 9, weight: .black, design: .rounded).width(.condensed))
                             }
-                            .foregroundStyle(Color.black)
+                            .foregroundStyle(KitchenTablePalette.onBrass)
                             .frame(minWidth: 66, minHeight: 54)
                             .padding(.horizontal, 8)
-                            .background(NeoAppColors.acid)
+                            .background(NeoAppColors.brass, in: RoundedRectangle(cornerRadius: 15, style: .continuous))
                             .overlay {
-                                Rectangle().stroke(Color.black, lineWidth: NeoAppMetrics.rule)
+                                RoundedRectangle(cornerRadius: 15, style: .continuous)
+                                    .stroke(KitchenTablePalette.brassDeep, lineWidth: NeoAppMetrics.rule)
                             }
                         }
                         .neoReviewBareRow()
@@ -310,20 +311,21 @@ struct FoodResultView: View {
                                             .resizable()
                                             .scaledToFill()
                                             .frame(width: 220, height: 200)
-                                            .clipShape(Rectangle())
+                                            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
                                             .overlay {
-                                                Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                                                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                                                    .stroke(KitchenTablePalette.rule, lineWidth: NeoAppMetrics.rule)
                                             }
                                             .overlay(alignment: .bottomTrailing) {
                                                 if images.count > 1 {
                                                     Text("\(index + 1)/\(images.count)")
                                                         .font(.system(.caption2, design: .rounded, weight: .black))
-                                                        .foregroundStyle(Color.black)
+                                                        .foregroundStyle(KitchenTablePalette.onBrass)
                                                         .padding(.horizontal, 8)
                                                         .padding(.vertical, 5)
-                                                        .background(NeoAppColors.acid)
+                                                        .background(NeoAppColors.brass, in: Capsule())
                                                         .overlay {
-                                                            Rectangle().stroke(Color.black, lineWidth: NeoAppMetrics.compactRule)
+                                                            Capsule().stroke(KitchenTablePalette.brassDeep, lineWidth: NeoAppMetrics.compactRule)
                                                         }
                                                         .padding(8)
                                                 }
@@ -669,14 +671,15 @@ private struct NeoReviewNutritionBanner: View {
             Button(action: action) {
                 Image(systemName: isUnlocked ? "lock.open.fill" : "lock.fill")
                     .font(.system(size: 16, weight: .black))
-                    .foregroundStyle(Color.black)
+                    .foregroundStyle(KitchenTablePalette.onBrass)
                     .frame(width: 44, height: 42)
-                    .background(NeoAppColors.acid)
+                    .background(NeoAppColors.brass, in: RoundedRectangle(cornerRadius: 13, style: .continuous))
                     .overlay {
-                        Rectangle().stroke(Color.black, lineWidth: NeoAppMetrics.rule)
+                        RoundedRectangle(cornerRadius: 13, style: .continuous)
+                            .stroke(KitchenTablePalette.brassDeep, lineWidth: NeoAppMetrics.rule)
                     }
             }
-            .buttonStyle(.plain)
+            .buttonStyle(KitchenTablePressableButtonStyle())
             .accessibilityLabel(isUnlocked ? "Lock nutrition editing" : "Unlock nutrition editing")
         }
     }
@@ -869,11 +872,12 @@ struct IngredientEditorSheet: View {
                     ) {
                         Image(systemName: target.index == nil ? "plus" : "square.and.pencil")
                             .font(.system(size: 22, weight: .black))
-                            .foregroundStyle(Color.black)
+                            .foregroundStyle(KitchenTablePalette.onBrass)
                             .frame(width: 48, height: 48)
-                            .background(NeoAppColors.acid)
+                            .background(NeoAppColors.brass, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
                             .overlay {
-                                Rectangle().stroke(Color.black, lineWidth: NeoAppMetrics.rule)
+                                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                                    .stroke(KitchenTablePalette.brassDeep, lineWidth: NeoAppMetrics.rule)
                             }
                     }
                     .neoReviewBareRow()
@@ -1035,11 +1039,12 @@ private struct WhatIfMealImpactSheet: View {
                     ) {
                         Image(systemName: "scope")
                             .font(.system(size: 23, weight: .black))
-                            .foregroundStyle(Color.black)
+                            .foregroundStyle(KitchenTablePalette.onBrass)
                             .frame(width: 48, height: 48)
-                            .background(NeoAppColors.acid)
+                            .background(NeoAppColors.brass, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
                             .overlay {
-                                Rectangle().stroke(Color.black, lineWidth: NeoAppMetrics.rule)
+                                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                                    .stroke(KitchenTablePalette.brassDeep, lineWidth: NeoAppMetrics.rule)
                             }
                     }
                     .neoReviewBareRow()
@@ -1121,12 +1126,13 @@ private struct WhatIfMealImpactSheet: View {
                             }
                             .textCase(.uppercase)
                             .font(.system(.body, design: .rounded, weight: .black).width(.condensed))
-                            .foregroundStyle(Color.black)
+                            .foregroundStyle(KitchenTablePalette.onStrongAccent)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 10)
-                            .background(NeoAppColors.acid)
+                            .background(NeoAppColors.tomato, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
                             .overlay {
-                                Rectangle().stroke(Color.black, lineWidth: NeoAppMetrics.rule)
+                                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                                    .stroke(KitchenTablePalette.tomatoDeep, lineWidth: NeoAppMetrics.rule)
                             }
                         }
                         .neoReviewRow()

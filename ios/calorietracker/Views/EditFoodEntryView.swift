@@ -203,21 +203,21 @@ struct EditFoodEntryView: View {
                                             .resizable()
                                             .scaledToFill()
                                             .frame(width: 220, height: 200)
-                                            .clipShape(Rectangle())
+                                            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
                                             .overlay {
-                                                Rectangle()
-                                                    .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                                                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                                                    .stroke(KitchenTablePalette.rule, lineWidth: NeoAppMetrics.rule)
                                             }
                                             .overlay(alignment: .bottomTrailing) {
                                                 if entryImages.count > 1 {
                                                     Text("\(index + 1)/\(entryImages.count)")
                                                         .font(.system(.caption2, design: .rounded, weight: .black))
-                                                        .foregroundStyle(Color.black)
+                                                        .foregroundStyle(KitchenTablePalette.onBrass)
                                                         .padding(.horizontal, 8)
                                                         .padding(.vertical, 5)
-                                                        .background(NeoAppColors.acid)
+                                                        .background(NeoAppColors.brass, in: Capsule())
                                                         .overlay {
-                                                            Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                                                            Capsule().stroke(KitchenTablePalette.brassDeep, lineWidth: NeoAppMetrics.compactRule)
                                                         }
                                                         .padding(8)
                                                 }
@@ -238,9 +238,10 @@ struct EditFoodEntryView: View {
                                 Text(emoji)
                                     .font(.system(size: 80))
                                     .frame(width: 140, height: 120)
-                                    .background(NeoAppColors.subtleSurface)
+                                    .background(NeoAppColors.subtleSurface, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
                                     .overlay {
-                                        Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                                        RoundedRectangle(cornerRadius: 18, style: .continuous)
+                                            .stroke(KitchenTablePalette.rule, lineWidth: NeoAppMetrics.rule)
                                     }
                                 Spacer()
                             }
@@ -374,9 +375,10 @@ struct EditFoodEntryView: View {
                                 .frame(minHeight: 80)
                                 .scrollContentBackground(.hidden)
                                 .padding(8)
-                                .background(NeoAppColors.subtleSurface)
+                                .background(NeoAppColors.subtleSurface, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
                                 .overlay {
-                                    Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                        .stroke(KitchenTablePalette.rule, lineWidth: NeoAppMetrics.compactRule)
                                 }
                         }
 

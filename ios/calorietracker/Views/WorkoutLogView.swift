@@ -195,11 +195,7 @@ struct WorkoutLogView: View {
                                     }
                                     .foregroundStyle(NeoAppColors.onCobalt)
                                     .frame(width: 58, height: 54)
-                                    .background(NeoAppColors.cobalt)
-                                    .overlay {
-                                        Rectangle()
-                                            .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
-                                    }
+                                    .kitchenTableIconTile(fill: NeoAppColors.cobalt, border: NeoAppColors.cobaltDeep)
                                 }
                                 .buttonStyle(WorkoutPressableButtonStyle())
                                 .accessibilityLabel("Exercise library")
@@ -367,10 +363,10 @@ struct WorkoutLogView: View {
                         .foregroundStyle(NeoAppColors.onCobalt)
                         .padding(.horizontal, 12)
                         .frame(minHeight: 42)
-                        .background(NeoAppColors.cobalt)
+                        .background(NeoAppColors.cobalt, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
                         .overlay {
-                            Rectangle()
-                                .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                                .stroke(NeoAppColors.cobaltDeep, lineWidth: NeoAppMetrics.rule)
                         }
                         .textCase(nil)
                         .contentShape(Rectangle())
@@ -379,7 +375,7 @@ struct WorkoutLogView: View {
                 }
                 .coordinateSpace(name: WorkoutLogLayout.coordinateSpace)
                 .scrollContentBackground(.hidden)
-                .background(NeoAppColors.canvas.ignoresSafeArea())
+                .background(KitchenTableBackdrop())
                 .listSectionSpacing(NeoAppMetrics.sectionSpacing)
                 .scrollDismissesKeyboard(.interactively)
                 .contentMargins(.bottom, NeoAppMetrics.bottomBarHeight + 96, for: .scrollContent)
@@ -471,14 +467,15 @@ struct WorkoutLogView: View {
             Label("Add workout", systemImage: "plus")
                 .textCase(.uppercase)
                 .font(.system(size: 16, weight: .black, design: .rounded).width(.condensed))
-                .foregroundStyle(Color.black)
+                .foregroundStyle(KitchenTablePalette.onStrongAccent)
                 .padding(.horizontal, 16)
                 .frame(minWidth: 150, minHeight: 56)
-                .background(NeoAppColors.acid)
+                .background(NeoAppColors.tomato, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
                 .overlay {
-                    Rectangle()
-                        .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                    RoundedRectangle(cornerRadius: 18, style: .continuous)
+                        .stroke(KitchenTablePalette.tomatoDeep, lineWidth: NeoAppMetrics.rule)
                 }
+                .shadow(color: NeoAppColors.tomato.opacity(0.24), radius: 8, x: 0, y: 4)
         }
         .tint(NeoAppColors.cobalt)
         .buttonStyle(WorkoutPressableButtonStyle())
@@ -645,11 +642,14 @@ private struct WorkoutLogWeekStrip: View {
             }
         }
         .padding(.vertical, 10)
-        .background(NeoAppColors.surface)
-        .overlay {
-            Rectangle()
-                .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
-        }
+        .kitchenTableSurface(
+            fill: NeoAppColors.surface,
+            border: KitchenTablePalette.rule,
+            cornerRadius: 18,
+            lineWidth: NeoAppMetrics.rule,
+            shadowRadius: 5,
+            shadowY: 2
+        )
         .accessibilityElement(children: .contain)
         .accessibilityLabel("Workout diary dates")
     }
@@ -684,10 +684,10 @@ private struct WorkoutLogWeekStrip: View {
                     .frame(width: 34, height: 34)
                     .background {
                         if isSelected {
-                            Rectangle()
+                            RoundedRectangle(cornerRadius: 10, style: .continuous)
                                 .fill(NeoAppColors.acid)
                         } else if isToday {
-                            Rectangle()
+                            RoundedRectangle(cornerRadius: 10, style: .continuous)
                                 .strokeBorder(NeoAppColors.cobalt, lineWidth: NeoAppMetrics.rule)
                         }
                     }
@@ -753,8 +753,8 @@ private struct WorkoutLogBurnHero: View {
             .frame(minHeight: 42)
             .background(NeoAppColors.cobalt)
             .overlay {
-                Rectangle()
-                    .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .stroke(NeoAppColors.cobaltDeep, lineWidth: NeoAppMetrics.rule)
             }
 
             WorkoutLogBurnButton(isCalculating: isCalculatingBurn, action: calculateBurn)
@@ -768,12 +768,15 @@ private struct WorkoutLogBurnHero: View {
             )
         }
         .frame(maxWidth: .infinity)
-        .background(NeoAppColors.surface)
-        .overlay {
-            Rectangle()
-                .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
-        }
-        .contentShape(Rectangle())
+        .kitchenTableSurface(
+            fill: NeoAppColors.surface,
+            border: KitchenTablePalette.rule,
+            cornerRadius: 20,
+            lineWidth: NeoAppMetrics.rule,
+            shadowRadius: 7,
+            shadowY: 3
+        )
+        .contentShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
         .simultaneousGesture(daySwipeGesture)
     }
 
@@ -805,10 +808,10 @@ private struct WorkoutLogBurnButton: View {
                     }
                 }
                 .frame(width: 54, height: 54)
-                .background(NeoAppColors.cobalt)
+                .background(NeoAppColors.cobalt, in: RoundedRectangle(cornerRadius: 15, style: .continuous))
                 .overlay {
-                    Rectangle()
-                        .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                    RoundedRectangle(cornerRadius: 15, style: .continuous)
+                        .stroke(NeoAppColors.cobaltDeep, lineWidth: NeoAppMetrics.rule)
                 }
 
                 VStack(alignment: .leading, spacing: 2) {
@@ -821,7 +824,7 @@ private struct WorkoutLogBurnButton: View {
                     Text("USES LOAD + REPS + EFFORT")
                         .font(.system(size: 9, weight: .black, design: .rounded).width(.condensed))
                         .tracking(0.4)
-                        .foregroundStyle(Color.black.opacity(0.68))
+                    .foregroundStyle(KitchenTablePalette.onStrongAccent.opacity(0.76))
                         .lineLimit(1)
                 }
 
@@ -830,13 +833,13 @@ private struct WorkoutLogBurnButton: View {
                 Image(systemName: "arrow.right")
                     .font(.system(size: 18, weight: .black))
             }
-            .foregroundStyle(Color.black)
+            .foregroundStyle(KitchenTablePalette.onStrongAccent)
             .padding(12)
             .frame(maxWidth: .infinity, minHeight: 78)
-            .background(NeoAppColors.acid)
+            .background(NeoAppColors.tomato, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
             .overlay {
-                Rectangle()
-                    .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .stroke(KitchenTablePalette.tomatoDeep, lineWidth: NeoAppMetrics.rule)
             }
         }
         .buttonStyle(WorkoutLogBurnButtonStyle())
@@ -848,11 +851,13 @@ private struct WorkoutLogBurnButton: View {
 }
 
 private struct WorkoutLogBurnButtonStyle: ButtonStyle {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .scaleEffect(configuration.isPressed ? 0.985 : 1)
+            .scaleEffect(reduceMotion ? 1 : (configuration.isPressed ? 0.985 : 1))
             .opacity(configuration.isPressed ? 0.76 : 1)
-            .animation(.snappy(duration: 0.12), value: configuration.isPressed)
+            .animation(reduceMotion ? nil : .snappy(duration: 0.12), value: configuration.isPressed)
     }
 }
 
@@ -877,10 +882,10 @@ private struct WorkoutLogStatsStrip: View {
             )
         }
         .frame(maxWidth: .infinity)
-        .background(NeoAppColors.subtleSurface)
+        .background(NeoAppColors.subtleSurface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
         .overlay {
-            Rectangle()
-                .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .stroke(KitchenTablePalette.rule, lineWidth: NeoAppMetrics.rule)
         }
         .accessibilityElement(children: .contain)
     }
@@ -961,10 +966,10 @@ private struct WorkoutLogExerciseCard: View {
                         allowsDerivedImageLookup: false
                     )
                     .frame(width: 64, height: 64)
-                    .clipShape(Rectangle())
+                    .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
                     .overlay {
-                        Rectangle()
-                            .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                        RoundedRectangle(cornerRadius: 14, style: .continuous)
+                            .stroke(KitchenTablePalette.rule, lineWidth: NeoAppMetrics.compactRule)
                     }
                     .clipped()
                     .layoutPriority(0)
@@ -991,10 +996,10 @@ private struct WorkoutLogExerciseCard: View {
                         .font(.caption.weight(.black))
                         .foregroundStyle(NeoAppColors.onCobalt)
                         .frame(width: 30, height: 30)
-                        .background(NeoAppColors.cobalt)
+                        .background(NeoAppColors.cobalt, in: RoundedRectangle(cornerRadius: 9, style: .continuous))
                         .overlay {
-                            Rectangle()
-                                .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                            RoundedRectangle(cornerRadius: 9, style: .continuous)
+                                .stroke(NeoAppColors.cobaltDeep, lineWidth: NeoAppMetrics.compactRule)
                         }
                 }
                 .padding(12)
@@ -1010,7 +1015,7 @@ private struct WorkoutLogExerciseCard: View {
                     Label("Sets", systemImage: "list.number")
                         .textCase(.uppercase)
                         .font(.system(size: 12, weight: .black, design: .rounded).width(.condensed))
-                        .foregroundStyle(Color.black)
+                        .foregroundStyle(KitchenTablePalette.onBrass)
 
                     Spacer(minLength: 8)
 
@@ -1021,7 +1026,7 @@ private struct WorkoutLogExerciseCard: View {
                         Text("\(exercise.sets.count) \(exercise.sets.count == 1 ? "set" : "sets")")
                             .textCase(.uppercase)
                             .font(.system(size: 11, weight: .black, design: .rounded).width(.condensed))
-                            .foregroundStyle(Color.black)
+                            .foregroundStyle(KitchenTablePalette.onBrass)
                             .lineLimit(1)
                     }
                     .tint(NeoAppColors.cobalt)
@@ -1030,10 +1035,10 @@ private struct WorkoutLogExerciseCard: View {
                 }
                 .padding(.horizontal, 10)
                 .frame(minHeight: 42)
-                .background(NeoAppColors.acid)
+                .background(NeoAppColors.brass, in: RoundedRectangle(cornerRadius: 13, style: .continuous))
                 .overlay {
-                    Rectangle()
-                        .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                    RoundedRectangle(cornerRadius: 13, style: .continuous)
+                        .stroke(KitchenTablePalette.brassDeep, lineWidth: NeoAppMetrics.rule)
                 }
 
                 VStack(spacing: 0) {
@@ -1056,25 +1061,29 @@ private struct WorkoutLogExerciseCard: View {
                         }
                     }
                 }
-                .background(NeoAppColors.subtleSurface)
+                .background(NeoAppColors.subtleSurface, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
                 .overlay {
-                    Rectangle()
-                        .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .stroke(KitchenTablePalette.rule, lineWidth: NeoAppMetrics.compactRule)
                 }
             }
             .padding(12)
             .background(NeoAppColors.subtleSurface)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(NeoAppColors.surface)
-        .overlay {
-            Rectangle()
-                .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
-        }
+        .kitchenTableSurface(
+            fill: NeoAppColors.surface,
+            border: KitchenTablePalette.rule,
+            cornerRadius: 18,
+            lineWidth: NeoAppMetrics.rule,
+            shadowRadius: 6,
+            shadowY: 3
+        )
         .overlay(alignment: .leading) {
-            Rectangle()
+            Capsule()
                 .fill(NeoAppColors.cobalt)
                 .frame(width: 5)
+                .padding(.vertical, 12)
         }
     }
 }

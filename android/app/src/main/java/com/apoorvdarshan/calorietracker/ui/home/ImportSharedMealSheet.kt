@@ -49,8 +49,8 @@ fun ImportSharedMealSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = state,
-        shape = RoundedCornerShape(0.dp),
-        containerColor = if (isDark) Color(0xF2141416) else Color(0xFFFAF3EE),
+        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
+        containerColor = MaterialTheme.colorScheme.surface,
     ) {
         Column(
             Modifier.fillMaxWidth().padding(horizontal = 24.dp).padding(bottom = 28.dp),
@@ -79,7 +79,7 @@ fun ImportSharedMealSheet(
                         "${meal.calories} kcal",
                         fontSize = 15.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = AppColors.Calorie,
+                        color = MaterialTheme.colorScheme.primary,
                     )
                 }
             }

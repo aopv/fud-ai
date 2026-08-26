@@ -75,11 +75,14 @@ struct ManualEntryView: View {
                     .labelsHidden()
                 }
                 .padding(12)
-                .background(NeoAppColors.surface)
-                .overlay {
-                    Rectangle()
-                        .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
-                }
+                .kitchenTableSurface(
+                    fill: NeoAppColors.surface,
+                    border: KitchenTablePalette.rule,
+                    cornerRadius: 14,
+                    lineWidth: NeoAppMetrics.rule,
+                    shadowRadius: 3,
+                    shadowY: 1
+                )
             }
 
             Button {
@@ -99,16 +102,16 @@ struct ManualEntryView: View {
                 Text("Save")
                     .textCase(.uppercase)
                     .font(.system(.headline, design: .rounded, weight: .black))
-                    .foregroundStyle(Color.black)
+                    .foregroundStyle(KitchenTablePalette.onStrongAccent)
                     .frame(maxWidth: .infinity)
                     .frame(minHeight: 50)
-                    .background(NeoAppColors.acid)
+                    .background(NeoAppColors.tomato, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
                     .overlay {
-                        Rectangle()
-                            .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                        RoundedRectangle(cornerRadius: 16, style: .continuous)
+                            .stroke(KitchenTablePalette.tomatoDeep, lineWidth: NeoAppMetrics.rule)
                     }
             }
-            .buttonStyle(.plain)
+            .buttonStyle(KitchenTablePressableButtonStyle())
             .disabled(!canSave)
             .opacity(canSave ? 1 : 0.45)
             .accessibilityIdentifier("quickAdd.manual.save")
@@ -120,18 +123,18 @@ struct ManualEntryView: View {
                     .foregroundStyle(NeoAppColors.cobalt)
                     .frame(maxWidth: .infinity)
                     .frame(minHeight: 44)
-                    .background(NeoAppColors.surface)
+                    .background(NeoAppColors.surface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
                     .overlay {
-                        Rectangle()
+                        RoundedRectangle(cornerRadius: 14, style: .continuous)
                             .stroke(NeoAppColors.cobalt, lineWidth: NeoAppMetrics.rule)
                     }
             }
-            .buttonStyle(.plain)
+            .buttonStyle(KitchenTablePressableButtonStyle())
             .accessibilityIdentifier("quickAdd.manual.cancel")
         }
         .padding(14)
         .frame(width: 340)
-        .background(NeoAppColors.canvas)
+        .background(KitchenTableBackdrop())
         .onAppear { focused = .name }
     }
 
@@ -150,11 +153,14 @@ struct ManualEntryView: View {
                 .autocorrectionDisabled()
                 .focused($focused, equals: focus)
                 .padding(12)
-                .background(NeoAppColors.surface)
-                .overlay {
-                    Rectangle()
-                        .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
-                }
+                .kitchenTableSurface(
+                    fill: NeoAppColors.surface,
+                    border: KitchenTablePalette.rule,
+                    cornerRadius: 14,
+                    lineWidth: NeoAppMetrics.rule,
+                    shadowRadius: 3,
+                    shadowY: 1
+                )
         }
     }
 
@@ -172,11 +178,14 @@ struct ManualEntryView: View {
                 .foregroundStyle(NeoAppColors.ink)
                 .focused($focused, equals: focus)
                 .padding(12)
-                .background(NeoAppColors.surface)
-                .overlay {
-                    Rectangle()
-                        .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
-                }
+                .kitchenTableSurface(
+                    fill: NeoAppColors.surface,
+                    border: KitchenTablePalette.rule,
+                    cornerRadius: 14,
+                    lineWidth: NeoAppMetrics.rule,
+                    shadowRadius: 3,
+                    shadowY: 1
+                )
         }
     }
 }

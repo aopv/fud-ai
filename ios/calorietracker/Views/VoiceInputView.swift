@@ -22,6 +22,7 @@ struct VoiceInputView: View {
     // Remote path (file-based recorder)
     @State private var audioRecorder: AVAudioRecorder?
     @State private var recordedFileURL: URL?
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var onCancel: () -> Void
     var onSubmit: (String) -> Void
@@ -59,10 +60,10 @@ struct VoiceInputView: View {
             .foregroundStyle(NeoAppColors.onCobalt)
             .padding(.horizontal, 10)
             .padding(.vertical, 7)
-            .background(NeoAppColors.cobalt)
+            .background(NeoAppColors.cobalt, in: Capsule())
             .overlay {
-                Rectangle()
-                    .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                Capsule()
+                    .stroke(KitchenTablePalette.rule, lineWidth: NeoAppMetrics.compactRule)
             }
 
             // Transcription area
@@ -95,11 +96,14 @@ struct VoiceInputView: View {
                     .padding(.vertical, 14)
             }
             .frame(minHeight: 100, alignment: .topLeading)
-            .background(NeoAppColors.surface)
-            .overlay {
-                Rectangle()
-                    .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
-            }
+            .kitchenTableSurface(
+                fill: NeoAppColors.surface,
+                border: KitchenTablePalette.rule,
+                cornerRadius: 16,
+                lineWidth: NeoAppMetrics.rule,
+                shadowRadius: 4,
+                shadowY: 2
+            )
             .accessibilityIdentifier("quickAdd.voice.transcription")
 
             // Mic button
@@ -112,22 +116,23 @@ struct VoiceInputView: View {
             } label: {
                 Image(systemName: isRecording ? "mic.fill" : "mic")
                     .font(.system(size: 28, weight: .black))
-                    .foregroundStyle(isRecording ? Color.white : Color.black)
+                    .foregroundStyle(isRecording ? KitchenTablePalette.onStrongAccent : KitchenTablePalette.onBrass)
                     .frame(width: 72, height: 72)
-                    .background(isRecording ? NeoAppColors.warning : NeoAppColors.acid)
+                    .background(isRecording ? NeoAppColors.tomato : NeoAppColors.brass, in: Circle())
                     .overlay {
-                        Rectangle()
-                            .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                        Circle()
+                            .stroke(KitchenTablePalette.strongRule, lineWidth: NeoAppMetrics.rule)
                     }
+                    .shadow(color: (isRecording ? NeoAppColors.tomato : NeoAppColors.brass).opacity(0.24), radius: 9, x: 0, y: 4)
                     .scaleEffect(pulseScale)
             }
-            .buttonStyle(.plain)
+            .buttonStyle(KitchenTablePressableButtonStyle())
             .disabled(isTranscribing)
             .accessibilityLabel(isRecording ? "Stop recording" : "Start recording")
             .accessibilityValue(isTranscribing ? "Transcribing" : (isRecording ? "Recording" : "Idle"))
             .accessibilityIdentifier("quickAdd.voice.microphone")
             .onChange(of: isRecording) { _, recording in
-                if recording {
+                if recording && !reduceMotion {
                     withAnimation(.easeInOut(duration: 0.8).repeatForever(autoreverses: true)) {
                         pulseScale = 1.15
                     }
@@ -146,9 +151,9 @@ struct VoiceInputView: View {
                     .multilineTextAlignment(.center)
                     .padding(10)
                     .frame(maxWidth: .infinity)
-                    .background(NeoAppColors.warning.opacity(0.12))
+                    .background(NeoAppColors.warning.opacity(0.12), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
                     .overlay {
-                        Rectangle()
+                        RoundedRectangle(cornerRadius: 12, style: .continuous)
                             .stroke(NeoAppColors.warning, lineWidth: NeoAppMetrics.compactRule)
                     }
             }
@@ -173,16 +178,16 @@ struct VoiceInputView: View {
                 Text(analyzeButtonLabel)
                     .textCase(.uppercase)
                     .font(.system(.headline, design: .rounded, weight: .black))
-                    .foregroundStyle(Color.black)
+                    .foregroundStyle(KitchenTablePalette.onStrongAccent)
                     .frame(maxWidth: .infinity)
                     .frame(minHeight: 50)
-                    .background(NeoAppColors.acid)
+                    .background(NeoAppColors.tomato, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
                     .overlay {
-                        Rectangle()
-                            .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                        RoundedRectangle(cornerRadius: 16, style: .continuous)
+                            .stroke(KitchenTablePalette.tomatoDeep, lineWidth: NeoAppMetrics.rule)
                     }
             }
-            .buttonStyle(.plain)
+            .buttonStyle(KitchenTablePressableButtonStyle())
             .disabled(analyzeButtonDisabled)
             .opacity(analyzeButtonDisabled ? 0.45 : 1)
             .accessibilityIdentifier("quickAdd.voice.analyze")
@@ -196,18 +201,18 @@ struct VoiceInputView: View {
                     .foregroundStyle(NeoAppColors.cobalt)
                     .frame(maxWidth: .infinity)
                     .frame(minHeight: 44)
-                    .background(NeoAppColors.surface)
+                    .background(NeoAppColors.surface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
                     .overlay {
-                        Rectangle()
+                        RoundedRectangle(cornerRadius: 14, style: .continuous)
                             .stroke(NeoAppColors.cobalt, lineWidth: NeoAppMetrics.rule)
                     }
             }
-            .buttonStyle(.plain)
+            .buttonStyle(KitchenTablePressableButtonStyle())
             .accessibilityIdentifier("quickAdd.voice.cancel")
         }
         .padding(14)
         .frame(width: 320)
-        .background(NeoAppColors.canvas)
+        .background(KitchenTableBackdrop())
         .onAppear { startRecording() }
         .onDisappear { stopRecording() }
     }

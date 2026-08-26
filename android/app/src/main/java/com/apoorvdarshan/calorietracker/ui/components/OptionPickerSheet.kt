@@ -68,14 +68,14 @@ fun <T> OptionPickerSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = state,
-        shape = RoundedCornerShape(0.dp),
-        containerColor = if (isDark) AppColors.NeoInk else AppColors.NeoPaper
+        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
+        containerColor = MaterialTheme.colorScheme.surface
     ) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp)) {
             Text(
-                title.uppercase(),
+                title,
                 style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Black
+                fontWeight = FontWeight.Bold
             )
             Spacer(Modifier.height(12.dp))
             LazyColumn(
@@ -129,19 +129,19 @@ private fun OptionPickerRow(
     isDark: Boolean,
     onClick: () -> Unit
 ) {
-    val shape = RoundedCornerShape(0.dp)
+    val shape = RoundedCornerShape(14.dp)
     Row(
         Modifier
             .fillMaxWidth()
             .clip(shape)
             .background(
-                if (isSelected) AppColors.NeoAcid
-                else if (isDark) AppColors.NeoInk
-                else Color.White
+                if (isSelected) AppColors.KitchenBrass.copy(alpha = 0.38f)
+                else MaterialTheme.colorScheme.surface
             )
             .border(
-                2.dp,
-                if (isDark && !isSelected) Color.White else AppColors.NeoInk,
+                1.dp,
+                if (isDark && !isSelected) AppColors.KitchenBrass.copy(alpha = 0.30f)
+                else AppColors.KitchenEspresso.copy(alpha = 0.20f),
                 shape
             )
             .clickable(onClick = onClick)
@@ -150,10 +150,10 @@ private fun OptionPickerRow(
     ) {
         Column(Modifier.weight(1f)) {
             Text(
-                label.uppercase(),
+                label,
                 style = MaterialTheme.typography.bodyLarge,
-                color = if (isSelected) AppColors.NeoInk else MaterialTheme.colorScheme.onSurface,
-                fontWeight = FontWeight.Black
+                color = MaterialTheme.colorScheme.onSurface,
+                fontWeight = FontWeight.SemiBold
             )
             if (!subtitle.isNullOrBlank()) {
                 Spacer(Modifier.height(2.dp))
@@ -169,7 +169,7 @@ private fun OptionPickerRow(
             Icon(
                 Icons.Filled.Check,
                 contentDescription = stringResource(R.string.sheet_selected_a11y),
-                tint = if (isSelected) AppColors.NeoInk else AppColors.NeoCobalt,
+                tint = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.size(20.dp)
             )
         }

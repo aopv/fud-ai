@@ -49,11 +49,14 @@ struct TextFoodInputView: View {
                     .padding(.vertical, 14)
             }
             .frame(minHeight: 112, alignment: .topLeading)
-            .background(NeoAppColors.surface)
-            .overlay {
-                Rectangle()
-                    .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
-            }
+            .kitchenTableSurface(
+                fill: NeoAppColors.surface,
+                border: KitchenTablePalette.rule,
+                cornerRadius: 16,
+                lineWidth: NeoAppMetrics.rule,
+                shadowRadius: 4,
+                shadowY: 2
+            )
             .accessibilityIdentifier("quickAdd.text.description")
 
             Button {
@@ -62,16 +65,16 @@ struct TextFoodInputView: View {
                 Text("Analyze")
                     .textCase(.uppercase)
                     .font(.system(.headline, design: .rounded, weight: .black))
-                    .foregroundStyle(Color.black)
+                    .foregroundStyle(KitchenTablePalette.onStrongAccent)
                     .frame(maxWidth: .infinity)
                     .frame(minHeight: 50)
-                    .background(NeoAppColors.acid)
+                    .background(NeoAppColors.tomato, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
                     .overlay {
-                        Rectangle()
-                            .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                        RoundedRectangle(cornerRadius: 16, style: .continuous)
+                            .stroke(KitchenTablePalette.tomatoDeep, lineWidth: NeoAppMetrics.rule)
                     }
             }
-            .buttonStyle(.plain)
+            .buttonStyle(KitchenTablePressableButtonStyle())
             .disabled(foodDescription.trimmingCharacters(in: .whitespaces).isEmpty)
             .opacity(foodDescription.trimmingCharacters(in: .whitespaces).isEmpty ? 0.45 : 1)
             .accessibilityIdentifier("quickAdd.text.analyze")
@@ -85,18 +88,18 @@ struct TextFoodInputView: View {
                     .foregroundStyle(NeoAppColors.cobalt)
                     .frame(maxWidth: .infinity)
                     .frame(minHeight: 44)
-                    .background(NeoAppColors.surface)
+                    .background(NeoAppColors.surface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
                     .overlay {
-                        Rectangle()
+                        RoundedRectangle(cornerRadius: 14, style: .continuous)
                             .stroke(NeoAppColors.cobalt, lineWidth: NeoAppMetrics.rule)
                     }
             }
-            .buttonStyle(.plain)
+            .buttonStyle(KitchenTablePressableButtonStyle())
             .accessibilityIdentifier("quickAdd.text.cancel")
         }
         .padding(14)
         .frame(width: 320)
-        .background(NeoAppColors.canvas)
+        .background(KitchenTableBackdrop())
         .onAppear { isFocused = true }
         .onReceive(timer) { _ in
             guard foodDescription.isEmpty else { return }

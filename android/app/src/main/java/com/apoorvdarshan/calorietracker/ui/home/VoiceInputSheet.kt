@@ -228,7 +228,7 @@ fun VoiceInputSheet(
             onDismiss()
         },
         sheetState = sheetState,
-        shape = RoundedCornerShape(0.dp),
+        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
         containerColor = MaterialTheme.colorScheme.surface
     ) {
         Column(
@@ -248,13 +248,13 @@ fun VoiceInputSheet(
                 Icon(
                     Icons.Filled.GraphicEq,
                     contentDescription = null,
-                    tint = AppColors.Calorie,
+                    tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(13.dp)
                 )
                 Spacer(Modifier.size(6.dp))
                 Text(
                     stringResource(provider.displayNameRes),
-                    color = AppColors.Calorie,
+                    color = MaterialTheme.colorScheme.primary,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -277,7 +277,7 @@ fun VoiceInputSheet(
                     phase == VoicePhase.TRANSCRIBING -> {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             androidx.compose.material3.CircularProgressIndicator(
-                                color = AppColors.Calorie,
+                                color = MaterialTheme.colorScheme.primary,
                                 strokeWidth = 2.dp,
                                 modifier = Modifier.size(16.dp)
                             )

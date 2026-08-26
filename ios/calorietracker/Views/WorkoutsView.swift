@@ -251,13 +251,14 @@ private struct ExerciseLibraryBrowserView: View {
                     Button(action: onShowWorkoutLog) {
                         Image(systemName: "figure.strengthtraining.traditional")
                             .font(.system(size: 18, weight: .bold))
-                            .foregroundStyle(Color.black)
+                            .foregroundStyle(KitchenTablePalette.onBrass)
                             .frame(width: 50, height: 50)
-                            .background(NeoAppColors.acid)
+                            .background(NeoAppColors.brass, in: RoundedRectangle(cornerRadius: 15, style: .continuous))
                             .overlay {
-                                Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                                RoundedRectangle(cornerRadius: 15, style: .continuous)
+                                    .stroke(KitchenTablePalette.brassDeep, lineWidth: NeoAppMetrics.rule)
                             }
-                            .contentShape(Rectangle())
+                            .contentShape(RoundedRectangle(cornerRadius: 15, style: .continuous))
                     }
                     .buttonStyle(.plain)
                     .workoutPressable()
@@ -579,10 +580,14 @@ private struct WorkoutsSearchPill: View {
         }
         .padding(.horizontal, 14)
         .frame(maxWidth: .infinity, minHeight: 50, alignment: .leading)
-        .background(Color.workoutCard)
-        .overlay {
-            Rectangle().stroke(Color.workoutHairline, lineWidth: NeoAppMetrics.rule)
-        }
+        .kitchenTableSurface(
+            fill: Color.workoutCard,
+            border: Color.workoutHairline,
+            cornerRadius: 16,
+            lineWidth: NeoAppMetrics.rule,
+            shadowRadius: 3,
+            shadowY: 1
+        )
     }
 }
 
@@ -705,10 +710,14 @@ private struct ResultsHeader: View {
             }
         }
         .padding(10)
-        .background(Color.workoutCard)
-        .overlay {
-            Rectangle().stroke(Color.workoutHairline, lineWidth: NeoAppMetrics.rule)
-        }
+        .kitchenTableSurface(
+            fill: Color.workoutCard,
+            border: Color.workoutHairline,
+            cornerRadius: 16,
+            lineWidth: NeoAppMetrics.rule,
+            shadowRadius: 4,
+            shadowY: 2
+        )
     }
 }
 
@@ -754,11 +763,15 @@ private struct ExerciseLibraryRow: View {
                 .foregroundStyle(Color.workoutAccent)
         }
         .padding(10)
-        .background(Color.workoutCard)
-        .overlay {
-            Rectangle().stroke(Color.workoutHairline, lineWidth: NeoAppMetrics.rule)
-        }
-        .contentShape(Rectangle())
+        .kitchenTableSurface(
+            fill: Color.workoutCard,
+            border: Color.workoutHairline,
+            cornerRadius: 18,
+            lineWidth: NeoAppMetrics.rule,
+            shadowRadius: 5,
+            shadowY: 2
+        )
+        .contentShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
         .accessibilityElement(children: .combine)
     }
 
@@ -772,9 +785,9 @@ private struct ExerciseLibraryRow: View {
         )
         .frame(width: 104, height: 104)
         .background(Color.workoutPanel)
-        .clipShape(Rectangle())
+        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
         .overlay {
-            Rectangle()
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
                 .stroke(Color.workoutHairline, lineWidth: NeoAppMetrics.compactRule)
         }
         .accessibilityHidden(true)
@@ -796,9 +809,9 @@ private struct LibraryTag: View {
             .minimumScaleFactor(0.78)
             .padding(.horizontal, 9)
             .padding(.vertical, 4)
-            .background(Color.workoutPanel)
+            .background(Color.workoutPanel, in: Capsule())
             .overlay {
-                Rectangle().stroke(Color.workoutHairline, lineWidth: NeoAppMetrics.compactRule)
+                Capsule().stroke(Color.workoutHairline, lineWidth: NeoAppMetrics.compactRule)
             }
             .accessibilityElement(children: .combine)
     }
@@ -877,12 +890,12 @@ struct ExerciseLibraryDetailView: View {
             } label: {
                 Image(systemName: "info.circle.fill")
                     .font(.system(size: 20, weight: .bold))
-                    .foregroundStyle(Color.black)
+                    .foregroundStyle(KitchenTablePalette.onBrass)
                     .frame(width: 44, height: 44)
-                    .background(NeoAppColors.acid)
+                    .background(NeoAppColors.brass, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
                     .overlay {
-                        Rectangle()
-                            .stroke(Color.workoutHairline, lineWidth: NeoAppMetrics.rule)
+                        RoundedRectangle(cornerRadius: 14, style: .continuous)
+                            .stroke(KitchenTablePalette.brassDeep, lineWidth: NeoAppMetrics.rule)
                     }
             }
             .buttonStyle(.plain)
@@ -893,10 +906,12 @@ struct ExerciseLibraryDetailView: View {
         }
         .frame(width: width, height: 294)
         .animation(.snappy(duration: 0.28), value: isMetricsPresented)
-        .clipped()
+        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
         .overlay {
-            Rectangle().stroke(Color.workoutHairline, lineWidth: NeoAppMetrics.rule)
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .stroke(Color.workoutHairline, lineWidth: NeoAppMetrics.rule)
         }
+        .shadow(color: KitchenTablePalette.shadow, radius: 7, x: 0, y: 3)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(Text("\(item.name) exercise visual"))
     }
@@ -949,9 +964,9 @@ private struct ExerciseHeroMetricOverlay: View {
         .padding(.horizontal, 12)
         .padding(.vertical, compact ? 6 : 5)
         .frame(maxWidth: .infinity, minHeight: compact ? 44 : (valueLineLimit > 2 ? 50 : 42), alignment: .leading)
-        .background(fillColor)
+        .background(fillColor, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
         .overlay {
-            Rectangle()
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
                 .stroke(strokeColor, lineWidth: NeoAppMetrics.compactRule)
         }
     }
@@ -965,11 +980,12 @@ private struct DetailInstructionSection: View {
             HStack(spacing: 10) {
                 Image(systemName: "list.number")
                     .font(.subheadline.weight(.bold))
-                    .foregroundStyle(Color.black)
+                    .foregroundStyle(KitchenTablePalette.onBrass)
                     .frame(width: 30, height: 30)
-                    .background(NeoAppColors.acid)
+                    .background(NeoAppColors.brass, in: RoundedRectangle(cornerRadius: 9, style: .continuous))
                     .overlay {
-                        Rectangle().stroke(Color.workoutHairline, lineWidth: NeoAppMetrics.compactRule)
+                        RoundedRectangle(cornerRadius: 9, style: .continuous)
+                            .stroke(Color.workoutHairline, lineWidth: NeoAppMetrics.compactRule)
                     }
 
                 Text("Instructions")
@@ -985,9 +1001,9 @@ private struct DetailInstructionSection: View {
                     .foregroundStyle(Color.black)
                     .padding(.horizontal, 9)
                     .padding(.vertical, 4)
-                    .background(NeoAppColors.acid)
+                    .background(NeoAppColors.brass, in: Capsule())
                     .overlay {
-                        Rectangle().stroke(Color.workoutHairline, lineWidth: NeoAppMetrics.compactRule)
+                        Capsule().stroke(Color.workoutHairline, lineWidth: NeoAppMetrics.compactRule)
                     }
             }
 

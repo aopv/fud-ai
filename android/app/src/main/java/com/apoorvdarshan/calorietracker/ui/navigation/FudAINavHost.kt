@@ -38,7 +38,6 @@ import com.apoorvdarshan.calorietracker.AppContainer
 import com.apoorvdarshan.calorietracker.services.update.AndroidUpdateChecker
 import com.apoorvdarshan.calorietracker.services.update.AndroidUpdateState
 import com.apoorvdarshan.calorietracker.ui.coach.CoachScreen
-import com.apoorvdarshan.calorietracker.ui.flutter.FlutterAppScreen
 import com.apoorvdarshan.calorietracker.ui.flutter.NativeFlutterDestination
 import com.apoorvdarshan.calorietracker.ui.home.HomeScreen
 import com.apoorvdarshan.calorietracker.ui.onboarding.OnboardingScreen
@@ -49,6 +48,7 @@ import com.apoorvdarshan.calorietracker.ui.settings.OptionalNutrientGoalsScreen
 import com.apoorvdarshan.calorietracker.ui.settings.SettingsScreen
 import com.apoorvdarshan.calorietracker.ui.settings.SettingsViewModel
 import com.apoorvdarshan.calorietracker.ui.workouts.WorkoutsScreen
+import com.apoorvdarshan.calorietracker.ui.components.KitchenTableBackground
 import com.apoorvdarshan.calorietracker.models.WorkoutTabMode
 import com.apoorvdarshan.calorietracker.models.QuickActionRequest
 import com.apoorvdarshan.calorietracker.ui.settings.QuickActionsScreen
@@ -96,9 +96,10 @@ fun FudAINavHost(
     // Match iOS's versioned AppStorage key: reset the former library-first
     // default once, then keep every user switch persistent after that.
     val workoutMode = if (workoutModeV2Initialized) persistedWorkoutMode else WorkoutTabMode.LOG
-    // The shared Flutter shell owns the themed five-tab navigation. Native
-    // destinations are feature-preserving drill-ins and never add a second bar.
-    val showTabs = false
+    // The five existing Compose destinations form the v7 shell. Capability
+    // drill-ins keep the bar hidden so camera, editor, and picker surfaces have
+    // their normal platform-native focus.
+    val showTabs = currentRoute in FudAIRoutes.bottomTabs && !analyzing
     val currentVersion = remember(context) { AndroidUpdateChecker.currentVersion(context) }
     var updateAvailable by remember { mutableStateOf(false) }
 
@@ -114,9 +115,14 @@ fun FudAINavHost(
 
     LaunchedEffect(quickActionRequest?.id, currentRoute) {
         if (quickActionRequest != null && currentRoute != FudAIRoutes.ONBOARDING &&
-            currentRoute != NativeFlutterDestination.HOME
+            currentRoute != FudAIRoutes.HOME
         ) {
-            nav.navigate(NativeFlutterDestination.HOME) { launchSingleTop = true }
+            // The Compose shell now owns Home, so app shortcuts return to the
+            // real tab instead of opening the former Flutter capability route
+            // (which intentionally has no bottom navigation).
+            if (!nav.popBackStack(FudAIRoutes.HOME, inclusive = false)) {
+                nav.navigate(FudAIRoutes.HOME) { launchSingleTop = true }
+            }
         }
     }
 
@@ -205,13 +211,13 @@ fun FudAINavHost(
                     })
                 }
                 composable(FudAIRoutes.HOME) {
-                    FlutterAppScreen(
-                        container = container,
-                        activity = context as com.apoorvdarshan.calorietracker.MainActivity,
-                        settingsViewModel = settingsViewModel,
-                        updateAvailable = updateAvailable,
-                        onOpenNative = { destination -> nav.navigate(destination) }
-                    )
+                    TabInset {
+                        HomeScreen(
+                            container = container,
+                            quickActionRequest = quickActionRequest,
+                            onQuickActionHandled = onQuickActionHandled
+                        )
+                    }
                 }
                 composable(FudAIRoutes.PROGRESS) { TabInset { ProgressScreen(container = container) } }
                 composable(FudAIRoutes.COACH) { TabInset { CoachScreen(container = container) } }
@@ -235,11 +241,7 @@ fun FudAINavHost(
                 composable(FudAIRoutes.WORKOUTS) { TabInset { WorkoutsScreen(container = container) } }
                 composable(NativeFlutterDestination.HOME) {
                     TabInset {
-                        HomeScreen(
-                            container = container,
-                            quickActionRequest = quickActionRequest,
-                            onQuickActionHandled = onQuickActionHandled
-                        )
+                        HomeScreen(container = container)
                     }
                 }
                 composable(
@@ -362,7 +364,9 @@ fun FudAINavHost(
 @Composable
 private fun TabInset(content: @Composable () -> Unit) {
     Column(Modifier.fillMaxSize().statusBarsPadding()) {
-        Box(Modifier.weight(1f).consumeWindowInsets(WindowInsets.statusBars)) { content() }
+        KitchenTableBackground(
+            Modifier.weight(1f).consumeWindowInsets(WindowInsets.statusBars)
+        ) { content() }
     }
 }
 

@@ -53,7 +53,7 @@ fun WaterProgressRow(current: Int, goal: Int, unit: WaterUnit, modifier: Modifie
             Icon(
                 Icons.Filled.WaterDrop,
                 contentDescription = null,
-                tint = AppColors.Calorie,
+                tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(17.dp)
             )
             Text(
@@ -72,7 +72,7 @@ fun WaterProgressRow(current: Int, goal: Int, unit: WaterUnit, modifier: Modifie
         LinearProgressIndicator(
             progress = { progress },
             modifier = Modifier.fillMaxWidth().height(5.dp).clip(RoundedCornerShape(3.dp)),
-            color = AppColors.Calorie,
+            color = MaterialTheme.colorScheme.primary,
             trackColor = AppColors.Calorie.copy(alpha = 0.16f)
         )
     }
@@ -90,7 +90,7 @@ fun WaterCustomAmountSheet(unit: WaterUnit, onDismiss: () -> Unit, onAdd: (Int) 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        shape = RoundedCornerShape(0.dp)
+        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)
     ) {
         Column(
             Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp),

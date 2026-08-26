@@ -21,7 +21,7 @@ struct AnalyzingView: View {
                         .scaledToFit()
                         .frame(maxWidth: 250, maxHeight: 250)
                         .compositingGroup()
-                        .clipShape(Rectangle())
+                        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
                 } else {
                     NeoAppColors.subtleSurface
 
@@ -31,11 +31,12 @@ struct AnalyzingView: View {
                 }
             }
             .frame(maxWidth: 250, minHeight: 220, maxHeight: 250)
-            .background(NeoAppColors.surface)
+            .background(NeoAppColors.surface, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
             .overlay {
-                Rectangle()
-                    .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                RoundedRectangle(cornerRadius: 22, style: .continuous)
+                    .stroke(KitchenTablePalette.rule, lineWidth: NeoAppMetrics.rule)
             }
+            .shadow(color: KitchenTablePalette.shadow, radius: 8, x: 0, y: 4)
             .accessibilityHidden(true)
 
             VStack(spacing: 12) {
@@ -46,15 +47,15 @@ struct AnalyzingView: View {
                 Text(message)
                     .textCase(.uppercase)
                     .font(.system(.headline, design: .rounded, weight: .black))
-                    .foregroundStyle(NeoAppColors.ink)
+                    .foregroundStyle(KitchenTablePalette.onBrass)
                     .multilineTextAlignment(.center)
             }
             .padding(16)
             .frame(maxWidth: 250)
-            .background(NeoAppColors.acid)
+            .background(NeoAppColors.brass, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
             .overlay {
-                Rectangle()
-                    .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .stroke(KitchenTablePalette.brassDeep, lineWidth: NeoAppMetrics.rule)
             }
             .accessibilityElement(children: .combine)
             .accessibilityLabel(message)
@@ -64,6 +65,6 @@ struct AnalyzingView: View {
         }
         .padding(NeoAppMetrics.screenInset)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(NeoAppColors.canvas.ignoresSafeArea())
+        .background(KitchenTableBackdrop())
     }
 }

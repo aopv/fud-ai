@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.FlashAuto
@@ -121,6 +122,16 @@ fun InAppCameraCaptureDialog(
                 modifier = Modifier.fillMaxSize()
             )
 
+            // A quiet plate-sized guide helps frame a meal while keeping the
+            // standard full-screen CameraX interaction intact.
+            Box(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .size(280.dp)
+                    .clip(CircleShape)
+                    .border(1.5.dp, AppColors.KitchenBrass.copy(alpha = 0.52f), CircleShape)
+            )
+
             IconButton(
                 onClick = onDismiss,
                 enabled = !isCapturing,
@@ -128,8 +139,9 @@ fun InAppCameraCaptureDialog(
                     .align(Alignment.TopStart)
                     .padding(18.dp)
                     .size(44.dp)
-                    .clip(CircleShape)
-                    .background(Color.Black.copy(alpha = 0.45f))
+                    .clip(RoundedCornerShape(14.dp))
+                    .background(AppColors.KitchenEspresso.copy(alpha = 0.72f))
+                    .border(1.dp, AppColors.KitchenBrass.copy(alpha = 0.42f), RoundedCornerShape(14.dp))
             ) {
                 Icon(Icons.Filled.Close, contentDescription = stringResource(R.string.cd_close_camera), tint = Color.White)
             }
@@ -142,8 +154,9 @@ fun InAppCameraCaptureDialog(
                         .align(Alignment.TopEnd)
                         .padding(18.dp)
                         .size(44.dp)
-                        .clip(CircleShape)
-                        .background(Color.Black.copy(alpha = 0.45f))
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(AppColors.KitchenEspresso.copy(alpha = 0.72f))
+                        .border(1.dp, AppColors.KitchenBrass.copy(alpha = 0.42f), RoundedCornerShape(14.dp))
                 ) {
                     val (flashIcon, flashDesc) = when (flashMode) {
                         ImageCapture.FLASH_MODE_ON -> Icons.Filled.FlashOn to "Flash on"
@@ -212,12 +225,12 @@ fun InAppCameraCaptureDialog(
                     .padding(bottom = 36.dp)
                     .size(76.dp)
                     .clip(CircleShape)
-                    .background(Color.White.copy(alpha = 0.95f))
-                    .border(5.dp, AppColors.Calorie, CircleShape)
+                    .background(AppColors.KitchenPaper.copy(alpha = 0.96f))
+                    .border(5.dp, AppColors.KitchenTomato, CircleShape)
             ) {
                 if (isCapturing) {
                     CircularProgressIndicator(
-                        color = AppColors.Calorie,
+                        color = MaterialTheme.colorScheme.primary,
                         strokeWidth = 3.dp,
                         modifier = Modifier.size(30.dp)
                     )
@@ -226,7 +239,7 @@ fun InAppCameraCaptureDialog(
                         modifier = Modifier
                             .size(54.dp)
                             .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.25f))
+                            .background(AppColors.KitchenTomato.copy(alpha = 0.18f))
                     )
                 }
             }

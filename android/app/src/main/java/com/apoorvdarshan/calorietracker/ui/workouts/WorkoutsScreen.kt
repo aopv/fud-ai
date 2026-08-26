@@ -84,6 +84,7 @@ import com.apoorvdarshan.calorietracker.R
 import com.apoorvdarshan.calorietracker.models.WorkoutTabMode
 import com.apoorvdarshan.calorietracker.models.WorkoutWeightUnit
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassSurface
+import com.apoorvdarshan.calorietracker.ui.components.KitchenPageHeader
 import com.apoorvdarshan.calorietracker.ui.navigation.BottomNavScrollPadding
 import com.apoorvdarshan.calorietracker.ui.theme.AppColors
 import com.apoorvdarshan.calorietracker.ui.workouts.AnimatedExerciseImage
@@ -179,7 +180,7 @@ internal fun WorkoutModeToggleButton(
         Icon(
             imageVector = if (mode == WorkoutTabMode.LOG) Icons.Filled.FitnessCenter else Icons.Filled.SportsGymnastics,
             contentDescription = if (mode == WorkoutTabMode.LOG) "Show exercise library" else "Show workout log",
-            tint = AppColors.Calorie,
+            tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier.size(24.dp)
         )
     }
@@ -262,12 +263,13 @@ private fun WorkoutLibraryScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(workoutsColors().background)
+            .background(Color.Transparent)
     ) {
         Column(
             Modifier.padding(start = 20.dp, end = 20.dp, top = 14.dp, bottom = 18.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+            KitchenPageHeader(title = stringResource(R.string.nav_workouts))
             WorkoutLibrarySearchRow(
                 value = vm.search,
                 onValueChange = { vm.search = it },
@@ -309,14 +311,14 @@ private fun WorkoutLibraryScreen(
 @Composable
 internal fun SearchPill(value: String, onValueChange: (String) -> Unit, modifier: Modifier = Modifier) {
     val colors = workoutsColors()
-    val shape = RoundedCornerShape(0.dp)
+    val shape = RoundedCornerShape(16.dp)
     Row(
         modifier = modifier
             .fillMaxWidth()
             .heightIn(min = 50.dp)
             .clip(shape)
             .background(MaterialTheme.colorScheme.surface)
-            .border(2.dp, AppColors.NeoInk, shape)
+            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, shape)
             .padding(horizontal = 14.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -438,18 +440,18 @@ internal fun FilterPill(
     val active = selected.isNotEmpty()
     val value = if (active) selected.first() else emptyDisplay
     val clearLabel = "${stringResource(R.string.filter_all)} $title"
-    val shape = RoundedCornerShape(0.dp)
+    val shape = RoundedCornerShape(14.dp)
 
     Box {
         Row(
             modifier = Modifier
-                .heightIn(min = 46.dp)
+                .heightIn(min = 48.dp)
                 .widthIn(min = 112.dp)
                 .clip(shape)
-                .background(if (active) AppColors.NeoAcid else MaterialTheme.colorScheme.surface)
+                .background(if (active) AppColors.KitchenBrass.copy(alpha = 0.38f) else MaterialTheme.colorScheme.surface)
                 .border(
-                    2.dp,
-                    AppColors.NeoInk,
+                    1.dp,
+                    MaterialTheme.colorScheme.outlineVariant,
                     shape
                 )
                 .clickable { expanded = true }
@@ -457,19 +459,19 @@ internal fun FilterPill(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(9.dp)
         ) {
-            Icon(icon, null, tint = if (active) AppColors.NeoInk else colors.secondaryAccent, modifier = Modifier.size(18.dp))
+            Icon(icon, null, tint = if (active) MaterialTheme.colorScheme.onSurface else colors.secondaryAccent, modifier = Modifier.size(18.dp))
             Column {
-                Text(title.uppercase(), color = if (active) AppColors.NeoInk else colors.mutedText, fontSize = 10.sp, fontWeight = FontWeight.Black, maxLines = 1)
-                Text(value, color = if (active) AppColors.NeoInk else colors.charcoal, fontSize = 14.sp, fontWeight = FontWeight.Black, maxLines = 1)
+                Text(title, color = if (active) MaterialTheme.colorScheme.onSurface else colors.mutedText, fontSize = 10.sp, fontWeight = FontWeight.Bold, maxLines = 1)
+                Text(value, color = if (active) MaterialTheme.colorScheme.onSurface else colors.charcoal, fontSize = 14.sp, fontWeight = FontWeight.Bold, maxLines = 1)
             }
-            Icon(Icons.Filled.KeyboardArrowDown, null, tint = if (active) AppColors.NeoInk else colors.mutedText, modifier = Modifier.size(16.dp))
+            Icon(Icons.Filled.KeyboardArrowDown, null, tint = if (active) MaterialTheme.colorScheme.onSurface else colors.mutedText, modifier = Modifier.size(16.dp))
         }
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
             modifier = Modifier.heightIn(max = 340.dp),
             containerColor = colors.card,
-            shape = RoundedCornerShape(0.dp)
+            shape = RoundedCornerShape(18.dp)
         ) {
             DropdownMenuItem(
                 text = { Text(clearLabel, color = if (!active) colors.accent else colors.charcoal, fontWeight = if (!active) FontWeight.Bold else FontWeight.Normal) },
@@ -538,7 +540,7 @@ internal fun ResultsHeader(
                     expanded = sortExpanded,
                     onDismissRequest = { sortExpanded = false },
                     containerColor = colors.card,
-                    shape = RoundedCornerShape(0.dp)
+                    shape = RoundedCornerShape(18.dp)
                 ) {
                     ExerciseSort.entries.forEach { sort ->
                         val isSel = selectedSort == sort
@@ -559,20 +561,25 @@ internal fun ResultsHeader(
 @Composable
 internal fun CapsuleButton(text: String, icon: ImageVector, tint: Color, enabled: Boolean, active: Boolean = false, onClick: () -> Unit) {
     val colors = workoutsColors()
-    val shape = RoundedCornerShape(0.dp)
-    val bg = if (active) AppColors.NeoAcid else MaterialTheme.colorScheme.surface
+    val shape = RoundedCornerShape(12.dp)
+    val bg = if (active) AppColors.KitchenBrass.copy(alpha = 0.34f) else MaterialTheme.colorScheme.surface
     Row(
         modifier = Modifier
+            .heightIn(min = 48.dp)
             .clip(shape)
             .background(bg)
-            .border(2.dp, AppColors.NeoInk, shape)
+            .border(
+                1.dp,
+                MaterialTheme.colorScheme.outlineVariant,
+                shape
+            )
             .then(if (enabled) Modifier.clickable { onClick() } else Modifier)
             .padding(horizontal = 11.dp, vertical = 7.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(5.dp)
     ) {
-        Icon(icon, null, tint = if (active) AppColors.NeoInk else tint, modifier = Modifier.size(15.dp))
-        Text(text.uppercase(), color = if (active) AppColors.NeoInk else tint, fontSize = 12.sp, fontWeight = FontWeight.Black)
+        Icon(icon, null, tint = if (active) MaterialTheme.colorScheme.onSurface else tint, modifier = Modifier.size(15.dp))
+        Text(text, color = if (active) MaterialTheme.colorScheme.onSurface else tint, fontSize = 12.sp, fontWeight = FontWeight.Bold)
     }
 }
 
@@ -601,9 +608,9 @@ internal fun ExerciseRow(
         Box(
             Modifier
                 .size(104.dp)
-                .clip(RoundedCornerShape(0.dp))
+                .clip(RoundedCornerShape(18.dp))
                 .background(colors.panel.copy(alpha = 0.32f))
-                .border(2.dp, AppColors.NeoInk, RoundedCornerShape(0.dp))
+                .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(18.dp))
         ) {
             AnimatedExerciseImage(item.imagePaths, Modifier.fillMaxSize())
         }
@@ -631,9 +638,9 @@ private fun Tag(title: String, icon: ImageVector) {
     val colors = workoutsColors()
     Row(
         modifier = Modifier
-            .clip(RoundedCornerShape(0.dp))
+            .clip(RoundedCornerShape(9.dp))
             .background(MaterialTheme.colorScheme.surface)
-            .border(1.dp, AppColors.NeoInk, RoundedCornerShape(0.dp))
+            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(9.dp))
             .padding(horizontal = 9.dp, vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(4.dp)

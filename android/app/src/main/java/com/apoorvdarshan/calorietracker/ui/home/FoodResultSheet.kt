@@ -281,7 +281,7 @@ fun FoodResultSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = state,
-        shape = RoundedCornerShape(0.dp),
+        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
         containerColor = sheetSurface
     ) {
         SheetReviewToolbar(
@@ -370,7 +370,7 @@ fun FoodResultSheet(
                             fontSize = 17.sp,
                             textAlign = androidx.compose.ui.text.style.TextAlign.End
                         ),
-                        cursorBrush = androidx.compose.ui.graphics.SolidColor(AppColors.Calorie),
+                        cursorBrush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.primary),
                         modifier = Modifier.weight(2f)
                     )
                 }
@@ -554,21 +554,21 @@ fun FoodResultSheet(
                             Icon(
                                 sheetMealIcon(mealType),
                                 contentDescription = null,
-                                tint = AppColors.Calorie,
+                                tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.size(20.dp)
                             )
                             Spacer(Modifier.width(6.dp))
                             Text(
                                 stringResource(mealType.displayNameRes),
                                 fontSize = 17.sp,
-                                color = AppColors.Calorie,
+                                color = MaterialTheme.colorScheme.primary,
                                 fontWeight = FontWeight.Medium
                             )
                             Spacer(Modifier.width(6.dp))
                             Icon(
                                 Icons.Filled.UnfoldMore,
                                 contentDescription = null,
-                                tint = AppColors.Calorie
+                                tint = MaterialTheme.colorScheme.primary
                             )
                         }
                         SheetGlassDropdownMenu(
@@ -722,7 +722,7 @@ private fun ReviewNutritionValueRow(
                     textAlign = TextAlign.End
                 ),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                cursorBrush = androidx.compose.ui.graphics.SolidColor(AppColors.Calorie),
+                cursorBrush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.primary),
                 modifier = Modifier.width(92.dp)
             )
         } else {
@@ -864,7 +864,7 @@ private fun WhatIfMealImpactDialog(
                                 CircularProgressIndicator(
                                     modifier = Modifier.size(18.dp),
                                     strokeWidth = 2.dp,
-                                    color = AppColors.Calorie
+                                    color = MaterialTheme.colorScheme.primary
                                 )
                                 Text(
                                     stringResource(R.string.what_if_loading),
@@ -884,7 +884,7 @@ private fun WhatIfMealImpactDialog(
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.action_done), color = AppColors.Calorie)
+                Text(stringResource(R.string.action_done), color = MaterialTheme.colorScheme.primary)
             }
         }
     )
@@ -907,7 +907,7 @@ private fun WhatIfImpactRow(
             Text(
                 added,
                 fontSize = 13.sp,
-                color = AppColors.Calorie,
+                color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Medium
             )
         }

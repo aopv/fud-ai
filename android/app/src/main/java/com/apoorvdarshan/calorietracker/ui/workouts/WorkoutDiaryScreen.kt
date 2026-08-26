@@ -2,7 +2,6 @@ package com.apoorvdarshan.calorietracker.ui.workouts
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -80,7 +79,7 @@ import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -100,6 +99,8 @@ import com.apoorvdarshan.calorietracker.models.WorkoutWeightUnit
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassDialog
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassSurface
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassTextButton
+import com.apoorvdarshan.calorietracker.ui.components.KitchenPageHeader
+import com.apoorvdarshan.calorietracker.ui.components.KitchenReceiptRule
 import com.apoorvdarshan.calorietracker.ui.home.SheetGlassDropdownMenu
 import com.apoorvdarshan.calorietracker.ui.home.SheetGlassDropdownMenuItem
 import com.apoorvdarshan.calorietracker.ui.navigation.BottomNavScrollPadding
@@ -152,7 +153,7 @@ internal fun WorkoutDiaryScreen(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(Color.Transparent)
             .onGloballyPositioned { diaryRootOrigin = it.boundsInRoot().topLeft }
             .pointerInput(diaryRootOrigin) {
                 // Observe completed pointers without consuming them, so set
@@ -184,6 +185,10 @@ internal fun WorkoutDiaryScreen(
             ),
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
+            item(key = "workout-masthead") {
+                KitchenPageHeader(title = stringResource(R.string.nav_workouts))
+            }
+
             item(key = "workout-week-strip") {
                 WorkoutWeekStrip(
                     selectedDate = state.selectedDate,
@@ -448,7 +453,9 @@ private fun WorkoutBurnHero(
             WorkoutLogBurnButton(
                 isCalculating = state.isCalculatingBurn,
                 onCalculate = onCalculate,
-                modifier = Modifier.align(Alignment.Center)
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(horizontal = 26.dp)
             )
             WorkoutModeToggleButton(
                 mode = com.apoorvdarshan.calorietracker.models.WorkoutTabMode.LOG,
@@ -459,7 +466,7 @@ private fun WorkoutBurnHero(
 
         FudGlassSurface(
             modifier = Modifier.fillMaxWidth(),
-            cornerRadius = 0.dp,
+            cornerRadius = 20.dp,
             padding = 10.dp
         ) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
@@ -508,13 +515,14 @@ private fun WorkoutLogBurnButton(
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
     val scale by animateFloatAsState(
-        targetValue = if (isPressed) 0.88f else 1f,
+        targetValue = if (isPressed) 0.985f else 1f,
         animationSpec = tween(durationMillis = 120),
         label = "workout-burn-press"
     )
-    Box(
+    FudGlassSurface(
         modifier = modifier
-            .size(176.dp)
+            .fillMaxWidth()
+            .heightIn(min = 112.dp)
             .scale(scale)
             .clickable(
                 enabled = !isCalculating,
@@ -530,48 +538,62 @@ private fun WorkoutLogBurnButton(
                     "Calculate calorie burn"
                 }
             },
+        cornerRadius = 24.dp,
+        padding = 0.dp,
         contentAlignment = Alignment.Center
     ) {
-        Image(
-            painter = painterResource(R.drawable.timer_button_red),
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize()
-        )
-        Column(
-            modifier = Modifier.size(156.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = 112.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            if (isCalculating) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(27.dp),
-                    color = Color.White,
-                    strokeWidth = 2.5.dp
+            Box(
+                modifier = Modifier
+                    .width(82.dp)
+                    .heightIn(min = 112.dp)
+                    .background(AppColors.KitchenTomato),
+                contentAlignment = Alignment.Center
+            ) {
+                if (isCalculating) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(28.dp),
+                        color = Color.White,
+                        strokeWidth = 2.5.dp
+                    )
+                } else {
+                    Icon(
+                        Icons.Filled.LocalFireDepartment,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(32.dp)
+                    )
+                }
+            }
+
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 18.dp, vertical = 15.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                Text(
+                    text = "CALORIE BURN",
+                    color = MaterialTheme.colorScheme.secondary,
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.Black,
+                    letterSpacing = 0.7.sp,
+                    maxLines = 1
                 )
-            } else {
-                Icon(
-                    Icons.Filled.LocalFireDepartment,
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.size(27.dp)
+                KitchenReceiptRule()
+                Text(
+                    text = if (isCalculating) "Calculating…" else "Calculate",
+                    color = MaterialTheme.colorScheme.onSurface,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Black,
+                    maxLines = 1
                 )
             }
-            Spacer(Modifier.height(5.dp))
-            Text(
-                text = if (isCalculating) "Calculating…" else "Calculate",
-                color = Color.White,
-                fontSize = if (isCalculating) 18.sp else 22.sp,
-                fontWeight = FontWeight.Black,
-                maxLines = 1
-            )
-            Text(
-                text = "CALORIE BURN",
-                color = Color.White.copy(alpha = 0.9f),
-                fontSize = 9.sp,
-                fontWeight = FontWeight.Black,
-                letterSpacing = 0.4.sp,
-                maxLines = 1
-            )
         }
     }
 }
@@ -632,7 +654,7 @@ private fun WorkoutDayHeader(
             .padding(horizontal = 4.dp, vertical = 2.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(Icons.Filled.CalendarMonth, contentDescription = null, tint = AppColors.Calorie, modifier = Modifier.size(19.dp))
+        Icon(Icons.Filled.CalendarMonth, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(19.dp))
         Spacer(Modifier.width(8.dp))
         Text(
             text = selectedDateTitle(selectedDate),
@@ -660,11 +682,11 @@ private fun WorkoutEmptyState(
         modifier = modifier
             .fillMaxWidth()
             .clickable(onClick = onAdd),
-        cornerRadius = 0.dp,
+        cornerRadius = 20.dp,
         padding = 14.dp
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            Icon(Icons.Filled.Add, contentDescription = null, tint = AppColors.Calorie, modifier = Modifier.size(28.dp))
+            Icon(Icons.Filled.Add, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(28.dp))
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
                 Text(
                     "No workouts logged",
@@ -700,7 +722,7 @@ private fun WorkoutExerciseCard(
 ) {
     FudGlassSurface(
         modifier = modifier.fillMaxWidth(),
-        cornerRadius = 0.dp,
+        cornerRadius = 20.dp,
         padding = 0.dp
     ) {
         Column(
@@ -717,12 +739,12 @@ private fun WorkoutExerciseCard(
                 Box(
                     modifier = Modifier
                         .size(64.dp)
-                        .clip(RoundedCornerShape(0.dp))
+                        .clip(RoundedCornerShape(14.dp))
                         .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.42f))
                         .border(
-                            2.dp,
-                            AppColors.NeoInk,
-                            RoundedCornerShape(0.dp)
+                            1.dp,
+                            MaterialTheme.colorScheme.outlineVariant,
+                            RoundedCornerShape(14.dp)
                         )
                 ) {
                     AnimatedExerciseImage(exercise.imagePaths, Modifier.fillMaxSize())
@@ -761,7 +783,7 @@ private fun WorkoutExerciseCard(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(Icons.Filled.Checklist, contentDescription = null, tint = AppColors.Calorie, modifier = Modifier.size(17.dp))
+                Icon(Icons.Filled.Checklist, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(17.dp))
                 Spacer(Modifier.width(6.dp))
                 Text(
                     "Sets",
@@ -892,7 +914,7 @@ private fun WorkoutSetField(
     modifier: Modifier = Modifier,
     keyboardActions: KeyboardActions = KeyboardActions.Default
 ) {
-    val shape = RoundedCornerShape(0.dp)
+    val shape = RoundedCornerShape(10.dp)
     BasicTextField(
         value = value,
         onValueChange = onValueChange,
@@ -903,17 +925,17 @@ private fun WorkoutSetField(
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center
         ),
-        cursorBrush = SolidColor(AppColors.Calorie),
+        cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
         keyboardOptions = KeyboardOptions(
             keyboardType = keyboardType,
             imeAction = ImeAction.Next
         ),
         keyboardActions = keyboardActions,
         modifier = modifier
-            .height(39.dp)
+            .height(48.dp)
             .clip(shape)
             .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.62f))
-            .border(2.dp, AppColors.NeoInk, shape)
+            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, shape)
             .padding(horizontal = 7.dp),
         decorationBox = { inner ->
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

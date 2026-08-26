@@ -178,6 +178,8 @@ import com.apoorvdarshan.calorietracker.ui.components.FudGlassPrimaryButton
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassSurface
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassTextButton
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassTextField
+import com.apoorvdarshan.calorietracker.ui.components.KitchenPageHeader
+import com.apoorvdarshan.calorietracker.ui.components.KitchenSectionLabel
 import com.apoorvdarshan.calorietracker.ui.components.FudIconBubble
 import com.apoorvdarshan.calorietracker.ui.components.FeetInchesWheelPicker
 import com.apoorvdarshan.calorietracker.ui.components.NumericWheelPicker
@@ -439,7 +441,7 @@ fun SettingsScreen(
         Box(
             Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
+                .background(Color.Transparent)
                 .padding(24.dp),
             contentAlignment = Alignment.Center
         ) {
@@ -465,7 +467,7 @@ fun SettingsScreen(
     } else {
         // The legacy full-page implementation remains available for deep links
         // that have not yet been promoted to the shared shell.
-        Scaffold(containerColor = MaterialTheme.colorScheme.background) { padding ->
+        Scaffold(containerColor = Color.Transparent) { padding ->
         Column(
             Modifier
                 .fillMaxSize()
@@ -474,6 +476,11 @@ fun SettingsScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
+            KitchenPageHeader(
+                title = stringResource(R.string.nav_settings),
+                modifier = Modifier.padding(start = 2.dp, end = 2.dp, bottom = 2.dp)
+            )
+
             // Section 1 — Personal Info (matches iOS Section "Personal Info")
             SectionCard(title = stringResource(R.string.settings_section_personal)) {
                 profile?.let { p ->
@@ -645,7 +652,7 @@ fun SettingsScreen(
                             // row's right edge, not a wrapped line below it.
                             Text(
                                 stringResource(R.string.settings_tap_to_update),
-                                color = AppColors.Calorie,
+                                color = MaterialTheme.colorScheme.primary,
                                 style = MaterialTheme.typography.bodySmall
                             )
                         }
@@ -696,7 +703,7 @@ fun SettingsScreen(
                                             Icon(
                                                 Icons.Filled.Check,
                                                 contentDescription = stringResource(R.string.sheet_selected_a11y),
-                                                tint = AppColors.Calorie,
+                                                tint = MaterialTheme.colorScheme.primary,
                                                 modifier = Modifier.size(18.dp)
                                             )
                                         }
@@ -979,7 +986,7 @@ fun SettingsScreen(
                         .padding(horizontal = 16.dp, vertical = 14.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    FudIconBubble(icon = Icons.Outlined.IosShare, size = 22.dp, iconSize = 14.dp, tint = AppColors.Calorie)
+                    FudIconBubble(icon = Icons.Outlined.IosShare, size = 22.dp, iconSize = 14.dp, tint = MaterialTheme.colorScheme.primary)
                     Spacer(Modifier.width(14.dp))
                     Text(
                         stringResource(R.string.export_diary_title),
@@ -997,7 +1004,7 @@ fun SettingsScreen(
                         .padding(horizontal = 16.dp, vertical = 14.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    FudIconBubble(icon = Icons.Outlined.Download, size = 22.dp, iconSize = 14.dp, tint = AppColors.Calorie)
+                    FudIconBubble(icon = Icons.Outlined.Download, size = 22.dp, iconSize = 14.dp, tint = MaterialTheme.colorScheme.primary)
                     Spacer(Modifier.width(14.dp))
                     Text(
                         stringResource(R.string.import_diary_title),
@@ -1463,13 +1470,13 @@ fun OptionalNutrientGoalsScreen(
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = null,
-                            tint = AppColors.Calorie,
+                            tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(22.dp)
                         )
                         Spacer(Modifier.width(6.dp))
                         Text(
                             stringResource(R.string.nav_settings),
-                            color = AppColors.Calorie,
+                            color = MaterialTheme.colorScheme.primary,
                             fontWeight = FontWeight.SemiBold
                         )
                     }
@@ -1573,13 +1580,13 @@ fun QuickActionsScreen(
                     Icon(
                         Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = null,
-                        tint = AppColors.Calorie,
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(22.dp)
                     )
                     Spacer(Modifier.width(6.dp))
                     Text(
                         stringResource(R.string.nav_settings),
-                        color = AppColors.Calorie,
+                        color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.SemiBold
                     )
                 }
@@ -1611,7 +1618,7 @@ fun QuickActionsScreen(
                                         DropdownMenuItem(
                                             text = { Text(action.title) },
                                             trailingIcon = if (action == selected) {
-                                                { Icon(Icons.Filled.Check, contentDescription = null, tint = AppColors.Calorie) }
+                                                { Icon(Icons.Filled.Check, contentDescription = null, tint = MaterialTheme.colorScheme.primary) }
                                             } else null,
                                             onClick = {
                                                 vm.setQuickAction(slot, action)
@@ -1672,11 +1679,11 @@ fun CalculationMethodsScreen(
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = null,
-                            tint = AppColors.Calorie,
+                            tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(22.dp)
                         )
                         Spacer(Modifier.width(6.dp))
-                        Text(stringResource(R.string.nav_settings), color = AppColors.Calorie, fontWeight = FontWeight.SemiBold)
+                        Text(stringResource(R.string.nav_settings), color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold)
                     }
                 }
             }
@@ -1861,7 +1868,7 @@ private fun CalcFormulaCard(
                         "Open source ↗",
                         style = MaterialTheme.typography.bodySmall,
                         fontWeight = FontWeight.Medium,
-                        color = AppColors.Calorie,
+                        color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier
                             .clip(RoundedCornerShape(6.dp))
                             .clickable { uriHandler.openUri(url) }
@@ -1890,8 +1897,8 @@ private fun SettingsSheets(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = state,
-        shape = RoundedCornerShape(0.dp),
-        containerColor = if (isDark) Color(0xF2141416) else Color(0xFFFAF3EE)
+        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
+        containerColor = MaterialTheme.colorScheme.surface
     ) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp)) {
             when (sheet) {
@@ -2299,7 +2306,7 @@ private fun OptionalNutrientGoalsSheet(
 
     if (nutrient != null) {
         TextButton(onClick = { editing = null }) {
-            Text(stringResource(R.string.settings_other_nutrients), color = AppColors.Calorie)
+            Text(stringResource(R.string.settings_other_nutrients), color = MaterialTheme.colorScheme.primary)
         }
         Spacer(Modifier.height(4.dp))
         NutritionPickerSheet(
@@ -2322,7 +2329,7 @@ private fun OptionalNutrientGoalsSheet(
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Text(stringResource(R.string.settings_other_nutrient_goals), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
         Spacer(Modifier.weight(1f))
-        TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_done), color = AppColors.Calorie) }
+        TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_done), color = MaterialTheme.colorScheme.primary) }
     }
     Text(
         "Separate from calorie, protein, carbs, and fat targets.",
@@ -2430,19 +2437,19 @@ private fun <T> ListSheet(
             val isSel = selected(item)
             val rowIcon = icon?.invoke(item)
             val sub = subtitle?.invoke(item)
-            val shape = RoundedCornerShape(0.dp)
+            val shape = RoundedCornerShape(14.dp)
             Row(
                 Modifier
                     .fillMaxWidth()
                     .clip(shape)
                     .background(
-                        if (isSel) AppColors.NeoAcid
-                        else if (isDark) AppColors.NeoInk
-                        else Color.White
+                        if (isSel) AppColors.KitchenBrass.copy(alpha = 0.38f)
+                        else MaterialTheme.colorScheme.surface
                     )
                     .border(
-                        2.dp,
-                        if (isDark && !isSel) Color.White else AppColors.NeoInk,
+                        1.dp,
+                        if (isDark && !isSel) AppColors.KitchenBrass.copy(alpha = 0.30f)
+                        else AppColors.KitchenEspresso.copy(alpha = 0.20f),
                         shape
                     )
                     .clickable { onSelect(item) }
@@ -2455,10 +2462,10 @@ private fun <T> ListSheet(
                 }
                 Column(Modifier.weight(1f)) {
                     Text(
-                        label(item).uppercase(),
+                        label(item),
                         style = MaterialTheme.typography.bodyLarge,
-                        color = if (isSel) AppColors.NeoInk else MaterialTheme.colorScheme.onSurface,
-                        fontWeight = FontWeight.Black
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontWeight = FontWeight.SemiBold
                     )
                     if (!sub.isNullOrBlank()) {
                         Spacer(Modifier.height(2.dp))
@@ -2473,7 +2480,7 @@ private fun <T> ListSheet(
                     Icon(
                         Icons.Filled.Check,
                         contentDescription = stringResource(R.string.sheet_selected_a11y),
-                        tint = if (isSel) AppColors.NeoInk else AppColors.NeoCobalt,
+                        tint = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.size(20.dp)
                     )
                 }
@@ -2640,7 +2647,7 @@ private fun MealTimesSheet(current: MealSchedule, onSave: (MealSchedule) -> Unit
             text = stringResource(R.string.settings_restore_default_times),
             onClick = { schedule = MealSchedule.Default },
             modifier = Modifier.fillMaxWidth(),
-            color = AppColors.Calorie
+            color = MaterialTheme.colorScheme.primary
         )
         Spacer(Modifier.height(8.dp))
     } else {
@@ -2841,7 +2848,7 @@ private fun GoalSpeedSheet(current: Double, goal: WeightGoal, useMetric: Boolean
                     Icon(
                         Icons.Filled.Check,
                         contentDescription = stringResource(R.string.cd_selected),
-                        tint = AppColors.Calorie,
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(20.dp)
                     )
                 }
@@ -2979,7 +2986,7 @@ fun NutritionPickerSheet(
         ) {
             Text(
                 stringResource(if (customMode) R.string.nutrient_use_preset_wheel else R.string.nutrient_custom_amount),
-                color = AppColors.Calorie,
+                color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.SemiBold
             )
         }
@@ -3090,7 +3097,7 @@ private fun MacroField(
         )
         Spacer(Modifier.height(6.dp))
         TextButton(onClick = { if (pinned) onClearPin?.invoke() else onPin() }) {
-            Text(if (pinned) stringResource(R.string.action_clear) else stringResource(R.string.action_pin), color = AppColors.Calorie)
+            Text(if (pinned) stringResource(R.string.action_clear) else stringResource(R.string.action_pin), color = MaterialTheme.colorScheme.primary)
         }
     }
 }
@@ -3100,15 +3107,11 @@ private fun SectionCard(title: String, content: @Composable () -> Unit) {
     // iOS uses sentence-case section titles ("Personal Info", "Goals & Nutrition")
     // in a small grey caption. Match that — no uppercase transform.
     Column {
-        Text(
-            title,
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.55f),
-            modifier = Modifier.padding(start = 4.dp, bottom = 6.dp)
-        )
+        KitchenSectionLabel(title)
+        Spacer(Modifier.height(6.dp))
         FudGlassSurface(
             modifier = Modifier.fillMaxWidth(),
-            cornerRadius = 18.dp,
+            cornerRadius = 22.dp,
             padding = 0.dp
         ) {
             Column(Modifier.padding(vertical = 4.dp)) { content() }
@@ -3396,7 +3399,7 @@ private fun EnergyBurnGoalsRow(
             CircularProgressIndicator(
                 modifier = Modifier.size(22.dp),
                 strokeWidth = 2.dp,
-                color = AppColors.Calorie
+                color = MaterialTheme.colorScheme.primary
             )
             Spacer(Modifier.width(14.dp))
         }
@@ -3435,7 +3438,7 @@ private fun AdaptiveGoalsRow(
             CircularProgressIndicator(
                 modifier = Modifier.size(22.dp),
                 strokeWidth = 2.dp,
-                color = AppColors.Calorie
+                color = MaterialTheme.colorScheme.primary
             )
             Spacer(Modifier.width(14.dp))
         }

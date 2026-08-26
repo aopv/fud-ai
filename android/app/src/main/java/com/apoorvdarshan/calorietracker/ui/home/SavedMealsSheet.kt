@@ -158,7 +158,7 @@ fun SavedMealsSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = state,
-        shape = RoundedCornerShape(0.dp),
+        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
         containerColor = sheetSurface
     ) {
         Column(
@@ -592,7 +592,7 @@ private fun SavedMealRow(
                     Icon(
                         Icons.Filled.Favorite,
                         contentDescription = null,
-                        tint = AppColors.Calorie,
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(11.dp)
                     )
                 }
@@ -605,7 +605,7 @@ private fun SavedMealRow(
                     "${entry.calories} kcal",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = AppColors.Calorie
+                    color = MaterialTheme.colorScheme.primary
                 )
                 if (subtitle != null) {
                     Text("·", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f))
@@ -629,7 +629,7 @@ private fun SavedMealRow(
             Icon(
                 Icons.Filled.AddCircle,
                 contentDescription = stringResource(R.string.cd_log),
-                tint = AppColors.Calorie,
+                tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(22.dp)
             )
         }
@@ -665,7 +665,7 @@ private fun Thumbnail(emoji: String?, imageFilename: String?, imageStore: FoodIm
             else -> Icon(
                 Icons.Filled.Restaurant,
                 contentDescription = null,
-                tint = AppColors.Calorie,
+                tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(22.dp)
             )
         }
@@ -702,7 +702,7 @@ private fun EmptyState(icon: ImageVector, text: String) {
             Icon(
                 icon,
                 contentDescription = null,
-                tint = AppColors.Calorie.copy(alpha = 0.4f),
+                tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
                 modifier = Modifier.size(32.dp)
             )
             Text(

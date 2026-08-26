@@ -41,22 +41,19 @@ import io.flutter.embedding.android.TransparencyMode
 import kotlinx.coroutines.launch
 import java.util.Locale
 
-/**
- * Flutter renders this one tab; the Compose shell, bottom navigation, dialogs,
- * repositories, and all durable data remain native.
- */
+/** Native Compose entry point for the v7 Progress tab and its capability routes. */
 @Composable
 internal fun ProgressScreen(
     container: AppContainer,
     initialAction: FlutterProgressAction? = null,
     onActionFinished: (() -> Unit)? = null
 ) {
-    val activity = LocalContext.current.findMainActivity()
-    if (initialAction != null || activity == null || activity.intent.getBooleanExtra(NATIVE_PROGRESS_EXTRA, false)) {
-        NativeProgressScreen(container, initialAction, onActionFinished)
-        return
-    }
-    FlutterProgressScreen(container = container, activity = activity)
+    // v7's normal tab now uses the native Compose presentation. Keep forwarding
+    // capability actions through the same parameters so shortcuts and drill-ins
+    // retain their existing completion behavior. The Flutter bridge remains
+    // available below for compatibility; this change does not touch its data or
+    // action contracts.
+    NativeProgressScreen(container, initialAction, onActionFinished)
 }
 
 @Composable

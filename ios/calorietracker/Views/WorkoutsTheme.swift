@@ -3,8 +3,8 @@ import UIKit
 
 // MARK: - Workouts theme bridge
 // The workout feature keeps its Delts-derived semantic tokens so its behavior and
-// data flow remain isolated. Their visual values now resolve through Fud AI's
-// app-wide Neo-Brutalist palette.
+// data flow remain isolated. Their visual values resolve through the same warm,
+// paper-led Kitchen Table palette as nutrition and coaching.
 
 extension Color {
     /// Screen background.
@@ -16,14 +16,14 @@ extension Color {
     /// Elevated panel behind menus / pills.
     static var workoutPanel: Color { NeoAppColors.subtleSurface }
 
-    /// High-contrast structural rules.
-    static var workoutHairline: Color { NeoAppColors.ink }
+    /// Quiet receipt/card rules.
+    static var workoutHairline: Color { KitchenTablePalette.strongRule }
 
     /// Primary structural accent.
     static var workoutAccent: Color { NeoAppColors.cobalt }
 
     /// Readable companion accent for supporting labels and controls.
-    static var workoutSecondaryAccent: Color { NeoAppColors.cobaltDeep }
+    static var workoutSecondaryAccent: Color { NeoAppColors.herb }
 
     /// Destructive/reset emphasis.
     static var workoutInferno: Color { NeoAppColors.warning }
@@ -40,8 +40,7 @@ extension Color {
 
 struct WorkoutBackground: View {
     var body: some View {
-        Color.workoutBackground
-            .ignoresSafeArea()
+        KitchenTableBackdrop()
     }
 }
 
@@ -66,7 +65,7 @@ private struct WorkoutLiquidBarSurfaceModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         let shape = RoundedRectangle(
-            cornerRadius: min(cornerRadius, NeoAppMetrics.cornerRadius),
+            cornerRadius: min(cornerRadius, 24),
             style: .continuous
         )
 
@@ -78,18 +77,20 @@ private struct WorkoutLiquidBarSurfaceModifier: ViewModifier {
                     lineWidth: NeoAppMetrics.rule
                 )
             )
+            .shadow(color: KitchenTablePalette.shadow, radius: 6, x: 0, y: 3)
     }
 }
 
 struct WorkoutPressableButtonStyle: ButtonStyle {
     @Environment(\.isEnabled) private var isEnabled
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     func makeBody(configuration: Configuration) -> some View {
         let isPressed = configuration.isPressed && isEnabled
 
         configuration.label
-            .scaleEffect(isPressed ? 0.985 : 1)
+            .scaleEffect(reduceMotion ? 1 : (isPressed ? 0.985 : 1))
             .opacity(isEnabled ? (isPressed ? 0.78 : 1) : 0.48)
-            .animation(.easeOut(duration: 0.14), value: isPressed)
+            .animation(reduceMotion ? nil : .easeOut(duration: 0.14), value: isPressed)
     }
 }

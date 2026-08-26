@@ -6,9 +6,9 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -61,6 +61,8 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -79,11 +81,11 @@ val BottomTabs = listOf(
     BottomTab(FudAIRoutes.WORKOUTS, Icons.Filled.FitnessCenter, R.string.nav_workouts)
 )
 
-private val BarHeight = 72.dp
-private val BarCorner = 36.dp
-private val PillCorner = 26.dp
-private val PillInsetH = 8.dp
-private val PillInsetV = 6.dp
+private val BarHeight = 76.dp
+private val BarCorner = 22.dp
+private val PillCorner = 15.dp
+private val PillInsetH = 6.dp
+private val PillInsetV = 7.dp
 
 val BottomNavScrollPadding = 132.dp
 val BottomNavDockedControlPadding = 82.dp
@@ -124,57 +126,43 @@ fun FudAIBottomNavBar(
 
     val barShape = RoundedCornerShape(BarCorner)
 
-    val backdropColor = if (isDark) Color(0xFF15151A).copy(alpha = 0.86f)
-                        else Color(0xFFFCF6F1).copy(alpha = 0.74f)
+    val backdropColor = if (isDark) AppColors.KitchenRoastPaper
+                        else AppColors.KitchenPaper
 
     val barSheen = Brush.verticalGradient(
-        colors = if (isDark)
-            listOf(Color.White.copy(alpha = 0.14f), Color.White.copy(alpha = 0.0f))
-        else
-            listOf(
-                Color.White.copy(alpha = 0.76f),
-                Color.White.copy(alpha = 0.22f),
-                AppColors.Calorie.copy(alpha = 0.035f)
-            )
+        colors = if (isDark) {
+            listOf(Color.White.copy(alpha = 0.035f), Color.Transparent)
+        } else {
+            listOf(Color.White.copy(alpha = 0.34f), AppColors.KitchenBone.copy(alpha = 0.28f))
+        }
     )
 
     val barBorder = Brush.linearGradient(
-        if (isDark) {
-            listOf(
-                Color.White.copy(alpha = 0.28f),
-                Color.White.copy(alpha = 0.06f)
-            )
-        } else {
-            listOf(
-                Color.White.copy(alpha = 0.95f),
-                Color.White.copy(alpha = 0.32f),
-                AppColors.Calorie.copy(alpha = 0.16f)
-            )
-        }
+        if (isDark) listOf(AppColors.KitchenBrass.copy(alpha = 0.34f), AppColors.KitchenBrass.copy(alpha = 0.16f))
+        else listOf(AppColors.KitchenEspresso.copy(alpha = 0.24f), AppColors.KitchenEspresso.copy(alpha = 0.12f))
     )
-    val shadowAlpha = if (isDark) 0.35f else 0.16f
+    val shadowAlpha = if (isDark) 0.30f else 0.12f
 
     Box(
         modifier = modifier
             .fillMaxWidth()
             .navigationBarsPadding()
-            .padding(horizontal = 14.dp, vertical = 10.dp)
+            .padding(horizontal = 12.dp, vertical = 8.dp)
     ) {
         BoxWithConstraints(
             Modifier
                 .fillMaxWidth()
                 .height(BarHeight)
                 .shadow(
-                    elevation = if (isDark) 22.dp else 18.dp,
+                    elevation = if (isDark) 12.dp else 8.dp,
                     shape = barShape,
                     ambientColor = Color.Black.copy(alpha = shadowAlpha),
                     spotColor = Color.Black.copy(alpha = shadowAlpha)
                 )
                 .clip(barShape)
                 .background(backdropColor)
-                .background(if (isDark) Brush.linearGradient(listOf(Color.Transparent, Color.Transparent)) else Brush.linearGradient(listOf(Color.White.copy(alpha = 0.18f), AppColors.Calorie.copy(alpha = 0.020f))))
                 .background(barSheen)
-                .border(0.8.dp, barBorder, barShape)
+                .border(1.dp, barBorder, barShape)
         ) {
             val density = LocalDensity.current
             val haptic = LocalHapticFeedback.current
@@ -290,7 +278,6 @@ fun FudAIBottomNavBar(
                         tab = tab,
                         selected = selected,
                         showBadge = showAboutBadge && tab.route == FudAIRoutes.SETTINGS,
-                        isDark = isDark,
                         modifier = Modifier
                             .width(tabWidthDp)
                             .fillMaxHeight()
@@ -321,20 +308,18 @@ fun FudAIBottomNavBar(
 private fun ActivePill(tabWidth: Dp, isDark: Boolean, modifier: Modifier = Modifier) {
     val pillShape = RoundedCornerShape(PillCorner)
 
-    val fill = if (isDark) Color.White.copy(alpha = 0.16f)
-               else AppColors.Calorie.copy(alpha = 0.14f)
+    val fill = if (isDark) AppColors.KitchenBrass.copy(alpha = 0.20f)
+               else AppColors.KitchenBrass.copy(alpha = 0.24f)
 
     val sheen = Brush.verticalGradient(
-        colors = if (isDark)
-            listOf(Color.White.copy(alpha = 0.20f), Color.White.copy(alpha = 0.0f))
-        else
-            listOf(Color.White.copy(alpha = 0.55f), Color.White.copy(alpha = 0.10f))
+        colors = if (isDark) listOf(Color.White.copy(alpha = 0.05f), Color.Transparent)
+        else listOf(Color.White.copy(alpha = 0.36f), Color.Transparent)
     )
 
     val border = Brush.linearGradient(
         listOf(
-            Color.White.copy(alpha = if (isDark) 0.32f else 0.75f),
-            Color.White.copy(alpha = if (isDark) 0.06f else 0.18f)
+            AppColors.KitchenBrass.copy(alpha = if (isDark) 0.38f else 0.46f),
+            AppColors.KitchenEspresso.copy(alpha = if (isDark) 0.18f else 0.16f)
         )
     )
 
@@ -346,8 +331,16 @@ private fun ActivePill(tabWidth: Dp, isDark: Boolean, modifier: Modifier = Modif
             .clip(pillShape)
             .background(fill)
             .background(sheen)
-            .border(0.7.dp, border, pillShape)
-    )
+            .border(1.dp, border, pillShape)
+    ) {
+        Box(
+            Modifier
+                .align(Alignment.TopCenter)
+                .fillMaxWidth()
+                .height(4.dp)
+                .background(AppColors.KitchenTomato)
+        )
+    }
 }
 
 @Composable
@@ -355,13 +348,11 @@ private fun TabItem(
     tab: BottomTab,
     selected: Boolean,
     showBadge: Boolean,
-    isDark: Boolean,
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
-    val activeColor = AppColors.Calorie
-    val inactiveColor = if (isDark) Color.White.copy(alpha = 0.62f)
-                        else Color.Black.copy(alpha = 0.55f)
+    val activeColor = MaterialTheme.colorScheme.primary
+    val inactiveColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.70f)
     val tint = if (selected) activeColor else inactiveColor
 
     val iconScale by animateFloatAsState(
@@ -376,20 +367,24 @@ private fun TabItem(
     val label = stringResource(tab.labelRes)
     val interactionSource = remember { MutableInteractionSource() }
     Column(
-        modifier = modifier.clickable(
-            interactionSource = interactionSource,
-            indication = null,
-            onClick = onClick
-        ),
+        modifier = modifier
+            .semantics(mergeDescendants = true) {}
+            .selectable(
+                selected = selected,
+                role = Role.Tab,
+                interactionSource = interactionSource,
+                indication = null,
+                onClick = onClick
+            ),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Box {
             Icon(
                 tab.icon,
-                contentDescription = label,
+                contentDescription = null,
                 tint = tint,
-                modifier = Modifier.size(if (selected) 26.dp else 24.dp).scale(iconScale)
+                modifier = Modifier.size(if (selected) 25.dp else 23.dp).scale(iconScale)
             )
             if (showBadge) {
                 Box(
@@ -397,7 +392,7 @@ private fun TabItem(
                         .align(Alignment.TopEnd)
                         .size(8.dp)
                         .clip(CircleShape)
-                        .background(AppColors.Calorie)
+                        .background(AppColors.KitchenBrass)
                 )
             }
         }
@@ -406,7 +401,7 @@ private fun TabItem(
             label,
             color = tint,
             fontSize = 11.sp,
-            fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Medium
+            fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium
         )
     }
 }

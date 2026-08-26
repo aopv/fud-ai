@@ -158,7 +158,7 @@ struct ContentView: View {
                     )
                 }
             }
-            .background(NeoAppColors.canvas)
+            .background(KitchenTableBackdrop())
     }
 
     private var standardTabView: some View {
@@ -1035,12 +1035,14 @@ struct HomeView: View {
                     )
                     .padding(.horizontal, 6)
                     .padding(.vertical, 5)
-                    .background(NeoHomeColors.surface)
-                    .overlay {
-                        Rectangle()
-                            .strokeBorder(NeoHomeColors.ink, lineWidth: NeoHomeMetrics.rule)
-                            .allowsHitTesting(false)
-                    }
+                    .kitchenTableSurface(
+                        fill: NeoHomeColors.surface,
+                        border: KitchenTablePalette.rule,
+                        cornerRadius: 18,
+                        lineWidth: NeoHomeMetrics.rule,
+                        shadowRadius: 5,
+                        shadowY: 2
+                    )
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
                     .listRowInsets(EdgeInsets(top: 0, leading: NeoHomeMetrics.horizontalInset, bottom: 5, trailing: NeoHomeMetrics.horizontalInset))
@@ -1205,7 +1207,7 @@ struct HomeView: View {
                 }
             }
             .scrollContentBackground(.hidden)
-            .background(NeoHomeColors.canvas)
+            .background(KitchenTableBackdrop())
             .environment(\.defaultMinListRowHeight, 1)
             .listSectionSpacing(10)
             .animation(.snappy, value: selectedDate)
@@ -1878,12 +1880,9 @@ private struct SiriPhrasesSettingsView: View {
                 ) {
                     Image(systemName: "waveform.circle.fill")
                         .font(.system(size: 24, weight: .black))
-                        .foregroundStyle(Color.black)
+                        .foregroundStyle(KitchenTablePalette.onBrass)
                         .frame(width: 48, height: 48)
-                        .background(NeoAppColors.acid)
-                        .overlay {
-                            Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
-                        }
+                        .kitchenTableIconTile(fill: NeoAppColors.brass, border: KitchenTablePalette.brassDeep)
                 }
                 .listRowInsets(EdgeInsets(top: 10, leading: NeoAppMetrics.screenInset, bottom: 4, trailing: NeoAppMetrics.screenInset))
                 .listRowSeparator(.hidden)
@@ -2003,12 +2002,9 @@ private struct CopyFromDaySheet: View {
                     ) {
                         Image(systemName: "calendar.badge.plus")
                             .font(.system(size: 22, weight: .black))
-                            .foregroundStyle(Color.black)
+                            .foregroundStyle(KitchenTablePalette.onBrass)
                             .frame(width: 48, height: 48)
-                            .background(NeoAppColors.acid)
-                            .overlay {
-                                Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
-                            }
+                            .kitchenTableIconTile(fill: NeoAppColors.brass, border: KitchenTablePalette.brassDeep)
                     }
                     .listRowInsets(EdgeInsets(top: 10, leading: NeoAppMetrics.screenInset, bottom: 4, trailing: NeoAppMetrics.screenInset))
                     .listRowSeparator(.hidden)
@@ -2490,12 +2486,9 @@ struct NutritionDetailView: View {
                     ) {
                         Image(systemName: "chart.bar.xaxis")
                             .font(.system(size: 22, weight: .black))
-                            .foregroundStyle(Color.black)
+                            .foregroundStyle(KitchenTablePalette.onBrass)
                             .frame(width: 48, height: 48)
-                            .background(NeoAppColors.acid)
-                            .overlay {
-                                Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
-                            }
+                            .kitchenTableIconTile(fill: NeoAppColors.brass, border: KitchenTablePalette.brassDeep)
                     }
                     .listRowInsets(EdgeInsets(top: 10, leading: NeoAppMetrics.screenInset, bottom: 4, trailing: NeoAppMetrics.screenInset))
                     .listRowSeparator(.hidden)
@@ -2720,12 +2713,9 @@ struct MultiPhotoCaptureSheet: View {
                     ) {
                         Image(systemName: "camera.fill")
                             .font(.system(size: 22, weight: .black))
-                            .foregroundStyle(Color.black)
+                            .foregroundStyle(KitchenTablePalette.onBrass)
                             .frame(width: 48, height: 48)
-                            .background(NeoAppColors.acid)
-                            .overlay {
-                                Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
-                            }
+                            .kitchenTableIconTile(fill: NeoAppColors.brass, border: KitchenTablePalette.brassDeep)
                     }
 
                     ScrollView(.horizontal, showsIndicators: false) {
@@ -2918,12 +2908,9 @@ struct ContextDescriptionSheet: View {
                     ) {
                         Image(systemName: "text.bubble.fill")
                             .font(.system(size: 22, weight: .black))
-                            .foregroundStyle(Color.black)
+                            .foregroundStyle(KitchenTablePalette.onBrass)
                             .frame(width: 48, height: 48)
-                            .background(NeoAppColors.acid)
-                            .overlay {
-                                Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
-                            }
+                            .kitchenTableIconTile(fill: NeoAppColors.brass, border: KitchenTablePalette.brassDeep)
                     }
 
                     if let image {
@@ -3682,10 +3669,7 @@ struct ProgressTabView: View {
                             .font(.system(size: 24, weight: .black))
                             .foregroundStyle(NeoAppColors.onCobalt)
                             .frame(width: 48, height: 48)
-                            .background(NeoAppColors.cobalt)
-                            .overlay {
-                                Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
-                            }
+                            .kitchenTableIconTile(fill: NeoAppColors.cobalt, border: NeoAppColors.cobaltDeep)
                     }
                     .padding(.horizontal, NeoAppMetrics.screenInset)
 
@@ -3995,12 +3979,9 @@ struct ProfileView: View {
                 ) {
                     Image(systemName: "slider.horizontal.3")
                         .font(.system(size: 23, weight: .black))
-                        .foregroundStyle(Color.black)
+                        .foregroundStyle(KitchenTablePalette.onBrass)
                         .frame(width: 48, height: 48)
-                        .background(NeoAppColors.acid)
-                        .overlay {
-                            Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
-                        }
+                        .kitchenTableIconTile(fill: NeoAppColors.brass, border: KitchenTablePalette.brassDeep)
                 }
                 .listRowInsets(EdgeInsets(top: 12, leading: 12, bottom: 4, trailing: 12))
                 .listRowSeparator(.hidden)
@@ -5116,10 +5097,10 @@ struct ProfileView: View {
             }
             .scrollContentBackground(.hidden)
             .listStyle(.plain)
-            .listSectionSpacing(14)
-            .listRowSeparatorTint(NeoAppColors.ink.opacity(0.38))
+            .listSectionSpacing(NeoAppMetrics.sectionSpacing)
+            .listRowSeparatorTint(KitchenTablePalette.rule)
             .modifier(SettingsKeyboardDismissalModifier())
-            .background(NeoAppColors.canvas)
+            .background(KitchenTableBackdrop())
             .navigationBarHidden(true)
             .sheet(isPresented: $showExportDiary) {
                 ExportDiaryView()
@@ -5140,12 +5121,9 @@ struct ProfileView: View {
                                 ) {
                                     Image(systemName: "birthday.cake.fill")
                                         .font(.system(size: 22, weight: .black))
-                                        .foregroundStyle(Color.black)
+                                        .foregroundStyle(KitchenTablePalette.onBrass)
                                         .frame(width: 48, height: 48)
-                                        .background(NeoAppColors.acid)
-                                        .overlay {
-                                            Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
-                                        }
+                                        .kitchenTableIconTile(fill: NeoAppColors.brass, border: KitchenTablePalette.brassDeep)
                                 }
 
                                 NeoOutlinedPanel(padding: 0) {

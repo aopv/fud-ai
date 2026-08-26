@@ -35,12 +35,14 @@ final class calorietrackerUITests: XCTestCase {
         XCTAssertTrue(calorieSummary.waitForExistence(timeout: 8))
         XCTAssertTrue(app.otherElements["neo.home.nutrientGrid"].exists)
         XCTAssertTrue(app.buttons["Choose date"].exists)
+        attachScreenshot(named: "kitchen-table-home", app: app)
 
         for tab in ["home", "progress", "coach", "settings", "workouts"] {
             let destination = app.buttons["nav.\(tab)"]
             XCTAssertTrue(destination.exists, "Missing bottom-bar \(tab) destination")
             destination.tap()
             XCTAssertTrue(destination.isSelected, "Bottom bar did not select \(tab)")
+            attachScreenshot(named: "kitchen-table-\(tab)", app: app)
         }
         let quickAdd = app.buttons["nav.quickAdd"]
         XCTAssertTrue(quickAdd.exists, "Missing bottom-bar quick action")
@@ -70,6 +72,14 @@ final class calorietrackerUITests: XCTestCase {
         XCTAssertTrue(app.buttons["neo.glassChoice.addFood.camera"].waitForExistence(timeout: 3))
         XCTAssertTrue(app.buttons["neo.glassChoice.addFood.photos"].exists)
         XCTAssertTrue(app.buttons["neo.glassChoice.addFood.barcode"].exists)
+        attachScreenshot(named: "kitchen-table-add-food", app: app)
+    }
+
+    private func attachScreenshot(named name: String, app: XCUIApplication) {
+        let attachment = XCTAttachment(screenshot: app.screenshot())
+        attachment.name = name
+        attachment.lifetime = .keepAlways
+        add(attachment)
     }
 
     @MainActor

@@ -39,11 +39,24 @@ enum class AppThemeColor(
 }
 
 object AppColors {
-    /** Fixed brand colors for the v7 neo-brutalist presentation. */
-    val NeoCobalt = Color(0xFF3F66E8)
-    val NeoAcid = Color(0xFFEFFF00)
-    val NeoInk = Color(0xFF050505)
-    val NeoPaper = Color(0xFFF8F8F2)
+    /**
+     * Fud AI's Kitchen Table palette. The legacy Neo* aliases remain so feature
+     * screens can adopt the new presentation without changing their contracts.
+     */
+    val KitchenBone = Color(0xFFF4E8D2)
+    val KitchenPaper = Color(0xFFFFF8EA)
+    val KitchenEspresso = Color(0xFF2C1E19)
+    val KitchenTomato = Color(0xFFB8412F)
+    val KitchenCobalt = Color(0xFF315BA9)
+    val KitchenHerb = Color(0xFF4F7252)
+    val KitchenBrass = Color(0xFFC7A24A)
+    val KitchenRoast = Color(0xFF1F1714)
+    val KitchenRoastPaper = Color(0xFF2A211D)
+
+    val NeoCobalt = KitchenCobalt
+    val NeoAcid = KitchenBrass
+    val NeoInk = KitchenEspresso
+    val NeoPaper = KitchenBone
 
     private var activeThemeColor: AppThemeColor = AppThemeColor.FUD_PINK
 
@@ -55,38 +68,38 @@ object AppColors {
         get() = activeThemeColor
 
     val CalorieStart: Color
-        get() = NeoCobalt
+        get() = KitchenTomato
 
     val CalorieEnd: Color
-        get() = NeoCobalt
+        get() = Color(0xFFC1533B)
 
     val Calorie: Color
         get() = CalorieStart
 
     val Protein: Color
-        get() = CalorieStart
+        get() = KitchenHerb
 
     val Carbs: Color
-        get() = CalorieStart
+        get() = KitchenBrass
 
     val Fat: Color
-        get() = CalorieStart
+        get() = KitchenCobalt
 
     val CalorieGradient: Brush
         get() = Brush.linearGradient(listOf(CalorieStart, CalorieEnd))
 
-    val AppBackgroundLight = NeoPaper
-    val AppBackgroundDark = NeoInk
+    val AppBackgroundLight = KitchenBone
+    val AppBackgroundDark = KitchenRoast
 
-    val AppCardLight = Color(0xFFFFFFFF)
-    val AppCardDark = Color(0xFF101010)
+    val AppCardLight = KitchenPaper
+    val AppCardDark = KitchenRoastPaper
 
-    val OnLight = Color(0xFF1C1C1E)
-    val OnDark = Color(0xFFF2F2F7)
+    val OnLight = KitchenEspresso
+    val OnDark = Color(0xFFF8ECD8)
 
-    val MutedLight = Color(0xFF8E8E93)
-    val MutedDark = Color(0xFF8E8E93)
+    val MutedLight = Color(0xFF76675D)
+    val MutedDark = Color(0xFFB9AA9D)
 
-    val DividerLight = Color(0xFFE5E5EA)
-    val DividerDark = Color(0xFF2C2C2E)
+    val DividerLight = Color(0xFFD8C7AF)
+    val DividerDark = Color(0xFF4B3B34)
 }

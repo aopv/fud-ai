@@ -1,9 +1,9 @@
 import SwiftUI
 
-// MARK: - App-wide Neo-Brutalist design system
+// MARK: - App-wide Kitchen Table design system
 
-/// Structural colors used across every primary Fud AI surface. Nutrition data can
-/// still use the user's saved app accent; the cobalt/acid palette defines the UI.
+/// Compatibility tokens keep the v7 view hierarchy and behavior untouched while
+/// resolving every app-owned surface through the warm Kitchen Table palette.
 enum NeoAppColors {
     static let canvas = NeoHomeColors.canvas
     static let surface = NeoHomeColors.surface
@@ -12,32 +12,29 @@ enum NeoAppColors {
     static let cobalt = NeoHomeColors.cobalt
     static let cobaltDeep = NeoHomeColors.cobaltDeep
     static let onCobalt = NeoHomeColors.onCobalt
-    static let acid = NeoHomeColors.acidYellow
+    static let acid = NeoHomeColors.brass
     static let paper = NeoHomeColors.paperWhite
+    static let tomato = NeoHomeColors.tomato
+    static let herb = NeoHomeColors.herb
+    static let brass = NeoHomeColors.brass
 
-    static let subtleSurface = Color(uiColor: UIColor { traits in
-        traits.userInterfaceStyle == .dark
-            ? UIColor(white: 0.075, alpha: 1)
-            : UIColor(red: 0.94, green: 0.93, blue: 0.88, alpha: 1)
-    })
+    static let subtleSurface = KitchenTablePalette.paperMuted
 
-    static let invertedInk = Color(uiColor: UIColor { traits in
-        traits.userInterfaceStyle == .dark ? .black : .white
-    })
+    static let invertedInk = KitchenTablePalette.onStrongAccent
 
-    static let warning = Color(hex: 0xFF5B35)
-    static let success = Color(hex: 0x30D17A)
+    static let warning = KitchenTablePalette.tomato
+    static let success = KitchenTablePalette.herb
 }
 
 enum NeoAppMetrics {
-    static let rule: CGFloat = 2
-    static let compactRule: CGFloat = 1
-    static let cornerRadius: CGFloat = 2
-    static let screenInset: CGFloat = 14
-    static let sectionSpacing: CGFloat = 14
-    static let bottomBarHeight: CGFloat = 64
-    static let bottomBarCornerRadius: CGFloat = 18
-    static let quickActionSize: CGFloat = 56
+    static let rule: CGFloat = 1
+    static let compactRule: CGFloat = 0.75
+    static let cornerRadius: CGFloat = 18
+    static let screenInset: CGFloat = 16
+    static let sectionSpacing: CGFloat = 16
+    static let bottomBarHeight: CGFloat = 66
+    static let bottomBarCornerRadius: CGFloat = 26
+    static let quickActionSize: CGFloat = 60
 }
 
 enum NeoAppTab: String, CaseIterable, Identifiable, Hashable {
@@ -81,9 +78,9 @@ struct NeoAppBottomNavigationBar: View {
 
     var body: some View {
         bottomNavigation
-            .padding(.horizontal, 10)
+            .padding(.horizontal, 12)
             .padding(.top, 8)
-            .padding(.bottom, 6)
+            .padding(.bottom, 8)
             .sensoryFeedback(.selection, trigger: selectionFeedbackTrigger)
             .accessibilityElement(children: .contain)
             .accessibilityLabel("App navigation")
@@ -98,14 +95,14 @@ struct NeoAppBottomNavigationBar: View {
                     navigationStrip
                         .glassEffect(
                             .regular
-                                .tint(NeoAppColors.cobalt.opacity(colorScheme == .dark ? 0.44 : 0.32)),
+                                .tint(NeoAppColors.paper.opacity(colorScheme == .dark ? 0.36 : 0.62)),
                             in: .rect(cornerRadius: NeoAppMetrics.bottomBarCornerRadius)
                         )
 
                     quickActionButton
                         .glassEffect(
                             .regular
-                                .tint(NeoAppColors.acid.opacity(colorScheme == .dark ? 0.58 : 0.72))
+                                .tint(NeoAppColors.tomato.opacity(colorScheme == .dark ? 0.60 : 0.76))
                                 .interactive(),
                             in: .rect(cornerRadius: NeoAppMetrics.bottomBarCornerRadius)
                         )
@@ -131,11 +128,12 @@ struct NeoAppBottomNavigationBar: View {
         .padding(5)
         .frame(maxWidth: .infinity)
         .frame(height: NeoAppMetrics.bottomBarHeight)
-        .background(NeoAppColors.cobalt.opacity(colorScheme == .dark ? 0.18 : 0.10), in: bottomBarShape)
+        .background(NeoAppColors.paper.opacity(colorScheme == .dark ? 0.88 : 0.94), in: bottomBarShape)
         .overlay {
             bottomBarShape
-                .stroke(NeoAppColors.cobalt, lineWidth: NeoAppMetrics.rule)
+                .stroke(KitchenTablePalette.strongRule, lineWidth: NeoAppMetrics.rule)
         }
+        .shadow(color: KitchenTablePalette.shadow, radius: 8, x: 0, y: 4)
     }
 
     private var quickActionButton: some View {
@@ -145,19 +143,20 @@ struct NeoAppBottomNavigationBar: View {
                     .font(.system(size: 22, weight: .black))
                 if !dynamicTypeSize.isAccessibilitySize {
                     Text("ADD")
-                        .font(.caption2.weight(.black).width(.condensed))
+                        .font(.caption2.weight(.bold))
                 }
             }
-            .foregroundStyle(Color.black)
+            .foregroundStyle(KitchenTablePalette.onStrongAccent)
             .frame(width: NeoAppMetrics.quickActionSize, height: NeoAppMetrics.bottomBarHeight)
-            .background(NeoAppColors.acid.opacity(quickActionFillOpacity), in: bottomBarShape)
+            .background(NeoAppColors.tomato.opacity(quickActionFillOpacity), in: bottomBarShape)
             .overlay {
                 bottomBarShape
-                    .stroke(Color.black, lineWidth: NeoAppMetrics.rule)
+                    .stroke(KitchenTablePalette.onStrongAccent.opacity(0.42), lineWidth: NeoAppMetrics.rule)
             }
+            .shadow(color: KitchenTablePalette.tomato.opacity(0.22), radius: 8, x: 0, y: 4)
             .accessibilityHidden(true)
         }
-        .buttonStyle(NeoNavigationButtonStyle())
+        .buttonStyle(KitchenTablePressableButtonStyle())
         .accessibilityLabel("Camera and note")
         .accessibilityIdentifier("nav.quickAdd")
     }
@@ -165,7 +164,7 @@ struct NeoAppBottomNavigationBar: View {
     private func navigationButton(for tab: NeoAppTab) -> some View {
         let isSelected = selection == tab
         let icon = tab == .workouts ? workoutsIcon : tab.systemImage
-        let badgeFill = isSelected ? NeoAppColors.cobalt : NeoAppColors.acid
+        let badgeFill = isSelected ? NeoAppColors.brass : NeoAppColors.tomato
 
         return Button {
             guard !isSelected else { return }
@@ -181,7 +180,7 @@ struct NeoAppBottomNavigationBar: View {
                     if tab == .settings && updateAvailable {
                         Text("!")
                             .font(.system(size: 9, weight: .black, design: .rounded))
-                            .foregroundStyle(isSelected ? NeoAppColors.onCobalt : Color.black)
+                            .foregroundStyle(isSelected ? KitchenTablePalette.onBrass : KitchenTablePalette.onStrongAccent)
                             .frame(width: 15, height: 15)
                             .background(badgeFill)
                             .clipShape(Circle())
@@ -192,22 +191,21 @@ struct NeoAppBottomNavigationBar: View {
 
                 if !dynamicTypeSize.isAccessibilitySize {
                     Text(tab.title)
-                        .textCase(.uppercase)
-                        .font(.caption2.weight(.black).width(.condensed))
+                        .font(.caption2.weight(.semibold))
                         .lineLimit(1)
                         .minimumScaleFactor(0.72)
                 }
             }
-            .foregroundStyle(isSelected ? Color.black : NeoAppColors.ink)
+            .foregroundStyle(isSelected ? NeoAppColors.onCobalt : NeoAppColors.ink)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(isSelected ? NeoAppColors.acid : Color.clear, in: selectedTabShape)
+            .background(isSelected ? NeoAppColors.cobalt : Color.clear, in: selectedTabShape)
             .overlay {
                 selectedTabShape
-                    .stroke(isSelected ? Color.black : Color.clear, lineWidth: NeoAppMetrics.compactRule)
+                    .stroke(isSelected ? NeoAppColors.cobaltDeep : Color.clear, lineWidth: NeoAppMetrics.compactRule)
             }
             .accessibilityHidden(true)
         }
-        .buttonStyle(NeoNavigationButtonStyle())
+        .buttonStyle(KitchenTablePressableButtonStyle())
         .frame(maxWidth: .infinity)
         .frame(height: NeoAppMetrics.bottomBarHeight - 10)
         .accessibilityLabel(Text(tab.title))
@@ -221,23 +219,14 @@ struct NeoAppBottomNavigationBar: View {
     }
 
     private var selectedTabShape: RoundedRectangle {
-        RoundedRectangle(cornerRadius: 12, style: .continuous)
+        RoundedRectangle(cornerRadius: 18, style: .continuous)
     }
 
     private var quickActionFillOpacity: Double {
         if #available(iOS 26.0, *) {
-            return colorScheme == .dark ? 0.24 : 0.32
+            return colorScheme == .dark ? 0.76 : 0.86
         }
-        return colorScheme == .dark ? 0.78 : 0.88
-    }
-}
-
-private struct NeoNavigationButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .opacity(configuration.isPressed ? 0.68 : 1)
-            .scaleEffect(configuration.isPressed ? 0.97 : 1)
-            .animation(.easeOut(duration: 0.12), value: configuration.isPressed)
+        return colorScheme == .dark ? 0.86 : 0.96
     }
 }
 
@@ -265,20 +254,20 @@ struct NeoScreenHeader<Trailing: View>: View {
                 if let eyebrow {
                     Text(LocalizedStringKey(eyebrow))
                         .textCase(.uppercase)
-                        .font(.system(size: 11, weight: .black, design: .rounded).width(.condensed))
-                        .foregroundStyle(NeoAppColors.cobalt)
+                        .font(.caption2.weight(.bold))
+                        .tracking(1.1)
+                        .foregroundStyle(NeoAppColors.tomato)
                 }
 
                 Text(LocalizedStringKey(title))
-                    .textCase(.uppercase)
-                    .font(.system(size: 34, weight: .black, design: .rounded).width(.condensed))
+                    .font(.system(.largeTitle, design: .serif, weight: .bold))
                     .foregroundStyle(NeoAppColors.ink)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.62)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.72)
 
                 if let subtitle {
                     Text(LocalizedStringKey(subtitle))
-                        .font(.system(size: 13, weight: .bold, design: .rounded))
+                        .font(.subheadline.weight(.medium))
                         .foregroundStyle(NeoAppColors.mutedInk)
                         .lineLimit(2)
                 }
@@ -287,11 +276,22 @@ struct NeoScreenHeader<Trailing: View>: View {
             Spacer(minLength: 4)
             trailing()
         }
-        .padding(14)
-        .background(NeoAppColors.surface)
-        .overlay {
-            Rectangle()
-                .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+        .padding(16)
+        .padding(.leading, 4)
+        .kitchenTableSurface(
+            fill: NeoAppColors.paper,
+            border: KitchenTablePalette.rule,
+            cornerRadius: 22,
+            shadowRadius: 8,
+            shadowY: 4
+        )
+        .overlay(alignment: .leading) {
+            Capsule()
+                .fill(NeoAppColors.tomato)
+                .frame(width: 5)
+                .padding(.vertical, 16)
+                .padding(.leading, 7)
+                .accessibilityHidden(true)
         }
     }
 }
@@ -317,21 +317,28 @@ struct NeoSectionBanner: View {
         HStack(spacing: 8) {
             Text(LocalizedStringKey(title))
                 .textCase(.uppercase)
-                .font(.system(size: 17, weight: .black, design: .rounded).width(.condensed))
+                .font(.subheadline.weight(.bold))
+                .tracking(0.7)
             Spacer(minLength: 8)
             if let detail {
                 Text(LocalizedStringKey(detail))
                     .textCase(.uppercase)
-                    .font(.system(size: 10, weight: .black, design: .rounded).width(.condensed))
+                    .font(.caption2.weight(.bold))
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(foreground.opacity(0.12), in: Capsule())
             }
         }
         .foregroundStyle(foreground)
         .padding(.horizontal, 12)
         .frame(minHeight: 42)
-        .background(background)
-        .overlay {
-            Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
-        }
+        .kitchenTableSurface(
+            fill: background,
+            border: KitchenTablePalette.strongRule,
+            cornerRadius: 14,
+            shadowRadius: 3,
+            shadowY: 2
+        )
     }
 
     private var background: Color {
@@ -345,7 +352,7 @@ struct NeoSectionBanner: View {
     private var foreground: Color {
         switch style {
         case .cobalt: NeoAppColors.onCobalt
-        case .acid: Color.black
+        case .acid: KitchenTablePalette.onBrass
         case .ink: NeoAppColors.invertedInk
         }
     }
@@ -360,10 +367,12 @@ struct NeoOutlinedPanel<Content: View>: View {
     var body: some View {
         content()
             .padding(padding)
-            .background(fill)
-            .overlay {
-                Rectangle().stroke(ruleColor, lineWidth: NeoAppMetrics.rule)
-            }
+            .kitchenTableSurface(
+                fill: fill,
+                border: ruleColor.opacity(0.28),
+                cornerRadius: NeoAppMetrics.cornerRadius,
+                lineWidth: NeoAppMetrics.rule
+            )
     }
 }
 
@@ -372,16 +381,22 @@ struct NeoMetricTag: View {
     var color: Color = NeoAppColors.cobalt
 
     var body: some View {
-        Text(LocalizedStringKey(label))
-            .textCase(.uppercase)
-            .font(.system(size: 10, weight: .black, design: .rounded).width(.condensed))
-            .foregroundStyle(NeoAppColors.ink)
-            .padding(.horizontal, 8)
-            .padding(.vertical, 5)
-            .background(color)
-            .overlay {
-                Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
-            }
+        HStack(spacing: 5) {
+            Circle()
+                .fill(color)
+                .frame(width: 7, height: 7)
+                .accessibilityHidden(true)
+            Text(LocalizedStringKey(label))
+                .textCase(.uppercase)
+                .font(.caption2.weight(.bold))
+        }
+        .foregroundStyle(NeoAppColors.ink)
+        .padding(.horizontal, 9)
+        .padding(.vertical, 6)
+        .background(NeoAppColors.subtleSurface, in: Capsule())
+        .overlay {
+            Capsule().stroke(color.opacity(0.55), lineWidth: NeoAppMetrics.compactRule)
+        }
     }
 }
 
@@ -423,12 +438,13 @@ struct NeoGlassChoicePanel<Content: View>: View {
                 .scrollIndicators(.hidden)
                 .frame(maxHeight: 420)
             }
-            .background(NeoAppColors.cobalt.opacity(colorScheme == .dark ? 0.16 : 0.10))
+            .background(NeoAppColors.paper.opacity(colorScheme == .dark ? 0.94 : 0.98))
             .clipShape(panelShape)
             .overlay {
                 panelShape
-                    .stroke(NeoAppColors.cobalt, lineWidth: NeoAppMetrics.rule)
+                    .stroke(KitchenTablePalette.strongRule, lineWidth: NeoAppMetrics.rule)
             }
+            .shadow(color: KitchenTablePalette.shadow, radius: 12, x: 0, y: 6)
         }
         .padding(6)
         .frame(minWidth: 300, idealWidth: 340, maxWidth: 370)
@@ -443,26 +459,27 @@ struct NeoGlassChoicePanel<Content: View>: View {
                     Image(systemName: "chevron.left")
                         .font(.system(size: 15, weight: .black))
                         .frame(width: 38, height: 38)
-                        .background(NeoAppColors.acid)
-                        .foregroundStyle(Color.black)
+                        .background(NeoAppColors.brass, in: RoundedRectangle(cornerRadius: 11, style: .continuous))
+                        .foregroundStyle(KitchenTablePalette.onBrass)
                         .overlay {
-                            Rectangle().stroke(Color.black, lineWidth: NeoAppMetrics.compactRule)
+                            RoundedRectangle(cornerRadius: 11, style: .continuous)
+                                .stroke(KitchenTablePalette.onBrass.opacity(0.30), lineWidth: NeoAppMetrics.compactRule)
                         }
                 }
-                .buttonStyle(NeoGlassChoiceButtonStyle())
+                .buttonStyle(KitchenTablePressableButtonStyle())
                 .accessibilityLabel("Back")
             }
 
             VStack(alignment: .leading, spacing: 1) {
                 Text(LocalizedStringKey(eyebrow))
-                    .font(.system(size: 10, weight: .black, design: .rounded).width(.condensed))
+                    .font(.caption2.weight(.bold))
                     .textCase(.uppercase)
-                    .foregroundStyle(NeoAppColors.onCobalt.opacity(0.82))
+                    .tracking(0.9)
+                    .foregroundStyle(KitchenTablePalette.brass)
 
                 Text(LocalizedStringKey(title))
-                    .font(.system(size: 22, weight: .black, design: .rounded).width(.condensed))
-                    .textCase(.uppercase)
-                    .foregroundStyle(NeoAppColors.onCobalt)
+                    .font(.system(.title3, design: .serif, weight: .bold))
+                    .foregroundStyle(KitchenTablePalette.onStrongAccent)
                     .lineLimit(1)
                     .minimumScaleFactor(0.72)
             }
@@ -473,26 +490,27 @@ struct NeoGlassChoicePanel<Content: View>: View {
                 Image(systemName: "xmark")
                     .font(.system(size: 14, weight: .black))
                     .frame(width: 38, height: 38)
-                    .background(Color.black.opacity(0.20))
-                    .foregroundStyle(NeoAppColors.onCobalt)
+                    .background(KitchenTablePalette.onStrongAccent.opacity(0.10), in: RoundedRectangle(cornerRadius: 11, style: .continuous))
+                    .foregroundStyle(KitchenTablePalette.onStrongAccent)
                     .overlay {
-                        Rectangle().stroke(NeoAppColors.onCobalt, lineWidth: NeoAppMetrics.compactRule)
+                        RoundedRectangle(cornerRadius: 11, style: .continuous)
+                            .stroke(KitchenTablePalette.onStrongAccent.opacity(0.38), lineWidth: NeoAppMetrics.compactRule)
                     }
             }
-            .buttonStyle(NeoGlassChoiceButtonStyle())
+            .buttonStyle(KitchenTablePressableButtonStyle())
             .accessibilityLabel("Close")
         }
         .padding(10)
-        .background(NeoAppColors.cobalt.opacity(colorScheme == .dark ? 0.88 : 0.94))
+        .background(KitchenTablePalette.espresso)
         .overlay(alignment: .bottom) {
             Rectangle()
-                .fill(NeoAppColors.ink)
-                .frame(height: NeoAppMetrics.rule)
+                .fill(KitchenTablePalette.brass.opacity(0.65))
+                .frame(height: NeoAppMetrics.compactRule)
         }
     }
 
     private var panelShape: RoundedRectangle {
-        RoundedRectangle(cornerRadius: 24, style: .continuous)
+        RoundedRectangle(cornerRadius: 26, style: .continuous)
     }
 
     @ViewBuilder
@@ -501,7 +519,7 @@ struct NeoGlassChoicePanel<Content: View>: View {
         if #available(iOS 26.0, *) {
             glassContent
                 .glassEffect(
-                    .regular.tint(NeoAppColors.cobalt.opacity(colorScheme == .dark ? 0.44 : 0.32)),
+                    .regular.tint(NeoAppColors.paper.opacity(colorScheme == .dark ? 0.40 : 0.68)),
                     in: panelShape
                 )
         } else {
@@ -522,22 +540,22 @@ struct NeoGlassActionRow: View {
                     .symbolRenderingMode(.monochrome)
                     .foregroundStyle(iconColor)
                     .frame(width: 38, height: 38)
-                    .background(iconBackground)
+                    .background(iconBackground, in: RoundedRectangle(cornerRadius: 11, style: .continuous))
                     .overlay {
-                        Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                        RoundedRectangle(cornerRadius: 11, style: .continuous)
+                            .stroke(NeoAppColors.ink.opacity(0.22), lineWidth: NeoAppMetrics.compactRule)
                     }
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(LocalizedStringKey(item.title))
-                        .font(.system(.body, design: .rounded, weight: .black).width(.condensed))
-                        .textCase(.uppercase)
+                        .font(.body.weight(.semibold))
                         .foregroundStyle(titleColor)
                         .lineLimit(1)
                         .minimumScaleFactor(0.76)
 
                     if let subtitle = item.subtitle {
                         Text(LocalizedStringKey(subtitle))
-                            .font(.system(.caption, design: .rounded, weight: .bold))
+                            .font(.caption)
                             .foregroundStyle(NeoAppColors.mutedInk)
                             .lineLimit(2)
                     }
@@ -558,13 +576,14 @@ struct NeoGlassActionRow: View {
             .padding(.horizontal, 10)
             .padding(.vertical, 8)
             .frame(maxWidth: .infinity, minHeight: 56, alignment: .leading)
-            .background(rowBackground)
+            .background(rowBackground, in: RoundedRectangle(cornerRadius: 15, style: .continuous))
             .overlay {
-                Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                RoundedRectangle(cornerRadius: 15, style: .continuous)
+                    .stroke(NeoAppColors.ink.opacity(0.18), lineWidth: NeoAppMetrics.compactRule)
             }
-            .contentShape(Rectangle())
+            .contentShape(RoundedRectangle(cornerRadius: 15, style: .continuous))
         }
-        .buttonStyle(NeoGlassChoiceButtonStyle())
+        .buttonStyle(KitchenTablePressableButtonStyle())
         .accessibilityLabel(Text(LocalizedStringKey(item.title)))
         .accessibilityValue(item.isSelected ? "Selected" : "")
         .accessibilityAddTraits(item.isSelected ? .isSelected : [])
@@ -572,7 +591,7 @@ struct NeoGlassActionRow: View {
     }
 
     private var rowBackground: Color {
-        if item.isSelected { return NeoAppColors.acid }
+        if item.isSelected { return NeoAppColors.brass.opacity(0.88) }
         if item.isDestructive { return NeoAppColors.warning.opacity(0.16) }
         return NeoAppColors.surface.opacity(0.90)
     }
@@ -580,11 +599,11 @@ struct NeoGlassActionRow: View {
     private var iconBackground: Color {
         if item.isSelected { return NeoAppColors.cobalt }
         if item.isDestructive { return NeoAppColors.warning }
-        return NeoAppColors.acid
+        return NeoAppColors.subtleSurface
     }
 
     private var iconColor: Color {
-        item.isSelected ? NeoAppColors.onCobalt : Color.black
+        item.isSelected ? NeoAppColors.onCobalt : NeoAppColors.ink
     }
 
     private var titleColor: Color {
@@ -643,18 +662,9 @@ struct NeoGlassChoiceMenu<Label: View>: View {
     }
 }
 
-private struct NeoGlassChoiceButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .opacity(configuration.isPressed ? 0.72 : 1)
-            .scaleEffect(configuration.isPressed ? 0.985 : 1)
-            .animation(.easeOut(duration: 0.12), value: configuration.isPressed)
-    }
-}
-
 extension View {
     func neoScreen() -> some View {
-        background(NeoAppColors.canvas)
+        background(KitchenTableBackdrop())
             .scrollContentBackground(.hidden)
     }
 
@@ -663,29 +673,35 @@ extension View {
         ruleColor: Color = NeoAppColors.ink,
         lineWidth: CGFloat = NeoAppMetrics.rule
     ) -> some View {
-        background(fill)
-            .clipShape(Rectangle())
-            .overlay {
-                Rectangle().stroke(ruleColor, lineWidth: lineWidth)
-            }
+        kitchenTableSurface(
+            fill: fill,
+            border: ruleColor.opacity(0.28),
+            cornerRadius: NeoAppMetrics.cornerRadius,
+            lineWidth: lineWidth
+        )
     }
 
     @ViewBuilder
-    func neoInteractiveSurface(cornerRadius: CGFloat = 2) -> some View {
+    func neoInteractiveSurface(cornerRadius: CGFloat = NeoAppMetrics.cornerRadius) -> some View {
         let shape = RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
         if #available(iOS 26.0, *) {
             self
-                .glassEffect(.regular.interactive(), in: shape)
-                .overlay(shape.stroke(Color.white.opacity(0.66), lineWidth: 1))
+                .glassEffect(.regular.tint(NeoAppColors.paper.opacity(0.48)).interactive(), in: shape)
+                .overlay(shape.stroke(KitchenTablePalette.strongRule, lineWidth: NeoAppMetrics.compactRule))
         } else {
-            self
-                .background(Color.white.opacity(0.10), in: shape)
-                .overlay(shape.stroke(Color.white.opacity(0.66), lineWidth: 1))
+            self.kitchenTableSurface(
+                fill: NeoAppColors.paper,
+                border: KitchenTablePalette.strongRule,
+                cornerRadius: cornerRadius,
+                lineWidth: NeoAppMetrics.compactRule,
+                shadowRadius: 3,
+                shadowY: 2
+            )
         }
     }
 
     func neoListRow() -> some View {
         listRowBackground(NeoAppColors.surface)
-            .listRowSeparatorTint(NeoAppColors.ink.opacity(0.34))
+            .listRowSeparatorTint(KitchenTablePalette.rule)
     }
 }

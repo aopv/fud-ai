@@ -35,6 +35,7 @@ import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -111,6 +112,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.apoorvdarshan.calorietracker.AppContainer
 import com.apoorvdarshan.calorietracker.models.ChatMessage
 import com.apoorvdarshan.calorietracker.ui.components.InAppCameraCaptureDialog
+import com.apoorvdarshan.calorietracker.ui.components.FudGlassSurface
+import com.apoorvdarshan.calorietracker.ui.components.KitchenReceiptRule
 import com.apoorvdarshan.calorietracker.models.SpeechLanguage
 import com.apoorvdarshan.calorietracker.models.SpeechProvider
 import com.apoorvdarshan.calorietracker.ui.navigation.BottomNavDockedControlPadding
@@ -226,34 +229,47 @@ fun CoachScreen(container: AppContainer, initialAction: String? = null) {
     }
 
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.background,
+        containerColor = Color.Transparent,
         topBar = {
             // iOS Coach: centered "Coach" title, with a small circular dark
             // chip on the right wrapping a counterclockwise arrow reset icon.
             CenterAlignedTopAppBar(
-                title = { Text(stringResource(R.string.coach_title), fontWeight = FontWeight.SemiBold) },
+                title = {
+                    Text(
+                        stringResource(R.string.coach_title),
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold
+                    )
+                },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background
+                    containerColor = Color.Transparent
                 ),
                 actions = {
                     val canReset = ui.messages.isNotEmpty()
                     Box(
                         modifier = Modifier
-                            .padding(end = 12.dp)
-                            .size(34.dp)
-                            .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.10f))
+                            .padding(end = 5.dp)
+                            .size(48.dp)
                             .clickable(enabled = canReset) { showResetConfirm = true },
                         contentAlignment = Alignment.Center
                     ) {
-                        Icon(
-                            Icons.Filled.Replay,
-                            contentDescription = stringResource(R.string.coach_reset_chat_a11y),
-                            tint = if (canReset)
-                                MaterialTheme.colorScheme.onBackground
-                            else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f),
-                            modifier = Modifier.size(18.dp)
-                        )
+                        Box(
+                            Modifier
+                                .size(34.dp)
+                                .clip(RoundedCornerShape(11.dp))
+                                .background(AppColors.KitchenBrass.copy(alpha = 0.18f))
+                                .border(1.dp, AppColors.KitchenBrass.copy(alpha = 0.34f), RoundedCornerShape(11.dp)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                Icons.Filled.Replay,
+                                contentDescription = stringResource(R.string.coach_reset_chat_a11y),
+                                tint = if (canReset)
+                                    MaterialTheme.colorScheme.onBackground
+                                else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f),
+                                modifier = Modifier.size(18.dp)
+                            )
+                        }
                     }
                 }
             )
@@ -373,47 +389,43 @@ private fun EmptyState(modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Box(
-            Modifier
-                .size(108.dp)
-                .shadow(
-                    elevation = 16.dp,
-                    shape = CircleShape,
-                    ambientColor = AppColors.Calorie.copy(alpha = 0.18f),
-                    spotColor = AppColors.Calorie.copy(alpha = 0.18f)
-                )
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.85f))
-                .border(
-                    0.8.dp,
-                    Brush.linearGradient(
-                        listOf(Color.White.copy(alpha = 0.35f), Color.White.copy(alpha = 0.05f))
-                    ),
-                    CircleShape
-                ),
-            contentAlignment = Alignment.Center
+        FudGlassSurface(
+            modifier = Modifier.widthIn(max = 340.dp),
+            cornerRadius = 24.dp,
+            padding = 24.dp
         ) {
-            Icon(
-                Icons.Filled.Forum,
-                contentDescription = null,
-                modifier = Modifier.size(44.dp),
-                tint = AppColors.Calorie
-            )
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Box(
+                    Modifier
+                        .size(52.dp)
+                        .clip(RoundedCornerShape(15.dp))
+                        .background(AppColors.KitchenTomato),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        Icons.Filled.Forum,
+                        contentDescription = null,
+                        modifier = Modifier.size(26.dp),
+                        tint = Color.White
+                    )
+                }
+                Text(
+                    stringResource(R.string.coach_empty_title),
+                    style = MaterialTheme.typography.headlineLarge
+                )
+                KitchenReceiptRule()
+                Text(
+                    stringResource(R.string.coach_empty_subtitle),
+                    fontSize = 15.sp,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.66f),
+                    lineHeight = 21.sp
+                )
+            }
         }
-        Spacer(Modifier.height(16.dp))
-        Text(
-            stringResource(R.string.coach_empty_title),
-            fontSize = 22.sp,
-            fontWeight = FontWeight.SemiBold
-        )
-        Spacer(Modifier.height(8.dp))
-        Text(
-            stringResource(R.string.coach_empty_subtitle),
-            fontSize = 15.sp,
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
-            textAlign = TextAlign.Center,
-            lineHeight = 21.sp
-        )
     }
 }
 
@@ -441,12 +453,12 @@ private fun MessageList(
                 ) {
                     Box(
                         Modifier
-                            .clip(RoundedCornerShape(18.dp))
-                            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.85f))
+                            .clip(RoundedCornerShape(14.dp))
+                            .background(MaterialTheme.colorScheme.surface)
                             .border(
-                                0.5.dp,
-                                Color.White.copy(alpha = 0.15f),
-                                RoundedCornerShape(18.dp)
+                                1.dp,
+                                MaterialTheme.colorScheme.outlineVariant,
+                                RoundedCornerShape(14.dp)
                             )
                             .padding(horizontal = 14.dp, vertical = 10.dp)
                     ) { TypingIndicator() }
@@ -543,15 +555,15 @@ private fun AssistantBadge() {
             .padding(top = 8.dp)
             .size(26.dp)
             .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.85f))
-            .border(0.5.dp, Color.White.copy(alpha = 0.18f), CircleShape),
+            .background(AppColors.KitchenHerb.copy(alpha = 0.14f))
+            .border(1.dp, AppColors.KitchenHerb.copy(alpha = 0.26f), CircleShape),
         contentAlignment = Alignment.Center
     ) {
         Icon(
             Icons.Filled.AutoAwesome,
             contentDescription = null,
             modifier = Modifier.size(11.dp),
-            tint = AppColors.Calorie
+            tint = MaterialTheme.colorScheme.tertiary
         )
     }
 }
@@ -569,15 +581,15 @@ private fun AssistantBadge() {
  */
 @Composable
 private fun Bubble(content: String, isUser: Boolean, attachmentImageBase64: String? = null) {
-    val shape = RoundedCornerShape(20.dp)
-    val borderBrush = Brush.linearGradient(
-        listOf(
-            Color.White.copy(alpha = if (isUser) 0.45f else 0.22f),
-            Color.White.copy(alpha = if (isUser) 0.05f else 0.04f)
-        )
-    )
-    val shadowElevation = if (isUser) 10.dp else 6.dp
-    val shadowColor = if (isUser) AppColors.Calorie.copy(alpha = 0.28f) else Color.Black.copy(alpha = 0.12f)
+    val shape = if (isUser) {
+        RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp, bottomStart = 20.dp, bottomEnd = 6.dp)
+    } else {
+        RoundedCornerShape(topStart = 6.dp, topEnd = 20.dp, bottomStart = 20.dp, bottomEnd = 20.dp)
+    }
+    val borderColor = if (isUser) AppColors.KitchenEspresso.copy(alpha = 0.20f)
+                      else MaterialTheme.colorScheme.outlineVariant
+    val shadowElevation = if (isUser) 5.dp else 3.dp
+    val shadowColor = Color.Black.copy(alpha = if (isUser) 0.13f else 0.08f)
 
     Box(
         modifier = Modifier
@@ -591,31 +603,13 @@ private fun Bubble(content: String, isUser: Boolean, attachmentImageBase64: Stri
             .clip(shape)
             .then(
                 if (isUser) {
-                    Modifier.background(AppColors.CalorieGradient)
+                    Modifier.background(AppColors.KitchenTomato)
                 } else {
-                    Modifier
-                        .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.85f))
-                        .background(AppColors.Calorie.copy(alpha = 0.035f))
+                    Modifier.background(MaterialTheme.colorScheme.surface)
                 }
             )
-            .border(0.7.dp, borderBrush, shape)
+            .border(1.dp, borderColor, shape)
     ) {
-        if (isUser) {
-            // Top white highlight — fakes SwiftUI .blendMode(.plusLighter).
-            Box(
-                Modifier
-                    .fillMaxWidth()
-                    .height(28.dp)
-                    .background(
-                        Brush.verticalGradient(
-                            colors = listOf(
-                                Color.White.copy(alpha = 0.35f),
-                                Color.Transparent
-                            )
-                        )
-                    )
-            )
-        }
         Column(Modifier.padding(horizontal = 16.dp, vertical = 11.dp)) {
             attachmentImageBase64?.let { encoded ->
                 val bitmap = remember(encoded) {
@@ -673,19 +667,13 @@ private fun PromptChipRow(chips: List<String>, enabled: Boolean, onTap: (String)
 
 @Composable
 private fun PromptChip(text: String, enabled: Boolean, onTap: (String) -> Unit) {
-    val shape = RoundedCornerShape(20.dp)
-    val strokeBrush = Brush.linearGradient(
-        listOf(
-            AppColors.Calorie.copy(alpha = 0.35f),
-            AppColors.Calorie.copy(alpha = 0.10f)
-        )
-    )
+    val shape = RoundedCornerShape(12.dp)
     Box(
         Modifier
+            .heightIn(min = 48.dp)
             .clip(shape)
-            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.85f))
-            .background(AppColors.Calorie.copy(alpha = 0.10f))
-            .border(0.6.dp, strokeBrush, shape)
+            .background(AppColors.KitchenBrass.copy(alpha = 0.14f))
+            .border(1.dp, AppColors.KitchenBrass.copy(alpha = 0.34f), shape)
             .clickable(enabled = enabled) { onTap(text) }
             .padding(horizontal = 14.dp, vertical = 9.dp)
     ) {
@@ -693,7 +681,7 @@ private fun PromptChip(text: String, enabled: Boolean, onTap: (String) -> Unit) 
             text,
             fontSize = 13.sp,
             fontWeight = FontWeight.Medium,
-            color = AppColors.Calorie
+            color = MaterialTheme.colorScheme.onSurface
         )
     }
 }
@@ -717,7 +705,7 @@ private fun InputBar(
     onSend: () -> Unit
 ) {
     val canSend = !sending && (value.trim().isNotEmpty() || attachedImageBytes != null)
-    val capsule = RoundedCornerShape(28.dp)
+    val capsule = RoundedCornerShape(20.dp)
 
     Column(
         modifier = Modifier
@@ -725,18 +713,16 @@ private fun InputBar(
             .padding(top = 4.dp, bottom = 10.dp)
             .fillMaxWidth()
             .shadow(
-                elevation = 14.dp,
+                elevation = 6.dp,
                 shape = capsule,
                 ambientColor = Color.Black.copy(alpha = 0.18f),
                 spotColor = Color.Black.copy(alpha = 0.18f)
             )
             .clip(capsule)
-            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.85f))
+            .background(MaterialTheme.colorScheme.surface)
             .border(
-                0.8.dp,
-                Brush.linearGradient(
-                    listOf(Color.White.copy(alpha = 0.25f), Color.White.copy(alpha = 0.05f))
-                ),
+                1.dp,
+                MaterialTheme.colorScheme.outlineVariant,
                 capsule
             )
             .padding(start = 4.dp, end = 5.dp, top = 4.dp, bottom = 4.dp),
@@ -802,7 +788,7 @@ private fun InputBar(
                             fontSize = 17.sp,
                             fontWeight = FontWeight.Normal
                         ),
-                        cursorBrush = SolidColor(AppColors.Calorie),
+                        cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
                         keyboardActions = KeyboardActions(onSend = { onSend() }),
                         maxLines = 5,

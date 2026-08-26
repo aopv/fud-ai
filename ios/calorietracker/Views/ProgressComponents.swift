@@ -218,9 +218,15 @@ struct WeightChartSection: View {
                 .chartYScale(domain: weightYDomain)
                 .chartXAxis {
                     AxisMarks(values: .stride(by: .day, count: xAxis.strideDays)) { _ in
-                        AxisGridLine()
+                        AxisGridLine().foregroundStyle(KitchenTablePalette.rule)
                         AxisValueLabel(format: xAxis.labelFormat)
                     }
+                }
+                .chartPlotStyle { plotArea in
+                    plotArea.background(
+                        NeoAppColors.subtleSurface.opacity(0.48),
+                        in: RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    )
                 }
                 .frame(height: 180)
                 .clipped()
@@ -337,10 +343,10 @@ struct WeightChartSection: View {
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 6)
-        .background(NeoAppColors.acid)
+        .background(NeoAppColors.brass, in: RoundedRectangle(cornerRadius: 11, style: .continuous))
         .overlay {
-            Rectangle()
-                .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+            RoundedRectangle(cornerRadius: 11, style: .continuous)
+                .stroke(KitchenTablePalette.brassDeep, lineWidth: NeoAppMetrics.compactRule)
         }
     }
 }
@@ -382,8 +388,8 @@ struct CalorieChartSection: View {
                             x: .value("Date", item.date, unit: .day),
                             y: .value("Calories", item.calories)
                         )
-                        .foregroundStyle(NeoAppColors.cobalt)
-                        .cornerRadius(0)
+                        .foregroundStyle(KitchenTablePalette.tomato)
+                        .cornerRadius(5)
                     }
 
                     RuleMark(y: .value("Goal", calorieGoal))
@@ -392,9 +398,15 @@ struct CalorieChartSection: View {
                 }
                 .chartXAxis {
                     AxisMarks(values: .stride(by: .day, count: calorieXStride)) { _ in
-                        AxisGridLine()
+                        AxisGridLine().foregroundStyle(KitchenTablePalette.rule)
                         AxisValueLabel(format: .dateTime.month(.abbreviated).day())
                     }
+                }
+                .chartPlotStyle { plotArea in
+                    plotArea.background(
+                        NeoAppColors.subtleSurface.opacity(0.48),
+                        in: RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    )
                 }
                 .frame(height: 180)
             }
@@ -430,9 +442,9 @@ struct MacroAveragesSection: View {
                 .textCase(.uppercase)
                 .foregroundStyle(NeoAppColors.ink)
 
-            MacroProgressRow(label: "Protein", current: avgProtein, goal: proteinGoal, color: NeoAppColors.cobalt, gradientColors: [NeoAppColors.cobalt, NeoAppColors.cobaltDeep])
-            MacroProgressRow(label: "Carbs", current: avgCarbs, goal: carbsGoal, color: NeoAppColors.acid, gradientColors: [NeoAppColors.acid, NeoAppColors.acid])
-            MacroProgressRow(label: "Fat", current: avgFat, goal: fatGoal, color: NeoAppColors.cobaltDeep, gradientColors: [NeoAppColors.cobaltDeep, NeoAppColors.cobalt])
+            MacroProgressRow(label: "Protein", current: avgProtein, goal: proteinGoal, color: AppColors.protein, gradientColors: AppColors.proteinGradient)
+            MacroProgressRow(label: "Carbs", current: avgCarbs, goal: carbsGoal, color: AppColors.carbs, gradientColors: AppColors.carbsGradient)
+            MacroProgressRow(label: "Fat", current: avgFat, goal: fatGoal, color: AppColors.fat, gradientColors: AppColors.fatGradient)
         }
         .padding()
         .neoPanel()
@@ -465,15 +477,15 @@ struct MacroProgressRow: View {
 
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
-                    Rectangle()
+                    Capsule()
                         .fill(NeoAppColors.subtleSurface)
 
-                    Rectangle()
+                    Capsule()
                         .fill(LinearGradient(colors: gradientColors, startPoint: .leading, endPoint: .trailing))
                         .frame(width: max(4, geo.size.width * progress))
                 }
                 .overlay {
-                    Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                    Capsule().stroke(NeoAppColors.ink.opacity(0.24), lineWidth: NeoAppMetrics.compactRule)
                 }
             }
             .frame(height: 10)
@@ -517,7 +529,7 @@ struct StatTile: View {
         VStack(spacing: 6) {
             Image(systemName: icon)
                 .font(.title2)
-                .foregroundStyle(NeoAppColors.cobalt)
+                .foregroundStyle(color)
 
             Text(value)
                 .font(.system(.title3, design: .rounded, weight: .bold))
@@ -529,9 +541,10 @@ struct StatTile: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 12)
-        .background(NeoAppColors.subtleSurface)
+        .background(NeoAppColors.subtleSurface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
         .overlay {
-            Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .stroke(color.opacity(0.38), lineWidth: NeoAppMetrics.compactRule)
         }
     }
 }
@@ -557,9 +570,10 @@ struct StatBadge: View {
         .frame(maxWidth: .infinity)
         .padding(.horizontal, 4)
         .padding(.vertical, 6)
-        .background(NeoAppColors.subtleSurface)
+        .background(NeoAppColors.subtleSurface, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
         .overlay {
-            Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .stroke(KitchenTablePalette.rule, lineWidth: NeoAppMetrics.compactRule)
         }
     }
 }
@@ -1098,9 +1112,15 @@ struct BodyFatChartSection: View {
                 .chartYScale(domain: bodyFatYDomain)
                 .chartXAxis {
                     AxisMarks(values: .stride(by: .day, count: xAxis.strideDays)) { _ in
-                        AxisGridLine()
+                        AxisGridLine().foregroundStyle(KitchenTablePalette.rule)
                         AxisValueLabel(format: xAxis.labelFormat)
                     }
+                }
+                .chartPlotStyle { plotArea in
+                    plotArea.background(
+                        NeoAppColors.subtleSurface.opacity(0.48),
+                        in: RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    )
                 }
                 .frame(height: 180)
                 .clipped()
@@ -1241,9 +1261,10 @@ private func emptyState(_ message: String) -> some View {
         .font(.system(.subheadline, design: .rounded, weight: .bold))
         .foregroundStyle(NeoAppColors.mutedInk)
         .frame(maxWidth: .infinity, minHeight: 80)
-        .background(NeoAppColors.subtleSurface)
+        .background(NeoAppColors.subtleSurface, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
         .overlay {
-            Rectangle().stroke(NeoAppColors.ink.opacity(0.4), lineWidth: NeoAppMetrics.compactRule)
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .stroke(KitchenTablePalette.rule, lineWidth: NeoAppMetrics.compactRule)
         }
 }
 

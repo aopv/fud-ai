@@ -177,81 +177,260 @@ enum AppThemeColor: String, CaseIterable, Identifiable {
 }
 
 enum AppColors {
-    // Version 7 uses cobalt consistently for data emphasis and interactive UI.
-    // The saved AppThemeColor remains intact for alternate icons, widgets, Watch,
-    // and migration compatibility; no preference or persisted value is removed.
-    static var calorieGradient: [Color] { [NeoHomeColors.cobaltDeep, NeoHomeColors.cobalt] }
-    static var calorie: Color { NeoHomeColors.cobalt }
+    // Version 7 keeps the saved theme preference intact for alternate icons,
+    // widgets, Watch, and migration compatibility. The in-app Kitchen Table
+    // palette uses distinct, accessible food-led accents for quick scanning.
+    static var calorieGradient: [Color] { [KitchenTablePalette.tomatoDeep, KitchenTablePalette.tomato] }
+    static var calorie: Color { KitchenTablePalette.tomato }
     static var userAccent: Color { AppThemeColor.current.color }
 
     // Protein
-    static var proteinGradient: [Color] { calorieGradient }
-    static var protein: Color { calorie }
+    static var proteinGradient: [Color] { [KitchenTablePalette.herbDeep, KitchenTablePalette.herb] }
+    static var protein: Color { KitchenTablePalette.herb }
 
     // Carbs
-    static var carbsGradient: [Color] { calorieGradient }
-    static var carbs: Color { calorie }
+    static var carbsGradient: [Color] { [KitchenTablePalette.brassDeep, KitchenTablePalette.brass] }
+    static var carbs: Color { KitchenTablePalette.brass }
 
     // Fat
-    static var fatGradient: [Color] { calorieGradient }
-    static var fat: Color { calorie }
+    static var fatGradient: [Color] { [KitchenTablePalette.cobaltDeep, KitchenTablePalette.cobalt] }
+    static var fat: Color { KitchenTablePalette.cobalt }
 
     // App-wide surfaces follow the 7.0 Neo-Brutalist system. Keeping these
     // semantic entry points means every legacy/secondary screen inherits the
     // redesign without changing its storage or behavior wiring.
-    static let appBackground = NeoHomeColors.canvas
-    static let appCard = NeoHomeColors.surface
+    static let appBackground = KitchenTablePalette.canvas
+    static let appCard = KitchenTablePalette.paper
 }
 
-/// Semantic colors for the Home screen's Neo-Brutalist presentation. These are
-/// intentionally independent from the user's saved accent color: the poster-like
-/// cobalt and acid-yellow surfaces define this layout, while native navigation,
-/// settings, widgets, and app-icon theming continue to honor `AppThemeColor`.
-enum NeoHomeColors {
+/// Warm, tactile colors shared by every app-owned surface. Values adapt for Dark
+/// Mode and Increase Contrast while keeping color roles stable: tomato for the
+/// primary food action, cobalt for navigation/data, herb for success/protein,
+/// and brass for secondary highlights.
+enum KitchenTablePalette {
     static let canvas = Color(uiColor: UIColor { traits in
-        traits.userInterfaceStyle == .dark
-            ? UIColor(red: 0.005, green: 0.005, blue: 0.008, alpha: 1)
-            : UIColor(red: 0.975, green: 0.965, blue: 0.925, alpha: 1)
+        if traits.userInterfaceStyle == .dark {
+            return UIColor(red: 0.075, green: 0.060, blue: 0.046, alpha: 1)
+        }
+        return UIColor(red: 0.957, green: 0.918, blue: 0.843, alpha: 1)
     })
 
-    static let surface = Color(uiColor: UIColor { traits in
-        traits.userInterfaceStyle == .dark
-            ? UIColor(red: 0.025, green: 0.025, blue: 0.03, alpha: 1)
-            : UIColor(red: 1.0, green: 0.995, blue: 0.975, alpha: 1)
+    static let paper = Color(uiColor: UIColor { traits in
+        if traits.userInterfaceStyle == .dark {
+            return UIColor(red: 0.125, green: 0.105, blue: 0.082, alpha: 1)
+        }
+        return UIColor(red: 1.0, green: 0.982, blue: 0.925, alpha: 1)
     })
 
-    static let ink = Color(uiColor: UIColor { traits in
-        traits.userInterfaceStyle == .dark ? .white : .black
+    static let paperRaised = Color(uiColor: UIColor { traits in
+        if traits.userInterfaceStyle == .dark {
+            return UIColor(red: 0.165, green: 0.137, blue: 0.104, alpha: 1)
+        }
+        return UIColor(red: 1.0, green: 0.993, blue: 0.965, alpha: 1)
     })
 
-    static let mutedInk = Color(uiColor: UIColor { traits in
+    static let paperMuted = Color(uiColor: UIColor { traits in
+        if traits.userInterfaceStyle == .dark {
+            return UIColor(red: 0.188, green: 0.156, blue: 0.118, alpha: 1)
+        }
+        return UIColor(red: 0.922, green: 0.870, blue: 0.775, alpha: 1)
+    })
+
+    static let espresso = Color(uiColor: UIColor { traits in
+        if traits.userInterfaceStyle == .dark {
+            return UIColor(red: 0.969, green: 0.925, blue: 0.843, alpha: 1)
+        }
+        let value: CGFloat = traits.accessibilityContrast == .high ? 0.055 : 0.105
+        return UIColor(red: value + 0.08, green: value + 0.035, blue: value, alpha: 1)
+    })
+
+    static let mutedEspresso = Color(uiColor: UIColor { traits in
+        if traits.userInterfaceStyle == .dark {
+            return UIColor(red: 0.745, green: 0.690, blue: 0.600, alpha: 1)
+        }
+        return UIColor(red: 0.360, green: 0.295, blue: 0.235, alpha: 1)
+    })
+
+    static let tomato = Color(uiColor: UIColor { traits in
         traits.userInterfaceStyle == .dark
-            ? UIColor(white: 0.68, alpha: 1)
-            : UIColor(white: 0.28, alpha: 1)
+            ? UIColor(red: 0.910, green: 0.337, blue: 0.235, alpha: 1)
+            : UIColor(red: 0.776, green: 0.196, blue: 0.118, alpha: 1)
+    })
+    static let tomatoDeep = Color(uiColor: UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 0.700, green: 0.205, blue: 0.135, alpha: 1)
+            : UIColor(red: 0.600, green: 0.125, blue: 0.075, alpha: 1)
     })
 
     static let cobalt = Color(uiColor: UIColor { traits in
         traits.userInterfaceStyle == .dark
-            ? UIColor(red: 0.30, green: 0.47, blue: 1.0, alpha: 1)
-            : UIColor(red: 0.024, green: 0.231, blue: 0.922, alpha: 1)
-    })
-    static let onCobalt = Color(uiColor: UIColor { traits in
-        traits.userInterfaceStyle == .dark ? .black : .white
+            ? UIColor(red: 0.365, green: 0.515, blue: 0.900, alpha: 1)
+            : UIColor(red: 0.110, green: 0.260, blue: 0.625, alpha: 1)
     })
     static let cobaltDeep = Color(uiColor: UIColor { traits in
         traits.userInterfaceStyle == .dark
-            ? UIColor(red: 0.055, green: 0.22, blue: 0.74, alpha: 1)
-            : UIColor(red: 0.0, green: 0.15, blue: 0.72, alpha: 1)
+            ? UIColor(red: 0.245, green: 0.360, blue: 0.690, alpha: 1)
+            : UIColor(red: 0.070, green: 0.170, blue: 0.455, alpha: 1)
     })
-    static let acidYellow = Color(hex: 0xEEFF00)
-    static let paperWhite = Color(hex: 0xFFFDF7)
+
+    static let herb = Color(uiColor: UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 0.390, green: 0.655, blue: 0.390, alpha: 1)
+            : UIColor(red: 0.190, green: 0.390, blue: 0.220, alpha: 1)
+    })
+    static let herbDeep = Color(uiColor: UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 0.265, green: 0.490, blue: 0.270, alpha: 1)
+            : UIColor(red: 0.110, green: 0.285, blue: 0.145, alpha: 1)
+    })
+
+    static let brass = Color(uiColor: UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 0.870, green: 0.665, blue: 0.285, alpha: 1)
+            : UIColor(red: 0.720, green: 0.470, blue: 0.125, alpha: 1)
+    })
+    static let brassDeep = Color(uiColor: UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 0.665, green: 0.475, blue: 0.175, alpha: 1)
+            : UIColor(red: 0.545, green: 0.325, blue: 0.075, alpha: 1)
+    })
+
+    static let onStrongAccent = Color(uiColor: UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 0.155, green: 0.095, blue: 0.055, alpha: 1)
+            : UIColor(red: 1.0, green: 0.975, blue: 0.910, alpha: 1)
+    })
+    static let onBrass = Color(red: 0.155, green: 0.095, blue: 0.055)
+    static let rule = espresso.opacity(0.20)
+    static let strongRule = espresso.opacity(0.42)
+    static let shadow = Color.black.opacity(0.12)
+}
+
+/// A restrained shared paper grain. It is decorative, ignores interaction, and
+/// disappears when Reduce Transparency is enabled. Keeping it here prevents
+/// every card or list row from decoding and layering its own texture.
+struct KitchenTableBackdrop: View {
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+
+    var body: some View {
+        ZStack {
+            KitchenTablePalette.canvas
+
+            LinearGradient(
+                colors: [
+                    KitchenTablePalette.paper.opacity(colorScheme == .dark ? 0.18 : 0.34),
+                    KitchenTablePalette.canvas,
+                    KitchenTablePalette.tomato.opacity(colorScheme == .dark ? 0.025 : 0.035)
+                ],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+
+            if !reduceTransparency {
+                Image(decorative: "KitchenPaper")
+                    .resizable()
+                    .scaledToFill()
+                    .blendMode(colorScheme == .dark ? .softLight : .multiply)
+                    .opacity(colorScheme == .dark ? 0.08 : 0.11)
+                    .allowsHitTesting(false)
+                    .accessibilityHidden(true)
+            }
+        }
+        .ignoresSafeArea()
+    }
+}
+
+private struct KitchenTableSurfaceModifier: ViewModifier {
+    let fill: Color
+    let border: Color
+    let cornerRadius: CGFloat
+    let lineWidth: CGFloat
+    let shadowRadius: CGFloat
+    let shadowY: CGFloat
+
+    func body(content: Content) -> some View {
+        let shape = RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+        content
+            .background(fill, in: shape)
+            .clipShape(shape)
+            .overlay {
+                shape.strokeBorder(border, lineWidth: lineWidth)
+            }
+            .shadow(color: KitchenTablePalette.shadow, radius: shadowRadius, x: 0, y: shadowY)
+    }
+}
+
+struct KitchenTablePressableButtonStyle: ButtonStyle {
+    @Environment(\.isEnabled) private var isEnabled
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    func makeBody(configuration: Configuration) -> some View {
+        let isPressed = configuration.isPressed && isEnabled
+        configuration.label
+            .scaleEffect(reduceMotion ? 1 : (isPressed ? 0.985 : 1))
+            .opacity(isEnabled ? (isPressed ? 0.78 : 1) : 0.46)
+            .animation(reduceMotion ? nil : .easeOut(duration: 0.12), value: isPressed)
+    }
+}
+
+extension View {
+    func kitchenTableSurface(
+        fill: Color = KitchenTablePalette.paper,
+        border: Color = KitchenTablePalette.rule,
+        cornerRadius: CGFloat = 18,
+        lineWidth: CGFloat = 1,
+        shadowRadius: CGFloat = 7,
+        shadowY: CGFloat = 3
+    ) -> some View {
+        modifier(
+            KitchenTableSurfaceModifier(
+                fill: fill,
+                border: border,
+                cornerRadius: cornerRadius,
+                lineWidth: lineWidth,
+                shadowRadius: shadowRadius,
+                shadowY: shadowY
+            )
+        )
+    }
+
+    func kitchenTableIconTile(
+        fill: Color,
+        border: Color = KitchenTablePalette.rule,
+        cornerRadius: CGFloat = 14
+    ) -> some View {
+        background(fill, in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                    .stroke(border, lineWidth: 1)
+            }
+            .shadow(color: KitchenTablePalette.shadow, radius: 3, x: 0, y: 2)
+    }
+}
+
+/// Compatibility names retained so the v7 screen structure and all call sites
+/// stay unchanged while their visual values resolve through Kitchen Table.
+enum NeoHomeColors {
+    static let canvas = KitchenTablePalette.canvas
+    static let surface = KitchenTablePalette.paper
+    static let ink = KitchenTablePalette.espresso
+    static let mutedInk = KitchenTablePalette.mutedEspresso
+    static let cobalt = KitchenTablePalette.cobalt
+    static let onCobalt = KitchenTablePalette.onStrongAccent
+    static let cobaltDeep = KitchenTablePalette.cobaltDeep
+    static let acidYellow = KitchenTablePalette.brass
+    static let paperWhite = KitchenTablePalette.paperRaised
+    static let tomato = KitchenTablePalette.tomato
+    static let herb = KitchenTablePalette.herb
+    static let brass = KitchenTablePalette.brass
 }
 
 enum NeoHomeMetrics {
-    static let rule: CGFloat = 2
-    static let compactRule: CGFloat = 1
-    static let cornerRadius: CGFloat = 2
-    static let horizontalInset: CGFloat = 14
+    static let rule: CGFloat = 1
+    static let compactRule: CGFloat = 0.75
+    static let cornerRadius: CGFloat = 18
+    static let horizontalInset: CGFloat = 16
 }
 
 extension Color {

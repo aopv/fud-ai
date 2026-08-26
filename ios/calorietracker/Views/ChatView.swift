@@ -31,6 +31,7 @@ struct ChatView: View {
     @State private var voicePulse = false
     @State private var isKeyboardPresented = false
     @FocusState private var isInputFocused: Bool
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var userProfile: UserProfile { profileStore.profile }
     private var messages: [ChatMessage] { chatStore.messages }
@@ -66,7 +67,7 @@ struct ChatView: View {
                 inputArea
                     .padding(.bottom, isKeyboardPresented ? 0 : NeoAppMetrics.bottomBarHeight + 14)
             }
-            .background(NeoAppColors.canvas)
+            .background(KitchenTableBackdrop())
             .navigationTitle("Coach")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar(.hidden, for: .navigationBar)
@@ -126,15 +127,18 @@ struct ChatView: View {
         } label: {
             Image(systemName: "arrow.counterclockwise")
                 .font(.system(size: 17, weight: .black))
-                .foregroundStyle(messages.isEmpty ? NeoAppColors.mutedInk : Color.black)
+                .foregroundStyle(messages.isEmpty ? NeoAppColors.mutedInk : KitchenTablePalette.onBrass)
                 .frame(width: 46, height: 46)
-                .background(messages.isEmpty ? NeoAppColors.subtleSurface : NeoAppColors.acid)
+                .background(
+                    messages.isEmpty ? NeoAppColors.subtleSurface : NeoAppColors.brass,
+                    in: RoundedRectangle(cornerRadius: 14, style: .continuous)
+                )
                 .overlay {
-                    Rectangle()
-                        .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .stroke(KitchenTablePalette.rule, lineWidth: NeoAppMetrics.rule)
                 }
         }
-        .buttonStyle(.plain)
+        .buttonStyle(KitchenTablePressableButtonStyle())
         .disabled(messages.isEmpty)
         .accessibilityLabel("Reset chat")
     }
@@ -145,28 +149,30 @@ struct ChatView: View {
         VStack(spacing: 14) {
             Spacer()
             ZStack(alignment: .bottomTrailing) {
-                Rectangle()
+                RoundedRectangle(cornerRadius: 28, style: .continuous)
                     .fill(NeoAppColors.cobalt)
-                    .frame(width: 104, height: 104)
+                    .frame(width: 108, height: 108)
                 Image(systemName: "bubble.left.and.bubble.right.fill")
                     .font(.system(size: 42, weight: .black))
                     .foregroundStyle(NeoAppColors.onCobalt)
-                    .frame(width: 104, height: 104)
+                    .frame(width: 108, height: 108)
 
                 Text("AI")
                     .font(.system(size: 13, weight: .black, design: .rounded).width(.condensed))
-                    .foregroundStyle(Color.black)
+                    .foregroundStyle(KitchenTablePalette.onBrass)
                     .padding(.horizontal, 8)
                     .frame(height: 28)
-                    .background(NeoAppColors.acid)
+                    .background(NeoAppColors.brass, in: Capsule())
                     .overlay {
-                        Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                        Capsule().stroke(KitchenTablePalette.brassDeep, lineWidth: NeoAppMetrics.compactRule)
                     }
                     .offset(x: 8, y: 8)
             }
             .overlay {
-                Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                RoundedRectangle(cornerRadius: 28, style: .continuous)
+                    .stroke(KitchenTablePalette.strongRule, lineWidth: NeoAppMetrics.rule)
             }
+            .shadow(color: NeoAppColors.cobalt.opacity(0.20), radius: 10, x: 0, y: 5)
             Text("Ask your Coach")
                 .font(.system(.title2, design: .rounded, weight: .black).width(.condensed))
                 .textCase(.uppercase)
@@ -180,12 +186,12 @@ struct ChatView: View {
             Text("TRACK  •  LEARN  •  WIN")
                 .font(.system(size: 10, weight: .black, design: .rounded).width(.condensed))
                 .tracking(1.2)
-                .foregroundStyle(Color.black)
+                .foregroundStyle(KitchenTablePalette.onBrass)
                 .padding(.horizontal, 10)
                 .padding(.vertical, 6)
-                .background(NeoAppColors.acid)
+                .background(NeoAppColors.brass, in: Capsule())
                 .overlay {
-                    Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                    Capsule().stroke(KitchenTablePalette.brassDeep, lineWidth: NeoAppMetrics.compactRule)
                 }
             Spacer()
         }
@@ -205,10 +211,10 @@ struct ChatView: View {
                             TypingIndicator()
                                 .padding(.horizontal, 14)
                                 .padding(.vertical, 10)
-                                .background(NeoAppColors.surface)
+                                .background(NeoAppColors.surface, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
                                 .overlay(
-                                    Rectangle()
-                                        .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                                        .stroke(KitchenTablePalette.rule, lineWidth: NeoAppMetrics.compactRule)
                                 )
                                 .padding(.leading, 4)
                             Spacer()
@@ -222,9 +228,9 @@ struct ChatView: View {
                             .foregroundStyle(NeoAppColors.ink)
                             .padding(.horizontal, 14)
                             .padding(.vertical, 8)
-                            .background(NeoAppColors.warning.opacity(0.20))
+                            .background(NeoAppColors.warning.opacity(0.14), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
                             .overlay(
-                                Rectangle()
+                                RoundedRectangle(cornerRadius: 14, style: .continuous)
                                     .stroke(NeoAppColors.warning, lineWidth: NeoAppMetrics.rule)
                             )
                             .padding(.horizontal)
@@ -310,14 +316,14 @@ struct ChatView: View {
                             .textCase(.uppercase)
                             .padding(.horizontal, 12)
                             .padding(.vertical, 9)
-                            .foregroundStyle(Color.black)
-                            .background(NeoAppColors.acid)
+                            .foregroundStyle(KitchenTablePalette.onBrass)
+                            .background(NeoAppColors.brass, in: Capsule())
                             .overlay {
-                                Rectangle()
-                                    .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                                Capsule()
+                                    .stroke(KitchenTablePalette.brassDeep, lineWidth: NeoAppMetrics.compactRule)
                             }
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(KitchenTablePressableButtonStyle())
                     .disabled(isSending)
                 }
             }
@@ -350,9 +356,9 @@ struct ChatView: View {
                 .resizable()
                 .scaledToFill()
                 .frame(width: 62, height: 62)
-                .clipShape(Rectangle())
+                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
                 .overlay(
-                    Rectangle()
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
                         .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
                 )
 
@@ -373,21 +379,25 @@ struct ChatView: View {
             } label: {
                 Image(systemName: "xmark")
                     .font(.system(size: 12, weight: .bold))
-                    .foregroundStyle(Color.black)
+                    .foregroundStyle(KitchenTablePalette.onBrass)
                     .frame(width: 44, height: 44)
-                    .background(NeoAppColors.acid)
+                    .background(NeoAppColors.brass, in: RoundedRectangle(cornerRadius: 13, style: .continuous))
                     .overlay {
-                        Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                        RoundedRectangle(cornerRadius: 13, style: .continuous)
+                            .stroke(KitchenTablePalette.rule, lineWidth: NeoAppMetrics.compactRule)
                     }
             }
-            .buttonStyle(.plain)
+            .buttonStyle(KitchenTablePressableButtonStyle())
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 9)
-        .background(NeoAppColors.surface)
-        .overlay(
-            Rectangle()
-                .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+        .kitchenTableSurface(
+            fill: NeoAppColors.surface,
+            border: KitchenTablePalette.rule,
+            cornerRadius: 18,
+            lineWidth: NeoAppMetrics.rule,
+            shadowRadius: 5,
+            shadowY: 2
         )
         .padding(.horizontal, 12)
     }
@@ -416,10 +426,10 @@ struct ChatView: View {
             // Trailing control (kept as the stable last child).
             trailingControl
         }
-        .background(NeoAppColors.surface)
+        .background(NeoAppColors.surface, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
         .overlay {
-            Rectangle()
-                .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .stroke(KitchenTablePalette.strongRule, lineWidth: NeoAppMetrics.rule)
         }
         .padding(.horizontal, 12)
         .padding(.bottom, 10)
@@ -486,9 +496,9 @@ struct ChatView: View {
                 .font(.system(size: 16, weight: .bold))
                 .foregroundStyle(canSend ? NeoAppColors.onCobalt : NeoAppColors.mutedInk)
                 .frame(width: 44, height: 44)
-                .background(canSend ? NeoAppColors.cobalt : NeoAppColors.subtleSurface)
+                .background(canSend ? NeoAppColors.cobalt : NeoAppColors.subtleSurface, in: Circle())
                 .overlay {
-                    Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                    Circle().stroke(KitchenTablePalette.rule, lineWidth: NeoAppMetrics.compactRule)
                 }
         }
         .disabled(!canSend)
@@ -500,9 +510,9 @@ struct ChatView: View {
             .font(.system(size: 16, weight: .bold))
             .foregroundStyle(holding ? Color.white : NeoAppColors.cobalt)
             .frame(width: 44, height: 44)
-            .background(holding ? NeoAppColors.warning : NeoAppColors.subtleSurface)
+            .background(holding ? NeoAppColors.warning : NeoAppColors.subtleSurface, in: Circle())
             .overlay {
-                Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                Circle().stroke(KitchenTablePalette.rule, lineWidth: NeoAppMetrics.compactRule)
             }
             .scaleEffect(holding ? 1.25 : 1.0)
             .animation(.easeInOut(duration: 0.15), value: holding)
@@ -542,9 +552,9 @@ struct ChatView: View {
                 .font(.system(size: 16, weight: .bold))
                 .foregroundStyle(NeoAppColors.onCobalt)
                 .frame(width: 44, height: 44)
-                .background(NeoAppColors.cobalt)
+                .background(NeoAppColors.cobalt, in: Circle())
                 .overlay {
-                    Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                    Circle().stroke(KitchenTablePalette.rule, lineWidth: NeoAppMetrics.compactRule)
                 }
         }
     }
@@ -557,9 +567,9 @@ struct ChatView: View {
                 .font(.system(size: 15, weight: .semibold))
                 .foregroundStyle(NeoAppColors.warning)
                 .frame(width: 44, height: 44)
-                .background(NeoAppColors.subtleSurface)
+                .background(NeoAppColors.subtleSurface, in: Circle())
                 .overlay {
-                    Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                    Circle().stroke(KitchenTablePalette.rule, lineWidth: NeoAppMetrics.compactRule)
                 }
         }
         .buttonStyle(.plain)
@@ -578,8 +588,10 @@ struct ChatView: View {
                     .frame(width: 9, height: 9)
                     .opacity(voicePulse ? 0.3 : 1.0)
                     .onAppear {
-                        withAnimation(.easeInOut(duration: 0.7).repeatForever(autoreverses: true)) {
-                            voicePulse = true
+                        if !reduceMotion {
+                            withAnimation(.easeInOut(duration: 0.7).repeatForever(autoreverses: true)) {
+                                voicePulse = true
+                            }
                         }
                     }
                     .onDisappear { voicePulse = false }
@@ -719,9 +731,10 @@ private struct MarkdownMessageText: View {
                         .font(.system(.callout, design: .monospaced))
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(10)
-                        .background(NeoAppColors.subtleSurface)
+                        .background(NeoAppColors.subtleSurface, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
                         .overlay {
-                            Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                .stroke(KitchenTablePalette.rule, lineWidth: NeoAppMetrics.compactRule)
                         }
                 case .paragraph:
                     Text(inline(block.text)).font(.system(.body, design: .rounded))
@@ -830,15 +843,16 @@ private struct MessageBubble: View {
 
     private var assistantBadge: some View {
         ZStack {
-            Rectangle()
-                .fill(NeoAppColors.acid)
+            RoundedRectangle(cornerRadius: 9, style: .continuous)
+                .fill(NeoAppColors.brass)
                 .frame(width: 28, height: 28)
                 .overlay {
-                    Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                    RoundedRectangle(cornerRadius: 9, style: .continuous)
+                        .stroke(KitchenTablePalette.rule, lineWidth: NeoAppMetrics.compactRule)
                 }
             Image(systemName: "sparkles")
                 .font(.system(size: 11, weight: .semibold))
-                .foregroundStyle(Color.black)
+                .foregroundStyle(KitchenTablePalette.onBrass)
         }
         .padding(.top, 8)
     }
@@ -851,9 +865,9 @@ private struct MessageBubble: View {
                     .resizable()
                     .scaledToFill()
                     .frame(width: 196, height: 140)
-                    .clipShape(Rectangle())
+                    .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
                     .overlay(
-                        Rectangle()
+                        RoundedRectangle(cornerRadius: 14, style: .continuous)
                             .stroke(isUser ? NeoAppColors.onCobalt : NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
                     )
             }
@@ -875,7 +889,7 @@ private struct MessageBubble: View {
             .padding(.vertical, 11)
             .background(bubbleBackground)
             .overlay(bubbleStroke)
-            .clipShape(Rectangle())
+            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
             .fixedSize(horizontal: false, vertical: true)
     }
 
@@ -889,8 +903,8 @@ private struct MessageBubble: View {
     }
 
     private var bubbleStroke: some View {
-        Rectangle()
-            .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+        RoundedRectangle(cornerRadius: 18, style: .continuous)
+            .stroke(KitchenTablePalette.rule, lineWidth: NeoAppMetrics.rule)
     }
 }
 

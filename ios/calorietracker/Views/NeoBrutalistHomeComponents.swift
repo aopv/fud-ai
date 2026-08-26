@@ -1,20 +1,21 @@
 import SwiftUI
 import UIKit
 
-// MARK: - Shared Neo-Brutalist primitives
+// MARK: - Shared Kitchen Table primitives
 
 private extension View {
     func neoHomeOutline(_ color: Color = NeoHomeColors.ink, width: CGFloat = NeoHomeMetrics.rule) -> some View {
-        overlay {
-            Rectangle()
-                .strokeBorder(color, lineWidth: width)
+        let shape = RoundedRectangle(cornerRadius: NeoHomeMetrics.cornerRadius, style: .continuous)
+        return clipShape(shape)
+            .overlay {
+            shape
+                .strokeBorder(color.opacity(0.32), lineWidth: width)
                 .allowsHitTesting(false)
         }
     }
 
     func neoHomeTitleStyle(size: CGFloat) -> some View {
-        font(.system(size: size, weight: .black, design: .default))
-            .fontWidth(.condensed)
+        font(.system(size: size, weight: .bold, design: .serif))
     }
 }
 
@@ -54,9 +55,14 @@ struct NeoHomeDateHeader: View {
             calendarButton
         }
         .padding(.horizontal, 16)
-        .padding(.vertical, 12)
-        .background(NeoHomeColors.surface)
-        .neoHomeOutline()
+        .padding(.vertical, 14)
+        .kitchenTableSurface(
+            fill: NeoHomeColors.surface,
+            border: KitchenTablePalette.rule,
+            cornerRadius: 22,
+            shadowRadius: 8,
+            shadowY: 4
+        )
         .accessibilityElement(children: .contain)
     }
 
@@ -82,8 +88,11 @@ struct NeoHomeDateHeader: View {
                     .font(.system(size: 20, weight: .bold))
                     .foregroundStyle(NeoHomeColors.ink)
                     .frame(width: 46, height: 46)
-                    .background(.ultraThinMaterial)
-                    .neoHomeOutline(width: NeoHomeMetrics.compactRule)
+                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 14, style: .continuous)
+                            .stroke(KitchenTablePalette.strongRule, lineWidth: NeoHomeMetrics.compactRule)
+                    }
             }
             .buttonStyle(.plain)
             .accessibilityLabel("Choose date")
@@ -110,10 +119,14 @@ private extension View {
                 .labelsHidden()
                 .tint(NeoAppColors.cobalt)
                 .padding(8)
-                .background(NeoAppColors.surface.opacity(0.92))
-                .overlay {
-                    Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
-                }
+                .kitchenTableSurface(
+                    fill: NeoAppColors.surface.opacity(0.94),
+                    border: KitchenTablePalette.rule,
+                    cornerRadius: 18,
+                    lineWidth: NeoAppMetrics.compactRule,
+                    shadowRadius: 2,
+                    shadowY: 1
+                )
             }
             .presentationCompactAdaptation(.popover)
             .presentationBackground(.clear)
@@ -131,6 +144,7 @@ struct NeoCalorieSummary: View {
     @State private var shownProgress = 0.0
     @State private var lastEpoch = -1
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @ScaledMetric(relativeTo: .largeTitle) private var calorieSize = 70
     @ScaledMetric(relativeTo: .title) private var targetSize = 31
 
@@ -177,7 +191,11 @@ struct NeoCalorieSummary: View {
         }
         .onChange(of: launchFillEpoch) { _, _ in playLaunchFill() }
         .onChange(of: progress) { _, newValue in
-            withAnimation(.snappy(duration: 0.35)) { shownProgress = newValue }
+            if reduceMotion {
+                shownProgress = newValue
+            } else {
+                withAnimation(.snappy(duration: 0.35)) { shownProgress = newValue }
+            }
         }
     }
 
@@ -192,12 +210,12 @@ struct NeoCalorieSummary: View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Calories")
                 .textCase(.uppercase)
-                .font(.system(.subheadline, design: .default, weight: .black))
-                .fontWidth(.condensed)
-                .foregroundStyle(.white)
-                .padding(.horizontal, 8)
-                .padding(.vertical, 5)
-                .background(.black)
+                .font(.subheadline.weight(.bold))
+                .tracking(0.8)
+                .foregroundStyle(KitchenTablePalette.onStrongAccent)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+                .background(KitchenTablePalette.espresso.opacity(0.86), in: Capsule())
 
             HStack(alignment: .lastTextBaseline, spacing: 7) {
                 Text(eaten.formatted())
@@ -210,7 +228,7 @@ struct NeoCalorieSummary: View {
                     .font(.system(.headline, design: .default, weight: .black))
                     .fontWidth(.condensed)
             }
-            .foregroundStyle(.white)
+            .foregroundStyle(KitchenTablePalette.onStrongAccent)
 
             VStack(spacing: 0) {
                 HStack(alignment: .lastTextBaseline, spacing: 8) {
@@ -225,7 +243,7 @@ struct NeoCalorieSummary: View {
                 .foregroundStyle(NeoHomeColors.ink)
                 .padding(.horizontal, 10)
                 .padding(.vertical, 7)
-                .background(NeoHomeColors.surface)
+                .background(NeoHomeColors.surface, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
 
                 NeoSegmentedProgress(progress: shownProgress)
                     .padding(8)
@@ -242,28 +260,29 @@ struct NeoCalorieSummary: View {
         .frame(maxWidth: .infinity, minHeight: 238, alignment: .topLeading)
         .background(
             LinearGradient(
-                colors: [NeoHomeColors.cobalt, NeoHomeColors.cobaltDeep],
+                colors: [KitchenTablePalette.tomato, KitchenTablePalette.tomatoDeep],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
         )
-        .neoHomeOutline()
+        .neoHomeOutline(KitchenTablePalette.tomatoDeep)
+        .shadow(color: KitchenTablePalette.tomato.opacity(0.18), radius: 9, x: 0, y: 4)
     }
 
     private var targetPanel: some View {
         VStack(spacing: 10) {
             Text("Target")
                 .textCase(.uppercase)
-                .font(.system(.caption, design: .default, weight: .black))
-                .fontWidth(.condensed)
-                .foregroundStyle(NeoHomeColors.paperWhite)
-                .padding(.horizontal, 7)
-                .padding(.vertical, 4)
-                .background(.black)
+                .font(.caption.weight(.bold))
+                .tracking(0.8)
+                .foregroundStyle(KitchenTablePalette.onBrass)
+                .padding(.horizontal, 9)
+                .padding(.vertical, 5)
+                .background(NeoHomeColors.brass, in: Capsule())
 
             Image(systemName: "scope")
                 .font(.system(size: 56, weight: .black))
-                .foregroundStyle(NeoHomeColors.cobalt)
+                .foregroundStyle(NeoHomeColors.brass)
                 .symbolRenderingMode(.monochrome)
 
             Spacer(minLength: 0)
@@ -282,12 +301,21 @@ struct NeoCalorieSummary: View {
         }
         .padding(12)
         .frame(maxWidth: .infinity, minHeight: 238)
-        .background(NeoHomeColors.surface)
-        .neoHomeOutline()
+        .kitchenTableSurface(
+            fill: NeoHomeColors.surface,
+            border: KitchenTablePalette.rule,
+            cornerRadius: NeoHomeMetrics.cornerRadius,
+            shadowRadius: 7,
+            shadowY: 3
+        )
     }
 
     private func playLaunchFill() {
         lastEpoch = launchFillEpoch
+        if reduceMotion {
+            shownProgress = progress
+            return
+        }
         var transaction = Transaction()
         transaction.disablesAnimations = true
         withTransaction(transaction) { shownProgress = 0 }
@@ -306,7 +334,7 @@ private struct NeoSegmentedProgress: View {
     var body: some View {
         HStack(spacing: 3) {
             ForEach(0..<segmentCount, id: \.self) { index in
-                Rectangle()
+                Capsule()
                     .fill(index < Int(ceil(progress * Double(segmentCount))) ? NeoHomeColors.ink : NeoHomeColors.ink.opacity(0.18))
                     .frame(maxWidth: .infinity)
             }
@@ -343,8 +371,13 @@ struct NeoNutrientGrid: View {
                 NeoNutrientTile(stat: stat, launchFillEpoch: launchFillEpoch)
             }
         }
-        .background(NeoHomeColors.surface)
-        .neoHomeOutline()
+        .kitchenTableSurface(
+            fill: NeoHomeColors.surface,
+            border: KitchenTablePalette.rule,
+            cornerRadius: NeoHomeMetrics.cornerRadius,
+            shadowRadius: 7,
+            shadowY: 3
+        )
         .accessibilityIdentifier("neo.home.nutrientGrid")
     }
 }
@@ -355,6 +388,20 @@ private struct NeoNutrientTile: View {
     @ScaledMetric(relativeTo: .title2) private var valueSize = 27
     @State private var shownProgress = 0.0
     @State private var lastEpoch = -1
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    private var accent: Color {
+        let key = "\(stat.id) \(stat.label)".lowercased()
+        if key.contains("protein") { return KitchenTablePalette.herb }
+        if key.contains("carb") { return KitchenTablePalette.brass }
+        if key.contains("fat") { return KitchenTablePalette.cobalt }
+        return KitchenTablePalette.tomato
+    }
+
+    private var onAccent: Color {
+        let key = "\(stat.id) \(stat.label)".lowercased()
+        return key.contains("carb") ? KitchenTablePalette.onBrass : KitchenTablePalette.onStrongAccent
+    }
 
     private var difference: Double {
         abs(stat.goal - stat.current)
@@ -386,7 +433,7 @@ private struct NeoNutrientTile: View {
 
             Image(systemName: stat.iconName)
                 .font(.system(size: 27, weight: .black))
-                .foregroundStyle(NeoHomeColors.cobalt)
+                .foregroundStyle(accent)
                 .frame(height: 32)
 
             HStack(alignment: .lastTextBaseline, spacing: 1) {
@@ -402,14 +449,13 @@ private struct NeoNutrientTile: View {
 
             GeometryReader { proxy in
                 ZStack(alignment: .leading) {
-                    Rectangle().fill(NeoHomeColors.ink.opacity(0.14))
-                    Rectangle()
-                        .fill(NeoHomeColors.cobalt)
+                    Capsule().fill(NeoHomeColors.ink.opacity(0.12))
+                    Capsule()
+                        .fill(accent)
                         .frame(width: proxy.size.width * shownProgress)
                 }
             }
             .frame(height: 5)
-            .neoHomeOutline(NeoHomeColors.ink, width: NeoHomeMetrics.compactRule)
             .accessibilityHidden(true)
 
             Text(statusText)
@@ -417,12 +463,11 @@ private struct NeoNutrientTile: View {
                 .fontWidth(.condensed)
                 .lineLimit(1)
                 .minimumScaleFactor(0.55)
-                .foregroundStyle(NeoHomeColors.onCobalt)
+                .foregroundStyle(onAccent)
                 .padding(.horizontal, 5)
                 .padding(.vertical, 5)
                 .frame(maxWidth: .infinity)
-                .background(NeoHomeColors.cobalt)
-                .neoHomeOutline(NeoHomeColors.ink, width: NeoHomeMetrics.compactRule)
+                .background(accent, in: Capsule())
         }
         .foregroundStyle(NeoHomeColors.ink)
         .padding(.horizontal, 6)
@@ -430,7 +475,7 @@ private struct NeoNutrientTile: View {
         .frame(maxWidth: .infinity, minHeight: 158)
         .overlay(alignment: .trailing) {
             Rectangle()
-                .fill(NeoHomeColors.ink)
+                .fill(KitchenTablePalette.rule)
                 .frame(width: NeoHomeMetrics.compactRule)
         }
         .accessibilityElement(children: .combine)
@@ -444,12 +489,20 @@ private struct NeoNutrientTile: View {
         }
         .onChange(of: launchFillEpoch) { _, _ in playLaunchFill() }
         .onChange(of: progress) { _, newValue in
-            withAnimation(.snappy(duration: 0.35)) { shownProgress = newValue }
+            if reduceMotion {
+                shownProgress = newValue
+            } else {
+                withAnimation(.snappy(duration: 0.35)) { shownProgress = newValue }
+            }
         }
     }
 
     private func playLaunchFill() {
         lastEpoch = launchFillEpoch
+        if reduceMotion {
+            shownProgress = progress
+            return
+        }
         var transaction = Transaction()
         transaction.disablesAnimations = true
         withTransaction(transaction) { shownProgress = 0 }
@@ -488,19 +541,23 @@ struct NeoWaterProgressPanel: View {
             }
             GeometryReader { proxy in
                 ZStack(alignment: .leading) {
-                    Rectangle().fill(NeoHomeColors.ink.opacity(0.16))
-                    Rectangle()
+                    Capsule().fill(NeoHomeColors.ink.opacity(0.12))
+                    Capsule()
                         .fill(NeoHomeColors.cobalt)
                         .frame(width: proxy.size.width * progress)
                 }
             }
             .frame(height: 10)
-            .neoHomeOutline(NeoHomeColors.ink, width: NeoHomeMetrics.compactRule)
         }
         .foregroundStyle(NeoHomeColors.ink)
         .padding(12)
-        .background(NeoHomeColors.surface)
-        .neoHomeOutline()
+        .kitchenTableSurface(
+            fill: NeoHomeColors.surface,
+            border: KitchenTablePalette.rule,
+            cornerRadius: NeoHomeMetrics.cornerRadius,
+            shadowRadius: 5,
+            shadowY: 2
+        )
         .accessibilityElement(children: .combine)
         .accessibilityLabel("Water, \(unit.displayValue(forMilliliters: current)) of \(unit.displayValue(forMilliliters: goal)) \(unit.accessibilityName)")
     }
@@ -523,10 +580,15 @@ struct NeoHomeDetailsButton: View {
             .foregroundStyle(NeoHomeColors.ink)
             .padding(.horizontal, 12)
             .frame(minHeight: 44)
-            .background(NeoHomeColors.surface)
-            .neoHomeOutline()
+            .kitchenTableSurface(
+                fill: NeoHomeColors.surface,
+                border: KitchenTablePalette.rule,
+                cornerRadius: 14,
+                shadowRadius: 4,
+                shadowY: 2
+            )
         }
-        .buttonStyle(.plain)
+        .buttonStyle(KitchenTablePressableButtonStyle())
         .accessibilityIdentifier("neo.home.viewNutrition")
     }
 }
@@ -563,7 +625,12 @@ struct NeoFramedModule<Content: View>: View {
                     Rectangle().fill(NeoHomeColors.ink).frame(height: NeoHomeMetrics.compactRule)
                 }
         }
-        .neoHomeOutline()
+        .clipShape(RoundedRectangle(cornerRadius: NeoHomeMetrics.cornerRadius, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: NeoHomeMetrics.cornerRadius, style: .continuous)
+                .stroke(KitchenTablePalette.rule, lineWidth: NeoHomeMetrics.rule)
+        }
+        .shadow(color: KitchenTablePalette.shadow, radius: 6, x: 0, y: 3)
     }
 }
 
@@ -572,19 +639,28 @@ struct NeoHomeSectionBanner: View {
     let iconName: String
 
     var body: some View {
-        Label {
-            Text(LocalizedStringKey(title)).textCase(.uppercase)
-        } icon: {
+        HStack(spacing: 10) {
             Image(systemName: iconName)
+                .font(.headline.weight(.bold))
+                .foregroundStyle(KitchenTablePalette.onStrongAccent)
+                .frame(width: 34, height: 34)
+                .background(NeoHomeColors.tomato, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+            Text(LocalizedStringKey(title))
+                .textCase(.uppercase)
+                .font(.headline.weight(.bold))
+                .tracking(0.7)
+            Spacer()
         }
-            .font(.system(.title2, design: .default, weight: .black))
-            .fontWidth(.condensed)
-            .foregroundStyle(.black)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, 12)
-            .frame(minHeight: 50)
-            .background(NeoHomeColors.acidYellow)
-            .neoHomeOutline(.black)
+        .foregroundStyle(NeoHomeColors.ink)
+        .padding(.horizontal, 12)
+        .frame(minHeight: 54)
+        .kitchenTableSurface(
+            fill: NeoHomeColors.surface,
+            border: KitchenTablePalette.rule,
+            cornerRadius: 16,
+            shadowRadius: 5,
+            shadowY: 2
+        )
     }
 }
 
@@ -624,14 +700,13 @@ struct NeoActiveFastingRow: View {
 
                 GeometryReader { proxy in
                     ZStack(alignment: .leading) {
-                        Rectangle().fill(NeoHomeColors.ink.opacity(0.14))
-                        Rectangle()
+                        Capsule().fill(NeoHomeColors.ink.opacity(0.12))
+                        Capsule()
                             .fill(NeoHomeColors.cobalt)
                             .frame(width: proxy.size.width * progress)
                     }
                 }
                 .frame(height: 8)
-                .neoHomeOutline(width: NeoHomeMetrics.compactRule)
             }
             .accessibilityElement(children: .combine)
         }
@@ -703,11 +778,12 @@ struct NeoMealHeader: View {
                 }
             }
         }
-        .foregroundStyle(.black)
+        .foregroundStyle(KitchenTablePalette.onBrass)
         .padding(.horizontal, 12)
         .padding(.vertical, 9)
         .background(NeoHomeColors.acidYellow)
-        .neoHomeOutline(.black)
+        .neoHomeOutline(KitchenTablePalette.brassDeep)
+        .shadow(color: KitchenTablePalette.shadow, radius: 5, x: 0, y: 2)
         .accessibilityElement(children: .contain)
     }
 
@@ -738,7 +814,11 @@ struct NeoMealHeader: View {
                     .labelStyle(.iconOnly)
                     .font(.system(.subheadline, weight: .black))
                     .frame(width: 44, height: 44)
-                    .neoHomeOutline(.black, width: NeoHomeMetrics.compactRule)
+                    .background(KitchenTablePalette.onBrass.opacity(0.08), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                            .stroke(KitchenTablePalette.onBrass.opacity(0.32), lineWidth: NeoHomeMetrics.compactRule)
+                    }
             }
             .buttonStyle(.plain)
             .accessibilityLabel("Sort food log")
@@ -750,7 +830,11 @@ struct NeoMealHeader: View {
             Image(systemName: "square.and.arrow.up")
                 .font(.system(.subheadline, weight: .black))
                 .frame(width: 44, height: 44)
-                .neoHomeOutline(.black, width: NeoHomeMetrics.compactRule)
+                .background(KitchenTablePalette.onBrass.opacity(0.08), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .stroke(KitchenTablePalette.onBrass.opacity(0.32), lineWidth: NeoHomeMetrics.compactRule)
+                }
         }
         .buttonStyle(.plain)
         .accessibilityLabel("Share \(title)")
@@ -769,7 +853,10 @@ struct NeoMealHeader: View {
         .minimumScaleFactor(0.65)
         .padding(.horizontal, 8)
         .padding(.vertical, 5)
-        .neoHomeOutline(.black, width: NeoHomeMetrics.compactRule)
+        .background(KitchenTablePalette.onBrass.opacity(0.08), in: Capsule())
+        .overlay {
+            Capsule().stroke(KitchenTablePalette.onBrass.opacity(0.32), lineWidth: NeoHomeMetrics.compactRule)
+        }
     }
 }
 
@@ -819,7 +906,7 @@ struct NeoFoodRow: View {
         .padding(.vertical, 10)
         .foregroundStyle(NeoHomeColors.ink)
         .background(NeoHomeColors.surface)
-        .neoHomeOutline(width: NeoHomeMetrics.compactRule)
+        .neoHomeOutline(KitchenTablePalette.rule, width: NeoHomeMetrics.compactRule)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(accessibilitySummary)
     }
@@ -827,9 +914,9 @@ struct NeoFoodRow: View {
     private var positionBadge: some View {
         Text(String(format: "%02d", position))
             .font(.system(.headline, design: .monospaced, weight: .black))
-            .foregroundStyle(NeoHomeColors.paperWhite)
+            .foregroundStyle(KitchenTablePalette.onBrass)
             .frame(width: 38, height: 38)
-            .background(.black)
+            .background(NeoHomeColors.brass, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
     }
 
     private var foodInfo: some View {
@@ -912,7 +999,7 @@ struct NeoFoodRow: View {
                             .font(.caption2.weight(.black))
                             .foregroundStyle(.white)
                             .padding(3)
-                            .background(.black)
+                            .background(KitchenTablePalette.espresso, in: Capsule())
                     }
                 }
         } else if let emoji = entry.emoji {
@@ -948,8 +1035,13 @@ struct NeoEmptyFoodPanel: View {
         .foregroundStyle(NeoHomeColors.ink)
         .frame(maxWidth: .infinity)
         .padding(.vertical, 24)
-        .background(NeoHomeColors.surface)
-        .neoHomeOutline()
+        .kitchenTableSurface(
+            fill: NeoHomeColors.surface,
+            border: KitchenTablePalette.rule,
+            cornerRadius: NeoHomeMetrics.cornerRadius,
+            shadowRadius: 5,
+            shadowY: 2
+        )
     }
 }
 
@@ -971,23 +1063,25 @@ struct NeoAddFoodLabel: View {
             Image(systemName: "viewfinder")
                 .font(.system(size: 21, weight: .black))
                 .frame(width: 44, height: 44)
-                .background(.white.opacity(0.42))
-                .neoHomeOutline(.black, width: NeoHomeMetrics.compactRule)
+                .background(KitchenTablePalette.onStrongAccent.opacity(0.14), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .stroke(KitchenTablePalette.onStrongAccent.opacity(0.42), lineWidth: NeoHomeMetrics.compactRule)
+                }
         }
-        .foregroundStyle(.black)
+        .foregroundStyle(KitchenTablePalette.onStrongAccent)
         .padding(.horizontal, 16)
         .frame(maxWidth: .infinity, minHeight: 62)
         .background {
-            ZStack {
-                Rectangle()
-                    .fill(Color.black.opacity(0.85))
-                    .offset(x: 4, y: 4)
-                Rectangle()
-                    .fill(NeoHomeColors.acidYellow)
-            }
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .fill(NeoHomeColors.tomato)
         }
-        .neoHomeOutline(.black)
-        .contentShape(Rectangle())
+        .overlay {
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .stroke(KitchenTablePalette.tomatoDeep, lineWidth: NeoHomeMetrics.rule)
+        }
+        .shadow(color: KitchenTablePalette.tomato.opacity(0.28), radius: 10, x: 0, y: 5)
+        .contentShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Add Food")
         .accessibilityIdentifier("neo.home.addFood")

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -75,6 +76,9 @@ import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
@@ -90,6 +94,7 @@ import com.apoorvdarshan.calorietracker.ui.components.FudGlassPrimaryButton
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassSurface
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassTextButton
 import com.apoorvdarshan.calorietracker.ui.components.FudIconBubble
+import com.apoorvdarshan.calorietracker.ui.components.KitchenPageHeader
 import com.apoorvdarshan.calorietracker.ui.components.SplitDecimalWheelPicker
 import com.apoorvdarshan.calorietracker.ui.components.UnitToggle
 import com.apoorvdarshan.calorietracker.ui.settings.NutritionPickerSheet
@@ -219,7 +224,7 @@ internal fun NativeProgressScreen(
         if (n == 0) Triple(0.0, 0.0, 0.0) else Triple(p / n, c / n, f / n)
     }
 
-    Scaffold(containerColor = MaterialTheme.colorScheme.background) { padding ->
+    Scaffold(containerColor = Color.Transparent) { padding ->
         LazyColumn(
             modifier = Modifier.fillMaxSize().padding(padding),
             contentPadding = androidx.compose.foundation.layout.PaddingValues(
@@ -230,6 +235,10 @@ internal fun NativeProgressScreen(
             ),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            item(key = "progress-masthead") {
+                KitchenPageHeader(title = stringResource(R.string.nav_progress))
+            }
+
             // 1. Segmented TimeRange picker
             item { TimeRangePicker(selected = range, onSelect = { range = it }) }
 
@@ -432,68 +441,48 @@ internal fun NativeProgressScreen(
 
 @Composable
 private fun TimeRangePicker(selected: TimeRange, onSelect: (TimeRange) -> Unit) {
-    // iOS .pickerStyle(.segmented): a track tinted with the system fill colour,
-    // active segment drawn as a slightly raised darker pill, active text uses
-    // the primary on-background colour (white in dark mode), not the brand pink.
     val shape = RoundedCornerShape(16.dp)
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
-    val trackFill = if (isDark) {
-        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.34f)
-    } else {
-        Color(0xFFE5DAD3).copy(alpha = 0.88f)
-    }
-    val shadowAlpha = if (isDark) 0.16f else 0.06f
+    val trackFill = MaterialTheme.colorScheme.surface
+    val outline = MaterialTheme.colorScheme.outlineVariant.copy(alpha = if (isDark) 0.86f else 0.72f)
     Row(
         Modifier
             .fillMaxWidth()
             .shadow(
-                elevation = if (isDark) 10.dp else 4.dp,
+                elevation = if (isDark) 3.dp else 2.dp,
                 shape = shape,
-                ambientColor = Color.Black.copy(alpha = shadowAlpha),
-                spotColor = Color.Black.copy(alpha = shadowAlpha)
+                ambientColor = Color.Black.copy(alpha = if (isDark) 0.18f else 0.07f),
+                spotColor = Color.Black.copy(alpha = if (isDark) 0.18f else 0.07f)
             )
             .clip(shape)
             .background(trackFill)
-            .background(
-                Brush.verticalGradient(
-                    listOf(
-                        Color.White.copy(alpha = if (isDark) 0.08f else 0.20f),
-                        Color.White.copy(alpha = if (isDark) 0.02f else 0.05f),
-                        AppColors.Calorie.copy(alpha = if (isDark) 0.025f else 0.045f)
-                    )
-                )
-            )
-            .border(
-                0.7.dp,
-                Brush.linearGradient(
-                    listOf(
-                        Color.White.copy(alpha = if (isDark) 0.15f else 0.50f),
-                        AppColors.Calorie.copy(alpha = if (isDark) 0.08f else 0.16f)
-                    )
-                ),
-                shape
-            )
+            .border(1.dp, outline, shape)
             .padding(3.dp)
     ) {
         for (r in TimeRange.values()) {
             val isSel = r == selected
+            val segmentShape = RoundedCornerShape(13.dp)
             Box(
                 Modifier
                     .weight(1f)
-                    .clip(RoundedCornerShape(13.dp))
+                    .defaultMinSize(minHeight = 42.dp)
+                    .clip(segmentShape)
                     .then(
-                        if (isSel) Modifier.background(AppColors.CalorieGradient)
+                        if (isSel) Modifier
+                            .background(MaterialTheme.colorScheme.secondary)
+                            .border(1.dp, AppColors.KitchenEspresso.copy(alpha = 0.18f), segmentShape)
                         else Modifier.background(Color.Transparent)
                     )
-                    .clickable { onSelect(r) }
-                    .padding(vertical = 7.dp),
+                    .semantics { this.selected = isSel }
+                    .clickable(role = Role.Tab) { onSelect(r) }
+                    .padding(horizontal = 2.dp, vertical = 9.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     stringResource(r.labelRes),
-                    fontSize = 13.sp,
-                    fontWeight = if (isSel) FontWeight.SemiBold else FontWeight.Medium,
-                    color = if (isSel) Color.White else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.72f)
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = if (isSel) FontWeight.Bold else FontWeight.SemiBold,
+                    color = if (isSel) Color.White else MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
@@ -504,9 +493,76 @@ private fun TimeRangePicker(selected: TimeRange, onSelect: (TimeRange) -> Unit) 
 private fun CardSection(content: @Composable () -> Unit) {
     FudGlassSurface(
         modifier = Modifier.fillMaxWidth(),
-        cornerRadius = 16.dp,
-        padding = 16.dp
+        cornerRadius = 20.dp,
+        padding = 18.dp
     ) { content() }
+}
+
+@Composable
+private fun ProgressSectionTitle(title: String) {
+    Text(
+        text = title,
+        style = MaterialTheme.typography.headlineSmall,
+        color = MaterialTheme.colorScheme.onSurface
+    )
+}
+
+@Composable
+private fun ProgressAction(
+    label: String,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .defaultMinSize(minHeight = 44.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.10f))
+            .border(
+                1.dp,
+                MaterialTheme.colorScheme.primary.copy(alpha = 0.24f),
+                RoundedCornerShape(12.dp)
+            )
+            .clickable(role = Role.Button, onClick = onClick)
+            .padding(horizontal = 10.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(6.dp)
+    ) {
+        Icon(
+            Icons.Filled.AddCircle,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.size(18.dp)
+        )
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.primary
+        )
+    }
+}
+
+@Composable
+private fun ProgressEmptyState(text: String) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(14.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.44f))
+            .border(
+                1.dp,
+                MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.72f),
+                RoundedCornerShape(14.dp)
+            )
+            .padding(horizontal = 16.dp, vertical = 26.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center
+        )
+    }
 }
 
 @Composable
@@ -519,27 +575,15 @@ private fun WeightSection(
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            // iOS .font(.headline) = 17sp semibold rounded.
-            Text(stringResource(R.string.progress_weight_section), fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
+            ProgressSectionTitle(stringResource(R.string.progress_weight_section))
             Spacer(Modifier.weight(1f))
-            Row(
-                modifier = Modifier.clickable(onClick = onLogWeight),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(Icons.Filled.AddCircle, null, tint = AppColors.Calorie, modifier = Modifier.size(16.dp))
-                Spacer(Modifier.width(4.dp))
-                Text(stringResource(R.string.progress_log_weight), fontSize = 15.sp, fontWeight = FontWeight.Medium, color = AppColors.Calorie)
-            }
+            ProgressAction(
+                label = stringResource(R.string.progress_log_weight),
+                onClick = onLogWeight
+            )
         }
         if (entries.isEmpty()) {
-            // iOS emptyState: centered secondary text inside the card.
-            Box(Modifier.fillMaxWidth().padding(vertical = 24.dp), contentAlignment = Alignment.Center) {
-                Text(
-                    stringResource(R.string.progress_log_first_weight),
-                    fontSize = 15.sp,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
-                )
-            }
+            ProgressEmptyState(stringResource(R.string.progress_log_first_weight))
         } else {
             val sortedEntries = entries.sortedBy { it.date }
             val netChangeKg = sortedEntries.last().weightKg - sortedEntries.first().weightKg
@@ -584,15 +628,24 @@ private fun StatBadgeRow(items: List<Pair<String, String>>) {
 @Composable
 private fun StatBadge(label: String, value: String, modifier: Modifier = Modifier) {
     Column(
-        modifier = modifier,
+        modifier = modifier
+            .clip(RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.46f))
+            .border(
+                1.dp,
+                MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.72f),
+                RoundedCornerShape(12.dp)
+            )
+            .padding(horizontal = 6.dp, vertical = 9.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(2.dp)
+        verticalArrangement = Arrangement.spacedBy(3.dp)
     ) {
         Text(
             value,
             modifier = Modifier.fillMaxWidth(),
-            fontSize = 15.sp,
-            fontWeight = FontWeight.SemiBold,
+            style = MaterialTheme.typography.labelLarge,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurface,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             textAlign = TextAlign.Center,
@@ -601,8 +654,8 @@ private fun StatBadge(label: String, value: String, modifier: Modifier = Modifie
         Text(
             label,
             modifier = Modifier.fillMaxWidth(),
-            fontSize = 11.sp,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             textAlign = TextAlign.Center,
@@ -628,9 +681,10 @@ private fun WeightChartCanvas(entries: List<WeightEntry>, goalKg: Double?, useMe
     val tEnd = sortedEntries.last().date.toEpochMilli()
     val singleEntry = sortedEntries.size == 1
     val tRange = maxOf(1L, tEnd - tStart)
-    val goalLineColor = Color(0xFF34C759).copy(alpha = 0.7f)
-    val gridColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.10f)
-    val secondaryColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
+    val goalLineColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.82f)
+    val gridColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.70f)
+    val secondaryColor = MaterialTheme.colorScheme.onSurfaceVariant
+    val accentColor = MaterialTheme.colorScheme.secondary
     val chartSurfaceColor = MaterialTheme.colorScheme.surface
     val ticks = remember(yMin, yMax) { niceAxisTicks(yMin, yMax, count = 5) }
     val zone = ZoneId.systemDefault()
@@ -752,22 +806,22 @@ private fun WeightChartCanvas(entries: List<WeightEntry>, goalKg: Double?, useMe
                 // clipRect: the smoothed curve can overshoot the value range a
                 // touch between points — keep it inside the plot like iOS .clipped()
                 clipRect {
-                    drawPath(smoothTrendPath(offsets), AppColors.Calorie, style = Stroke(width = 5f))
+                    drawPath(smoothTrendPath(offsets), accentColor, style = Stroke(width = 5f))
                     if (showsDots) {
-                        offsets.forEach { drawCircle(AppColors.Calorie, radius = 5.5f, center = it) }
+                        offsets.forEach { drawCircle(accentColor, radius = 5.5f, center = it) }
                     }
 
                     selectedPoint?.let { point ->
                         val pointY = h - (((point.value - yMin) / (yMax - yMin)).toFloat() * h)
                         drawLine(
-                            color = AppColors.Calorie.copy(alpha = 0.62f),
+                            color = accentColor.copy(alpha = 0.62f),
                             start = Offset(animatedInspectorX, 0f),
                             end = Offset(animatedInspectorX, h),
                             strokeWidth = 2.5f,
                             pathEffect = PathEffect.dashPathEffect(floatArrayOf(7f, 7f))
                         )
                         drawCircle(chartSurfaceColor, radius = 11f, center = Offset(animatedInspectorX, pointY))
-                        drawCircle(AppColors.Calorie, radius = 6f, center = Offset(animatedInspectorX, pointY))
+                        drawCircle(accentColor, radius = 6f, center = Offset(animatedInspectorX, pointY))
                     }
                 }
             }
@@ -784,7 +838,7 @@ private fun WeightChartCanvas(entries: List<WeightEntry>, goalKg: Double?, useMe
                         .shadow(8.dp, RoundedCornerShape(10.dp))
                         .clip(RoundedCornerShape(10.dp))
                         .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.96f))
-                        .border(0.75.dp, AppColors.Calorie.copy(alpha = 0.24f), RoundedCornerShape(10.dp))
+                        .border(1.dp, accentColor.copy(alpha = 0.30f), RoundedCornerShape(10.dp))
                         .padding(horizontal = 8.dp, vertical = 6.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(1.dp)
@@ -946,28 +1000,33 @@ private fun WeightHistoryLink(count: Int, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick),
-        cornerRadius = 16.dp,
+        cornerRadius = 18.dp,
         padding = 14.dp
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             FudIconBubble(
                 icon = Icons.AutoMirrored.Filled.ListAlt,
                 size = 28.dp,
-                iconSize = 16.dp
+                iconSize = 16.dp,
+                tint = MaterialTheme.colorScheme.secondary
             )
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                Text(stringResource(R.string.progress_weight_history), fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
+                Text(
+                    stringResource(R.string.progress_weight_history),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
                 Text(
                     stringResource(R.string.progress_history_count_format, count),
-                    fontSize = 13.sp,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
             Icon(
                 Icons.Filled.ChevronRight,
                 null,
-                tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                tint = MaterialTheme.colorScheme.secondary,
                 modifier = Modifier.size(18.dp)
             )
         }
@@ -980,28 +1039,33 @@ private fun BodyFatHistoryLink(count: Int, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick),
-        cornerRadius = 16.dp,
+        cornerRadius = 18.dp,
         padding = 14.dp
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             FudIconBubble(
                 icon = Icons.AutoMirrored.Filled.ListAlt,
                 size = 28.dp,
-                iconSize = 16.dp
+                iconSize = 16.dp,
+                tint = MaterialTheme.colorScheme.tertiary
             )
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                Text(stringResource(R.string.progress_body_fat_history), fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
+                Text(
+                    stringResource(R.string.progress_body_fat_history),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
                 Text(
                     stringResource(R.string.progress_history_count_format, count),
-                    fontSize = 13.sp,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
             Icon(
                 Icons.Filled.ChevronRight,
                 null,
-                tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                tint = MaterialTheme.colorScheme.tertiary,
                 modifier = Modifier.size(18.dp)
             )
         }
@@ -1012,32 +1076,33 @@ private fun BodyFatHistoryLink(count: Int, onClick: () -> Unit) {
 private fun WorkoutHistoryLink(count: Int, onClick: () -> Unit) {
     FudGlassSurface(
         modifier = Modifier.fillMaxWidth().clickable(onClick = onClick),
-        cornerRadius = 16.dp,
+        cornerRadius = 18.dp,
         padding = 14.dp
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             FudIconBubble(
                 icon = Icons.AutoMirrored.Filled.ListAlt,
                 size = 28.dp,
-                iconSize = 16.dp
+                iconSize = 16.dp,
+                tint = MaterialTheme.colorScheme.primary
             )
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(
                     stringResource(R.string.progress_workout_history),
-                    fontSize = 17.sp,
-                    fontWeight = FontWeight.SemiBold
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
                     stringResource(R.string.progress_workout_history_count_format, count),
-                    fontSize = 13.sp,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
             Icon(
                 Icons.Filled.ChevronRight,
                 null,
-                tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(18.dp)
             )
         }
@@ -1048,26 +1113,28 @@ private fun WorkoutHistoryLink(count: Int, onClick: () -> Unit) {
 private fun CalorieSection(dailyCalories: List<Pair<LocalDate, Int>>, calorieGoal: Int) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(stringResource(R.string.progress_calories_section), fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
+            ProgressSectionTitle(stringResource(R.string.progress_calories_section))
             Spacer(Modifier.weight(1f))
             if (dailyCalories.isNotEmpty()) {
                 val avg = dailyCalories.sumOf { it.second } / dailyCalories.size
                 Text(
                     stringResource(R.string.progress_avg_format, avg),
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.10f))
+                        .border(
+                            1.dp,
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.22f),
+                            RoundedCornerShape(10.dp)
+                        )
+                        .padding(horizontal = 9.dp, vertical = 6.dp),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
         }
         if (dailyCalories.isEmpty()) {
-            Box(Modifier.fillMaxWidth().padding(vertical = 24.dp), contentAlignment = Alignment.Center) {
-                Text(
-                    stringResource(R.string.progress_no_food),
-                    fontSize = 15.sp,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
-                )
-            }
+            ProgressEmptyState(stringResource(R.string.progress_no_food))
         } else {
             CalorieBarChart(dailyCalories = dailyCalories, goal = calorieGoal)
         }
@@ -1079,9 +1146,9 @@ private fun CalorieBarChart(dailyCalories: List<Pair<LocalDate, Int>>, goal: Int
     val maxValue = dailyCalories.maxOf { it.second }.coerceAtLeast(goal).toDouble()
     val gradientStart = AppColors.CalorieStart
     val gradientEnd = AppColors.CalorieEnd
-    val goalColor = AppColors.Calorie.copy(alpha = 0.4f)
-    val gridColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.10f)
-    val secondaryColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
+    val goalColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.72f)
+    val gridColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.70f)
+    val secondaryColor = MaterialTheme.colorScheme.onSurfaceVariant
     val density = androidx.compose.ui.platform.LocalDensity.current
     val ticks = niceAxisTicks(0.0, maxValue, count = 5)
     val yTop = ticks.last().coerceAtLeast(maxValue)
@@ -1214,15 +1281,15 @@ private fun MacroAveragesSection(
     proteinGoal: Int, carbsGoal: Int, fatGoal: Int
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Text(stringResource(R.string.progress_macro_averages), fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
-        MacroProgressRow(stringResource(R.string.macro_protein), avgProtein, proteinGoal)
-        MacroProgressRow(stringResource(R.string.macro_carbs), avgCarbs, carbsGoal)
-        MacroProgressRow(stringResource(R.string.macro_fat), avgFat, fatGoal)
+        ProgressSectionTitle(stringResource(R.string.progress_macro_averages))
+        MacroProgressRow(stringResource(R.string.macro_protein), avgProtein, proteinGoal, AppColors.Protein)
+        MacroProgressRow(stringResource(R.string.macro_carbs), avgCarbs, carbsGoal, AppColors.Carbs)
+        MacroProgressRow(stringResource(R.string.macro_fat), avgFat, fatGoal, AppColors.Fat)
     }
 }
 
 @Composable
-private fun MacroProgressRow(label: String, current: Double, goal: Int) {
+private fun MacroProgressRow(label: String, current: Double, goal: Int, color: Color) {
     val progress = if (goal > 0) (current.toFloat() / goal).coerceIn(0f, 1f) else 0f
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -1238,7 +1305,7 @@ private fun MacroProgressRow(label: String, current: Double, goal: Int) {
             val w = maxWidth
             Box(
                 Modifier.fillMaxWidth().height(8.dp).clip(RoundedCornerShape(4.dp))
-                    .background(AppColors.Calorie.copy(alpha = 0.12f))
+                    .background(color.copy(alpha = 0.12f))
             )
             val barWidth = (w * progress).coerceAtLeast(6.dp)
             Box(
@@ -1248,11 +1315,11 @@ private fun MacroProgressRow(label: String, current: Double, goal: Int) {
                     .shadow(
                         elevation = 4.dp,
                         shape = RoundedCornerShape(4.dp),
-                        ambientColor = AppColors.Calorie.copy(alpha = 0.3f),
-                        spotColor = AppColors.Calorie.copy(alpha = 0.3f)
+                        ambientColor = color.copy(alpha = 0.22f),
+                        spotColor = color.copy(alpha = 0.22f)
                     )
                     .clip(RoundedCornerShape(4.dp))
-                    .background(AppColors.CalorieGradient)
+                    .background(color)
             )
         }
     }
@@ -1269,18 +1336,18 @@ internal fun AllWeightHistorySheet(
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val fmt = DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.US).withZone(ZoneId.systemDefault())
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
-    val sheetSurface = if (isDark) MaterialTheme.colorScheme.surface else Color(0xFFFAF3EE)
+    val sheetSurface = MaterialTheme.colorScheme.surface
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = state,
-        shape = RoundedCornerShape(0.dp),
+        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
         containerColor = sheetSurface
     ) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 10.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(stringResource(R.string.progress_weight_history), fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
                 Spacer(Modifier.weight(1f))
-                TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_done), color = AppColors.Calorie) }
+                TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_done), color = MaterialTheme.colorScheme.primary) }
             }
             Spacer(Modifier.height(12.dp))
             FudGlassSurface(
@@ -1332,18 +1399,18 @@ internal fun AllBodyFatHistorySheet(
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val fmt = DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.US).withZone(ZoneId.systemDefault())
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
-    val sheetSurface = if (isDark) MaterialTheme.colorScheme.surface else Color(0xFFFAF3EE)
+    val sheetSurface = MaterialTheme.colorScheme.surface
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = state,
-        shape = RoundedCornerShape(0.dp),
+        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
         containerColor = sheetSurface
     ) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 10.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(stringResource(R.string.progress_body_fat_history), fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
                 Spacer(Modifier.weight(1f))
-                TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_done), color = AppColors.Calorie) }
+                TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_done), color = MaterialTheme.colorScheme.primary) }
             }
             Spacer(Modifier.height(12.dp))
             FudGlassSurface(
@@ -1395,11 +1462,11 @@ internal fun AllWorkoutHistorySheet(
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val displayDate = DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.US)
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
-    val sheetSurface = if (isDark) MaterialTheme.colorScheme.surface else Color(0xFFFAF3EE)
+    val sheetSurface = MaterialTheme.colorScheme.surface
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = state,
-        shape = RoundedCornerShape(0.dp),
+        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
         containerColor = sheetSurface
     ) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 10.dp)) {
@@ -1411,7 +1478,7 @@ internal fun AllWorkoutHistorySheet(
                 )
                 Spacer(Modifier.weight(1f))
                 TextButton(onClick = onDismiss) {
-                    Text(stringResource(R.string.action_done), color = AppColors.Calorie)
+                    Text(stringResource(R.string.action_done), color = MaterialTheme.colorScheme.primary)
                 }
             }
             Spacer(Modifier.height(12.dp))
@@ -1536,66 +1603,48 @@ enum class BodyMetric { WEIGHT, BODY_FAT }
 private fun BodyMetricToggle(selected: BodyMetric, onSelect: (BodyMetric) -> Unit) {
     val labelWeight = stringResource(R.string.progress_metric_weight)
     val labelBodyFat = stringResource(R.string.progress_metric_body_fat)
-    val shape = RoundedCornerShape(18.dp)
+    val shape = RoundedCornerShape(16.dp)
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
-    val trackFill = if (isDark) {
-        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.34f)
-    } else {
-        Color(0xFFE5DAD3).copy(alpha = 0.88f)
-    }
-    val shadowAlpha = if (isDark) 0.14f else 0.05f
+    val outline = MaterialTheme.colorScheme.outlineVariant.copy(alpha = if (isDark) 0.86f else 0.72f)
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .shadow(
-                elevation = if (isDark) 10.dp else 4.dp,
+                elevation = if (isDark) 3.dp else 2.dp,
                 shape = shape,
-                ambientColor = Color.Black.copy(alpha = shadowAlpha),
-                spotColor = Color.Black.copy(alpha = shadowAlpha)
+                ambientColor = Color.Black.copy(alpha = if (isDark) 0.18f else 0.07f),
+                spotColor = Color.Black.copy(alpha = if (isDark) 0.18f else 0.07f)
             )
             .clip(shape)
-            .background(trackFill)
-            .background(
-                Brush.verticalGradient(
-                    listOf(
-                        Color.White.copy(alpha = if (isDark) 0.08f else 0.20f),
-                        Color.White.copy(alpha = if (isDark) 0.02f else 0.05f),
-                        AppColors.Calorie.copy(alpha = if (isDark) 0.025f else 0.045f)
-                    )
-                )
-            )
-            .border(
-                0.7.dp,
-                Brush.linearGradient(
-                    listOf(
-                        Color.White.copy(alpha = if (isDark) 0.15f else 0.50f),
-                        AppColors.Calorie.copy(alpha = if (isDark) 0.08f else 0.16f)
-                    )
-                ),
-                shape
-            )
+            .background(MaterialTheme.colorScheme.surface)
+            .border(1.dp, outline, shape)
             .padding(3.dp),
         horizontalArrangement = Arrangement.spacedBy(0.dp)
     ) {
         listOf(BodyMetric.WEIGHT to labelWeight, BodyMetric.BODY_FAT to labelBodyFat).forEach { (metric, label) ->
             val isSelected = metric == selected
+            val segmentShape = RoundedCornerShape(13.dp)
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .clip(RoundedCornerShape(15.dp))
+                    .defaultMinSize(minHeight = 42.dp)
+                    .clip(segmentShape)
                     .then(
-                        if (isSelected) Modifier.background(AppColors.CalorieGradient)
+                        if (isSelected) Modifier
+                            .background(MaterialTheme.colorScheme.secondary)
+                            .border(1.dp, AppColors.KitchenEspresso.copy(alpha = 0.18f), segmentShape)
                         else Modifier.background(Color.Transparent)
                     )
-                    .clickable { onSelect(metric) }
-                    .padding(vertical = 8.dp),
+                    .semantics { this.selected = isSelected }
+                    .clickable(role = Role.Tab) { onSelect(metric) }
+                    .padding(horizontal = 8.dp, vertical = 9.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     label,
-                    fontSize = 14.sp,
-                    fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Medium,
-                    color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.SemiBold,
+                    color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
@@ -1611,25 +1660,15 @@ private fun BodyFatSection(
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(stringResource(R.string.progress_metric_body_fat), fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
+            ProgressSectionTitle(stringResource(R.string.progress_metric_body_fat))
             Spacer(Modifier.weight(1f))
-            Row(
-                modifier = Modifier.clickable(onClick = onLogBodyFat),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(Icons.Filled.AddCircle, null, tint = AppColors.Calorie, modifier = Modifier.size(16.dp))
-                Spacer(Modifier.width(4.dp))
-                Text(stringResource(R.string.progress_log_body_fat), fontSize = 15.sp, fontWeight = FontWeight.Medium, color = AppColors.Calorie)
-            }
+            ProgressAction(
+                label = stringResource(R.string.progress_log_body_fat),
+                onClick = onLogBodyFat
+            )
         }
         if (entries.isEmpty() && latest == null) {
-            Box(Modifier.fillMaxWidth().padding(vertical = 24.dp), contentAlignment = Alignment.Center) {
-                Text(
-                    stringResource(R.string.progress_log_first_body_fat),
-                    fontSize = 15.sp,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
-                )
-            }
+            ProgressEmptyState(stringResource(R.string.progress_log_first_body_fat))
         } else {
             val currentLabel = stringResource(R.string.progress_stat_current)
             val goalLabel = stringResource(R.string.progress_stat_goal)
@@ -1674,9 +1713,10 @@ private fun BodyFatChartCanvas(entries: List<BodyFatEntry>, goalFraction: Double
     val tEnd = entries.last().date.toEpochMilli()
     val singleEntry = entries.size == 1
     val tRange = maxOf(1L, tEnd - tStart)
-    val goalLineColor = Color(0xFF34C759).copy(alpha = 0.7f)
-    val gridColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.10f)
-    val secondaryColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
+    val goalLineColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.82f)
+    val gridColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.70f)
+    val secondaryColor = MaterialTheme.colorScheme.onSurfaceVariant
+    val accentColor = MaterialTheme.colorScheme.tertiary
     val ticks = niceAxisTicks(yMin, yMax, count = 5)
     val zone = ZoneId.systemDefault()
     // Same year-label + downsampling policy as WeightChartCanvas.
@@ -1727,9 +1767,9 @@ private fun BodyFatChartCanvas(entries: List<BodyFatEntry>, goalFraction: Double
                 )
             }
             clipRect {
-                drawPath(smoothTrendPath(offsets), AppColors.Calorie, style = Stroke(width = 5f))
+                drawPath(smoothTrendPath(offsets), accentColor, style = Stroke(width = 5f))
                 if (showsDots) {
-                    offsets.forEach { drawCircle(AppColors.Calorie, radius = 5.5f, center = it) }
+                    offsets.forEach { drawCircle(accentColor, radius = 5.5f, center = it) }
                 }
             }
         }
@@ -1853,18 +1893,18 @@ private fun BodyMeasurementsHistorySheet(
 ) {
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
-    val sheetSurface = if (isDark) MaterialTheme.colorScheme.surface else Color(0xFFFAF3EE)
+    val sheetSurface = MaterialTheme.colorScheme.surface
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = state,
-        shape = RoundedCornerShape(0.dp),
+        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
         containerColor = sheetSurface
     ) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 10.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(stringResource(R.string.measurement_history), fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
                 Spacer(Modifier.weight(1f))
-                TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_done), color = AppColors.Calorie) }
+                TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_done), color = MaterialTheme.colorScheme.primary) }
             }
             Spacer(Modifier.height(12.dp))
             FudGlassSurface(modifier = Modifier.fillMaxWidth(), cornerRadius = 22.dp, padding = 0.dp) {
@@ -1945,9 +1985,9 @@ fun BodyMeasurementsScreen(container: AppContainer, onBack: () -> Unit) {
                             .padding(horizontal = 2.dp, vertical = 8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = AppColors.Calorie, modifier = Modifier.size(22.dp))
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(22.dp))
                         Spacer(Modifier.width(6.dp))
-                        Text(stringResource(R.string.nav_settings), color = AppColors.Calorie, fontWeight = FontWeight.SemiBold)
+                        Text(stringResource(R.string.nav_settings), color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold)
                     }
                 }
             }
@@ -1993,7 +2033,7 @@ fun BodyMeasurementsScreen(container: AppContainer, onBack: () -> Unit) {
                                 derived.forEach { (label, value) ->
                                     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                                         Text(label, modifier = Modifier.weight(1f), fontSize = 15.sp)
-                                        Text(value, fontSize = 15.sp, fontWeight = FontWeight.SemiBold, color = AppColors.Calorie)
+                                        Text(value, fontSize = 15.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.primary)
                                     }
                                 }
                             }

@@ -35,6 +35,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material.icons.filled.Tag
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -66,10 +67,10 @@ fun ExerciseDetailScreen(item: ExerciseItem, onBack: () -> Unit, modifier: Modif
     val colors = workoutsColors()
     var showMetrics by remember { mutableStateOf(false) }
 
-    Column(modifier.fillMaxSize().background(colors.background).statusBarsPadding()) {
+    Column(modifier.fillMaxSize().background(Color.Transparent).statusBarsPadding()) {
         // Top bar: back (start) + centered title
         Box(
-            Modifier.fillMaxWidth().background(colors.background).padding(vertical = 8.dp, horizontal = 8.dp),
+            Modifier.fillMaxWidth().background(Color.Transparent).padding(vertical = 8.dp, horizontal = 8.dp),
             contentAlignment = Alignment.Center
         ) {
             Icon(
@@ -110,14 +111,14 @@ fun ExerciseDetailScreen(item: ExerciseItem, onBack: () -> Unit, modifier: Modif
 @Composable
 private fun Hero(item: ExerciseItem, showMetrics: Boolean, onToggle: () -> Unit) {
     val colors = workoutsColors()
-    val shape = RoundedCornerShape(0.dp)
+    val shape = RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
     Box(
         Modifier
             .fillMaxWidth()
             .height(HERO_HEIGHT)
             .clip(shape)
             .background(colors.panel.copy(alpha = 0.32f))
-            .border(2.dp, AppColors.NeoInk, shape)
+            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, shape)
     ) {
         AnimatedExerciseImage(item.imagePaths, Modifier.fillMaxSize(), fallbackLabel = item.name)
 
@@ -147,9 +148,9 @@ private fun Hero(item: ExerciseItem, showMetrics: Boolean, onToggle: () -> Unit)
                 .align(Alignment.TopEnd)
                 .padding(16.dp)
                 .size(44.dp)
-                .clip(RoundedCornerShape(0.dp))
-                .background(AppColors.NeoAcid)
-                .border(2.dp, AppColors.NeoInk, RoundedCornerShape(0.dp))
+                .clip(RoundedCornerShape(14.dp))
+                .background(AppColors.KitchenBrass)
+                .border(1.dp, AppColors.KitchenEspresso.copy(alpha = 0.28f), RoundedCornerShape(14.dp))
                 .clickable { onToggle() }
                 .padding(12.dp)
         )
@@ -180,12 +181,12 @@ private fun MetricCard(title: String, value: String, icon: ImageVector, valueMax
     val labelColor = if (dark) colors.accent else colors.secondaryAccent
     val fill = if (dark) colors.background.copy(alpha = 0.55f) else colors.background.copy(alpha = 0.92f)
     val stroke = if (dark) colors.hairline.copy(alpha = 0.32f) else colors.hairline.copy(alpha = 0.45f)
-    val shape = RoundedCornerShape(0.dp)
+    val shape = RoundedCornerShape(12.dp)
     Column(
         modifier
             .clip(shape)
             .background(fill)
-            .border(2.dp, AppColors.NeoInk, shape)
+            .border(1.dp, stroke, shape)
             .padding(horizontal = 12.dp, vertical = 6.dp),
         verticalArrangement = Arrangement.spacedBy(3.dp)
     ) {
@@ -210,7 +211,7 @@ private fun InstructionSection(instructions: List<String>, modifier: Modifier = 
     Column(modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             Box(
-                Modifier.size(30.dp).clip(RoundedCornerShape(0.dp)).background(AppColors.NeoCobalt),
+                Modifier.size(30.dp).clip(RoundedCornerShape(10.dp)).background(AppColors.KitchenCobalt),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(Icons.Filled.FormatListNumbered, null, tint = Color.White, modifier = Modifier.size(18.dp))
@@ -219,12 +220,12 @@ private fun InstructionSection(instructions: List<String>, modifier: Modifier = 
             Spacer(Modifier.weight(1f))
             Box(
                 Modifier
-                    .clip(RoundedCornerShape(0.dp))
-                    .background(AppColors.NeoAcid)
-                    .border(1.dp, AppColors.NeoInk, RoundedCornerShape(0.dp))
+                    .clip(RoundedCornerShape(9.dp))
+                    .background(AppColors.KitchenBrass.copy(alpha = 0.72f))
+                    .border(1.dp, AppColors.KitchenEspresso.copy(alpha = 0.20f), RoundedCornerShape(9.dp))
                     .padding(horizontal = 9.dp, vertical = 4.dp)
             ) {
-                Text("${instructions.size}", color = AppColors.NeoInk, fontSize = 12.sp, fontWeight = FontWeight.Black)
+                Text("${instructions.size}", color = AppColors.KitchenEspresso, fontSize = 12.sp, fontWeight = FontWeight.Bold)
             }
         }
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -232,14 +233,14 @@ private fun InstructionSection(instructions: List<String>, modifier: Modifier = 
                 Row(
                     Modifier
                         .fillMaxWidth()
-                        .clip(RoundedCornerShape(0.dp))
+                        .clip(RoundedCornerShape(16.dp))
                         .background(colors.panel.copy(alpha = 0.16f))
-                        .border(2.dp, AppColors.NeoInk, RoundedCornerShape(0.dp))
+                        .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(16.dp))
                         .padding(14.dp),
                     horizontalArrangement = Arrangement.spacedBy(13.dp)
                 ) {
                     Box(
-                        Modifier.size(27.dp).clip(RoundedCornerShape(0.dp)).background(AppColors.NeoCobalt),
+                        Modifier.size(27.dp).clip(RoundedCornerShape(9.dp)).background(AppColors.KitchenCobalt),
                         contentAlignment = Alignment.Center
                     ) {
                         Text("${index + 1}", color = colors.onAccent, fontSize = 15.sp, fontWeight = FontWeight.Black)

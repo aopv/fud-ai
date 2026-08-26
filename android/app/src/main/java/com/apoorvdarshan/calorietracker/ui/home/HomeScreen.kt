@@ -28,14 +28,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.material3.FloatingActionButton
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -129,7 +122,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import com.apoorvdarshan.calorietracker.ui.util.clockTimePattern
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -144,6 +136,7 @@ import com.apoorvdarshan.calorietracker.models.FastingSession
 import com.apoorvdarshan.calorietracker.models.formatFastingDuration
 import com.apoorvdarshan.calorietracker.services.MealShare
 import com.apoorvdarshan.calorietracker.models.FoodSource
+import com.apoorvdarshan.calorietracker.models.HomeTopNutrient
 import com.apoorvdarshan.calorietracker.models.MacroValueFormatter
 import com.apoorvdarshan.calorietracker.models.MealType
 import com.apoorvdarshan.calorietracker.models.QuickAction
@@ -158,6 +151,8 @@ import com.apoorvdarshan.calorietracker.ui.components.FudGlassDialogActions
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassPrimaryButton
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassSurface
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassTextField
+import com.apoorvdarshan.calorietracker.ui.components.KitchenPageHeader
+import com.apoorvdarshan.calorietracker.ui.components.KitchenReceiptRule
 import com.apoorvdarshan.calorietracker.ui.components.WeekEnergyStrip
 import com.apoorvdarshan.calorietracker.ui.navigation.BottomNavScrollPadding
 import com.apoorvdarshan.calorietracker.ui.theme.AppColors
@@ -347,7 +342,7 @@ fun HomeScreen(
         Box(
             Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
+                .background(Color.Transparent)
                 .padding(24.dp),
             contentAlignment = Alignment.Center
         ) {
@@ -381,7 +376,7 @@ fun HomeScreen(
     // No topBar: the empty TopAppBar used to act as the status-bar spacer, but the
     // ad strip above this screen (TabWithBanner) now owns that inset.
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.background,
+        containerColor = Color.Transparent,
     ) { padding ->
         Box(Modifier.fillMaxSize().padding(padding)) {
         LazyColumn(
@@ -389,6 +384,16 @@ fun HomeScreen(
                 .fillMaxSize(),
             contentPadding = androidx.compose.foundation.layout.PaddingValues(top = 8.dp, bottom = BottomNavScrollPadding + 72.dp)
         ) {
+            item(key = "home-masthead") {
+                KitchenPageHeader(
+                    title = stringResource(R.string.nav_home),
+                    subtitle = selectedDate.format(
+                        DateTimeFormatter.ofPattern("EEEE, MMMM d", Locale.getDefault())
+                    ),
+                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
+                )
+            }
+
             // Week strip — verbatim port of WeekEnergyStrip in HomeComponents.swift,
             // with horizontal pagination across 53 weeks of history.
             item {
@@ -431,15 +436,22 @@ fun HomeScreen(
                     Row(
                         Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            .padding(horizontal = 18.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         ui.homeTopNutrients.forEach { nutrient ->
+                            val macroColor = when (nutrient) {
+                                HomeTopNutrient.PROTEIN -> AppColors.Protein
+                                HomeTopNutrient.CARBS -> AppColors.Carbs
+                                HomeTopNutrient.FAT -> AppColors.Fat
+                                else -> AppColors.KitchenTomato
+                            }
                             MacroCard(
                                 label = stringResource(nutrient.displayNameRes),
                                 current = nutrient.current(ui.todayEntries),
                                 goal = nutrient.goal(ui.profile, ui.optionalNutrientGoals),
                                 unit = nutrient.unit,
+                                gradientColors = listOf(macroColor, macroColor.copy(alpha = 0.78f)),
                                 modifier = Modifier.weight(1f)
                             )
                         }
@@ -569,8 +581,15 @@ fun HomeScreen(
             Box(
                 modifier = Modifier
                     .size(60.dp)
-                    .clip(CircleShape)
+                    .shadow(
+                        elevation = 8.dp,
+                        shape = RoundedCornerShape(20.dp),
+                        ambientColor = Color.Black.copy(alpha = 0.14f),
+                        spotColor = Color.Black.copy(alpha = 0.14f)
+                    )
+                    .clip(RoundedCornerShape(20.dp))
                     .background(AppColors.Calorie)
+                    .border(1.dp, AppColors.KitchenEspresso.copy(alpha = 0.28f), RoundedCornerShape(20.dp))
                     .clickable {
                         addMenuGroup = null
                         showAddMenu = true
@@ -932,7 +951,7 @@ private fun ActiveFastingRow(session: FastingSession, onClick: () -> Unit) {
             .padding(horizontal = 18.dp, vertical = 13.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Filled.Timer, contentDescription = null, tint = AppColors.Calorie, modifier = Modifier.size(27.dp))
+            Icon(Icons.Filled.Timer, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(27.dp))
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
                 Text(stringResource(R.string.fasting_in_progress), fontWeight = FontWeight.SemiBold)
@@ -945,7 +964,7 @@ private fun ActiveFastingRow(session: FastingSession, onClick: () -> Unit) {
             Column(horizontalAlignment = Alignment.End) {
                 Text(
                     formatFastingDuration(elapsed),
-                    color = AppColors.Calorie,
+                    color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
@@ -961,7 +980,7 @@ private fun ActiveFastingRow(session: FastingSession, onClick: () -> Unit) {
         LinearProgressIndicator(
             progress = { progress },
             modifier = Modifier.fillMaxWidth().height(5.dp).clip(CircleShape),
-            color = AppColors.Calorie,
+            color = MaterialTheme.colorScheme.primary,
             trackColor = AppColors.Calorie.copy(alpha = 0.16f)
         )
     }
@@ -981,7 +1000,7 @@ private fun CompletedFastingRow(session: FastingSession, onClick: () -> Unit) {
             .padding(horizontal = 18.dp, vertical = 13.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(Icons.Filled.Timer, contentDescription = null, tint = AppColors.Calorie, modifier = Modifier.size(27.dp))
+        Icon(Icons.Filled.Timer, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(27.dp))
         Spacer(Modifier.width(12.dp))
         Column(Modifier.weight(1f)) {
             Text(
@@ -1027,11 +1046,11 @@ private fun FastingGoalDialog(
             verticalAlignment = Alignment.CenterVertically
         ) {
             TextButton(onClick = { hours = (hours - 1).coerceAtLeast(1) }) {
-                Text("−", fontSize = 28.sp, color = AppColors.Calorie)
+                Text("−", fontSize = 28.sp, color = MaterialTheme.colorScheme.primary)
             }
             Text("$hours ${stringResource(R.string.fasting_hours)}", fontSize = 28.sp, fontWeight = FontWeight.Bold)
             TextButton(onClick = { hours = (hours + 1).coerceAtMost(168) }) {
-                Text("+", fontSize = 28.sp, color = AppColors.Calorie)
+                Text("+", fontSize = 28.sp, color = MaterialTheme.colorScheme.primary)
             }
         }
         FudGlassDialogActions(
@@ -1085,9 +1104,9 @@ private fun FastingSessionDialog(
         ) {
             Text(stringResource(R.string.settings_fasting_goal), fontWeight = FontWeight.Medium)
             Row(verticalAlignment = Alignment.CenterVertically) {
-                TextButton(onClick = { goalHours = (goalHours - 1).coerceAtLeast(1) }) { Text("−", color = AppColors.Calorie) }
+                TextButton(onClick = { goalHours = (goalHours - 1).coerceAtLeast(1) }) { Text("−", color = MaterialTheme.colorScheme.primary) }
                 Text("$goalHours h", fontWeight = FontWeight.SemiBold)
-                TextButton(onClick = { goalHours = (goalHours + 1).coerceAtMost(168) }) { Text("+", color = AppColors.Calorie) }
+                TextButton(onClick = { goalHours = (goalHours + 1).coerceAtMost(168) }) { Text("+", color = MaterialTheme.colorScheme.primary) }
             }
         }
 
@@ -1302,86 +1321,47 @@ private fun CalorieHero(current: Int, goal: Int) {
         else -> "Goal reached"
     }
     val gradientColors = listOf(AppColors.CalorieStart, AppColors.CalorieEnd)
-    val trackColor = AppColors.Calorie.copy(alpha = 0.12f)
+    val stackReadout = LocalDensity.current.fontScale > 1.15f
 
-    Box(
+    FudGlassSurface(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 8.dp, bottom = 4.dp),
-        contentAlignment = Alignment.TopCenter
+            .padding(horizontal = 16.dp, vertical = 4.dp),
+        cornerRadius = 22.dp,
+        padding = 20.dp
     ) {
-        // Segmented (dashed) semicircle speedometer arc. Fixed 260dp dome to mirror
-        // iOS CalorieGauge's hard .frame(width: 260) (244dp arc + 16dp stroke = 260dp).
-        Canvas(
-            modifier = Modifier
-                .width(260.dp)
-                .aspectRatio(2f)
-        ) {
-            val stroke = 16.dp.toPx()
-            val inset = stroke / 2f
-            val arcSize = Size(size.width - stroke, size.width - stroke)
-            val topLeft = Offset(inset, inset)
-            val dash = PathEffect.dashPathEffect(floatArrayOf(4.dp.toPx(), 6.dp.toPx()), 0f)
-            drawArc(
-                color = trackColor,
-                startAngle = 180f,
-                sweepAngle = 180f,
-                useCenter = false,
-                topLeft = topLeft,
-                size = arcSize,
-                style = Stroke(width = stroke, cap = StrokeCap.Butt, pathEffect = dash)
-            )
-            drawArc(
-                brush = Brush.horizontalGradient(gradientColors),
-                startAngle = 180f,
-                sweepAngle = 180f * animatedRatio.value,
-                useCenter = false,
-                topLeft = topLeft,
-                size = arcSize,
-                style = Stroke(width = stroke, cap = StrokeCap.Butt, pathEffect = dash)
-            )
-        }
-
-        // Centered readout, sitting inside the dome
         Column(
-            modifier = Modifier.padding(top = 44.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(2.dp)
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Text(
-                "CALORIES",
-                fontSize = 12.sp,
-                fontWeight = FontWeight.SemiBold,
-                letterSpacing = 0.5.sp,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-            )
-            Text(
-                "$current",
-                style = TextStyle(
-                    brush = Brush.linearGradient(gradientColors),
-                    fontSize = 54.sp,
-                    fontWeight = FontWeight.Bold
-                ),
-                maxLines = 1
-            )
-            // Flame + calorie status, mirroring iOS HStack(spacing: 5) { flame.fill (11pt) ;
-            // Text(statusText) } tinted to AppColors.calorie — a pink monochrome
-            // glyph, not a multicolor emoji, and the count is un-grouped (no thousands comma).
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(5.dp)
+            if (stackReadout) {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    CalorieValueReadout(current)
+                    CalorieGoalReadout(goal, statusText, Alignment.Start)
+                }
+            } else {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.Bottom
+                ) {
+                    CalorieValueReadout(current)
+                    Spacer(Modifier.weight(1f))
+                    CalorieGoalReadout(goal, statusText, Alignment.End)
+                }
+            }
+            KitchenReceiptRule()
+            BoxWithConstraints(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(11.dp)
+                    .clip(RoundedCornerShape(6.dp))
+                    .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f))
             ) {
-                Icon(
-                    Icons.Filled.LocalFireDepartment,
-                    contentDescription = null,
-                    tint = AppColors.Calorie,
-                    modifier = Modifier.size(13.dp)
-                )
-                Text(
-                    statusText,
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = AppColors.Calorie
+                Box(
+                    Modifier
+                        .width(maxWidth * animatedRatio.value)
+                        .fillMaxHeight()
+                        .background(Brush.horizontalGradient(gradientColors))
                 )
             }
         }
@@ -1389,6 +1369,57 @@ private fun CalorieHero(current: Int, goal: Int) {
 }
 
 // ── Macro card (iOS port) ────────────────────────────────────────────
+
+@Composable
+private fun CalorieValueReadout(current: Int) {
+    Column(verticalArrangement = Arrangement.spacedBy(1.dp)) {
+        Text(
+            "CALORIES",
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.tertiary
+        )
+        Text(
+            "$current",
+            style = MaterialTheme.typography.displayLarge,
+            color = MaterialTheme.colorScheme.onSurface,
+            maxLines = 1
+        )
+    }
+}
+
+@Composable
+private fun CalorieGoalReadout(
+    goal: Int,
+    statusText: String,
+    horizontalAlignment: Alignment.Horizontal
+) {
+    Column(horizontalAlignment = horizontalAlignment) {
+        Text(
+            stringResource(R.string.home_kcal_of_format, goal.toString()),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.68f),
+            maxLines = 2
+        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(5.dp)
+        ) {
+            Icon(
+                Icons.Filled.LocalFireDepartment,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(14.dp)
+            )
+            Text(
+                statusText,
+                fontSize = 13.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.primary,
+                maxLines = 2
+            )
+        }
+    }
+}
 
 // MacroCard moved to ui/components/MacroCard.kt as a verbatim port of
 // HomeComponents.swift's struct MacroCard. Imported above.
@@ -1405,13 +1436,13 @@ private fun ViewMoreButton() {
             stringResource(R.string.home_view_more),
             fontSize = 15.sp,
             fontWeight = FontWeight.Medium,
-            color = AppColors.Calorie.copy(alpha = 0.6f)
+            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f)
         )
         Spacer(Modifier.width(5.dp))
         Icon(
             Icons.Filled.ChevronRight,
             contentDescription = null,
-            tint = AppColors.Calorie.copy(alpha = 0.6f),
+            tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
             modifier = Modifier.size(11.dp)
         )
     }
@@ -1478,14 +1509,14 @@ private fun MealSectionHeader(
                     Icon(
                         Icons.Filled.SwapVert,
                         contentDescription = null,
-                        tint = AppColors.Calorie,
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(16.dp)
                     )
                     Text(
                         stringResource(R.string.sort),
                         fontSize = 17.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = AppColors.Calorie
+                        color = MaterialTheme.colorScheme.primary
                     )
                 }
                 SheetGlassDropdownMenu(
@@ -1512,7 +1543,7 @@ private fun MealSectionHeader(
                 Icon(
                     Icons.Filled.IosShare,
                     contentDescription = stringResource(R.string.cd_share_meal),
-                    tint = AppColors.Calorie,
+                    tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
                         .clickable { onShare() }
                         .padding(4.dp)
@@ -1525,7 +1556,7 @@ private fun MealSectionHeader(
                     "$totalCalories kcal",
                     fontSize = 15.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = AppColors.Calorie
+                    color = MaterialTheme.colorScheme.primary
                 )
                 Text(
                     "${totalProtein.roundToInt()}P · ${totalCarbs.roundToInt()}C · ${totalFat.roundToInt()}F",
@@ -1614,7 +1645,7 @@ private fun sectionCardShape(isFirst: Boolean, isLast: Boolean): RoundedCornerSh
         isFirst && isLast -> RoundedCornerShape(22.dp)
         isFirst -> RoundedCornerShape(topStart = 22.dp, topEnd = 22.dp)
         isLast -> RoundedCornerShape(bottomStart = 22.dp, bottomEnd = 22.dp)
-        else -> RoundedCornerShape(0.dp)
+        else -> RoundedCornerShape(4.dp)
     }
 }
 
@@ -1632,6 +1663,13 @@ private fun SectionCardWrapper(
             .padding(horizontal = 16.dp)
             .clip(shape)
             .background(if (transparent) Color.Transparent else MaterialTheme.colorScheme.surface)
+            .then(
+                if (!transparent) Modifier.border(
+                    1.dp,
+                    MaterialTheme.colorScheme.outlineVariant,
+                    shape
+                ) else Modifier
+            )
     ) { content() }
 }
 
@@ -1769,17 +1807,10 @@ private fun FoodRow(
         Modifier
             .fillMaxWidth()
             .clip(rowShape)
-            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.86f))
-            .background(AppColors.Calorie.copy(alpha = 0.025f))
+            .background(MaterialTheme.colorScheme.surface)
             .border(
-                0.7.dp,
-                Brush.linearGradient(
-                    listOf(
-                        Color.White.copy(alpha = 0.14f),
-                        Color.White.copy(alpha = 0.035f),
-                        AppColors.Calorie.copy(alpha = 0.07f)
-                    )
-                ),
+                1.dp,
+                MaterialTheme.colorScheme.outlineVariant,
                 rowShape
             )
             .padding(horizontal = 14.dp, vertical = 12.dp),
@@ -1804,7 +1835,7 @@ private fun FoodRow(
                 else -> Icon(
                     Icons.Filled.Restaurant,
                     contentDescription = null,
-                    tint = AppColors.Calorie,
+                    tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(28.dp)
                 )
             }
@@ -1848,7 +1879,7 @@ private fun FoodRow(
                         Icon(
                             Icons.Filled.Favorite,
                             contentDescription = stringResource(R.string.cd_favorited),
-                            tint = AppColors.Calorie,
+                            tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(12.dp)
                         )
                     }
@@ -1869,7 +1900,7 @@ private fun FoodRow(
                     "${entry.calories} kcal",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = AppColors.Calorie
+                    color = MaterialTheme.colorScheme.primary
                 )
                 entry.servingSizeGrams?.takeIf { it > 0 }?.let { grams ->
                     Text("·", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f))
@@ -1895,10 +1926,16 @@ private fun FoodRow(
 
 @Composable
 private fun MacroChip(label: String, value: Double) {
+    val chipColor = when (label) {
+        "P" -> AppColors.Protein
+        "C" -> AppColors.Carbs
+        else -> AppColors.Fat
+    }
     Box(
         Modifier
             .clip(CircleShape)
-            .background(AppColors.Calorie.copy(alpha = 0.10f))
+            .background(chipColor.copy(alpha = 0.12f))
+            .border(0.6.dp, chipColor.copy(alpha = 0.24f), CircleShape)
             .padding(horizontal = 8.dp, vertical = 3.dp)
     ) {
         Text(
@@ -1939,7 +1976,7 @@ private fun CopyFromDaySheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = state,
-        shape = RoundedCornerShape(0.dp),
+        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
         containerColor = MaterialTheme.colorScheme.background
     ) {
         SheetReviewToolbar(
@@ -1962,7 +1999,7 @@ private fun CopyFromDaySheet(
                             sourceDate.format(dateFmt),
                             fontSize = 17.sp,
                             fontWeight = FontWeight.Medium,
-                            color = AppColors.Calorie
+                            color = MaterialTheme.colorScheme.primary
                         )
                     }
                     Spacer(Modifier.height(8.dp))
@@ -1986,7 +2023,7 @@ private fun CopyFromDaySheet(
                             Icon(
                                 Icons.Filled.CalendarMonth,
                                 contentDescription = null,
-                                tint = AppColors.Calorie.copy(alpha = 0.45f),
+                                tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.45f),
                                 modifier = Modifier.size(34.dp)
                             )
                             Text(
@@ -2030,7 +2067,7 @@ private fun CopyFromDaySheet(
                             ) {
                                 Text(
                                     stringResource(R.string.copy_meal_format, stringResource(group.meal.displayNameRes)),
-                                    color = AppColors.Calorie,
+                                    color = MaterialTheme.colorScheme.primary,
                                     fontSize = 15.sp,
                                     fontWeight = FontWeight.SemiBold
                                 )
@@ -2112,12 +2149,12 @@ private fun AnalyzingOverlay(imageBytes: ByteArray? = null) {
                 Icon(
                     Icons.Filled.ImageSearch,
                     contentDescription = null,
-                    tint = AppColors.Calorie,
+                    tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(64.dp)
                 )
             }
             CircularProgressIndicator(
-                color = AppColors.Calorie,
+                color = MaterialTheme.colorScheme.primary,
                 strokeWidth = 4.dp,
                 modifier = Modifier.size(40.dp)
             )
@@ -2129,7 +2166,7 @@ private fun AnalyzingOverlay(imageBytes: ByteArray? = null) {
                 if (bitmap != null) stringResource(R.string.home_analyzing_food) else stringResource(R.string.home_looking_up_nutrition),
                 fontSize = 17.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = AppColors.Calorie
+                color = MaterialTheme.colorScheme.primary
             )
         }
     }
@@ -2210,7 +2247,7 @@ private fun AnalysisResultDialog(
         Text("${analysis.emoji ?: "🍽"}  ${analysis.name}", fontSize = 21.sp, fontWeight = FontWeight.Bold)
         FudGlassSurface(modifier = Modifier.fillMaxWidth(), cornerRadius = 20.dp, padding = 16.dp) {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("${analysis.calories} kcal", fontSize = 30.sp, fontWeight = FontWeight.Bold, color = AppColors.Calorie)
+                Text("${analysis.calories} kcal", fontSize = 30.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
                 Text(stringResource(R.string.macro_protein_format, MacroValueFormatter.withUnit(analysis.protein)))
                 Text(stringResource(R.string.macro_carbs_format, MacroValueFormatter.withUnit(analysis.carbs)))
                 Text(stringResource(R.string.macro_fat_format, MacroValueFormatter.withUnit(analysis.fat)))
@@ -2338,14 +2375,14 @@ private fun ManualEntryDialog(
                             Icon(
                                 sheetMealIcon(mealType),
                                 contentDescription = null,
-                                tint = AppColors.Calorie,
+                                tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.size(18.dp)
                             )
                             Spacer(Modifier.width(6.dp))
                             Text(
                                 stringResource(mealType.displayNameRes),
                                 fontSize = 16.sp,
-                                color = AppColors.Calorie,
+                                color = MaterialTheme.colorScheme.primary,
                                 fontWeight = FontWeight.Medium
                             )
                         }
