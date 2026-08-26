@@ -1,14 +1,16 @@
 package com.apoorvdarshan.calorietracker.ui.navigation
 
+import androidx.annotation.StringRes
+import androidx.annotation.DrawableRes
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -23,6 +25,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -35,10 +38,7 @@ import androidx.compose.material.icons.filled.SportsGymnastics
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.ui.res.stringResource
 import androidx.compose.runtime.Composable
-import androidx.annotation.StringRes
-import com.apoorvdarshan.calorietracker.R
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -50,57 +50,47 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.apoorvdarshan.calorietracker.ui.theme.AppColors
+import com.apoorvdarshan.calorietracker.R
 import com.apoorvdarshan.calorietracker.models.WorkoutTabMode
+import com.apoorvdarshan.calorietracker.ui.theme.AppColors
 import kotlinx.coroutines.launch
 
-data class BottomTab(val route: String, val icon: ImageVector, @get:StringRes val labelRes: Int)
-
-val BottomTabs = listOf(
-    BottomTab(FudAIRoutes.HOME, Icons.Filled.Home, R.string.nav_home),
-    BottomTab(FudAIRoutes.PROGRESS, Icons.Filled.BarChart, R.string.nav_progress),
-    BottomTab(FudAIRoutes.COACH, Icons.Filled.Forum, R.string.nav_coach),
-    BottomTab(FudAIRoutes.SETTINGS, Icons.Filled.Settings, R.string.nav_settings),
-    BottomTab(FudAIRoutes.WORKOUTS, Icons.Filled.FitnessCenter, R.string.nav_workouts)
+/** Native navigation routes paired with their tactile Kitchen Table objects. */
+data class BottomTab(
+    val route: String,
+    val icon: ImageVector,
+    @get:StringRes val labelRes: Int,
+    @get:DrawableRes val drawableRes: Int
 )
 
-private val BarHeight = 76.dp
-private val BarCorner = 22.dp
-private val PillCorner = 15.dp
-private val PillInsetH = 6.dp
-private val PillInsetV = 7.dp
+val BottomTabs = listOf(
+    BottomTab(FudAIRoutes.HOME, Icons.Filled.Home, R.string.nav_home, R.drawable.kt_nav_home),
+    BottomTab(FudAIRoutes.PROGRESS, Icons.Filled.BarChart, R.string.nav_progress, R.drawable.kt_nav_progress),
+    BottomTab(FudAIRoutes.COACH, Icons.Filled.Forum, R.string.nav_coach, R.drawable.kt_nav_coach),
+    BottomTab(FudAIRoutes.SETTINGS, Icons.Filled.Settings, R.string.nav_settings, R.drawable.kt_nav_settings),
+    BottomTab(FudAIRoutes.WORKOUTS, Icons.Filled.FitnessCenter, R.string.nav_workouts, R.drawable.kt_nav_workouts)
+)
 
-val BottomNavScrollPadding = 132.dp
-val BottomNavDockedControlPadding = 82.dp
+private val BarHeight = 84.dp
+val BottomNavScrollPadding = 128.dp
+val BottomNavDockedControlPadding = 88.dp
 
-/**
- * Floating Liquid Glass tab bar — capsule with translucent backdrop, glassy
- * sheen, hairline border, soft shadow, and a spring-animated bright pill
- * behind the active tab.
- *
- * The pill is **draggable**: place a finger anywhere on the bar and slide
- * horizontally to drag it across tabs. Taps still work normally (drag is
- * only claimed after horizontal touch slop). On release the pill snaps to
- * the nearest tab; haptic ticks fire each time the pill crosses a boundary
- * during the drag, mirroring the iOS 26 Liquid Glass tab-bar feel.
- */
 @Composable
 fun FudAIBottomNavBar(
     currentRoute: String?,
@@ -120,81 +110,63 @@ fun FudAIBottomNavBar(
             )
         }
     }
-    val isDark = MaterialTheme.colorScheme.background.let {
-        (it.red + it.green + it.blue) / 3f < 0.5f
-    }
-
-    val barShape = RoundedCornerShape(BarCorner)
-
-    val backdropColor = if (isDark) AppColors.KitchenRoastPaper
-                        else AppColors.KitchenPaper
-
-    val barSheen = Brush.verticalGradient(
-        colors = if (isDark) {
-            listOf(Color.White.copy(alpha = 0.035f), Color.Transparent)
-        } else {
-            listOf(Color.White.copy(alpha = 0.34f), AppColors.KitchenBone.copy(alpha = 0.28f))
-        }
-    )
-
-    val barBorder = Brush.linearGradient(
-        if (isDark) listOf(AppColors.KitchenBrass.copy(alpha = 0.34f), AppColors.KitchenBrass.copy(alpha = 0.16f))
-        else listOf(AppColors.KitchenEspresso.copy(alpha = 0.24f), AppColors.KitchenEspresso.copy(alpha = 0.12f))
-    )
-    val shadowAlpha = if (isDark) 0.30f else 0.12f
 
     Box(
         modifier = modifier
             .fillMaxWidth()
             .navigationBarsPadding()
-            .padding(horizontal = 12.dp, vertical = 8.dp)
+            .padding(horizontal = 8.dp, vertical = 5.dp)
+            .shadow(
+                elevation = 9.dp,
+                shape = RoundedCornerShape(topStart = 18.dp, topEnd = 18.dp),
+                ambientColor = Color.Black.copy(alpha = 0.14f),
+                spotColor = Color.Black.copy(alpha = 0.14f)
+            )
+            .clip(RoundedCornerShape(topStart = 18.dp, topEnd = 18.dp))
+            .background(AppColors.KitchenPaper)
+            .border(
+                1.dp,
+                AppColors.KitchenEspresso.copy(alpha = 0.18f),
+                RoundedCornerShape(topStart = 18.dp, topEnd = 18.dp)
+            )
+            .height(BarHeight)
     ) {
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .height(2.dp)
+                .background(AppColors.KitchenBrass.copy(alpha = 0.5f))
+        )
         BoxWithConstraints(
             Modifier
                 .fillMaxWidth()
-                .height(BarHeight)
-                .shadow(
-                    elevation = if (isDark) 12.dp else 8.dp,
-                    shape = barShape,
-                    ambientColor = Color.Black.copy(alpha = shadowAlpha),
-                    spotColor = Color.Black.copy(alpha = shadowAlpha)
-                )
-                .clip(barShape)
-                .background(backdropColor)
-                .background(barSheen)
-                .border(1.dp, barBorder, barShape)
+                .fillMaxHeight()
+                .padding(horizontal = 3.dp, vertical = 4.dp)
         ) {
             val density = LocalDensity.current
             val haptic = LocalHapticFeedback.current
             val scope = rememberCoroutineScope()
-
-            val barWidthDp = maxWidth
             val tabCount = tabs.size
-            val tabWidthDp = barWidthDp / tabCount
+            val tabWidthDp = maxWidth / tabCount
             val tabWidthPx = with(density) { tabWidthDp.toPx() }
             val maxOffsetPx = tabWidthPx * (tabCount - 1)
+            val selectedIndex = tabs.indexOfFirst { it.route == currentRoute }.coerceAtLeast(0)
 
-            val selectedIndex = tabs.indexOfFirst { it.route == currentRoute }
-                .coerceAtLeast(0)
-
-            // Spring animator drives the pill when it's NOT being dragged
-            // (initial mount, external route changes, settle-after-release).
-            val pillAnim = remember { Animatable(0f) }
+            // Keep the original swipe-to-select contract: the active marker follows
+            // the finger, haptics tick at tab boundaries, and release selects the
+            // nearest route. Taps remain owned by each selectable tab.
+            val markerAnim = remember { Animatable(0f) }
             var isDragging by remember { mutableStateOf(false) }
             var dragOffsetPx by remember { mutableFloatStateOf(0f) }
             var hoverIndex by remember { mutableIntStateOf(selectedIndex) }
 
-            // Sync pill position once the bar's width has been measured, and on
-            // any later external selectedIndex change. Skip while dragging so a
-            // mid-drag recomposition doesn't yank the pill back to a snapped
-            // position.
             LaunchedEffect(selectedIndex, tabWidthPx) {
                 if (!isDragging) {
                     val target = selectedIndex * tabWidthPx
-                    if (pillAnim.value == 0f && selectedIndex > 0) {
-                        pillAnim.snapTo(target)
+                    if (markerAnim.value == 0f && selectedIndex > 0) {
+                        markerAnim.snapTo(target)
                     } else {
-                        pillAnim.animateTo(
+                        markerAnim.animateTo(
                             target,
                             spring(
                                 dampingRatio = Spring.DampingRatioLowBouncy,
@@ -205,47 +177,18 @@ fun FudAIBottomNavBar(
                 }
             }
 
-            val pillPx = if (isDragging) dragOffsetPx else pillAnim.value
-            val pillOffsetDp = with(density) { pillPx.toDp() }
-
-            val pillScale by animateFloatAsState(
-                targetValue = if (isDragging) 1.06f else 1f,
-                animationSpec = spring(
-                    dampingRatio = Spring.DampingRatioMediumBouncy,
-                    stiffness = 380f
-                ),
-                label = "pillDragScale"
-            )
-
-            // Active-tab pill — the bright glass disc.
-            ActivePill(
-                tabWidth = tabWidthDp,
-                isDark = isDark,
-                modifier = Modifier
-                    .offset(x = pillOffsetDp)
-                    .graphicsLayer {
-                        scaleX = pillScale
-                        scaleY = pillScale
-                        transformOrigin = TransformOrigin(0.5f, 0.5f)
-                    }
-            )
-
-            // Shared drag handlers used by every TabItem. clickable on the
-            // tab handles the tap (proven reliable); a sibling pointerInput
-            // with detectHorizontalDragGestures handles the drag — both can
-            // listen on the same pointer stream because clickable claims on
-            // release-without-slop and the drag detector claims on slop.
             fun startDrag() {
                 isDragging = true
-                dragOffsetPx = pillAnim.value
+                dragOffsetPx = markerAnim.value
                 hoverIndex = selectedIndex
             }
+
             fun endDrag() {
                 val landed = hoverIndex
                 scope.launch {
-                    pillAnim.snapTo(dragOffsetPx)
+                    markerAnim.snapTo(dragOffsetPx)
                     isDragging = false
-                    pillAnim.animateTo(
+                    markerAnim.animateTo(
                         landed * tabWidthPx,
                         spring(
                             dampingRatio = Spring.DampingRatioLowBouncy,
@@ -253,31 +196,44 @@ fun FudAIBottomNavBar(
                         )
                     )
                 }
-                if (tabs[landed].route != currentRoute) {
-                    onTap(tabs[landed].route)
-                }
+                if (tabs[landed].route != currentRoute) onTap(tabs[landed].route)
             }
+
             fun onDragDelta(delta: Float) {
                 dragOffsetPx = (dragOffsetPx + delta).coerceIn(0f, maxOffsetPx)
                 val newHover = ((dragOffsetPx + tabWidthPx / 2f) / tabWidthPx)
-                    .toInt().coerceIn(0, tabCount - 1)
+                    .toInt()
+                    .coerceIn(0, tabCount - 1)
                 if (newHover != hoverIndex) {
                     hoverIndex = newHover
                     haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                 }
             }
 
+            val markerOffsetDp = with(density) {
+                (if (isDragging) dragOffsetPx else markerAnim.value).toDp()
+            }
+            Box(
+                Modifier
+                    .align(Alignment.BottomStart)
+                    .offset(x = markerOffsetDp)
+                    .width(tabWidthDp)
+                    .height(2.dp)
+                    .padding(horizontal = tabWidthDp * 0.26f)
+                    .background(AppColors.KitchenTomato)
+            )
+
             Row(
                 Modifier.fillMaxWidth().fillMaxHeight(),
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                for (tab in tabs) {
-                    val selected = tab.route == currentRoute
-                    TabItem(
+                tabs.forEachIndexed { index, tab ->
+                    KitchenTabItem(
                         tab = tab,
-                        selected = selected,
+                        selected = index == if (isDragging) hoverIndex else selectedIndex,
                         showBadge = showAboutBadge && tab.route == FudAIRoutes.SETTINGS,
+                        objectRotation = listOf(-4f, 2f, -2f, 3f, -5f)[index],
                         modifier = Modifier
                             .width(tabWidthDp)
                             .fillMaxHeight()
@@ -292,116 +248,99 @@ fun FudAIBottomNavBar(
                                         change.consume()
                                     }
                                 )
-                            }
-                    ) { onTap(tab.route) }
+                            },
+                        onClick = { onTap(tab.route) }
+                    )
                 }
             }
         }
     }
 }
 
-/**
- * Bright "glass-on-glass" pill highlighting the active tab. Layered on top of
- * the bar so it reads like a brighter slab of glass within the larger one.
- */
 @Composable
-private fun ActivePill(tabWidth: Dp, isDark: Boolean, modifier: Modifier = Modifier) {
-    val pillShape = RoundedCornerShape(PillCorner)
-
-    val fill = if (isDark) AppColors.KitchenBrass.copy(alpha = 0.20f)
-               else AppColors.KitchenBrass.copy(alpha = 0.24f)
-
-    val sheen = Brush.verticalGradient(
-        colors = if (isDark) listOf(Color.White.copy(alpha = 0.05f), Color.Transparent)
-        else listOf(Color.White.copy(alpha = 0.36f), Color.Transparent)
-    )
-
-    val border = Brush.linearGradient(
-        listOf(
-            AppColors.KitchenBrass.copy(alpha = if (isDark) 0.38f else 0.46f),
-            AppColors.KitchenEspresso.copy(alpha = if (isDark) 0.18f else 0.16f)
-        )
-    )
-
-    Box(
-        modifier
-            .width(tabWidth)
-            .fillMaxHeight()
-            .padding(horizontal = PillInsetH, vertical = PillInsetV)
-            .clip(pillShape)
-            .background(fill)
-            .background(sheen)
-            .border(1.dp, border, pillShape)
-    ) {
-        Box(
-            Modifier
-                .align(Alignment.TopCenter)
-                .fillMaxWidth()
-                .height(4.dp)
-                .background(AppColors.KitchenTomato)
-        )
-    }
-}
-
-@Composable
-private fun TabItem(
+private fun KitchenTabItem(
     tab: BottomTab,
     selected: Boolean,
     showBadge: Boolean,
+    objectRotation: Float,
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
-    val activeColor = MaterialTheme.colorScheme.primary
-    val inactiveColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.70f)
-    val tint = if (selected) activeColor else inactiveColor
-
-    val iconScale by animateFloatAsState(
-        targetValue = if (selected) 1.08f else 1.0f,
-        animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = 380f
-        ),
-        label = "tabIconScale"
+    val scale by animateFloatAsState(
+        targetValue = if (selected) 1.08f else 1f,
+        animationSpec = spring(dampingRatio = 0.82f, stiffness = 420f),
+        label = "kitchenTabObject"
     )
-
     val label = stringResource(tab.labelRes)
-    val interactionSource = remember { MutableInteractionSource() }
+    val ink = if (selected) AppColors.KitchenTomato else AppColors.KitchenEspresso
+
     Column(
         modifier = modifier
             .semantics(mergeDescendants = true) {}
             .selectable(
                 selected = selected,
                 role = Role.Tab,
-                interactionSource = interactionSource,
+                interactionSource = remember { MutableInteractionSource() },
                 indication = null,
                 onClick = onClick
             ),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Box {
-            Icon(
-                tab.icon,
+        Box(contentAlignment = Alignment.Center) {
+            Image(
+                painter = painterResource(tab.drawableRes),
                 contentDescription = null,
-                tint = tint,
-                modifier = Modifier.size(if (selected) 25.dp else 23.dp).scale(iconScale)
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .size(45.dp)
+                    .graphicsLayer {
+                        scaleX = scale
+                        scaleY = scale
+                        rotationZ = objectRotation
+                    }
             )
+            if (tab.route == FudAIRoutes.WORKOUTS) {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .size(18.dp)
+                        .clip(RoundedCornerShape(3.dp))
+                        .background(AppColors.KitchenPaper)
+                        .border(
+                            1.dp,
+                            ink.copy(alpha = 0.52f),
+                            RoundedCornerShape(3.dp)
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = tab.icon,
+                        contentDescription = null,
+                        tint = ink,
+                        modifier = Modifier.size(13.dp)
+                    )
+                }
+            }
             if (showBadge) {
                 Box(
                     Modifier
                         .align(Alignment.TopEnd)
                         .size(8.dp)
                         .clip(CircleShape)
-                        .background(AppColors.KitchenBrass)
+                        .background(AppColors.KitchenTomato)
                 )
             }
         }
-        Spacer(Modifier.height(3.dp))
+        Spacer(Modifier.height(1.dp))
         Text(
-            label,
-            color = tint,
-            fontSize = 11.sp,
-            fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium
+            text = label,
+            color = ink,
+            fontFamily = MaterialTheme.typography.labelSmall.fontFamily,
+            fontSize = 9.sp,
+            fontWeight = if (selected) FontWeight.Black else FontWeight.Bold,
+            maxLines = 1
         )
+        Spacer(Modifier.height(4.dp))
     }
 }

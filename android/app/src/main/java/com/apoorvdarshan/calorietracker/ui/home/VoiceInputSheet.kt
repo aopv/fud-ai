@@ -10,6 +10,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -53,6 +54,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -228,8 +230,8 @@ fun VoiceInputSheet(
             onDismiss()
         },
         sheetState = sheetState,
-        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
-        containerColor = MaterialTheme.colorScheme.surface
+        shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
+        containerColor = AppColors.KitchenBone
     ) {
         Column(
             Modifier
@@ -240,8 +242,9 @@ fun VoiceInputSheet(
             // Provider pill — pink capsule with a bolt + provider name (mirrors iOS).
             Row(
                 Modifier
-                    .clip(CircleShape)
-                    .background(AppColors.Calorie.copy(alpha = 0.12f))
+                    .clip(RoundedCornerShape(3.dp))
+                    .background(AppColors.KitchenPaper)
+                    .border(1.dp, AppColors.KitchenTomato.copy(alpha = 0.55f), RoundedCornerShape(3.dp))
                     .padding(horizontal = 12.dp, vertical = 6.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -269,8 +272,10 @@ fun VoiceInputSheet(
                 Modifier
                     .fillMaxWidth()
                     .heightIn(min = 100.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f))
+                    .shadow(3.dp, RoundedCornerShape(4.dp))
+                    .clip(RoundedCornerShape(4.dp))
+                    .background(AppColors.KitchenPaper)
+                    .border(1.dp, AppColors.KitchenEspresso.copy(alpha = 0.18f), RoundedCornerShape(4.dp))
                     .padding(horizontal = 14.dp, vertical = 12.dp)
             ) {
                 when {
@@ -374,7 +379,7 @@ fun VoiceInputSheet(
                 },
                 enabled = canAnalyze,
                 colors = ButtonDefaults.buttonColors(containerColor = AppColors.Calorie),
-                shape = RoundedCornerShape(20.dp),
+                shape = RoundedCornerShape(4.dp),
                 modifier = Modifier.fillMaxWidth().height(52.dp)
             ) {
                 Text(stringResource(R.string.action_analyze), color = Color.White, fontWeight = FontWeight.SemiBold, fontSize = 16.sp)

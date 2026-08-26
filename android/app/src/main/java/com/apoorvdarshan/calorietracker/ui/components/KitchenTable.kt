@@ -45,7 +45,7 @@ fun KitchenTableBackground(
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .matchParentSize()
-                .alpha(if (isDark) 0.025f else 0.055f)
+                .alpha(if (isDark) 0.05f else 0.10f)
         )
         content()
     }

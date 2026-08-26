@@ -134,20 +134,23 @@ struct WeightChartSection: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Text("Weight")
-                    .font(.system(.headline, design: .rounded, weight: .black).width(.condensed))
-                    .textCase(.uppercase)
+                    .font(.system(.title3, design: .serif, weight: .bold))
                     .foregroundStyle(NeoAppColors.ink)
                 Spacer()
                 Button(action: onLogWeight) {
                     Label("Log Weight", systemImage: "plus.circle.fill")
-                        .font(.system(.caption, design: .rounded, weight: .black).width(.condensed))
+                        .font(.system(.caption, design: .monospaced, weight: .bold))
                         .textCase(.uppercase)
-                        .foregroundStyle(Color.black)
+                        .foregroundStyle(KitchenTablePalette.tomatoDeep)
                         .padding(.horizontal, 9)
                         .padding(.vertical, 7)
-                        .background(NeoAppColors.acid)
+                        .background(KitchenTablePalette.paper)
                         .overlay {
-                            Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                            RoundedRectangle(cornerRadius: 5, style: .continuous)
+                                .stroke(
+                                    KitchenTablePalette.tomato,
+                                    style: StrokeStyle(lineWidth: 0.9, dash: [3, 2])
+                                )
                         }
                 }
                 .buttonStyle(.plain)
@@ -223,12 +226,11 @@ struct WeightChartSection: View {
                     }
                 }
                 .chartPlotStyle { plotArea in
-                    plotArea.background(
-                        NeoAppColors.subtleSurface.opacity(0.48),
-                        in: RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    )
+                    plotArea
+                        .background(KitchenTablePalette.paperMuted.opacity(0.26))
+                        .background(KitchenGraphPaper())
                 }
-                .frame(height: 180)
+                .frame(height: 158)
                 .clipped()
                 .chartOverlay { proxy in
                     GeometryReader { geometry in
@@ -272,8 +274,8 @@ struct WeightChartSection: View {
                 .animation(.snappy(duration: 0.16), value: inspectedPoint?.date)
             }
         }
-        .padding()
-        .neoPanel()
+        .padding(14)
+        .kitchenReceiptSurface(accent: KitchenTablePalette.cobalt)
     }
 
     /// What actually gets drawn: every entry for short ranges, bucket
@@ -361,20 +363,20 @@ struct CalorieChartSection: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Text("Calories")
-                    .font(.system(.headline, design: .rounded, weight: .black).width(.condensed))
-                    .textCase(.uppercase)
+                    .font(.system(.title3, design: .serif, weight: .bold))
                     .foregroundStyle(NeoAppColors.ink)
                 Spacer()
                 if !dailyCalories.isEmpty {
                     let avg = dailyCalories.reduce(0) { $0 + $1.calories } / max(dailyCalories.count, 1)
                     Text("Avg: \(avg) kcal")
-                        .font(.system(.caption, design: .rounded, weight: .black).width(.condensed))
-                        .foregroundStyle(Color.black)
+                        .font(.system(.caption, design: .monospaced, weight: .bold))
+                        .foregroundStyle(KitchenTablePalette.tomatoDeep)
                         .padding(.horizontal, 8)
                         .padding(.vertical, 5)
-                        .background(NeoAppColors.acid)
+                        .background(KitchenTablePalette.paperMuted.opacity(0.55))
                         .overlay {
-                            Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                            RoundedRectangle(cornerRadius: 4, style: .continuous)
+                                .stroke(KitchenTablePalette.tomato.opacity(0.7), lineWidth: 0.8)
                         }
                 }
             }
@@ -403,16 +405,15 @@ struct CalorieChartSection: View {
                     }
                 }
                 .chartPlotStyle { plotArea in
-                    plotArea.background(
-                        NeoAppColors.subtleSurface.opacity(0.48),
-                        in: RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    )
+                    plotArea
+                        .background(KitchenTablePalette.paperMuted.opacity(0.26))
+                        .background(KitchenGraphPaper(color: KitchenTablePalette.tomato))
                 }
-                .frame(height: 180)
+                .frame(height: 158)
             }
         }
-        .padding()
-        .neoPanel()
+        .padding(14)
+        .kitchenReceiptSurface(accent: KitchenTablePalette.tomato)
     }
 
     private var calorieXStride: Int {
@@ -438,16 +439,15 @@ struct MacroAveragesSection: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Macro Averages")
-                .font(.system(.headline, design: .rounded, weight: .black).width(.condensed))
-                .textCase(.uppercase)
+                .font(.system(.title3, design: .serif, weight: .bold))
                 .foregroundStyle(NeoAppColors.ink)
 
             MacroProgressRow(label: "Protein", current: avgProtein, goal: proteinGoal, color: AppColors.protein, gradientColors: AppColors.proteinGradient)
             MacroProgressRow(label: "Carbs", current: avgCarbs, goal: carbsGoal, color: AppColors.carbs, gradientColors: AppColors.carbsGradient)
             MacroProgressRow(label: "Fat", current: avgFat, goal: fatGoal, color: AppColors.fat, gradientColors: AppColors.fatGradient)
         }
-        .padding()
-        .neoPanel()
+        .padding(14)
+        .kitchenReceiptSurface(accent: KitchenTablePalette.herb)
     }
 }
 
@@ -466,29 +466,30 @@ struct MacroProgressRow: View {
         VStack(alignment: .leading, spacing: 6) {
             HStack {
                 Text(LocalizedDisplayText.text(label))
-                    .font(.system(.caption, design: .rounded, weight: .black).width(.condensed))
+                    .font(.system(.caption, design: .monospaced, weight: .bold))
                     .textCase(.uppercase)
                     .foregroundStyle(NeoAppColors.ink)
                 Spacer()
                 Text("\(MacroValueFormatter.withUnit(current)) / \(goal)g")
-                    .font(.system(.caption, design: .rounded, weight: .bold))
+                    .font(.system(.caption, design: .monospaced, weight: .semibold))
                     .foregroundStyle(NeoAppColors.mutedInk)
             }
 
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
-                    Capsule()
+                    RoundedRectangle(cornerRadius: 2, style: .continuous)
                         .fill(NeoAppColors.subtleSurface)
 
-                    Capsule()
+                    RoundedRectangle(cornerRadius: 2, style: .continuous)
                         .fill(LinearGradient(colors: gradientColors, startPoint: .leading, endPoint: .trailing))
                         .frame(width: max(4, geo.size.width * progress))
                 }
                 .overlay {
-                    Capsule().stroke(NeoAppColors.ink.opacity(0.24), lineWidth: NeoAppMetrics.compactRule)
+                    RoundedRectangle(cornerRadius: 2, style: .continuous)
+                        .stroke(NeoAppColors.ink.opacity(0.24), lineWidth: NeoAppMetrics.compactRule)
                 }
             }
-            .frame(height: 10)
+            .frame(height: 8)
         }
     }
 }
@@ -504,8 +505,7 @@ struct StatsSection: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Streaks & Stats")
-                .font(.system(.headline, design: .rounded, weight: .black).width(.condensed))
-                .textCase(.uppercase)
+                .font(.system(.title3, design: .serif, weight: .bold))
 
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
                 StatTile(icon: "flame.fill", label: "Current Streak", value: "\(streak) days", color: AppColors.calorie)
@@ -514,8 +514,8 @@ struct StatsSection: View {
                 StatTile(icon: "fork.knife", label: "Total Entries", value: "\(totalEntries)", color: AppColors.fat)
             }
         }
-        .padding()
-        .neoPanel()
+        .padding(14)
+        .kitchenReceiptSurface(accent: KitchenTablePalette.brass)
     }
 }
 
@@ -541,10 +541,10 @@ struct StatTile: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 12)
-        .background(NeoAppColors.subtleSurface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .background(NeoAppColors.subtleSurface.opacity(0.55), in: RoundedRectangle(cornerRadius: 5, style: .continuous))
         .overlay {
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .stroke(color.opacity(0.38), lineWidth: NeoAppMetrics.compactRule)
+            RoundedRectangle(cornerRadius: 5, style: .continuous)
+                .stroke(color.opacity(0.48), style: StrokeStyle(lineWidth: 0.8, dash: [3, 2]))
         }
     }
 }
@@ -556,12 +556,12 @@ struct StatBadge: View {
     var body: some View {
         VStack(spacing: 2) {
             Text(value)
-                .font(.system(.subheadline, design: .rounded, weight: .black).width(.condensed))
+                .font(.system(.subheadline, design: .serif, weight: .bold))
                 .foregroundStyle(NeoAppColors.ink)
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
             Text(LocalizedDisplayText.text(label))
-                .font(.system(.caption2, design: .rounded, weight: .bold).width(.condensed))
+                .font(.system(.caption2, design: .monospaced, weight: .bold))
                 .textCase(.uppercase)
                 .foregroundStyle(NeoAppColors.mutedInk)
                 .lineLimit(1)
@@ -570,10 +570,13 @@ struct StatBadge: View {
         .frame(maxWidth: .infinity)
         .padding(.horizontal, 4)
         .padding(.vertical, 6)
-        .background(NeoAppColors.subtleSurface, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+        .background(NeoAppColors.subtleSurface.opacity(0.45), in: RoundedRectangle(cornerRadius: 4, style: .continuous))
         .overlay {
-            RoundedRectangle(cornerRadius: 10, style: .continuous)
-                .stroke(KitchenTablePalette.rule, lineWidth: NeoAppMetrics.compactRule)
+            RoundedRectangle(cornerRadius: 4, style: .continuous)
+                .stroke(
+                    KitchenTablePalette.rule,
+                    style: StrokeStyle(lineWidth: NeoAppMetrics.compactRule, dash: [3, 2])
+                )
         }
     }
 }
@@ -721,17 +724,17 @@ struct WeightHistoryLink: View {
                     .font(.system(size: 16, weight: .medium))
                     .foregroundStyle(NeoAppColors.onCobalt)
                     .frame(width: 28, height: 28)
-                    .background(NeoAppColors.cobalt)
+                    .background(NeoAppColors.cobalt, in: RoundedRectangle(cornerRadius: 4, style: .continuous))
                     .overlay {
-                        Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                        RoundedRectangle(cornerRadius: 4, style: .continuous)
+                            .stroke(NeoAppColors.cobaltDeep, lineWidth: NeoAppMetrics.compactRule)
                     }
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Weight History")
-                        .font(.system(.body, design: .rounded, weight: .black).width(.condensed))
-                        .textCase(.uppercase)
+                        .font(.system(.body, design: .serif, weight: .bold))
                         .foregroundStyle(NeoAppColors.ink)
                     Text("\(totalCount) \(totalCount == 1 ? "entry" : "entries") · tap to view or delete")
-                        .font(.system(.caption, design: .rounded))
+                        .font(.system(.caption, design: .monospaced))
                         .foregroundStyle(NeoAppColors.mutedInk)
                 }
                 Spacer()
@@ -741,7 +744,7 @@ struct WeightHistoryLink: View {
             }
             .padding(.vertical, 12)
             .padding(.horizontal, 14)
-            .neoPanel()
+            .kitchenReceiptSurface(accent: KitchenTablePalette.cobalt)
         }
         .buttonStyle(.plain)
     }
@@ -845,17 +848,17 @@ struct BodyFatHistoryLink: View {
                     .font(.system(size: 16, weight: .medium))
                     .foregroundStyle(Color.black)
                     .frame(width: 28, height: 28)
-                    .background(NeoAppColors.acid)
+                    .background(NeoAppColors.acid, in: RoundedRectangle(cornerRadius: 4, style: .continuous))
                     .overlay {
-                        Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                        RoundedRectangle(cornerRadius: 4, style: .continuous)
+                            .stroke(KitchenTablePalette.brassDeep, lineWidth: NeoAppMetrics.compactRule)
                     }
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Body Fat History")
-                        .font(.system(.body, design: .rounded, weight: .black).width(.condensed))
-                        .textCase(.uppercase)
+                        .font(.system(.body, design: .serif, weight: .bold))
                         .foregroundStyle(NeoAppColors.ink)
                     Text("\(totalCount) \(totalCount == 1 ? "entry" : "entries") · tap to view or delete")
-                        .font(.system(.caption, design: .rounded))
+                        .font(.system(.caption, design: .monospaced))
                         .foregroundStyle(NeoAppColors.mutedInk)
                 }
                 Spacer()
@@ -865,7 +868,7 @@ struct BodyFatHistoryLink: View {
             }
             .padding(.vertical, 12)
             .padding(.horizontal, 14)
-            .neoPanel()
+            .kitchenReceiptSurface(accent: KitchenTablePalette.brass)
         }
         .buttonStyle(.plain)
     }
@@ -1050,20 +1053,23 @@ struct BodyFatChartSection: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Text("Body Fat")
-                    .font(.system(.headline, design: .rounded, weight: .black).width(.condensed))
-                    .textCase(.uppercase)
+                    .font(.system(.title3, design: .serif, weight: .bold))
                     .foregroundStyle(NeoAppColors.ink)
                 Spacer()
                 Button(action: onLogBodyFat) {
                     Label("Log Body Fat", systemImage: "plus.circle.fill")
-                        .font(.system(.caption, design: .rounded, weight: .black).width(.condensed))
+                        .font(.system(.caption, design: .monospaced, weight: .bold))
                         .textCase(.uppercase)
-                        .foregroundStyle(Color.black)
+                        .foregroundStyle(KitchenTablePalette.tomatoDeep)
                         .padding(.horizontal, 9)
                         .padding(.vertical, 7)
-                        .background(NeoAppColors.acid)
+                        .background(KitchenTablePalette.paper)
                         .overlay {
-                            Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                            RoundedRectangle(cornerRadius: 5, style: .continuous)
+                                .stroke(
+                                    KitchenTablePalette.tomato,
+                                    style: StrokeStyle(lineWidth: 0.9, dash: [3, 2])
+                                )
                         }
                 }
                 .buttonStyle(.plain)
@@ -1117,17 +1123,16 @@ struct BodyFatChartSection: View {
                     }
                 }
                 .chartPlotStyle { plotArea in
-                    plotArea.background(
-                        NeoAppColors.subtleSurface.opacity(0.48),
-                        in: RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    )
+                    plotArea
+                        .background(KitchenTablePalette.paperMuted.opacity(0.26))
+                        .background(KitchenGraphPaper())
                 }
-                .frame(height: 180)
+                .frame(height: 158)
                 .clipped()
             }
         }
-        .padding()
-        .neoPanel()
+        .padding(14)
+        .kitchenReceiptSurface(accent: KitchenTablePalette.cobalt)
     }
 
     /// Same plotting policy as WeightChartSection — raw entries for short
@@ -1257,15 +1262,23 @@ struct LogBodyFatSheet: View {
 // MARK: - Helpers
 
 private func emptyState(_ message: String) -> some View {
-    Text(message)
-        .font(.system(.subheadline, design: .rounded, weight: .bold))
-        .foregroundStyle(NeoAppColors.mutedInk)
-        .frame(maxWidth: .infinity, minHeight: 80)
-        .background(NeoAppColors.subtleSurface, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-        .overlay {
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .stroke(KitchenTablePalette.rule, lineWidth: NeoAppMetrics.compactRule)
-        }
+    VStack(spacing: 8) {
+        Image(systemName: "chart.line.uptrend.xyaxis")
+            .font(.system(size: 18, weight: .medium))
+            .foregroundStyle(KitchenTablePalette.cobalt)
+        Text(message)
+            .font(.system(.subheadline, design: .serif, weight: .semibold))
+            .foregroundStyle(NeoAppColors.mutedInk)
+    }
+    .frame(maxWidth: .infinity, minHeight: 76)
+    .background(KitchenGraphPaper())
+    .overlay {
+        RoundedRectangle(cornerRadius: 4, style: .continuous)
+            .stroke(
+                KitchenTablePalette.rule,
+                style: StrokeStyle(lineWidth: NeoAppMetrics.compactRule, dash: [3, 2])
+            )
+    }
 }
 
 // MARK: - Body Measurements

@@ -129,6 +129,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.text.font.FontWeight
@@ -3104,17 +3105,27 @@ private fun MacroField(
 
 @Composable
 private fun SectionCard(title: String, content: @Composable () -> Unit) {
-    // iOS uses sentence-case section titles ("Personal Info", "Goals & Nutrition")
-    // in a small grey caption. Match that — no uppercase transform.
     Column {
         KitchenSectionLabel(title)
         Spacer(Modifier.height(6.dp))
-        FudGlassSurface(
-            modifier = Modifier.fillMaxWidth(),
-            cornerRadius = 22.dp,
-            padding = 0.dp
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .shadow(
+                    4.dp,
+                    RoundedCornerShape(4.dp),
+                    ambientColor = Color.Black.copy(alpha = 0.10f),
+                    spotColor = Color.Black.copy(alpha = 0.10f)
+                )
+                .clip(RoundedCornerShape(4.dp))
+                .background(AppColors.KitchenPaper)
+                .border(
+                    1.dp,
+                    AppColors.KitchenEspresso.copy(alpha = 0.19f),
+                    RoundedCornerShape(4.dp)
+                )
         ) {
-            Column(Modifier.padding(vertical = 4.dp)) { content() }
+            Column(Modifier.padding(vertical = 3.dp)) { content() }
         }
     }
 }

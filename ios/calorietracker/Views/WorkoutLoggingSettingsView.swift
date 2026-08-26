@@ -46,12 +46,19 @@ struct WorkoutLoggingSettingsSection: View {
             Text("**CR10 0–10:** General effort from rest to maximum.")
             Text("**Borg 6–20:** Endurance effort linked to breathing and heart rate.")
         }
-        .font(.system(.footnote, design: .rounded))
+        .font(.system(.footnote, design: .monospaced))
         .foregroundStyle(.secondary)
         .lineSpacing(1)
         .fixedSize(horizontal: false, vertical: true)
         .padding(10)
-        .neoPanel(fill: NeoAppColors.subtleSurface, lineWidth: NeoAppMetrics.compactRule)
+        .background(KitchenTablePalette.paperMuted.opacity(0.34))
+        .overlay {
+            RoundedRectangle(cornerRadius: 5, style: .continuous)
+                .stroke(
+                    KitchenTablePalette.rule,
+                    style: StrokeStyle(lineWidth: NeoAppMetrics.compactRule, dash: [3, 2])
+                )
+        }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(
             "RPE scale guide. Strength 1 to 10 measures lifting effort by reps left. "

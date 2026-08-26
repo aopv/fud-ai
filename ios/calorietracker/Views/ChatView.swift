@@ -39,16 +39,7 @@ struct ChatView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                NeoScreenHeader(
-                    eyebrow: String(localized: "Personal guidance"),
-                    title: String(localized: "AI Coach"),
-                    subtitle: String(localized: "Answers grounded in your data")
-                ) {
-                    resetButton
-                }
-                .padding(.horizontal, NeoAppMetrics.screenInset)
-                .padding(.top, 10)
-                .padding(.bottom, 8)
+                coachHeader
 
                 Group {
                     if messages.isEmpty {
@@ -121,20 +112,45 @@ struct ChatView: View {
         }
     }
 
+    private var coachHeader: some View {
+        HStack(alignment: .center, spacing: 12) {
+            VStack(alignment: .leading, spacing: 3) {
+                Text("Coach")
+                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                    .tracking(1.4)
+                    .foregroundStyle(KitchenTablePalette.cobalt)
+
+                Text("Ask your Coach")
+                    .font(.system(.largeTitle, design: .serif, weight: .bold))
+                    .foregroundStyle(KitchenTablePalette.espresso)
+
+                Text("Coach that knows your data")
+                    .font(.system(.subheadline, design: .rounded, weight: .medium))
+                    .foregroundStyle(KitchenTablePalette.mutedEspresso)
+            }
+
+            Spacer(minLength: 8)
+            resetButton
+        }
+        .padding(.horizontal, NeoAppMetrics.screenInset)
+        .padding(.top, 12)
+        .padding(.bottom, 10)
+    }
+
     private var resetButton: some View {
         Button {
             if !messages.isEmpty { showResetConfirmation = true }
         } label: {
             Image(systemName: "arrow.counterclockwise")
-                .font(.system(size: 17, weight: .black))
-                .foregroundStyle(messages.isEmpty ? NeoAppColors.mutedInk : KitchenTablePalette.onBrass)
-                .frame(width: 46, height: 46)
+                .font(.system(size: 16, weight: .semibold))
+                .foregroundStyle(messages.isEmpty ? KitchenTablePalette.mutedEspresso : KitchenTablePalette.cobalt)
+                .frame(width: 44, height: 44)
                 .background(
-                    messages.isEmpty ? NeoAppColors.subtleSurface : NeoAppColors.brass,
-                    in: RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    KitchenTablePalette.paperRaised,
+                    in: Circle()
                 )
                 .overlay {
-                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    Circle()
                         .stroke(KitchenTablePalette.rule, lineWidth: NeoAppMetrics.rule)
                 }
         }
@@ -146,56 +162,73 @@ struct ChatView: View {
     // MARK: - Sections
 
     private var emptyState: some View {
-        VStack(spacing: 14) {
-            Spacer()
-            ZStack(alignment: .bottomTrailing) {
-                RoundedRectangle(cornerRadius: 28, style: .continuous)
-                    .fill(NeoAppColors.cobalt)
-                    .frame(width: 108, height: 108)
-                Image(systemName: "bubble.left.and.bubble.right.fill")
-                    .font(.system(size: 42, weight: .black))
-                    .foregroundStyle(NeoAppColors.onCobalt)
-                    .frame(width: 108, height: 108)
+        VStack(spacing: 0) {
+            Spacer(minLength: 8)
 
-                Text("AI")
-                    .font(.system(size: 13, weight: .black, design: .rounded).width(.condensed))
-                    .foregroundStyle(KitchenTablePalette.onBrass)
-                    .padding(.horizontal, 8)
-                    .frame(height: 28)
-                    .background(NeoAppColors.brass, in: Capsule())
-                    .overlay {
-                        Capsule().stroke(KitchenTablePalette.brassDeep, lineWidth: NeoAppMetrics.compactRule)
+            ZStack(alignment: .top) {
+                VStack(alignment: .leading, spacing: 16) {
+                    Text("Coach that knows your data")
+                        .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                        .tracking(1.4)
+                        .foregroundStyle(KitchenTablePalette.cobaltDeep)
+
+                    Text("Ask your Coach")
+                        .font(.system(.title, design: .serif, weight: .bold))
+                        .foregroundStyle(KitchenTablePalette.cobaltDeep)
+
+                    Text("Your coach can see your weight history, calorie log, and goals. Ask about expected weight, what to eat, or how to hit your target.")
+                        .font(.system(.body, design: .serif, weight: .regular))
+                        .foregroundStyle(KitchenTablePalette.espresso)
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    Rectangle()
+                        .fill(KitchenTablePalette.cobalt.opacity(0.34))
+                        .frame(height: 1)
+
+                    HStack(spacing: 8) {
+                        Image(systemName: "sparkles")
+                            .font(.system(size: 13, weight: .semibold))
+                        Text("Goals & Nutrition")
+                            .font(.system(.caption, design: .rounded, weight: .semibold))
                     }
-                    .offset(x: 8, y: 8)
-            }
-            .overlay {
-                RoundedRectangle(cornerRadius: 28, style: .continuous)
-                    .stroke(KitchenTablePalette.strongRule, lineWidth: NeoAppMetrics.rule)
-            }
-            .shadow(color: NeoAppColors.cobalt.opacity(0.20), radius: 10, x: 0, y: 5)
-            Text("Ask your Coach")
-                .font(.system(.title2, design: .rounded, weight: .black).width(.condensed))
-                .textCase(.uppercase)
-                .foregroundStyle(NeoAppColors.ink)
-            Text("Your coach can see your nutrition, goals, and workout diary. Ask about food, progress, recovery, or your training plan.")
-                .font(.system(.subheadline, design: .rounded, weight: .semibold))
-                .foregroundStyle(NeoAppColors.mutedInk)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, 20)
-
-            Text("TRACK  •  LEARN  •  WIN")
-                .font(.system(size: 10, weight: .black, design: .rounded).width(.condensed))
-                .tracking(1.2)
-                .foregroundStyle(KitchenTablePalette.onBrass)
-                .padding(.horizontal, 10)
-                .padding(.vertical, 6)
-                .background(NeoAppColors.brass, in: Capsule())
-                .overlay {
-                    Capsule().stroke(KitchenTablePalette.brassDeep, lineWidth: NeoAppMetrics.compactRule)
+                    .foregroundStyle(KitchenTablePalette.cobaltDeep)
                 }
-            Spacer()
+                .padding(.horizontal, 22)
+                .padding(.top, 30)
+                .padding(.bottom, 22)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(KitchenTablePalette.cobalt.opacity(0.15))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 2, style: .continuous)
+                        .stroke(KitchenTablePalette.cobalt.opacity(0.28), lineWidth: 1)
+                }
+                .shadow(color: KitchenTablePalette.shadow, radius: 8, x: 0, y: 5)
+                .rotationEffect(.degrees(-0.5))
+
+                ZStack {
+                    Capsule()
+                        .fill(KitchenTablePalette.cobaltDeep.opacity(0.22))
+                        .frame(width: 13, height: 29)
+                        .rotationEffect(.degrees(16))
+                        .offset(y: 5)
+                    Circle()
+                        .fill(KitchenTablePalette.cobalt)
+                        .frame(width: 22, height: 22)
+                        .overlay {
+                            Circle()
+                                .fill(.white.opacity(0.38))
+                                .frame(width: 7, height: 7)
+                                .offset(x: -4, y: -4)
+                        }
+                        .shadow(color: KitchenTablePalette.shadow, radius: 3, x: 0, y: 2)
+                }
+                .offset(y: -10)
+                .accessibilityHidden(true)
+            }
+
+            Spacer(minLength: 12)
         }
-        .padding(.horizontal, NeoAppMetrics.screenInset)
+        .padding(.horizontal, 24)
     }
 
     private var messageList: some View {
@@ -305,31 +338,56 @@ struct ChatView: View {
         }()
 
         return ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 8) {
-                ForEach(chips, id: \.self) { chip in
-                    Button {
-                        draft = chip
-                        send()
-                    } label: {
-                        Text(chip)
-                            .font(.system(.footnote, design: .rounded, weight: .black).width(.condensed))
-                            .textCase(.uppercase)
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 9)
-                            .foregroundStyle(KitchenTablePalette.onBrass)
-                            .background(NeoAppColors.brass, in: Capsule())
-                            .overlay {
-                                Capsule()
-                                    .stroke(KitchenTablePalette.brassDeep, lineWidth: NeoAppMetrics.compactRule)
-                            }
-                    }
-                    .buttonStyle(KitchenTablePressableButtonStyle())
-                    .disabled(isSending)
+            HStack(spacing: 10) {
+                ForEach(Array(chips.enumerated()), id: \.element) { index, chip in
+                    promptChip(chip, index: index)
                 }
             }
-            .padding(.horizontal)
-            .padding(.vertical, 8)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 10)
         }
+    }
+
+    private func promptChip(_ chip: String, index: Int) -> some View {
+        Button {
+            draft = chip
+            send()
+        } label: {
+            HStack(spacing: 10) {
+                Image(systemName: promptIcon(at: index))
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundStyle(index.isMultiple(of: 2) ? KitchenTablePalette.tomato : KitchenTablePalette.herb)
+                    .frame(width: 30, height: 30)
+                    .background(KitchenTablePalette.paperMuted.opacity(0.72), in: Circle())
+
+                Text(chip)
+                    .font(.system(.footnote, design: .serif, weight: .semibold))
+                    .foregroundStyle(KitchenTablePalette.espresso)
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(2)
+
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(KitchenTablePalette.mutedEspresso)
+            }
+            .padding(.horizontal, 13)
+            .padding(.vertical, 10)
+            .frame(width: 250, alignment: .leading)
+            .frame(minHeight: 58, alignment: .leading)
+            .background(KitchenTablePalette.paperRaised)
+            .overlay {
+                RoundedRectangle(cornerRadius: 3, style: .continuous)
+                    .stroke(KitchenTablePalette.rule, lineWidth: 1)
+            }
+            .shadow(color: KitchenTablePalette.shadow, radius: 4, x: 0, y: 2)
+            .rotationEffect(.degrees(index.isMultiple(of: 2) ? -0.25 : 0.25))
+        }
+        .buttonStyle(KitchenTablePressableButtonStyle())
+        .disabled(isSending)
+    }
+
+    private func promptIcon(at index: Int) -> String {
+        ["fork.knife", "figure.walk", "chart.line.uptrend.xyaxis", "dumbbell.fill"][index % 4]
     }
 
     private var inputArea: some View {
@@ -410,8 +468,8 @@ struct ChatView: View {
                     HStack(spacing: 8) {
                         attachMenu
                         TextField("Ask Coach…", text: $draft, axis: .vertical)
-                            .font(.system(.body, design: .rounded, weight: .semibold))
-                            .foregroundStyle(NeoAppColors.ink)
+                            .font(.system(.body, design: .serif, weight: .regular))
+                            .foregroundStyle(KitchenTablePalette.espresso)
                             .lineLimit(1...5)
                             .padding(.horizontal, 8)
                             .padding(.vertical, 12)
@@ -426,11 +484,12 @@ struct ChatView: View {
             // Trailing control (kept as the stable last child).
             trailingControl
         }
-        .background(NeoAppColors.surface, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .background(KitchenTablePalette.paperRaised, in: RoundedRectangle(cornerRadius: 4, style: .continuous))
         .overlay {
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .stroke(KitchenTablePalette.strongRule, lineWidth: NeoAppMetrics.rule)
+            RoundedRectangle(cornerRadius: 4, style: .continuous)
+                .stroke(KitchenTablePalette.strongRule, lineWidth: 1)
         }
+        .shadow(color: KitchenTablePalette.shadow, radius: 5, x: 0, y: 3)
         .padding(.horizontal, 12)
         .padding(.bottom, 10)
         .padding(.top, 4)
@@ -439,7 +498,7 @@ struct ChatView: View {
     private var attachMenu: some View {
         NeoGlassChoiceMenu(
             title: "Add to Message",
-            eyebrow: "AI Coach",
+            eyebrow: "Coach",
             items: [
                 NeoGlassChoiceItem(
                     id: "coachAttachment.camera",
@@ -458,8 +517,8 @@ struct ChatView: View {
             ]
         ) {
             Image(systemName: attachedImage == nil ? "plus.circle.fill" : "photo.fill")
-                .font(.system(size: 24, weight: .semibold))
-                .foregroundStyle(NeoAppColors.cobalt)
+                .font(.system(size: 22, weight: .semibold))
+                .foregroundStyle(KitchenTablePalette.cobalt)
                 .frame(width: 44, height: 44)
         }
         .disabled(isSending)
@@ -494,9 +553,9 @@ struct ChatView: View {
         } label: {
             Image(systemName: "arrow.up")
                 .font(.system(size: 16, weight: .bold))
-                .foregroundStyle(canSend ? NeoAppColors.onCobalt : NeoAppColors.mutedInk)
+                .foregroundStyle(canSend ? KitchenTablePalette.onStrongAccent : KitchenTablePalette.mutedEspresso)
                 .frame(width: 44, height: 44)
-                .background(canSend ? NeoAppColors.cobalt : NeoAppColors.subtleSurface, in: Circle())
+                .background(canSend ? KitchenTablePalette.cobalt : KitchenTablePalette.paperMuted, in: Circle())
                 .overlay {
                     Circle().stroke(KitchenTablePalette.rule, lineWidth: NeoAppMetrics.compactRule)
                 }
@@ -843,22 +902,30 @@ private struct MessageBubble: View {
 
     private var assistantBadge: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: 9, style: .continuous)
-                .fill(NeoAppColors.brass)
-                .frame(width: 28, height: 28)
-                .overlay {
-                    RoundedRectangle(cornerRadius: 9, style: .continuous)
-                        .stroke(KitchenTablePalette.rule, lineWidth: NeoAppMetrics.compactRule)
-                }
-            Image(systemName: "sparkles")
-                .font(.system(size: 11, weight: .semibold))
-                .foregroundStyle(KitchenTablePalette.onBrass)
+            Capsule()
+                .fill(KitchenTablePalette.cobaltDeep.opacity(0.20))
+                .frame(width: 9, height: 23)
+                .rotationEffect(.degrees(14))
+                .offset(y: 4)
+            Circle()
+                .fill(KitchenTablePalette.cobalt)
+                .frame(width: 20, height: 20)
+                .shadow(color: KitchenTablePalette.shadow, radius: 2, x: 0, y: 1)
         }
-        .padding(.top, 8)
+        .padding(.top, 3)
+        .accessibilityHidden(true)
     }
 
     private var bubble: some View {
         VStack(alignment: .leading, spacing: 9) {
+            if !isUser {
+                Text("Coach")
+                    .textCase(.uppercase)
+                    .font(.system(size: 9, weight: .semibold, design: .monospaced))
+                    .tracking(1.2)
+                    .foregroundStyle(KitchenTablePalette.cobaltDeep)
+            }
+
             if let imageData = message.attachmentImageData,
                let uiImage = UIImage(data: imageData) {
                 Image(uiImage: uiImage)
@@ -868,43 +935,47 @@ private struct MessageBubble: View {
                     .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
                     .overlay(
                         RoundedRectangle(cornerRadius: 14, style: .continuous)
-                            .stroke(isUser ? NeoAppColors.onCobalt : NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                            .stroke(KitchenTablePalette.rule, lineWidth: NeoAppMetrics.compactRule)
                     )
             }
 
             if isUser {
                 // User's own typed text — show verbatim, no markdown.
                 Text(message.content)
-                    .font(.system(.body, design: .rounded, weight: .semibold))
+                    .font(.system(.body, design: .serif, weight: .regular))
                     .textSelection(.enabled)
-                    .foregroundStyle(NeoAppColors.onCobalt)
+                    .foregroundStyle(KitchenTablePalette.espresso)
             } else {
                 // Coach replies often use markdown — render it.
                 MarkdownMessageText(text: message.content)
                     .textSelection(.enabled)
-                    .foregroundStyle(NeoAppColors.ink)
+                    .foregroundStyle(KitchenTablePalette.espresso)
             }
         }
             .padding(.horizontal, 16)
-            .padding(.vertical, 11)
+            .padding(.vertical, 13)
             .background(bubbleBackground)
             .overlay(bubbleStroke)
-            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+            .clipShape(RoundedRectangle(cornerRadius: 3, style: .continuous))
+            .shadow(color: KitchenTablePalette.shadow, radius: 4, x: 0, y: 2)
             .fixedSize(horizontal: false, vertical: true)
     }
 
     @ViewBuilder
     private var bubbleBackground: some View {
         if isUser {
-            NeoAppColors.cobalt
+            KitchenTablePalette.paperRaised
         } else {
-            NeoAppColors.surface
+            KitchenTablePalette.cobalt.opacity(0.14)
         }
     }
 
     private var bubbleStroke: some View {
-        RoundedRectangle(cornerRadius: 18, style: .continuous)
-            .stroke(KitchenTablePalette.rule, lineWidth: NeoAppMetrics.rule)
+        RoundedRectangle(cornerRadius: 3, style: .continuous)
+            .stroke(
+                isUser ? KitchenTablePalette.tomato.opacity(0.34) : KitchenTablePalette.cobalt.opacity(0.32),
+                lineWidth: 1
+            )
     }
 }
 

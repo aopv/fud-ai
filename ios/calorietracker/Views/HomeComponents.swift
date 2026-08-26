@@ -107,34 +107,32 @@ struct WeekEnergyStrip: View {
                 selectedDate = date
             }
         } label: {
-            VStack(spacing: 5) {
+            VStack(spacing: 3) {
                 Text(date.formatted(.dateTime.weekday(.narrow)))
-                    .font(.system(.caption2, design: .default, weight: .black))
-                    .fontWidth(.condensed)
+                    .font(.system(size: 9, weight: .semibold, design: .monospaced))
                     .foregroundStyle(isSelected ? NeoHomeColors.ink : NeoHomeColors.mutedInk)
 
                 Text(date.formatted(.dateTime.day()))
-                    .font(.system(.body, design: .default, weight: .black))
-                    .fontWidth(.condensed)
+                    .font(.system(.body, design: .serif, weight: .semibold))
                     .lineLimit(1)
                     .minimumScaleFactor(0.65)
                     .foregroundStyle(isSelected ? Color.black : (isToday ? NeoHomeColors.cobalt : NeoHomeColors.ink))
-                    .frame(width: 38, height: 36)
+                    .frame(width: 35, height: 34)
                     .background {
                         if isSelected {
-                            RoundedRectangle(cornerRadius: 11, style: .continuous)
-                                .fill(NeoHomeColors.acidYellow)
+                            RoundedRectangle(cornerRadius: 9, style: .continuous)
+                                .fill(NeoHomeColors.acidYellow.opacity(0.88))
                                 .overlay {
-                                    RoundedRectangle(cornerRadius: 11, style: .continuous)
+                                    RoundedRectangle(cornerRadius: 9, style: .continuous)
                                         .strokeBorder(KitchenTablePalette.brassDeep, lineWidth: NeoHomeMetrics.compactRule)
                                 }
                         } else if isToday {
-                            RoundedRectangle(cornerRadius: 11, style: .continuous)
+                            RoundedRectangle(cornerRadius: 9, style: .continuous)
                                 .strokeBorder(NeoHomeColors.cobalt, lineWidth: NeoHomeMetrics.rule)
                         }
                     }
             }
-            .padding(.vertical, 5)
+            .padding(.vertical, 4)
         }
         .buttonStyle(.plain)
         .frame(maxWidth: .infinity)

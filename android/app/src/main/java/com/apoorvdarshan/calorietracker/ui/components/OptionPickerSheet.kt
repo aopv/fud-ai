@@ -32,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
@@ -68,14 +69,14 @@ fun <T> OptionPickerSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = state,
-        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
-        containerColor = MaterialTheme.colorScheme.surface
+        shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
+        containerColor = AppColors.KitchenBone
     ) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp)) {
             Text(
                 title,
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
+                style = MaterialTheme.typography.headlineMedium,
+                color = AppColors.KitchenEspresso
             )
             Spacer(Modifier.height(12.dp))
             LazyColumn(
@@ -129,14 +130,15 @@ private fun OptionPickerRow(
     isDark: Boolean,
     onClick: () -> Unit
 ) {
-    val shape = RoundedCornerShape(14.dp)
+    val shape = RoundedCornerShape(4.dp)
     Row(
         Modifier
             .fillMaxWidth()
+            .shadow(2.dp, shape)
             .clip(shape)
             .background(
                 if (isSelected) AppColors.KitchenBrass.copy(alpha = 0.38f)
-                else MaterialTheme.colorScheme.surface
+                else AppColors.KitchenPaper
             )
             .border(
                 1.dp,

@@ -134,6 +134,7 @@ internal fun WorkoutDiaryScreen(
     val listState = rememberLazyListState()
     val focusManager = LocalFocusManager.current
     val keyboard = LocalSoftwareKeyboardController.current
+    val addWorkoutLabel = stringResource(R.string.workout_add_workout)
     val exerciseCardBounds = remember { mutableStateMapOf<UUID, androidx.compose.ui.geometry.Rect>() }
     var diaryRootOrigin by remember { mutableStateOf(Offset.Zero) }
 
@@ -281,21 +282,35 @@ internal fun WorkoutDiaryScreen(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .navigationBarsPadding()
-                .padding(end = 24.dp, bottom = 100.dp)
+                .padding(end = 18.dp, bottom = 96.dp)
         ) {
             Box(
                 modifier = Modifier
-                    .size(60.dp)
-                    .clip(CircleShape)
-                    .background(AppColors.Calorie)
+                    .width(166.dp)
+                    .height(50.dp)
+                    .shadow(5.dp, RoundedCornerShape(5.dp))
+                    .clip(RoundedCornerShape(5.dp))
+                    .background(AppColors.KitchenTomato)
+                    .border(1.dp, AppColors.KitchenEspresso.copy(alpha = 0.30f), RoundedCornerShape(5.dp))
                     .clickable(role = Role.Button) {
                         dismissKeyboard()
                         addMenuExpanded = true
                     }
-                    .semantics { contentDescription = "Add workout" },
+                    .semantics { contentDescription = addWorkoutLabel },
                 contentAlignment = Alignment.Center
             ) {
-                Icon(Icons.Filled.Add, contentDescription = null, tint = Color.White, modifier = Modifier.size(30.dp))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Icon(Icons.Filled.Add, contentDescription = null, tint = AppColors.KitchenCream, modifier = Modifier.size(22.dp))
+                    Text(
+                        addWorkoutLabel.uppercase(Locale.getDefault()),
+                        color = AppColors.KitchenCream,
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.Black
+                    )
+                }
             }
 
             SheetGlassDropdownMenu(
@@ -445,29 +460,34 @@ private fun WorkoutBurnHero(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier.fillMaxWidth().padding(top = 18.dp, bottom = 10.dp),
+        modifier = modifier.fillMaxWidth().padding(top = 6.dp, bottom = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(22.dp)
+        verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        Box(modifier = Modifier.fillMaxWidth().height(176.dp)) {
-            WorkoutLogBurnButton(
-                isCalculating = state.isCalculatingBurn,
-                onCalculate = onCalculate,
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(horizontal = 26.dp)
-            )
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
             WorkoutModeToggleButton(
                 mode = com.apoorvdarshan.calorietracker.models.WorkoutTabMode.LOG,
-                onToggle = onShowLibrary,
-                modifier = Modifier.align(Alignment.TopEnd)
+                onToggle = onShowLibrary
             )
         }
+        WorkoutLogBurnButton(
+            isCalculating = state.isCalculatingBurn,
+            onCalculate = onCalculate,
+            modifier = Modifier.fillMaxWidth()
+        )
 
-        FudGlassSurface(
-            modifier = Modifier.fillMaxWidth(),
-            cornerRadius = 20.dp,
-            padding = 10.dp
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .shadow(3.dp, RoundedCornerShape(4.dp))
+                .clip(RoundedCornerShape(4.dp))
+                .background(AppColors.KitchenPaper)
+                .border(
+                    1.dp,
+                    AppColors.KitchenEspresso.copy(alpha = 0.20f),
+                    RoundedCornerShape(4.dp)
+                )
+                .padding(7.dp)
         ) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 WorkoutMetric(
@@ -519,11 +539,24 @@ private fun WorkoutLogBurnButton(
         animationSpec = tween(durationMillis = 120),
         label = "workout-burn-press"
     )
-    FudGlassSurface(
+    Box(
         modifier = modifier
             .fillMaxWidth()
             .heightIn(min = 112.dp)
             .scale(scale)
+            .shadow(
+                6.dp,
+                RoundedCornerShape(4.dp),
+                ambientColor = Color.Black.copy(alpha = 0.12f),
+                spotColor = Color.Black.copy(alpha = 0.12f)
+            )
+            .clip(RoundedCornerShape(4.dp))
+            .background(AppColors.KitchenPaper)
+            .border(
+                1.dp,
+                AppColors.KitchenEspresso.copy(alpha = 0.22f),
+                RoundedCornerShape(4.dp)
+            )
             .clickable(
                 enabled = !isCalculating,
                 interactionSource = interactionSource,
@@ -538,8 +571,6 @@ private fun WorkoutLogBurnButton(
                     "Calculate calorie burn"
                 }
             },
-        cornerRadius = 24.dp,
-        padding = 0.dp,
         contentAlignment = Alignment.Center
     ) {
         Row(
@@ -550,7 +581,7 @@ private fun WorkoutLogBurnButton(
         ) {
             Box(
                 modifier = Modifier
-                    .width(82.dp)
+                    .width(74.dp)
                     .heightIn(min = 112.dp)
                     .background(AppColors.KitchenTomato),
                 contentAlignment = Alignment.Center
@@ -678,12 +709,15 @@ private fun WorkoutEmptyState(
     onAdd: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    FudGlassSurface(
+    Box(
         modifier = modifier
             .fillMaxWidth()
-            .clickable(onClick = onAdd),
-        cornerRadius = 20.dp,
-        padding = 14.dp
+            .shadow(3.dp, RoundedCornerShape(4.dp))
+            .clip(RoundedCornerShape(4.dp))
+            .background(AppColors.KitchenPaper)
+            .border(1.dp, AppColors.KitchenEspresso.copy(alpha = 0.20f), RoundedCornerShape(4.dp))
+            .clickable(onClick = onAdd)
+            .padding(14.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             Icon(Icons.Filled.Add, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(28.dp))
@@ -720,10 +754,13 @@ private fun WorkoutExerciseCard(
     onReps: (UUID, String) -> Unit,
     onRpe: (UUID, String) -> Unit
 ) {
-    FudGlassSurface(
-        modifier = modifier.fillMaxWidth(),
-        cornerRadius = 20.dp,
-        padding = 0.dp
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .shadow(4.dp, RoundedCornerShape(4.dp))
+            .clip(RoundedCornerShape(4.dp))
+            .background(AppColors.KitchenPaper)
+            .border(1.dp, AppColors.KitchenEspresso.copy(alpha = 0.20f), RoundedCornerShape(4.dp))
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -1053,7 +1090,7 @@ private fun WorkoutDayTile(
             Text(
                 date.dayOfMonth.toString(),
                 color = when {
-                    isSelected -> Color.White
+                    isSelected -> MaterialTheme.colorScheme.onPrimary
                     isToday -> AppColors.Calorie
                     else -> MaterialTheme.colorScheme.onSurface
                 },

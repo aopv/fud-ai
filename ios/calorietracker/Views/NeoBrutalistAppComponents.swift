@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 // MARK: - App-wide Kitchen Table design system
 
@@ -32,9 +33,9 @@ enum NeoAppMetrics {
     static let cornerRadius: CGFloat = 18
     static let screenInset: CGFloat = 16
     static let sectionSpacing: CGFloat = 16
-    static let bottomBarHeight: CGFloat = 66
-    static let bottomBarCornerRadius: CGFloat = 26
-    static let quickActionSize: CGFloat = 60
+    static let bottomBarHeight: CGFloat = 62
+    static let bottomBarCornerRadius: CGFloat = 20
+    static let quickActionSize: CGFloat = 54
 }
 
 enum NeoAppTab: String, CaseIterable, Identifiable, Hashable {
@@ -65,10 +66,29 @@ enum NeoAppTab: String, CaseIterable, Identifiable, Hashable {
         case .workouts: "dumbbell.fill"
         }
     }
+
+    var kitchenAssetName: String {
+        switch self {
+        case .home: "KitchenNavHome"
+        case .progress: "KitchenNavProgress"
+        case .coach: "KitchenNavCoach"
+        case .settings: "KitchenNavSettings"
+        case .workouts: "KitchenNavWorkouts"
+        }
+    }
+
+    var kitchenAccent: Color {
+        switch self {
+        case .home: KitchenTablePalette.herb
+        case .progress: KitchenTablePalette.brassDeep
+        case .coach: KitchenTablePalette.cobalt
+        case .settings: KitchenTablePalette.tomato
+        case .workouts: KitchenTablePalette.espresso
+        }
+    }
 }
 
 struct NeoAppBottomNavigationBar: View {
-    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Binding var selection: NeoAppTab
     let workoutsIcon: String
@@ -77,83 +97,62 @@ struct NeoAppBottomNavigationBar: View {
     @State private var selectionFeedbackTrigger = 0
 
     var body: some View {
-        bottomNavigation
-            .padding(.horizontal, 12)
-            .padding(.top, 8)
-            .padding(.bottom, 8)
+        HStack(alignment: .center, spacing: 7) {
+            navigationStrip
+            quickActionButton
+        }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 7)
+            .background(KitchenTablePalette.paperRaised, in: bottomBarShape)
+            .overlay {
+                bottomBarShape
+                    .stroke(KitchenTablePalette.strongRule, lineWidth: NeoAppMetrics.compactRule)
+            }
+            .overlay(alignment: .top) {
+                Rectangle()
+                    .fill(KitchenTablePalette.paper)
+                    .frame(height: 3)
+                    .padding(.horizontal, 18)
+                    .offset(y: -2)
+                    .accessibilityHidden(true)
+            }
+            .shadow(color: KitchenTablePalette.espresso.opacity(0.16), radius: 10, x: 0, y: 3)
+            .padding(.horizontal, 10)
+            .padding(.top, 5)
+            .padding(.bottom, 6)
             .sensoryFeedback(.selection, trigger: selectionFeedbackTrigger)
             .accessibilityElement(children: .contain)
             .accessibilityLabel("App navigation")
             .accessibilityAddTraits(.isTabBar)
     }
 
-    @ViewBuilder
-    private var bottomNavigation: some View {
-        if #available(iOS 26.0, *) {
-            GlassEffectContainer(spacing: 10) {
-                HStack(spacing: 10) {
-                    navigationStrip
-                        .glassEffect(
-                            .regular
-                                .tint(NeoAppColors.paper.opacity(colorScheme == .dark ? 0.36 : 0.62)),
-                            in: .rect(cornerRadius: NeoAppMetrics.bottomBarCornerRadius)
-                        )
-
-                    quickActionButton
-                        .glassEffect(
-                            .regular
-                                .tint(NeoAppColors.tomato.opacity(colorScheme == .dark ? 0.60 : 0.76))
-                                .interactive(),
-                            in: .rect(cornerRadius: NeoAppMetrics.bottomBarCornerRadius)
-                        )
-                }
-            }
-        } else {
-            HStack(spacing: 10) {
-                navigationStrip
-                    .background(.ultraThinMaterial, in: bottomBarShape)
-
-                quickActionButton
-                    .background(.ultraThinMaterial, in: bottomBarShape)
-            }
-        }
-    }
-
     private var navigationStrip: some View {
-        HStack(spacing: 2) {
+        HStack(spacing: 0) {
             ForEach(NeoAppTab.allCases) { tab in
                 navigationButton(for: tab)
             }
         }
-        .padding(5)
         .frame(maxWidth: .infinity)
         .frame(height: NeoAppMetrics.bottomBarHeight)
-        .background(NeoAppColors.paper.opacity(colorScheme == .dark ? 0.88 : 0.94), in: bottomBarShape)
-        .overlay {
-            bottomBarShape
-                .stroke(KitchenTablePalette.strongRule, lineWidth: NeoAppMetrics.rule)
-        }
-        .shadow(color: KitchenTablePalette.shadow, radius: 8, x: 0, y: 4)
     }
 
     private var quickActionButton: some View {
         Button(action: onQuickAdd) {
-            VStack(spacing: 2) {
-                Image(systemName: "bolt.fill")
-                    .font(.system(size: 22, weight: .black))
+            VStack(spacing: 1) {
+                kitchenNavigationIcon(
+                    assetName: "KitchenNavQuickAdd",
+                    systemImage: "camera.fill",
+                    accent: KitchenTablePalette.tomato,
+                    size: 31
+                )
                 if !dynamicTypeSize.isAccessibilitySize {
                     Text("ADD")
-                        .font(.caption2.weight(.bold))
+                        .font(.system(size: 9, weight: .bold, design: .rounded))
+                        .tracking(0.4)
                 }
             }
-            .foregroundStyle(KitchenTablePalette.onStrongAccent)
+            .foregroundStyle(KitchenTablePalette.tomatoDeep)
             .frame(width: NeoAppMetrics.quickActionSize, height: NeoAppMetrics.bottomBarHeight)
-            .background(NeoAppColors.tomato.opacity(quickActionFillOpacity), in: bottomBarShape)
-            .overlay {
-                bottomBarShape
-                    .stroke(KitchenTablePalette.onStrongAccent.opacity(0.42), lineWidth: NeoAppMetrics.rule)
-            }
-            .shadow(color: KitchenTablePalette.tomato.opacity(0.22), radius: 8, x: 0, y: 4)
             .accessibilityHidden(true)
         }
         .buttonStyle(KitchenTablePressableButtonStyle())
@@ -164,23 +163,42 @@ struct NeoAppBottomNavigationBar: View {
     private func navigationButton(for tab: NeoAppTab) -> some View {
         let isSelected = selection == tab
         let icon = tab == .workouts ? workoutsIcon : tab.systemImage
-        let badgeFill = isSelected ? NeoAppColors.brass : NeoAppColors.tomato
+        let badgeFill = isSelected ? tab.kitchenAccent : NeoAppColors.tomato
 
         return Button {
             guard !isSelected else { return }
             selection = tab
             selectionFeedbackTrigger += 1
         } label: {
-            VStack(spacing: 3) {
+            VStack(spacing: 1) {
                 ZStack(alignment: .topTrailing) {
-                    Image(systemName: icon)
-                        .font(.system(size: 20, weight: .bold))
-                        .frame(width: 28, height: 23)
+                    kitchenNavigationIcon(
+                        assetName: tab.kitchenAssetName,
+                        systemImage: icon,
+                        accent: tab.kitchenAccent,
+                        size: 30
+                    )
+                    .frame(width: 34, height: 33)
+
+                    if tab == .workouts, UIImage(named: tab.kitchenAssetName) != nil {
+                        Image(systemName: workoutsIcon)
+                            .font(.system(size: 7, weight: .black))
+                            .symbolRenderingMode(.monochrome)
+                            .foregroundStyle(KitchenTablePalette.espresso)
+                            .frame(width: 14, height: 14)
+                            .background(KitchenTablePalette.paperRaised, in: Circle())
+                            .overlay {
+                                Circle()
+                                    .stroke(KitchenTablePalette.espresso.opacity(0.45), lineWidth: 0.7)
+                            }
+                            .offset(x: 6, y: 18)
+                            .accessibilityHidden(true)
+                    }
 
                     if tab == .settings && updateAvailable {
                         Text("!")
                             .font(.system(size: 9, weight: .black, design: .rounded))
-                            .foregroundStyle(isSelected ? KitchenTablePalette.onBrass : KitchenTablePalette.onStrongAccent)
+                            .foregroundStyle(KitchenTablePalette.onStrongAccent)
                             .frame(width: 15, height: 15)
                             .background(badgeFill)
                             .clipShape(Circle())
@@ -191,23 +209,25 @@ struct NeoAppBottomNavigationBar: View {
 
                 if !dynamicTypeSize.isAccessibilitySize {
                     Text(tab.title)
-                        .font(.caption2.weight(.semibold))
+                        .font(.system(size: 9, weight: isSelected ? .bold : .medium, design: .rounded))
+                        .textCase(.uppercase)
+                        .tracking(isSelected ? 0.25 : 0.1)
                         .lineLimit(1)
-                        .minimumScaleFactor(0.72)
+                        .minimumScaleFactor(0.62)
                 }
+
+                Capsule()
+                    .fill(isSelected ? tab.kitchenAccent : Color.clear)
+                    .frame(width: 18, height: 2)
+                    .accessibilityHidden(true)
             }
-            .foregroundStyle(isSelected ? NeoAppColors.onCobalt : NeoAppColors.ink)
+            .foregroundStyle(isSelected ? tab.kitchenAccent : NeoAppColors.ink)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(isSelected ? NeoAppColors.cobalt : Color.clear, in: selectedTabShape)
-            .overlay {
-                selectedTabShape
-                    .stroke(isSelected ? NeoAppColors.cobaltDeep : Color.clear, lineWidth: NeoAppMetrics.compactRule)
-            }
             .accessibilityHidden(true)
         }
         .buttonStyle(KitchenTablePressableButtonStyle())
         .frame(maxWidth: .infinity)
-        .frame(height: NeoAppMetrics.bottomBarHeight - 10)
+        .frame(height: NeoAppMetrics.bottomBarHeight)
         .accessibilityLabel(Text(tab.title))
         .accessibilityValue(tab == .settings && updateAvailable ? "Update available" : "")
         .accessibilityAddTraits(isSelected ? .isSelected : [])
@@ -218,15 +238,31 @@ struct NeoAppBottomNavigationBar: View {
         RoundedRectangle(cornerRadius: NeoAppMetrics.bottomBarCornerRadius, style: .continuous)
     }
 
-    private var selectedTabShape: RoundedRectangle {
-        RoundedRectangle(cornerRadius: 18, style: .continuous)
-    }
-
-    private var quickActionFillOpacity: Double {
-        if #available(iOS 26.0, *) {
-            return colorScheme == .dark ? 0.76 : 0.86
+    @ViewBuilder
+    private func kitchenNavigationIcon(
+        assetName: String,
+        systemImage: String,
+        accent: Color,
+        size: CGFloat
+    ) -> some View {
+        if UIImage(named: assetName) != nil {
+            Image(decorative: assetName)
+                .resizable()
+                .scaledToFit()
+                .frame(width: size, height: size)
+        } else {
+            Image(systemName: systemImage)
+                .font(.system(size: size * 0.68, weight: .semibold))
+                .symbolRenderingMode(.hierarchical)
+                .foregroundStyle(accent)
+                .frame(width: size, height: size)
+                .background(KitchenTablePalette.paperMuted.opacity(0.54), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                        .stroke(KitchenTablePalette.rule, lineWidth: NeoAppMetrics.compactRule)
+                }
+                .rotationEffect(.degrees(assetName == "KitchenNavCoach" ? -3 : 0))
         }
-        return colorScheme == .dark ? 0.86 : 0.96
     }
 }
 
@@ -314,46 +350,51 @@ struct NeoSectionBanner: View {
     }
 
     var body: some View {
-        HStack(spacing: 8) {
+        HStack(spacing: 9) {
+            RoundedRectangle(cornerRadius: 1.5, style: .continuous)
+                .fill(accent)
+                .frame(width: 3, height: 24)
+                .accessibilityHidden(true)
+
             Text(LocalizedStringKey(title))
                 .textCase(.uppercase)
-                .font(.subheadline.weight(.bold))
-                .tracking(0.7)
+                .font(.system(size: 11, weight: .bold, design: .monospaced))
+                .tracking(0.55)
+                .foregroundStyle(accent)
             Spacer(minLength: 8)
             if let detail {
                 Text(LocalizedStringKey(detail))
                     .textCase(.uppercase)
-                    .font(.caption2.weight(.bold))
-                    .padding(.horizontal, 8)
+                    .font(.system(size: 9, weight: .semibold, design: .monospaced))
+                    .foregroundStyle(accent)
+                    .padding(.horizontal, 7)
                     .padding(.vertical, 4)
-                    .background(foreground.opacity(0.12), in: Capsule())
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 4, style: .continuous)
+                            .stroke(
+                                accent.opacity(0.62),
+                                style: StrokeStyle(lineWidth: 1, dash: [3, 2])
+                            )
+                    }
             }
         }
-        .foregroundStyle(foreground)
-        .padding(.horizontal, 12)
-        .frame(minHeight: 42)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 7)
+        .frame(minHeight: 38)
         .kitchenTableSurface(
-            fill: background,
-            border: KitchenTablePalette.strongRule,
-            cornerRadius: 14,
+            fill: KitchenTablePalette.paperRaised,
+            border: KitchenTablePalette.rule,
+            cornerRadius: 6,
             shadowRadius: 3,
             shadowY: 2
         )
     }
 
-    private var background: Color {
+    private var accent: Color {
         switch style {
-        case .cobalt: NeoAppColors.cobalt
-        case .acid: NeoAppColors.acid
-        case .ink: NeoAppColors.ink
-        }
-    }
-
-    private var foreground: Color {
-        switch style {
-        case .cobalt: NeoAppColors.onCobalt
-        case .acid: KitchenTablePalette.onBrass
-        case .ink: NeoAppColors.invertedInk
+        case .cobalt: KitchenTablePalette.cobaltDeep
+        case .acid: KitchenTablePalette.brassDeep
+        case .ink: KitchenTablePalette.espresso
         }
     }
 }

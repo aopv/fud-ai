@@ -37,15 +37,15 @@ private fun lightColors(themeColor: AppThemeColor) = lightColorScheme(
 )
 
 private fun darkColors(themeColor: AppThemeColor) = darkColorScheme(
-    primary = Color(0xFFFF8B70),
+    primary = AppColors.KitchenTomato,
     onPrimary = AppColors.KitchenRoast,
     primaryContainer = Color(0xFF71372C),
     onPrimaryContainer = AppColors.OnDark,
-    secondary = Color(0xFF91B4F4),
+    secondary = AppColors.KitchenCobalt,
     onSecondary = AppColors.KitchenRoast,
     secondaryContainer = Color(0xFF263B68),
     onSecondaryContainer = AppColors.OnDark,
-    tertiary = Color(0xFFA8CAA6),
+    tertiary = AppColors.KitchenHerb,
     onTertiary = AppColors.KitchenRoast,
     tertiaryContainer = Color(0xFF304533),
     onTertiaryContainer = AppColors.OnDark,
@@ -77,6 +77,7 @@ fun FudAITheme(
     content: @Composable () -> Unit
 ) {
     AppColors.setThemeColor(themeColor)
+    AppColors.setDarkTheme(darkTheme)
     val colorScheme = if (darkTheme) darkColors(themeColor) else lightColors(themeColor)
     MaterialTheme(
         colorScheme = colorScheme,

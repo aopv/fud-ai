@@ -94,6 +94,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -112,7 +113,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.apoorvdarshan.calorietracker.AppContainer
 import com.apoorvdarshan.calorietracker.models.ChatMessage
 import com.apoorvdarshan.calorietracker.ui.components.InAppCameraCaptureDialog
-import com.apoorvdarshan.calorietracker.ui.components.FudGlassSurface
 import com.apoorvdarshan.calorietracker.ui.components.KitchenReceiptRule
 import com.apoorvdarshan.calorietracker.models.SpeechLanguage
 import com.apoorvdarshan.calorietracker.models.SpeechProvider
@@ -237,8 +237,8 @@ fun CoachScreen(container: AppContainer, initialAction: String? = null) {
                 title = {
                     Text(
                         stringResource(R.string.coach_title),
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold
+                        style = MaterialTheme.typography.displaySmall,
+                        color = AppColors.KitchenEspresso
                     )
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -256,9 +256,9 @@ fun CoachScreen(container: AppContainer, initialAction: String? = null) {
                         Box(
                             Modifier
                                 .size(34.dp)
-                                .clip(RoundedCornerShape(11.dp))
-                                .background(AppColors.KitchenBrass.copy(alpha = 0.18f))
-                                .border(1.dp, AppColors.KitchenBrass.copy(alpha = 0.34f), RoundedCornerShape(11.dp)),
+                                .clip(RoundedCornerShape(3.dp))
+                                .background(AppColors.KitchenPaper)
+                                .border(1.dp, AppColors.KitchenEspresso.copy(alpha = 0.22f), RoundedCornerShape(3.dp)),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
@@ -384,47 +384,54 @@ fun CoachScreen(container: AppContainer, initialAction: String? = null) {
  */
 @Composable
 private fun EmptyState(modifier: Modifier = Modifier) {
+    val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
+    val notePaper = if (isDark) Color(0xFF263A61) else Color(0xFFD7E3F6)
     Column(
         modifier = modifier.fillMaxWidth().padding(horizontal = 32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        FudGlassSurface(
-            modifier = Modifier.widthIn(max = 340.dp),
-            cornerRadius = 24.dp,
-            padding = 24.dp
+        Box(
+            modifier = Modifier
+                .widthIn(max = 340.dp)
+                .shadow(
+                    8.dp,
+                    RoundedCornerShape(3.dp),
+                    ambientColor = Color.Black.copy(alpha = 0.14f),
+                    spotColor = Color.Black.copy(alpha = 0.14f)
+                )
+                .clip(RoundedCornerShape(3.dp))
+                .background(notePaper)
+                .border(1.dp, AppColors.KitchenCobalt.copy(alpha = 0.28f), RoundedCornerShape(3.dp))
         ) {
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 28.dp),
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                Box(
-                    Modifier
-                        .size(52.dp)
-                        .clip(RoundedCornerShape(15.dp))
-                        .background(AppColors.KitchenTomato),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        Icons.Filled.Forum,
-                        contentDescription = null,
-                        modifier = Modifier.size(26.dp),
-                        tint = Color.White
-                    )
-                }
                 Text(
                     stringResource(R.string.coach_empty_title),
-                    style = MaterialTheme.typography.headlineLarge
+                    style = MaterialTheme.typography.headlineLarge,
+                    color = AppColors.KitchenCobalt
                 )
-                KitchenReceiptRule()
+                KitchenReceiptRule(color = AppColors.KitchenCobalt)
                 Text(
                     stringResource(R.string.coach_empty_subtitle),
                     fontSize = 15.sp,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.66f),
+                    color = AppColors.KitchenEspresso.copy(alpha = 0.82f),
                     lineHeight = 21.sp
                 )
             }
+            Box(
+                Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(top = 8.dp)
+                    .size(15.dp)
+                    .shadow(3.dp, CircleShape)
+                    .clip(CircleShape)
+                    .background(AppColors.KitchenCobalt)
+                    .border(1.dp, Color.White.copy(alpha = 0.38f), CircleShape)
+            )
         }
     }
 }
@@ -453,12 +460,12 @@ private fun MessageList(
                 ) {
                     Box(
                         Modifier
-                            .clip(RoundedCornerShape(14.dp))
-                            .background(MaterialTheme.colorScheme.surface)
+                            .clip(RoundedCornerShape(3.dp))
+                            .background(AppColors.KitchenPaper)
                             .border(
                                 1.dp,
                                 MaterialTheme.colorScheme.outlineVariant,
-                                RoundedCornerShape(14.dp)
+                                RoundedCornerShape(3.dp)
                             )
                             .padding(horizontal = 14.dp, vertical = 10.dp)
                     ) { TypingIndicator() }
@@ -582,9 +589,9 @@ private fun AssistantBadge() {
 @Composable
 private fun Bubble(content: String, isUser: Boolean, attachmentImageBase64: String? = null) {
     val shape = if (isUser) {
-        RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp, bottomStart = 20.dp, bottomEnd = 6.dp)
+        RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp, bottomStart = 4.dp, bottomEnd = 1.dp)
     } else {
-        RoundedCornerShape(topStart = 6.dp, topEnd = 20.dp, bottomStart = 20.dp, bottomEnd = 20.dp)
+        RoundedCornerShape(topStart = 1.dp, topEnd = 4.dp, bottomStart = 4.dp, bottomEnd = 4.dp)
     }
     val borderColor = if (isUser) AppColors.KitchenEspresso.copy(alpha = 0.20f)
                       else MaterialTheme.colorScheme.outlineVariant
@@ -605,7 +612,7 @@ private fun Bubble(content: String, isUser: Boolean, attachmentImageBase64: Stri
                 if (isUser) {
                     Modifier.background(AppColors.KitchenTomato)
                 } else {
-                    Modifier.background(MaterialTheme.colorScheme.surface)
+                    Modifier.background(AppColors.KitchenPaper)
                 }
             )
             .border(1.dp, borderColor, shape)
@@ -667,13 +674,13 @@ private fun PromptChipRow(chips: List<String>, enabled: Boolean, onTap: (String)
 
 @Composable
 private fun PromptChip(text: String, enabled: Boolean, onTap: (String) -> Unit) {
-    val shape = RoundedCornerShape(12.dp)
+    val shape = RoundedCornerShape(3.dp)
     Box(
         Modifier
             .heightIn(min = 48.dp)
             .clip(shape)
-            .background(AppColors.KitchenBrass.copy(alpha = 0.14f))
-            .border(1.dp, AppColors.KitchenBrass.copy(alpha = 0.34f), shape)
+            .background(AppColors.KitchenPaper)
+            .border(1.dp, AppColors.KitchenBrass.copy(alpha = 0.62f), shape)
             .clickable(enabled = enabled) { onTap(text) }
             .padding(horizontal = 14.dp, vertical = 9.dp)
     ) {
@@ -705,7 +712,7 @@ private fun InputBar(
     onSend: () -> Unit
 ) {
     val canSend = !sending && (value.trim().isNotEmpty() || attachedImageBytes != null)
-    val capsule = RoundedCornerShape(20.dp)
+    val capsule = RoundedCornerShape(4.dp)
 
     Column(
         modifier = Modifier
@@ -719,7 +726,7 @@ private fun InputBar(
                 spotColor = Color.Black.copy(alpha = 0.18f)
             )
             .clip(capsule)
-            .background(MaterialTheme.colorScheme.surface)
+            .background(AppColors.KitchenPaper)
             .border(
                 1.dp,
                 MaterialTheme.colorScheme.outlineVariant,

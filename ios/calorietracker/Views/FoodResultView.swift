@@ -273,82 +273,224 @@ struct FoodResultView: View {
         selectedServingUnitID = ServingUnitOption.grams.unit
     }
 
+    private var reviewHero: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .firstTextBaseline) {
+                Text("Review Food")
+                    .font(.system(.subheadline, design: .rounded, weight: .bold))
+                    .tracking(0.8)
+                    .foregroundStyle(KitchenTablePalette.tomato)
+
+                Spacer()
+
+                HStack(spacing: 3) {
+                    Text(verbatim: "FÜD AI ·")
+                    Text("AI analysis")
+                        .textCase(.uppercase)
+                }
+                .font(.system(size: 9, weight: .semibold, design: .monospaced))
+                .tracking(1)
+                .foregroundStyle(KitchenTablePalette.mutedEspresso)
+            }
+
+            ZStack(alignment: .bottom) {
+                reviewPhoto
+                    .frame(maxWidth: .infinity)
+                    .frame(height: images.isEmpty && emoji == nil ? 250 : 330)
+                    .padding(.bottom, 106)
+
+                reviewReceipt
+                    .padding(.horizontal, 14)
+            }
+
+            if images.count > 1 {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 9) {
+                        ForEach(Array(images.dropFirst().enumerated()), id: \.offset) { index, image in
+                            Image(uiImage: image)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 72, height: 58)
+                                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                                .overlay {
+                                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                        .stroke(KitchenTablePalette.rule, lineWidth: 1)
+                                }
+                                .accessibilityLabel("Review Food")
+                                .accessibilityValue(Text(verbatim: "\(index + 2) / \(images.count)"))
+                        }
+                    }
+                    .padding(.horizontal, 2)
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var reviewPhoto: some View {
+        if let image = images.first {
+            Image(uiImage: image)
+                .resizable()
+                .scaledToFill()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .clipShape(RoundedRectangle(cornerRadius: 30, style: .continuous))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 30, style: .continuous)
+                        .stroke(KitchenTablePalette.paperRaised, lineWidth: 8)
+                        .padding(5)
+                }
+                .overlay {
+                    RoundedRectangle(cornerRadius: 30, style: .continuous)
+                        .stroke(KitchenTablePalette.strongRule, lineWidth: 1)
+                }
+                .shadow(color: KitchenTablePalette.shadow, radius: 10, x: 0, y: 5)
+                .clipped()
+                .accessibilityLabel("Review Food")
+        } else {
+            ZStack {
+                RoundedRectangle(cornerRadius: 30, style: .continuous)
+                    .fill(KitchenTablePalette.paperMuted)
+
+                if let emoji {
+                    Text(emoji)
+                        .font(.system(size: 88))
+                } else {
+                    Image(systemName: "fork.knife.circle")
+                        .font(.system(size: 78, weight: .light))
+                        .foregroundStyle(KitchenTablePalette.cobalt)
+                }
+            }
+            .overlay {
+                RoundedRectangle(cornerRadius: 30, style: .continuous)
+                    .stroke(KitchenTablePalette.rule, lineWidth: 1)
+            }
+        }
+    }
+
+    private var reviewReceipt: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .firstTextBaseline) {
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("AI analysis")
+                        .textCase(.uppercase)
+                        .font(.system(size: 9, weight: .semibold, design: .monospaced))
+                        .tracking(1.4)
+                        .foregroundStyle(KitchenTablePalette.mutedEspresso)
+
+                    Group {
+                        if name.isEmpty {
+                            Text("Meal")
+                        } else {
+                            Text(name)
+                        }
+                    }
+                    .font(.system(.title3, design: .serif, weight: .bold))
+                    .foregroundStyle(KitchenTablePalette.espresso)
+                    .lineLimit(2)
+                }
+
+                Spacer(minLength: 12)
+
+                VStack(alignment: .trailing, spacing: 0) {
+                    Text(scaledCalories.formatted())
+                        .font(.system(.title2, design: .serif, weight: .bold))
+                        .monospacedDigit()
+                    Text(verbatim: "kcal")
+                        .textCase(.uppercase)
+                        .font(.system(size: 9, weight: .bold, design: .monospaced))
+                        .tracking(0.8)
+                }
+                .foregroundStyle(KitchenTablePalette.tomatoDeep)
+            }
+
+            Rectangle()
+                .fill(KitchenTablePalette.rule)
+                .frame(height: 1)
+
+            HStack(spacing: 0) {
+                receiptMacro("Protein", value: scaledProtein, tint: KitchenTablePalette.herb)
+                receiptMacro("Carbs", value: scaledCarbs, tint: KitchenTablePalette.cobalt)
+                receiptMacro("Fat", value: scaledFat, tint: KitchenTablePalette.tomato)
+            }
+        }
+        .padding(.horizontal, 18)
+        .padding(.vertical, 15)
+        .background(KitchenTablePalette.paperRaised)
+        .overlay {
+            RoundedRectangle(cornerRadius: 3, style: .continuous)
+                .stroke(KitchenTablePalette.rule, lineWidth: 1)
+        }
+        .shadow(color: KitchenTablePalette.shadow, radius: 8, x: 0, y: 5)
+        .rotationEffect(.degrees(-0.35))
+    }
+
+    private func receiptMacro(_ label: LocalizedStringKey, value: Double, tint: Color) -> some View {
+        VStack(spacing: 2) {
+            Text(label)
+                .textCase(.uppercase)
+                .font(.system(size: 8, weight: .semibold, design: .monospaced))
+                .tracking(0.5)
+                .foregroundStyle(KitchenTablePalette.mutedEspresso)
+            Text(verbatim: "\(MacroValueFormatter.string(value)) g")
+                .font(.system(.headline, design: .serif, weight: .bold))
+                .foregroundStyle(tint)
+                .monospacedDigit()
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    private var reviewActions: some View {
+        HStack(spacing: 10) {
+            Button("What if?") { showWhatIfSheet = true }
+                .font(.system(.callout, design: .rounded, weight: .semibold))
+                .foregroundStyle(KitchenTablePalette.espresso)
+                .frame(minWidth: 82, minHeight: 50)
+                .padding(.horizontal, 4)
+                .background(KitchenTablePalette.paperRaised, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .stroke(KitchenTablePalette.strongRule, lineWidth: 1)
+                }
+
+            Button(action: logFood) {
+                HStack(spacing: 12) {
+                    Text("Add to Log")
+                    Spacer(minLength: 0)
+                    Text(verbatim: "\(scaledCalories.formatted()) kcal")
+                        .monospacedDigit()
+                }
+                .font(.system(.headline, design: .rounded, weight: .bold))
+                .tracking(0.5)
+                .foregroundStyle(KitchenTablePalette.onStrongAccent)
+                .padding(.horizontal, 18)
+                .frame(maxWidth: .infinity, minHeight: 50)
+                .background(KitchenTablePalette.tomato, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                        .stroke(KitchenTablePalette.tomatoDeep, lineWidth: 1)
+                }
+                .shadow(color: KitchenTablePalette.tomato.opacity(0.22), radius: 6, x: 0, y: 3)
+            }
+            .accessibilityLabel("Log")
+        }
+        .buttonStyle(KitchenTablePressableButtonStyle())
+        .padding(.horizontal, 12)
+        .padding(.top, 8)
+        .padding(.bottom, 10)
+        .background(KitchenTablePalette.canvas.opacity(0.98))
+    }
+
     var body: some View {
         NavigationStack {
             ScrollViewReader { scrollProxy in
                 List {
                     Section {
-                        NeoScreenHeader(
-                            eyebrow: "Food analysis",
-                            title: "Review Food",
-                            subtitle: "Confirm the serving and nutrition before adding it to your day"
-                        ) {
-                            VStack(spacing: 1) {
-                                Text(scaledCalories.formatted())
-                                    .font(.system(.title2, design: .rounded, weight: .black))
-                                    .monospacedDigit()
-                                Text("KCAL")
-                                    .font(.system(size: 9, weight: .black, design: .rounded).width(.condensed))
-                            }
-                            .foregroundStyle(KitchenTablePalette.onBrass)
-                            .frame(minWidth: 66, minHeight: 54)
-                            .padding(.horizontal, 8)
-                            .background(NeoAppColors.brass, in: RoundedRectangle(cornerRadius: 15, style: .continuous))
-                            .overlay {
-                                RoundedRectangle(cornerRadius: 15, style: .continuous)
-                                    .stroke(KitchenTablePalette.brassDeep, lineWidth: NeoAppMetrics.rule)
-                            }
-                        }
+                        reviewHero
                         .neoReviewBareRow()
                     }
 
-                    if !images.isEmpty {
-                        Section {
-                            ScrollView(.horizontal, showsIndicators: false) {
-                                LazyHStack(spacing: 12) {
-                                    ForEach(Array(images.enumerated()), id: \.offset) { index, image in
-                                        Image(uiImage: image)
-                                            .resizable()
-                                            .scaledToFill()
-                                            .frame(width: 220, height: 200)
-                                            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
-                                            .overlay {
-                                                RoundedRectangle(cornerRadius: 18, style: .continuous)
-                                                    .stroke(KitchenTablePalette.rule, lineWidth: NeoAppMetrics.rule)
-                                            }
-                                            .overlay(alignment: .bottomTrailing) {
-                                                if images.count > 1 {
-                                                    Text("\(index + 1)/\(images.count)")
-                                                        .font(.system(.caption2, design: .rounded, weight: .black))
-                                                        .foregroundStyle(KitchenTablePalette.onBrass)
-                                                        .padding(.horizontal, 8)
-                                                        .padding(.vertical, 5)
-                                                        .background(NeoAppColors.brass, in: Capsule())
-                                                        .overlay {
-                                                            Capsule().stroke(KitchenTablePalette.brassDeep, lineWidth: NeoAppMetrics.compactRule)
-                                                        }
-                                                        .padding(8)
-                                                }
-                                            }
-                                    }
-                                }
-                                .scrollTargetLayout()
-                            }
-                            .scrollTargetBehavior(.viewAligned)
-                            .neoReviewRow(padding: 10)
-                        }
-                    } else if let emoji {
-                        Section {
-                            Text(emoji)
-                                .font(.system(size: 76))
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 14)
-                                .neoReviewRow(padding: 0)
-                        }
-                    }
-
                     Section {
-                        NeoSectionBanner(title: "Food Details", detail: "Confirm")
+                        KitchenReviewSectionLabel(title: "Food Details")
                             .neoReviewBareRow()
 
                         HStack {
@@ -360,16 +502,17 @@ struct FoodResultView: View {
                                 .font(.system(.body, design: .rounded, weight: .bold))
                                 .padding(.horizontal, 10)
                                 .padding(.vertical, 7)
-                                .background(NeoAppColors.subtleSurface)
+                                .background(KitchenTablePalette.paperMuted.opacity(0.62), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
                                 .overlay {
-                                    Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                        .stroke(KitchenTablePalette.rule, lineWidth: NeoAppMetrics.compactRule)
                                 }
                         }
                         .neoReviewRow()
                     }
 
                     Section {
-                        NeoSectionBanner(title: "Serving", detail: "Scale")
+                        KitchenReviewSectionLabel(title: "Serving")
                             .neoReviewBareRow()
 
                         HStack {
@@ -513,7 +656,7 @@ struct FoodResultView: View {
                     }
 
                     Section {
-                        NeoSectionBanner(title: "Meal", detail: "Destination", style: .acid)
+                        KitchenReviewSectionLabel(title: "Meal", accent: KitchenTablePalette.herb)
                             .neoReviewBareRow()
 
                         Picker("Meal Type", selection: $mealType) {
@@ -538,6 +681,8 @@ struct FoodResultView: View {
                 .safeAreaInset(edge: .bottom) {
                     if isQuantityEditing {
                         Color.clear.frame(height: 12)
+                    } else {
+                        reviewActions
                     }
                 }
                 .onChange(of: isQuantityEditing) { _, editing in
@@ -549,16 +694,7 @@ struct FoodResultView: View {
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
                         Button("Cancel") { dismiss() }
-                            .tint(NeoAppColors.cobalt)
-                    }
-                    ToolbarItemGroup(placement: .confirmationAction) {
-                        Button("What if?") { showWhatIfSheet = true }
-                            .font(.system(.body, design: .rounded, weight: .semibold))
-                            .tint(NeoAppColors.cobalt)
-
-                        Button("Log", action: logFood)
-                            .font(.system(.body, design: .rounded, weight: .black))
-                            .tint(NeoAppColors.cobalt)
+                            .tint(KitchenTablePalette.tomato)
                     }
                 }
                 .sheet(isPresented: $showWhatIfSheet) {
@@ -663,24 +799,60 @@ private struct NeoReviewNutritionBanner: View {
 
     var body: some View {
         HStack(spacing: 8) {
-            NeoSectionBanner(
+            KitchenReviewSectionLabel(
                 title: "Nutrition",
-                detail: isUnlocked ? "Editing" : "Locked"
+                detail: isUnlocked ? "Unlocked" : "Locked",
+                accent: KitchenTablePalette.cobalt
             )
 
             Button(action: action) {
                 Image(systemName: isUnlocked ? "lock.open.fill" : "lock.fill")
-                    .font(.system(size: 16, weight: .black))
-                    .foregroundStyle(KitchenTablePalette.onBrass)
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundStyle(KitchenTablePalette.cobalt)
                     .frame(width: 44, height: 42)
-                    .background(NeoAppColors.brass, in: RoundedRectangle(cornerRadius: 13, style: .continuous))
+                    .background(KitchenTablePalette.paperRaised, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
                     .overlay {
-                        RoundedRectangle(cornerRadius: 13, style: .continuous)
-                            .stroke(KitchenTablePalette.brassDeep, lineWidth: NeoAppMetrics.rule)
+                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+                            .stroke(KitchenTablePalette.rule, lineWidth: NeoAppMetrics.rule)
                     }
             }
             .buttonStyle(KitchenTablePressableButtonStyle())
             .accessibilityLabel(isUnlocked ? "Lock nutrition editing" : "Unlock nutrition editing")
+        }
+    }
+}
+
+private struct KitchenReviewSectionLabel: View {
+    let title: String
+    var detail: String? = nil
+    var accent: Color = KitchenTablePalette.tomato
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Rectangle()
+                .fill(accent)
+                .frame(width: 4, height: 20)
+
+            Text(LocalizedStringKey(title))
+                .font(.system(.subheadline, design: .serif, weight: .bold))
+                .foregroundStyle(KitchenTablePalette.espresso)
+
+            Spacer(minLength: 8)
+
+            if let detail {
+                Text(LocalizedStringKey(detail))
+                    .textCase(.uppercase)
+                    .font(.system(size: 9, weight: .semibold, design: .monospaced))
+                    .tracking(0.8)
+                    .foregroundStyle(accent)
+            }
+        }
+        .padding(.horizontal, 4)
+        .padding(.vertical, 7)
+        .overlay(alignment: .bottom) {
+            Rectangle()
+                .fill(KitchenTablePalette.rule)
+                .frame(height: 1)
         }
     }
 }
@@ -690,9 +862,14 @@ private extension View {
         padding: CGFloat = 12,
         fill: Color = NeoAppColors.surface
     ) -> some View {
-        NeoOutlinedPanel(fill: fill, padding: padding) {
-            self
-        }
+        self
+            .padding(padding)
+            .background(fill, in: RoundedRectangle(cornerRadius: 4, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: 4, style: .continuous)
+                    .stroke(KitchenTablePalette.rule, lineWidth: 1)
+            }
+            .shadow(color: KitchenTablePalette.shadow.opacity(0.7), radius: 3, x: 0, y: 2)
             .neoListRow()
             .listRowBackground(Color.clear)
             .listRowSeparator(.hidden)
@@ -742,9 +919,9 @@ struct MealIngredientsSection: View {
 
     var body: some View {
         Section {
-            NeoSectionBanner(
+            KitchenReviewSectionLabel(
                 title: "Ingredients",
-                detail: ingredients.isEmpty ? "Optional" : "\(ingredients.count) items"
+                accent: KitchenTablePalette.herb
             )
             .neoReviewBareRow()
 
@@ -762,8 +939,7 @@ struct MealIngredientsSection: View {
                         VStack(alignment: .leading, spacing: 6) {
                             HStack {
                                 Text(ingredient.name)
-                                    .textCase(.uppercase)
-                                    .font(.system(.body, design: .rounded, weight: .black).width(.condensed))
+                                    .font(.system(.body, design: .serif, weight: .semibold))
                                     .foregroundStyle(NeoAppColors.ink)
                                 Spacer()
                                 Text("\(MacroValueFormatter.string(ingredient.grams))g · \(ingredient.calories) kcal")
@@ -788,13 +964,12 @@ struct MealIngredientsSection: View {
 
             Button(action: onAdd) {
                 Label("Add Ingredient", systemImage: "plus")
-                    .textCase(.uppercase)
-                    .font(.system(.body, design: .rounded, weight: .black).width(.condensed))
-                    .foregroundStyle(Color.black)
+                    .font(.system(.body, design: .rounded, weight: .semibold))
+                    .foregroundStyle(KitchenTablePalette.herbDeep)
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.plain)
-            .neoReviewRow(fill: NeoAppColors.acid)
+            .neoReviewRow(fill: KitchenTablePalette.herb.opacity(0.12))
 
             Text("Ingredient changes update the meal's calorie and macro totals automatically.")
                 .font(.system(.caption, design: .rounded, weight: .bold))
@@ -805,13 +980,14 @@ struct MealIngredientsSection: View {
 
     private func macro(_ label: String, _ value: Double, _ color: Color) -> some View {
         Text("\(label) \(MacroValueFormatter.string(value))g")
-            .font(.system(.caption2, design: .rounded, weight: .black))
-            .foregroundStyle(NeoAppColors.onCobalt)
+            .font(.system(.caption2, design: .monospaced, weight: .semibold))
+            .foregroundStyle(KitchenTablePalette.cobaltDeep)
             .padding(.horizontal, 7)
             .padding(.vertical, 4)
-            .background(color)
+            .background(color.opacity(0.13), in: RoundedRectangle(cornerRadius: 5, style: .continuous))
             .overlay {
-                Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                RoundedRectangle(cornerRadius: 5, style: .continuous)
+                    .stroke(color.opacity(0.28), lineWidth: NeoAppMetrics.compactRule)
             }
     }
 }

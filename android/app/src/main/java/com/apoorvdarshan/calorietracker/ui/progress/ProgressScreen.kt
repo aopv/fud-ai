@@ -441,18 +441,17 @@ internal fun NativeProgressScreen(
 
 @Composable
 private fun TimeRangePicker(selected: TimeRange, onSelect: (TimeRange) -> Unit) {
-    val shape = RoundedCornerShape(16.dp)
-    val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
-    val trackFill = MaterialTheme.colorScheme.surface
-    val outline = MaterialTheme.colorScheme.outlineVariant.copy(alpha = if (isDark) 0.86f else 0.72f)
+    val shape = RoundedCornerShape(4.dp)
+    val trackFill = AppColors.KitchenPaper
+    val outline = AppColors.KitchenEspresso.copy(alpha = 0.20f)
     Row(
         Modifier
             .fillMaxWidth()
             .shadow(
-                elevation = if (isDark) 3.dp else 2.dp,
+                elevation = 3.dp,
                 shape = shape,
-                ambientColor = Color.Black.copy(alpha = if (isDark) 0.18f else 0.07f),
-                spotColor = Color.Black.copy(alpha = if (isDark) 0.18f else 0.07f)
+                ambientColor = Color.Black.copy(alpha = 0.09f),
+                spotColor = Color.Black.copy(alpha = 0.09f)
             )
             .clip(shape)
             .background(trackFill)
@@ -461,7 +460,7 @@ private fun TimeRangePicker(selected: TimeRange, onSelect: (TimeRange) -> Unit) 
     ) {
         for (r in TimeRange.values()) {
             val isSel = r == selected
-            val segmentShape = RoundedCornerShape(13.dp)
+            val segmentShape = RoundedCornerShape(2.dp)
             Box(
                 Modifier
                     .weight(1f)
@@ -469,7 +468,7 @@ private fun TimeRangePicker(selected: TimeRange, onSelect: (TimeRange) -> Unit) 
                     .clip(segmentShape)
                     .then(
                         if (isSel) Modifier
-                            .background(MaterialTheme.colorScheme.secondary)
+                            .background(AppColors.KitchenCobalt)
                             .border(1.dp, AppColors.KitchenEspresso.copy(alpha = 0.18f), segmentShape)
                         else Modifier.background(Color.Transparent)
                     )
@@ -482,7 +481,7 @@ private fun TimeRangePicker(selected: TimeRange, onSelect: (TimeRange) -> Unit) 
                     stringResource(r.labelRes),
                     style = MaterialTheme.typography.labelMedium,
                     fontWeight = if (isSel) FontWeight.Bold else FontWeight.SemiBold,
-                    color = if (isSel) Color.White else MaterialTheme.colorScheme.onSurfaceVariant
+                    color = if (isSel) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
@@ -491,11 +490,41 @@ private fun TimeRangePicker(selected: TimeRange, onSelect: (TimeRange) -> Unit) 
 
 @Composable
 private fun CardSection(content: @Composable () -> Unit) {
-    FudGlassSurface(
-        modifier = Modifier.fillMaxWidth(),
-        cornerRadius = 20.dp,
-        padding = 18.dp
-    ) { content() }
+    val shape = RoundedCornerShape(4.dp)
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .shadow(
+                5.dp,
+                shape,
+                ambientColor = Color.Black.copy(alpha = 0.10f),
+                spotColor = Color.Black.copy(alpha = 0.10f)
+            )
+            .clip(shape)
+            .background(AppColors.KitchenPaper)
+            .border(1.dp, AppColors.KitchenEspresso.copy(alpha = 0.20f), shape)
+    ) {
+        Canvas(Modifier.fillMaxSize()) {
+            val step = 16.dp.toPx()
+            var x = step
+            while (x < size.width) {
+                drawLine(
+                    AppColors.KitchenCobalt.copy(alpha = 0.055f),
+                    Offset(x, 0f), Offset(x, size.height), 1.dp.toPx()
+                )
+                x += step
+            }
+            var y = step
+            while (y < size.height) {
+                drawLine(
+                    AppColors.KitchenCobalt.copy(alpha = 0.055f),
+                    Offset(0f, y), Offset(size.width, y), 1.dp.toPx()
+                )
+                y += step
+            }
+        }
+        Column(Modifier.padding(18.dp)) { content() }
+    }
 }
 
 @Composable
@@ -503,7 +532,7 @@ private fun ProgressSectionTitle(title: String) {
     Text(
         text = title,
         style = MaterialTheme.typography.headlineSmall,
-        color = MaterialTheme.colorScheme.onSurface
+        color = AppColors.KitchenEspresso
     )
 }
 
@@ -515,12 +544,12 @@ private fun ProgressAction(
     Row(
         modifier = Modifier
             .defaultMinSize(minHeight = 44.dp)
-            .clip(RoundedCornerShape(12.dp))
-            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.10f))
+            .clip(RoundedCornerShape(3.dp))
+            .background(AppColors.KitchenTomato.copy(alpha = 0.10f))
             .border(
                 1.dp,
                 MaterialTheme.colorScheme.primary.copy(alpha = 0.24f),
-                RoundedCornerShape(12.dp)
+                RoundedCornerShape(3.dp)
             )
             .clickable(role = Role.Button, onClick = onClick)
             .padding(horizontal = 10.dp, vertical = 8.dp),
@@ -546,12 +575,12 @@ private fun ProgressEmptyState(text: String) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(14.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.44f))
+            .clip(RoundedCornerShape(3.dp))
+            .background(AppColors.KitchenPaper.copy(alpha = 0.80f))
             .border(
                 1.dp,
                 MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.72f),
-                RoundedCornerShape(14.dp)
+                RoundedCornerShape(3.dp)
             )
             .padding(horizontal = 16.dp, vertical = 26.dp),
         contentAlignment = Alignment.Center
@@ -629,12 +658,13 @@ private fun StatBadgeRow(items: List<Pair<String, String>>) {
 private fun StatBadge(label: String, value: String, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
-            .clip(RoundedCornerShape(12.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.46f))
+            .shadow(1.dp, RoundedCornerShape(3.dp))
+            .clip(RoundedCornerShape(3.dp))
+            .background(AppColors.KitchenPaper)
             .border(
                 1.dp,
                 MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.72f),
-                RoundedCornerShape(12.dp)
+                RoundedCornerShape(3.dp)
             )
             .padding(horizontal = 6.dp, vertical = 9.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -1644,7 +1674,7 @@ private fun BodyMetricToggle(selected: BodyMetric, onSelect: (BodyMetric) -> Uni
                     label,
                     style = MaterialTheme.typography.labelLarge,
                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.SemiBold,
-                    color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurfaceVariant
+                    color = if (isSelected) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }

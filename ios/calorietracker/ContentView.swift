@@ -1014,6 +1014,75 @@ struct HomeView: View {
         ))
     }
 
+    /// Food is the physical subject of the Kitchen Table screen, so real meal
+    /// photos and entries sit before the compact daily totals. Storage,
+    /// grouping, sorting, sharing, editing, and swipe actions remain unchanged.
+    @ViewBuilder
+    private var foodLogContent: some View {
+        let mealGroups = foodStore.entriesByMeal(for: selectedDate, order: foodLogSortOrder)
+        if mealGroups.isEmpty {
+            Section {
+                NeoHomeSectionBanner(title: isToday ? "Today's Food" : "Food Log", iconName: "fork.knife")
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(EdgeInsets(top: 8, leading: NeoHomeMetrics.horizontalInset, bottom: 0, trailing: NeoHomeMetrics.horizontalInset))
+                NeoEmptyFoodPanel(isToday: isToday)
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(EdgeInsets(top: 0, leading: NeoHomeMetrics.horizontalInset, bottom: 5, trailing: NeoHomeMetrics.horizontalInset))
+            }
+        } else {
+            ForEach(mealGroups) { group in
+                Section {
+                    NeoMealHeader(
+                        title: group.meal.displayName,
+                        iconName: group.meal.icon,
+                        totalCalories: group.totalCalories,
+                        totalProtein: group.totalProtein,
+                        totalCarbs: group.totalCarbs,
+                        totalFat: group.totalFat,
+                        showsSort: group.id == mealGroups.first?.id,
+                        sortOrderRaw: $foodLogSortOrderRaw,
+                        onShare: { MealShare.presentShareSheet(for: group.entries) }
+                    )
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(EdgeInsets(top: 8, leading: NeoHomeMetrics.horizontalInset, bottom: 0, trailing: NeoHomeMetrics.horizontalInset))
+
+                    ForEach(Array(group.entries.enumerated()), id: \.element.id) { index, entry in
+                        NeoFoodRow(entry: entry, position: index + 1)
+                            .listRowBackground(Color.clear)
+                            .listRowSeparator(.hidden)
+                            .listRowInsets(EdgeInsets(top: 0, leading: NeoHomeMetrics.horizontalInset, bottom: 0, trailing: NeoHomeMetrics.horizontalInset))
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                editingEntry = entry
+                                activeSheet = .editFood
+                            }
+                            .accessibilityAddTraits(.isButton)
+                            .accessibilityAction {
+                                editingEntry = entry
+                                activeSheet = .editFood
+                            }
+                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                Button(role: .destructive) {
+                                    foodStore.deleteEntry(entry)
+                                } label: {
+                                    Label("Delete", systemImage: "trash.fill")
+                                }
+                                Button {
+                                    foodStore.toggleFavorite(entry)
+                                } label: {
+                                    Label(foodStore.isFavorite(entry) ? "Unfavorite" : "Favorite", systemImage: foodStore.isFavorite(entry) ? "heart.slash.fill" : "heart.fill")
+                                }
+                                .tint(NeoHomeColors.cobalt)
+                            }
+                    }
+                }
+            }
+        }
+    }
+
     var body: some View {
         // Explicit observation tracking — reads profileStore.profile at body root
         // so SwiftUI invalidates this view on every profile mutation.
@@ -1034,19 +1103,21 @@ struct HomeView: View {
                         calorieGoal: calorieGoal
                     )
                     .padding(.horizontal, 6)
-                    .padding(.vertical, 5)
+                    .padding(.vertical, 3)
                     .kitchenTableSurface(
                         fill: NeoHomeColors.surface,
                         border: KitchenTablePalette.rule,
-                        cornerRadius: 18,
+                        cornerRadius: 9,
                         lineWidth: NeoHomeMetrics.rule,
-                        shadowRadius: 5,
+                        shadowRadius: 3,
                         shadowY: 2
                     )
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
                     .listRowInsets(EdgeInsets(top: 0, leading: NeoHomeMetrics.horizontalInset, bottom: 5, trailing: NeoHomeMetrics.horizontalInset))
                 }
+
+                foodLogContent
 
                 // Calorie and target values retain the same selected-day calculations and
                 // launch fill animation; only their presentation changes.
@@ -1142,76 +1213,13 @@ struct HomeView: View {
                     }
                 }
 
-                // Food list
-                let mealGroups = foodStore.entriesByMeal(for: selectedDate, order: foodLogSortOrder)
-                if mealGroups.isEmpty {
-                    Section {
-                        NeoHomeSectionBanner(title: isToday ? "Today's Food" : "Food Log", iconName: "fork.knife")
-                            .listRowBackground(Color.clear)
-                            .listRowSeparator(.hidden)
-                            .listRowInsets(EdgeInsets(top: 8, leading: NeoHomeMetrics.horizontalInset, bottom: 0, trailing: NeoHomeMetrics.horizontalInset))
-                        NeoEmptyFoodPanel(isToday: isToday)
-                            .listRowBackground(Color.clear)
-                            .listRowSeparator(.hidden)
-                            .listRowInsets(EdgeInsets(top: 0, leading: NeoHomeMetrics.horizontalInset, bottom: 5, trailing: NeoHomeMetrics.horizontalInset))
-                    }
-                } else {
-                    ForEach(mealGroups) { group in
-                        Section {
-                            NeoMealHeader(
-                                title: group.meal.displayName,
-                                iconName: group.meal.icon,
-                                totalCalories: group.totalCalories,
-                                totalProtein: group.totalProtein,
-                                totalCarbs: group.totalCarbs,
-                                totalFat: group.totalFat,
-                                showsSort: group.id == mealGroups.first?.id,
-                                sortOrderRaw: $foodLogSortOrderRaw,
-                                onShare: { MealShare.presentShareSheet(for: group.entries) }
-                            )
-                            .listRowBackground(Color.clear)
-                            .listRowSeparator(.hidden)
-                            .listRowInsets(EdgeInsets(top: 8, leading: NeoHomeMetrics.horizontalInset, bottom: 0, trailing: NeoHomeMetrics.horizontalInset))
-
-                            ForEach(Array(group.entries.enumerated()), id: \.element.id) { index, entry in
-                                NeoFoodRow(entry: entry, position: index + 1)
-                                    .listRowBackground(Color.clear)
-                                    .listRowSeparator(.hidden)
-                                    .listRowInsets(EdgeInsets(top: 0, leading: NeoHomeMetrics.horizontalInset, bottom: 0, trailing: NeoHomeMetrics.horizontalInset))
-                                    .contentShape(Rectangle())
-                                    .onTapGesture {
-                                        editingEntry = entry
-                                        activeSheet = .editFood
-                                    }
-                                    .accessibilityAddTraits(.isButton)
-                                    .accessibilityAction {
-                                        editingEntry = entry
-                                        activeSheet = .editFood
-                                    }
-                                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                        Button(role: .destructive) {
-                                            foodStore.deleteEntry(entry)
-                                        } label: {
-                                            Label("Delete", systemImage: "trash.fill")
-                                        }
-                                        Button {
-                                            foodStore.toggleFavorite(entry)
-                                        } label: {
-                                            Label(foodStore.isFavorite(entry) ? "Unfavorite" : "Favorite", systemImage: foodStore.isFavorite(entry) ? "heart.slash.fill" : "heart.fill")
-                                        }
-                                        .tint(NeoHomeColors.cobalt)
-                                    }
-                            }
-                        }
-                    }
-                }
             }
             .scrollContentBackground(.hidden)
             .background(KitchenTableBackdrop())
             .environment(\.defaultMinListRowHeight, 1)
-            .listSectionSpacing(10)
+            .listSectionSpacing(7)
             .animation(.snappy, value: selectedDate)
-            .contentMargins(.bottom, NeoAppMetrics.bottomBarHeight + 104, for: .scrollContent)
+            .contentMargins(.bottom, 74, for: .scrollContent)
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
             .overlay(alignment: .bottom) {
@@ -1282,7 +1290,7 @@ struct HomeView: View {
                     .presentationCompactAdaptation(.popover)
                 }
                 .padding(.horizontal, NeoHomeMetrics.horizontalInset)
-                .padding(.bottom, NeoAppMetrics.bottomBarHeight + 18)
+                .padding(.bottom, NeoAppMetrics.bottomBarHeight + 28)
             }
             .fullScreenCover(isPresented: $showCamera) {
                 CameraView(
@@ -1398,9 +1406,9 @@ struct HomeView: View {
                 case .analyzing:
                     AnalyzingView(image: currentImage)
                 case .analyzingText:
-                    AnalyzingView(image: nil, message: "Looking up nutrition...")
+                    AnalyzingView(image: nil, message: String(localized: "Analyzing with AI…"))
                 case .lookingUpBarcode:
-                    AnalyzingView(image: nil, message: "Looking up barcode...")
+                    AnalyzingView(image: nil, message: String(localized: "Analyzing with AI…"))
                 case .foodResult:
                     if let result = currentFoodResult {
                         FoodResultView(

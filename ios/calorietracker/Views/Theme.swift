@@ -208,102 +208,84 @@ enum AppColors {
 /// primary food action, cobalt for navigation/data, herb for success/protein,
 /// and brass for secondary highlights.
 enum KitchenTablePalette {
-    static let canvas = Color(uiColor: UIColor { traits in
-        if traits.userInterfaceStyle == .dark {
-            return UIColor(red: 0.075, green: 0.060, blue: 0.046, alpha: 1)
-        }
-        return UIColor(red: 0.957, green: 0.918, blue: 0.843, alpha: 1)
-    })
+    private static func adaptive(light: UIColor, dark: UIColor) -> Color {
+        Color(uiColor: UIColor { traits in
+            traits.userInterfaceStyle == .dark ? dark : light
+        })
+    }
 
-    static let paper = Color(uiColor: UIColor { traits in
-        if traits.userInterfaceStyle == .dark {
-            return UIColor(red: 0.125, green: 0.105, blue: 0.082, alpha: 1)
-        }
-        return UIColor(red: 1.0, green: 0.982, blue: 0.925, alpha: 1)
-    })
-
-    static let paperRaised = Color(uiColor: UIColor { traits in
-        if traits.userInterfaceStyle == .dark {
-            return UIColor(red: 0.165, green: 0.137, blue: 0.104, alpha: 1)
-        }
-        return UIColor(red: 1.0, green: 0.993, blue: 0.965, alpha: 1)
-    })
-
-    static let paperMuted = Color(uiColor: UIColor { traits in
-        if traits.userInterfaceStyle == .dark {
-            return UIColor(red: 0.188, green: 0.156, blue: 0.118, alpha: 1)
-        }
-        return UIColor(red: 0.922, green: 0.870, blue: 0.775, alpha: 1)
-    })
+    static let canvas = adaptive(
+        light: UIColor(red: 0.967, green: 0.944, blue: 0.895, alpha: 1),
+        dark: UIColor(red: 0.075, green: 0.052, blue: 0.036, alpha: 1)
+    )
+    static let paper = adaptive(
+        light: UIColor(red: 0.997, green: 0.982, blue: 0.941, alpha: 1),
+        dark: UIColor(red: 0.145, green: 0.111, blue: 0.079, alpha: 1)
+    )
+    static let paperRaised = adaptive(
+        light: UIColor(red: 1.0, green: 0.994, blue: 0.971, alpha: 1),
+        dark: UIColor(red: 0.190, green: 0.148, blue: 0.105, alpha: 1)
+    )
+    static let paperMuted = adaptive(
+        light: UIColor(red: 0.925, green: 0.886, blue: 0.805, alpha: 1),
+        dark: UIColor(red: 0.255, green: 0.198, blue: 0.137, alpha: 1)
+    )
 
     static let espresso = Color(uiColor: UIColor { traits in
         if traits.userInterfaceStyle == .dark {
-            return UIColor(red: 0.969, green: 0.925, blue: 0.843, alpha: 1)
+            return traits.accessibilityContrast == .high
+                ? UIColor(red: 1.0, green: 0.978, blue: 0.925, alpha: 1)
+                : UIColor(red: 0.949, green: 0.906, blue: 0.821, alpha: 1)
         }
-        let value: CGFloat = traits.accessibilityContrast == .high ? 0.055 : 0.105
-        return UIColor(red: value + 0.08, green: value + 0.035, blue: value, alpha: 1)
+        let value: CGFloat = traits.accessibilityContrast == .high ? 0.045 : 0.075
+        return UIColor(red: value + 0.085, green: value + 0.040, blue: value, alpha: 1)
     })
-
-    static let mutedEspresso = Color(uiColor: UIColor { traits in
-        if traits.userInterfaceStyle == .dark {
-            return UIColor(red: 0.745, green: 0.690, blue: 0.600, alpha: 1)
-        }
-        return UIColor(red: 0.360, green: 0.295, blue: 0.235, alpha: 1)
-    })
-
-    static let tomato = Color(uiColor: UIColor { traits in
-        traits.userInterfaceStyle == .dark
-            ? UIColor(red: 0.910, green: 0.337, blue: 0.235, alpha: 1)
-            : UIColor(red: 0.776, green: 0.196, blue: 0.118, alpha: 1)
-    })
-    static let tomatoDeep = Color(uiColor: UIColor { traits in
-        traits.userInterfaceStyle == .dark
-            ? UIColor(red: 0.700, green: 0.205, blue: 0.135, alpha: 1)
-            : UIColor(red: 0.600, green: 0.125, blue: 0.075, alpha: 1)
-    })
-
-    static let cobalt = Color(uiColor: UIColor { traits in
-        traits.userInterfaceStyle == .dark
-            ? UIColor(red: 0.365, green: 0.515, blue: 0.900, alpha: 1)
-            : UIColor(red: 0.110, green: 0.260, blue: 0.625, alpha: 1)
-    })
-    static let cobaltDeep = Color(uiColor: UIColor { traits in
-        traits.userInterfaceStyle == .dark
-            ? UIColor(red: 0.245, green: 0.360, blue: 0.690, alpha: 1)
-            : UIColor(red: 0.070, green: 0.170, blue: 0.455, alpha: 1)
-    })
-
-    static let herb = Color(uiColor: UIColor { traits in
-        traits.userInterfaceStyle == .dark
-            ? UIColor(red: 0.390, green: 0.655, blue: 0.390, alpha: 1)
-            : UIColor(red: 0.190, green: 0.390, blue: 0.220, alpha: 1)
-    })
-    static let herbDeep = Color(uiColor: UIColor { traits in
-        traits.userInterfaceStyle == .dark
-            ? UIColor(red: 0.265, green: 0.490, blue: 0.270, alpha: 1)
-            : UIColor(red: 0.110, green: 0.285, blue: 0.145, alpha: 1)
-    })
-
-    static let brass = Color(uiColor: UIColor { traits in
-        traits.userInterfaceStyle == .dark
-            ? UIColor(red: 0.870, green: 0.665, blue: 0.285, alpha: 1)
-            : UIColor(red: 0.720, green: 0.470, blue: 0.125, alpha: 1)
-    })
-    static let brassDeep = Color(uiColor: UIColor { traits in
-        traits.userInterfaceStyle == .dark
-            ? UIColor(red: 0.665, green: 0.475, blue: 0.175, alpha: 1)
-            : UIColor(red: 0.545, green: 0.325, blue: 0.075, alpha: 1)
-    })
-
-    static let onStrongAccent = Color(uiColor: UIColor { traits in
-        traits.userInterfaceStyle == .dark
-            ? UIColor(red: 0.155, green: 0.095, blue: 0.055, alpha: 1)
-            : UIColor(red: 1.0, green: 0.975, blue: 0.910, alpha: 1)
-    })
+    static let mutedEspresso = adaptive(
+        light: UIColor(red: 0.365, green: 0.296, blue: 0.235, alpha: 1),
+        dark: UIColor(red: 0.760, green: 0.698, blue: 0.598, alpha: 1)
+    )
+    static let tomato = adaptive(
+        light: UIColor(red: 0.874, green: 0.231, blue: 0.126, alpha: 1),
+        dark: UIColor(red: 0.745, green: 0.245, blue: 0.160, alpha: 1)
+    )
+    static let tomatoDeep = adaptive(
+        light: UIColor(red: 0.655, green: 0.128, blue: 0.072, alpha: 1),
+        dark: UIColor(red: 0.965, green: 0.430, blue: 0.310, alpha: 1)
+    )
+    static let cobalt = adaptive(
+        light: UIColor(red: 0.075, green: 0.245, blue: 0.650, alpha: 1),
+        dark: UIColor(red: 0.210, green: 0.355, blue: 0.675, alpha: 1)
+    )
+    static let cobaltDeep = adaptive(
+        light: UIColor(red: 0.040, green: 0.145, blue: 0.430, alpha: 1),
+        dark: UIColor(red: 0.505, green: 0.635, blue: 0.905, alpha: 1)
+    )
+    static let herb = adaptive(
+        light: UIColor(red: 0.245, green: 0.425, blue: 0.220, alpha: 1),
+        dark: UIColor(red: 0.285, green: 0.480, blue: 0.285, alpha: 1)
+    )
+    static let herbDeep = adaptive(
+        light: UIColor(red: 0.115, green: 0.280, blue: 0.125, alpha: 1),
+        dark: UIColor(red: 0.560, green: 0.735, blue: 0.520, alpha: 1)
+    )
+    static let brass = adaptive(
+        light: UIColor(red: 0.770, green: 0.555, blue: 0.205, alpha: 1),
+        dark: UIColor(red: 0.815, green: 0.620, blue: 0.285, alpha: 1)
+    )
+    static let brassDeep = adaptive(
+        light: UIColor(red: 0.550, green: 0.330, blue: 0.085, alpha: 1),
+        dark: UIColor(red: 0.930, green: 0.755, blue: 0.405, alpha: 1)
+    )
+    static let onStrongAccent = adaptive(
+        light: UIColor(red: 1.0, green: 0.977, blue: 0.920, alpha: 1),
+        dark: UIColor(red: 1.0, green: 0.960, blue: 0.875, alpha: 1)
+    )
     static let onBrass = Color(red: 0.155, green: 0.095, blue: 0.055)
     static let rule = espresso.opacity(0.20)
     static let strongRule = espresso.opacity(0.42)
-    static let shadow = Color.black.opacity(0.12)
+    static let shadow = Color(uiColor: UIColor { traits in
+        UIColor.black.withAlphaComponent(traits.userInterfaceStyle == .dark ? 0.34 : 0.12)
+    })
 }
 
 /// A restrained shared paper grain. It is decorative, ignores interaction, and
@@ -319,9 +301,10 @@ struct KitchenTableBackdrop: View {
 
             LinearGradient(
                 colors: [
-                    KitchenTablePalette.paper.opacity(colorScheme == .dark ? 0.18 : 0.34),
+                    KitchenTablePalette.paper.opacity(colorScheme == .dark ? 0.22 : 0.38),
                     KitchenTablePalette.canvas,
-                    KitchenTablePalette.tomato.opacity(colorScheme == .dark ? 0.025 : 0.035)
+                    (colorScheme == .dark ? KitchenTablePalette.brass : KitchenTablePalette.tomato)
+                        .opacity(colorScheme == .dark ? 0.025 : 0.025)
                 ],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
@@ -332,7 +315,7 @@ struct KitchenTableBackdrop: View {
                     .resizable()
                     .scaledToFill()
                     .blendMode(colorScheme == .dark ? .softLight : .multiply)
-                    .opacity(colorScheme == .dark ? 0.08 : 0.11)
+                    .opacity(colorScheme == .dark ? 0.075 : 0.10)
                     .allowsHitTesting(false)
                     .accessibilityHidden(true)
             }

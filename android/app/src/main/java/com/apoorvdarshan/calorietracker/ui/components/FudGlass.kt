@@ -53,7 +53,8 @@ fun FudGlassSurface(
     content: @Composable BoxScope.() -> Unit
 ) {
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
-    val shape = RoundedCornerShape(cornerRadius)
+    val resolvedCornerRadius = if (cornerRadius > 8.dp) 8.dp else cornerRadius
+    val shape = RoundedCornerShape(resolvedCornerRadius)
     val baseColor = if (isDark) AppColors.KitchenRoastPaper else AppColors.KitchenPaper
     val shadowColor = Color.Black.copy(alpha = if (isDark) 0.24f else 0.10f)
     val borderColor = if (isDark) {
@@ -118,9 +119,9 @@ fun FudIconBubble(
     Box(
         modifier = modifier
             .size(size)
-            .clip(RoundedCornerShape(size * 0.34f))
+            .clip(RoundedCornerShape(4.dp))
             .background(resolvedTint.copy(alpha = 0.11f))
-            .border(1.dp, resolvedTint.copy(alpha = 0.18f), RoundedCornerShape(size * 0.34f)),
+            .border(1.dp, resolvedTint.copy(alpha = 0.28f), RoundedCornerShape(4.dp)),
         contentAlignment = Alignment.Center
     ) {
         Icon(
@@ -149,7 +150,7 @@ fun FudGlassTextField(
         fontWeight = FontWeight.Medium
     )
 ) {
-    val shape = RoundedCornerShape(14.dp)
+    val shape = RoundedCornerShape(4.dp)
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
     val fieldFill = if (isDark) {
         AppColors.KitchenRoastPaper
@@ -208,7 +209,7 @@ fun FudGlassDialog(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(horizontal = 24.dp),
-            cornerRadius = 24.dp,
+            cornerRadius = 6.dp,
             padding = 20.dp
         ) {
             Column(
@@ -241,9 +242,9 @@ fun FudGlassPrimaryButton(
     Row(
         modifier
             .height(height)
-            .clip(RoundedCornerShape(14.dp))
+            .clip(RoundedCornerShape(4.dp))
             .background(brush)
-            .border(1.dp, AppColors.KitchenEspresso.copy(alpha = 0.32f), RoundedCornerShape(14.dp))
+            .border(1.dp, AppColors.KitchenEspresso.copy(alpha = 0.32f), RoundedCornerShape(4.dp))
             .clickable(enabled = enabled, onClick = onClick)
             .padding(horizontal = 18.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -265,7 +266,7 @@ fun FudGlassTextButton(
     color: Color = Color.Unspecified
 ) {
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
-    val shape = RoundedCornerShape(12.dp)
+    val shape = RoundedCornerShape(4.dp)
     val fill = if (isDark) {
         AppColors.KitchenRoastPaper
     } else {

@@ -143,7 +143,7 @@ private fun Hero(item: ExerciseItem, showMetrics: Boolean, onToggle: () -> Unit)
         Icon(
             Icons.Filled.Info,
             contentDescription = stringResource(if (showMetrics) R.string.hide_details else R.string.show_details),
-            tint = colors.accent,
+            tint = AppColors.KitchenRoast,
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .padding(16.dp)
@@ -214,7 +214,12 @@ private fun InstructionSection(instructions: List<String>, modifier: Modifier = 
                 Modifier.size(30.dp).clip(RoundedCornerShape(10.dp)).background(AppColors.KitchenCobalt),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(Icons.Filled.FormatListNumbered, null, tint = Color.White, modifier = Modifier.size(18.dp))
+                Icon(
+                    Icons.Filled.FormatListNumbered,
+                    null,
+                    tint = MaterialTheme.colorScheme.onSecondary,
+                    modifier = Modifier.size(18.dp)
+                )
             }
             Text(stringResource(R.string.instructions), color = colors.charcoal, fontSize = 20.sp, fontWeight = FontWeight.Bold)
             Spacer(Modifier.weight(1f))
@@ -225,7 +230,7 @@ private fun InstructionSection(instructions: List<String>, modifier: Modifier = 
                     .border(1.dp, AppColors.KitchenEspresso.copy(alpha = 0.20f), RoundedCornerShape(9.dp))
                     .padding(horizontal = 9.dp, vertical = 4.dp)
             ) {
-                Text("${instructions.size}", color = AppColors.KitchenEspresso, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                Text("${instructions.size}", color = AppColors.KitchenRoast, fontSize = 12.sp, fontWeight = FontWeight.Bold)
             }
         }
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -243,7 +248,12 @@ private fun InstructionSection(instructions: List<String>, modifier: Modifier = 
                         Modifier.size(27.dp).clip(RoundedCornerShape(9.dp)).background(AppColors.KitchenCobalt),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text("${index + 1}", color = colors.onAccent, fontSize = 15.sp, fontWeight = FontWeight.Black)
+                        Text(
+                            "${index + 1}",
+                            color = MaterialTheme.colorScheme.onSecondary,
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Black
+                        )
                     }
                     Text(
                         instruction,

@@ -47,6 +47,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.luminance
@@ -277,7 +278,7 @@ fun EditFoodEntrySheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = state,
-        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
+        shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
         containerColor = sheetSurface
     ) {
         // While the note differs from what's saved, the primary button becomes
@@ -367,8 +368,11 @@ fun EditFoodEntrySheet(
                                         contentDescription = "Photo ${index + 1}",
                                         contentScale = androidx.compose.ui.layout.ContentScale.Crop,
                                         modifier = Modifier
-                                            .size(240.dp)
-                                            .clip(RoundedCornerShape(20.dp))
+                                            .size(280.dp)
+                                            .shadow(6.dp, RoundedCornerShape(4.dp))
+                                            .background(AppColors.KitchenPaper)
+                                            .padding(7.dp)
+                                            .clip(RoundedCornerShape(2.dp))
                                     )
                                     if (bitmaps.size > 1) {
                                         Text(

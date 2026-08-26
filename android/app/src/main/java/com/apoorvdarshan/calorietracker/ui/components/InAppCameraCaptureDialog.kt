@@ -225,7 +225,7 @@ fun InAppCameraCaptureDialog(
                     .padding(bottom = 36.dp)
                     .size(76.dp)
                     .clip(CircleShape)
-                    .background(AppColors.KitchenPaper.copy(alpha = 0.96f))
+                    .background(AppColors.KitchenCream.copy(alpha = 0.96f))
                     .border(5.dp, AppColors.KitchenTomato, CircleShape)
             ) {
                 if (isCapturing) {

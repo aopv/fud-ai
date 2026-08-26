@@ -180,9 +180,9 @@ private fun DayTile(
         Text(
             narrowDay(date.dayOfWeek),
             fontSize = 11.sp,
-            fontWeight = FontWeight.Medium,
-            color = if (isSelected) AppColors.Calorie
-                    else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f * 0.6f)
+            fontWeight = FontWeight.Bold,
+            color = if (isSelected) AppColors.KitchenTomato
+                    else AppColors.KitchenEspresso.copy(alpha = 0.58f)
         )
 
         // .font(.system(.body, design: .rounded, weight: .semibold))
@@ -197,17 +197,22 @@ private fun DayTile(
                     if (isSelected) {
                         it
                             .shadow(
-                                elevation = 6.dp,
-                                shape = CircleShape,
-                                ambientColor = AppColors.Calorie.copy(alpha = 0.35f),
-                                spotColor = AppColors.Calorie.copy(alpha = 0.35f)
+                                elevation = 3.dp,
+                                shape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp),
+                                ambientColor = Color.Black.copy(alpha = 0.13f),
+                                spotColor = Color.Black.copy(alpha = 0.13f)
                             )
-                            .clip(CircleShape)
-                            .background(Brush.linearGradient(listOf(AppColors.CalorieStart, AppColors.CalorieEnd)))
+                            .clip(androidx.compose.foundation.shape.RoundedCornerShape(10.dp))
+                            .background(AppColors.KitchenBrass)
+                            .border(
+                                1.dp,
+                                AppColors.KitchenEspresso.copy(alpha = 0.22f),
+                                androidx.compose.foundation.shape.RoundedCornerShape(10.dp)
+                            )
                     } else if (isToday) {
                         it
                             .clip(CircleShape)
-                            .border(1.5.dp, AppColors.Calorie.copy(alpha = 0.35f), CircleShape)
+                            .border(1.5.dp, AppColors.KitchenTomato.copy(alpha = 0.4f), CircleShape)
                     } else it
                 },
             contentAlignment = Alignment.Center
@@ -217,9 +222,9 @@ private fun DayTile(
                 fontSize = 17.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = when {
-                    isSelected -> Color.White
-                    isToday -> AppColors.Calorie
-                    else -> MaterialTheme.colorScheme.onSurface
+                    isSelected -> AppColors.KitchenRoast
+                    isToday -> AppColors.KitchenTomato
+                    else -> AppColors.KitchenEspresso
                 }
             )
         }

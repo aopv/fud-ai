@@ -43,25 +43,63 @@ object AppColors {
      * Fud AI's Kitchen Table palette. The legacy Neo* aliases remain so feature
      * screens can adopt the new presentation without changing their contracts.
      */
-    val KitchenBone = Color(0xFFF4E8D2)
-    val KitchenPaper = Color(0xFFFFF8EA)
-    val KitchenEspresso = Color(0xFF2C1E19)
-    val KitchenTomato = Color(0xFFB8412F)
-    val KitchenCobalt = Color(0xFF315BA9)
-    val KitchenHerb = Color(0xFF4F7252)
-    val KitchenBrass = Color(0xFFC7A24A)
+    private val LightKitchenBone = Color(0xFFF4E8D2)
+    private val LightKitchenPaper = Color(0xFFFFF8EA)
+    private val LightKitchenEspresso = Color(0xFF2C1E19)
+    private val LightKitchenTomato = Color(0xFFB8412F)
+    private val LightKitchenCobalt = Color(0xFF315BA9)
+    private val LightKitchenHerb = Color(0xFF4F7252)
+    private val LightKitchenBrass = Color(0xFFC7A24A)
+
+    // Dark mode keeps the same table-and-receipt hierarchy, only at night:
+    // roast canvas, lifted brown paper, cream ink, and brighter stamp pigments.
+    private val DarkKitchenBone = Color(0xFF251C18)
+    private val DarkKitchenPaper = Color(0xFF352923)
+    private val DarkKitchenEspresso = Color(0xFFF4E6D0)
+    private val DarkKitchenTomato = Color(0xFFE36A50)
+    private val DarkKitchenCobalt = Color(0xFF82A6ED)
+    private val DarkKitchenHerb = Color(0xFF91B38B)
+    private val DarkKitchenBrass = Color(0xFFDDB866)
+
+    /** Stable light cream for ink placed on tomato controls and camera chrome. */
+    val KitchenCream = LightKitchenPaper
+
+    private var darkKitchen = false
+
+    val KitchenBone: Color
+        get() = if (darkKitchen) DarkKitchenBone else LightKitchenBone
+    val KitchenPaper: Color
+        get() = if (darkKitchen) DarkKitchenPaper else LightKitchenPaper
+    val KitchenEspresso: Color
+        get() = if (darkKitchen) DarkKitchenEspresso else LightKitchenEspresso
+    val KitchenTomato: Color
+        get() = if (darkKitchen) DarkKitchenTomato else LightKitchenTomato
+    val KitchenCobalt: Color
+        get() = if (darkKitchen) DarkKitchenCobalt else LightKitchenCobalt
+    val KitchenHerb: Color
+        get() = if (darkKitchen) DarkKitchenHerb else LightKitchenHerb
+    val KitchenBrass: Color
+        get() = if (darkKitchen) DarkKitchenBrass else LightKitchenBrass
     val KitchenRoast = Color(0xFF1F1714)
     val KitchenRoastPaper = Color(0xFF2A211D)
 
-    val NeoCobalt = KitchenCobalt
-    val NeoAcid = KitchenBrass
-    val NeoInk = KitchenEspresso
-    val NeoPaper = KitchenBone
+    val NeoCobalt: Color
+        get() = KitchenCobalt
+    val NeoAcid: Color
+        get() = KitchenBrass
+    val NeoInk: Color
+        get() = KitchenEspresso
+    val NeoPaper: Color
+        get() = KitchenBone
 
     private var activeThemeColor: AppThemeColor = AppThemeColor.FUD_PINK
 
     fun setThemeColor(themeColor: AppThemeColor) {
         activeThemeColor = themeColor
+    }
+
+    fun setDarkTheme(enabled: Boolean) {
+        darkKitchen = enabled
     }
 
     val ThemeColor: AppThemeColor
@@ -88,10 +126,10 @@ object AppColors {
     val CalorieGradient: Brush
         get() = Brush.linearGradient(listOf(CalorieStart, CalorieEnd))
 
-    val AppBackgroundLight = KitchenBone
+    val AppBackgroundLight = LightKitchenBone
     val AppBackgroundDark = KitchenRoast
 
-    val AppCardLight = KitchenPaper
+    val AppCardLight = LightKitchenPaper
     val AppCardDark = KitchenRoastPaper
 
     val OnLight = KitchenEspresso

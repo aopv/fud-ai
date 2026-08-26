@@ -2,69 +2,141 @@ import SwiftUI
 
 struct AnalyzingView: View {
     let image: UIImage?
-    var message: String = "Analyzing your food..."
+    var message: String = String(localized: "Analyzing with AI…")
 
     var body: some View {
-        VStack(spacing: NeoAppMetrics.sectionSpacing) {
-            NeoScreenHeader(
-                eyebrow: "FUD AI VISION",
-                title: "Analyzing",
-                subtitle: message
-            )
-
-            Spacer(minLength: 8)
-
+        GeometryReader { proxy in
             ZStack {
-                if let image {
-                    Image(uiImage: image)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(maxWidth: 250, maxHeight: 250)
-                        .compositingGroup()
-                        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-                } else {
-                    NeoAppColors.subtleSurface
+                KitchenTableBackdrop()
 
-                    Image(systemName: "text.magnifyingglass")
-                        .font(.system(size: 64, weight: .black))
-                        .foregroundStyle(NeoAppColors.cobalt)
+                VStack(spacing: 18) {
+                    HStack(alignment: .firstTextBaseline) {
+                        Text("Review Food")
+                            .font(.system(.subheadline, design: .rounded, weight: .bold))
+                            .tracking(0.8)
+                            .foregroundStyle(KitchenTablePalette.tomato)
+
+                        Spacer()
+
+                        Text("AI analysis")
+                            .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                            .tracking(1.1)
+                            .foregroundStyle(KitchenTablePalette.mutedEspresso)
+                    }
+
+                    ZStack(alignment: .bottom) {
+                        mealPreview
+                            .frame(
+                                width: min(proxy.size.width - 32, 390),
+                                height: min(proxy.size.width - 32, 390)
+                            )
+                            .padding(.bottom, 88)
+
+                        analysisReceipt
+                            .frame(maxWidth: min(proxy.size.width - 58, 344))
+                    }
+                    .frame(maxHeight: .infinity)
+
+                    Text("Analyzing with AI…")
+                        .font(.system(.caption, design: .rounded, weight: .medium))
+                        .foregroundStyle(KitchenTablePalette.mutedEspresso)
+                        .multilineTextAlignment(.center)
+                }
+                .padding(.horizontal, 16)
+                .padding(.top, 12)
+                .padding(.bottom, 24)
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel(message)
+        .accessibilityValue("Analyzing")
+    }
+
+    @ViewBuilder
+    private var mealPreview: some View {
+        ZStack {
+            Circle()
+                .fill(KitchenTablePalette.paperMuted)
+
+            if let image {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFill()
+                    .clipShape(Circle())
+                    .padding(9)
+            } else {
+                VStack(spacing: 12) {
+                    Image(systemName: "fork.knife.circle")
+                        .font(.system(size: 72, weight: .light))
+                        .foregroundStyle(KitchenTablePalette.cobalt)
+                    Text("Analyzing with AI…")
+                        .font(.system(.callout, design: .serif, weight: .semibold))
+                        .foregroundStyle(KitchenTablePalette.mutedEspresso)
                 }
             }
-            .frame(maxWidth: 250, minHeight: 220, maxHeight: 250)
-            .background(NeoAppColors.surface, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
-            .overlay {
-                RoundedRectangle(cornerRadius: 22, style: .continuous)
-                    .stroke(KitchenTablePalette.rule, lineWidth: NeoAppMetrics.rule)
-            }
-            .shadow(color: KitchenTablePalette.shadow, radius: 8, x: 0, y: 4)
-            .accessibilityHidden(true)
+        }
+        .overlay {
+            Circle()
+                .stroke(KitchenTablePalette.strongRule, lineWidth: 1)
+        }
+        .overlay {
+            Circle()
+                .stroke(KitchenTablePalette.paperRaised, lineWidth: 7)
+                .padding(8)
+        }
+        .shadow(color: KitchenTablePalette.shadow, radius: 12, x: 0, y: 6)
+        .accessibilityHidden(true)
+    }
 
-            VStack(spacing: 12) {
+    private var analysisReceipt: some View {
+        VStack(alignment: .leading, spacing: 11) {
+            HStack(alignment: .firstTextBaseline) {
+                Text("AI analysis")
+                    .textCase(.uppercase)
+                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                    .tracking(1.4)
+
+                Spacer()
+
+                Text("Analyzing")
+                    .textCase(.uppercase)
+                    .font(.system(size: 9, weight: .bold, design: .monospaced))
+                    .foregroundStyle(KitchenTablePalette.tomato)
+            }
+
+            Rectangle()
+                .fill(KitchenTablePalette.rule)
+                .frame(height: 1)
+
+            HStack(spacing: 12) {
                 ProgressView()
-                    .controlSize(.large)
-                    .tint(NeoAppColors.cobalt)
+                    .controlSize(.regular)
+                    .tint(KitchenTablePalette.cobalt)
 
                 Text(message)
-                    .textCase(.uppercase)
-                    .font(.system(.headline, design: .rounded, weight: .black))
-                    .foregroundStyle(KitchenTablePalette.onBrass)
-                    .multilineTextAlignment(.center)
+                    .font(.system(.title3, design: .serif, weight: .semibold))
+                    .foregroundStyle(KitchenTablePalette.espresso)
+                    .fixedSize(horizontal: false, vertical: true)
             }
-            .padding(16)
-            .frame(maxWidth: 250)
-            .background(NeoAppColors.brass, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-            .overlay {
-                RoundedRectangle(cornerRadius: 18, style: .continuous)
-                    .stroke(KitchenTablePalette.brassDeep, lineWidth: NeoAppMetrics.rule)
-            }
-            .accessibilityElement(children: .combine)
-            .accessibilityLabel(message)
-            .accessibilityValue("In progress")
 
-            Spacer(minLength: 8)
+            HStack(spacing: 7) {
+                Circle()
+                    .fill(KitchenTablePalette.herb)
+                    .frame(width: 7, height: 7)
+                Text("Analyzing with AI…")
+                    .font(.system(.caption, design: .rounded, weight: .medium))
+                    .foregroundStyle(KitchenTablePalette.mutedEspresso)
+            }
         }
-        .padding(NeoAppMetrics.screenInset)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(KitchenTableBackdrop())
+        .padding(.horizontal, 18)
+        .padding(.vertical, 16)
+        .background(KitchenTablePalette.paperRaised)
+        .overlay {
+            RoundedRectangle(cornerRadius: 3, style: .continuous)
+                .stroke(KitchenTablePalette.rule, lineWidth: 1)
+        }
+        .shadow(color: KitchenTablePalette.shadow, radius: 8, x: 0, y: 5)
+        .rotationEffect(.degrees(-0.45))
     }
 }

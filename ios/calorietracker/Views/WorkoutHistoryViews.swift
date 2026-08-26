@@ -16,18 +16,18 @@ struct WorkoutHistoryLink: View {
                     .font(.system(size: 16, weight: .medium))
                     .foregroundStyle(Color.black)
                     .frame(width: 28, height: 28)
-                    .background(NeoAppColors.acid)
+                    .background(NeoAppColors.acid.opacity(0.78), in: RoundedRectangle(cornerRadius: 4, style: .continuous))
                     .overlay {
-                        Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                        RoundedRectangle(cornerRadius: 4, style: .continuous)
+                            .stroke(KitchenTablePalette.brassDeep, lineWidth: NeoAppMetrics.compactRule)
                     }
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Workout History")
-                        .font(.system(.body, design: .rounded, weight: .black).width(.condensed))
-                        .textCase(.uppercase)
+                        .font(.system(.body, design: .serif, weight: .bold))
                         .foregroundStyle(NeoAppColors.ink)
                     Text("\(burnRecordCount) \(burnRecordCount == 1 ? "entry" : "entries") · tap to view or delete")
-                        .font(.system(.caption, design: .rounded))
+                        .font(.system(.caption, design: .monospaced))
                         .foregroundStyle(NeoAppColors.mutedInk)
                 }
 
@@ -39,7 +39,7 @@ struct WorkoutHistoryLink: View {
             }
             .padding(.vertical, 12)
             .padding(.horizontal, 14)
-            .neoPanel()
+            .kitchenReceiptSurface(accent: KitchenTablePalette.tomato)
         }
         .buttonStyle(.plain)
         .accessibilityHint("Opens workout calorie history")

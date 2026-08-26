@@ -35,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
@@ -95,8 +96,9 @@ internal fun SheetReviewToolbar(
         Spacer(Modifier.width(itemGap))
         Text(
             title,
-            fontSize = if (compact) 16.sp else 17.sp,
-            fontWeight = FontWeight.SemiBold,
+            style = MaterialTheme.typography.titleLarge,
+            fontSize = if (compact) 17.sp else 19.sp,
+            color = AppColors.KitchenEspresso,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             textAlign = TextAlign.Center,
@@ -118,7 +120,7 @@ private fun SheetToolbarPill(
     compact: Boolean = false,
     onClick: () -> Unit
 ) {
-    val shape = RoundedCornerShape(12.dp)
+    val shape = RoundedCornerShape(4.dp)
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
     val horizontalPadding = when {
         compact && bold -> 12.dp
@@ -160,9 +162,9 @@ private fun SheetToolbarPill(
 internal fun SheetSectionHeader(title: String) {
     Text(
         title,
-        fontSize = 14.sp,
-        fontWeight = FontWeight.SemiBold,
-        color = MaterialTheme.colorScheme.tertiary,
+        style = MaterialTheme.typography.labelMedium,
+        fontWeight = FontWeight.Bold,
+        color = AppColors.KitchenHerb,
         modifier = Modifier.padding(start = 18.dp, top = 8.dp, bottom = 4.dp)
     )
 }
@@ -172,7 +174,7 @@ internal fun SheetPillRow(
     onClick: (() -> Unit)? = null,
     content: @Composable RowScope.() -> Unit
 ) {
-    val shape = RoundedCornerShape(16.dp)
+    val shape = RoundedCornerShape(4.dp)
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
     val rowFill = if (isDark) {
         AppColors.KitchenRoastPaper
@@ -183,6 +185,12 @@ internal fun SheetPillRow(
                     else AppColors.KitchenEspresso.copy(alpha = 0.18f)
     val base = Modifier
         .fillMaxWidth()
+        .shadow(
+            3.dp,
+            shape,
+            ambientColor = Color.Black.copy(alpha = 0.09f),
+            spotColor = Color.Black.copy(alpha = 0.09f)
+        )
         .clip(shape)
         .background(rowFill)
         .border(1.dp, rowBorder, shape)
@@ -196,7 +204,7 @@ internal fun SheetPillRow(
 
 @Composable
 internal fun SheetPillCard(content: @Composable ColumnScope.() -> Unit) {
-    val shape = RoundedCornerShape(18.dp)
+    val shape = RoundedCornerShape(4.dp)
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
     val cardFill = if (isDark) {
         AppColors.KitchenRoastPaper
@@ -208,6 +216,12 @@ internal fun SheetPillCard(content: @Composable ColumnScope.() -> Unit) {
     Column(
         Modifier
             .fillMaxWidth()
+            .shadow(
+                3.dp,
+                shape,
+                ambientColor = Color.Black.copy(alpha = 0.09f),
+                spotColor = Color.Black.copy(alpha = 0.09f)
+            )
             .clip(shape)
             .background(cardFill)
             .border(1.dp, cardBorder, shape)
