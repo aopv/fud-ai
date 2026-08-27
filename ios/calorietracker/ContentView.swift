@@ -1025,11 +1025,11 @@ struct HomeView: View {
                 NeoHomeSectionBanner(title: isToday ? "Today's Food" : "Food Log", iconName: "fork.knife")
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
-                    .listRowInsets(EdgeInsets(top: 8, leading: NeoHomeMetrics.horizontalInset, bottom: 0, trailing: NeoHomeMetrics.horizontalInset))
+                    .listRowInsets(EdgeInsets(top: 3, leading: NeoHomeMetrics.horizontalInset, bottom: -1, trailing: NeoHomeMetrics.horizontalInset))
                 NeoEmptyFoodPanel(isToday: isToday)
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
-                    .listRowInsets(EdgeInsets(top: 0, leading: NeoHomeMetrics.horizontalInset, bottom: 5, trailing: NeoHomeMetrics.horizontalInset))
+                    .listRowInsets(EdgeInsets(top: 0, leading: NeoHomeMetrics.horizontalInset + 7, bottom: 3, trailing: NeoHomeMetrics.horizontalInset + 2))
             }
         } else {
             ForEach(mealGroups) { group in
@@ -1047,23 +1047,19 @@ struct HomeView: View {
                     )
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
-                    .listRowInsets(EdgeInsets(top: 8, leading: NeoHomeMetrics.horizontalInset, bottom: 0, trailing: NeoHomeMetrics.horizontalInset))
+                    .listRowInsets(EdgeInsets(top: 4, leading: NeoHomeMetrics.horizontalInset + 8, bottom: -4, trailing: NeoHomeMetrics.horizontalInset + 2))
 
                     ForEach(Array(group.entries.enumerated()), id: \.element.id) { index, entry in
-                        NeoFoodRow(entry: entry, position: index + 1)
+                        Button {
+                            editingEntry = entry
+                            activeSheet = .editFood
+                        } label: {
+                            NeoFoodRow(entry: entry, position: index + 1)
+                        }
+                            .buttonStyle(.plain)
                             .listRowBackground(Color.clear)
                             .listRowSeparator(.hidden)
-                            .listRowInsets(EdgeInsets(top: 0, leading: NeoHomeMetrics.horizontalInset, bottom: 0, trailing: NeoHomeMetrics.horizontalInset))
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                editingEntry = entry
-                                activeSheet = .editFood
-                            }
-                            .accessibilityAddTraits(.isButton)
-                            .accessibilityAction {
-                                editingEntry = entry
-                                activeSheet = .editFood
-                            }
+                            .listRowInsets(EdgeInsets(top: -2, leading: NeoHomeMetrics.horizontalInset, bottom: 0, trailing: NeoHomeMetrics.horizontalInset + 5))
                             .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                                 Button(role: .destructive) {
                                     foodStore.deleteEntry(entry)
@@ -1089,51 +1085,20 @@ struct HomeView: View {
         let _ = profileStore.profile
         return NavigationStack {
             List {
-                // Poster header + existing 53-week selector. The selector keeps its original
-                // paging, Monday/Sunday preference, date binding, and haptics.
+                // The reference moves straight from the compact date masthead into the
+                // diary. Date switching remains available through the calendar coin and
+                // the existing horizontal day swipe on the totals row.
                 Section {
                     NeoHomeDateHeader(selectedDate: $selectedDate)
                         .listRowBackground(Color.clear)
                         .listRowSeparator(.hidden)
-                        .listRowInsets(EdgeInsets(top: 8, leading: NeoHomeMetrics.horizontalInset, bottom: 5, trailing: NeoHomeMetrics.horizontalInset))
-
-                    WeekEnergyStrip(
-                        selectedDate: $selectedDate,
-                        caloriesForDate: { foodStore.calories(for: $0) },
-                        calorieGoal: calorieGoal
-                    )
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 3)
-                    .kitchenTableSurface(
-                        fill: NeoHomeColors.surface,
-                        border: KitchenTablePalette.rule,
-                        cornerRadius: 9,
-                        lineWidth: NeoHomeMetrics.rule,
-                        shadowRadius: 3,
-                        shadowY: 2
-                    )
-                    .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
-                    .listRowInsets(EdgeInsets(top: 0, leading: NeoHomeMetrics.horizontalInset, bottom: 5, trailing: NeoHomeMetrics.horizontalInset))
+                        .listRowInsets(EdgeInsets(top: 1, leading: NeoHomeMetrics.horizontalInset, bottom: 2, trailing: NeoHomeMetrics.horizontalInset))
                 }
 
                 foodLogContent
 
-                // Calorie and target values retain the same selected-day calculations and
-                // launch fill animation; only their presentation changes.
-                Section {
-                    NeoCalorieSummary(eaten: selectedCalories, goal: calorieGoal, launchFillEpoch: launchFillEpoch)
-                        .frame(maxWidth: .infinity)
-                        .contentShape(Rectangle())
-                        .simultaneousGesture(daySwipeGesture)
-                        .accessibilityIdentifier("neo.home.calorieSummary")
-                        .listRowBackground(Color.clear)
-                        .listRowSeparator(.hidden)
-                        .listRowInsets(EdgeInsets(top: 5, leading: NeoHomeMetrics.horizontalInset, bottom: 5, trailing: NeoHomeMetrics.horizontalInset))
-                }
-
-                // The saved four-nutrient selection remains the source of this adaptive grid,
-                // including custom micronutrients and supplement goals.
+                // The saved four-nutrient selection remains the source of these four
+                // compact ingredient stamps, including custom micronutrients and goals.
                 let nutrientStats = homeTopNutrients.map { nutrient in
                     NeoNutrientStat(
                         id: nutrient.id,
@@ -1145,12 +1110,17 @@ struct HomeView: View {
                     )
                 }
                 Section {
-                    NeoNutrientGrid(stats: nutrientStats, launchFillEpoch: launchFillEpoch)
+                    NeoHomeNutritionStrip(
+                        eaten: selectedCalories,
+                        goal: calorieGoal,
+                        stats: nutrientStats,
+                        launchFillEpoch: launchFillEpoch
+                    )
                         .contentShape(Rectangle())
                         .simultaneousGesture(daySwipeGesture)
                         .listRowBackground(Color.clear)
                         .listRowSeparator(.hidden)
-                        .listRowInsets(EdgeInsets(top: 5, leading: NeoHomeMetrics.horizontalInset, bottom: 5, trailing: NeoHomeMetrics.horizontalInset))
+                        .listRowInsets(EdgeInsets(top: 5, leading: NeoHomeMetrics.horizontalInset, bottom: 2, trailing: NeoHomeMetrics.horizontalInset))
 
                     if waterTrackingEnabled {
                         NeoWaterProgressPanel(
@@ -1160,13 +1130,13 @@ struct HomeView: View {
                         )
                         .listRowBackground(Color.clear)
                         .listRowSeparator(.hidden)
-                        .listRowInsets(EdgeInsets(top: 5, leading: NeoHomeMetrics.horizontalInset, bottom: 5, trailing: NeoHomeMetrics.horizontalInset))
+                        .listRowInsets(EdgeInsets(top: 3, leading: NeoHomeMetrics.horizontalInset, bottom: 3, trailing: NeoHomeMetrics.horizontalInset))
                     }
 
                     NeoHomeDetailsButton { showNutritionDetail = true }
                         .listRowBackground(Color.clear)
                         .listRowSeparator(.hidden)
-                        .listRowInsets(EdgeInsets(top: 5, leading: NeoHomeMetrics.horizontalInset, bottom: 5, trailing: NeoHomeMetrics.horizontalInset))
+                        .listRowInsets(EdgeInsets(top: 1, leading: NeoHomeMetrics.horizontalInset, bottom: 3, trailing: NeoHomeMetrics.horizontalInset))
                 }
 
                 // Fasting timeline. Stored separately from nutrition so these rows never
@@ -1217,12 +1187,13 @@ struct HomeView: View {
             .scrollContentBackground(.hidden)
             .background(KitchenTableBackdrop())
             .environment(\.defaultMinListRowHeight, 1)
-            .listSectionSpacing(7)
+            .listStyle(.plain)
+            .listSectionSpacing(2)
             .animation(.snappy, value: selectedDate)
-            .contentMargins(.bottom, 74, for: .scrollContent)
+            .contentMargins(.bottom, 67, for: .scrollContent)
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
-            .overlay(alignment: .bottom) {
+            .overlay(alignment: .bottomTrailing) {
                 Button {
                     addFoodMenuPage = .root
                     showAddFoodMenu = true
@@ -1289,8 +1260,8 @@ struct HomeView: View {
                     )
                     .presentationCompactAdaptation(.popover)
                 }
-                .padding(.horizontal, NeoHomeMetrics.horizontalInset)
-                .padding(.bottom, NeoAppMetrics.bottomBarHeight + 28)
+                .padding(.trailing, NeoHomeMetrics.horizontalInset)
+                .padding(.bottom, NeoAppMetrics.bottomBarHeight + 9)
             }
             .fullScreenCover(isPresented: $showCamera) {
                 CameraView(
@@ -2698,6 +2669,9 @@ private struct NativeSheetToolbarButton: View {
 
 // MARK: - Multi-photo Capture Review
 struct MultiPhotoCaptureSheet: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     @Binding var images: [UIImage]
     let isImportingPhotos: Bool
     @Binding var selectedPhotoItems: [PhotosPickerItem]
@@ -2709,159 +2683,81 @@ struct MultiPhotoCaptureSheet: View {
     @State private var showAdditionalPhotoPicker = false
     @State private var progressiveMeal = false
     @State private var showProgressiveInfo = false
+    @State private var showsNoteEditor = false
+
+    private var addPhotoTitle: LocalizedStringKey {
+        isImportingPhotos ? "Add Photos" : "Add Photo"
+    }
+
+    private var progressiveMealDetail: LocalizedStringKey {
+        images.count < 2 ? "Add photo 2 for ingredient steps" : "Same plate · additions in order"
+    }
+
+    private var noteAccessibilityValue: LocalizedStringKey {
+        showsNoteEditor ? "Expanded" : "Collapsed"
+    }
+
+    private struct ReviewImage: Identifiable {
+        let id: ObjectIdentifier
+        let index: Int
+        let image: UIImage
+    }
+
+    private var reviewImages: [ReviewImage] {
+        images.enumerated().map { index, image in
+            ReviewImage(id: ObjectIdentifier(image), index: index, image: image)
+        }
+    }
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
-                    NeoScreenHeader(
-                        eyebrow: "Food Analysis",
-                        title: "Meal Photos",
-                        subtitle: "\(images.count) of 10 photos ready"
-                    ) {
-                        Image(systemName: "camera.fill")
-                            .font(.system(size: 22, weight: .black))
-                            .foregroundStyle(KitchenTablePalette.onBrass)
-                            .frame(width: 48, height: 48)
-                            .kitchenTableIconTile(fill: NeoAppColors.brass, border: KitchenTablePalette.brassDeep)
-                    }
-
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        LazyHStack(spacing: 12) {
-                            ForEach(Array(images.enumerated()), id: \.offset) { index, image in
-                                Image(uiImage: image)
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: 240, height: 260)
-                                    .clipShape(Rectangle())
-                                    .overlay {
-                                        Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
-                                    }
-                                    .overlay(alignment: .topTrailing) {
-                                        Button {
-                                            onRemove(index)
-                                        } label: {
-                                            Image(systemName: "xmark")
-                                                .font(.caption.weight(.black))
-                                                .foregroundStyle(NeoAppColors.onCobalt)
-                                                .frame(width: 34, height: 34)
-                                                .background(NeoAppColors.cobalt.opacity(0.78))
-                                                .overlay {
-                                                    Rectangle().stroke(Color.white.opacity(0.8), lineWidth: NeoAppMetrics.compactRule)
-                                                }
-                                        }
-                                        .buttonStyle(.plain)
-                                        .neoInteractiveSurface(cornerRadius: NeoAppMetrics.cornerRadius)
-                                        .padding(10)
-                                    }
-                                    .overlay(alignment: .bottomLeading) {
-                                        Text("Photo \(index + 1)")
-                                            .textCase(.uppercase)
-                                            .font(.system(.caption, design: .rounded, weight: .black).width(.condensed))
-                                            .foregroundStyle(Color.black)
-                                            .padding(.horizontal, 10)
-                                            .padding(.vertical, 6)
-                                            .background(NeoAppColors.acid)
-                                            .overlay {
-                                                Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
-                                            }
-                                            .padding(10)
-                                    }
-                            }
+            GeometryReader { proxy in
+                let photoHeight = min(max(proxy.size.height * 0.50, 300), 520)
+                VStack(spacing: 0) {
+                    reviewToolbar
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
+                        .background(KitchenTablePalette.paperRaised)
+                        .overlay(alignment: .bottom) {
+                            Rectangle()
+                                .fill(KitchenTablePalette.rule)
+                                .frame(height: NeoAppMetrics.compactRule)
                         }
-                        .scrollTargetLayout()
-                    }
-                    .scrollTargetBehavior(.viewAligned)
 
-                    if images.count < 10 {
-                        Button {
-                            if isImportingPhotos {
-                                showAdditionalPhotoPicker = true
-                            } else {
-                                onAddPhoto()
-                            }
-                        } label: {
-                            HStack(spacing: 10) {
-                                Label(
-                                    isImportingPhotos ? "Add Photos" : "Add Photo",
-                                    systemImage: isImportingPhotos ? "photo.on.rectangle" : "camera.fill"
-                                )
-                                Spacer()
-                                Text("\(10 - images.count) LEFT")
-                                    .font(.system(.caption, design: .rounded, weight: .black).width(.condensed))
-                            }
-                            .textCase(.uppercase)
-                            .font(.system(.headline, design: .rounded, weight: .black).width(.condensed))
-                            .foregroundStyle(NeoAppColors.onCobalt)
-                            .padding(.horizontal, 14)
-                            .frame(maxWidth: .infinity, minHeight: 50)
-                            .background(NeoAppColors.cobalt)
-                            .overlay {
-                                Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
-                            }
-                        }
-                        .buttonStyle(.plain)
-                    }
-
-                    NeoOutlinedPanel {
-                        HStack(spacing: 12) {
-                            VStack(alignment: .leading, spacing: 5) {
-                                HStack(spacing: 8) {
-                                    Text("Progressive Meal")
-                                        .textCase(.uppercase)
-                                        .font(.system(.body, design: .rounded, weight: .black).width(.condensed))
-                                        .foregroundStyle(NeoAppColors.ink)
-                                    Button {
-                                        showProgressiveInfo = true
-                                    } label: {
-                                        Image(systemName: "info.circle.fill")
-                                            .font(.system(size: 17, weight: .black))
-                                            .foregroundStyle(NeoAppColors.cobalt)
-                                    }
-                                    .buttonStyle(.plain)
-                                    .accessibilityLabel("How Progressive Meal works")
-                                }
-                                Text("Photo 1 → 2 → 3 follows each ingredient added to the same plate. Visible scale differences become ingredient weights.")
-                                    .font(.system(.caption, design: .rounded, weight: .bold))
-                                    .foregroundStyle(NeoAppColors.mutedInk)
-                                    .fixedSize(horizontal: false, vertical: true)
-                            }
-                            Spacer(minLength: 8)
-                            Toggle("", isOn: $progressiveMeal)
-                                .labelsHidden()
-                                .tint(NeoAppColors.cobalt)
-                                .disabled(images.count < 2)
-                        }
-                    }
-
-                    NeoOutlinedPanel {
+                    ScrollView {
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("Analysis Note · Optional")
-                                .textCase(.uppercase)
-                                .font(.system(.subheadline, design: .rounded, weight: .black).width(.condensed))
-                                .foregroundStyle(NeoAppColors.cobalt)
-                            TextField(
-                                "e.g. chicken is 180g, rice is 220g, use half the sauce",
-                                text: $description,
-                                axis: .vertical
-                            )
-                            .font(.system(.body, design: .rounded, weight: .bold))
-                            .lineLimit(3...6)
-                            .padding(12)
-                            .background(NeoAppColors.subtleSurface)
-                            .overlay {
-                                Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                LazyHStack(spacing: 10) {
+                                    ForEach(reviewImages) { item in
+                                        reviewPhoto(
+                                            item,
+                                            width: max(proxy.size.width - (NeoAppMetrics.screenInset * 2), 220),
+                                            height: photoHeight
+                                        )
+                                    }
+                                }
+                                .scrollTargetLayout()
                             }
+                            .scrollTargetBehavior(.viewAligned)
+                            .frame(height: photoHeight)
+
+                            if images.count < 10 {
+                                addPhotoReceipt
+                            }
+
+                            progressiveMealReceipt
+                            noteReceipt
                         }
+                        .padding(.horizontal, NeoAppMetrics.screenInset)
+                        .padding(.top, 10)
+                        .padding(.bottom, 24)
                     }
+                    .scrollIndicators(.hidden)
                 }
-                .padding(NeoAppMetrics.screenInset)
+                .background(KitchenTableBackdrop())
             }
-            .background(NeoAppColors.canvas)
             .tint(NeoAppColors.cobalt)
-            .navigationTitle("")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(NeoAppColors.surface, for: .navigationBar)
+            .navigationBarHidden(true)
             .photosPicker(
                 isPresented: $showAdditionalPhotoPicker,
                 selection: $selectedPhotoItems,
@@ -2869,26 +2765,269 @@ struct MultiPhotoCaptureSheet: View {
                 selectionBehavior: .ordered,
                 matching: .images
             )
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    NativeSheetToolbarButton(title: "Cancel", action: onCancel)
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    NativeSheetToolbarButton(
+            .onChange(of: images.count) { _, count in
+                if count < 2 { progressiveMeal = false }
+            }
+            .onAppear {
+                showsNoteEditor = !description.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            }
+            .alert("How Progressive Meal works", isPresented: $showProgressiveInfo) {
+                Button("Done", role: .cancel) {}
+            } message: {
+                Text("Use this when every photo shows the same plate after another ingredient is added. Keep the photos in order and make the scale display visible. Fud AI uses the difference between consecutive scale totals to estimate each new ingredient. Leave this off when the photos are only different angles of the same meal.")
+            }
+        }
+    }
+
+    private var reviewToolbar: some View {
+        Group {
+            if dynamicTypeSize.isAccessibilitySize {
+                VStack(alignment: .leading, spacing: 6) {
+                    reviewToolbarTitle
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    reviewToolbarButton(
+                        title: "Cancel",
+                        minimumWidth: 58,
+                        fillsWidth: true,
+                        action: onCancel
+                    )
+                    reviewToolbarButton(
                         title: "Analyze",
+                        minimumWidth: 68,
+                        fillsWidth: true,
+                        isEmphasized: true,
+                        isDisabled: images.isEmpty,
+                        action: { onAnalyze(progressiveMeal && images.count > 1) }
+                    )
+                }
+            } else {
+                HStack(spacing: 8) {
+                    reviewToolbarButton(
+                        title: "Cancel",
+                        minimumWidth: 58,
+                        action: onCancel
+                    )
+                    reviewToolbarTitle
+                        .frame(maxWidth: .infinity)
+                    reviewToolbarButton(
+                        title: "Analyze",
+                        minimumWidth: 68,
                         isEmphasized: true,
                         isDisabled: images.isEmpty,
                         action: { onAnalyze(progressiveMeal && images.count > 1) }
                     )
                 }
             }
-            .onChange(of: images.count) { _, count in
-                if count < 2 { progressiveMeal = false }
+        }
+    }
+
+    private var reviewToolbarTitle: some View {
+        VStack(spacing: 0) {
+            Text("Meal Photos")
+                .font(.system(.headline, design: .serif, weight: .bold))
+            Text(verbatim: "\(images.count)/10")
+                .font(
+                    dynamicTypeSize.isAccessibilitySize
+                        ? .system(.caption2, design: .monospaced, weight: .semibold)
+                        : .system(size: 8, weight: .semibold, design: .monospaced)
+                )
+                .foregroundStyle(KitchenTablePalette.mutedEspresso)
+        }
+        .accessibilityElement(children: .combine)
+    }
+
+    private func reviewToolbarButton(
+        title: LocalizedStringKey,
+        minimumWidth: CGFloat,
+        fillsWidth: Bool = false,
+        isEmphasized: Bool = false,
+        isDisabled: Bool = false,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            Text(title)
+                .font(.system(.subheadline, design: isEmphasized ? .monospaced : .serif, weight: isEmphasized ? .bold : .semibold))
+                .textCase(isEmphasized ? .uppercase : nil)
+                .foregroundStyle(isEmphasized ? KitchenTablePalette.onStrongAccent : KitchenTablePalette.espresso)
+                .frame(
+                    minWidth: minimumWidth,
+                    maxWidth: fillsWidth ? .infinity : nil,
+                    minHeight: 36
+                )
+                .padding(.horizontal, 4)
+                .background(isEmphasized ? KitchenTablePalette.tomato : KitchenTablePalette.paper)
+                .overlay {
+                    Rectangle().stroke(
+                        isEmphasized ? KitchenTablePalette.tomatoDeep : KitchenTablePalette.rule,
+                        lineWidth: 1
+                    )
+                }
+                .frame(maxWidth: fillsWidth ? .infinity : nil, minHeight: 44)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .disabled(isDisabled)
+        .opacity(isDisabled ? 0.5 : 1)
+    }
+
+    private func reviewPhoto(_ item: ReviewImage, width: CGFloat, height: CGFloat) -> some View {
+        Image(uiImage: item.image)
+            .resizable()
+            .scaledToFit()
+            .frame(width: width, height: height)
+            .background(KitchenTablePalette.espresso.opacity(0.94))
+            .overlay {
+                Rectangle().stroke(KitchenTablePalette.strongRule, lineWidth: 1)
             }
-            .alert("How Progressive Meal works", isPresented: $showProgressiveInfo) {
-                Button("Done", role: .cancel) {}
-            } message: {
-                Text("Use this when every photo shows the same plate after another ingredient is added. Keep the photos in order and make the scale display visible. Fud AI uses the difference between consecutive scale totals to estimate each new ingredient. Leave this off when the photos are only different angles of the same meal.")
+            .overlay(alignment: .topTrailing) {
+                Button {
+                    onRemove(item.index)
+                } label: {
+                    Image(systemName: "xmark")
+                        .font(.caption.weight(.bold))
+                        .foregroundStyle(KitchenTablePalette.onStrongAccent)
+                        .frame(width: 34, height: 34)
+                        .background(KitchenTablePalette.espresso.opacity(0.84), in: Circle())
+                        .frame(width: 44, height: 44)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .padding(4)
+                .accessibilityLabel("Remove")
+            }
+            .overlay(alignment: .bottomLeading) {
+                Text(verbatim: "\(item.index + 1)/\(images.count)")
+                    .textCase(.uppercase)
+                    .font(.system(size: 8, weight: .bold, design: .monospaced))
+                    .foregroundStyle(KitchenTablePalette.onBrass)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 5)
+                    .background(KitchenTablePalette.brass)
+                    .overlay { Rectangle().stroke(KitchenTablePalette.brassDeep, lineWidth: 1) }
+                    .padding(9)
+            }
+    }
+
+    private var addPhotoReceipt: some View {
+        Button {
+            if isImportingPhotos {
+                showAdditionalPhotoPicker = true
+            } else {
+                onAddPhoto()
+            }
+        } label: {
+            HStack(spacing: 8) {
+                Image(systemName: isImportingPhotos ? "photo.on.rectangle" : "camera.fill")
+                    .foregroundStyle(KitchenTablePalette.cobaltDeep)
+                Text(addPhotoTitle)
+                    .font(.system(.subheadline, design: .monospaced, weight: .bold))
+                    .textCase(.uppercase)
+                Spacer(minLength: 8)
+                Text(
+                    "\(10 - images.count) left",
+                    comment: "Number of remaining photo slots in the meal-analysis review sheet."
+                )
+                    .font(.system(size: 8, weight: .semibold, design: .monospaced))
+                    .foregroundStyle(KitchenTablePalette.mutedEspresso)
+            }
+            .foregroundStyle(KitchenTablePalette.espresso)
+            .padding(.horizontal, 11)
+            .frame(maxWidth: .infinity, minHeight: 44)
+            .contentShape(Rectangle())
+            .background(KitchenTablePalette.paperRaised)
+            .overlay { Rectangle().stroke(KitchenTablePalette.cobalt.opacity(0.7), lineWidth: 1) }
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var progressiveMealReceipt: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "square.stack.3d.up.fill")
+                .foregroundStyle(KitchenTablePalette.herb)
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 1) {
+                Text("Progressive Meal")
+                    .font(.system(.subheadline, design: .monospaced, weight: .bold))
+                    .textCase(.uppercase)
+                Text(progressiveMealDetail)
+                    .font(.system(size: 8, weight: .medium, design: .monospaced))
+                    .foregroundStyle(KitchenTablePalette.mutedEspresso)
+            }
+            Button {
+                showProgressiveInfo = true
+            } label: {
+                Image(systemName: "info.circle")
+                    .frame(width: 30, height: 30)
+                    .frame(width: 44, height: 44)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Progressive Meal")
+            Spacer(minLength: 4)
+            Toggle("Progressive Meal", isOn: $progressiveMeal)
+                .labelsHidden()
+                .tint(KitchenTablePalette.herb)
+                .disabled(images.count < 2)
+        }
+        .padding(.horizontal, 11)
+        .frame(maxWidth: .infinity, minHeight: 46)
+        .background(KitchenTablePalette.paperRaised)
+        .overlay { Rectangle().stroke(KitchenTablePalette.herb.opacity(0.65), lineWidth: 1) }
+    }
+
+    private var noteReceipt: some View {
+        VStack(spacing: 0) {
+            Button(action: toggleNoteEditor) {
+                HStack(spacing: 8) {
+                    Image(systemName: "pencil.line")
+                        .foregroundStyle(KitchenTablePalette.tomatoDeep)
+                    Text("Analysis Note · Optional")
+                        .font(.system(.subheadline, design: .monospaced, weight: .bold))
+                        .textCase(.uppercase)
+                    Spacer(minLength: 6)
+                    if !description.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                        Text("Added")
+                            .font(.system(size: 7, weight: .bold, design: .monospaced))
+                            .foregroundStyle(KitchenTablePalette.herbDeep)
+                    }
+                    Image(systemName: "chevron.down")
+                        .font(.caption.weight(.bold))
+                        .rotationEffect(.degrees(showsNoteEditor ? 0 : -90))
+                }
+                .foregroundStyle(KitchenTablePalette.tomatoDeep)
+                .frame(maxWidth: .infinity, minHeight: 44)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Analysis Note · Optional")
+            .accessibilityValue(Text(noteAccessibilityValue))
+
+            if showsNoteEditor {
+                TextField(
+                    "e.g. chicken is 180g, rice is 220g, use half the sauce",
+                    text: $description,
+                    axis: .vertical
+                )
+                .font(.system(.body, design: .serif))
+                .lineLimit(2...4)
+                .padding(9)
+                .background(KitchenTablePalette.paperMuted.opacity(0.48))
+                .overlay { Rectangle().stroke(KitchenTablePalette.rule, lineWidth: 1) }
+                .padding(.top, 7)
+            }
+        }
+        .padding(.horizontal, 11)
+        .padding(.vertical, 3)
+        .background(KitchenTablePalette.paperRaised)
+        .overlay { Rectangle().stroke(KitchenTablePalette.tomato.opacity(0.62), lineWidth: 1) }
+    }
+
+    private func toggleNoteEditor() {
+        if reduceMotion {
+            showsNoteEditor.toggle()
+        } else {
+            withAnimation(.easeInOut(duration: 0.18)) {
+                showsNoteEditor.toggle()
             }
         }
     }
@@ -3496,7 +3635,7 @@ struct FoodRow: View {
                     }
                     .overlay(alignment: .bottomTrailing) {
                         if !entry.additionalImageData.isEmpty {
-                            Text("+\(entry.additionalImageData.count)")
+                            Text(verbatim: "+\(entry.additionalImageData.count.formatted())")
                                 .font(.system(.caption2, design: .rounded, weight: .black))
                                 .foregroundStyle(Color.black)
                                 .padding(.horizontal, 6)
@@ -3589,6 +3728,96 @@ struct MacroPill: View {
     }
 }
 
+private struct ProgressRangeControl: View {
+    @Binding var selection: TimeRange
+
+    private var options: [TimeRange] { TimeRange.allCases }
+
+    private var selectedIndex: Int {
+        options.firstIndex(of: selection) ?? 0
+    }
+
+    private var rangeDescription: String {
+        switch selection {
+        case .week: String(localized: "Last 7 days")
+        case .month: String(localized: "Last 30 days")
+        case .threeMonths: String(localized: "Last 3 months")
+        case .sixMonths: String(localized: "Last 6 months")
+        case .year: String(localized: "Last year")
+        case .allTime: String(localized: "All time")
+        }
+    }
+
+    var body: some View {
+        HStack(spacing: 6) {
+            rangeButton(
+                systemImage: "chevron.left",
+                label: LocalizedStringKey("Previous time range"),
+                isDisabled: selectedIndex == 0
+            ) {
+                selection = options[selectedIndex - 1]
+            }
+
+            Menu {
+                Picker("Time Range", selection: $selection) {
+                    ForEach(options, id: \.self) { range in
+                        Text(verbatim: range.rawValue).tag(range)
+                    }
+                }
+            } label: {
+                VStack(spacing: 0) {
+                    Text(rangeDescription)
+                        .font(.system(.subheadline, design: .serif, weight: .semibold))
+                    Text(verbatim: selection.rawValue)
+                        .font(.system(size: 8, weight: .bold, design: .monospaced))
+                        .foregroundStyle(KitchenTablePalette.brassDeep)
+                }
+                .frame(maxWidth: .infinity, minHeight: 44)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Time Range")
+
+            rangeButton(
+                systemImage: "chevron.right",
+                label: LocalizedStringKey("Next time range"),
+                isDisabled: selectedIndex == options.count - 1
+            ) {
+                selection = options[selectedIndex + 1]
+            }
+        }
+        .padding(.horizontal, 6)
+        .padding(.vertical, 3)
+        .background(KitchenTablePalette.paperRaised)
+        .overlay { Rectangle().stroke(KitchenTablePalette.rule, lineWidth: 1) }
+        .overlay(alignment: .leading) {
+            Rectangle()
+                .fill(KitchenTablePalette.brass)
+                .frame(width: 3)
+                .accessibilityHidden(true)
+        }
+    }
+
+    private func rangeButton(
+        systemImage: String,
+        label: LocalizedStringKey,
+        isDisabled: Bool,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            Image(systemName: systemImage)
+                .font(.system(size: 12, weight: .bold))
+                .frame(width: 36, height: 36)
+                .frame(width: 44, height: 44)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .disabled(isDisabled)
+        .opacity(isDisabled ? 0.3 : 1)
+        .accessibilityLabel(Text(label))
+    }
+}
+
 // MARK: - Progress Tab
 struct ProgressTabView: View {
     @Environment(FoodStore.self) private var foodStore
@@ -3604,6 +3833,7 @@ struct ProgressTabView: View {
     @State private var showAllWeights = false
     @State private var showAllBodyFat = false
     @State private var showWorkoutHistory = false
+    @State private var showsDetailedProgress = false
 
     private var userProfile: UserProfile { profileStore.profile }
 
@@ -3644,6 +3874,17 @@ struct ProgressTabView: View {
         }.reversed()
     }
 
+    private var organizerFoodEntries: [FoodEntry] {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: .now)
+        return (0..<7).flatMap { offset -> [FoodEntry] in
+            guard let date = calendar.date(byAdding: .day, value: -offset, to: today) else {
+                return []
+            }
+            return foodStore.entries(for: date)
+        }
+    }
+
     private var macroAverages: (protein: Double, carbs: Double, fat: Double) {
         let calendar = Calendar.current
         let days = timeRange.days
@@ -3667,98 +3908,95 @@ struct ProgressTabView: View {
         let _ = profileStore.profile
         return NavigationStack {
             ScrollView {
-                VStack(spacing: NeoAppMetrics.sectionSpacing) {
-                    NeoScreenHeader(
-                        eyebrow: "Your data",
-                        title: "Progress",
-                        subtitle: "Trends, targets, and training history"
-                    ) {
-                        Image(systemName: "chart.xyaxis.line")
-                            .font(.system(size: 24, weight: .black))
-                            .foregroundStyle(NeoAppColors.onCobalt)
-                            .frame(width: 48, height: 48)
-                            .kitchenTableIconTile(fill: NeoAppColors.cobalt, border: NeoAppColors.cobaltDeep)
-                    }
+                VStack(spacing: 8) {
+                    ProgressRangeControl(selection: $timeRange)
                     .padding(.horizontal, NeoAppMetrics.screenInset)
 
-                    // Segmented Picker
-                    NeoOutlinedPanel(padding: 8) {
-                        Picker("Time Range", selection: $timeRange) {
-                            ForEach(TimeRange.allCases, id: \.self) { range in
-                                Text(range.rawValue.uppercased()).tag(range)
-                            }
-                        }
-                        .pickerStyle(.segmented)
-                    }
-                    .padding(.horizontal, NeoAppMetrics.screenInset)
-
-                    // Weight / Body Fat Trend — single card with a segmented
-                    // toggle (when the user has opted into body-fat tracking)
-                    // or just the bare Weight chart (when they haven't, so the
-                    // layout stays identical to v3.1 for those users).
-                    BodyMetricsSection(
-                        weightEntries: filteredWeightEntries,
-                        goalWeightKg: userProfile.goalWeightKg,
-                        currentWeightKg: weightStore.latestEntry?.weightKg,
-                        onLogWeight: { showLogWeight = true },
-                        bodyFatEntries: filteredBodyFatEntries,
-                        goalBodyFatFraction: userProfile.goalBodyFatPercentage,
-                        currentBodyFatFraction: bodyFatStore.latestEntry?.bodyFatFraction ?? userProfile.bodyFatPercentage,
-                        onLogBodyFat: { showLogBodyFat = true },
-                        bodyFatAvailable: showsBodyFatSection
-                    )
-                    .padding(.horizontal, NeoAppMetrics.screenInset)
-
-                    // Weight History — tap to view/delete entries
-                    if !weightStore.entries.isEmpty {
-                        WeightHistoryLink(
-                            totalCount: weightStore.entries.count,
-                            onTap: { showAllWeights = true }
-                        )
-                        .padding(.horizontal, NeoAppMetrics.screenInset)
-                    }
-
-                    // Body Fat History — tap to view/delete entries
-                    if !bodyFatStore.entries.isEmpty {
-                        BodyFatHistoryLink(
-                            totalCount: bodyFatStore.entries.count,
-                            onTap: { showAllBodyFat = true }
-                        )
-                        .padding(.horizontal, NeoAppMetrics.screenInset)
-                    }
-
-                    // Workout History — calculated burns with exercise/set detail.
-                    if !workoutCalorieSessions.isEmpty {
-                        WorkoutHistoryLink(
-                            sessions: workoutCalorieSessions,
-                            onTap: { showWorkoutHistory = true }
-                        )
-                        .padding(.horizontal, NeoAppMetrics.screenInset)
-                    }
-
-                    // Calorie Trend
+                    // The complete seven-day organizer is the first visual object.
+                    // Actual stored meals feed its photo/stamp cells; sparse days stay empty.
                     CalorieChartSection(
                         dailyCalories: dailyCalories,
-                        calorieGoal: userProfile.effectiveCalories
+                        calorieGoal: userProfile.effectiveCalories,
+                        foodEntries: organizerFoodEntries
                     )
                     .padding(.horizontal, NeoAppMetrics.screenInset)
 
-                    // Macro Averages
-                    MacroAveragesSection(
-                        avgProtein: macroAverages.protein,
-                        avgCarbs: macroAverages.carbs,
-                        avgFat: macroAverages.fat,
-                        proteinGoal: userProfile.effectiveProtein,
-                        carbsGoal: userProfile.effectiveCarbs,
-                        fatGoal: userProfile.effectiveFat
-                    )
-                    .padding(.horizontal, NeoAppMetrics.screenInset)
+                    DisclosureGroup(isExpanded: $showsDetailedProgress) {
+                        VStack(spacing: 12) {
+                            BodyMetricsSection(
+                                weightEntries: filteredWeightEntries,
+                                goalWeightKg: userProfile.goalWeightKg,
+                                currentWeightKg: weightStore.latestEntry?.weightKg,
+                                onLogWeight: { showLogWeight = true },
+                                bodyFatEntries: filteredBodyFatEntries,
+                                goalBodyFatFraction: userProfile.goalBodyFatPercentage,
+                                currentBodyFatFraction: bodyFatStore.latestEntry?.bodyFatFraction ?? userProfile.bodyFatPercentage,
+                                onLogBodyFat: { showLogBodyFat = true },
+                                bodyFatAvailable: showsBodyFatSection
+                            )
 
+                            if !weightStore.entries.isEmpty {
+                                WeightHistoryLink(
+                                    totalCount: weightStore.entries.count,
+                                    onTap: { showAllWeights = true }
+                                )
+                            }
+
+                            if !bodyFatStore.entries.isEmpty {
+                                BodyFatHistoryLink(
+                                    totalCount: bodyFatStore.entries.count,
+                                    onTap: { showAllBodyFat = true }
+                                )
+                            }
+
+                            if !workoutCalorieSessions.isEmpty {
+                                WorkoutHistoryLink(
+                                    sessions: workoutCalorieSessions,
+                                    onTap: { showWorkoutHistory = true }
+                                )
+                            }
+
+                            MacroAveragesSection(
+                                avgProtein: macroAverages.protein,
+                                avgCarbs: macroAverages.carbs,
+                                avgFat: macroAverages.fat,
+                                proteinGoal: userProfile.effectiveProtein,
+                                carbsGoal: userProfile.effectiveCarbs,
+                                fatGoal: userProfile.effectiveFat
+                            )
+                        }
+                        .padding(.top, 10)
+                    } label: {
+                        HStack(spacing: 8) {
+                            Image(systemName: "chart.line.uptrend.xyaxis")
+                                .foregroundStyle(KitchenTablePalette.cobaltDeep)
+                                .accessibilityHidden(true)
+                            VStack(alignment: .leading, spacing: 0) {
+                                Text("Weight, Body & Macros")
+                                    .font(.system(.subheadline, design: .monospaced, weight: .bold))
+                                    .textCase(.uppercase)
+                                Text(showsDetailedProgress
+                                     ? String(localized: "Hide detailed trends")
+                                     : String(localized: "Show detailed trends"))
+                                    .font(.system(size: 8, weight: .medium, design: .monospaced))
+                                    .foregroundStyle(KitchenTablePalette.mutedEspresso)
+                            }
+                            Spacer(minLength: 4)
+                        }
+                    }
+                    .tint(KitchenTablePalette.cobaltDeep)
+                    .padding(11)
+                    .background(KitchenTablePalette.paperRaised)
+                    .overlay {
+                        Rectangle().stroke(KitchenTablePalette.cobalt.opacity(0.58), lineWidth: 1)
+                    }
+                    .padding(.horizontal, NeoAppMetrics.screenInset)
                 }
-                .padding(.vertical)
+                .padding(.top, 6)
+                .padding(.bottom, 16)
             }
             .background(NeoAppColors.canvas)
-            .navigationBarHidden(true)
+            .toolbar(.hidden, for: .navigationBar)
             .sheet(isPresented: $showLogWeight) {
                 LogWeightSheet(
                     currentWeightKg: weightStore.latestEntry?.weightKg ?? userProfile.weightKg
@@ -3827,6 +4065,54 @@ private struct SettingsKeyboardDismissalModifier: ViewModifier {
             from: nil,
             for: nil
         )
+    }
+}
+
+private struct SettingsCompactMasthead: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    var body: some View {
+        Group {
+            if dynamicTypeSize.isAccessibilitySize {
+                VStack(alignment: .leading, spacing: 5) {
+                    mastheadCopy
+                    settingsStamp
+                }
+            } else {
+                HStack(alignment: .center, spacing: 10) {
+                    mastheadCopy
+                    Spacer(minLength: 8)
+                    settingsStamp
+                }
+            }
+        }
+        .padding(.horizontal, 3)
+        .padding(.vertical, 2)
+        .accessibilityElement(children: .combine)
+    }
+
+    private var mastheadCopy: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Text("Settings")
+                .font(.system(.title, design: .serif, weight: .bold))
+            Text("Profile, goals, integrations & preferences")
+                .font(.system(.caption2, design: .serif))
+                .foregroundStyle(KitchenTablePalette.mutedEspresso)
+                .lineLimit(dynamicTypeSize.isAccessibilitySize ? 2 : 1)
+        }
+    }
+
+    private var settingsStamp: some View {
+        Image(systemName: "slider.horizontal.3")
+            .font(.system(size: 14, weight: .bold))
+            .foregroundStyle(KitchenTablePalette.onBrass)
+            .frame(width: 34, height: 34)
+            .background(KitchenTablePalette.brass, in: RoundedRectangle(cornerRadius: 4, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: 4, style: .continuous)
+                    .stroke(KitchenTablePalette.brassDeep, lineWidth: 1)
+            }
+            .accessibilityHidden(true)
     }
 }
 
@@ -3980,18 +4266,8 @@ struct ProfileView: View {
     var body: some View {
         NavigationStack {
             List {
-                NeoScreenHeader(
-                    eyebrow: "Control center",
-                    title: "Settings",
-                    subtitle: "Profile, goals, integrations, and app preferences"
-                ) {
-                    Image(systemName: "slider.horizontal.3")
-                        .font(.system(size: 23, weight: .black))
-                        .foregroundStyle(KitchenTablePalette.onBrass)
-                        .frame(width: 48, height: 48)
-                        .kitchenTableIconTile(fill: NeoAppColors.brass, border: KitchenTablePalette.brassDeep)
-                }
-                .listRowInsets(EdgeInsets(top: 12, leading: 12, bottom: 4, trailing: 12))
+                SettingsCompactMasthead()
+                .listRowInsets(EdgeInsets(top: 5, leading: 16, bottom: 1, trailing: 16))
                 .listRowSeparator(.hidden)
                 .listRowBackground(NeoAppColors.canvas)
 
@@ -5105,7 +5381,7 @@ struct ProfileView: View {
             }
             .scrollContentBackground(.hidden)
             .listStyle(.plain)
-            .listSectionSpacing(NeoAppMetrics.sectionSpacing)
+            .listSectionSpacing(7)
             .listRowSeparatorTint(KitchenTablePalette.rule)
             .modifier(SettingsKeyboardDismissalModifier())
             .background(KitchenTableBackdrop())

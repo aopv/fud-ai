@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.apoorvdarshan.calorietracker.R
 import com.apoorvdarshan.calorietracker.ui.theme.AppColors
@@ -52,9 +53,10 @@ fun KitchenTableBackground(
 }
 
 /**
- * Shared masthead for the five native destinations. The perforated rule is the
- * system's receipt signature: recognisable as food logging without turning the
- * app into a literal or inaccessible skeuomorph.
+ * Shared utility-page masthead. It stays intentionally shallow so Settings and
+ * library screens begin with their useful controls instead of a marketing hero.
+ * The compact perforated rule carries the receipt motif without taking over the
+ * first viewport.
  */
 @Composable
 fun KitchenPageHeader(
@@ -65,54 +67,50 @@ fun KitchenPageHeader(
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(5.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.Bottom
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Column(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(2.dp)
+                verticalArrangement = Arrangement.spacedBy(1.dp)
             ) {
                 Text(
-                    text = "FÜD AI",
-                    style = MaterialTheme.typography.labelMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.tertiary
-                )
-                Text(
                     text = title,
-                    style = MaterialTheme.typography.displaySmall,
+                    style = MaterialTheme.typography.headlineSmall,
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 if (!subtitle.isNullOrBlank()) {
                     Text(
                         text = subtitle,
-                        style = MaterialTheme.typography.bodyMedium,
+                        style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.62f)
                     )
                 }
             }
             trailing()
         }
-        KitchenReceiptRule()
+        KitchenReceiptRule(height = 5.dp, markerRadius = 2.dp)
     }
 }
 
 @Composable
 fun KitchenReceiptRule(
     modifier: Modifier = Modifier,
-    color: Color = AppColors.KitchenBrass
+    color: Color = AppColors.KitchenBrass,
+    height: Dp = 8.dp,
+    markerRadius: Dp = 3.dp
 ) {
-    Canvas(modifier.fillMaxWidth().height(8.dp)) {
+    Canvas(modifier.fillMaxWidth().height(height)) {
         val centerY = size.height / 2f
-        val markerRadius = 3.dp.toPx()
-        val lineStart = markerRadius * 3.2f
+        val markerRadiusPx = markerRadius.toPx()
+        val lineStart = markerRadiusPx * 3.2f
         drawCircle(
             color = AppColors.KitchenTomato,
-            radius = markerRadius,
-            center = Offset(markerRadius, centerY)
+            radius = markerRadiusPx,
+            center = Offset(markerRadiusPx, centerY)
         )
         drawLine(
             color = color.copy(alpha = 0.72f),

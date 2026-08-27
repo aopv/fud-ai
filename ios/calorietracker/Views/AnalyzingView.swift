@@ -6,45 +6,27 @@ struct AnalyzingView: View {
 
     var body: some View {
         GeometryReader { proxy in
+            let plateSize = min(proxy.size.width - 24, proxy.size.height * 0.46)
+
             ZStack {
                 KitchenTableBackdrop()
 
-                VStack(spacing: 18) {
-                    HStack(alignment: .firstTextBaseline) {
-                        Text("Review Food")
-                            .font(.system(.subheadline, design: .rounded, weight: .bold))
-                            .tracking(0.8)
-                            .foregroundStyle(KitchenTablePalette.tomato)
-
-                        Spacer()
-
-                        Text("AI analysis")
-                            .font(.system(size: 10, weight: .semibold, design: .monospaced))
-                            .tracking(1.1)
-                            .foregroundStyle(KitchenTablePalette.mutedEspresso)
-                    }
-
+                VStack(spacing: 0) {
                     ZStack(alignment: .bottom) {
                         mealPreview
-                            .frame(
-                                width: min(proxy.size.width - 32, 390),
-                                height: min(proxy.size.width - 32, 390)
-                            )
-                            .padding(.bottom, 88)
+                            .frame(width: plateSize, height: plateSize)
+                            .padding(.bottom, 96)
 
                         analysisReceipt
                             .frame(maxWidth: min(proxy.size.width - 58, 344))
                     }
-                    .frame(maxHeight: .infinity)
+                    .frame(maxWidth: .infinity)
 
-                    Text("Analyzing with AI…")
-                        .font(.system(.caption, design: .rounded, weight: .medium))
-                        .foregroundStyle(KitchenTablePalette.mutedEspresso)
-                        .multilineTextAlignment(.center)
+                    Spacer(minLength: 0)
                 }
-                .padding(.horizontal, 16)
-                .padding(.top, 12)
-                .padding(.bottom, 24)
+                .padding(.horizontal, 12)
+                .padding(.top, 14)
+                .padding(.bottom, 18)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -85,7 +67,7 @@ struct AnalyzingView: View {
                 .stroke(KitchenTablePalette.paperRaised, lineWidth: 7)
                 .padding(8)
         }
-        .shadow(color: KitchenTablePalette.shadow, radius: 12, x: 0, y: 6)
+        .shadow(color: KitchenTablePalette.shadow, radius: 5, x: 0, y: 3)
         .accessibilityHidden(true)
     }
 
@@ -136,7 +118,7 @@ struct AnalyzingView: View {
             RoundedRectangle(cornerRadius: 3, style: .continuous)
                 .stroke(KitchenTablePalette.rule, lineWidth: 1)
         }
-        .shadow(color: KitchenTablePalette.shadow, radius: 8, x: 0, y: 5)
+        .shadow(color: KitchenTablePalette.shadow, radius: 5, x: 0, y: 3)
         .rotationEffect(.degrees(-0.45))
     }
 }

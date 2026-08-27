@@ -70,6 +70,7 @@ struct WorkoutLogView: View {
     @Environment(ProfileStore.self) private var profileStore
     @AppStorage(WeightUnit.storageKey) private var weightUnitRaw = WeightUnit.lbs.rawValue
     @AppStorage(AppThemeColor.storageKey) private var appThemeColorRaw = AppThemeColor.defaultColor.rawValue
+    @AppStorage("weekStartsOnMonday") private var weekStartsOnMonday = true
 
     @State private var pickerRequest: WorkoutLogPickerRequest?
     @State private var isCopySheetPresented = false
@@ -174,7 +175,7 @@ struct WorkoutLogView: View {
                 List {
                     Section {
                         WorkoutLogMasthead(
-                            subtitle: selectedDateTitle,
+                            subtitle: weekRangeTitle,
                             showsLibrary: onShowLibrary != nil,
                             openLibrary: {
                                 guard let onShowLibrary else { return }
@@ -189,9 +190,9 @@ struct WorkoutLogView: View {
                         .listRowSeparator(.hidden)
                         .listRowInsets(
                             EdgeInsets(
-                                top: 10,
+                                top: 6,
                                 leading: NeoAppMetrics.screenInset,
-                                bottom: 10,
+                                bottom: 5,
                                 trailing: NeoAppMetrics.screenInset
                             )
                         )
@@ -207,6 +208,22 @@ struct WorkoutLogView: View {
                                 top: 0,
                                 leading: NeoAppMetrics.screenInset,
                                 bottom: 0,
+                                trailing: NeoAppMetrics.screenInset
+                            )
+                        )
+
+                        WorkoutLogWeekOverview(
+                            selectedDate: selectedDateBinding,
+                            exercisesForDate: workoutStore.exercises,
+                            caloriesForDate: workoutStore.caloriesBurned
+                        )
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
+                        .listRowInsets(
+                            EdgeInsets(
+                                top: 5,
+                                leading: NeoAppMetrics.screenInset,
+                                bottom: 3,
                                 trailing: NeoAppMetrics.screenInset
                             )
                         )
@@ -243,9 +260,9 @@ struct WorkoutLogView: View {
                                 .listRowSeparator(.hidden)
                                 .listRowInsets(
                                     EdgeInsets(
-                                        top: 7,
+                                        top: 4,
                                         leading: NeoAppMetrics.screenInset,
-                                        bottom: 7,
+                                        bottom: 4,
                                         trailing: NeoAppMetrics.screenInset
                                     )
                                 )
@@ -308,9 +325,9 @@ struct WorkoutLogView: View {
                                 .listRowSeparator(.hidden)
                                 .listRowInsets(
                                     EdgeInsets(
-                                        top: 7,
+                                        top: 4,
                                         leading: NeoAppMetrics.screenInset,
-                                        bottom: 7,
+                                        bottom: 4,
                                         trailing: NeoAppMetrics.screenInset
                                     )
                                 )
@@ -355,13 +372,30 @@ struct WorkoutLogView: View {
                         .contentShape(Rectangle())
                         .simultaneousGesture(daySwipeGesture)
                     }
+
+                    Section {
+                        addExerciseMenu
+                            .listRowBackground(Color.clear)
+                            .listRowSeparator(.hidden)
+                            .listRowInsets(
+                                EdgeInsets(
+                                    top: 4,
+                                    leading: NeoAppMetrics.screenInset,
+                                    bottom: 8,
+                                    trailing: NeoAppMetrics.screenInset
+                                )
+                            )
+                            .simultaneousGesture(
+                                TapGesture().onEnded(dismissSetKeyboard)
+                            )
+                    }
                 }
                 .coordinateSpace(name: WorkoutLogLayout.coordinateSpace)
                 .scrollContentBackground(.hidden)
                 .background(KitchenTableBackdrop())
-                .listSectionSpacing(NeoAppMetrics.sectionSpacing)
+                .listSectionSpacing(6)
                 .scrollDismissesKeyboard(.interactively)
-                .contentMargins(.bottom, NeoAppMetrics.bottomBarHeight + 96, for: .scrollContent)
+                .contentMargins(.bottom, 12, for: .scrollContent)
                 .animation(.snappy, value: selectedDate)
                 .onPreferenceChange(WorkoutLogCardFramePreferenceKey.self) { frames in
                     workoutCardFrames = frames
@@ -388,17 +422,6 @@ struct WorkoutLogView: View {
                             proxy.scrollTo(exerciseID, anchor: UnitPoint(x: 0.5, y: 0.8))
                         }
                     }
-                }
-                .overlay(alignment: .bottomTrailing) {
-                    addExerciseMenu
-                        .padding(.horizontal, NeoAppMetrics.screenInset)
-                        .padding(
-                            .bottom,
-                            focusedSetField == nil ? NeoAppMetrics.bottomBarHeight + 32 : 24
-                        )
-                        .simultaneousGesture(
-                            TapGesture().onEnded(dismissSetKeyboard)
-                        )
                 }
             }
             // Keep the chrome quiet: the date strip and burn calculator lead.
@@ -452,10 +475,10 @@ struct WorkoutLogView: View {
                 .font(.system(size: 14, weight: .bold, design: .monospaced))
                 .foregroundStyle(KitchenTablePalette.tomatoDeep)
                 .padding(.horizontal, 16)
-                .frame(minWidth: 150, minHeight: 48)
-                .background(KitchenTablePalette.paperRaised, in: RoundedRectangle(cornerRadius: 7, style: .continuous))
+                .frame(maxWidth: .infinity, minHeight: 44)
+                .background(KitchenTablePalette.paperRaised, in: RoundedRectangle(cornerRadius: 5, style: .continuous))
                 .overlay {
-                    RoundedRectangle(cornerRadius: 7, style: .continuous)
+                    RoundedRectangle(cornerRadius: 5, style: .continuous)
                         .stroke(
                             KitchenTablePalette.tomato,
                             style: StrokeStyle(lineWidth: 1, dash: [4, 2])
@@ -521,6 +544,17 @@ struct WorkoutLogView: View {
         if Calendar.current.isDateInTomorrow(selectedDate) { return "Tomorrow" }
         if Calendar.current.isDateInYesterday(selectedDate) { return "Yesterday" }
         return selectedDate.formatted(.dateTime.weekday(.wide).month(.abbreviated).day())
+    }
+
+    private var weekRangeTitle: String {
+        var calendar = Calendar.current
+        calendar.firstWeekday = weekStartsOnMonday ? 2 : 1
+        let day = calendar.startOfDay(for: selectedDate)
+        let weekday = calendar.component(.weekday, from: day)
+        let daysBack = (weekday - calendar.firstWeekday + 7) % 7
+        let start = calendar.date(byAdding: .day, value: -daysBack, to: day) ?? day
+        let end = calendar.date(byAdding: .day, value: 6, to: start) ?? start
+        return "\(start.formatted(.dateTime.month(.abbreviated).day())) – \(end.formatted(.dateTime.month(.abbreviated).day()))"
     }
 
     private func changeDay(by delta: Int) {
@@ -590,14 +624,8 @@ private struct WorkoutLogMasthead: View {
     var body: some View {
         HStack(alignment: .center, spacing: 12) {
             VStack(alignment: .leading, spacing: 2) {
-                Text("Workouts")
-                    .font(.system(size: 10, weight: .bold, design: .monospaced))
-                    .textCase(.uppercase)
-                    .tracking(0.8)
-                    .foregroundStyle(KitchenTablePalette.tomato)
-
-                Text("Workouts")
-                    .font(.system(size: 30, weight: .bold, design: .serif))
+                Text("This Week")
+                    .font(.system(.title2, design: .serif, weight: .bold))
                     .foregroundStyle(NeoAppColors.ink)
                     .lineLimit(1)
                     .minimumScaleFactor(0.78)
@@ -612,30 +640,29 @@ private struct WorkoutLogMasthead: View {
             if showsLibrary {
                 Button(action: openLibrary) {
                     VStack(spacing: 2) {
-                        Image(systemName: "dumbbell.fill")
-                            .font(.system(size: 17, weight: .bold))
-                        Text("Search")
-                            .font(.system(size: 8, weight: .bold, design: .monospaced))
-                            .textCase(.uppercase)
+                        Image(systemName: "calendar.badge.plus")
+                            .font(.system(size: 16, weight: .semibold))
                     }
                     .foregroundStyle(KitchenTablePalette.cobaltDeep)
-                    .frame(width: 54, height: 48)
-                    .background(KitchenTablePalette.paperMuted.opacity(0.62))
+                    .frame(width: 42, height: 38)
+                    .background(KitchenTablePalette.paperRaised)
                     .overlay {
-                        RoundedRectangle(cornerRadius: 6, style: .continuous)
+                        RoundedRectangle(cornerRadius: 4, style: .continuous)
                             .stroke(
                                 KitchenTablePalette.cobalt.opacity(0.72),
                                 style: StrokeStyle(lineWidth: 0.9, dash: [3, 2])
                             )
                     }
+                    .frame(width: 44, height: 44)
+                    .contentShape(Rectangle())
                 }
                 .buttonStyle(WorkoutPressableButtonStyle())
-                .accessibilityLabel("870+ exercise library")
+                .accessibilityLabel("Open exercise library")
+                .accessibilityHint("Choose an exercise to add to this day")
             }
         }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 12)
-        .kitchenReceiptSurface(accent: KitchenTablePalette.tomato)
+        .padding(.horizontal, 3)
+        .padding(.vertical, 3)
     }
 }
 
@@ -684,7 +711,7 @@ private struct WorkoutLogWeekStrip: View {
                 withAnimation(.snappy) { scrolledWeek = target }
             }
         }
-        .padding(.vertical, 8)
+        .padding(.vertical, 4)
         .kitchenReceiptSurface(accent: KitchenTablePalette.brass)
         .accessibilityElement(children: .contain)
         .accessibilityLabel("Workout diary dates")
@@ -767,6 +794,172 @@ private struct WorkoutLogWeekStrip: View {
     }
 }
 
+private struct WorkoutLogWeekDay: Identifiable {
+    let date: Date
+    let exercises: [StrengthPlannedExercise]
+    let calories: Int?
+
+    var id: Date { date }
+}
+
+/// A real-data weekly organizer: only planned/logged workout days become
+/// tickets, so the screen matches the paper diary reference without inventing
+/// sessions for an empty week.
+private struct WorkoutLogWeekOverview: View {
+    @Binding var selectedDate: Date
+    let exercisesForDate: (Date) -> [StrengthPlannedExercise]
+    let caloriesForDate: (Date) -> Int?
+    @AppStorage("weekStartsOnMonday") private var weekStartsOnMonday = true
+
+    private var calendar: Calendar {
+        var value = Calendar.current
+        value.firstWeekday = weekStartsOnMonday ? 2 : 1
+        return value
+    }
+
+    private var activeDays: [WorkoutLogWeekDay] {
+        weekDates.compactMap { date in
+            let exercises = exercisesForDate(date)
+            guard !exercises.isEmpty else { return nil }
+            return WorkoutLogWeekDay(
+                date: date,
+                exercises: exercises,
+                calories: caloriesForDate(date)
+            )
+        }
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 7) {
+            if activeDays.isEmpty {
+                emptyStatusTicket(
+                    icon: "calendar",
+                    title: "Week open",
+                    detail: "0 workout days planned across this week",
+                    accent: KitchenTablePalette.cobalt
+                )
+                emptyStatusTicket(
+                    icon: "dumbbell",
+                    title: "No sets logged",
+                    detail: "Reps and load stay blank until you train",
+                    accent: KitchenTablePalette.herb
+                )
+                emptyStatusTicket(
+                    icon: "plus",
+                    title: "Ready to plan",
+                    detail: "Choose a date, then add from the exercise library",
+                    accent: KitchenTablePalette.tomato
+                )
+            } else {
+                ForEach(activeDays) { day in
+                    weekTicket(day)
+                }
+            }
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("This week's workouts")
+    }
+
+    private func emptyStatusTicket(
+        icon: String,
+        title: LocalizedStringKey,
+        detail: LocalizedStringKey,
+        accent: Color
+    ) -> some View {
+        HStack(spacing: 10) {
+            Image(systemName: icon)
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundStyle(accent)
+                .frame(width: 28, height: 28)
+                .overlay {
+                    Rectangle()
+                        .stroke(accent.opacity(0.72), lineWidth: 0.8)
+                }
+                .accessibilityHidden(true)
+
+            VStack(alignment: .leading, spacing: 1) {
+                Text(title)
+                    .font(.system(.subheadline, design: .serif, weight: .bold))
+                Text(detail)
+                    .font(.system(.caption2, design: .monospaced, weight: .semibold))
+                    .foregroundStyle(KitchenTablePalette.mutedEspresso)
+                    .lineLimit(2)
+            }
+
+            Spacer(minLength: 2)
+        }
+        .padding(.horizontal, 9)
+        .padding(.vertical, 7)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .kitchenWorkoutTicket(accent: accent)
+        .accessibilityElement(children: .combine)
+    }
+
+    private func weekTicket(_ day: WorkoutLogWeekDay) -> some View {
+        let isSelected = calendar.isDate(day.date, inSameDayAs: selectedDate)
+        let performedSets = day.exercises.flatMap(\.sets).filter { !$0.reps.isEmpty }.count
+
+        return Button {
+            selectedDate = day.date
+        } label: {
+            HStack(alignment: .top, spacing: 10) {
+                VStack(spacing: 0) {
+                    Text(day.date.formatted(.dateTime.weekday(.abbreviated)))
+                        .font(.system(size: 8, weight: .bold, design: .monospaced))
+                    Text(day.date.formatted(.dateTime.day()))
+                        .font(.system(.headline, design: .serif, weight: .bold))
+                }
+                .foregroundStyle(isSelected ? KitchenTablePalette.tomatoDeep : KitchenTablePalette.espresso)
+                .frame(width: 34)
+
+                VStack(alignment: .leading, spacing: 5) {
+                    HStack(alignment: .firstTextBaseline) {
+                        Text(day.exercises.first?.name ?? String(localized: "Workout"))
+                            .font(.system(.headline, design: .serif, weight: .bold))
+                            .lineLimit(1)
+                        Spacer(minLength: 8)
+                        Text("\(day.exercises.count) exercises")
+                            .font(.system(size: 8, weight: .bold, design: .monospaced))
+                            .foregroundStyle(KitchenTablePalette.mutedEspresso)
+                    }
+
+                    KitchenReceiptRule(color: KitchenTablePalette.rule)
+
+                    HStack(spacing: 8) {
+                        Text(day.exercises.prefix(2).map(\.name).joined(separator: " · "))
+                            .font(.system(size: 9, weight: .semibold, design: .monospaced))
+                            .lineLimit(1)
+                        Spacer(minLength: 4)
+                        if performedSets > 0 {
+                            Text("\(performedSets) sets")
+                                .foregroundStyle(KitchenTablePalette.tomatoDeep)
+                        } else if let calories = day.calories {
+                            Text("\(calories) kcal")
+                                .foregroundStyle(KitchenTablePalette.herb)
+                        }
+                    }
+                    .font(.system(size: 8, weight: .bold, design: .monospaced))
+                }
+                .foregroundStyle(KitchenTablePalette.espresso)
+            }
+            .padding(9)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .kitchenWorkoutTicket(accent: isSelected ? KitchenTablePalette.tomato : KitchenTablePalette.cobalt)
+        }
+        .buttonStyle(WorkoutPressableButtonStyle())
+        .accessibilityLabel(day.date.formatted(date: .complete, time: .omitted))
+        .accessibilityValue("\(day.exercises.count) exercises, \(performedSets) performed sets")
+    }
+
+    private var weekDates: [Date] {
+        let day = calendar.startOfDay(for: selectedDate)
+        let weekday = calendar.component(.weekday, from: day)
+        let daysBack = (weekday - calendar.firstWeekday + 7) % 7
+        let start = calendar.date(byAdding: .day, value: -daysBack, to: day) ?? day
+        return (0..<7).compactMap { calendar.date(byAdding: .day, value: $0, to: start) }
+    }
+}
+
 // MARK: - Signature burn calculator and stats
 
 private struct WorkoutLogBurnHero: View {
@@ -779,13 +972,13 @@ private struct WorkoutLogBurnHero: View {
     let changeDay: (Int) -> Void
 
     var body: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: 6) {
             HStack(spacing: 8) {
                 Text("CALORIE BURN")
-                    .font(.system(size: 17, weight: .bold, design: .serif))
+                    .font(.system(size: 13, weight: .bold, design: .serif))
                 Spacer(minLength: 8)
                 Text("PERFORMED SETS")
-                    .font(.system(size: 9, weight: .bold, design: .monospaced))
+                    .font(.system(size: 8, weight: .bold, design: .monospaced))
             }
             .foregroundStyle(NeoAppColors.ink)
 
@@ -800,7 +993,7 @@ private struct WorkoutLogBurnHero: View {
 
             WorkoutLogBurnButton(isCalculating: isCalculatingBurn, action: calculateBurn)
         }
-        .padding(14)
+        .padding(9)
         .frame(maxWidth: .infinity)
         .kitchenWorkoutTicket(accent: KitchenTablePalette.tomato)
         .contentShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
@@ -820,6 +1013,14 @@ private struct WorkoutLogBurnButton: View {
     let isCalculating: Bool
     let action: () -> Void
 
+    private var title: LocalizedStringResource {
+        isCalculating ? "Calculating…" : "Calculate Burn"
+    }
+
+    private var accessibilityState: LocalizedStringResource {
+        isCalculating ? "Calculating" : "Ready"
+    }
+
     var body: some View {
         Button(action: action) {
             HStack(spacing: 10) {
@@ -836,8 +1037,8 @@ private struct WorkoutLogBurnButton: View {
                 .frame(width: 24, height: 24)
 
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(isCalculating ? "Calculating…" : "Calculate Burn")
-                        .font(.system(size: 14, weight: .bold, design: .monospaced))
+                    Text(title)
+                        .font(.system(size: 12, weight: .bold, design: .monospaced))
                         .textCase(.uppercase)
                         .contentTransition(.opacity)
                         .lineLimit(1)
@@ -857,7 +1058,7 @@ private struct WorkoutLogBurnButton: View {
             }
             .foregroundStyle(KitchenTablePalette.tomatoDeep)
             .padding(.horizontal, 12)
-            .frame(maxWidth: .infinity, minHeight: 46)
+            .frame(maxWidth: .infinity, minHeight: 38)
             .background(KitchenTablePalette.paper)
             .overlay {
                 RoundedRectangle(cornerRadius: 5, style: .continuous)
@@ -866,11 +1067,13 @@ private struct WorkoutLogBurnButton: View {
                         style: StrokeStyle(lineWidth: 0.9, dash: [4, 2])
                     )
             }
+            .frame(minHeight: 44)
+            .contentShape(Rectangle())
         }
         .buttonStyle(WorkoutLogBurnButtonStyle())
         .disabled(isCalculating)
         .accessibilityLabel("Calculate calorie burn")
-        .accessibilityValue(isCalculating ? "Calculating" : "Ready")
+        .accessibilityValue(Text(accessibilityState))
         .accessibilityHint("Uses performed sets, repetitions, effort, load, and current body weight")
     }
 }
@@ -936,9 +1139,9 @@ private struct WorkoutLogStatsStrip: View {
                 .minimumScaleFactor(0.5)
                 .lineLimit(1)
         }
-        .frame(maxWidth: .infinity, minHeight: 50, alignment: .leading)
+        .frame(maxWidth: .infinity, minHeight: 40, alignment: .leading)
         .padding(.horizontal, 7)
-        .padding(.vertical, 6)
+        .padding(.vertical, 4)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(label)
         .accessibilityValue(value)
@@ -1234,9 +1437,9 @@ private struct WorkoutLogEmptyRoutineRow: View {
     var body: some View {
         HStack(spacing: 12) {
             Image(systemName: "plus")
-                .font(.title2.weight(.black))
+                .font(.headline.weight(.bold))
                 .foregroundStyle(Color.black)
-                .frame(width: 52, height: 52)
+                .frame(width: 40, height: 40)
                 .background(NeoAppColors.acid.opacity(0.78), in: RoundedRectangle(cornerRadius: 5, style: .continuous))
                 .overlay {
                     RoundedRectangle(cornerRadius: 5, style: .continuous)
@@ -1253,7 +1456,7 @@ private struct WorkoutLogEmptyRoutineRow: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .padding(14)
+        .padding(9)
         .frame(maxWidth: .infinity, alignment: .leading)
         .kitchenWorkoutTicket(accent: NeoAppColors.cobalt)
         .accessibilityElement(children: .combine)

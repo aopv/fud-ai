@@ -655,4 +655,78 @@
     <string name="whats_new_v30_adaptive">アダプティブ目標とエネルギー消費が実験的機能を卒業し、新規インストールではデフォルトでオンに。</string>
     <string name="whats_new_v30_widgets">ウィジェットを刷新：ホームのスピードメーターデザインを各ウィジェットの実サイズで描画。</string>
     <string name="whats_new_v30_restore">再インストールや機種変更をしても、食事記録・体重・体脂肪がHealth Connectから自動的に復元されるようになりました。</string>
+    <!-- Kitchen Table home, coach, and capture -->
+    <string name="home_add_group_photo_scan">写真とスキャン</string>
+    <string name="home_add_group_describe">食事を説明</string>
+    <string name="home_add_group_reuse">食事を再利用</string>
+    <string name="home_add_barcode">バーコード</string>
+    <string name="home_calorie_summary_a11y">%2$d カロリー中 %1$d</string>
+    <string name="coach_summary_headline_format">今日の記録：%1$s</string>
+    <string name="coach_summary_with_target_format">%1$s 記録済み · 目標 %2$s</string>
+    <string name="coach_summary_without_target_format">%1$s 記録済み · 目標未設定</string>
+    <string name="coach_summary_provenance">今日の日記に基づく</string>
+    <string name="coach_more_prompts">その他の候補</string>
+    <string name="coach_fewer_prompts">候補を減らす</string>
+    <string name="capture_photo_description">写真 %1$d</string>
+    <string name="capture_photo_label">写真 %1$d</string>
+    <plurals name="capture_photo_count">
+        <item quantity="other">%2$d 枚中 %1$d 枚</item>
+    </plurals>
+    <string name="capture_add_photo">写真を追加</string>
+    <string name="capture_add_photos">写真を追加</string>
+    <string name="capture_progressive_ready">同じ皿 · 追加順</string>
+    <string name="capture_progressive_needs_second">材料の手順用に写真2を追加</string>
+
+    <!-- Progress and workout diary -->
+    <string name="show_details">詳細を表示</string>
+    <string name="hide_details">詳細を非表示</string>
+    <string name="progress_previous_week_a11y">前の週</string>
+    <string name="progress_next_week_a11y">次の週</string>
+    <plurals name="progress_more_meal_groups">
+        <item quantity="one">食事グループを %1$d 個追加</item>
+        <item quantity="other">食事グループを %1$d 個追加</item>
+    </plurals>
+    <string name="progress_calorie_summary_a11y">%2$d カロリー中 %1$d</string>
+    <string name="workout_add_workout">ワークアウトを追加</string>
+    <string name="workout_this_week">今週</string>
+    <string name="workout_menu_all_exercises">すべてのエクササイズ</string>
+    <string name="workout_menu_copy_from_day">日付からコピー</string>
+    <string name="workout_menu_saved">保存済み</string>
+    <string name="workout_log_reps_first">先に回数を記録してください</string>
+    <string name="workout_calculate_burn">消費カロリーを計算</string>
+    <string name="workout_metric_sets">セット</string>
+    <string name="workout_metric_workouts">ワークアウト</string>
+    <string name="workout_metric_reps">回数</string>
+    <string name="workout_metric_burn">消費</string>
+    <string name="workout_calculating_burn_a11y">消費カロリーを計算中</string>
+    <string name="workout_calculate_burn_a11y">消費カロリーを計算</string>
+    <string name="workout_calorie_burn_label">消費カロリー</string>
+    <string name="workout_calculating">計算中…</string>
+    <string name="workout_calculate">計算</string>
+    <string name="workout_today">今日</string>
+    <string name="workout_tomorrow">明日</string>
+    <string name="workout_yesterday">昨日</string>
+    <plurals name="workout_count">
+        <item quantity="one">ワークアウト %1$d 件</item>
+        <item quantity="other">ワークアウト %1$d 件</item>
+    </plurals>
+    <string name="workout_empty_title">記録されたワークアウトはありません</string>
+    <string name="workout_empty_body_format">+ で今日の %1$s エクササイズを選択</string>
+    <string name="workout_fallback_label">ワークアウト</string>
+    <string name="workout_unspecified">未指定</string>
+    <string name="workout_open_exercise_a11y">エクササイズの手順を開く</string>
+    <string name="workout_sets_label">セット</string>
+    <string name="workout_remove_set_a11y">セットを削除</string>
+    <string name="workout_add_set_a11y">空のセットを追加</string>
+    <plurals name="workout_set_count">
+        <item quantity="one">%1$d セット</item>
+        <item quantity="other">%1$d セット</item>
+    </plurals>
+    <string name="workout_unsave_exercise_a11y">保存済みからエクササイズを削除</string>
+    <string name="workout_save_exercise_a11y">エクササイズを保存</string>
+    <string name="workout_remove_exercise_a11y">エクササイズを削除</string>
+    <string name="workout_set_number_format">セット %1$d</string>
+    <string name="workout_reps_placeholder">回数</string>
+    <string name="workout_show_library_a11y">エクササイズライブラリを表示</string>
+    <string name="workout_show_log_a11y">ワークアウトログを表示</string>
 </resources>

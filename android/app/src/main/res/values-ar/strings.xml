@@ -655,4 +655,95 @@
     <string name="whats_new_v30_adaptive">تخرّجت ميزتا الأهداف التكيفية وحرق الطاقة من المرحلة التجريبية وأصبحتا مفعّلتين افتراضيًا للتثبيتات الجديدة.</string>
     <string name="whats_new_v30_widgets">تصميم جديد للودجات: نمط عدّاد السرعة من الرئيسية، مرسوم بالحجم الحقيقي لكل ودجة.</string>
     <string name="whats_new_v30_restore">أعدت التثبيت أو غيّرت هاتفك؟ يُستعاد الآن سجل طعامك ووزنك ودهون جسمك تلقائيًا من Health Connect.</string>
+    <!-- Kitchen Table home, coach, and capture -->
+    <string name="home_add_group_photo_scan">الصور والمسح</string>
+    <string name="home_add_group_describe">وصف الوجبة</string>
+    <string name="home_add_group_reuse">إعادة استخدام وجبة</string>
+    <string name="home_add_barcode">الرمز الشريطي</string>
+    <string name="home_calorie_summary_a11y">%1$d من أصل %2$d سعرة حرارية</string>
+    <string name="coach_summary_headline_format">تم تسجيل %1$s اليوم.</string>
+    <string name="coach_summary_with_target_format">تم تسجيل %1$s · الهدف %2$s</string>
+    <string name="coach_summary_without_target_format">تم تسجيل %1$s · لم يتم تعيين الهدف</string>
+    <string name="coach_summary_provenance">استنادًا إلى سجل اليوم</string>
+    <string name="coach_more_prompts">المزيد من الاقتراحات</string>
+    <string name="coach_fewer_prompts">اقتراحات أقل</string>
+    <string name="capture_photo_description">الصورة %1$d</string>
+    <string name="capture_photo_label">الصورة %1$d</string>
+    <plurals name="capture_photo_count">
+        <item quantity="zero">%1$d من أصل %2$d صور</item>
+        <item quantity="one">%1$d من أصل %2$d صورة</item>
+        <item quantity="two">%1$d من أصل %2$d صورتين</item>
+        <item quantity="few">%1$d من أصل %2$d صور</item>
+        <item quantity="many">%1$d من أصل %2$d صورة</item>
+        <item quantity="other">%1$d من أصل %2$d صورة</item>
+    </plurals>
+    <string name="capture_add_photo">إضافة صورة</string>
+    <string name="capture_add_photos">إضافة صور</string>
+    <string name="capture_progressive_ready">الطبق نفسه · الإضافات بالترتيب</string>
+    <string name="capture_progressive_needs_second">أضف الصورة 2 لخطوات المكونات</string>
+
+    <!-- Progress and workout diary -->
+    <string name="show_details">عرض التفاصيل</string>
+    <string name="hide_details">إخفاء التفاصيل</string>
+    <string name="progress_previous_week_a11y">الأسبوع السابق</string>
+    <string name="progress_next_week_a11y">الأسبوع التالي</string>
+    <plurals name="progress_more_meal_groups">
+        <item quantity="zero">%1$d مجموعة وجبات إضافية</item>
+        <item quantity="one">%1$d مجموعة وجبات إضافية</item>
+        <item quantity="two">%1$d مجموعتا وجبات إضافيتان</item>
+        <item quantity="few">%1$d مجموعات وجبات إضافية</item>
+        <item quantity="many">%1$d مجموعة وجبات إضافية</item>
+        <item quantity="other">%1$d مجموعات وجبات إضافية</item>
+    </plurals>
+    <string name="progress_calorie_summary_a11y">%1$d من أصل %2$d سعرة حرارية</string>
+    <string name="workout_add_workout">إضافة تمرين</string>
+    <string name="workout_this_week">هذا الأسبوع</string>
+    <string name="workout_menu_all_exercises">كل التمارين</string>
+    <string name="workout_menu_copy_from_day">نسخ من يوم</string>
+    <string name="workout_menu_saved">محفوظ</string>
+    <string name="workout_log_reps_first">سجّل التكرارات أولاً</string>
+    <string name="workout_calculate_burn">احسب الحرق</string>
+    <string name="workout_metric_sets">مجموعات</string>
+    <string name="workout_metric_workouts">تمارين</string>
+    <string name="workout_metric_reps">تكرارات</string>
+    <string name="workout_metric_burn">حرق</string>
+    <string name="workout_calculating_burn_a11y">جارٍ حساب حرق السعرات</string>
+    <string name="workout_calculate_burn_a11y">حساب حرق السعرات</string>
+    <string name="workout_calorie_burn_label">حرق السعرات</string>
+    <string name="workout_calculating">جارٍ الحساب…</string>
+    <string name="workout_calculate">احسب</string>
+    <string name="workout_today">اليوم</string>
+    <string name="workout_tomorrow">غدًا</string>
+    <string name="workout_yesterday">أمس</string>
+    <plurals name="workout_count">
+        <item quantity="zero">%1$d تمرين</item>
+        <item quantity="one">%1$d تمرين</item>
+        <item quantity="two">%1$d تمرينان</item>
+        <item quantity="few">%1$d تمارين</item>
+        <item quantity="many">%1$d تمرينًا</item>
+        <item quantity="other">%1$d تمارين</item>
+    </plurals>
+    <string name="workout_empty_title">لا توجد تمارين مسجلة</string>
+    <string name="workout_empty_body_format">استخدم + لاختيار تمارين %1$s لهذا اليوم</string>
+    <string name="workout_fallback_label">تمرين</string>
+    <string name="workout_unspecified">غير محدد</string>
+    <string name="workout_open_exercise_a11y">فتح تعليمات التمرين</string>
+    <string name="workout_sets_label">مجموعات</string>
+    <string name="workout_remove_set_a11y">إزالة مجموعة</string>
+    <string name="workout_add_set_a11y">إضافة مجموعة فارغة</string>
+    <plurals name="workout_set_count">
+        <item quantity="zero">%1$d مجموعة</item>
+        <item quantity="one">%1$d مجموعة</item>
+        <item quantity="two">%1$d مجموعتان</item>
+        <item quantity="few">%1$d مجموعات</item>
+        <item quantity="many">%1$d مجموعة</item>
+        <item quantity="other">%1$d مجموعات</item>
+    </plurals>
+    <string name="workout_unsave_exercise_a11y">إزالة التمرين من المحفوظات</string>
+    <string name="workout_save_exercise_a11y">حفظ التمرين</string>
+    <string name="workout_remove_exercise_a11y">إزالة التمرين</string>
+    <string name="workout_set_number_format">المجموعة %1$d</string>
+    <string name="workout_reps_placeholder">تكرارات</string>
+    <string name="workout_show_library_a11y">عرض مكتبة التمارين</string>
+    <string name="workout_show_log_a11y">عرض سجل التمارين</string>
 </resources>

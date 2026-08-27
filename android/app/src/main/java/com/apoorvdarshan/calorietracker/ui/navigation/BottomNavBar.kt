@@ -87,9 +87,9 @@ val BottomTabs = listOf(
     BottomTab(FudAIRoutes.WORKOUTS, Icons.Filled.FitnessCenter, R.string.nav_workouts, R.drawable.kt_nav_workouts)
 )
 
-private val BarHeight = 84.dp
-val BottomNavScrollPadding = 128.dp
-val BottomNavDockedControlPadding = 88.dp
+private val BarHeight = 72.dp
+val BottomNavScrollPadding = 112.dp
+val BottomNavDockedControlPadding = 76.dp
 
 @Composable
 fun FudAIBottomNavBar(
@@ -115,19 +115,19 @@ fun FudAIBottomNavBar(
         modifier = modifier
             .fillMaxWidth()
             .navigationBarsPadding()
-            .padding(horizontal = 8.dp, vertical = 5.dp)
+            .padding(horizontal = 0.dp, vertical = 0.dp)
             .shadow(
-                elevation = 9.dp,
-                shape = RoundedCornerShape(topStart = 18.dp, topEnd = 18.dp),
-                ambientColor = Color.Black.copy(alpha = 0.14f),
-                spotColor = Color.Black.copy(alpha = 0.14f)
+                elevation = 5.dp,
+                shape = RoundedCornerShape(topStart = 7.dp, topEnd = 7.dp),
+                ambientColor = Color.Black.copy(alpha = 0.11f),
+                spotColor = Color.Black.copy(alpha = 0.11f)
             )
-            .clip(RoundedCornerShape(topStart = 18.dp, topEnd = 18.dp))
+            .clip(RoundedCornerShape(topStart = 7.dp, topEnd = 7.dp))
             .background(AppColors.KitchenPaper)
             .border(
                 1.dp,
                 AppColors.KitchenEspresso.copy(alpha = 0.18f),
-                RoundedCornerShape(topStart = 18.dp, topEnd = 18.dp)
+                RoundedCornerShape(topStart = 7.dp, topEnd = 7.dp)
             )
             .height(BarHeight)
     ) {
@@ -141,7 +141,7 @@ fun FudAIBottomNavBar(
             Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .padding(horizontal = 3.dp, vertical = 4.dp)
+                .padding(horizontal = 2.dp, vertical = 2.dp)
         ) {
             val density = LocalDensity.current
             val haptic = LocalHapticFeedback.current
@@ -267,7 +267,7 @@ private fun KitchenTabItem(
     onClick: () -> Unit
 ) {
     val scale by animateFloatAsState(
-        targetValue = if (selected) 1.08f else 1f,
+        targetValue = if (selected) 1.04f else 1f,
         animationSpec = spring(dampingRatio = 0.82f, stiffness = 420f),
         label = "kitchenTabObject"
     )
@@ -293,7 +293,7 @@ private fun KitchenTabItem(
                 contentDescription = null,
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
-                    .size(45.dp)
+                    .size(38.dp)
                     .graphicsLayer {
                         scaleX = scale
                         scaleY = scale
@@ -332,15 +332,15 @@ private fun KitchenTabItem(
                 )
             }
         }
-        Spacer(Modifier.height(1.dp))
+        Spacer(Modifier.height(0.dp))
         Text(
             text = label,
             color = ink,
             fontFamily = MaterialTheme.typography.labelSmall.fontFamily,
-            fontSize = 9.sp,
+            fontSize = 8.sp,
             fontWeight = if (selected) FontWeight.Black else FontWeight.Bold,
             maxLines = 1
         )
-        Spacer(Modifier.height(4.dp))
+        Spacer(Modifier.height(2.dp))
     }
 }

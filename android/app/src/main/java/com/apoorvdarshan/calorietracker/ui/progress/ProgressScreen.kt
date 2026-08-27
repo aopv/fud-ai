@@ -4,6 +4,7 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -35,6 +37,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ListAlt
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -55,6 +58,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -71,16 +75,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -94,7 +102,6 @@ import com.apoorvdarshan.calorietracker.ui.components.FudGlassPrimaryButton
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassSurface
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassTextButton
 import com.apoorvdarshan.calorietracker.ui.components.FudIconBubble
-import com.apoorvdarshan.calorietracker.ui.components.KitchenPageHeader
 import com.apoorvdarshan.calorietracker.ui.components.SplitDecimalWheelPicker
 import com.apoorvdarshan.calorietracker.ui.components.UnitToggle
 import com.apoorvdarshan.calorietracker.ui.settings.NutritionPickerSheet
@@ -109,6 +116,7 @@ import com.apoorvdarshan.calorietracker.AppContainer
 import com.apoorvdarshan.calorietracker.models.BodyFatEntry
 import com.apoorvdarshan.calorietracker.models.FoodEntry
 import com.apoorvdarshan.calorietracker.models.MacroValueFormatter
+import com.apoorvdarshan.calorietracker.models.MealType
 import com.apoorvdarshan.calorietracker.models.WeightEntry
 import com.apoorvdarshan.calorietracker.models.WorkoutSession
 import com.apoorvdarshan.calorietracker.ui.navigation.BottomNavScrollPadding
@@ -118,6 +126,8 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlin.math.roundToInt
 
 /**
@@ -165,6 +175,8 @@ internal fun NativeProgressScreen(
     val weightMetric = weightUnit == "kg"
 
     var range by remember { mutableStateOf(TimeRange.WEEK) }
+    var organizerWeekOffset by remember { mutableStateOf(0) }
+    var showTrendDetails by remember { mutableStateOf(false) }
     var showAddDialog by remember(initialAction) {
         mutableStateOf(initialAction == FlutterProgressAction.LOG_WEIGHT)
     }
@@ -224,23 +236,57 @@ internal fun NativeProgressScreen(
         if (n == 0) Triple(0.0, 0.0, 0.0) else Triple(p / n, c / n, f / n)
     }
 
+    val organizerEndDate = remember(organizerWeekOffset) {
+        LocalDate.now().plusWeeks(organizerWeekOffset.toLong())
+    }
+    val organizerStartDate = organizerEndDate.minusDays(6)
+
     Scaffold(containerColor = Color.Transparent) { padding ->
         LazyColumn(
             modifier = Modifier.fillMaxSize().padding(padding),
             contentPadding = androidx.compose.foundation.layout.PaddingValues(
-                start = 16.dp,
-                top = 16.dp,
-                end = 16.dp,
+                start = 12.dp,
+                top = 4.dp,
+                end = 12.dp,
                 bottom = BottomNavScrollPadding
             ),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            item(key = "progress-masthead") {
-                KitchenPageHeader(title = stringResource(R.string.nav_progress))
+            item(key = "progress-organizer") {
+                WeeklyFoodOrganizer(
+                    container = container,
+                    foods = foods,
+                    startDate = organizerStartDate,
+                    endDate = organizerEndDate,
+                    calorieGoal = ui.profile?.effectiveCalories ?: 2000,
+                    onPreviousWeek = { organizerWeekOffset -= 1 },
+                    onNextWeek = { if (organizerWeekOffset < 0) organizerWeekOffset += 1 }
+                )
             }
 
-            // 1. Segmented TimeRange picker
-            item { TimeRangePicker(selected = range, onSelect = { range = it }) }
+            item(key = "progress-details-toggle") {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 48.dp)
+                        .clickable(role = Role.Button) { showTrendDetails = !showTrendDetails },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        stringResource(if (showTrendDetails) R.string.hide_details else R.string.show_details),
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = AppColors.KitchenTomato
+                    )
+                }
+            }
+
+            // Detailed trends remain intact behind one compact disclosure. This
+            // keeps the opening viewport faithful to the seven-day organizer while
+            // preserving every range, weight, calorie and macro interaction.
+            if (showTrendDetails) {
+                item { TimeRangePicker(selected = range, onSelect = { range = it }) }
 
             // 2. Weight / Body Fat chart — single card with a segmented toggle
             //    when the user has opted into body-fat tracking, or just the
@@ -330,6 +376,7 @@ internal fun NativeProgressScreen(
                         )
                     }
                 }
+            }
             }
         }
     }
@@ -440,6 +487,341 @@ internal fun NativeProgressScreen(
 // ── Components ──────────────────────────────────────────────────────
 
 @Composable
+private fun WeeklyFoodOrganizer(
+    container: AppContainer,
+    foods: List<FoodEntry>,
+    startDate: LocalDate,
+    endDate: LocalDate,
+    calorieGoal: Int,
+    onPreviousWeek: () -> Unit,
+    onNextWeek: () -> Unit
+) {
+    val zone = ZoneId.systemDefault()
+    val days = remember(startDate) { (0L..6L).map(startDate::plusDays) }
+    val foodsByDay = remember(foods, startDate, endDate) {
+        foods
+            .filter { it.timestamp.atZone(zone).toLocalDate() in startDate..endDate }
+            .groupBy { it.timestamp.atZone(zone).toLocalDate() }
+    }
+    val dateFormat = remember { DateTimeFormatter.ofPattern("MMM d", Locale.getDefault()) }
+    val today = LocalDate.now()
+
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(6.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(onClick = onPreviousWeek, modifier = Modifier.size(48.dp)) {
+                Icon(
+                    Icons.Filled.ChevronLeft,
+                    contentDescription = stringResource(R.string.progress_previous_week_a11y),
+                    tint = AppColors.KitchenEspresso,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+            Text(
+                text = "${startDate.format(dateFormat)} – ${endDate.format(dateFormat)}",
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.Center,
+                fontSize = 18.sp,
+                lineHeight = 20.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = AppColors.KitchenEspresso
+            )
+            IconButton(
+                onClick = onNextWeek,
+                enabled = endDate.isBefore(today),
+                modifier = Modifier.size(48.dp)
+            ) {
+                Icon(
+                    Icons.Filled.ChevronRight,
+                    contentDescription = stringResource(R.string.progress_next_week_a11y),
+                    tint = AppColors.KitchenEspresso.copy(alpha = if (endDate.isBefore(today)) 1f else 0.28f),
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+        }
+
+        days.forEach { day ->
+            val entries = foodsByDay[day].orEmpty().sortedBy(FoodEntry::timestamp)
+            OrganizerDayRow(
+                container = container,
+                day = day,
+                entries = entries,
+                calorieGoal = calorieGoal,
+                isToday = day == today
+            )
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(start = 46.dp, top = 4.dp, bottom = 3.dp),
+            horizontalArrangement = Arrangement.spacedBy(18.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            OrganizerLegendDot(AppColors.KitchenHerb, stringResource(R.string.macro_protein))
+            OrganizerLegendDot(AppColors.KitchenCobalt, stringResource(R.string.macro_carbs))
+            OrganizerLegendDot(AppColors.KitchenTomato, stringResource(R.string.macro_fat))
+        }
+    }
+}
+
+@Composable
+private fun OrganizerDayRow(
+    container: AppContainer,
+    day: LocalDate,
+    entries: List<FoodEntry>,
+    calorieGoal: Int,
+    isToday: Boolean
+) {
+    val totalCalories = entries.sumOf(FoodEntry::calories)
+    val dominantColor = organizerDominantColor(entries)
+    val mealGroups = remember(entries) { organizerMealGroups(entries) }
+    val visibleGroups = mealGroups.take(3)
+    val moreGroupCount = (mealGroups.size - visibleGroups.size).coerceAtLeast(0)
+    val calorieSummaryDescription = stringResource(
+        R.string.progress_calorie_summary_a11y,
+        totalCalories,
+        calorieGoal
+    )
+    val dayName = day.dayOfWeek.getDisplayName(java.time.format.TextStyle.SHORT, Locale.getDefault())
+        .uppercase(Locale.getDefault())
+
+    Row(
+        modifier = Modifier.fillMaxWidth().height(66.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(6.dp)
+    ) {
+        Column(
+            modifier = Modifier.width(34.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                dayName,
+                fontSize = 8.sp,
+                lineHeight = 9.sp,
+                fontWeight = if (isToday) FontWeight.Black else FontWeight.SemiBold,
+                color = if (isToday) AppColors.KitchenHerb else AppColors.KitchenEspresso.copy(alpha = 0.74f)
+            )
+            Text(
+                day.dayOfMonth.toString(),
+                fontSize = 15.sp,
+                lineHeight = 16.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = AppColors.KitchenEspresso
+            )
+            if (isToday) {
+                Text(
+                    stringResource(R.string.widget_today).uppercase(Locale.getDefault()),
+                    fontSize = 6.sp,
+                    lineHeight = 7.sp,
+                    fontWeight = FontWeight.Black,
+                    color = AppColors.KitchenHerb
+                )
+            }
+        }
+
+        Row(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()
+                .shadow(3.dp, RoundedCornerShape(4.dp))
+                .background(AppColors.KitchenBone, RoundedCornerShape(4.dp))
+                .border(
+                    if (isToday) 1.5.dp else 1.dp,
+                    if (isToday) AppColors.KitchenHerb else AppColors.KitchenEspresso.copy(alpha = 0.32f),
+                    RoundedCornerShape(4.dp)
+                )
+                .padding(5.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(5.dp)
+        ) {
+            repeat(3) { index ->
+                OrganizerMealTile(
+                    container = container,
+                    group = visibleGroups.getOrNull(index),
+                    moreGroupCount = if (index == 2) moreGroupCount else 0,
+                    accent = dominantColor,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .size(50.dp)
+                    .shadow(2.dp, androidx.compose.foundation.shape.CircleShape)
+                    .background(AppColors.KitchenPaper, androidx.compose.foundation.shape.CircleShape)
+                    .border(1.dp, AppColors.KitchenEspresso.copy(alpha = 0.24f), androidx.compose.foundation.shape.CircleShape)
+                    .semantics {
+                        this.contentDescription = calorieSummaryDescription
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        totalCalories.toString(),
+                        fontSize = if (totalCalories >= 1000) 12.sp else 14.sp,
+                        lineHeight = 14.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = AppColors.KitchenEspresso
+                    )
+                    Text(
+                        stringResource(R.string.unit_kcal).uppercase(Locale.getDefault()),
+                        fontSize = 6.sp,
+                        lineHeight = 7.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = AppColors.KitchenEspresso.copy(alpha = 0.72f)
+                    )
+                }
+            }
+        }
+    }
+}
+
+private data class OrganizerMealGroup(
+    val mealType: MealType,
+    val entries: List<FoodEntry>
+) {
+    val representative: FoodEntry = entries.firstOrNull { it.imageFilename != null }
+        ?: entries.firstOrNull { it.emoji != null }
+        ?: entries.first()
+}
+
+private fun organizerMealGroups(entries: List<FoodEntry>): List<OrganizerMealGroup> {
+    val entriesByMealType = entries.groupBy(FoodEntry::mealType)
+    return MealType.values().mapNotNull { mealType ->
+        entriesByMealType[mealType]
+            ?.takeIf { it.isNotEmpty() }
+            ?.let { OrganizerMealGroup(mealType, it) }
+    }
+}
+
+@Composable
+private fun OrganizerMealTile(
+    container: AppContainer,
+    group: OrganizerMealGroup?,
+    moreGroupCount: Int,
+    accent: Color,
+    modifier: Modifier = Modifier
+) {
+    val entry = group?.representative
+    val mealLabel = group?.mealType?.let { stringResource(it.displayNameRes) }
+    val moreGroupsDescription = if (moreGroupCount > 0) {
+        pluralStringResource(R.plurals.progress_more_meal_groups, moreGroupCount, moreGroupCount)
+    } else {
+        null
+    }
+    val bitmap by produceState<android.graphics.Bitmap?>(
+        initialValue = null,
+        key1 = entry?.imageFilename
+    ) {
+        value = withContext(Dispatchers.IO) {
+            entry?.imageFilename?.let(container.imageStore::loadThumbnail)
+        }
+    }
+    Box(
+        modifier = modifier
+            .fillMaxHeight()
+            .shadow(1.dp, RoundedCornerShape(2.dp))
+            .background(AppColors.KitchenPaper, RoundedCornerShape(2.dp))
+            .border(1.dp, AppColors.KitchenEspresso.copy(alpha = 0.18f), RoundedCornerShape(2.dp))
+            .padding(3.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        val loadedBitmap = bitmap
+        when {
+            loadedBitmap != null -> Image(
+                bitmap = loadedBitmap.asImageBitmap(),
+                contentDescription = mealLabel,
+                modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(1.dp)),
+                contentScale = ContentScale.Crop
+            )
+            entry?.emoji != null -> Text(entry.emoji.orEmpty(), fontSize = 23.sp)
+            entry != null -> Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    mealLabel.orEmpty().take(1),
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = accent
+                )
+                Text(
+                    mealLabel.orEmpty(),
+                    fontSize = 6.sp,
+                    lineHeight = 7.sp,
+                    textAlign = TextAlign.Center,
+                    color = AppColors.KitchenEspresso,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+            else -> Canvas(Modifier.size(28.dp)) {
+                drawCircle(
+                    color = AppColors.KitchenEspresso.copy(alpha = 0.12f),
+                    radius = size.minDimension * 0.35f,
+                    style = Stroke(width = 1.2.dp.toPx())
+                )
+                drawLine(
+                    color = accent.copy(alpha = 0.22f),
+                    start = Offset(size.width * 0.16f, size.height * 0.2f),
+                    end = Offset(size.width * 0.16f, size.height * 0.8f),
+                    strokeWidth = 1.dp.toPx()
+                )
+                drawLine(
+                    color = accent.copy(alpha = 0.22f),
+                    start = Offset(size.width * 0.84f, size.height * 0.2f),
+                    end = Offset(size.width * 0.84f, size.height * 0.8f),
+                    strokeWidth = 1.dp.toPx()
+                )
+            }
+        }
+        if (moreGroupCount > 0) {
+            Text(
+                text = "+$moreGroupCount",
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .clip(RoundedCornerShape(2.dp))
+                    .background(AppColors.KitchenTomato)
+                    .semantics {
+                        contentDescription = moreGroupsDescription.orEmpty()
+                    }
+                    .padding(horizontal = 4.dp, vertical = 1.dp),
+                fontSize = 7.sp,
+                lineHeight = 9.sp,
+                fontWeight = FontWeight.Black,
+                color = AppColors.KitchenCream
+            )
+        }
+    }
+}
+
+private fun organizerDominantColor(entries: List<FoodEntry>): Color {
+    if (entries.isEmpty()) return AppColors.KitchenBrass
+    val protein = entries.sumOf(FoodEntry::protein) * 4.0
+    val carbs = entries.sumOf(FoodEntry::carbs) * 4.0
+    val fatCalories = entries.sumOf(FoodEntry::fat) * 9.0
+    return when {
+        protein >= carbs && protein >= fatCalories -> AppColors.KitchenHerb
+        carbs >= fatCalories -> AppColors.KitchenCobalt
+        else -> AppColors.KitchenTomato
+    }
+}
+
+@Composable
+private fun OrganizerLegendDot(color: Color, label: String) {
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(5.dp)) {
+        Box(Modifier.size(8.dp).background(color, androidx.compose.foundation.shape.CircleShape))
+        Text(
+            label.uppercase(Locale.getDefault()),
+            fontSize = 7.sp,
+            fontWeight = FontWeight.Bold,
+            color = AppColors.KitchenEspresso.copy(alpha = 0.78f)
+        )
+    }
+}
+
+@Composable
 private fun TimeRangePicker(selected: TimeRange, onSelect: (TimeRange) -> Unit) {
     val shape = RoundedCornerShape(4.dp)
     val trackFill = AppColors.KitchenPaper
@@ -464,7 +846,7 @@ private fun TimeRangePicker(selected: TimeRange, onSelect: (TimeRange) -> Unit) 
             Box(
                 Modifier
                     .weight(1f)
-                    .defaultMinSize(minHeight = 42.dp)
+                    .defaultMinSize(minHeight = 48.dp)
                     .clip(segmentShape)
                     .then(
                         if (isSel) Modifier
@@ -543,7 +925,7 @@ private fun ProgressAction(
 ) {
     Row(
         modifier = Modifier
-            .defaultMinSize(minHeight = 44.dp)
+            .defaultMinSize(minHeight = 48.dp)
             .clip(RoundedCornerShape(3.dp))
             .background(AppColors.KitchenTomato.copy(alpha = 0.10f))
             .border(
@@ -1657,7 +2039,7 @@ private fun BodyMetricToggle(selected: BodyMetric, onSelect: (BodyMetric) -> Uni
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .defaultMinSize(minHeight = 42.dp)
+                    .defaultMinSize(minHeight = 48.dp)
                     .clip(segmentShape)
                     .then(
                         if (isSelected) Modifier

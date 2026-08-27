@@ -165,12 +165,12 @@ private struct ExerciseLibraryBrowserView: View {
         VStack(alignment: .leading, spacing: 0) {
             WorkoutLibraryMasthead()
             .padding(.horizontal, NeoAppMetrics.screenInset)
-            .padding(.top, 10)
+            .padding(.top, 6)
 
             filters
                 .padding(.horizontal, NeoAppMetrics.screenInset)
-                .padding(.top, 10)
-                .padding(.bottom, 10)
+                .padding(.top, 6)
+                .padding(.bottom, 6)
 
             ResultsHeader(
                 count: items.count,
@@ -185,7 +185,7 @@ private struct ExerciseLibraryBrowserView: View {
                 }
             )
             .padding(.horizontal, NeoAppMetrics.screenInset)
-            .padding(.bottom, 8)
+            .padding(.bottom, 5)
 
             scrollingList
         }
@@ -210,7 +210,7 @@ private struct ExerciseLibraryBrowserView: View {
 
     private var scrollingList: some View {
         ScrollView {
-            LazyVStack(alignment: .leading, spacing: 10) {
+            LazyVStack(alignment: .leading, spacing: 7) {
                 if items.isEmpty {
                     ContentUnavailableView {
                         Label("No exercises match", systemImage: "line.3.horizontal.decrease")
@@ -549,18 +549,17 @@ private struct WorkoutLibraryMasthead: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 3) {
             Text("870+ exercise library")
-                .font(.system(size: 10, weight: .bold, design: .monospaced))
+                .font(.system(size: 9, weight: .bold, design: .monospaced))
                 .tracking(0.8)
                 .textCase(.uppercase)
                 .foregroundStyle(KitchenTablePalette.tomato)
-            Text("Workouts")
-                .font(.system(size: 30, weight: .bold, design: .serif))
+            Text("Exercise Library")
+                .font(.system(.title2, design: .serif, weight: .bold))
                 .foregroundStyle(NeoAppColors.ink)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, 14)
-        .padding(.vertical, 12)
-        .kitchenReceiptSurface(accent: KitchenTablePalette.tomato)
+        .padding(.horizontal, 3)
+        .padding(.vertical, 3)
     }
 }
 
@@ -589,12 +588,15 @@ private struct WorkoutsSearchPill: View {
                     Image(systemName: "xmark.circle.fill")
                         .font(.system(size: 15, weight: .bold))
                         .foregroundStyle(Color.workoutMutedText)
+                        .frame(width: 44, height: 44)
+                        .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel("Clear search")
             }
         }
         .padding(.horizontal, 14)
-        .frame(maxWidth: .infinity, minHeight: 46, alignment: .leading)
+        .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
         .kitchenReceiptSurface(accent: KitchenTablePalette.cobalt)
     }
 }
@@ -636,7 +638,7 @@ private struct FilterMenuPill: View {
                 .padding(.leading, 1)
         }
         .padding(.horizontal, 12)
-        .frame(minWidth: 112, minHeight: 46, alignment: .leading)
+        .frame(minWidth: 106, minHeight: 44, alignment: .leading)
         .background(isDefaultValue ? Color.workoutCard : NeoAppColors.acid.opacity(0.72))
         .overlay {
             RoundedRectangle(cornerRadius: 5, style: .continuous)
@@ -686,6 +688,8 @@ private struct ResultsHeader: View {
                             Rectangle()
                                 .stroke(canReset ? Color.workoutInferno : Color.workoutHairline, lineWidth: NeoAppMetrics.compactRule)
                         }
+                        .frame(minHeight: 44)
+                        .contentShape(Rectangle())
                 }
                 .disabled(!canReset)
                 .buttonStyle(.plain)
@@ -713,13 +717,15 @@ private struct ResultsHeader: View {
                             Rectangle()
                                 .stroke(Color.workoutHairline, lineWidth: NeoAppMetrics.compactRule)
                         }
+                        .frame(minHeight: 44)
+                        .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
                 .workoutPressable()
                 .disabled(count == 0)
             }
         }
-        .padding(10)
+        .padding(8)
         .kitchenReceiptSurface(accent: KitchenTablePalette.brass)
     }
 }
@@ -728,10 +734,10 @@ private struct ExerciseLibraryRow: View {
     let item: ExerciseLibraryItem
 
     var body: some View {
-        HStack(spacing: 16) {
+        HStack(spacing: 10) {
             thumbnail
 
-            VStack(alignment: .leading, spacing: 9) {
+            VStack(alignment: .leading, spacing: 5) {
                 Text(item.name)
                     .font(.system(.headline, design: .serif, weight: .bold))
                     .foregroundStyle(Color.workoutCharcoal)
@@ -764,7 +770,7 @@ private struct ExerciseLibraryRow: View {
                 .font(.footnote.weight(.semibold))
                 .foregroundStyle(Color.workoutAccent)
         }
-        .padding(10)
+        .padding(8)
         .kitchenWorkoutTicket(accent: KitchenTablePalette.cobalt)
         .contentShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
         .accessibilityElement(children: .combine)
@@ -774,11 +780,11 @@ private struct ExerciseLibraryRow: View {
         AnimatedExerciseVisual(
             exerciseName: item.name,
             imagePaths: item.imagePaths,
-            height: 104,
+            height: 78,
             fillsWidth: false,
             allowsDerivedImageLookup: false
         )
-        .frame(width: 104, height: 104)
+        .frame(width: 78, height: 78)
         .background(Color.workoutPanel)
         .clipShape(RoundedRectangle(cornerRadius: 5, style: .continuous))
         .overlay {

@@ -34,10 +34,12 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -106,6 +108,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalDensity
@@ -158,7 +161,6 @@ import com.apoorvdarshan.calorietracker.ui.components.FudGlassPrimaryButton
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassSurface
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassTextField
 import com.apoorvdarshan.calorietracker.ui.components.KitchenReceiptRule
-import com.apoorvdarshan.calorietracker.ui.components.WeekEnergyStrip
 import com.apoorvdarshan.calorietracker.ui.navigation.BottomNavScrollPadding
 import com.apoorvdarshan.calorietracker.ui.theme.AppColors
 import java.time.DayOfWeek
@@ -171,7 +173,9 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.WeekFields
 import java.util.Locale
 import kotlin.math.roundToInt
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 
 private enum class AddMenuGroup {
     PhotoAndScan,
@@ -194,7 +198,6 @@ fun HomeScreen(
     val vm: HomeViewModel = viewModel(factory = HomeViewModel.Factory(container))
     val ui by vm.ui.collectAsState()
     val ctx = LocalContext.current
-    val weekStartsOnMonday by container.prefs.weekStartsOnMonday.collectAsState(initial = true)
     val allEntries by container.foodRepository.entries.collectAsState(initial = emptyList())
 
     var showText by remember { mutableStateOf(false) }
@@ -387,7 +390,7 @@ fun HomeScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize(),
-            contentPadding = androidx.compose.foundation.layout.PaddingValues(top = 8.dp, bottom = BottomNavScrollPadding + 72.dp)
+            contentPadding = androidx.compose.foundation.layout.PaddingValues(top = 2.dp, bottom = BottomNavScrollPadding + 60.dp)
         ) {
             item(key = "home-masthead") {
                 KitchenTodayHeader(
@@ -409,37 +412,8 @@ fun HomeScreen(
                                 .toEpochMilli()
                         }.show()
                     },
-                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 6.dp)
+                    modifier = Modifier.padding(horizontal = 18.dp, vertical = 1.dp)
                 )
-            }
-
-            // Week strip — verbatim port of WeekEnergyStrip in HomeComponents.swift,
-            // with horizontal pagination across 53 weeks of history.
-            item {
-                Box(
-                    Modifier
-                        .padding(horizontal = 16.dp, vertical = 2.dp)
-                        .shadow(
-                            3.dp,
-                            RoundedCornerShape(5.dp),
-                            ambientColor = Color.Black.copy(alpha = 0.1f),
-                            spotColor = Color.Black.copy(alpha = 0.1f)
-                        )
-                        .clip(RoundedCornerShape(5.dp))
-                        .background(AppColors.KitchenPaper)
-                        .border(
-                            1.dp,
-                            AppColors.KitchenEspresso.copy(alpha = 0.22f),
-                            RoundedCornerShape(5.dp)
-                        )
-                        .padding(horizontal = 6.dp, vertical = 10.dp)
-                ) {
-                    WeekEnergyStrip(
-                        selectedDate = selectedDate,
-                        onSelect = { vm.setSelectedDate(it) },
-                        weekStartsOnMonday = weekStartsOnMonday
-                    )
-                }
             }
 
             // Fasting timeline. It is a separate model and never participates in
@@ -471,17 +445,34 @@ fun HomeScreen(
             }
 
             // Food log
-            item { Spacer(Modifier.height(8.dp)) }
+            item { Spacer(Modifier.height(1.dp)) }
             if (mealGroups.isEmpty()) {
                 item { SectionHeader(if (isToday) stringResource(R.string.home_todays_food) else stringResource(R.string.home_food_log)) }
                 item {
                     SectionCardWrapper(isFirst = true, isLast = true) {
-                        Box(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 16.dp)) {
-                            Text(
-                                stringResource(R.string.home_no_foods_logged),
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
+                        Row(
+                            Modifier.fillMaxWidth().padding(horizontal = 13.dp, vertical = 11.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            Icon(
+                                Icons.Filled.Restaurant,
+                                contentDescription = null,
+                                tint = AppColors.KitchenHerb,
+                                modifier = Modifier.size(20.dp)
                             )
+                            Column(verticalArrangement = Arrangement.spacedBy(1.dp)) {
+                                Text(
+                                    stringResource(R.string.home_no_foods_logged),
+                                    style = MaterialTheme.typography.titleSmall,
+                                    color = AppColors.KitchenEspresso
+                                )
+                                Text(
+                                    stringResource(R.string.home_add_food),
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = AppColors.KitchenEspresso.copy(alpha = 0.52f)
+                                )
+                            }
                         }
                     }
                 }
@@ -508,10 +499,17 @@ fun HomeScreen(
                     }
                     items(group.entries, key = { it.id }) { entry ->
                         val index = group.entries.indexOf(entry)
-                        val isFirst = index == 0
-                        val isLast = index == group.entries.lastIndex
-                        val rowShape = sectionCardShape(isFirst, isLast)
-                        SectionCardWrapper(isFirst = isFirst, isLast = isLast, transparent = true) {
+                        val scrapbookIndex = groupIndex * 5 + index
+                        val rowShape = RoundedCornerShape(2.dp)
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(
+                                    start = if (scrapbookIndex % 2 == 0) 14.dp else 42.dp,
+                                    end = if (scrapbookIndex % 2 == 0) 40.dp else 14.dp
+                                )
+                                .offset(y = (-3).dp)
+                        ) {
                             // Tap row -> open EditFoodEntrySheet (matches iOS .onTapGesture).
                             // Swipe trailing edge -> delete; swipe leading edge -> toggle favorite.
                             // Mirrors iOS ContentView.swift .swipeActions(edge: .trailing) on the row,
@@ -521,11 +519,11 @@ fun HomeScreen(
                                 entry = entry,
                                 isFavorite = isFav,
                                 rowShape = rowShape,
+                                scrapbookIndex = scrapbookIndex,
                                 onTap = { editingEntry = entry },
                                 onDelete = { vm.deleteEntry(entry.id) },
                                 onToggleFavorite = { vm.toggleFavorite(entry) }
                             )
-                            if (index != group.entries.lastIndex) Divider()
                         }
                     }
                 }
@@ -537,7 +535,7 @@ fun HomeScreen(
             item(key = "daily-tally") {
                 Column(
                     modifier = Modifier
-                        .padding(top = 18.dp)
+                        .padding(top = if (mealGroups.isEmpty()) 10.dp else 1.dp)
                         .pointerInput(selectedDate) {
                             var accum = 0f
                             val threshold = 80.dp.toPx()
@@ -578,10 +576,15 @@ fun HomeScreen(
                     Box(
                         Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 2.dp),
+                            .padding(vertical = 0.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        Box(modifier = Modifier.clickable { showNutritionDetail = true }) {
+                        Box(
+                            modifier = Modifier
+                                .heightIn(min = 48.dp)
+                                .clickable(role = Role.Button) { showNutritionDetail = true },
+                            contentAlignment = Alignment.Center
+                        ) {
                             ViewMoreButton()
                         }
                     }
@@ -595,23 +598,13 @@ fun HomeScreen(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .navigationBarsPadding()
-                .padding(end = 18.dp, bottom = 96.dp)
+                .padding(end = 16.dp, bottom = 79.dp)
         ) {
             val addFoodLabel = stringResource(R.string.home_add_food)
             Box(
                 modifier = Modifier
-                    .width(166.dp)
-                    .height(50.dp)
-                    .shadow(
-                        elevation = 6.dp,
-                        shape = RoundedCornerShape(6.dp),
-                        ambientColor = Color.Black.copy(alpha = 0.16f),
-                        spotColor = Color.Black.copy(alpha = 0.16f)
-                    )
-                    .graphicsLayer { rotationZ = -0.5f }
-                    .clip(RoundedCornerShape(6.dp))
-                    .background(AppColors.KitchenTomato)
-                    .border(1.dp, AppColors.KitchenEspresso.copy(alpha = 0.32f), RoundedCornerShape(6.dp))
+                    .width(132.dp)
+                    .height(48.dp)
                     .semantics(mergeDescendants = true) {
                         contentDescription = addFoodLabel
                     }
@@ -621,27 +614,44 @@ fun HomeScreen(
                     },
                 contentAlignment = Alignment.Center
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(38.dp)
+                        .shadow(
+                            elevation = 4.dp,
+                            shape = RoundedCornerShape(3.dp),
+                            ambientColor = Color.Black.copy(alpha = 0.16f),
+                            spotColor = Color.Black.copy(alpha = 0.16f)
+                        )
+                        .graphicsLayer { rotationZ = -0.5f }
+                        .clip(RoundedCornerShape(3.dp))
+                        .background(AppColors.KitchenTomato)
+                        .border(1.dp, AppColors.KitchenEspresso.copy(alpha = 0.32f), RoundedCornerShape(3.dp)),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        Icons.Filled.Add,
-                        contentDescription = null,
-                        tint = AppColors.KitchenCream,
-                        modifier = Modifier.size(22.dp)
-                    )
-                    Text(
-                        text = addFoodLabel.uppercase(Locale.getDefault()),
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.Black,
-                        color = AppColors.KitchenCream
-                    )
-                    androidx.compose.foundation.Image(
-                        painter = painterResource(R.drawable.kt_nav_quickadd),
-                        contentDescription = null,
-                        modifier = Modifier.size(38.dp)
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        Icon(
+                            Icons.Filled.Add,
+                            contentDescription = null,
+                            tint = AppColors.KitchenCream,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Text(
+                            text = addFoodLabel.uppercase(Locale.getDefault()),
+                            style = MaterialTheme.typography.labelLarge,
+                            fontWeight = FontWeight.Black,
+                            color = AppColors.KitchenCream
+                        )
+                        androidx.compose.foundation.Image(
+                            painter = painterResource(R.drawable.kt_nav_quickadd),
+                            contentDescription = null,
+                            modifier = Modifier.size(25.dp)
+                        )
+                    }
                 }
             }
             // Glass-styled, progressive add menu. Actions read in task order from
@@ -656,9 +666,9 @@ fun HomeScreen(
             ) {
                 when (addMenuGroup) {
                     null -> {
-                        SheetGlassDropdownMenuItem(label = "Photo & Scan", leadingIcon = Icons.Filled.CameraAlt, trailingIcon = Icons.Filled.ChevronRight) { addMenuGroup = AddMenuGroup.PhotoAndScan }
-                        SheetGlassDropdownMenuItem(label = "Describe Meal", leadingIcon = Icons.Filled.Edit, trailingIcon = Icons.Filled.ChevronRight) { addMenuGroup = AddMenuGroup.DescribeMeal }
-                        SheetGlassDropdownMenuItem(label = "Reuse Meal", leadingIcon = Icons.Filled.Bookmark, trailingIcon = Icons.Filled.ChevronRight) { addMenuGroup = AddMenuGroup.ReuseMeal }
+                        SheetGlassDropdownMenuItem(label = stringResource(R.string.home_add_group_photo_scan), leadingIcon = Icons.Filled.CameraAlt, trailingIcon = Icons.Filled.ChevronRight) { addMenuGroup = AddMenuGroup.PhotoAndScan }
+                        SheetGlassDropdownMenuItem(label = stringResource(R.string.home_add_group_describe), leadingIcon = Icons.Filled.Edit, trailingIcon = Icons.Filled.ChevronRight) { addMenuGroup = AddMenuGroup.DescribeMeal }
+                        SheetGlassDropdownMenuItem(label = stringResource(R.string.home_add_group_reuse), leadingIcon = Icons.Filled.Bookmark, trailingIcon = Icons.Filled.ChevronRight) { addMenuGroup = AddMenuGroup.ReuseMeal }
                         if (ui.waterTrackingEnabled) {
                             SheetGlassDropdownMenuItem(label = stringResource(R.string.water), leadingIcon = Icons.Filled.WaterDrop, trailingIcon = Icons.Filled.ChevronRight) { addMenuGroup = AddMenuGroup.Water }
                         }
@@ -675,23 +685,23 @@ fun HomeScreen(
                     }
 
                     AddMenuGroup.PhotoAndScan -> {
-                        SheetGlassDropdownMenuItem(label = "Camera", leadingIcon = Icons.Filled.CameraAlt) { showAddMenu = false; addMenuGroup = null; openCamera() }
-                        SheetGlassDropdownMenuItem(label = "Photos", leadingIcon = Icons.Filled.PhotoLibrary) {
+                        SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_camera), leadingIcon = Icons.Filled.CameraAlt) { showAddMenu = false; addMenuGroup = null; openCamera() }
+                        SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_from_photos), leadingIcon = Icons.Filled.PhotoLibrary) {
                             showAddMenu = false
                             addMenuGroup = null
                             isImportingPhotos = true
                             pendingCaptureImageBytes = emptyList()
                             photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
                         }
-                        SheetGlassDropdownMenuItem(label = "Barcode", leadingIcon = Icons.Filled.QrCodeScanner) { showAddMenu = false; addMenuGroup = null; openBarcodeScanner() }
-                        SheetGlassDropdownMenuItem(label = "Back", leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
+                        SheetGlassDropdownMenuItem(label = stringResource(R.string.home_add_barcode), leadingIcon = Icons.Filled.QrCodeScanner) { showAddMenu = false; addMenuGroup = null; openBarcodeScanner() }
+                        SheetGlassDropdownMenuItem(label = stringResource(R.string.onboarding_back), leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
                     }
 
                     AddMenuGroup.DescribeMeal -> {
                         SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_text_input), leadingIcon = Icons.Filled.Edit) { showAddMenu = false; addMenuGroup = null; showText = true }
                         SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_voice), leadingIcon = Icons.Filled.Mic) { showAddMenu = false; addMenuGroup = null; showVoice = true }
                         SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_manual_entry), leadingIcon = Icons.Filled.DriveFileRenameOutline) { showAddMenu = false; addMenuGroup = null; showManual = true }
-                        SheetGlassDropdownMenuItem(label = "Back", leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
+                        SheetGlassDropdownMenuItem(label = stringResource(R.string.onboarding_back), leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
                     }
 
                     AddMenuGroup.ReuseMeal -> {
@@ -699,7 +709,7 @@ fun HomeScreen(
                         SheetGlassDropdownMenuItem(label = stringResource(R.string.saved_meals_tab_frequent), leadingIcon = Icons.Filled.Repeat) { showAddMenu = false; addMenuGroup = null; savedMealsTab = SavedTab.FREQUENT }
                         SheetGlassDropdownMenuItem(label = stringResource(R.string.saved_meals_tab_favorites), leadingIcon = Icons.Filled.Favorite) { showAddMenu = false; addMenuGroup = null; savedMealsTab = SavedTab.FAVORITES }
                         SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_copy_from_day), leadingIcon = Icons.Filled.CalendarMonth) { showAddMenu = false; addMenuGroup = null; showCopyFromDay = true }
-                        SheetGlassDropdownMenuItem(label = "Back", leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
+                        SheetGlassDropdownMenuItem(label = stringResource(R.string.onboarding_back), leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
                     }
 
                     AddMenuGroup.Water -> {
@@ -707,7 +717,7 @@ fun HomeScreen(
                         SheetGlassDropdownMenuItem(label = stringResource(R.string.water_two_glasses_dynamic, ui.waterUnit.format(500)), leadingIcon = Icons.Filled.WaterDrop) { showAddMenu = false; addMenuGroup = null; vm.addWater(500) }
                         SheetGlassDropdownMenuItem(label = stringResource(R.string.water_three_glasses_dynamic, ui.waterUnit.format(750)), leadingIcon = Icons.Filled.WaterDrop) { showAddMenu = false; addMenuGroup = null; vm.addWater(750) }
                         SheetGlassDropdownMenuItem(label = stringResource(R.string.water_custom_amount), leadingIcon = Icons.Filled.DriveFileRenameOutline) { showAddMenu = false; addMenuGroup = null; showCustomWaterLog = true }
-                        SheetGlassDropdownMenuItem(label = "Back", leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
+                        SheetGlassDropdownMenuItem(label = stringResource(R.string.onboarding_back), leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
                     }
 
                     AddMenuGroup.Fasting -> {
@@ -721,7 +731,7 @@ fun HomeScreen(
                             addMenuGroup = null
                             vm.cancelFast()
                         }
-                        SheetGlassDropdownMenuItem(label = "Back", leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
+                        SheetGlassDropdownMenuItem(label = stringResource(R.string.onboarding_back), leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
                     }
                 }
             }
@@ -1321,14 +1331,17 @@ private fun KitchenTodayHeader(
                 text = if (isToday) stringResource(R.string.widget_today) else selectedDate.format(
                     DateTimeFormatter.ofPattern("MMMM d", Locale.getDefault())
                 ),
-                style = MaterialTheme.typography.displaySmall,
+                fontSize = 23.sp,
+                lineHeight = 25.sp,
+                fontWeight = FontWeight.SemiBold,
                 color = AppColors.KitchenEspresso
             )
             Text(
                 text = selectedDate.format(
                     DateTimeFormatter.ofPattern("MMMM d, EEEE", Locale.getDefault())
                 ),
-                style = MaterialTheme.typography.bodySmall,
+                fontSize = 10.sp,
+                lineHeight = 12.sp,
                 color = AppColors.KitchenEspresso.copy(alpha = 0.68f)
             )
         }
@@ -1342,7 +1355,7 @@ private fun KitchenTodayHeader(
         ) {
             Box(
                 Modifier
-                    .size(38.dp)
+                    .size(28.dp)
                     .shadow(2.dp, CircleShape)
                     .clip(CircleShape)
                     .background(AppColors.KitchenPaper)
@@ -1353,7 +1366,7 @@ private fun KitchenTodayHeader(
                     Icons.Filled.CalendarMonth,
                     contentDescription = null,
                     tint = AppColors.KitchenEspresso,
-                    modifier = Modifier.size(18.dp)
+                    modifier = Modifier.size(14.dp)
                 )
             }
         }
@@ -1368,84 +1381,111 @@ private fun KitchenDailySummary(
     entries: List<FoodEntry>,
     nutrientGoal: (HomeTopNutrient) -> Int
 ) {
+    val useAccessibleGrid = LocalDensity.current.fontScale > 1.22f
     Column(
         Modifier
             .fillMaxWidth()
-            .padding(horizontal = 18.dp),
-        verticalArrangement = Arrangement.spacedBy(7.dp)
+            .padding(horizontal = 14.dp),
+        verticalArrangement = Arrangement.spacedBy(5.dp)
     ) {
-        Row(
-            Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(9.dp)
-        ) {
-            Box(
-                Modifier
-                    .size(91.dp)
-                    .shadow(
-                        6.dp,
-                        CircleShape,
-                        ambientColor = Color.Black.copy(alpha = 0.16f),
-                        spotColor = Color.Black.copy(alpha = 0.16f)
-                    )
-                    .clip(CircleShape)
-                    .background(AppColors.KitchenBone)
-                    .border(1.dp, AppColors.KitchenEspresso.copy(alpha = 0.25f), CircleShape),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = calories.toString(),
-                        style = MaterialTheme.typography.headlineLarge,
-                        color = AppColors.KitchenEspresso,
-                        maxLines = 1
-                    )
-                    Text(
-                        text = stringResource(R.string.unit_kcal).uppercase(Locale.getDefault()),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = AppColors.KitchenEspresso
-                    )
-                    Text(
-                        text = stringResource(R.string.home_kcal_of_format, calorieGoal.toString()),
-                        fontSize = 9.sp,
-                        color = AppColors.KitchenEspresso.copy(alpha = 0.58f)
-                    )
+        if (useAccessibleGrid) {
+            CaloriePebble(
+                calories = calories,
+                calorieGoal = calorieGoal,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+            nutrients.chunked(2).forEachIndexed { rowIndex, rowNutrients ->
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    rowNutrients.forEachIndexed { columnIndex, nutrient ->
+                        val index = rowIndex * 2 + columnIndex
+                        NutrientStamp(
+                            name = stringResource(nutrient.displayNameRes),
+                            value = MacroValueFormatter.string(nutrient.current(entries)),
+                            unit = stringResource(nutrient.unitRes),
+                            goal = nutrientGoal(nutrient),
+                            color = nutrientStampColor(nutrient),
+                            rotation = listOf(-1.2f, 0.8f, -0.7f, 1f)[index % 4],
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                    if (rowNutrients.size == 1) Spacer(Modifier.weight(1f))
                 }
             }
-
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(6.dp)
+        } else {
+            Row(
+                Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(5.dp)
             ) {
-                nutrients.chunked(2).forEachIndexed { rowIndex, rowNutrients ->
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        rowNutrients.forEachIndexed { columnIndex, nutrient ->
-                            val index = rowIndex * 2 + columnIndex
-                            val color = when (nutrient) {
-                                HomeTopNutrient.PROTEIN -> AppColors.KitchenHerb
-                                HomeTopNutrient.CARBS -> AppColors.KitchenCobalt
-                                HomeTopNutrient.FAT -> AppColors.KitchenTomato
-                                else -> AppColors.KitchenBrass
-                            }
-                            NutrientStamp(
-                                name = stringResource(nutrient.displayNameRes),
-                                value = MacroValueFormatter.string(nutrient.current(entries)),
-                                unit = stringResource(nutrient.unitRes),
-                                goal = nutrientGoal(nutrient),
-                                color = color,
-                                rotation = listOf(-1.5f, 1.2f, -0.8f, 1f)[index % 4],
-                                modifier = Modifier.weight(1f)
-                            )
-                        }
-                        if (rowNutrients.size == 1) Spacer(Modifier.weight(1f))
-                    }
+                CaloriePebble(calories = calories, calorieGoal = calorieGoal)
+                nutrients.forEachIndexed { index, nutrient ->
+                    NutrientStamp(
+                        name = stringResource(nutrient.displayNameRes),
+                        value = MacroValueFormatter.string(nutrient.current(entries)),
+                        unit = stringResource(nutrient.unitRes),
+                        goal = nutrientGoal(nutrient),
+                        color = nutrientStampColor(nutrient),
+                        rotation = listOf(-1.2f, 0.8f, -0.7f, 1f)[index % 4],
+                        modifier = Modifier.weight(1f)
+                    )
                 }
             }
         }
         KitchenReceiptRule()
+    }
+}
+
+private fun nutrientStampColor(nutrient: HomeTopNutrient): Color = when (nutrient) {
+    HomeTopNutrient.PROTEIN -> AppColors.KitchenHerb
+    HomeTopNutrient.CARBS -> AppColors.KitchenCobalt
+    HomeTopNutrient.FAT -> AppColors.KitchenTomato
+    else -> AppColors.KitchenBrass
+}
+
+@Composable
+private fun CaloriePebble(
+    calories: Int,
+    calorieGoal: Int,
+    modifier: Modifier = Modifier
+) {
+    val calorieDescription = stringResource(
+        R.string.home_calorie_summary_a11y,
+        calories,
+        calorieGoal
+    )
+    Box(
+        modifier
+            .size(78.dp)
+            .shadow(
+                5.dp,
+                CircleShape,
+                ambientColor = Color.Black.copy(alpha = 0.15f),
+                spotColor = Color.Black.copy(alpha = 0.15f)
+            )
+            .clip(CircleShape)
+            .background(AppColors.KitchenBone)
+            .border(1.dp, AppColors.KitchenEspresso.copy(alpha = 0.25f), CircleShape)
+            .semantics(mergeDescendants = true) {
+                contentDescription = calorieDescription
+            },
+        contentAlignment = Alignment.Center
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                text = calories.toString(),
+                style = MaterialTheme.typography.headlineMedium,
+                color = AppColors.KitchenEspresso,
+                maxLines = 1
+            )
+            Text(
+                text = stringResource(R.string.unit_kcal).uppercase(Locale.getDefault()),
+                style = MaterialTheme.typography.labelSmall,
+                color = AppColors.KitchenEspresso
+            )
+        }
     }
 }
 
@@ -1462,7 +1502,7 @@ private fun NutrientStamp(
     val goalText = if (goal > 0) "$goal$unit" else "—"
     Column(
         modifier = modifier
-            .height(68.dp)
+            .height(72.dp)
             .graphicsLayer { rotationZ = rotation }
             .shadow(2.dp, RoundedCornerShape(3.dp))
             .clip(RoundedCornerShape(3.dp))
@@ -1471,33 +1511,29 @@ private fun NutrientStamp(
             .semantics(mergeDescendants = true) {
                 contentDescription = listOf(name, "$value$unit", goalText).joinToString(", ")
             }
-            .padding(horizontal = 4.dp, vertical = 5.dp),
+            .padding(horizontal = 2.dp, vertical = 7.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween
+        verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {
         Text(
             text = name,
             color = color,
-            fontSize = 8.sp,
-            lineHeight = 9.sp,
+            fontSize = 7.sp,
+            lineHeight = 8.sp,
             fontWeight = FontWeight.Black,
             textAlign = TextAlign.Center,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
         )
+        Spacer(Modifier.weight(1f))
         Text(
             text = "$value$unit",
-            fontSize = 11.sp,
+            fontSize = 12.sp,
             fontWeight = FontWeight.Bold,
             color = AppColors.KitchenEspresso,
             maxLines = 1
         )
-        Text(
-            text = if (goal > 0) "/ $goal$unit" else "—",
-            fontSize = 8.sp,
-            color = AppColors.KitchenEspresso.copy(alpha = 0.52f),
-            maxLines = 1
-        )
+        Spacer(Modifier.height(2.dp))
     }
 }
 
@@ -1666,11 +1702,11 @@ private fun ViewMoreButton() {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-            .padding(horizontal = 10.dp, vertical = 8.dp)
+            .padding(horizontal = 8.dp, vertical = 4.dp)
     ) {
         Text(
             stringResource(R.string.home_view_more),
-            fontSize = 15.sp,
+            fontSize = 11.sp,
             fontWeight = FontWeight.Medium,
             color = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f)
         )
@@ -1679,7 +1715,7 @@ private fun ViewMoreButton() {
             Icons.Filled.ChevronRight,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
-            modifier = Modifier.size(11.dp)
+            modifier = Modifier.size(9.dp)
         )
     }
 }
@@ -1690,7 +1726,7 @@ private fun ViewMoreButton() {
 private fun SectionHeader(title: String) {
     Box(
         Modifier
-            .padding(start = 22.dp, top = 14.dp, bottom = 5.dp)
+            .padding(start = 22.dp, top = 7.dp, bottom = 1.dp)
             .graphicsLayer { rotationZ = -1.2f }
             .shadow(2.dp, RoundedCornerShape(2.dp))
             .background(AppColors.KitchenPaper, RoundedCornerShape(2.dp))
@@ -1699,11 +1735,11 @@ private fun SectionHeader(title: String) {
                 AppColors.KitchenEspresso.copy(alpha = 0.16f),
                 RoundedCornerShape(2.dp)
             )
-            .padding(horizontal = 12.dp, vertical = 5.dp)
+            .padding(horizontal = 10.dp, vertical = 3.dp)
     ) {
         Text(
             title,
-            style = MaterialTheme.typography.headlineSmall,
+            style = MaterialTheme.typography.titleMedium,
             fontStyle = FontStyle.Italic,
             color = AppColors.KitchenEspresso
         )
@@ -1728,7 +1764,8 @@ private fun MealSectionHeader(
     Row(
         Modifier
             .fillMaxWidth()
-            .padding(start = 22.dp, end = 22.dp, top = 15.dp, bottom = 5.dp),
+            .padding(start = 28.dp, end = 20.dp, top = 1.dp, bottom = 0.dp)
+            .offset(y = 4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Row(
@@ -1741,19 +1778,21 @@ private fun MealSectionHeader(
                     AppColors.KitchenEspresso.copy(alpha = 0.16f),
                     RoundedCornerShape(2.dp)
                 )
-                .padding(horizontal = 10.dp, vertical = 5.dp),
+                .padding(horizontal = 8.dp, vertical = 1.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
                 mealIcon(meal),
                 contentDescription = null,
                 tint = AppColors.KitchenHerb,
-                modifier = Modifier.size(14.dp)
+                modifier = Modifier.size(10.dp)
             )
-            Spacer(Modifier.width(7.dp))
+            Spacer(Modifier.width(5.dp))
             Text(
                 stringResource(meal.displayNameRes),
-                style = MaterialTheme.typography.titleMedium,
+                fontSize = 12.sp,
+                lineHeight = 13.sp,
+                fontWeight = FontWeight.Medium,
                 fontStyle = FontStyle.Italic,
                 color = AppColors.KitchenEspresso
             )
@@ -1763,6 +1802,8 @@ private fun MealSectionHeader(
             Box {
                 Row(
                     modifier = Modifier
+                        .widthIn(min = 48.dp)
+                        .heightIn(min = 48.dp)
                         .clip(RoundedCornerShape(4.dp))
                         .clickable { onSortClick() }
                         .padding(horizontal = 5.dp, vertical = 6.dp),
@@ -1773,7 +1814,7 @@ private fun MealSectionHeader(
                         Icons.Filled.SwapVert,
                         contentDescription = null,
                         tint = AppColors.KitchenTomato,
-                        modifier = Modifier.size(14.dp)
+                        modifier = Modifier.size(12.dp)
                     )
                     Text(
                         stringResource(R.string.sort),
@@ -1798,34 +1839,19 @@ private fun MealSectionHeader(
                 }
             }
         }
-        // Combined nutrients for this meal (issue #103: chicken + pasta + sauce = one total)
-        if (totalCalories != null) {
-            Spacer(Modifier.weight(1f))
-            // Share the whole meal as a fudai://add-meal link (issue #107)
-            if (onShare != null) {
+        Spacer(Modifier.weight(1f))
+        if (onShare != null) {
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clickable(role = Role.Button) { onShare() },
+                contentAlignment = Alignment.Center
+            ) {
                 Icon(
                     Icons.Filled.IosShare,
                     contentDescription = stringResource(R.string.cd_share_meal),
                     tint = AppColors.KitchenTomato,
-                    modifier = Modifier
-                        .clickable { onShare() }
-                        .padding(4.dp)
-                        .size(18.dp),
-                )
-                Spacer(Modifier.width(8.dp))
-            }
-            Column(horizontalAlignment = Alignment.End) {
-                Text(
-                    "$totalCalories kcal",
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = AppColors.KitchenEspresso
-                )
-                Text(
-                    "${totalProtein.roundToInt()}P · ${totalCarbs.roundToInt()}C · ${totalFat.roundToInt()}F",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = AppColors.KitchenEspresso.copy(alpha = 0.58f)
+                    modifier = Modifier.size(15.dp)
                 )
             }
         }
@@ -1919,27 +1945,29 @@ private fun SectionCardWrapper(
     content: @Composable () -> Unit
 ) {
     val shape = sectionCardShape(isFirst, isLast)
+    val paperDecoration = if (transparent) {
+        Modifier
+    } else {
+        Modifier
+            .shadow(
+                3.dp,
+                shape,
+                ambientColor = Color.Black.copy(alpha = 0.1f),
+                spotColor = Color.Black.copy(alpha = 0.1f)
+            )
+            .clip(shape)
+            .background(AppColors.KitchenPaper)
+            .border(
+                1.dp,
+                AppColors.KitchenEspresso.copy(alpha = 0.18f),
+                shape
+            )
+    }
     Box(
         Modifier
             .fillMaxWidth()
-            .padding(horizontal = 22.dp)
-            .then(
-                if (!transparent) Modifier.shadow(
-                    3.dp,
-                    shape,
-                    ambientColor = Color.Black.copy(alpha = 0.1f),
-                    spotColor = Color.Black.copy(alpha = 0.1f)
-                ) else Modifier
-            )
-            .clip(shape)
-            .background(if (transparent) Color.Transparent else AppColors.KitchenPaper)
-            .then(
-                if (!transparent) Modifier.border(
-                    1.dp,
-                    AppColors.KitchenEspresso.copy(alpha = 0.18f),
-                    shape
-                ) else Modifier
-            )
+            .padding(horizontal = if (transparent) 18.dp else 22.dp)
+            .then(paperDecoration)
     ) { content() }
 }
 
@@ -1971,6 +1999,7 @@ private fun SwipeableFoodRow(
     entry: FoodEntry,
     isFavorite: Boolean,
     rowShape: RoundedCornerShape,
+    scrapbookIndex: Int,
     onTap: () -> Unit,
     onDelete: () -> Unit,
     onToggleFavorite: () -> Unit
@@ -2010,7 +2039,12 @@ private fun SwipeableFoodRow(
                     }
                     .clickable(onClick = onTap)
             ) {
-                FoodRow(entry = entry, isFavorite = isFavorite, rowShape = rowShape)
+                FoodRow(
+                    entry = entry,
+                    isFavorite = isFavorite,
+                    rowShape = rowShape,
+                    scrapbookIndex = scrapbookIndex
+                )
             }
         }
     }
@@ -2063,18 +2097,42 @@ private data class Quad<A, B, C, D>(val a: A, val b: B, val c: C, val d: D)
 private fun FoodRow(
     entry: FoodEntry,
     isFavorite: Boolean = false,
-    rowShape: RoundedCornerShape = RoundedCornerShape(4.dp)
+    rowShape: RoundedCornerShape = RoundedCornerShape(2.dp),
+    scrapbookIndex: Int = kotlin.math.abs(entry.id.hashCode())
 ) {
     val ctx = LocalContext.current
     val timeFmt = DateTimeFormatter.ofPattern(clockTimePattern(ctx), Locale.US).withZone(ZoneId.systemDefault())
     val container = (ctx.applicationContext as com.apoorvdarshan.calorietracker.FudAIApp).container
-    val bitmap = remember(entry.imageFilename) {
-        entry.imageFilename?.let { container.imageStore.loadThumbnail(it) }
+    val bitmap by produceState<android.graphics.Bitmap?>(
+        initialValue = null,
+        key1 = entry.imageFilename
+    ) {
+        value = withContext(Dispatchers.IO) {
+            entry.imageFilename?.let(container.imageStore::loadThumbnail)
+        }
     }
-    val photoRotation = if (entry.id.hashCode() % 2 == 0) -1.5f else 1.2f
+    val photoRotation = if (scrapbookIndex % 2 == 0) -2.2f else 1.8f
+    val scrapRotation = when (scrapbookIndex % 4) {
+        0 -> -1.25f
+        1 -> 0.9f
+        2 -> -0.65f
+        else -> 1.1f
+    }
+    val detailLine = entry.ingredients
+        .take(4)
+        .joinToString(" · ") { it.name }
+        .ifBlank {
+            entry.customNote?.takeIf { it.isNotBlank() }
+                ?: "P ${MacroValueFormatter.withUnit(entry.protein)}  ·  C ${MacroValueFormatter.withUnit(entry.carbs)}  ·  F ${MacroValueFormatter.withUnit(entry.fat)}"
+        }
+    val stampText = entry.ingredients.firstOrNull()?.name
+        ?.takeIf { it.isNotBlank() }
+        ?: stringResource(entry.mealType.displayNameRes)
     Row(
         Modifier
             .fillMaxWidth()
+            .heightIn(min = 94.dp)
+            .graphicsLayer { rotationZ = scrapRotation }
             .shadow(
                 3.dp,
                 rowShape,
@@ -2088,13 +2146,27 @@ private fun FoodRow(
                 AppColors.KitchenEspresso.copy(alpha = 0.17f),
                 rowShape
             )
-            .padding(horizontal = 11.dp, vertical = 10.dp),
-        verticalAlignment = Alignment.Top,
-        horizontalArrangement = Arrangement.spacedBy(11.dp)
+            .padding(horizontal = 6.dp, vertical = 7.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(6.dp)
     ) {
+        Column(
+            modifier = Modifier.width(5.dp),
+            verticalArrangement = Arrangement.spacedBy(7.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            repeat(6) {
+                Box(
+                    Modifier
+                        .size(3.dp)
+                        .clip(CircleShape)
+                        .background(AppColors.KitchenEspresso.copy(alpha = 0.28f))
+                )
+            }
+        }
         Box(
             Modifier
-                .size(78.dp)
+                .size(80.dp)
                 .graphicsLayer { rotationZ = photoRotation }
                 .shadow(3.dp, RoundedCornerShape(2.dp))
                 .clip(RoundedCornerShape(2.dp))
@@ -2107,9 +2179,10 @@ private fun FoodRow(
                 .padding(4.dp),
             contentAlignment = Alignment.Center
         ) {
+            val decodedBitmap = bitmap
             when {
-                bitmap != null -> androidx.compose.foundation.Image(
-                    bitmap = bitmap.asImageBitmap(),
+                decodedBitmap != null -> androidx.compose.foundation.Image(
+                    bitmap = decodedBitmap.asImageBitmap(),
                     contentDescription = entry.name,
                     contentScale = androidx.compose.ui.layout.ContentScale.Crop,
                     modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(1.dp))
@@ -2139,9 +2212,8 @@ private fun FoodRow(
 
         Column(
             Modifier.weight(1f).padding(top = 1.dp),
-            verticalArrangement = Arrangement.spacedBy(5.dp)
+            verticalArrangement = Arrangement.spacedBy(3.dp)
         ) {
-            // Name (+ heart) on the left, time on the top-right.
             Row(
                 verticalAlignment = Alignment.Top,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -2153,7 +2225,9 @@ private fun FoodRow(
                 ) {
                     Text(
                         entry.name,
-                        style = MaterialTheme.typography.titleMedium,
+                        fontSize = 14.sp,
+                        lineHeight = 16.sp,
+                        fontWeight = FontWeight.SemiBold,
                         color = AppColors.KitchenEspresso,
                         maxLines = 2,
                         modifier = Modifier.weight(1f, fill = false)
@@ -2167,21 +2241,25 @@ private fun FoodRow(
                         )
                     }
                 }
-                Text(
-                    timeFmt.format(entry.timestamp).lowercase(),
-                    fontSize = 12.sp,
-                    color = AppColors.KitchenEspresso.copy(alpha = 0.52f)
-                )
             }
 
-            // Pink kcal · gray serving size.
+            Text(
+                detailLine,
+                fontSize = 9.sp,
+                lineHeight = 11.sp,
+                color = AppColors.KitchenEspresso.copy(alpha = 0.78f),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+
             Row(
+                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 Text(
                     "${entry.calories} kcal",
-                    fontSize = 14.sp,
+                    fontSize = 12.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = AppColors.KitchenTomato
                 )
@@ -2195,14 +2273,40 @@ private fun FoodRow(
                         color = AppColors.KitchenEspresso.copy(alpha = 0.62f)
                     )
                 }
+                Spacer(Modifier.weight(1f))
+                Text(
+                    timeFmt.format(entry.timestamp).lowercase(),
+                    fontSize = 9.sp,
+                    fontStyle = FontStyle.Italic,
+                    color = AppColors.KitchenHerb
+                )
             }
+        }
 
-            // Macro pills (P / C / F) — tinted dark capsules with gray text.
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                MacroChip("P", entry.protein)
-                MacroChip("C", entry.carbs)
-                MacroChip("F", entry.fat)
-            }
+        Box(
+            modifier = Modifier
+                .width(43.dp)
+                .height(55.dp)
+                .graphicsLayer { rotationZ = if (scrapbookIndex % 2 == 0) 2.4f else -2f }
+                .background(AppColors.KitchenBone)
+                .border(
+                    1.2.dp,
+                    if (scrapbookIndex % 3 == 0) AppColors.KitchenHerb else AppColors.KitchenCobalt,
+                    RoundedCornerShape(1.dp)
+                )
+                .padding(horizontal = 3.dp, vertical = 4.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                stampText.uppercase(Locale.getDefault()),
+                fontSize = 6.sp,
+                lineHeight = 7.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                color = if (scrapbookIndex % 3 == 0) AppColors.KitchenHerb else AppColors.KitchenCobalt,
+                maxLines = 4,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     }
 }
@@ -2406,8 +2510,12 @@ private fun AnalyzingOverlay(imageBytes: ByteArray? = null) {
     // Verbatim port of ios/calorietracker/Views/AnalyzingView.swift:
     //   VStack { (image | text.magnifyingglass) → ProgressView(.large) → "Analyzing your food..." }
     //   filling the screen, opaque background, calorie-pink accents.
-    val bitmap = remember(imageBytes) {
-        imageBytes?.let { android.graphics.BitmapFactory.decodeByteArray(it, 0, it.size) }
+    val bitmap by produceState<android.graphics.Bitmap?>(initialValue = null, key1 = imageBytes) {
+        value = imageBytes?.let { bytes ->
+            withContext(Dispatchers.Default) {
+                android.graphics.BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+            }
+        }
     }
     Box(
         Modifier
@@ -2420,9 +2528,10 @@ private fun AnalyzingOverlay(imageBytes: ByteArray? = null) {
             verticalArrangement = Arrangement.spacedBy(24.dp),
             modifier = Modifier.padding(horizontal = 32.dp)
         ) {
-            if (bitmap != null) {
+            val decodedBitmap = bitmap
+            if (decodedBitmap != null) {
                 androidx.compose.foundation.Image(
-                    bitmap = bitmap.asImageBitmap(),
+                    bitmap = decodedBitmap.asImageBitmap(),
                     contentDescription = null,
                     contentScale = androidx.compose.ui.layout.ContentScale.Fit,
                     modifier = Modifier
@@ -2447,7 +2556,7 @@ private fun AnalyzingOverlay(imageBytes: ByteArray? = null) {
             // "Looking up nutrition..." (see ContentView.swift cases .analyzing /
             // .analyzingText). pendingImageBytes is the discriminator.
             Text(
-                if (bitmap != null) stringResource(R.string.home_analyzing_food) else stringResource(R.string.home_looking_up_nutrition),
+                if (imageBytes != null) stringResource(R.string.home_analyzing_food) else stringResource(R.string.home_looking_up_nutrition),
                 fontSize = 17.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.primary

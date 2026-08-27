@@ -63,11 +63,11 @@ private fun darkColors(themeColor: AppThemeColor) = darkColorScheme(
 )
 
 private val KitchenShapes = Shapes(
-    extraSmall = RoundedCornerShape(8.dp),
-    small = RoundedCornerShape(12.dp),
-    medium = RoundedCornerShape(18.dp),
-    large = RoundedCornerShape(24.dp),
-    extraLarge = RoundedCornerShape(30.dp)
+    extraSmall = RoundedCornerShape(2.dp),
+    small = RoundedCornerShape(4.dp),
+    medium = RoundedCornerShape(6.dp),
+    large = RoundedCornerShape(10.dp),
+    extraLarge = RoundedCornerShape(14.dp)
 )
 
 @Composable

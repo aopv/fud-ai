@@ -17,10 +17,11 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -60,7 +61,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -80,8 +83,10 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -99,7 +104,6 @@ import com.apoorvdarshan.calorietracker.models.WorkoutWeightUnit
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassDialog
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassSurface
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassTextButton
-import com.apoorvdarshan.calorietracker.ui.components.KitchenPageHeader
 import com.apoorvdarshan.calorietracker.ui.components.KitchenReceiptRule
 import com.apoorvdarshan.calorietracker.ui.home.SheetGlassDropdownMenu
 import com.apoorvdarshan.calorietracker.ui.home.SheetGlassDropdownMenuItem
@@ -112,6 +116,7 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.Locale
 import java.util.UUID
+import kotlinx.coroutines.flow.collect
 
 private const val WORKOUT_WEEKS = 53
 private const val CURRENT_WORKOUT_WEEK = WORKOUT_WEEKS - 1
@@ -135,8 +140,17 @@ internal fun WorkoutDiaryScreen(
     val focusManager = LocalFocusManager.current
     val keyboard = LocalSoftwareKeyboardController.current
     val addWorkoutLabel = stringResource(R.string.workout_add_workout)
+    val allExercisesLabel = stringResource(R.string.workout_menu_all_exercises)
+    val copyFromDayLabel = stringResource(R.string.workout_menu_copy_from_day)
+    val savedLabel = stringResource(R.string.workout_menu_saved)
     val exerciseCardBounds = remember { mutableStateMapOf<UUID, androidx.compose.ui.geometry.Rect>() }
     var diaryRootOrigin by remember { mutableStateOf(Offset.Zero) }
+    val firstDayOfWeek = remember(weekStartsOnMonday) {
+        if (weekStartsOnMonday) DayOfWeek.MONDAY else DayOfWeek.SUNDAY
+    }
+    var visibleWeekStart by remember(weekStartsOnMonday, state.selectedDate) {
+        mutableStateOf(startOfWeek(state.selectedDate, firstDayOfWeek))
+    }
 
     fun dismissKeyboard() {
         focusManager.clearFocus()
@@ -179,15 +193,18 @@ internal fun WorkoutDiaryScreen(
             state = listState,
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(
-                start = 16.dp,
-                top = 8.dp,
-                end = 16.dp,
-                bottom = BottomNavScrollPadding + 76.dp
+                start = 12.dp,
+                top = 3.dp,
+                end = 12.dp,
+                bottom = BottomNavScrollPadding + 10.dp
             ),
-            verticalArrangement = Arrangement.spacedBy(14.dp)
+            verticalArrangement = Arrangement.spacedBy(7.dp)
         ) {
             item(key = "workout-masthead") {
-                KitchenPageHeader(title = stringResource(R.string.nav_workouts))
+                WorkoutWeekHeader(
+                    weekStart = visibleWeekStart,
+                    weekStartsOnMonday = weekStartsOnMonday
+                )
             }
 
             item(key = "workout-week-strip") {
@@ -198,13 +215,23 @@ internal fun WorkoutDiaryScreen(
                         dismissKeyboard()
                         viewModel.selectDate(it)
                     },
+                    onVisibleWeekChange = { visibleWeekStart = it },
+                    onSettledWeekChange = { settledWeekStart ->
+                        val selectedWeekStart = startOfWeek(state.selectedDate, firstDayOfWeek)
+                        if (settledWeekStart != selectedWeekStart) {
+                            val selectedDayOffset = ChronoUnit.DAYS
+                                .between(selectedWeekStart, state.selectedDate)
+                                .coerceIn(0, 6)
+                            viewModel.selectDate(settledWeekStart.plusDays(selectedDayOffset))
+                        }
+                    },
                     weekStartsOnMonday = weekStartsOnMonday,
-                    modifier = Modifier.padding(top = 2.dp, bottom = 4.dp)
+                    modifier = Modifier.padding(bottom = 1.dp)
                 )
             }
 
             item(key = "workout-burn") {
-                WorkoutBurnHero(
+                WorkoutUtilityStrip(
                     state = state,
                     onShowLibrary = onShowLibrary,
                     onCalculate = {
@@ -218,25 +245,6 @@ internal fun WorkoutDiaryScreen(
                             viewModel.moveDate(it)
                         }
                     )
-                )
-            }
-
-            item(key = "workout-day-title") {
-                WorkoutDayHeader(
-                    selectedDate = state.selectedDate,
-                    workoutCount = state.exercises.size,
-                    modifier = Modifier
-                        .workoutDaySwipe(
-                            selectedDate = state.selectedDate,
-                            onMove = {
-                                dismissKeyboard()
-                                viewModel.moveDate(it)
-                            }
-                        )
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null
-                        ) { dismissKeyboard() }
                 )
             }
 
@@ -275,91 +283,87 @@ internal fun WorkoutDiaryScreen(
                 }
             }
 
-            item(key = "workout-extra-space") { Spacer(Modifier.height(24.dp)) }
-        }
-
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .navigationBarsPadding()
-                .padding(end = 18.dp, bottom = 96.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .width(166.dp)
-                    .height(50.dp)
-                    .shadow(5.dp, RoundedCornerShape(5.dp))
-                    .clip(RoundedCornerShape(5.dp))
-                    .background(AppColors.KitchenTomato)
-                    .border(1.dp, AppColors.KitchenEspresso.copy(alpha = 0.30f), RoundedCornerShape(5.dp))
-                    .clickable(role = Role.Button) {
-                        dismissKeyboard()
-                        addMenuExpanded = true
-                    }
-                    .semantics { contentDescription = addWorkoutLabel },
-                contentAlignment = Alignment.Center
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Icon(Icons.Filled.Add, contentDescription = null, tint = AppColors.KitchenCream, modifier = Modifier.size(22.dp))
-                    Text(
-                        addWorkoutLabel.uppercase(Locale.getDefault()),
-                        color = AppColors.KitchenCream,
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.Black
-                    )
-                }
-            }
-
-            SheetGlassDropdownMenu(
-                expanded = addMenuExpanded,
-                onDismissRequest = { addMenuExpanded = false },
-                modifier = Modifier.heightIn(max = 520.dp),
-                menuWidth = 236.dp
-            ) {
-                if (state.splitGroups.isEmpty()) {
-                    SheetGlassDropdownMenuItem(
-                        label = "All exercises",
-                        leadingContent = { WorkoutMenuGlyph(workoutMenuGlyphAsset("All exercises", emptySet())) },
-                        onClick = {
-                            addMenuExpanded = false
-                            pickerRequest = WorkoutPickerRequest.all()
+            item(key = "workout-add-action") {
+                Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = 48.dp)
+                            .clip(RoundedCornerShape(3.dp))
+                            .background(Color.Transparent)
+                            .border(1.2.dp, AppColors.KitchenTomato, RoundedCornerShape(3.dp))
+                            .clickable(role = Role.Button) {
+                                dismissKeyboard()
+                                addMenuExpanded = true
+                            }
+                            .semantics { contentDescription = addWorkoutLabel },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            Icon(Icons.Filled.Add, contentDescription = null, tint = AppColors.KitchenTomato, modifier = Modifier.size(16.dp))
+                            Text(
+                                addWorkoutLabel.uppercase(Locale.getDefault()),
+                                color = AppColors.KitchenTomato,
+                                style = MaterialTheme.typography.labelLarge,
+                                fontWeight = FontWeight.Black
+                            )
                         }
-                    )
-                } else {
-                    state.splitGroups.forEach { group ->
+                    }
+
+                    SheetGlassDropdownMenu(
+                        expanded = addMenuExpanded,
+                        onDismissRequest = { addMenuExpanded = false },
+                        modifier = Modifier.heightIn(max = 520.dp),
+                        menuWidth = 236.dp
+                    ) {
+                        if (state.splitGroups.isEmpty()) {
+                            SheetGlassDropdownMenuItem(
+                                label = allExercisesLabel,
+                                leadingContent = { WorkoutMenuGlyph(workoutMenuGlyphAsset(allExercisesLabel, emptySet())) },
+                                onClick = {
+                                    addMenuExpanded = false
+                                    pickerRequest = WorkoutPickerRequest.all()
+                                }
+                            )
+                        } else {
+                            state.splitGroups.forEach { group ->
+                                SheetGlassDropdownMenuItem(
+                                    label = group.title,
+                                    leadingContent = {
+                                        WorkoutMenuGlyph(workoutMenuGlyphAsset(group.title, group.muscles))
+                                    },
+                                    onClick = {
+                                        addMenuExpanded = false
+                                        pickerRequest = WorkoutPickerRequest.group(group)
+                                    }
+                                )
+                            }
+                        }
+                        HorizontalDivider(color = workoutsColors().hairline.copy(alpha = 0.45f))
                         SheetGlassDropdownMenuItem(
-                            label = group.title,
-                            leadingContent = {
-                                WorkoutMenuGlyph(workoutMenuGlyphAsset(group.title, group.muscles))
-                            },
+                            label = copyFromDayLabel,
+                            leadingIcon = Icons.Filled.ContentCopy,
                             onClick = {
                                 addMenuExpanded = false
-                                pickerRequest = WorkoutPickerRequest.group(group)
+                                copySheetVisible = true
+                            }
+                        )
+                        SheetGlassDropdownMenuItem(
+                            label = savedLabel,
+                            leadingIcon = Icons.Filled.Bookmark,
+                            onClick = {
+                                addMenuExpanded = false
+                                pickerRequest = WorkoutPickerRequest.saved()
                             }
                         )
                     }
                 }
-                HorizontalDivider(color = workoutsColors().hairline.copy(alpha = 0.45f))
-                SheetGlassDropdownMenuItem(
-                    label = "Copy from day",
-                    leadingIcon = Icons.Filled.ContentCopy,
-                    onClick = {
-                        addMenuExpanded = false
-                        copySheetVisible = true
-                    }
-                )
-                SheetGlassDropdownMenuItem(
-                    label = "Saved",
-                    leadingIcon = Icons.Filled.Bookmark,
-                    onClick = {
-                        addMenuExpanded = false
-                        pickerRequest = WorkoutPickerRequest.saved()
-                    }
-                )
             }
+
+            item(key = "workout-extra-space") { Spacer(Modifier.height(4.dp)) }
         }
     }
 
@@ -400,7 +404,7 @@ internal fun WorkoutDiaryScreen(
     state.notice?.let { message ->
         FudGlassDialog(onDismissRequest = viewModel::dismissNotice) {
             Text(
-                text = "Log reps first",
+                text = stringResource(R.string.workout_log_reps_first),
                 color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
@@ -412,7 +416,7 @@ internal fun WorkoutDiaryScreen(
                 lineHeight = 21.sp
             )
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                FudGlassTextButton(text = "OK", onClick = viewModel::dismissNotice)
+                FudGlassTextButton(text = stringResource(R.string.action_ok), onClick = viewModel::dismissNotice)
             }
         }
     }
@@ -453,6 +457,105 @@ private fun workoutMenuGlyphAsset(title: String, muscles: Set<String>): String {
 }
 
 @Composable
+private fun WorkoutWeekHeader(weekStart: LocalDate, weekStartsOnMonday: Boolean) {
+    val firstDay = remember(weekStartsOnMonday) {
+        if (weekStartsOnMonday) DayOfWeek.MONDAY else DayOfWeek.SUNDAY
+    }
+    val currentWeekStart = remember(firstDay) { startOfWeek(LocalDate.now(), firstDay) }
+    val end = weekStart.plusDays(6)
+    val rangeFormatter = remember { DateTimeFormatter.ofPattern("MMM d", Locale.getDefault()) }
+    val monthFormatter = remember { DateTimeFormatter.ofPattern("MMMM yyyy", Locale.getDefault()) }
+    val title = if (weekStart == currentWeekStart) {
+        stringResource(R.string.workout_this_week)
+    } else {
+        weekStart.format(monthFormatter)
+    }
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(top = 2.dp, bottom = 1.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(1.dp)
+    ) {
+        Text(
+            title,
+            fontSize = 21.sp,
+            lineHeight = 23.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = AppColors.KitchenEspresso
+        )
+        Text(
+            "${weekStart.format(rangeFormatter)} – ${end.format(rangeFormatter)}",
+            fontSize = 10.sp,
+            lineHeight = 12.sp,
+            color = AppColors.KitchenEspresso.copy(alpha = 0.68f)
+        )
+    }
+}
+
+@Composable
+private fun WorkoutUtilityStrip(
+    state: WorkoutDiaryUiState,
+    onCalculate: () -> Unit,
+    onShowLibrary: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier.fillMaxWidth().heightIn(min = 48.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()
+                .background(AppColors.KitchenPaper, RoundedCornerShape(3.dp))
+                .border(1.dp, AppColors.KitchenEspresso.copy(alpha = 0.20f), RoundedCornerShape(3.dp))
+                .clickable(enabled = !state.isCalculatingBurn, onClick = onCalculate)
+                .padding(horizontal = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(7.dp)
+        ) {
+            if (state.isCalculatingBurn) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(16.dp),
+                    color = AppColors.KitchenTomato,
+                    strokeWidth = 2.dp
+                )
+            } else {
+                Icon(
+                    Icons.Filled.LocalFireDepartment,
+                    contentDescription = null,
+                    tint = AppColors.KitchenTomato,
+                    modifier = Modifier.size(17.dp)
+                )
+            }
+            Text(
+                if (state.caloriesBurned != null) {
+                    "${state.caloriesBurned} ${stringResource(R.string.unit_kcal)}"
+                } else {
+                    stringResource(R.string.workout_calculate_burn)
+                },
+                modifier = Modifier.weight(1f),
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Bold,
+                color = AppColors.KitchenEspresso
+            )
+            if (state.exercises.isNotEmpty()) {
+                Text(
+                    "${state.exercises.size}",
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Black,
+                    color = AppColors.KitchenTomato
+                )
+            }
+        }
+        WorkoutModeToggleButton(
+            mode = com.apoorvdarshan.calorietracker.models.WorkoutTabMode.LOG,
+            onToggle = onShowLibrary
+        )
+    }
+}
+
+@Composable
 private fun WorkoutBurnHero(
     state: WorkoutDiaryUiState,
     onCalculate: () -> Unit,
@@ -476,51 +579,36 @@ private fun WorkoutBurnHero(
             modifier = Modifier.fillMaxWidth()
         )
 
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .shadow(3.dp, RoundedCornerShape(4.dp))
-                .clip(RoundedCornerShape(4.dp))
-                .background(AppColors.KitchenPaper)
-                .border(
-                    1.dp,
-                    AppColors.KitchenEspresso.copy(alpha = 0.20f),
-                    RoundedCornerShape(4.dp)
-                )
-                .padding(7.dp)
-        ) {
-            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                WorkoutMetric(
-                    label = "Sets",
-                    value = state.performedSetCount.toString(),
-                    icon = Icons.Filled.Checklist,
-                    active = state.performedSetCount > 0,
-                    modifier = Modifier.weight(1f)
-                )
-                MetricDivider()
-                WorkoutMetric(
-                    label = "Workouts",
-                    value = state.exercises.size.toString(),
-                    icon = Icons.Filled.FitnessCenter,
-                    active = state.exercises.isNotEmpty(),
-                    modifier = Modifier.weight(1f)
-                )
-                MetricDivider()
-                WorkoutMetric(
-                    label = "Reps",
-                    value = state.repCount.toString(),
-                    icon = Icons.Filled.Repeat,
-                    active = state.repCount > 0,
-                    modifier = Modifier.weight(1f)
-                )
-                MetricDivider()
-                WorkoutMetric(
-                    label = "Burn",
-                    value = state.caloriesBurned?.let { "$it kcal" } ?: "-- kcal",
-                    icon = Icons.Filled.LocalFireDepartment,
-                    active = state.caloriesBurned != null,
-                    modifier = Modifier.weight(1f)
-                )
+        if (state.exercises.isNotEmpty() || state.performedSetCount > 0 || state.caloriesBurned != null) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(3.dp, RoundedCornerShape(4.dp))
+                    .clip(RoundedCornerShape(4.dp))
+                    .background(AppColors.KitchenPaper)
+                    .border(
+                        1.dp,
+                        AppColors.KitchenEspresso.copy(alpha = 0.20f),
+                        RoundedCornerShape(4.dp)
+                    )
+                    .padding(5.dp)
+            ) {
+                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                    WorkoutMetric(stringResource(R.string.workout_metric_sets), state.performedSetCount.toString(), Icons.Filled.Checklist, state.performedSetCount > 0, Modifier.weight(1f))
+                    MetricDivider()
+                    WorkoutMetric(stringResource(R.string.workout_metric_workouts), state.exercises.size.toString(), Icons.Filled.FitnessCenter, state.exercises.isNotEmpty(), Modifier.weight(1f))
+                    MetricDivider()
+                    WorkoutMetric(stringResource(R.string.workout_metric_reps), state.repCount.toString(), Icons.Filled.Repeat, state.repCount > 0, Modifier.weight(1f))
+                    MetricDivider()
+                    WorkoutMetric(
+                        stringResource(R.string.workout_metric_burn),
+                        state.caloriesBurned?.let { "$it ${stringResource(R.string.unit_kcal)}" }
+                            ?: "-- ${stringResource(R.string.unit_kcal)}",
+                        Icons.Filled.LocalFireDepartment,
+                        state.caloriesBurned != null,
+                        Modifier.weight(1f)
+                    )
+                }
             }
         }
     }
@@ -532,6 +620,10 @@ private fun WorkoutLogBurnButton(
     onCalculate: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val burnDescription = stringResource(
+        if (isCalculating) R.string.workout_calculating_burn_a11y
+        else R.string.workout_calculate_burn_a11y
+    )
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
     val scale by animateFloatAsState(
@@ -542,7 +634,7 @@ private fun WorkoutLogBurnButton(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .heightIn(min = 112.dp)
+            .heightIn(min = 76.dp)
             .scale(scale)
             .shadow(
                 6.dp,
@@ -565,24 +657,20 @@ private fun WorkoutLogBurnButton(
                 onClick = onCalculate
             )
             .semantics {
-                contentDescription = if (isCalculating) {
-                    "Calculating calorie burn"
-                } else {
-                    "Calculate calorie burn"
-                }
+                contentDescription = burnDescription
             },
         contentAlignment = Alignment.Center
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .heightIn(min = 112.dp),
+                .heightIn(min = 76.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
                 modifier = Modifier
-                    .width(74.dp)
-                    .heightIn(min = 112.dp)
+                    .width(56.dp)
+                    .heightIn(min = 76.dp)
                     .background(AppColors.KitchenTomato),
                 contentAlignment = Alignment.Center
             ) {
@@ -597,7 +685,7 @@ private fun WorkoutLogBurnButton(
                         Icons.Filled.LocalFireDepartment,
                         contentDescription = null,
                         tint = Color.White,
-                        modifier = Modifier.size(32.dp)
+                        modifier = Modifier.size(25.dp)
                     )
                 }
             }
@@ -605,11 +693,11 @@ private fun WorkoutLogBurnButton(
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(horizontal = 18.dp, vertical = 15.dp),
-                verticalArrangement = Arrangement.spacedBy(6.dp)
+                    .padding(horizontal = 13.dp, vertical = 10.dp),
+                verticalArrangement = Arrangement.spacedBy(3.dp)
             ) {
                 Text(
-                    text = "CALORIE BURN",
+                    text = stringResource(R.string.workout_calorie_burn_label).uppercase(Locale.getDefault()),
                     color = MaterialTheme.colorScheme.secondary,
                     style = MaterialTheme.typography.labelMedium,
                     fontWeight = FontWeight.Black,
@@ -618,9 +706,11 @@ private fun WorkoutLogBurnButton(
                 )
                 KitchenReceiptRule()
                 Text(
-                    text = if (isCalculating) "Calculating…" else "Calculate",
+                    text = stringResource(
+                        if (isCalculating) R.string.workout_calculating else R.string.workout_calculate
+                    ),
                     color = MaterialTheme.colorScheme.onSurface,
-                    style = MaterialTheme.typography.titleLarge,
+                    style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Black,
                     maxLines = 1
                 )
@@ -639,8 +729,8 @@ private fun WorkoutMetric(
 ) {
     val color = if (active) AppColors.Calorie else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
     Column(
-        modifier = modifier.padding(horizontal = 7.dp, vertical = 7.dp),
-        verticalArrangement = Arrangement.spacedBy(6.dp)
+        modifier = modifier.padding(horizontal = 5.dp, vertical = 5.dp),
+        verticalArrangement = Arrangement.spacedBy(3.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             Icon(icon, contentDescription = null, tint = color, modifier = Modifier.size(14.dp))
@@ -655,7 +745,7 @@ private fun WorkoutMetric(
         Text(
             text = value,
             color = color,
-            fontSize = 24.sp,
+            fontSize = 18.sp,
             fontWeight = FontWeight.ExtraBold,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
@@ -668,7 +758,7 @@ private fun MetricDivider() {
     Box(
         Modifier
             .width(1.dp)
-            .height(44.dp)
+            .height(34.dp)
             .background(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.46f))
     )
 }
@@ -679,6 +769,13 @@ private fun WorkoutDayHeader(
     workoutCount: Int,
     modifier: Modifier = Modifier
 ) {
+    val today = LocalDate.now()
+    val dateTitle = when (selectedDate) {
+        today -> stringResource(R.string.workout_today)
+        today.plusDays(1) -> stringResource(R.string.workout_tomorrow)
+        today.minusDays(1) -> stringResource(R.string.workout_yesterday)
+        else -> selectedDate.format(DateTimeFormatter.ofPattern("EEEE, MMM d", Locale.getDefault()))
+    }
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -688,14 +785,14 @@ private fun WorkoutDayHeader(
         Icon(Icons.Filled.CalendarMonth, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(19.dp))
         Spacer(Modifier.width(8.dp))
         Text(
-            text = selectedDateTitle(selectedDate),
+            text = dateTitle,
             color = MaterialTheme.colorScheme.onSurface,
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.weight(1f)
         )
         Text(
-            text = "$workoutCount ${if (workoutCount == 1) "workout" else "workouts"}",
+            text = pluralStringResource(R.plurals.workout_count, workoutCount, workoutCount),
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
             fontSize = 12.sp,
             fontWeight = FontWeight.Bold
@@ -712,30 +809,44 @@ private fun WorkoutEmptyState(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .shadow(3.dp, RoundedCornerShape(4.dp))
-            .clip(RoundedCornerShape(4.dp))
+            .shadow(3.dp, RoundedCornerShape(3.dp))
+            .clip(RoundedCornerShape(3.dp))
             .background(AppColors.KitchenPaper)
-            .border(1.dp, AppColors.KitchenEspresso.copy(alpha = 0.20f), RoundedCornerShape(4.dp))
+            .border(1.dp, AppColors.KitchenEspresso.copy(alpha = 0.24f), RoundedCornerShape(3.dp))
             .clickable(onClick = onAdd)
-            .padding(14.dp)
+            .padding(horizontal = 13.dp, vertical = 10.dp)
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            Icon(Icons.Filled.Add, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(28.dp))
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(9.dp)) {
+            Icon(Icons.Filled.Add, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
                 Text(
-                    "No workouts logged",
+                    stringResource(R.string.workout_empty_title),
                     color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = 16.sp,
+                    fontSize = 14.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    "Use + to pick $splitTitle exercises for this day",
+                    stringResource(R.string.workout_empty_body_format, splitTitle),
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.58f),
-                    fontSize = 13.sp,
+                    fontSize = 10.sp,
                     fontWeight = FontWeight.Medium
                 )
             }
         }
+        Box(
+            Modifier
+                .align(Alignment.CenterStart)
+                .offset(x = (-18).dp)
+                .size(10.dp)
+                .background(MaterialTheme.colorScheme.background, CircleShape)
+        )
+        Box(
+            Modifier
+                .align(Alignment.CenterEnd)
+                .offset(x = 18.dp)
+                .size(10.dp)
+                .background(MaterialTheme.colorScheme.background, CircleShape)
+        )
     }
 }
 
@@ -754,55 +865,70 @@ private fun WorkoutExerciseCard(
     onReps: (UUID, String) -> Unit,
     onRpe: (UUID, String) -> Unit
 ) {
+    val fallbackWorkoutLabel = stringResource(R.string.workout_fallback_label)
+    val unspecifiedLabel = stringResource(R.string.workout_unspecified)
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .shadow(4.dp, RoundedCornerShape(4.dp))
-            .clip(RoundedCornerShape(4.dp))
+            .shadow(4.dp, RoundedCornerShape(3.dp))
+            .clip(RoundedCornerShape(3.dp))
             .background(AppColors.KitchenPaper)
-            .border(1.dp, AppColors.KitchenEspresso.copy(alpha = 0.20f), RoundedCornerShape(4.dp))
+            .border(1.dp, AppColors.KitchenEspresso.copy(alpha = 0.24f), RoundedCornerShape(3.dp))
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            modifier = Modifier.padding(horizontal = 11.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .heightIn(min = 48.dp)
                     .clickable(onClick = onOpen),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Box(
                     modifier = Modifier
-                        .size(64.dp)
-                        .clip(RoundedCornerShape(14.dp))
+                        .size(38.dp)
+                        .clip(RoundedCornerShape(2.dp))
                         .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.42f))
                         .border(
                             1.dp,
                             MaterialTheme.colorScheme.outlineVariant,
-                            RoundedCornerShape(14.dp)
+                            RoundedCornerShape(2.dp)
                         )
                 ) {
                     AnimatedExerciseImage(exercise.imagePaths, Modifier.fillMaxSize())
                 }
-                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(5.dp)) {
+                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(1.dp)) {
+                    Text(
+                        exercise.primaryMuscles.firstOrNull()?.uppercase(Locale.getDefault())
+                            ?: fallbackWorkoutLabel.uppercase(Locale.getDefault()),
+                        color = AppColors.KitchenTomato,
+                        fontSize = 7.sp,
+                        lineHeight = 8.sp,
+                        letterSpacing = 0.7.sp,
+                        fontWeight = FontWeight.Black,
+                        maxLines = 1
+                    )
                     Text(
                         exercise.name,
                         color = MaterialTheme.colorScheme.onSurface,
-                        fontSize = 16.sp,
+                        fontSize = 15.sp,
+                        lineHeight = 17.sp,
                         fontWeight = FontWeight.Bold,
-                        maxLines = 2,
+                        maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
                     Text(
                         buildString {
-                            append(exercise.primaryMuscles.joinToString().ifBlank { "Unspecified" })
+                            append(exercise.primaryMuscles.joinToString().ifBlank { unspecifiedLabel })
                             append(" · ")
                             append(exercise.equipment)
                         },
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.57f),
-                        fontSize = 12.sp,
+                        fontSize = 9.sp,
+                        lineHeight = 10.sp,
                         fontWeight = FontWeight.SemiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
@@ -810,61 +936,66 @@ private fun WorkoutExerciseCard(
                 }
                 Icon(
                     Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                    contentDescription = "Open exercise instructions",
+                    contentDescription = stringResource(R.string.workout_open_exercise_a11y),
                     tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.34f),
-                    modifier = Modifier.size(20.dp)
+                    modifier = Modifier.size(16.dp)
                 )
             }
+
+            KitchenReceiptRule()
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(Icons.Filled.Checklist, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(17.dp))
-                Spacer(Modifier.width(6.dp))
+                Icon(Icons.Filled.Checklist, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(14.dp))
+                Spacer(Modifier.width(4.dp))
                 Text(
-                    "Sets",
+                    stringResource(R.string.workout_sets_label),
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.58f),
-                    fontSize = 12.sp,
+                    fontSize = 10.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(Modifier.weight(1f))
                 IconButton(
                     onClick = { onSetCount(exercise.sets.size - 1) },
                     enabled = exercise.sets.size > 1,
-                    modifier = Modifier.size(34.dp)
+                    modifier = Modifier.size(48.dp)
                 ) {
-                    Icon(Icons.Filled.Remove, contentDescription = "Remove set", modifier = Modifier.size(18.dp))
+                    Icon(Icons.Filled.Remove, contentDescription = stringResource(R.string.workout_remove_set_a11y), modifier = Modifier.size(15.dp))
                 }
                 Text(
-                    "${exercise.sets.size} ${if (exercise.sets.size == 1) "set" else "sets"}",
+                    pluralStringResource(R.plurals.workout_set_count, exercise.sets.size, exercise.sets.size),
                     color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = 13.sp,
+                    fontSize = 11.sp,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.width(54.dp)
+                    modifier = Modifier.width(46.dp)
                 )
                 IconButton(
                     onClick = { onSetCount(exercise.sets.size + 1) },
                     enabled = exercise.sets.size < 12,
-                    modifier = Modifier.size(34.dp)
+                    modifier = Modifier.size(48.dp)
                 ) {
-                    Icon(Icons.Filled.Add, contentDescription = "Add blank set", modifier = Modifier.size(18.dp))
+                    Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.workout_add_set_a11y), modifier = Modifier.size(15.dp))
                 }
-                IconButton(onClick = onToggleSaved, modifier = Modifier.size(36.dp)) {
+                IconButton(onClick = onToggleSaved, modifier = Modifier.size(48.dp)) {
                     Icon(
                         if (isSaved) Icons.Filled.Bookmark else Icons.Filled.BookmarkBorder,
-                        contentDescription = if (isSaved) "Unsave exercise" else "Save exercise",
+                        contentDescription = stringResource(
+                            if (isSaved) R.string.workout_unsave_exercise_a11y
+                            else R.string.workout_save_exercise_a11y
+                        ),
                         tint = if (isSaved) AppColors.Calorie else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.48f),
-                        modifier = Modifier.size(19.dp)
+                        modifier = Modifier.size(16.dp)
                     )
                 }
-                IconButton(onClick = onRemove, modifier = Modifier.size(36.dp)) {
+                IconButton(onClick = onRemove, modifier = Modifier.size(48.dp)) {
                     Icon(
                         Icons.Filled.DeleteOutline,
-                        contentDescription = "Remove exercise",
+                        contentDescription = stringResource(R.string.workout_remove_exercise_a11y),
                         tint = MaterialTheme.colorScheme.error.copy(alpha = 0.82f),
-                        modifier = Modifier.size(19.dp)
+                        modifier = Modifier.size(16.dp)
                     )
                 }
             }
@@ -890,6 +1021,22 @@ private fun WorkoutExerciseCard(
                 }
             }
         }
+        Box(
+            Modifier
+                .align(Alignment.CenterStart)
+                .offset(x = (-5).dp)
+                .size(10.dp)
+                .background(MaterialTheme.colorScheme.background, CircleShape)
+                .border(1.dp, AppColors.KitchenEspresso.copy(alpha = 0.18f), CircleShape)
+        )
+        Box(
+            Modifier
+                .align(Alignment.CenterEnd)
+                .offset(x = 5.dp)
+                .size(10.dp)
+                .background(MaterialTheme.colorScheme.background, CircleShape)
+                .border(1.dp, AppColors.KitchenEspresso.copy(alpha = 0.18f), CircleShape)
+        )
     }
 }
 
@@ -905,17 +1052,17 @@ private fun WorkoutSetRow(
 ) {
     val focusManager = LocalFocusManager.current
     Row(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 7.dp),
+        modifier = Modifier.fillMaxWidth().padding(vertical = 3.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(7.dp)
     ) {
         Text(
-            "Set ${index + 1}",
+            stringResource(R.string.workout_set_number_format, index + 1),
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.58f),
-            fontSize = 12.sp,
+            fontSize = 10.sp,
             fontWeight = FontWeight.Bold,
             maxLines = 1,
-            modifier = Modifier.width(47.dp)
+            modifier = Modifier.width(36.dp)
         )
         WorkoutSetField(
             value = set.displayWeight(weightUnit),
@@ -927,7 +1074,7 @@ private fun WorkoutSetRow(
         WorkoutSetField(
             value = set.reps,
             onValueChange = onReps,
-            placeholder = "Reps",
+            placeholder = stringResource(R.string.workout_reps_placeholder),
             keyboardType = KeyboardType.Number,
             modifier = Modifier.weight(1f)
         )
@@ -951,14 +1098,14 @@ private fun WorkoutSetField(
     modifier: Modifier = Modifier,
     keyboardActions: KeyboardActions = KeyboardActions.Default
 ) {
-    val shape = RoundedCornerShape(10.dp)
+    val shape = RoundedCornerShape(2.dp)
     BasicTextField(
         value = value,
         onValueChange = onValueChange,
         singleLine = true,
         textStyle = TextStyle(
             color = MaterialTheme.colorScheme.onSurface,
-            fontSize = 13.sp,
+            fontSize = 11.sp,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center
         ),
@@ -969,18 +1116,18 @@ private fun WorkoutSetField(
         ),
         keyboardActions = keyboardActions,
         modifier = modifier
-            .height(48.dp)
+            .heightIn(min = 48.dp)
             .clip(shape)
             .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.62f))
             .border(1.dp, MaterialTheme.colorScheme.outlineVariant, shape)
-            .padding(horizontal = 7.dp),
+            .padding(horizontal = 4.dp),
         decorationBox = { inner ->
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 if (value.isEmpty()) {
                     Text(
                         placeholder,
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.35f),
-                        fontSize = 12.sp,
+                        fontSize = 9.sp,
                         fontWeight = FontWeight.SemiBold,
                         textAlign = TextAlign.Center,
                         maxLines = 1
@@ -997,6 +1144,8 @@ private fun WorkoutWeekStrip(
     selectedDate: LocalDate,
     workoutCounts: Map<LocalDate, Int>,
     onSelect: (LocalDate) -> Unit,
+    onVisibleWeekChange: (LocalDate) -> Unit,
+    onSettledWeekChange: (LocalDate) -> Unit,
     weekStartsOnMonday: Boolean,
     modifier: Modifier = Modifier
 ) {
@@ -1012,13 +1161,33 @@ private fun WorkoutWeekStrip(
     }
     val state = rememberLazyListState(initialFirstVisibleItemIndex = targetWeek)
     val fling = rememberSnapFlingBehavior(lazyListState = state)
+    val currentOnVisibleWeekChange by rememberUpdatedState(onVisibleWeekChange)
+    val currentOnSettledWeekChange by rememberUpdatedState(onSettledWeekChange)
 
     LaunchedEffect(targetWeek) {
         if (state.firstVisibleItemIndex != targetWeek) state.animateScrollToItem(targetWeek)
     }
 
+    LaunchedEffect(state, currentWeekStart) {
+        var wasScrolling = false
+        snapshotFlow { state.firstVisibleItemIndex to state.isScrollInProgress }.collect { (weekIndex, scrolling) ->
+            val visibleStart = currentWeekStart.plusWeeks(
+                (weekIndex - CURRENT_WORKOUT_WEEK).toLong()
+            )
+            currentOnVisibleWeekChange(
+                visibleStart
+            )
+            if (scrolling) {
+                wasScrolling = true
+            } else if (wasScrolling) {
+                wasScrolling = false
+                currentOnSettledWeekChange(visibleStart)
+            }
+        }
+    }
+
     BoxWithConstraints(modifier.fillMaxWidth()) {
-        val pageWidth = maxWidth
+        val pageWidth = maxWidth.coerceAtLeast(336.dp)
         LazyRow(state = state, flingBehavior = fling, modifier = Modifier.fillMaxWidth()) {
             items((0 until WORKOUT_WEEKS).toList()) { weekIndex ->
                 val weekStart = currentWeekStart.plusWeeks((weekIndex - CURRENT_WORKOUT_WEEK).toLong())
@@ -1056,11 +1225,14 @@ private fun WorkoutDayTile(
 ) {
     Column(
         modifier = modifier
+            .heightIn(min = 48.dp)
             .alpha(if (enabled) 1f else 0.32f)
+            .semantics(mergeDescendants = true) { selected = isSelected }
             .clickable(
                 enabled = enabled,
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
+                role = Role.Tab,
                 onClick = onClick
             ),
         horizontalAlignment = Alignment.CenterHorizontally,

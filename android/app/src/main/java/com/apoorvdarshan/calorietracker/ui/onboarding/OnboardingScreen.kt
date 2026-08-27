@@ -7,8 +7,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -80,11 +83,14 @@ import androidx.compose.animation.core.tween
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -114,6 +120,8 @@ import com.apoorvdarshan.calorietracker.ui.components.SplitDecimalWheelPicker
 import com.apoorvdarshan.calorietracker.ui.components.FeetInchesWheelPicker
 import com.apoorvdarshan.calorietracker.ui.components.NumericWheelPicker
 import com.apoorvdarshan.calorietracker.ui.components.UnitToggle
+import com.apoorvdarshan.calorietracker.ui.components.KitchenTableBackground
+import com.apoorvdarshan.calorietracker.ui.components.KitchenReceiptRule
 import com.apoorvdarshan.calorietracker.ui.theme.AppColors
 import java.time.LocalDate
 import java.time.Period
@@ -123,7 +131,13 @@ import java.util.Locale
 fun OnboardingScreen(container: AppContainer, onComplete: () -> Unit) {
     val vm: OnboardingViewModel = viewModel(factory = OnboardingViewModel.Factory(container))
     val ui by vm.ui.collectAsState()
+    val stepScrollState = rememberScrollState()
 
+    LaunchedEffect(ui.step) {
+        stepScrollState.scrollTo(0)
+    }
+
+    KitchenTableBackground(Modifier.fillMaxSize()) {
     Column(
         Modifier
             .fillMaxSize()
@@ -131,7 +145,6 @@ fun OnboardingScreen(container: AppContainer, onComplete: () -> Unit) {
             // Shrink for the keyboard so the API-key field (Provider step) and the
             // footer CTA stay reachable while typing instead of being covered.
             .imePadding()
-            .background(MaterialTheme.colorScheme.background)
     ) {
         // iOS shows a chevron-left back button + a thin Capsule progress bar at
         // the top, only on steps 1..N-2 (hidden on Welcome and Review).
@@ -140,33 +153,36 @@ fun OnboardingScreen(container: AppContainer, onComplete: () -> Unit) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 24.dp),
+                    .padding(horizontal = 18.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Icon(
-                    imageVector = Icons.Outlined.ChevronLeft,
-                    contentDescription = stringResource(R.string.onboarding_back),
-                    tint = MaterialTheme.colorScheme.onBackground,
+                Box(
                     modifier = Modifier
-                        .size(28.dp)
-                        .clickable { vm.back() }
-                )
+                        .size(48.dp)
+                        .clickable(role = Role.Button) { vm.back() },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.ChevronLeft,
+                        contentDescription = stringResource(R.string.onboarding_back),
+                        tint = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
                 val totalSteps = OnboardingStep.values().size
                 val progress = ui.step.ordinal.toFloat() / (totalSteps - 1).toFloat()
                 Box(
                     Modifier
                         .weight(1f)
-                        .height(4.dp)
-                        .clip(RoundedCornerShape(2.dp))
-                        .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.08f))
+                        .height(5.dp)
+                        .background(AppColors.KitchenEspresso.copy(alpha = 0.10f))
                 ) {
                     Box(
                         Modifier
                             .fillMaxHeight()
                             .fillMaxWidth(progress)
-                            .clip(RoundedCornerShape(2.dp))
-                            .background(MaterialTheme.colorScheme.onBackground)
+                            .background(AppColors.KitchenTomato)
                     )
                 }
             }
@@ -175,66 +191,81 @@ fun OnboardingScreen(container: AppContainer, onComplete: () -> Unit) {
             Spacer(Modifier.height(24.dp))
         }
 
-        Box(Modifier.weight(1f).fillMaxWidth().padding(horizontal = 24.dp)) {
-            when (ui.step) {
-                OnboardingStep.WELCOME -> WelcomeStep()
-                OnboardingStep.GENDER -> GenderStep(selected = ui.gender, onSelect = vm::setGender)
-                OnboardingStep.BIRTHDAY -> BirthdayStep(current = ui.birthday, onChange = vm::setBirthday)
-                OnboardingStep.HEIGHT_WEIGHT -> HeightWeightStep(
-                    cm = ui.heightCm,
-                    kg = ui.weightKg,
-                    heightMetric = ui.heightMetric,
-                    weightMetric = ui.weightMetric,
-                    onHeightChange = vm::setHeight,
-                    onWeightChange = vm::setWeight,
-                    onToggle = vm::setUseMetric
-                )
-                OnboardingStep.BODY_FAT -> BodyFatStep(
-                    bodyFat = ui.bodyFatPercentage,
-                    goalBodyFat = ui.goalBodyFatPercentage,
-                    onChange = vm::setBodyFat,
-                    onGoalChange = vm::setGoalBodyFat
-                )
-                OnboardingStep.ACTIVITY -> ActivityStep(
-                    selected = ui.activity,
-                    onSelect = vm::setActivity
-                )
-                OnboardingStep.GOAL -> GoalStep(selected = ui.goal, onSelect = vm::setGoal)
-                OnboardingStep.GOAL_WEIGHT -> GoalWeightStep(
-                    current = ui.goalWeightKg,
-                    goal = ui.goal,
-                    heightMetric = ui.heightMetric,
-                    weightMetric = ui.weightMetric,
-                    onChange = vm::setGoalWeight,
-                    onToggle = vm::setUseMetric
-                )
-                OnboardingStep.GOAL_SPEED -> GoalSpeedStep(
-                    weeklyKg = ui.weeklyChangeKg,
-                    goal = ui.goal,
-                    useMetric = ui.weightMetric,
-                    currentKg = ui.weightKg,
-                    targetKg = ui.goalWeightKg,
-                    onSelect = vm::setWeeklyChange
-                )
-                OnboardingStep.NOTIFICATIONS -> NotificationsStep(
-                    enabled = ui.notificationsEnabled,
-                    onToggle = vm::setNotificationsEnabled
-                )
-                OnboardingStep.HEALTH_CONNECT -> HealthConnectStep(
-                    container = container,
-                    enabled = ui.healthConnectEnabled,
-                    onToggle = vm::setHealthConnectEnabled
-                )
-                OnboardingStep.PROVIDER -> ProviderStep(
-                    provider = ui.aiProvider,
-                    model = ui.aiModel,
-                    apiKey = ui.apiKey,
-                    onProviderChange = vm::setAiProvider,
-                    onModelChange = vm::setAiModel,
-                    onKeyChange = vm::setApiKey
-                )
-                OnboardingStep.BUILDING_PLAN -> BuildingPlanStep(vm = vm, onComplete = vm::next)
-                OnboardingStep.PLAN_READY -> PlanReadyStep(state = ui, vm = vm)
+        BoxWithConstraints(Modifier.weight(1f).fillMaxWidth()) {
+            val viewportHeight = maxHeight
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(stepScrollState)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = viewportHeight)
+                        .padding(horizontal = 18.dp),
+                    propagateMinConstraints = true
+                ) {
+                    when (ui.step) {
+                        OnboardingStep.WELCOME -> WelcomeStep()
+                        OnboardingStep.GENDER -> GenderStep(selected = ui.gender, onSelect = vm::setGender)
+                        OnboardingStep.BIRTHDAY -> BirthdayStep(current = ui.birthday, onChange = vm::setBirthday)
+                        OnboardingStep.HEIGHT_WEIGHT -> HeightWeightStep(
+                            cm = ui.heightCm,
+                            kg = ui.weightKg,
+                            heightMetric = ui.heightMetric,
+                            weightMetric = ui.weightMetric,
+                            onHeightChange = vm::setHeight,
+                            onWeightChange = vm::setWeight,
+                            onToggle = vm::setUseMetric
+                        )
+                        OnboardingStep.BODY_FAT -> BodyFatStep(
+                            bodyFat = ui.bodyFatPercentage,
+                            goalBodyFat = ui.goalBodyFatPercentage,
+                            onChange = vm::setBodyFat,
+                            onGoalChange = vm::setGoalBodyFat
+                        )
+                        OnboardingStep.ACTIVITY -> ActivityStep(
+                            selected = ui.activity,
+                            onSelect = vm::setActivity
+                        )
+                        OnboardingStep.GOAL -> GoalStep(selected = ui.goal, onSelect = vm::setGoal)
+                        OnboardingStep.GOAL_WEIGHT -> GoalWeightStep(
+                            current = ui.goalWeightKg,
+                            goal = ui.goal,
+                            heightMetric = ui.heightMetric,
+                            weightMetric = ui.weightMetric,
+                            onChange = vm::setGoalWeight,
+                            onToggle = vm::setUseMetric
+                        )
+                        OnboardingStep.GOAL_SPEED -> GoalSpeedStep(
+                            weeklyKg = ui.weeklyChangeKg,
+                            goal = ui.goal,
+                            useMetric = ui.weightMetric,
+                            currentKg = ui.weightKg,
+                            targetKg = ui.goalWeightKg,
+                            onSelect = vm::setWeeklyChange
+                        )
+                        OnboardingStep.NOTIFICATIONS -> NotificationsStep(
+                            enabled = ui.notificationsEnabled,
+                            onToggle = vm::setNotificationsEnabled
+                        )
+                        OnboardingStep.HEALTH_CONNECT -> HealthConnectStep(
+                            container = container,
+                            enabled = ui.healthConnectEnabled,
+                            onToggle = vm::setHealthConnectEnabled
+                        )
+                        OnboardingStep.PROVIDER -> ProviderStep(
+                            provider = ui.aiProvider,
+                            model = ui.aiModel,
+                            apiKey = ui.apiKey,
+                            onProviderChange = vm::setAiProvider,
+                            onModelChange = vm::setAiModel,
+                            onKeyChange = vm::setApiKey
+                        )
+                        OnboardingStep.BUILDING_PLAN -> BuildingPlanStep(vm = vm, onComplete = vm::next)
+                        OnboardingStep.PLAN_READY -> PlanReadyStep(state = ui, vm = vm)
+                    }
+                }
             }
         }
 
@@ -244,13 +275,13 @@ fun OnboardingScreen(container: AppContainer, onComplete: () -> Unit) {
                 Box(
                     Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 24.dp, vertical = 36.dp)
+                        .padding(horizontal = 18.dp, vertical = 18.dp)
                 ) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(56.dp)
-                            .clip(RoundedCornerShape(14.dp))
+                            .heightIn(min = 50.dp)
+                            .clip(RoundedCornerShape(3.dp))
                             .background(
                                 Brush.horizontalGradient(
                                     listOf(AppColors.CalorieStart, AppColors.CalorieEnd)
@@ -280,10 +311,10 @@ fun OnboardingScreen(container: AppContainer, onComplete: () -> Unit) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 24.dp)
-                        .padding(bottom = 36.dp)
-                        .height(54.dp)
-                        .clip(RoundedCornerShape(28.dp))
+                        .padding(horizontal = 18.dp)
+                        .padding(bottom = 18.dp)
+                        .heightIn(min = 50.dp)
+                        .clip(RoundedCornerShape(3.dp))
                         .background(
                             Brush.horizontalGradient(
                                 listOf(AppColors.CalorieStart, AppColors.CalorieEnd)
@@ -305,16 +336,16 @@ fun OnboardingScreen(container: AppContainer, onComplete: () -> Unit) {
                 Button(
                     onClick = { vm.next() },
                     enabled = ui.canAdvance,
-                    shape = RoundedCornerShape(28.dp),
+                    shape = RoundedCornerShape(3.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.onBackground,
                         contentColor = MaterialTheme.colorScheme.background
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 24.dp)
-                        .padding(bottom = 36.dp)
-                        .height(54.dp)
+                        .padding(horizontal = 18.dp)
+                        .padding(bottom = 18.dp)
+                        .heightIn(min = 50.dp)
                 ) {
                     Text(
                         stringResource(R.string.action_continue),
@@ -325,85 +356,186 @@ fun OnboardingScreen(container: AppContainer, onComplete: () -> Unit) {
             }
         }
     }
+    }
 }
 
 @Composable
 private fun WelcomeStep() {
-    // 1:1 port of iOS OnboardingView.welcomeStep — broccoli logo, two-line
-    // "Eat Smart, / Live Better" headline (second line uses the pink gradient),
-    // and a centered two-line subheading.
     Column(
         Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_logo),
-            contentDescription = stringResource(R.string.onboarding_logo_description),
-            modifier = Modifier.size(120.dp)
-        )
-        Spacer(Modifier.height(20.dp))
         Text(
-            stringResource(R.string.onboarding_welcome_line1),
-            fontSize = 32.sp,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onBackground
+            "KITCHEN TABLE",
+            style = MaterialTheme.typography.displaySmall,
+            fontWeight = FontWeight.Black,
+            color = AppColors.KitchenEspresso
         )
-        Spacer(Modifier.height(8.dp))
-        // Second line of the headline uses the pink gradient as a foreground
-        // brush — matches iOS .foregroundStyle(LinearGradient(...)).
         Text(
-            stringResource(R.string.onboarding_welcome_line2),
-            fontSize = 32.sp,
-            fontWeight = FontWeight.Bold,
-            style = LocalTextStyle.current.copy(
-                brush = androidx.compose.ui.graphics.Brush.horizontalGradient(
-                    listOf(AppColors.CalorieStart, AppColors.CalorieEnd)
+            "FÜD AI  —  ${stringResource(R.string.onboarding_welcome_subtitle)}",
+            style = MaterialTheme.typography.labelSmall,
+            color = AppColors.KitchenEspresso.copy(alpha = 0.68f),
+            maxLines = 2
+        )
+
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .graphicsLayer { rotationZ = -0.6f }
+                .shadow(4.dp, RoundedCornerShape(3.dp))
+                .clip(RoundedCornerShape(3.dp))
+                .background(AppColors.KitchenPaper)
+                .border(
+                    1.dp,
+                    AppColors.KitchenEspresso.copy(alpha = 0.22f),
+                    RoundedCornerShape(3.dp)
                 )
-            )
-        )
-        Spacer(Modifier.height(20.dp))
-        Text(
-            stringResource(R.string.onboarding_welcome_subtitle),
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
-            textAlign = androidx.compose.ui.text.style.TextAlign.Center
-        )
-        Spacer(Modifier.height(24.dp))
-        // Quick feature tour — everything is free and already unlocked (iOS parity).
-        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                .padding(15.dp)
+        ) {
+            Column(verticalArrangement = Arrangement.spacedBy(7.dp)) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.kt_nav_home),
+                        contentDescription = stringResource(R.string.onboarding_logo_description),
+                        modifier = Modifier.size(58.dp)
+                    )
+                    Column {
+                        Text(
+                            stringResource(R.string.onboarding_welcome_line1),
+                            style = MaterialTheme.typography.headlineMedium,
+                            color = AppColors.KitchenEspresso
+                        )
+                        Text(
+                            stringResource(R.string.onboarding_welcome_line2),
+                            style = MaterialTheme.typography.headlineMedium,
+                            color = AppColors.KitchenTomato
+                        )
+                    }
+                }
+                KitchenReceiptRule()
+                Text(
+                    stringResource(R.string.onboarding_welcome_subtitle),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = AppColors.KitchenEspresso.copy(alpha = 0.70f)
+                )
+            }
+        }
+
+        Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
             WelcomeFeatureRow(Icons.Outlined.PhotoCamera, stringResource(R.string.onboarding_feature_snap))
             WelcomeFeatureRow(Icons.Outlined.Forum, stringResource(R.string.onboarding_feature_coach))
             WelcomeFeatureRow(Icons.Outlined.FitnessCenter, stringResource(R.string.onboarding_feature_library))
             WelcomeFeatureRow(Icons.Outlined.Widgets, stringResource(R.string.onboarding_feature_widgets))
         }
+
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .graphicsLayer { rotationZ = 0.35f }
+                .shadow(2.dp, RoundedCornerShape(2.dp))
+                .clip(RoundedCornerShape(2.dp))
+                .background(AppColors.KitchenPaper)
+                .border(1.dp, AppColors.KitchenEspresso.copy(alpha = 0.15f), RoundedCornerShape(2.dp))
+                .padding(horizontal = 10.dp, vertical = 8.dp)
+        ) {
+            Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
+                Text(
+                    stringResource(R.string.action_get_started).uppercase(Locale.getDefault()),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = AppColors.KitchenTomato
+                )
+                KitchenReceiptRule()
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    SetupMark("1", stringResource(R.string.onboarding_gender_title), Modifier.weight(1f))
+                    SetupMark("2", stringResource(R.string.onboarding_activity_title), Modifier.weight(1f))
+                }
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    SetupMark("3", stringResource(R.string.onboarding_goal_title), Modifier.weight(1f))
+                    SetupMark("4", stringResource(R.string.onboarding_provider_title), Modifier.weight(1f))
+                }
+            }
+        }
+
+        Spacer(Modifier.weight(1f))
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.Bottom
+        ) {
+            Image(painterResource(R.drawable.kt_nav_quickadd), null, Modifier.size(54.dp).graphicsLayer { rotationZ = -4f })
+            Image(painterResource(R.drawable.kt_nav_coach), null, Modifier.size(54.dp).graphicsLayer { rotationZ = 2f })
+            Image(painterResource(R.drawable.kt_nav_progress), null, Modifier.size(54.dp).graphicsLayer { rotationZ = -2f })
+            Image(painterResource(R.drawable.kt_nav_workouts), null, Modifier.size(54.dp).graphicsLayer { rotationZ = 3f })
+        }
+    }
+}
+
+@Composable
+private fun SetupMark(number: String, title: String, modifier: Modifier = Modifier) {
+    Row(
+        modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(6.dp)
+    ) {
+        Box(
+            Modifier
+                .size(19.dp)
+                .border(1.dp, AppColors.KitchenBrass, RoundedCornerShape(2.dp)),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(number, style = MaterialTheme.typography.labelSmall, color = AppColors.KitchenEspresso)
+        }
+        Text(
+            title,
+            style = MaterialTheme.typography.labelSmall,
+            color = AppColors.KitchenEspresso,
+            maxLines = 2
+        )
     }
 }
 
 @Composable
 private fun WelcomeFeatureRow(icon: ImageVector, text: String) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = AppColors.Calorie,
-            modifier = Modifier.size(20.dp)
-        )
-        Spacer(Modifier.width(12.dp))
-        Text(
-            text,
-            style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.Medium
-        )
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .background(AppColors.KitchenPaper.copy(alpha = 0.76f), RoundedCornerShape(2.dp))
+            .border(
+                1.dp,
+                AppColors.KitchenEspresso.copy(alpha = 0.13f),
+                RoundedCornerShape(2.dp)
+            )
+            .padding(horizontal = 10.dp, vertical = 7.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(icon, null, tint = AppColors.KitchenTomato, modifier = Modifier.size(17.dp))
+        Spacer(Modifier.width(9.dp))
+        Text(text, style = MaterialTheme.typography.bodySmall, color = AppColors.KitchenEspresso)
     }
 }
 
 @Composable
 private fun StepHeader(title: String, subtitle: String? = null) {
-    Column {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .graphicsLayer { rotationZ = -0.35f }
+            .shadow(3.dp, RoundedCornerShape(3.dp))
+            .clip(RoundedCornerShape(3.dp))
+            .background(AppColors.KitchenPaper)
+            .border(
+                1.dp,
+                AppColors.KitchenEspresso.copy(alpha = 0.18f),
+                RoundedCornerShape(3.dp)
+            )
+            .padding(horizontal = 14.dp, vertical = 12.dp)
+    ) {
         Text(
             title,
-            style = MaterialTheme.typography.displaySmall,
+            style = MaterialTheme.typography.headlineLarge,
             fontWeight = FontWeight.Bold
         )
         subtitle?.let {
@@ -414,8 +546,8 @@ private fun StepHeader(title: String, subtitle: String? = null) {
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
             )
         }
-        Spacer(Modifier.height(32.dp))
     }
+    Spacer(Modifier.height(18.dp))
 }
 
 @Composable
@@ -616,7 +748,7 @@ private fun WheeledColumn(
 
 @Composable
 private fun ActivityStep(selected: ActivityLevel, onSelect: (ActivityLevel) -> Unit) {
-    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+    Column(Modifier.fillMaxSize()) {
         StepHeader(
             stringResource(R.string.onboarding_activity_title),
             subtitle = stringResource(R.string.onboarding_activity_subtitle)
@@ -717,7 +849,7 @@ private fun BodyFatStep(
     // Mirrors iOS: Yes/No SelectionCards. "No" reveals a small explanatory
     // ƒ(x) message; "Yes" reveals a body-fat % wheel picker + an optional Goal toggle.
     val knows = bodyFat != null
-    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+    Column(Modifier.fillMaxSize()) {
         StepHeader(
             stringResource(R.string.onboarding_body_fat_title),
             subtitle = stringResource(R.string.onboarding_body_fat_subtitle)
@@ -1192,8 +1324,7 @@ private fun ProviderStep(
     var selectorSheet by remember { mutableStateOf<ProviderSelectorSheet?>(null) }
     Column(
         Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
+            .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -1695,8 +1826,13 @@ private fun MacroCard(
 ) {
     Box(
         modifier
-            .clip(RoundedCornerShape(14.dp))
-            .background(MaterialTheme.colorScheme.surface)
+            .clip(RoundedCornerShape(3.dp))
+            .background(AppColors.KitchenPaper)
+            .border(
+                1.dp,
+                AppColors.KitchenEspresso.copy(alpha = 0.18f),
+                RoundedCornerShape(3.dp)
+            )
             .padding(vertical = 14.dp),
         contentAlignment = Alignment.Center
     ) {
@@ -1743,22 +1879,32 @@ private fun SelectionCard(
     onClick: () -> Unit
 ) {
     val accent = if (selected) AppColors.Calorie else MaterialTheme.colorScheme.onBackground
-    val selectedBorder = if (selected) {
-        Modifier.border(BorderStroke(1.4.dp, AppColors.Calorie.copy(alpha = 0.55f)), RoundedCornerShape(20.dp))
-    } else {
+    val shape = RoundedCornerShape(3.dp)
+    Box(
         Modifier
-    }
-    FudGlassSurface(
-        modifier = Modifier
             .fillMaxWidth()
-            .then(selectedBorder)
-            .clickable(onClick = onClick),
-        cornerRadius = 20.dp,
-        padding = 16.dp
+            .graphicsLayer { rotationZ = if (selected) -0.35f else 0f }
+            .shadow(2.dp, shape)
+            .clip(shape)
+            .background(AppColors.KitchenPaper)
+            .border(
+                BorderStroke(
+                    if (selected) 1.5.dp else 1.dp,
+                    if (selected) AppColors.KitchenTomato else AppColors.KitchenEspresso.copy(alpha = 0.18f)
+                ),
+                shape
+            )
+            .heightIn(min = 48.dp)
+            .selectable(
+                selected = selected,
+                role = Role.RadioButton,
+                onClick = onClick
+            )
+            .padding(horizontal = 14.dp, vertical = 12.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            FudIconBubble(icon = icon, size = 40.dp, iconSize = 21.dp, tint = accent)
-            Spacer(Modifier.width(14.dp))
+            Icon(icon, null, tint = accent, modifier = Modifier.size(24.dp))
+            Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
                 Text(
                     title,
@@ -1789,15 +1935,26 @@ private fun ChoiceRow(label: String, subtitle: String? = null, selected: Boolean
     val bg = if (selected) {
         Brush.linearGradient(listOf(AppColors.CalorieStart.copy(alpha = 0.18f), AppColors.CalorieEnd.copy(alpha = 0.10f)))
     } else {
-        Brush.linearGradient(listOf(MaterialTheme.colorScheme.surface, MaterialTheme.colorScheme.surface))
+        Brush.linearGradient(listOf(AppColors.KitchenPaper, AppColors.KitchenPaper))
     }
     Box(
         Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(3.dp))
             .background(bg)
-            .clickable(onClick = onClick)
-            .padding(horizontal = 18.dp, vertical = 16.dp)
+            .border(
+                1.dp,
+                if (selected) AppColors.KitchenTomato.copy(alpha = 0.65f)
+                else AppColors.KitchenEspresso.copy(alpha = 0.18f),
+                RoundedCornerShape(3.dp)
+            )
+            .heightIn(min = 48.dp)
+            .selectable(
+                selected = selected,
+                role = Role.RadioButton,
+                onClick = onClick
+            )
+            .padding(horizontal = 14.dp, vertical = 12.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(

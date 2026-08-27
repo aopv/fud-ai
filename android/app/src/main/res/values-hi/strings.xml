@@ -655,4 +655,79 @@
     <string name="whats_new_v30_adaptive">Adaptive Goals और Energy Burn अब प्रयोगात्मक नहीं हैं और नए इंस्टॉल पर डिफ़ॉल्ट रूप से चालू हैं।</string>
     <string name="whats_new_v30_widgets">विजेट नए रूप में: होम का स्पीडोमीटर स्टाइल, हर विजेट के असली आकार में।</string>
     <string name="whats_new_v30_restore">दोबारा इंस्टॉल किया या फ़ोन बदला? आपका फ़ूड लॉग, वज़न और बॉडी फ़ैट अब Health Connect से अपने आप बहाल हो जाते हैं।</string>
+    <!-- Kitchen Table home, coach, and capture -->
+    <string name="home_add_group_photo_scan">फ़ोटो और स्कैन</string>
+    <string name="home_add_group_describe">भोजन का वर्णन करें</string>
+    <string name="home_add_group_reuse">भोजन फिर से इस्तेमाल करें</string>
+    <string name="home_add_barcode">बारकोड</string>
+    <string name="home_calorie_summary_a11y">%1$d / %2$d कैलोरी</string>
+    <string name="coach_summary_headline_format">आज %1$s दर्ज किया गया।</string>
+    <string name="coach_summary_with_target_format">%1$s दर्ज · लक्ष्य %2$s</string>
+    <string name="coach_summary_without_target_format">%1$s दर्ज · लक्ष्य तय नहीं है</string>
+    <string name="coach_summary_provenance">आज की डायरी के आधार पर</string>
+    <string name="coach_more_prompts">और सुझाव</string>
+    <string name="coach_fewer_prompts">कम सुझाव</string>
+    <string name="capture_photo_description">फ़ोटो %1$d</string>
+    <string name="capture_photo_label">फ़ोटो %1$d</string>
+    <plurals name="capture_photo_count">
+        <item quantity="one">%1$d / %2$d फ़ोटो</item>
+        <item quantity="other">%1$d / %2$d फ़ोटो</item>
+    </plurals>
+    <string name="capture_add_photo">फ़ोटो जोड़ें</string>
+    <string name="capture_add_photos">फ़ोटो जोड़ें</string>
+    <string name="capture_progressive_ready">वही प्लेट · चीज़ें क्रम में जोड़ी गईं</string>
+    <string name="capture_progressive_needs_second">सामग्री के चरणों के लिए फ़ोटो 2 जोड़ें</string>
+
+    <!-- Progress and workout diary -->
+    <string name="show_details">विवरण दिखाएँ</string>
+    <string name="hide_details">विवरण छिपाएँ</string>
+    <string name="progress_previous_week_a11y">पिछला सप्ताह</string>
+    <string name="progress_next_week_a11y">अगला सप्ताह</string>
+    <plurals name="progress_more_meal_groups">
+        <item quantity="one">%1$d और मील समूह</item>
+        <item quantity="other">%1$d और मील समूह</item>
+    </plurals>
+    <string name="progress_calorie_summary_a11y">%1$d / %2$d कैलोरी</string>
+    <string name="workout_add_workout">वर्कआउट जोड़ें</string>
+    <string name="workout_this_week">यह सप्ताह</string>
+    <string name="workout_menu_all_exercises">सभी एक्सरसाइज़</string>
+    <string name="workout_menu_copy_from_day">किसी दिन से कॉपी करें</string>
+    <string name="workout_menu_saved">सेव किया गया</string>
+    <string name="workout_log_reps_first">पहले रेप्स दर्ज करें</string>
+    <string name="workout_calculate_burn">बर्न की गणना करें</string>
+    <string name="workout_metric_sets">सेट</string>
+    <string name="workout_metric_workouts">वर्कआउट</string>
+    <string name="workout_metric_reps">रेप्स</string>
+    <string name="workout_metric_burn">बर्न</string>
+    <string name="workout_calculating_burn_a11y">कैलोरी बर्न की गणना हो रही है</string>
+    <string name="workout_calculate_burn_a11y">कैलोरी बर्न की गणना करें</string>
+    <string name="workout_calorie_burn_label">कैलोरी बर्न</string>
+    <string name="workout_calculating">गणना हो रही है…</string>
+    <string name="workout_calculate">गणना करें</string>
+    <string name="workout_today">आज</string>
+    <string name="workout_tomorrow">कल</string>
+    <string name="workout_yesterday">बीता कल</string>
+    <plurals name="workout_count">
+        <item quantity="one">%1$d वर्कआउट</item>
+        <item quantity="other">%1$d वर्कआउट</item>
+    </plurals>
+    <string name="workout_empty_title">कोई वर्कआउट दर्ज नहीं है</string>
+    <string name="workout_empty_body_format">आज के लिए %1$s एक्सरसाइज़ चुनने हेतु + का उपयोग करें</string>
+    <string name="workout_fallback_label">वर्कआउट</string>
+    <string name="workout_unspecified">निर्दिष्ट नहीं</string>
+    <string name="workout_open_exercise_a11y">एक्सरसाइज़ के निर्देश खोलें</string>
+    <string name="workout_sets_label">सेट</string>
+    <string name="workout_remove_set_a11y">सेट हटाएँ</string>
+    <string name="workout_add_set_a11y">खाली सेट जोड़ें</string>
+    <plurals name="workout_set_count">
+        <item quantity="one">%1$d सेट</item>
+        <item quantity="other">%1$d सेट</item>
+    </plurals>
+    <string name="workout_unsave_exercise_a11y">एक्सरसाइज़ को सेव से हटाएँ</string>
+    <string name="workout_save_exercise_a11y">एक्सरसाइज़ सेव करें</string>
+    <string name="workout_remove_exercise_a11y">एक्सरसाइज़ हटाएँ</string>
+    <string name="workout_set_number_format">सेट %1$d</string>
+    <string name="workout_reps_placeholder">रेप्स</string>
+    <string name="workout_show_library_a11y">एक्सरसाइज़ लाइब्रेरी दिखाएँ</string>
+    <string name="workout_show_log_a11y">वर्कआउट लॉग दिखाएँ</string>
 </resources>

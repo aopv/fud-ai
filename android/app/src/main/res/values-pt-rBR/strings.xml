@@ -655,4 +655,79 @@
     <string name="whats_new_v30_adaptive">Metas adaptativas e Queima de energia saíram da fase experimental e vêm ativadas por padrão em novas instalações.</string>
     <string name="whats_new_v30_widgets">Widgets redesenhados: o estilo velocímetro da tela inicial, desenhado no tamanho real de cada widget.</string>
     <string name="whats_new_v30_restore">Reinstalou ou trocou de celular? Seu diário alimentar, peso e gordura corporal agora são restaurados automaticamente do Health Connect.</string>
+    <!-- Kitchen Table home, coach, and capture -->
+    <string name="home_add_group_photo_scan">Foto e escaneamento</string>
+    <string name="home_add_group_describe">Descrever refeição</string>
+    <string name="home_add_group_reuse">Reutilizar refeição</string>
+    <string name="home_add_barcode">Código de barras</string>
+    <string name="home_calorie_summary_a11y">%1$d de %2$d calorias</string>
+    <string name="coach_summary_headline_format">Hoje: %1$s registrados.</string>
+    <string name="coach_summary_with_target_format">%1$s registrados · meta %2$s</string>
+    <string name="coach_summary_without_target_format">%1$s registrados · meta não definida</string>
+    <string name="coach_summary_provenance">Com base no diário de hoje</string>
+    <string name="coach_more_prompts">Mais sugestões</string>
+    <string name="coach_fewer_prompts">Menos sugestões</string>
+    <string name="capture_photo_description">Foto %1$d</string>
+    <string name="capture_photo_label">Foto %1$d</string>
+    <plurals name="capture_photo_count">
+        <item quantity="one">%1$d de %2$d foto</item>
+        <item quantity="other">%1$d de %2$d fotos</item>
+    </plurals>
+    <string name="capture_add_photo">Adicionar foto</string>
+    <string name="capture_add_photos">Adicionar fotos</string>
+    <string name="capture_progressive_ready">Mesmo prato · adições em ordem</string>
+    <string name="capture_progressive_needs_second">Adicione a foto 2 para as etapas dos ingredientes</string>
+
+    <!-- Progress and workout diary -->
+    <string name="show_details">Mostrar detalhes</string>
+    <string name="hide_details">Ocultar detalhes</string>
+    <string name="progress_previous_week_a11y">Semana anterior</string>
+    <string name="progress_next_week_a11y">Próxima semana</string>
+    <plurals name="progress_more_meal_groups">
+        <item quantity="one">Mais %1$d grupo de refeições</item>
+        <item quantity="other">Mais %1$d grupos de refeições</item>
+    </plurals>
+    <string name="progress_calorie_summary_a11y">%1$d de %2$d calorias</string>
+    <string name="workout_add_workout">Adicionar treino</string>
+    <string name="workout_this_week">Esta semana</string>
+    <string name="workout_menu_all_exercises">Todos os exercícios</string>
+    <string name="workout_menu_copy_from_day">Copiar de outro dia</string>
+    <string name="workout_menu_saved">Salvo</string>
+    <string name="workout_log_reps_first">Registre primeiro as repetições</string>
+    <string name="workout_calculate_burn">Calcular gasto</string>
+    <string name="workout_metric_sets">Séries</string>
+    <string name="workout_metric_workouts">Treinos</string>
+    <string name="workout_metric_reps">Repetições</string>
+    <string name="workout_metric_burn">Gasto</string>
+    <string name="workout_calculating_burn_a11y">Calculando gasto calórico</string>
+    <string name="workout_calculate_burn_a11y">Calcular gasto calórico</string>
+    <string name="workout_calorie_burn_label">Gasto calórico</string>
+    <string name="workout_calculating">Calculando…</string>
+    <string name="workout_calculate">Calcular</string>
+    <string name="workout_today">Hoje</string>
+    <string name="workout_tomorrow">Amanhã</string>
+    <string name="workout_yesterday">Ontem</string>
+    <plurals name="workout_count">
+        <item quantity="one">%1$d treino</item>
+        <item quantity="other">%1$d treinos</item>
+    </plurals>
+    <string name="workout_empty_title">Nenhum treino registrado</string>
+    <string name="workout_empty_body_format">Use + para escolher exercícios de %1$s para hoje</string>
+    <string name="workout_fallback_label">Treino</string>
+    <string name="workout_unspecified">Não especificado</string>
+    <string name="workout_open_exercise_a11y">Abrir instruções do exercício</string>
+    <string name="workout_sets_label">Séries</string>
+    <string name="workout_remove_set_a11y">Remover série</string>
+    <string name="workout_add_set_a11y">Adicionar série vazia</string>
+    <plurals name="workout_set_count">
+        <item quantity="one">%1$d série</item>
+        <item quantity="other">%1$d séries</item>
+    </plurals>
+    <string name="workout_unsave_exercise_a11y">Remover exercício dos salvos</string>
+    <string name="workout_save_exercise_a11y">Salvar exercício</string>
+    <string name="workout_remove_exercise_a11y">Remover exercício</string>
+    <string name="workout_set_number_format">Série %1$d</string>
+    <string name="workout_reps_placeholder">Repetições</string>
+    <string name="workout_show_library_a11y">Mostrar biblioteca de exercícios</string>
+    <string name="workout_show_log_a11y">Mostrar registro de treinos</string>
 </resources>

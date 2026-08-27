@@ -274,33 +274,15 @@ struct FoodResultView: View {
     }
 
     private var reviewHero: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack(alignment: .firstTextBaseline) {
-                Text("Review Food")
-                    .font(.system(.subheadline, design: .rounded, weight: .bold))
-                    .tracking(0.8)
-                    .foregroundStyle(KitchenTablePalette.tomato)
-
-                Spacer()
-
-                HStack(spacing: 3) {
-                    Text(verbatim: "FÜD AI ·")
-                    Text("AI analysis")
-                        .textCase(.uppercase)
-                }
-                .font(.system(size: 9, weight: .semibold, design: .monospaced))
-                .tracking(1)
-                .foregroundStyle(KitchenTablePalette.mutedEspresso)
-            }
-
+        VStack(alignment: .leading, spacing: 9) {
             ZStack(alignment: .bottom) {
                 reviewPhoto
                     .frame(maxWidth: .infinity)
-                    .frame(height: images.isEmpty && emoji == nil ? 250 : 330)
-                    .padding(.bottom, 106)
+                    .frame(height: images.isEmpty && emoji == nil ? 300 : 360)
+                    .padding(.bottom, 112)
 
                 reviewReceipt
-                    .padding(.horizontal, 14)
+                    .padding(.horizontal, 16)
             }
 
             if images.count > 1 {
@@ -311,9 +293,9 @@ struct FoodResultView: View {
                                 .resizable()
                                 .scaledToFill()
                                 .frame(width: 72, height: 58)
-                                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                                .clipShape(RoundedRectangle(cornerRadius: 3, style: .continuous))
                                 .overlay {
-                                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                    RoundedRectangle(cornerRadius: 3, style: .continuous)
                                         .stroke(KitchenTablePalette.rule, lineWidth: 1)
                                 }
                                 .accessibilityLabel("Review Food")
@@ -323,7 +305,48 @@ struct FoodResultView: View {
                     .padding(.horizontal, 2)
                 }
             }
+
+            if !scaledIngredients.isEmpty {
+                reviewIngredientStrip
+            }
         }
+    }
+
+    private var reviewIngredientStrip: some View {
+        HStack(alignment: .top, spacing: 6) {
+            ForEach(Array(scaledIngredients.prefix(4).enumerated()), id: \.element.id) { index, ingredient in
+                VStack(alignment: .leading, spacing: 4) {
+                    Circle()
+                        .fill([KitchenTablePalette.tomato, KitchenTablePalette.herb, KitchenTablePalette.cobalt, KitchenTablePalette.brass][index % 4])
+                        .frame(width: 7, height: 7)
+
+                    Text(ingredient.name)
+                        .font(.system(size: 9, weight: .semibold, design: .serif))
+                        .foregroundStyle(KitchenTablePalette.espresso)
+                        .lineLimit(2)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+
+                    Text(verbatim: "\(Self.formatGrams(ingredient.grams)) g")
+                        .font(.system(size: 8, weight: .semibold, design: .monospaced))
+                        .foregroundStyle(KitchenTablePalette.mutedEspresso)
+                        .lineLimit(1)
+                }
+                .padding(7)
+                .frame(maxWidth: .infinity, minHeight: 72, alignment: .topLeading)
+                .background(KitchenTablePalette.paperRaised)
+                .overlay {
+                    RoundedRectangle(cornerRadius: 3, style: .continuous)
+                        .stroke(KitchenTablePalette.rule, lineWidth: 0.8)
+                }
+                .shadow(color: KitchenTablePalette.shadow, radius: 2, x: 0, y: 1)
+                .rotationEffect(.degrees(index.isMultiple(of: 2) ? -0.3 : 0.3))
+            }
+        }
+        .padding(.horizontal, 2)
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel(
+            Text("Ingredients", comment: "Accessibility label for the analyzed meal's ingredient list.")
+        )
     }
 
     @ViewBuilder
@@ -333,22 +356,23 @@ struct FoodResultView: View {
                 .resizable()
                 .scaledToFill()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .clipShape(RoundedRectangle(cornerRadius: 30, style: .continuous))
+                .compositingGroup()
+                .clipShape(RoundedRectangle(cornerRadius: 7, style: .continuous))
                 .overlay {
-                    RoundedRectangle(cornerRadius: 30, style: .continuous)
-                        .stroke(KitchenTablePalette.paperRaised, lineWidth: 8)
-                        .padding(5)
+                    RoundedRectangle(cornerRadius: 7, style: .continuous)
+                        .stroke(KitchenTablePalette.paperRaised, lineWidth: 6)
+                        .padding(4)
                 }
                 .overlay {
-                    RoundedRectangle(cornerRadius: 30, style: .continuous)
+                    RoundedRectangle(cornerRadius: 7, style: .continuous)
                         .stroke(KitchenTablePalette.strongRule, lineWidth: 1)
                 }
-                .shadow(color: KitchenTablePalette.shadow, radius: 10, x: 0, y: 5)
+                .shadow(color: KitchenTablePalette.shadow, radius: 5, x: 0, y: 3)
                 .clipped()
                 .accessibilityLabel("Review Food")
         } else {
             ZStack {
-                RoundedRectangle(cornerRadius: 30, style: .continuous)
+                RoundedRectangle(cornerRadius: 7, style: .continuous)
                     .fill(KitchenTablePalette.paperMuted)
 
                 if let emoji {
@@ -361,7 +385,7 @@ struct FoodResultView: View {
                 }
             }
             .overlay {
-                RoundedRectangle(cornerRadius: 30, style: .continuous)
+                RoundedRectangle(cornerRadius: 7, style: .continuous)
                     .stroke(KitchenTablePalette.rule, lineWidth: 1)
             }
         }
@@ -420,7 +444,7 @@ struct FoodResultView: View {
             RoundedRectangle(cornerRadius: 3, style: .continuous)
                 .stroke(KitchenTablePalette.rule, lineWidth: 1)
         }
-        .shadow(color: KitchenTablePalette.shadow, radius: 8, x: 0, y: 5)
+        .shadow(color: KitchenTablePalette.shadow, radius: 5, x: 0, y: 3)
         .rotationEffect(.degrees(-0.35))
     }
 
@@ -446,9 +470,9 @@ struct FoodResultView: View {
                 .foregroundStyle(KitchenTablePalette.espresso)
                 .frame(minWidth: 82, minHeight: 50)
                 .padding(.horizontal, 4)
-                .background(KitchenTablePalette.paperRaised, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .background(KitchenTablePalette.paperRaised, in: RoundedRectangle(cornerRadius: 4, style: .continuous))
                 .overlay {
-                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    RoundedRectangle(cornerRadius: 4, style: .continuous)
                         .stroke(KitchenTablePalette.strongRule, lineWidth: 1)
                 }
 
@@ -464,12 +488,12 @@ struct FoodResultView: View {
                 .foregroundStyle(KitchenTablePalette.onStrongAccent)
                 .padding(.horizontal, 18)
                 .frame(maxWidth: .infinity, minHeight: 50)
-                .background(KitchenTablePalette.tomato, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                .background(KitchenTablePalette.tomato, in: RoundedRectangle(cornerRadius: 6, style: .continuous))
                 .overlay {
-                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    RoundedRectangle(cornerRadius: 6, style: .continuous)
                         .stroke(KitchenTablePalette.tomatoDeep, lineWidth: 1)
                 }
-                .shadow(color: KitchenTablePalette.tomato.opacity(0.22), radius: 6, x: 0, y: 3)
+                .shadow(color: KitchenTablePalette.tomato.opacity(0.18), radius: 3, x: 0, y: 2)
             }
             .accessibilityLabel("Log")
         }
@@ -673,7 +697,7 @@ struct FoodResultView: View {
 
                 }
                 .listStyle(.plain)
-                .listSectionSpacing(10)
+                .listSectionSpacing(6)
                 .environment(\.defaultMinListRowHeight, 1)
                 .neoScreen()
                 .background(KeyboardDismissTapInstaller())

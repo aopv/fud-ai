@@ -179,7 +179,10 @@ internal fun WorkoutModeToggleButton(
     ) {
         Icon(
             imageVector = if (mode == WorkoutTabMode.LOG) Icons.Filled.FitnessCenter else Icons.Filled.SportsGymnastics,
-            contentDescription = if (mode == WorkoutTabMode.LOG) "Show exercise library" else "Show workout log",
+            contentDescription = stringResource(
+                if (mode == WorkoutTabMode.LOG) R.string.workout_show_library_a11y
+                else R.string.workout_show_log_a11y
+            ),
             tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier.size(24.dp)
         )
@@ -350,12 +353,19 @@ internal fun SearchPill(value: String, onValueChange: (String) -> Unit, modifier
             modifier = Modifier.weight(1f)
         )
         if (value.isNotEmpty()) {
-            Icon(
-                Icons.Filled.Cancel,
-                contentDescription = stringResource(R.string.clear_search),
-                tint = colors.mutedText,
-                modifier = Modifier.size(18.dp).clip(CircleShape).clickable { onValueChange("") }
-            )
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clickable { onValueChange("") },
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    Icons.Filled.Cancel,
+                    contentDescription = stringResource(R.string.clear_search),
+                    tint = colors.mutedText,
+                    modifier = Modifier.size(18.dp)
+                )
+            }
         }
     }
 }

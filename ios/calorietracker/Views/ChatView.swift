@@ -1,6 +1,115 @@
+import ImageIO
 import PhotosUI
 import SwiftUI
 import UIKit
+
+private final class CoachImageBox: @unchecked Sendable {
+    let cgImage: CGImage
+    let cost: Int
+
+    nonisolated init(cgImage: CGImage, cost: Int) {
+        self.cgImage = cgImage
+        self.cost = cost
+    }
+}
+
+private actor CoachImagePipeline {
+    static let shared = CoachImagePipeline()
+
+    private let cache: NSCache<NSString, CoachImageBox>
+
+    private init() {
+        let cache = NSCache<NSString, CoachImageBox>()
+        cache.countLimit = 48
+        cache.totalCostLimit = 18 * 1_024 * 1_024
+        self.cache = cache
+    }
+
+    func image(
+        data: Data,
+        cacheKey: String? = nil,
+        maxPixelSize: Int
+    ) -> CoachImageBox? {
+        let key = cacheKey.map(NSString.init)
+        if let key, let cached = cache.object(forKey: key) {
+            return cached
+        }
+        guard !Task.isCancelled else { return nil }
+
+        let sourceOptions: [CFString: Any] = [
+            kCGImageSourceShouldCache: false
+        ]
+        guard let source = CGImageSourceCreateWithData(data as CFData, sourceOptions as CFDictionary) else {
+            return nil
+        }
+
+        let thumbnailOptions: [CFString: Any] = [
+            kCGImageSourceCreateThumbnailFromImageAlways: true,
+            kCGImageSourceCreateThumbnailWithTransform: true,
+            kCGImageSourceThumbnailMaxPixelSize: max(maxPixelSize, 1),
+            kCGImageSourceShouldCacheImmediately: true
+        ]
+        guard !Task.isCancelled,
+              let cgImage = CGImageSourceCreateThumbnailAtIndex(source, 0, thumbnailOptions as CFDictionary)
+        else {
+            return nil
+        }
+
+        let box = CoachImageBox(
+            cgImage: cgImage,
+            cost: cgImage.bytesPerRow * cgImage.height
+        )
+        guard !Task.isCancelled else { return nil }
+        if let key {
+            cache.setObject(box, forKey: key, cost: box.cost)
+        }
+        return box
+    }
+}
+
+private struct CoachPrompt: Identifiable {
+    let id: String
+    let title: LocalizedStringResource
+    let systemImage: String
+    let accent: Color
+    let rotation: Double
+}
+
+private struct CoachObservation: Identifiable {
+    let id: String
+    let systemImage: String
+    let title: LocalizedStringResource
+    let detail: LocalizedStringResource
+}
+
+private struct CoachObservationRow: View {
+    let observation: CoachObservation
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 9) {
+            Image(systemName: observation.systemImage)
+                .font(.caption.weight(.bold))
+                .frame(width: 24, height: 24)
+                .overlay {
+                    Circle()
+                        .stroke(KitchenTablePalette.cobaltDeep.opacity(0.72), lineWidth: 0.8)
+                }
+                .accessibilityHidden(true)
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(observation.title)
+                    .font(.system(.caption, design: .serif, weight: .semibold))
+                    .fixedSize(horizontal: false, vertical: true)
+                Text(observation.detail)
+                    .font(.system(.caption2, design: .monospaced, weight: .semibold))
+                    .foregroundStyle(KitchenTablePalette.cobaltDeep.opacity(0.78))
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .foregroundStyle(KitchenTablePalette.cobaltDeep)
+        .accessibilityElement(children: .combine)
+    }
+}
 
 /// "Coach" tab — a persistent AI conversation that has access to the user's profile,
 /// weight history, food log, computed forecast, and workout diary. Handles multi-turn
@@ -32,33 +141,32 @@ struct ChatView: View {
     @State private var isKeyboardPresented = false
     @FocusState private var isInputFocused: Bool
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     private var userProfile: UserProfile { profileStore.profile }
     private var messages: [ChatMessage] { chatStore.messages }
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
-                coachHeader
-
-                Group {
+            GeometryReader { proxy in
+                VStack(spacing: 0) {
                     if messages.isEmpty {
-                        emptyState
+                        emptyConversation(viewportHeight: proxy.size.height)
                     } else {
+                        coachHeader
                         messageList
+                        promptChips
+                        inputArea
+                            .padding(.bottom, isKeyboardPresented ? 0 : 8)
                     }
                 }
-                .contentShape(Rectangle())
-                .simultaneousGesture(
-                    TapGesture().onEnded { isInputFocused = false }
-                )
-
-                promptChips
-
-                inputArea
-                    .padding(.bottom, isKeyboardPresented ? 0 : NeoAppMetrics.bottomBarHeight + 14)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                .background {
+                    KitchenTableBackdrop()
+                        .contentShape(Rectangle())
+                        .onTapGesture { isInputFocused = false }
+                }
             }
-            .background(KitchenTableBackdrop())
             .navigationTitle("Coach")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar(.hidden, for: .navigationBar)
@@ -82,25 +190,36 @@ struct ChatView: View {
                 attachedImage = image
                 errorMessage = nil
             }
-            .onChange(of: selectedPhotoItem) { _, newValue in
-                guard let item = newValue else { return }
-                selectedPhotoItem = nil
-                Task {
-                    do {
-                        guard let data = try await item.loadTransferable(type: Data.self),
-                              let image = UIImage(data: data) else {
-                            await MainActor.run { errorMessage = "Could not load that photo." }
-                            return
-                        }
-                        await MainActor.run {
-                            attachedImage = image
-                            errorMessage = nil
-                        }
-                    } catch {
-                        await MainActor.run {
+            .task(id: selectedPhotoItem) {
+                guard let item = selectedPhotoItem else { return }
+                defer {
+                    if selectedPhotoItem == item {
+                        selectedPhotoItem = nil
+                    }
+                }
+
+                do {
+                    guard let data = try await item.loadTransferable(type: Data.self),
+                          !Task.isCancelled,
+                          let result = await CoachImagePipeline.shared.image(
+                              data: data,
+                              maxPixelSize: 1_600
+                          ),
+                          !Task.isCancelled,
+                          selectedPhotoItem == item
+                    else {
+                        if !Task.isCancelled, selectedPhotoItem == item {
                             errorMessage = "Could not load that photo."
                         }
+                        return
                     }
+                    attachedImage = UIImage(cgImage: result.cgImage)
+                    errorMessage = nil
+                } catch is CancellationError {
+                    return
+                } catch {
+                    guard selectedPhotoItem == item else { return }
+                    errorMessage = "Could not load that photo."
                 }
             }
             .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { _ in
@@ -115,26 +234,22 @@ struct ChatView: View {
     private var coachHeader: some View {
         HStack(alignment: .center, spacing: 12) {
             VStack(alignment: .leading, spacing: 3) {
-                Text("Coach")
+                Text("AI COACH")
                     .font(.system(size: 10, weight: .semibold, design: .monospaced))
                     .tracking(1.4)
                     .foregroundStyle(KitchenTablePalette.cobalt)
 
-                Text("Ask your Coach")
-                    .font(.system(.largeTitle, design: .serif, weight: .bold))
+                Text("Conversation")
+                    .font(.system(.title3, design: .serif, weight: .bold))
                     .foregroundStyle(KitchenTablePalette.espresso)
-
-                Text("Coach that knows your data")
-                    .font(.system(.subheadline, design: .rounded, weight: .medium))
-                    .foregroundStyle(KitchenTablePalette.mutedEspresso)
             }
 
             Spacer(minLength: 8)
             resetButton
         }
         .padding(.horizontal, NeoAppMetrics.screenInset)
-        .padding(.top, 12)
-        .padding(.bottom, 10)
+        .padding(.top, 8)
+        .padding(.bottom, 6)
     }
 
     private var resetButton: some View {
@@ -161,74 +276,187 @@ struct ChatView: View {
 
     // MARK: - Sections
 
-    private var emptyState: some View {
+    private func emptyConversation(viewportHeight: CGFloat) -> some View {
         VStack(spacing: 0) {
-            Spacer(minLength: 8)
-
-            ZStack(alignment: .top) {
-                VStack(alignment: .leading, spacing: 16) {
-                    Text("Coach that knows your data")
-                        .font(.system(size: 10, weight: .semibold, design: .monospaced))
-                        .tracking(1.4)
-                        .foregroundStyle(KitchenTablePalette.cobaltDeep)
-
-                    Text("Ask your Coach")
-                        .font(.system(.title, design: .serif, weight: .bold))
-                        .foregroundStyle(KitchenTablePalette.cobaltDeep)
-
-                    Text("Your coach can see your weight history, calorie log, and goals. Ask about expected weight, what to eat, or how to hit your target.")
-                        .font(.system(.body, design: .serif, weight: .regular))
-                        .foregroundStyle(KitchenTablePalette.espresso)
-                        .fixedSize(horizontal: false, vertical: true)
-
-                    Rectangle()
-                        .fill(KitchenTablePalette.cobalt.opacity(0.34))
-                        .frame(height: 1)
-
-                    HStack(spacing: 8) {
-                        Image(systemName: "sparkles")
-                            .font(.system(size: 13, weight: .semibold))
-                        Text("Goals & Nutrition")
-                            .font(.system(.caption, design: .rounded, weight: .semibold))
-                    }
-                    .foregroundStyle(KitchenTablePalette.cobaltDeep)
+            ScrollView {
+                VStack(spacing: 0) {
+                    emptyState(viewportHeight: viewportHeight)
+                    promptChips
                 }
-                .padding(.horizontal, 22)
-                .padding(.top, 30)
-                .padding(.bottom, 22)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(KitchenTablePalette.cobalt.opacity(0.15))
-                .overlay {
-                    RoundedRectangle(cornerRadius: 2, style: .continuous)
-                        .stroke(KitchenTablePalette.cobalt.opacity(0.28), lineWidth: 1)
-                }
-                .shadow(color: KitchenTablePalette.shadow, radius: 8, x: 0, y: 5)
-                .rotationEffect(.degrees(-0.5))
-
-                ZStack {
-                    Capsule()
-                        .fill(KitchenTablePalette.cobaltDeep.opacity(0.22))
-                        .frame(width: 13, height: 29)
-                        .rotationEffect(.degrees(16))
-                        .offset(y: 5)
-                    Circle()
-                        .fill(KitchenTablePalette.cobalt)
-                        .frame(width: 22, height: 22)
-                        .overlay {
-                            Circle()
-                                .fill(.white.opacity(0.38))
-                                .frame(width: 7, height: 7)
-                                .offset(x: -4, y: -4)
-                        }
-                        .shadow(color: KitchenTablePalette.shadow, radius: 3, x: 0, y: 2)
-                }
-                .offset(y: -10)
-                .accessibilityHidden(true)
+                .padding(.bottom, 8)
             }
+            .scrollIndicators(.hidden)
+            .scrollDismissesKeyboard(.interactively)
+            .accessibilityIdentifier("coach.empty.scroll")
 
-            Spacer(minLength: 12)
+            inputArea
+                .padding(
+                    .bottom,
+                    isKeyboardPresented ? 0 : NeoAppMetrics.bottomBarHeight + 10
+                )
         }
-        .padding(.horizontal, 24)
+    }
+
+    private func emptyState(viewportHeight: CGFloat) -> some View {
+        let referenceHeight = min(max(viewportHeight * 0.58, 410), 470)
+
+        return ZStack(alignment: .top) {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("AI COACH · TODAY")
+                    .font(.system(.caption2, design: .monospaced, weight: .semibold))
+                    .tracking(1.4)
+                    .foregroundStyle(KitchenTablePalette.cobaltDeep)
+
+                Text(coachHeadline)
+                    .font(.system(.title, design: .serif, weight: .bold))
+                    .foregroundStyle(KitchenTablePalette.cobaltDeep)
+                    .lineSpacing(1)
+
+                Text(coachStatus)
+                    .font(.system(.body, design: .serif))
+                    .foregroundStyle(KitchenTablePalette.espresso)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Rectangle()
+                    .fill(KitchenTablePalette.cobalt.opacity(0.38))
+                    .frame(height: 1)
+
+                VStack(alignment: .leading, spacing: 8) {
+                    ForEach(coachObservations) { observation in
+                        CoachObservationRow(observation: observation)
+                            .frame(maxHeight: .infinity, alignment: .top)
+                    }
+                }
+                .frame(maxHeight: .infinity, alignment: .top)
+
+                Text("FROM LOCAL LOGS + SAVED TARGETS")
+                    .font(.system(.caption2, design: .monospaced, weight: .semibold))
+                    .tracking(1.1)
+                    .foregroundStyle(KitchenTablePalette.cobaltDeep.opacity(0.78))
+            }
+            .padding(.horizontal, dynamicTypeSize.isAccessibilitySize ? 16 : 22)
+            .padding(.top, 30)
+            .padding(.bottom, 18)
+            .frame(maxWidth: .infinity, minHeight: referenceHeight, alignment: .topLeading)
+            .background(KitchenTablePalette.cobalt.opacity(0.18))
+            .overlay {
+                Rectangle()
+                    .stroke(KitchenTablePalette.cobalt.opacity(0.30), lineWidth: 1)
+            }
+            .shadow(color: KitchenTablePalette.shadow, radius: 5, x: 0, y: 3)
+            .rotationEffect(.degrees(-0.35))
+
+            ZStack {
+                Capsule()
+                    .fill(KitchenTablePalette.cobaltDeep.opacity(0.22))
+                    .frame(width: 13, height: 29)
+                    .rotationEffect(.degrees(16))
+                    .offset(y: 5)
+                Circle()
+                    .fill(KitchenTablePalette.cobalt)
+                    .frame(width: 22, height: 22)
+                    .overlay {
+                        Circle()
+                            .fill(.white.opacity(0.38))
+                            .frame(width: 7, height: 7)
+                            .offset(x: -4, y: -4)
+                    }
+                    .shadow(color: KitchenTablePalette.shadow, radius: 3, x: 0, y: 2)
+            }
+            .offset(y: -10)
+            .accessibilityHidden(true)
+        }
+        .frame(minHeight: referenceHeight)
+        .padding(.horizontal, dynamicTypeSize.isAccessibilitySize ? 16 : 36)
+        .padding(.top, 12)
+        .padding(.bottom, 8)
+        .accessibilityElement(children: .contain)
+    }
+
+    private var todayFoodEntries: [FoodEntry] {
+        foodStore.entries(for: .now)
+    }
+
+    private var todayCalories: Int {
+        todayFoodEntries.reduce(0) { $0 + $1.calories }
+    }
+
+    private var todayProtein: Double {
+        todayFoodEntries.reduce(0) { $0 + $1.protein }
+    }
+
+    private var coachHeadline: LocalizedStringResource {
+        guard !todayFoodEntries.isEmpty else { return "No food logged today" }
+        return "\(todayCalories.formatted()) kcal logged today"
+    }
+
+    private var coachStatus: LocalizedStringResource {
+        let protein = Int(todayProtein.rounded())
+        return "\(protein.formatted())g protein across \(todayFoodEntries.count.formatted()) food entries."
+    }
+
+    private var coachObservations: [CoachObservation] {
+        let calorieGoal = userProfile.effectiveCalories
+        let proteinGoal = userProfile.effectiveProtein
+        let caloriesRemaining = calorieGoal - todayCalories
+        let loggedProtein = Int(todayProtein.rounded())
+        let proteinRemaining = proteinGoal - loggedProtein
+
+        let calorieDetail: LocalizedStringResource
+        if caloriesRemaining > 0 {
+            calorieDetail = "\(caloriesRemaining.formatted()) kcal remain to the saved target"
+        } else if caloriesRemaining < 0 {
+            calorieDetail = "Logged total is \((-caloriesRemaining).formatted()) kcal above the saved target"
+        } else {
+            calorieDetail = "Logged total matches the saved calorie target"
+        }
+        let calorieObservation = CoachObservation(
+            id: "calories",
+            systemImage: "fork.knife",
+            title: "\(todayCalories.formatted()) of \(calorieGoal.formatted()) kcal logged",
+            detail: calorieDetail
+        )
+
+        let proteinDetail: LocalizedStringResource
+        if proteinRemaining > 0 {
+            proteinDetail = "\(proteinRemaining.formatted())g remain to the saved target"
+        } else if proteinRemaining < 0 {
+            proteinDetail = "Logged amount is \((-proteinRemaining).formatted())g above the saved target"
+        } else {
+            proteinDetail = "Logged amount matches the saved protein target"
+        }
+        let proteinObservation = CoachObservation(
+            id: "protein",
+            systemImage: "checkmark",
+            title: "\(loggedProtein.formatted())g of \(proteinGoal.formatted())g protein logged",
+            detail: proteinDetail
+        )
+
+        let contextObservation: CoachObservation
+        if !strengthWorkoutStore.completedSessions.isEmpty {
+            contextObservation = CoachObservation(
+                id: "history",
+                systemImage: "dumbbell.fill",
+                title: "\(strengthWorkoutStore.completedSessions.count.formatted()) completed workouts saved",
+                detail: "Count covers all completed workout history"
+            )
+        } else if !weightStore.entries.isEmpty {
+            contextObservation = CoachObservation(
+                id: "history",
+                systemImage: "chart.line.uptrend.xyaxis",
+                title: "\(weightStore.entries.count.formatted()) weigh-ins saved",
+                detail: "Count covers all saved weight history"
+            )
+        } else {
+            contextObservation = CoachObservation(
+                id: "history",
+                systemImage: "chart.line.uptrend.xyaxis",
+                title: "No saved workout or weight entries",
+                detail: "No historical entries are available for this summary"
+            )
+        }
+
+        return [calorieObservation, proteinObservation, contextObservation]
     }
 
     private var messageList: some View {
@@ -304,90 +532,169 @@ struct ChatView: View {
         }
     }
 
-    /// Context-aware suggested prompts — pick a different set based on goal to keep them relevant.
-    private var promptChips: some View {
-        let chips: [String] = {
-            var values: [String]
-            switch userProfile.goal {
-            case .lose:
-                values = [
-                    "What's my expected weight in 30 days?",
-                    "How do I lose weight faster safely?",
-                    "Am I eating too much?",
-                    "What should I eat for dinner?",
-                ]
-            case .gain:
-                values = [
-                    "What's my expected weight in 30 days?",
-                    "How do I gain weight healthily?",
-                    "Am I eating enough?",
-                    "High-protein foods I can add?",
-                ]
-            case .maintain:
-                values = [
-                    "Am I holding my weight?",
-                    "What's my average intake?",
-                    "Macro suggestions?",
-                    "How's my trend?",
-                ]
-            }
-            if !strengthWorkoutStore.completedSessions.isEmpty {
-                values.insert("Analyze my last 4 weeks of training", at: 0)
-            }
-            return values
-        }()
+    /// Context-aware suggested prompts — every suggestion remains available.
+    private var suggestedPrompts: [CoachPrompt] {
+        var values: [CoachPrompt]
+        switch userProfile.goal {
+        case .lose:
+            values = [
+                CoachPrompt(id: "forecast", title: "What's my expected weight in 30 days?", systemImage: "chart.line.uptrend.xyaxis", accent: KitchenTablePalette.tomato, rotation: -0.25),
+                CoachPrompt(id: "lose-safely", title: "How do I lose weight faster safely?", systemImage: "figure.walk", accent: KitchenTablePalette.herb, rotation: 0.25),
+                CoachPrompt(id: "intake-check", title: "Am I eating too much?", systemImage: "fork.knife", accent: KitchenTablePalette.tomato, rotation: -0.25),
+                CoachPrompt(id: "dinner", title: "What should I eat for dinner?", systemImage: "fork.knife", accent: KitchenTablePalette.herb, rotation: 0.25),
+            ]
+        case .gain:
+            values = [
+                CoachPrompt(id: "forecast", title: "What's my expected weight in 30 days?", systemImage: "chart.line.uptrend.xyaxis", accent: KitchenTablePalette.tomato, rotation: -0.25),
+                CoachPrompt(id: "gain-healthily", title: "How do I gain weight healthily?", systemImage: "figure.walk", accent: KitchenTablePalette.herb, rotation: 0.25),
+                CoachPrompt(id: "intake-check", title: "Am I eating enough?", systemImage: "fork.knife", accent: KitchenTablePalette.tomato, rotation: -0.25),
+                CoachPrompt(id: "protein-foods", title: "High-protein foods I can add?", systemImage: "fork.knife", accent: KitchenTablePalette.herb, rotation: 0.25),
+            ]
+        case .maintain:
+            values = [
+                CoachPrompt(id: "weight-hold", title: "Am I holding my weight?", systemImage: "chart.line.uptrend.xyaxis", accent: KitchenTablePalette.tomato, rotation: -0.25),
+                CoachPrompt(id: "average-intake", title: "What's my average intake?", systemImage: "fork.knife", accent: KitchenTablePalette.herb, rotation: 0.25),
+                CoachPrompt(id: "macro-suggestions", title: "Macro suggestions?", systemImage: "fork.knife", accent: KitchenTablePalette.tomato, rotation: -0.25),
+                CoachPrompt(id: "trend", title: "How's my trend?", systemImage: "chart.line.uptrend.xyaxis", accent: KitchenTablePalette.herb, rotation: 0.25),
+            ]
+        }
+        if !strengthWorkoutStore.completedSessions.isEmpty {
+            values.insert(
+                CoachPrompt(
+                    id: "training-four-weeks",
+                    title: "Analyze my last 4 weeks of training",
+                    systemImage: "dumbbell.fill",
+                    accent: KitchenTablePalette.cobalt,
+                    rotation: -0.25
+                ),
+                at: 0
+            )
+        }
+        return values
+    }
 
-        return ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 10) {
-                ForEach(Array(chips.enumerated()), id: \.element) { index, chip in
-                    promptChip(chip, index: index)
+    private var remainingPrompts: [CoachPrompt] {
+        Array(suggestedPrompts.dropFirst(2))
+    }
+
+    private var promptChips: some View {
+        Group {
+            if messages.isEmpty {
+                VStack(spacing: 8) {
+                    ForEach(suggestedPrompts.prefix(2)) { prompt in
+                        promptChip(prompt, fillsWidth: true)
+                    }
+                    morePromptsMenu
+                }
+                .padding(.horizontal, 13)
+                .padding(.vertical, 4)
+            } else {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 10) {
+                        ForEach(suggestedPrompts) { prompt in
+                            promptChip(prompt, fillsWidth: false)
+                        }
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
                 }
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 10)
         }
     }
 
-    private func promptChip(_ chip: String, index: Int) -> some View {
-        Button {
-            draft = chip
-            send()
+    @ViewBuilder
+    private var morePromptsMenu: some View {
+        if !remainingPrompts.isEmpty {
+            Menu {
+                ForEach(remainingPrompts) { prompt in
+                    Button {
+                        sendPrompt(prompt)
+                    } label: {
+                        Label {
+                            Text(prompt.title)
+                        } icon: {
+                            Image(systemName: prompt.systemImage)
+                        }
+                    }
+                }
+            } label: {
+                HStack(spacing: 9) {
+                    Image(systemName: "ellipsis.circle")
+                        .font(.body.weight(.semibold))
+                        .foregroundStyle(KitchenTablePalette.cobaltDeep)
+                        .accessibilityHidden(true)
+                    Text("More prompts")
+                        .font(.system(.footnote, design: .serif, weight: .semibold))
+                    Spacer(minLength: 6)
+                    Text(verbatim: remainingPrompts.count.formatted())
+                        .font(.system(.caption, design: .monospaced, weight: .bold))
+                        .foregroundStyle(KitchenTablePalette.mutedEspresso)
+                    Image(systemName: "chevron.down")
+                        .font(.caption2.weight(.bold))
+                        .foregroundStyle(KitchenTablePalette.mutedEspresso)
+                        .accessibilityHidden(true)
+                }
+                .foregroundStyle(KitchenTablePalette.espresso)
+                .padding(.horizontal, 13)
+                .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+                .background(KitchenTablePalette.paperMuted.opacity(0.68))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 3, style: .continuous)
+                        .stroke(KitchenTablePalette.rule, style: StrokeStyle(lineWidth: 0.8, dash: [3, 2]))
+                }
+            }
+            .disabled(isSending)
+            .accessibilityLabel("More prompts")
+            .accessibilityValue("\(remainingPrompts.count) additional suggestions")
+            .accessibilityHint("Shows every remaining suggested Coach question")
+        }
+    }
+
+    private func promptChip(_ prompt: CoachPrompt, fillsWidth: Bool) -> some View {
+        let button = Button {
+            sendPrompt(prompt)
         } label: {
             HStack(spacing: 10) {
-                Image(systemName: promptIcon(at: index))
+                Image(systemName: prompt.systemImage)
                     .font(.system(size: 16, weight: .semibold))
-                    .foregroundStyle(index.isMultiple(of: 2) ? KitchenTablePalette.tomato : KitchenTablePalette.herb)
+                    .foregroundStyle(prompt.accent)
                     .frame(width: 30, height: 30)
                     .background(KitchenTablePalette.paperMuted.opacity(0.72), in: Circle())
+                    .accessibilityHidden(true)
 
-                Text(chip)
+                Text(prompt.title)
                     .font(.system(.footnote, design: .serif, weight: .semibold))
                     .foregroundStyle(KitchenTablePalette.espresso)
                     .multilineTextAlignment(.leading)
-                    .lineLimit(2)
+                    .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
 
                 Image(systemName: "chevron.right")
                     .font(.system(size: 11, weight: .semibold))
                     .foregroundStyle(KitchenTablePalette.mutedEspresso)
+                    .accessibilityHidden(true)
             }
             .padding(.horizontal, 13)
-            .padding(.vertical, 10)
-            .frame(width: 250, alignment: .leading)
-            .frame(minHeight: 58, alignment: .leading)
+            .padding(.vertical, 8)
+            .frame(minHeight: 52, alignment: .leading)
             .background(KitchenTablePalette.paperRaised)
             .overlay {
                 RoundedRectangle(cornerRadius: 3, style: .continuous)
                     .stroke(KitchenTablePalette.rule, lineWidth: 1)
             }
             .shadow(color: KitchenTablePalette.shadow, radius: 4, x: 0, y: 2)
-            .rotationEffect(.degrees(index.isMultiple(of: 2) ? -0.25 : 0.25))
+            .rotationEffect(.degrees(prompt.rotation))
         }
         .buttonStyle(KitchenTablePressableButtonStyle())
         .disabled(isSending)
+
+        return button
+            .frame(width: fillsWidth ? nil : 250, alignment: .leading)
+            .frame(maxWidth: fillsWidth ? .infinity : nil, alignment: .leading)
     }
 
-    private func promptIcon(at index: Int) -> String {
-        ["fork.knife", "figure.walk", "chart.line.uptrend.xyaxis", "dumbbell.fill"][index % 4]
+    private func sendPrompt(_ prompt: CoachPrompt) {
+        draft = String(localized: prompt.title)
+        send()
     }
 
     private var inputArea: some View {
@@ -474,6 +781,7 @@ struct ChatView: View {
                             .padding(.horizontal, 8)
                             .padding(.vertical, 12)
                             .focused($isInputFocused)
+                            .accessibilityIdentifier("coach.input")
                     }
                 } else {
                     recordingIndicator
@@ -876,6 +1184,56 @@ private struct MarkdownMessageText: View {
     }
 }
 
+private struct CoachMessageAttachmentImage: View {
+    private struct LoadedImage {
+        let requestKey: String
+        let image: UIImage
+    }
+
+    let messageID: UUID
+    let imageData: Data
+
+    @Environment(\.displayScale) private var displayScale
+    @State private var loadedImage: LoadedImage?
+
+    private var maxPixelSize: Int {
+        max(Int((196 * displayScale).rounded(.up)), 1)
+    }
+
+    private var requestKey: String {
+        "\(messageID.uuidString)|\(imageData.count)|\(maxPixelSize)"
+    }
+
+    var body: some View {
+        ZStack {
+            KitchenTablePalette.paperMuted.opacity(0.45)
+
+            if let loadedImage, loadedImage.requestKey == requestKey {
+                Image(uiImage: loadedImage.image)
+                    .resizable()
+                    .scaledToFill()
+            } else {
+                Image(systemName: "photo")
+                    .font(.system(size: 22, weight: .semibold))
+                    .foregroundStyle(KitchenTablePalette.mutedEspresso)
+            }
+        }
+        .task(id: requestKey) {
+            loadedImage = nil
+            let result = await CoachImagePipeline.shared.image(
+                data: imageData,
+                cacheKey: requestKey,
+                maxPixelSize: maxPixelSize
+            )
+            guard !Task.isCancelled, let result else { return }
+            loadedImage = LoadedImage(
+                requestKey: requestKey,
+                image: UIImage(cgImage: result.cgImage)
+            )
+        }
+    }
+}
+
 private struct MessageBubble: View {
     let message: ChatMessage
 
@@ -926,12 +1284,13 @@ private struct MessageBubble: View {
                     .foregroundStyle(KitchenTablePalette.cobaltDeep)
             }
 
-            if let imageData = message.attachmentImageData,
-               let uiImage = UIImage(data: imageData) {
-                Image(uiImage: uiImage)
-                    .resizable()
-                    .scaledToFill()
+            if let imageData = message.attachmentImageData {
+                CoachMessageAttachmentImage(
+                    messageID: message.id,
+                    imageData: imageData
+                )
                     .frame(width: 196, height: 140)
+                    .compositingGroup()
                     .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
                     .overlay(
                         RoundedRectangle(cornerRadius: 14, style: .continuous)

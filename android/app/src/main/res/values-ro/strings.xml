@@ -655,4 +655,83 @@
     <string name="whats_new_v30_adaptive">Obiectivele adaptive și Energia consumată au ieșit din faza experimentală și sunt activate implicit la instalările noi.</string>
     <string name="whats_new_v30_widgets">Widgeturi reproiectate: stilul vitezometru din ecranul principal, desenat la dimensiunea reală a fiecărui widget.</string>
     <string name="whats_new_v30_restore">Ai reinstalat sau ai schimbat telefonul? Jurnalul alimentar, greutatea și grăsimea corporală se restaurează acum automat din Health Connect.</string>
+    <!-- Kitchen Table home, coach, and capture -->
+    <string name="home_add_group_photo_scan">Fotografie și scanare</string>
+    <string name="home_add_group_describe">Descrie masa</string>
+    <string name="home_add_group_reuse">Reutilizează masa</string>
+    <string name="home_add_barcode">Cod de bare</string>
+    <string name="home_calorie_summary_a11y">%1$d din %2$d calorii</string>
+    <string name="coach_summary_headline_format">Astăzi s-au înregistrat %1$s.</string>
+    <string name="coach_summary_with_target_format">%1$s înregistrate · obiectiv %2$s</string>
+    <string name="coach_summary_without_target_format">%1$s înregistrate · obiectiv nesetat</string>
+    <string name="coach_summary_provenance">Pe baza jurnalului de astăzi</string>
+    <string name="coach_more_prompts">Mai multe sugestii</string>
+    <string name="coach_fewer_prompts">Mai puține sugestii</string>
+    <string name="capture_photo_description">Fotografia %1$d</string>
+    <string name="capture_photo_label">Fotografia %1$d</string>
+    <plurals name="capture_photo_count">
+        <item quantity="one">%1$d din %2$d fotografie</item>
+        <item quantity="few">%1$d din %2$d fotografii</item>
+        <item quantity="other">%1$d din %2$d fotografii</item>
+    </plurals>
+    <string name="capture_add_photo">Adaugă fotografie</string>
+    <string name="capture_add_photos">Adaugă fotografii</string>
+    <string name="capture_progressive_ready">Aceeași farfurie · adăugări în ordine</string>
+    <string name="capture_progressive_needs_second">Adaugă fotografia 2 pentru pașii ingredientelor</string>
+
+    <!-- Progress and workout diary -->
+    <string name="show_details">Afișează detaliile</string>
+    <string name="hide_details">Ascunde detaliile</string>
+    <string name="progress_previous_week_a11y">Săptămâna anterioară</string>
+    <string name="progress_next_week_a11y">Săptămâna următoare</string>
+    <plurals name="progress_more_meal_groups">
+        <item quantity="one">Încă %1$d grup de mese</item>
+        <item quantity="few">Încă %1$d grupuri de mese</item>
+        <item quantity="other">Încă %1$d grupuri de mese</item>
+    </plurals>
+    <string name="progress_calorie_summary_a11y">%1$d din %2$d calorii</string>
+    <string name="workout_add_workout">Adaugă antrenament</string>
+    <string name="workout_this_week">Săptămâna aceasta</string>
+    <string name="workout_menu_all_exercises">Toate exercițiile</string>
+    <string name="workout_menu_copy_from_day">Copiază dintr-o zi</string>
+    <string name="workout_menu_saved">Salvat</string>
+    <string name="workout_log_reps_first">Înregistrează mai întâi repetările</string>
+    <string name="workout_calculate_burn">Calculează consumul</string>
+    <string name="workout_metric_sets">Seturi</string>
+    <string name="workout_metric_workouts">Antrenamente</string>
+    <string name="workout_metric_reps">Repetări</string>
+    <string name="workout_metric_burn">Consum</string>
+    <string name="workout_calculating_burn_a11y">Se calculează caloriile consumate</string>
+    <string name="workout_calculate_burn_a11y">Calculează caloriile consumate</string>
+    <string name="workout_calorie_burn_label">Calorii consumate</string>
+    <string name="workout_calculating">Se calculează…</string>
+    <string name="workout_calculate">Calculează</string>
+    <string name="workout_today">Astăzi</string>
+    <string name="workout_tomorrow">Mâine</string>
+    <string name="workout_yesterday">Ieri</string>
+    <plurals name="workout_count">
+        <item quantity="one">%1$d antrenament</item>
+        <item quantity="few">%1$d antrenamente</item>
+        <item quantity="other">%1$d antrenamente</item>
+    </plurals>
+    <string name="workout_empty_title">Niciun antrenament înregistrat</string>
+    <string name="workout_empty_body_format">Folosește + pentru a alege exercițiile %1$s de azi</string>
+    <string name="workout_fallback_label">Antrenament</string>
+    <string name="workout_unspecified">Nespecificat</string>
+    <string name="workout_open_exercise_a11y">Deschide instrucțiunile exercițiului</string>
+    <string name="workout_sets_label">Seturi</string>
+    <string name="workout_remove_set_a11y">Elimină setul</string>
+    <string name="workout_add_set_a11y">Adaugă un set gol</string>
+    <plurals name="workout_set_count">
+        <item quantity="one">%1$d set</item>
+        <item quantity="few">%1$d seturi</item>
+        <item quantity="other">%1$d seturi</item>
+    </plurals>
+    <string name="workout_unsave_exercise_a11y">Elimină exercițiul din cele salvate</string>
+    <string name="workout_save_exercise_a11y">Salvează exercițiul</string>
+    <string name="workout_remove_exercise_a11y">Elimină exercițiul</string>
+    <string name="workout_set_number_format">Setul %1$d</string>
+    <string name="workout_reps_placeholder">Repetări</string>
+    <string name="workout_show_library_a11y">Afișează biblioteca de exerciții</string>
+    <string name="workout_show_log_a11y">Afișează jurnalul de antrenament</string>
 </resources>
