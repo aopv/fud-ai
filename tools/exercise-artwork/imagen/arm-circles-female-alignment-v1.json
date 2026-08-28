@@ -1,0 +1,1830 @@
+{
+  "apply": true,
+  "exerciseID": "Arm_Circles",
+  "frames": [
+    {
+      "alignedSHA256": "bcc28f4e3d167b9f59cd313d1e36a0e591ff04ccd87e29fd17bd4ab36d2320ba",
+      "alignmentAfter": {
+        "method": "mediapipe-pelvis-torso-v1",
+        "pelvisAnchor": [
+          0.502724,
+          0.459302
+        ],
+        "subjectScale": 0.227196,
+        "torsoAnchor": [
+          0.502726,
+          0.345704
+        ]
+      },
+      "alignmentBefore": {
+        "method": "mediapipe-pelvis-torso-v1",
+        "pelvisAnchor": [
+          0.500998,
+          0.466895
+        ],
+        "subjectScale": 0.227193,
+        "torsoAnchor": [
+          0.502445,
+          0.353308
+        ]
+      },
+      "alphaAreaPreserved": true,
+      "alphaAreaRelativeError": 0.00357368,
+      "alphaGeometry": {
+        "alphaBoundingBox": [
+          132,
+          79,
+          892,
+          941
+        ],
+        "margins": [
+          132,
+          79,
+          132,
+          83
+        ],
+        "minimumMargin": 79,
+        "passed": true,
+        "visibleAlphaPixels": 125032
+      },
+      "alphaGeometryBefore": {
+        "alphaBoundingBox": [
+          135,
+          85,
+          888,
+          939
+        ],
+        "margins": [
+          135,
+          85,
+          136,
+          85
+        ],
+        "minimumMargin": 85,
+        "passed": true,
+        "visibleAlphaPixels": 122318
+      },
+      "driftAfter": null,
+      "frameIndex": 0,
+      "inputPath": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Arm_Circles/0.png",
+      "inputSHA256": "9e1a646ba0ac3a3deac207028eb096736de165c2d194987b492436912cda2212",
+      "integrityAfter": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 2.411e-05,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.11924,
+        "passed": true,
+        "sha256": "bcc28f4e3d167b9f59cd313d1e36a0e591ff04ccd87e29fd17bd4ab36d2320ba",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "jobID": "Arm_Circles__f0__female",
+      "poseAfter": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 4.77,
+        "normalizedRMSE": 0.291574,
+        "outputConfidence": 0.988442,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 21.184,
+        "passed": true,
+        "segmentDiagnostics": [
+          {
+            "deltaDegrees": 21.184,
+            "outputAngleDegrees": -178.597,
+            "outputEnd": [
+              -1.326926,
+              -1.01114
+            ],
+            "outputStart": [
+              -0.841966,
+              -0.999264
+            ],
+            "segment": "rightElbow->rightWrist",
+            "sourceAngleDegrees": -157.413,
+            "sourceEnd": [
+              -0.794818,
+              -1.11006
+            ],
+            "sourceStart": [
+              -0.512945,
+              -0.992805
+            ]
+          },
+          {
+            "deltaDegrees": 17.397,
+            "outputAngleDegrees": -4.342,
+            "outputEnd": [
+              1.255229,
+              -0.999311
+            ],
+            "outputStart": [
+              0.818174,
+              -0.966129
+            ],
+            "segment": "leftElbow->leftWrist",
+            "sourceAngleDegrees": -21.739,
+            "sourceEnd": [
+              0.808581,
+              -1.075296
+            ],
+            "sourceStart": [
+              0.525185,
+              -0.962295
+            ]
+          },
+          {
+            "deltaDegrees": 5.281,
+            "outputAngleDegrees": 94.335,
+            "outputEnd": [
+              -0.315312,
+              1.684008
+            ],
+            "outputStart": [
+              -0.249733,
+              0.818927
+            ],
+            "segment": "rightKnee->rightAnkle",
+            "sourceAngleDegrees": 89.054,
+            "sourceEnd": [
+              -0.106981,
+              1.312938
+            ],
+            "sourceStart": [
+              -0.116457,
+              0.738808
+            ]
+          },
+          {
+            "deltaDegrees": 5.125,
+            "outputAngleDegrees": 87.243,
+            "outputEnd": [
+              0.258111,
+              1.671535
+            ],
+            "outputStart": [
+              0.216777,
+              0.813281
+            ],
+            "segment": "leftKnee->leftAnkle",
+            "sourceAngleDegrees": 92.368,
+            "sourceEnd": [
+              0.095894,
+              1.310534
+            ],
+            "sourceStart": [
+              0.120001,
+              0.72749
+            ]
+          },
+          {
+            "deltaDegrees": 4.415,
+            "outputAngleDegrees": 93.695,
+            "outputEnd": [
+              -0.249733,
+              0.818927
+            ],
+            "outputStart": [
+              -0.196734,
+              -0.001789
+            ],
+            "segment": "rightHip->rightKnee",
+            "sourceAngleDegrees": 89.279,
+            "sourceEnd": [
+              -0.116457,
+              0.738808
+            ],
+            "sourceStart": [
+              -0.125808,
+              -0.004566
+            ]
+          },
+          {
+            "deltaDegrees": 3.326,
+            "outputAngleDegrees": 3.354,
+            "outputEnd": [
+              0.818174,
+              -0.966129
+            ],
+            "outputStart": [
+              0.332392,
+              -0.994597
+            ],
+            "segment": "leftShoulder->leftElbow",
+            "sourceAngleDegrees": 6.68,
+            "sourceEnd": [
+              0.525185,
+              -0.962295
+            ],
+            "sourceStart": [
+              0.239098,
+              -0.995801
+            ]
+          },
+          {
+            "deltaDegrees": 1.875,
+            "outputAngleDegrees": 88.585,
+            "outputEnd": [
+              0.216777,
+              0.813281
+            ],
+            "outputStart": [
+              0.196734,
+              0.001789
+            ],
+            "segment": "leftHip->leftKnee",
+            "sourceAngleDegrees": 90.46,
+            "sourceEnd": [
+              0.120001,
+              0.72749
+            ],
+            "sourceStart": [
+              0.125808,
+              0.004566
+            ]
+          },
+          {
+            "deltaDegrees": 1.417,
+            "outputAngleDegrees": 179.31,
+            "outputEnd": [
+              -0.841966,
+              -0.999264
+            ],
+            "outputStart": [
+              -0.33235,
+              -1.005403
+            ],
+            "segment": "rightShoulder->rightElbow",
+            "sourceAngleDegrees": 177.893,
+            "sourceEnd": [
+              -0.512945,
+              -0.992805
+            ],
+            "sourceStart": [
+              -0.209289,
+              -1.003977
+            ]
+          }
+        ],
+        "sourceConfidence": 0.991091,
+        "sourceDetected": true,
+        "swappedRMSE": 1.040829,
+        "torsoAngleDegrees": 0.853
+      },
+      "transform": {
+        "method": "uniform-scale-translate-whole-rgba-v1",
+        "translation": [
+          -0.003362435,
+          -0.006903115
+        ],
+        "uniformScale": 1.009231444
+      }
+    },
+    {
+      "alignedSHA256": "2b28e521dcca057ce08369e5262484569df51c2e776749868b49b9c371275f08",
+      "alignmentAfter": {
+        "method": "mediapipe-pelvis-torso-v1",
+        "pelvisAnchor": [
+          0.501398,
+          0.46095
+        ],
+        "subjectScale": 0.226018,
+        "torsoAnchor": [
+          0.501483,
+          0.34794
+        ]
+      },
+      "alignmentBefore": {
+        "method": "mediapipe-pelvis-torso-v1",
+        "pelvisAnchor": [
+          0.500443,
+          0.466068
+        ],
+        "subjectScale": 0.227301,
+        "torsoAnchor": [
+          0.500126,
+          0.352419
+        ]
+      },
+      "alphaAreaPreserved": true,
+      "alphaAreaRelativeError": 0.0038979,
+      "alphaGeometry": {
+        "alphaBoundingBox": [
+          134,
+          79,
+          894,
+          942
+        ],
+        "margins": [
+          134,
+          79,
+          130,
+          82
+        ],
+        "minimumMargin": 79,
+        "passed": true,
+        "visibleAlphaPixels": 122082
+      },
+      "alphaGeometryBefore": {
+        "alphaBoundingBox": [
+          136,
+          85,
+          888,
+          939
+        ],
+        "margins": [
+          136,
+          85,
+          136,
+          85
+        ],
+        "minimumMargin": 85,
+        "passed": true,
+        "visibleAlphaPixels": 119507
+      },
+      "driftAfter": {
+        "checks": {
+          "pelvisAnchorDrift": true,
+          "subjectScaleRelativeDrift": true,
+          "torsoAnchorDrift": true
+        },
+        "passed": true,
+        "pelvisAnchorDrift": 0.002115,
+        "subjectScaleRelativeDrift": 0.005185,
+        "torsoAnchorDrift": 0.002558
+      },
+      "frameIndex": 1,
+      "inputPath": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Arm_Circles/1.png",
+      "inputSHA256": "ae1f7988ca1e447514da57fd3407d9c78d257012d3f9c1539f1cc0240fe0e79f",
+      "integrityAfter": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.116426,
+        "passed": true,
+        "sha256": "2b28e521dcca057ce08369e5262484569df51c2e776749868b49b9c371275f08",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "jobID": "Arm_Circles__f1__female",
+      "poseAfter": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 5.451,
+        "normalizedRMSE": 0.293873,
+        "outputConfidence": 0.985512,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 21.499,
+        "passed": true,
+        "segmentDiagnostics": [
+          {
+            "deltaDegrees": 21.499,
+            "outputAngleDegrees": -173.694,
+            "outputEnd": [
+              -1.279206,
+              -1.085939
+            ],
+            "outputStart": [
+              -0.816439,
+              -1.034801
+            ],
+            "segment": "rightElbow->rightWrist",
+            "sourceAngleDegrees": -152.195,
+            "sourceEnd": [
+              -0.777259,
+              -1.165802
+            ],
+            "sourceStart": [
+              -0.500492,
+              -1.019851
+            ]
+          },
+          {
+            "deltaDegrees": 19.023,
+            "outputAngleDegrees": -7.7,
+            "outputEnd": [
+              1.285623,
+              -1.098642
+            ],
+            "outputStart": [
+              0.806773,
+              -1.033898
+            ],
+            "segment": "leftElbow->leftWrist",
+            "sourceAngleDegrees": -26.723,
+            "sourceEnd": [
+              0.788961,
+              -1.127419
+            ],
+            "sourceStart": [
+              0.516487,
+              -0.990243
+            ]
+          },
+          {
+            "deltaDegrees": 6.077,
+            "outputAngleDegrees": -4.781,
+            "outputEnd": [
+              0.806773,
+              -1.033898
+            ],
+            "outputStart": [
+              0.329241,
+              -0.993958
+            ],
+            "segment": "leftShoulder->leftElbow",
+            "sourceAngleDegrees": 1.296,
+            "sourceEnd": [
+              0.516487,
+              -0.990243
+            ],
+            "sourceStart": [
+              0.233931,
+              -0.996633
+            ]
+          },
+          {
+            "deltaDegrees": 5.506,
+            "outputAngleDegrees": 94.554,
+            "outputEnd": [
+              -0.315454,
+              1.682907
+            ],
+            "outputStart": [
+              -0.247684,
+              0.83199
+            ],
+            "segment": "rightKnee->rightAnkle",
+            "sourceAngleDegrees": 89.048,
+            "sourceEnd": [
+              -0.108287,
+              1.302215
+            ],
+            "sourceStart": [
+              -0.117795,
+              0.730169
+            ]
+          },
+          {
+            "deltaDegrees": 5.396,
+            "outputAngleDegrees": 86.947,
+            "outputEnd": [
+              0.259035,
+              1.663804
+            ],
+            "outputStart": [
+              0.21416,
+              0.822445
+            ],
+            "segment": "leftKnee->leftAnkle",
+            "sourceAngleDegrees": 92.343,
+            "sourceEnd": [
+              0.093206,
+              1.298197
+            ],
+            "sourceStart": [
+              0.116997,
+              0.716662
+            ]
+          },
+          {
+            "deltaDegrees": 4.28,
+            "outputAngleDegrees": 93.758,
+            "outputEnd": [
+              -0.247684,
+              0.83199
+            ],
+            "outputStart": [
+              -0.192991,
+              -0.000748
+            ],
+            "segment": "rightHip->rightKnee",
+            "sourceAngleDegrees": 89.478,
+            "sourceEnd": [
+              -0.117795,
+              0.730169
+            ],
+            "sourceStart": [
+              -0.124476,
+              -0.003357
+            ]
+          },
+          {
+            "deltaDegrees": 2.076,
+            "outputAngleDegrees": 88.524,
+            "outputEnd": [
+              0.21416,
+              0.822445
+            ],
+            "outputStart": [
+              0.192991,
+              0.000748
+            ],
+            "segment": "leftHip->leftKnee",
+            "sourceAngleDegrees": 90.601,
+            "sourceEnd": [
+              0.116997,
+              0.716662
+            ],
+            "sourceStart": [
+              0.124476,
+              0.003357
+            ]
+          },
+          {
+            "deltaDegrees": 0.105,
+            "outputAngleDegrees": -176.632,
+            "outputEnd": [
+              -0.816439,
+              -1.034801
+            ],
+            "outputStart": [
+              -0.327738,
+              -1.006042
+            ],
+            "segment": "rightShoulder->rightElbow",
+            "sourceAngleDegrees": -176.737,
+            "sourceEnd": [
+              -0.500492,
+              -1.019851
+            ],
+            "sourceStart": [
+              -0.208534,
+              -1.003206
+            ]
+          }
+        ],
+        "sourceConfidence": 0.985897,
+        "sourceDetected": true,
+        "swappedRMSE": 1.025822,
+        "torsoAngleDegrees": 0.685
+      },
+      "transform": {
+        "method": "uniform-scale-translate-whole-rgba-v1",
+        "translation": [
+          -0.002562335,
+          -0.005844988
+        ],
+        "uniformScale": 1.008751916
+      }
+    },
+    {
+      "alignedSHA256": "6a5a3781c903be5775e0a444874a75770dda784a4237aa14762e168421ac86f6",
+      "alignmentAfter": {
+        "method": "mediapipe-pelvis-torso-v1",
+        "pelvisAnchor": [
+          0.502556,
+          0.466188
+        ],
+        "subjectScale": 0.231042,
+        "torsoAnchor": [
+          0.50222,
+          0.350668
+        ]
+      },
+      "alignmentBefore": {
+        "method": "mediapipe-pelvis-torso-v1",
+        "pelvisAnchor": [
+          0.501972,
+          0.462349
+        ],
+        "subjectScale": 0.225021,
+        "torsoAnchor": [
+          0.501707,
+          0.349839
+        ]
+      },
+      "alphaAreaPreserved": true,
+      "alphaAreaRelativeError": 0.00243912,
+      "alphaGeometry": {
+        "alphaBoundingBox": [
+          104,
+          79,
+          919,
+          950
+        ],
+        "margins": [
+          104,
+          79,
+          105,
+          74
+        ],
+        "minimumMargin": 74,
+        "passed": true,
+        "visibleAlphaPixels": 125573
+      },
+      "alphaGeometryBefore": {
+        "alphaBoundingBox": [
+          112,
+          85,
+          911,
+          939
+        ],
+        "margins": [
+          112,
+          85,
+          113,
+          85
+        ],
+        "minimumMargin": 85,
+        "passed": true,
+        "visibleAlphaPixels": 120646
+      },
+      "driftAfter": {
+        "checks": {
+          "pelvisAnchorDrift": true,
+          "subjectScaleRelativeDrift": true,
+          "torsoAnchorDrift": true
+        },
+        "passed": true,
+        "pelvisAnchorDrift": 0.005364,
+        "subjectScaleRelativeDrift": 0.022228,
+        "torsoAnchorDrift": 0.002826
+      },
+      "frameIndex": 2,
+      "inputPath": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Arm_Circles/2.png",
+      "inputSHA256": "4c0599c42a9144e13319e059879037093250f389776ab4e979c216f3a1f5b3b6",
+      "integrityAfter": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.119756,
+        "passed": true,
+        "sha256": "6a5a3781c903be5775e0a444874a75770dda784a4237aa14762e168421ac86f6",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "jobID": "Arm_Circles__f2__female",
+      "poseAfter": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 4.574,
+        "normalizedRMSE": 0.342723,
+        "outputConfidence": 0.994071,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 22.808,
+        "passed": true,
+        "segmentDiagnostics": [
+          {
+            "deltaDegrees": 22.808,
+            "outputAngleDegrees": -170.072,
+            "outputEnd": [
+              -1.419454,
+              -1.198059
+            ],
+            "outputStart": [
+              -0.904236,
+              -1.107876
+            ],
+            "segment": "rightElbow->rightWrist",
+            "sourceAngleDegrees": -147.263,
+            "sourceEnd": [
+              -0.759696,
+              -1.221539
+            ],
+            "sourceStart": [
+              -0.488037,
+              -1.046892
+            ]
+          },
+          {
+            "deltaDegrees": 16.85,
+            "outputAngleDegrees": -14.82,
+            "outputEnd": [
+              1.353411,
+              -1.202773
+            ],
+            "outputStart": [
+              0.86302,
+              -1.07302
+            ],
+            "segment": "leftElbow->leftWrist",
+            "sourceAngleDegrees": -31.671,
+            "sourceEnd": [
+              0.769337,
+              -1.179537
+            ],
+            "sourceStart": [
+              0.507787,
+              -1.018185
+            ]
+          },
+          {
+            "deltaDegrees": 5.247,
+            "outputAngleDegrees": 87.07,
+            "outputEnd": [
+              0.261207,
+              1.662082
+            ],
+            "outputStart": [
+              0.218513,
+              0.827784
+            ],
+            "segment": "leftKnee->leftAnkle",
+            "sourceAngleDegrees": 92.318,
+            "sourceEnd": [
+              0.090517,
+              1.285853
+            ],
+            "sourceStart": [
+              0.113992,
+              0.70583
+            ]
+          },
+          {
+            "deltaDegrees": 4.971,
+            "outputAngleDegrees": 94.654,
+            "outputEnd": [
+              -0.260911,
+              0.817192
+            ],
+            "outputStart": [
+              -0.193919,
+              -0.005808
+            ],
+            "segment": "rightHip->rightKnee",
+            "sourceAngleDegrees": 89.682,
+            "sourceEnd": [
+              -0.119133,
+              0.721526
+            ],
+            "sourceStart": [
+              -0.123145,
+              -0.002148
+            ]
+          },
+          {
+            "deltaDegrees": 4.176,
+            "outputAngleDegrees": 93.217,
+            "outputEnd": [
+              -0.3084,
+              1.662158
+            ],
+            "outputStart": [
+              -0.260911,
+              0.817192
+            ],
+            "segment": "rightKnee->rightAnkle",
+            "sourceAngleDegrees": 89.041,
+            "sourceEnd": [
+              -0.109592,
+              1.291485
+            ],
+            "sourceStart": [
+              -0.119133,
+              0.721526
+            ]
+          },
+          {
+            "deltaDegrees": 4.042,
+            "outputAngleDegrees": -8.29,
+            "outputEnd": [
+              0.86302,
+              -1.07302
+            ],
+            "outputStart": [
+              0.334143,
+              -0.995962
+            ],
+            "segment": "leftShoulder->leftElbow",
+            "sourceAngleDegrees": -4.248,
+            "sourceEnd": [
+              0.507787,
+              -1.018185
+            ],
+            "sourceStart": [
+              0.228763,
+              -0.99746
+            ]
+          },
+          {
+            "deltaDegrees": 2.459,
+            "outputAngleDegrees": 88.286,
+            "outputEnd": [
+              0.218513,
+              0.827784
+            ],
+            "outputStart": [
+              0.193919,
+              0.005808
+            ],
+            "segment": "leftHip->leftKnee",
+            "sourceAngleDegrees": 90.745,
+            "sourceEnd": [
+              0.113992,
+              0.70583
+            ],
+            "sourceStart": [
+              0.123145,
+              0.002148
+            ]
+          },
+          {
+            "deltaDegrees": 1.413,
+            "outputAngleDegrees": -169.572,
+            "outputEnd": [
+              -0.904236,
+              -1.107876
+            ],
+            "outputStart": [
+              -0.339963,
+              -1.004029
+            ],
+            "segment": "rightShoulder->rightElbow",
+            "sourceAngleDegrees": -170.985,
+            "sourceEnd": [
+              -0.488037,
+              -1.046892
+            ],
+            "sourceStart": [
+              -0.207778,
+              -1.002429
+            ]
+          }
+        ],
+        "sourceConfidence": 0.985897,
+        "sourceDetected": true,
+        "swappedRMSE": 1.065503,
+        "torsoAngleDegrees": 0.768
+      },
+      "transform": {
+        "method": "uniform-scale-translate-whole-rgba-v1",
+        "translation": [
+          -0.009235406,
+          -0.006819139
+        ],
+        "uniformScale": 1.018972982
+      }
+    },
+    {
+      "alignedSHA256": "6af35dfa53717b60fafbbf76e5e25b209475b3d04d230eae3c6099713fdd9e18",
+      "alignmentAfter": {
+        "method": "mediapipe-pelvis-torso-v1",
+        "pelvisAnchor": [
+          0.501873,
+          0.465783
+        ],
+        "subjectScale": 0.229262,
+        "torsoAnchor": [
+          0.502126,
+          0.351152
+        ]
+      },
+      "alignmentBefore": {
+        "method": "mediapipe-pelvis-torso-v1",
+        "pelvisAnchor": [
+          0.500852,
+          0.457881
+        ],
+        "subjectScale": 0.223308,
+        "torsoAnchor": [
+          0.501087,
+          0.346227
+        ]
+      },
+      "alphaAreaPreserved": true,
+      "alphaAreaRelativeError": 0.00482845,
+      "alphaGeometry": {
+        "alphaBoundingBox": [
+          186,
+          82,
+          840,
+          958
+        ],
+        "margins": [
+          186,
+          82,
+          184,
+          66
+        ],
+        "minimumMargin": 66,
+        "passed": true,
+        "visibleAlphaPixels": 123229
+      },
+      "alphaGeometryBefore": {
+        "alphaBoundingBox": [
+          194,
+          85,
+          830,
+          939
+        ],
+        "margins": [
+          194,
+          85,
+          194,
+          85
+        ],
+        "minimumMargin": 85,
+        "passed": true,
+        "visibleAlphaPixels": 116321
+      },
+      "driftAfter": {
+        "checks": {
+          "pelvisAnchorDrift": true,
+          "subjectScaleRelativeDrift": true,
+          "torsoAnchorDrift": true
+        },
+        "passed": true,
+        "pelvisAnchorDrift": 0.000794,
+        "subjectScaleRelativeDrift": 0.007704,
+        "torsoAnchorDrift": 0.000493
+      },
+      "frameIndex": 3,
+      "inputPath": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Arm_Circles/3.png",
+      "inputSHA256": "b4f1b40573718c876d215e1027f5ff079b6ff9a11b52baab92841cf1f982f87a",
+      "integrityAfter": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.11752,
+        "passed": true,
+        "sha256": "6af35dfa53717b60fafbbf76e5e25b209475b3d04d230eae3c6099713fdd9e18",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "jobID": "Arm_Circles__f3__female",
+      "poseAfter": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 2.88,
+        "normalizedRMSE": 0.293498,
+        "outputConfidence": 0.989726,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 6.356,
+        "passed": true,
+        "segmentDiagnostics": [
+          {
+            "deltaDegrees": 6.356,
+            "outputAngleDegrees": -16.207,
+            "outputEnd": [
+              0.798082,
+              -1.148551
+            ],
+            "outputStart": [
+              0.321509,
+              -1.010027
+            ],
+            "segment": "leftShoulder->leftElbow",
+            "sourceAngleDegrees": -9.851,
+            "sourceEnd": [
+              0.499084,
+              -1.046123
+            ],
+            "sourceStart": [
+              0.223594,
+              -0.998283
+            ]
+          },
+          {
+            "deltaDegrees": 6.33,
+            "outputAngleDegrees": 85.962,
+            "outputEnd": [
+              0.266943,
+              1.707119
+            ],
+            "outputStart": [
+              0.207116,
+              0.859538
+            ],
+            "segment": "leftKnee->leftAnkle",
+            "sourceAngleDegrees": 92.292,
+            "sourceEnd": [
+              0.087828,
+              1.273503
+            ],
+            "sourceStart": [
+              0.110986,
+              0.694995
+            ]
+          },
+          {
+            "deltaDegrees": 5.181,
+            "outputAngleDegrees": 94.215,
+            "outputEnd": [
+              -0.318851,
+              1.705158
+            ],
+            "outputStart": [
+              -0.254716,
+              0.83495
+            ],
+            "segment": "rightKnee->rightAnkle",
+            "sourceAngleDegrees": 89.034,
+            "sourceEnd": [
+              -0.110897,
+              1.280749
+            ],
+            "sourceStart": [
+              -0.12047,
+              0.71288
+            ]
+          },
+          {
+            "deltaDegrees": 4.082,
+            "outputAngleDegrees": 93.974,
+            "outputEnd": [
+              -0.254716,
+              0.83495
+            ],
+            "outputStart": [
+              -0.196268,
+              -0.006312
+            ],
+            "segment": "rightHip->rightKnee",
+            "sourceAngleDegrees": 89.892,
+            "sourceEnd": [
+              -0.12047,
+              0.71288
+            ],
+            "sourceStart": [
+              -0.121812,
+              -0.000939
+            ]
+          },
+          {
+            "deltaDegrees": 1.678,
+            "outputAngleDegrees": -163.258,
+            "outputEnd": [
+              -0.774582,
+              -1.127586
+            ],
+            "outputStart": [
+              -0.317089,
+              -0.989968
+            ],
+            "segment": "rightShoulder->rightElbow",
+            "sourceAngleDegrees": -164.936,
+            "sourceEnd": [
+              -0.475579,
+              -1.073928
+            ],
+            "sourceStart": [
+              -0.207021,
+              -1.001648
+            ]
+          },
+          {
+            "deltaDegrees": 1.622,
+            "outputAngleDegrees": 89.272,
+            "outputEnd": [
+              0.207116,
+              0.859538
+            ],
+            "outputStart": [
+              0.196268,
+              0.006312
+            ],
+            "segment": "leftHip->leftKnee",
+            "sourceAngleDegrees": 90.894,
+            "sourceEnd": [
+              0.110986,
+              0.694995
+            ],
+            "sourceStart": [
+              0.121812,
+              0.000939
+            ]
+          },
+          {
+            "deltaDegrees": 1.126,
+            "outputAngleDegrees": -143.787,
+            "outputEnd": [
+              -1.148833,
+              -1.40163
+            ],
+            "outputStart": [
+              -0.774582,
+              -1.127586
+            ],
+            "segment": "rightElbow->rightWrist",
+            "sourceAngleDegrees": -142.661,
+            "sourceEnd": [
+              -0.74213,
+              -1.277271
+            ],
+            "sourceStart": [
+              -0.475579,
+              -1.073928
+            ]
+          },
+          {
+            "deltaDegrees": 0.729,
+            "outputAngleDegrees": -35.782,
+            "outputEnd": [
+              1.159079,
+              -1.40874
+            ],
+            "outputStart": [
+              0.798082,
+              -1.148551
+            ],
+            "segment": "leftElbow->leftWrist",
+            "sourceAngleDegrees": -36.511,
+            "sourceEnd": [
+              0.74971,
+              -1.23165
+            ],
+            "sourceStart": [
+              0.499084,
+              -1.046123
+            ]
+          }
+        ],
+        "sourceConfidence": 0.985897,
+        "sourceDetected": true,
+        "swappedRMSE": 0.970986,
+        "torsoAngleDegrees": 0.348
+      },
+      "transform": {
+        "method": "uniform-scale-translate-whole-rgba-v1",
+        "translation": [
+          -0.012009096,
+          -0.005845423
+        ],
+        "uniformScale": 1.026789543
+      }
+    },
+    {
+      "alignedSHA256": "3b52ba61f459402b90cdd74d9764834d9f3ea4d7176d06275dca0591ea14e5a8",
+      "alignmentAfter": {
+        "method": "mediapipe-pelvis-torso-v1",
+        "pelvisAnchor": [
+          0.502957,
+          0.46518
+        ],
+        "subjectScale": 0.230608,
+        "torsoAnchor": [
+          0.501625,
+          0.349883
+        ]
+      },
+      "alignmentBefore": {
+        "method": "mediapipe-pelvis-torso-v1",
+        "pelvisAnchor": [
+          0.501922,
+          0.461306
+        ],
+        "subjectScale": 0.223395,
+        "torsoAnchor": [
+          0.501259,
+          0.349611
+        ]
+      },
+      "alphaAreaPreserved": true,
+      "alphaAreaRelativeError": 0.00376599,
+      "alphaGeometry": {
+        "alphaBoundingBox": [
+          91,
+          77,
+          934,
+          955
+        ],
+        "margins": [
+          91,
+          77,
+          90,
+          69
+        ],
+        "minimumMargin": 69,
+        "passed": true,
+        "visibleAlphaPixels": 131308
+      },
+      "alphaGeometryBefore": {
+        "alphaBoundingBox": [
+          101,
+          85,
+          923,
+          939
+        ],
+        "margins": [
+          101,
+          85,
+          101,
+          85
+        ],
+        "minimumMargin": 85,
+        "passed": true,
+        "visibleAlphaPixels": 124175
+      },
+      "driftAfter": {
+        "checks": {
+          "pelvisAnchorDrift": true,
+          "subjectScaleRelativeDrift": true,
+          "torsoAnchorDrift": true
+        },
+        "passed": true,
+        "pelvisAnchorDrift": 0.00124,
+        "subjectScaleRelativeDrift": 0.005871,
+        "torsoAnchorDrift": 0.001364
+      },
+      "frameIndex": 4,
+      "inputPath": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Arm_Circles/4.png",
+      "inputSHA256": "fc83c49381391f20891eb383b1e331531dfe1babfdda4e59b555a12b85d2d71e",
+      "integrityAfter": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 7.65e-06,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.125225,
+        "passed": true,
+        "sha256": "3b52ba61f459402b90cdd74d9764834d9f3ea4d7176d06275dca0591ea14e5a8",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "jobID": "Arm_Circles__f4__female",
+      "poseAfter": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 4.544,
+        "normalizedRMSE": 0.368536,
+        "outputConfidence": 0.993601,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 16.299,
+        "passed": true,
+        "segmentDiagnostics": [
+          {
+            "deltaDegrees": 16.299,
+            "outputAngleDegrees": -24.881,
+            "outputEnd": [
+              1.400105,
+              -1.436585
+            ],
+            "outputStart": [
+              0.853181,
+              -1.182928
+            ],
+            "segment": "leftElbow->leftWrist",
+            "sourceAngleDegrees": -41.181,
+            "sourceEnd": [
+              0.730078,
+              -1.283756
+            ],
+            "sourceStart": [
+              0.490378,
+              -1.074056
+            ]
+          },
+          {
+            "deltaDegrees": 16.181,
+            "outputAngleDegrees": -154.591,
+            "outputEnd": [
+              -1.401406,
+              -1.44647
+            ],
+            "outputStart": [
+              -0.882939,
+              -1.200181
+            ],
+            "segment": "rightElbow->rightWrist",
+            "sourceAngleDegrees": -138.41,
+            "sourceEnd": [
+              -0.724559,
+              -1.332996
+            ],
+            "sourceStart": [
+              -0.463119,
+              -1.100959
+            ]
+          },
+          {
+            "deltaDegrees": 6.282,
+            "outputAngleDegrees": 85.985,
+            "outputEnd": [
+              0.271565,
+              1.653297
+            ],
+            "outputStart": [
+              0.212961,
+              0.818367
+            ],
+            "segment": "leftKnee->leftAnkle",
+            "sourceAngleDegrees": 92.267,
+            "sourceEnd": [
+              0.085138,
+              1.261146
+            ],
+            "sourceStart": [
+              0.10798,
+              0.684157
+            ]
+          },
+          {
+            "deltaDegrees": 5.061,
+            "outputAngleDegrees": 94.089,
+            "outputEnd": [
+              -0.316394,
+              1.665746
+            ],
+            "outputStart": [
+              -0.255728,
+              0.817077
+            ],
+            "segment": "rightKnee->rightAnkle",
+            "sourceAngleDegrees": 89.027,
+            "sourceEnd": [
+              -0.112202,
+              1.270006
+            ],
+            "sourceStart": [
+              -0.121806,
+              0.70423
+            ]
+          },
+          {
+            "deltaDegrees": 4.027,
+            "outputAngleDegrees": 94.135,
+            "outputEnd": [
+              -0.255728,
+              0.817077
+            ],
+            "outputStart": [
+              -0.196345,
+              -0.004385
+            ],
+            "segment": "rightHip->rightKnee",
+            "sourceAngleDegrees": 90.108,
+            "sourceEnd": [
+              -0.121806,
+              0.70423
+            ],
+            "sourceStart": [
+              -0.12048,
+              0.00027
+            ]
+          },
+          {
+            "deltaDegrees": 3.116,
+            "outputAngleDegrees": -18.525,
+            "outputEnd": [
+              0.853181,
+              -1.182928
+            ],
+            "outputStart": [
+              0.325877,
+              -1.006234
+            ],
+            "segment": "leftShoulder->leftElbow",
+            "sourceAngleDegrees": -15.409,
+            "sourceEnd": [
+              0.490378,
+              -1.074056
+            ],
+            "sourceStart": [
+              0.218423,
+              -0.999101
+            ]
+          },
+          {
+            "deltaDegrees": 2.216,
+            "outputAngleDegrees": 88.831,
+            "outputEnd": [
+              0.212961,
+              0.818367
+            ],
+            "outputStart": [
+              0.196345,
+              0.004385
+            ],
+            "segment": "leftHip->leftKnee",
+            "sourceAngleDegrees": 91.046,
+            "sourceEnd": [
+              0.10798,
+              0.684157
+            ],
+            "sourceStart": [
+              0.12048,
+              -0.00027
+            ]
+          },
+          {
+            "deltaDegrees": 0.143,
+            "outputAngleDegrees": -158.853,
+            "outputEnd": [
+              -0.882939,
+              -1.200181
+            ],
+            "outputStart": [
+              -0.34897,
+              -0.993632
+            ],
+            "segment": "rightShoulder->rightElbow",
+            "sourceAngleDegrees": -158.709,
+            "sourceEnd": [
+              -0.463119,
+              -1.100959
+            ],
+            "sourceStart": [
+              -0.206263,
+              -1.000862
+            ]
+          }
+        ],
+        "sourceConfidence": 0.985897,
+        "sourceDetected": true,
+        "swappedRMSE": 1.053883,
+        "torsoAngleDegrees": 1.01
+      },
+      "transform": {
+        "method": "uniform-scale-translate-whole-rgba-v1",
+        "translation": [
+          -0.012907054,
+          -0.009177711
+        ],
+        "uniformScale": 1.026389666
+      }
+    },
+    {
+      "alignedSHA256": "01366148ecb09b4c76198f517380add1fc54d2cd9a51b7abd4a01edbe58894c6",
+      "alignmentAfter": {
+        "method": "mediapipe-pelvis-torso-v1",
+        "pelvisAnchor": [
+          0.50175,
+          0.46394
+        ],
+        "subjectScale": 0.229052,
+        "torsoAnchor": [
+          0.500751,
+          0.349418
+        ]
+      },
+      "alignmentBefore": {
+        "method": "mediapipe-pelvis-torso-v1",
+        "pelvisAnchor": [
+          0.503523,
+          0.461709
+        ],
+        "subjectScale": 0.231407,
+        "torsoAnchor": [
+          0.502543,
+          0.346009
+        ]
+      },
+      "alphaAreaPreserved": true,
+      "alphaAreaRelativeError": 0.00343117,
+      "alphaGeometry": {
+        "alphaBoundingBox": [
+          157,
+          91,
+          865,
+          938
+        ],
+        "margins": [
+          157,
+          91,
+          159,
+          86
+        ],
+        "minimumMargin": 86,
+        "passed": true,
+        "visibleAlphaPixels": 120476
+      },
+      "alphaGeometryBefore": {
+        "alphaBoundingBox": [
+          155,
+          85,
+          869,
+          939
+        ],
+        "margins": [
+          155,
+          85,
+          155,
+          85
+        ],
+        "minimumMargin": 85,
+        "passed": true,
+        "visibleAlphaPixels": 122291
+      },
+      "driftAfter": {
+        "checks": {
+          "pelvisAnchorDrift": true,
+          "subjectScaleRelativeDrift": true,
+          "torsoAnchorDrift": true
+        },
+        "passed": true,
+        "pelvisAnchorDrift": 0.00173,
+        "subjectScaleRelativeDrift": 0.006747,
+        "torsoAnchorDrift": 0.00099
+      },
+      "frameIndex": 5,
+      "inputPath": "/Users/apoorvdarshan/fud-ai/shared/exercise-artwork/fud-flat-raster-v1/frames/female/Arm_Circles/5.png",
+      "inputSHA256": "36e78ac1dffe41da50422b3bd5e1bbc07fc79a51ccf3db58af20469a213129b4",
+      "integrityAfter": {
+        "checks": {
+          "chromaFringe": true,
+          "dimensions": true,
+          "edgeClearance": true,
+          "hasTransparency": true,
+          "occupancy": true,
+          "png": true
+        },
+        "chromaFringeFraction": 0.0,
+        "edgeAlphaFraction": 0.0,
+        "foregroundOccupancy": 0.114895,
+        "passed": true,
+        "sha256": "01366148ecb09b4c76198f517380add1fc54d2cd9a51b7abd4a01edbe58894c6",
+        "size": [
+          1024,
+          1024
+        ]
+      },
+      "jobID": "Arm_Circles__f5__female",
+      "poseAfter": {
+        "checks": {
+          "leftRight": true,
+          "medianLimbAngle": true,
+          "normalizedRMSE": true,
+          "outputConfidence": true,
+          "p90LimbAngle": true,
+          "torsoAngle": true
+        },
+        "medianLimbAngleDegrees": 4.39,
+        "normalizedRMSE": 0.294828,
+        "outputConfidence": 0.996835,
+        "outputDetected": true,
+        "p90LimbAngleDegrees": 18.298,
+        "passed": true,
+        "segmentDiagnostics": [
+          {
+            "deltaDegrees": 18.298,
+            "outputAngleDegrees": -27.334,
+            "outputEnd": [
+              1.172205,
+              -1.380506
+            ],
+            "outputStart": [
+              0.771706,
+              -1.173493
+            ],
+            "segment": "leftElbow->leftWrist",
+            "sourceAngleDegrees": -45.631,
+            "sourceEnd": [
+              0.710444,
+              -1.335855
+            ],
+            "sourceStart": [
+              0.481671,
+              -1.101983
+            ]
+          },
+          {
+            "deltaDegrees": 17.441,
+            "outputAngleDegrees": -151.953,
+            "outputEnd": [
+              -1.198265,
+              -1.408387
+            ],
+            "outputStart": [
+              -0.789768,
+              -1.190758
+            ],
+            "segment": "rightElbow->rightWrist",
+            "sourceAngleDegrees": -134.512,
+            "sourceEnd": [
+              -0.706986,
+              -1.388714
+            ],
+            "sourceStart": [
+              -0.450657,
+              -1.127984
+            ]
+          },
+          {
+            "deltaDegrees": 6.996,
+            "outputAngleDegrees": 85.246,
+            "outputEnd": [
+              0.281812,
+              1.629566
+            ],
+            "outputStart": [
+              0.212501,
+              0.796154
+            ],
+            "segment": "leftKnee->leftAnkle",
+            "sourceAngleDegrees": 92.242,
+            "sourceEnd": [
+              0.082448,
+              1.248784
+            ],
+            "sourceStart": [
+              0.104974,
+              0.673315
+            ]
+          },
+          {
+            "deltaDegrees": 4.699,
+            "outputAngleDegrees": 93.719,
+            "outputEnd": [
+              -0.306322,
+              1.643626
+            ],
+            "outputStart": [
+              -0.252395,
+              0.814081
+            ],
+            "segment": "rightKnee->rightAnkle",
+            "sourceAngleDegrees": 89.021,
+            "sourceEnd": [
+              -0.113506,
+              1.259258
+            ],
+            "sourceStart": [
+              -0.123142,
+              0.695577
+            ]
+          },
+          {
+            "deltaDegrees": 4.082,
+            "outputAngleDegrees": 94.412,
+            "outputEnd": [
+              -0.252395,
+              0.814081
+            ],
+            "outputStart": [
+              -0.189303,
+              -0.003573
+            ],
+            "segment": "rightHip->rightKnee",
+            "sourceAngleDegrees": 90.33,
+            "sourceEnd": [
+              -0.123142,
+              0.695577
+            ],
+            "sourceStart": [
+              -0.119146,
+              0.001479
+            ]
+          },
+          {
+            "deltaDegrees": 3.992,
+            "outputAngleDegrees": -156.438,
+            "outputEnd": [
+              -0.789768,
+              -1.190758
+            ],
+            "outputStart": [
+              -0.335211,
+              -0.992524
+            ],
+            "segment": "rightShoulder->rightElbow",
+            "sourceAngleDegrees": -152.446,
+            "sourceEnd": [
+              -0.450657,
+              -1.127984
+            ],
+            "sourceStart": [
+              -0.205504,
+              -1.000071
+            ]
+          },
+          {
+            "deltaDegrees": 2.88,
+            "outputAngleDegrees": 88.324,
+            "outputEnd": [
+              0.212501,
+              0.796154
+            ],
+            "outputStart": [
+              0.189303,
+              0.003573
+            ],
+            "segment": "leftHip->leftKnee",
+            "sourceAngleDegrees": 91.203,
+            "sourceEnd": [
+              0.104974,
+              0.673315
+            ],
+            "sourceStart": [
+              0.119146,
+              -0.001479
+            ]
+          },
+          {
+            "deltaDegrees": 0.723,
+            "outputAngleDegrees": -20.097,
+            "outputEnd": [
+              0.771706,
+              -1.173493
+            ],
+            "outputStart": [
+              0.317759,
+              -1.0074
+            ],
+            "segment": "leftShoulder->leftElbow",
+            "sourceAngleDegrees": -20.82,
+            "sourceEnd": [
+              0.481671,
+              -1.101983
+            ],
+            "sourceStart": [
+              0.213252,
+              -0.999914
+            ]
+          }
+        ],
+        "sourceConfidence": 0.985897,
+        "sourceDetected": true,
+        "swappedRMSE": 0.958218,
+        "torsoAngleDegrees": 0.722
+      },
+      "transform": {
+        "method": "uniform-scale-translate-whole-rgba-v1",
+        "translation": [
+          0.003343227,
+          0.006816254
+        ],
+        "uniformScale": 0.990852996
+      }
+    }
+  ],
+  "gender": "female",
+  "minimumAlphaMargin": 8,
+  "ordinaryPoseIntegrityDriftPassed": true,
+  "schemaVersion": 1,
+  "target": {
+    "derivation": "endpoint-pelvis-mean-geometric-torso-scale-v1",
+    "pelvisAnchor": [
+      0.5022605,
+      0.464302
+    ],
+    "subjectScale": 0.2292903193573597,
+    "torsoAnchor": [
+      0.502494,
+      0.3496585
+    ]
+  }
+}

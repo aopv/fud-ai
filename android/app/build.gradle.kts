@@ -17,6 +17,19 @@ val keystoreProps = Properties().apply {
     if (keystorePropsFile.exists()) load(keystorePropsFile.inputStream())
 }
 
+// Windows installs expose the interpreter as `python` — a `python3` on PATH
+// there is usually just the Microsoft Store alias stub, which exits with 9009
+// and fails the build. Unix convention stays `python3`.
+val pythonCommand = if (System.getProperty("os.name").startsWith("Windows")) "python" else "python3"
+
+val verifyExerciseArtwork by tasks.registering(Exec::class) {
+    workingDir(rootProject.projectDir.parentFile)
+    commandLine(
+        pythonCommand,
+        "tools/exercise-artwork/imagen/VerifyPackagedExerciseArtwork.py"
+    )
+}
+
 android {
     namespace = "com.apoorvdarshan.calorietracker"
     compileSdk {
@@ -95,18 +108,22 @@ android {
 
     // Workouts (exercise library ported from Delts): mirror the iOS app's exercise
     // dataset + images without duplicating ~98MB in git — pull them straight from
-    // the iOS resources at build time. The JSON (exercises.json) and the 1,746
+    // the iOS resources at build time. The JSON (exercises.json) and the 1,750
     // JPGs land flat at the assets root.
     sourceSets {
         getByName("main") {
             assets.srcDirs(
                 "src/main/assets",
                 "../../ios/calorietracker/Resources/FreeExerciseDB/dist",
-                "../../ios/calorietracker/Resources/FreeExerciseDB/images"
+                "../../ios/calorietracker/Resources/FreeExerciseDB/images",
+                "../../shared/exercise-artwork/fud-flat-raster-v1/packaged-768"
             )
         }
     }
 }
+
+tasks.matching { it.name in setOf("mergeDebugAssets", "mergeDebug2Assets", "mergeReleaseAssets") }
+    .configureEach { dependsOn(verifyExerciseArtwork) }
 
 kotlin {
     jvmToolchain(17)

@@ -56,12 +56,18 @@ import androidx.compose.ui.unit.sp
 import com.apoorvdarshan.calorietracker.R
 import com.apoorvdarshan.calorietracker.ui.navigation.BottomNavScrollPadding
 import com.apoorvdarshan.calorietracker.data.ExerciseItem
+import com.apoorvdarshan.calorietracker.models.Gender
 import com.apoorvdarshan.calorietracker.ui.workouts.AnimatedExerciseImage
 
 private val HERO_HEIGHT = 294.dp
 
 @Composable
-fun ExerciseDetailScreen(item: ExerciseItem, onBack: () -> Unit, modifier: Modifier = Modifier) {
+fun ExerciseDetailScreen(
+    item: ExerciseItem,
+    gender: Gender = Gender.MALE,
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     val colors = workoutsColors()
     var showMetrics by remember { mutableStateOf(false) }
 
@@ -101,13 +107,13 @@ fun ExerciseDetailScreen(item: ExerciseItem, onBack: () -> Unit, modifier: Modif
                 item(key = "pad") { Spacer(Modifier.size(40.dp)) }
             }
 
-            Hero(item = item, showMetrics = showMetrics, onToggle = { showMetrics = !showMetrics })
+            Hero(item = item, gender = gender, showMetrics = showMetrics, onToggle = { showMetrics = !showMetrics })
         }
     }
 }
 
 @Composable
-private fun Hero(item: ExerciseItem, showMetrics: Boolean, onToggle: () -> Unit) {
+private fun Hero(item: ExerciseItem, gender: Gender, showMetrics: Boolean, onToggle: () -> Unit) {
     val colors = workoutsColors()
     Box(
         Modifier
@@ -117,7 +123,13 @@ private fun Hero(item: ExerciseItem, showMetrics: Boolean, onToggle: () -> Unit)
             .background(colors.panel.copy(alpha = 0.32f))
             .border(0.5.dp, colors.hairline.copy(alpha = 0.35f), RoundedCornerShape(20.dp))
     ) {
-        AnimatedExerciseImage(item.imagePaths, Modifier.fillMaxSize(), fallbackLabel = item.name)
+        AnimatedExerciseImage(
+            exerciseId = item.id,
+            imagePaths = item.imagePaths,
+            gender = gender,
+            modifier = Modifier.fillMaxSize(),
+            fallbackLabel = item.name
+        )
 
         AnimatedVisibility(
             visible = showMetrics,

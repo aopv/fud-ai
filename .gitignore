@@ -24,3 +24,11 @@ ios/build-sim/
 
 # Xcode per-user state (scheme order, workspace UI) — meaningless off this machine
 ios/**/xcuserdata/
+
+# Exercise artwork generation workspace (canonical accepted masters live in frames/)
+shared/exercise-artwork/fud-flat-raster-v1/raw/
+tools/exercise-artwork/imagen/raw/
+shared/exercise-artwork/fud-flat-raster-v1/frames/**/*.pilot.png
+shared/exercise-artwork/fud-flat-raster-v1/frames/**/*.generated.png
+shared/exercise-artwork/fud-flat-raster-v1/frames/**/*.partial
+shared/exercise-artwork/fud-flat-raster-v1/frames/**/*.tmp
