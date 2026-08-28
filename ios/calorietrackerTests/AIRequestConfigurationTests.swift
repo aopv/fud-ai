@@ -132,6 +132,68 @@ struct AIRequestConfigurationTests {
         #expect(!SpeechProvider.remoteProviders.contains(.nativeIOS))
     }
 
+    @Test func primaryAIProvidersMapOnlyToTheirFirstPartySpeechProvider() {
+        #expect(SpeechProvider.matchingPrimaryAIProvider(.gemini) == .gemini)
+        #expect(SpeechProvider.matchingPrimaryAIProvider(.openai) == .openai)
+        #expect(SpeechProvider.matchingPrimaryAIProvider(.groq) == .groq)
+        #expect(SpeechProvider.matchingPrimaryAIProvider(.mistral) == .mistral)
+        #expect(SpeechProvider.matchingPrimaryAIProvider(.anthropic) == nil)
+        #expect(SpeechProvider.matchingPrimaryAIProvider(.appleIntelligence) == nil)
+    }
+
+    @Test func existingNativeSpeechMigratesOnceAndAvoidsFallbackCollision() throws {
+        let suiteName = "AIRequestConfigurationTests.speechMigration.\(UUID().uuidString)"
+        let defaults = try #require(UserDefaults(suiteName: suiteName))
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+
+        defaults.set(true, forKey: "hasCompletedOnboarding")
+        defaults.set(AIProvider.openai.rawValue, forKey: "selectedAIProvider")
+        defaults.set(SpeechProvider.nativeIOS.rawValue, forKey: "selectedSpeechProvider")
+        defaults.set(SpeechProvider.openai.rawValue, forKey: "selectedSpeechFallbackProvider")
+
+        SpeechSettings.migrateMatchingPrimaryProviderIfNeeded(defaults: defaults)
+
+        #expect(defaults.string(forKey: "selectedSpeechProvider") == SpeechProvider.openai.rawValue)
+        #expect(defaults.string(forKey: "selectedSpeechFallbackProvider") == SpeechProvider.gemini.rawValue)
+
+        // The one-time marker protects a later manual Native selection.
+        defaults.set(AIProvider.groq.rawValue, forKey: "selectedAIProvider")
+        defaults.set(SpeechProvider.nativeIOS.rawValue, forKey: "selectedSpeechProvider")
+        SpeechSettings.migrateMatchingPrimaryProviderIfNeeded(defaults: defaults)
+        #expect(defaults.string(forKey: "selectedSpeechProvider") == SpeechProvider.nativeIOS.rawValue)
+    }
+
+    @Test func speechMigrationPreservesCloudChoiceAndWaitsForOnboarding() throws {
+        let suiteName = "AIRequestConfigurationTests.speechPreserve.\(UUID().uuidString)"
+        let defaults = try #require(UserDefaults(suiteName: suiteName))
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+
+        defaults.set(AIProvider.mistral.rawValue, forKey: "selectedAIProvider")
+        defaults.set(SpeechProvider.nativeIOS.rawValue, forKey: "selectedSpeechProvider")
+        SpeechSettings.migrateMatchingPrimaryProviderIfNeeded(defaults: defaults)
+        #expect(defaults.string(forKey: "selectedSpeechProvider") == SpeechProvider.nativeIOS.rawValue)
+        #expect(defaults.integer(forKey: "matchingSpeechProviderMigrationVersion") == 0)
+
+        defaults.set(true, forKey: "hasCompletedOnboarding")
+        defaults.set(SpeechProvider.deepgram.rawValue, forKey: "selectedSpeechProvider")
+        SpeechSettings.migrateMatchingPrimaryProviderIfNeeded(defaults: defaults)
+        #expect(defaults.string(forKey: "selectedSpeechProvider") == SpeechProvider.deepgram.rawValue)
+        #expect(defaults.integer(forKey: "matchingSpeechProviderMigrationVersion") == 1)
+    }
+
+    @Test func newUserSpeechDefaultMatchesPrimaryAndUnsupportedProvidersStayNative() throws {
+        let suiteName = "AIRequestConfigurationTests.newSpeechDefault.\(UUID().uuidString)"
+        let defaults = try #require(UserDefaults(suiteName: suiteName))
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+
+        SpeechSettings.setInitialProvider(matching: .mistral, defaults: defaults)
+        #expect(defaults.string(forKey: "selectedSpeechProvider") == SpeechProvider.mistral.rawValue)
+        #expect(defaults.integer(forKey: "matchingSpeechProviderMigrationVersion") == 1)
+
+        SpeechSettings.setInitialProvider(matching: .openrouter, defaults: defaults)
+        #expect(defaults.string(forKey: "selectedSpeechProvider") == SpeechProvider.nativeIOS.rawValue)
+    }
+
     @Test func foodPhotosAreDownscaledWithoutUpscaling() throws {
         let format = UIGraphicsImageRendererFormat.default()
         format.scale = 1

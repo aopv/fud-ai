@@ -28,6 +28,14 @@ enum class SpeechProvider {
 
     val requiresApiKey: Boolean get() = this != NATIVE
 
+    val matchingAIProvider: AIProvider? get() = when (this) {
+        GEMINI -> AIProvider.GEMINI
+        OPENAI -> AIProvider.OPENAI
+        GROQ -> AIProvider.GROQ
+        MISTRAL -> AIProvider.MISTRAL
+        NATIVE, DEEPGRAM, ASSEMBLY_AI -> null
+    }
+
     @get:StringRes
     val apiKeyPlaceholderRes: Int get() = when (this) {
         NATIVE -> R.string.speech_key_placeholder_native
@@ -63,5 +71,23 @@ enum class SpeechProvider {
     companion object {
         val remoteProviders: List<SpeechProvider>
             get() = values().filter { it.requiresApiKey }
+
+        /** First-party STT route for a supported Primary AI provider. */
+        fun matchingPrimaryAIProvider(provider: AIProvider): SpeechProvider? = when (provider) {
+            AIProvider.GEMINI -> GEMINI
+            AIProvider.OPENAI -> OPENAI
+            AIProvider.GROQ -> GROQ
+            AIProvider.MISTRAL -> MISTRAL
+            else -> null
+        }
+
+        fun migratedV7Selection(
+            primaryAIProvider: AIProvider,
+            currentSpeechProvider: SpeechProvider
+        ): SpeechProvider = if (currentSpeechProvider == NATIVE) {
+            matchingPrimaryAIProvider(primaryAIProvider) ?: NATIVE
+        } else {
+            currentSpeechProvider
+        }
     }
 }

@@ -221,6 +221,7 @@ class OnboardingViewModel(private val container: AppContainer) : ViewModel() {
             if (state.apiKey.isNotBlank()) {
                 container.keyStore.setApiKey(state.aiProvider, state.apiKey.trim())
             }
+            container.prefs.setInitialSpeechProviderForAIProvider(state.aiProvider)
             // New installs start with Energy Burn on, and Adaptive Goals on unless the
             // user hand-tuned their plan (adaptive would overwrite it). Existing users are
             // untouched — these prefs are only written here and by the Settings toggles.

@@ -1259,6 +1259,7 @@ struct OnboardingView: View {
                 editedProfile.customCarbs = editedCarbs
                 editedProfile.autoBalanceMacro = .carbs
                 editedProfile.save()
+                SpeechSettings.setInitialProvider(matching: byokProvider)
                 hasCompletedOnboarding = true
             } label: {
                 Text("Let's get started!")

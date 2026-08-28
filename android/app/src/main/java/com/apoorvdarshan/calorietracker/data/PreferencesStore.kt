@@ -492,8 +492,66 @@ class PreferencesStore(private val context: Context) : WorkoutStateStore {
         }
     }
 
+    /**
+     * One-time v7 migration. Existing users who still use Native STT move to the
+     * first-party speech provider matching Primary AI. Explicit cloud choices are
+     * preserved. Incomplete onboarding is intentionally left unmarked so its final
+     * step can establish the new-user default.
+     */
+    suspend fun migrateMatchingSpeechProviderIfNeeded() {
+        ds.edit { prefs ->
+            if ((prefs[Keys.MATCHING_SPEECH_PROVIDER_MIGRATION_VERSION] ?: 0)
+                >= MATCHING_SPEECH_PROVIDER_MIGRATION_VERSION ||
+                prefs[Keys.ONBOARDING_COMPLETED] != true
+            ) {
+                return@edit
+            }
+
+            val currentSpeech = storedSpeechProvider(prefs[Keys.SELECTED_SPEECH_PROVIDER])
+                ?: SpeechProvider.NATIVE
+            val primaryAI = storedAIProvider(prefs[Keys.SELECTED_AI_PROVIDER])
+                ?: AIProvider.GEMINI
+            val migratedSpeech = SpeechProvider.migratedV7Selection(primaryAI, currentSpeech)
+            if (migratedSpeech != currentSpeech) {
+                migratedSpeech.let { matched ->
+                    prefs[Keys.SELECTED_SPEECH_PROVIDER] = matched.name
+                    val fallback = storedSpeechProvider(prefs[Keys.SPEECH_FALLBACK_PROVIDER])
+                        ?: SpeechProvider.GROQ
+                    if (fallback == matched) {
+                        SpeechProvider.remoteProviders.firstOrNull { it != matched }?.let { alternate ->
+                            prefs[Keys.SPEECH_FALLBACK_PROVIDER] = alternate.name
+                        }
+                    }
+                }
+            }
+
+            prefs[Keys.MATCHING_SPEECH_PROVIDER_MIGRATION_VERSION] =
+                MATCHING_SPEECH_PROVIDER_MIGRATION_VERSION
+        }
+    }
+
+    /** New-user default applied exactly once when onboarding completes. */
+    suspend fun setInitialSpeechProviderForAIProvider(provider: AIProvider) {
+        ds.edit { prefs ->
+            val speech = SpeechProvider.matchingPrimaryAIProvider(provider) ?: SpeechProvider.NATIVE
+            prefs[Keys.SELECTED_SPEECH_PROVIDER] = speech.name
+            val fallback = storedSpeechProvider(prefs[Keys.SPEECH_FALLBACK_PROVIDER])
+                ?: SpeechProvider.GROQ
+            if (fallback == speech) {
+                SpeechProvider.remoteProviders.firstOrNull { it != speech }?.let { alternate ->
+                    prefs[Keys.SPEECH_FALLBACK_PROVIDER] = alternate.name
+                }
+            }
+            prefs[Keys.MATCHING_SPEECH_PROVIDER_MIGRATION_VERSION] =
+                MATCHING_SPEECH_PROVIDER_MIGRATION_VERSION
+        }
+    }
+
     private fun storedAIProvider(rawValue: String?): AIProvider? =
         AIProvider.values().firstOrNull { it.name == rawValue }
+
+    private fun storedSpeechProvider(rawValue: String?): SpeechProvider? =
+        SpeechProvider.values().firstOrNull { it.name == rawValue }
 
     fun customBaseUrl(provider: AIProvider): Flow<String?> = ds.data.map {
         it[stringPreferencesKey(CUSTOM_BASE_URL_PREFIX + provider.name)]
@@ -835,6 +893,8 @@ class PreferencesStore(private val context: Context) : WorkoutStateStore {
         val SELECTED_SPEECH_PROVIDER = stringPreferencesKey("selectedSpeechProvider")
         val SPEECH_FALLBACK_ENABLED = booleanPreferencesKey("speechFallbackEnabled")
         val SPEECH_FALLBACK_PROVIDER = stringPreferencesKey("selectedSpeechFallbackProvider")
+        val MATCHING_SPEECH_PROVIDER_MIGRATION_VERSION =
+            intPreferencesKey("matchingSpeechProviderMigrationVersion")
         fun selectedSpeechLanguage(provider: SpeechProvider) =
             stringPreferencesKey("selectedSpeechLanguage_${provider.name}")
         val FOOD_ENTRIES = stringPreferencesKey("foodEntries")
@@ -850,5 +910,6 @@ class PreferencesStore(private val context: Context) : WorkoutStateStore {
 
     companion object {
         private const val CUSTOM_BASE_URL_PREFIX = "customBaseURL_"
+        private const val MATCHING_SPEECH_PROVIDER_MIGRATION_VERSION = 1
     }
 }

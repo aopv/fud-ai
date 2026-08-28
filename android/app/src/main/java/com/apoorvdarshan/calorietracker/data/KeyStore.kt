@@ -33,7 +33,11 @@ class KeyStore(context: Context) {
     }
 
     // Speech providers
-    fun speechApiKey(provider: SpeechProvider): String? = load(STT_PREFIX + provider.name)
+    fun speechApiKey(provider: SpeechProvider): String? {
+        val dedicated = load(STT_PREFIX + provider.name)
+        if (!dedicated.isNullOrEmpty()) return dedicated
+        return provider.matchingAIProvider?.let(::apiKey)
+    }
     fun setSpeechApiKey(provider: SpeechProvider, key: String?) {
         val storageKey = STT_PREFIX + provider.name
         if (key.isNullOrEmpty()) delete(storageKey) else save(storageKey, key)

@@ -214,6 +214,40 @@ class AIRequestConfigurationTest {
     }
 
     @Test
+    fun primaryAiProvidersMapOnlyToTheirFirstPartySpeechProvider() {
+        assertEquals(
+            SpeechProvider.GEMINI,
+            SpeechProvider.matchingPrimaryAIProvider(AIProvider.GEMINI)
+        )
+        assertEquals(
+            SpeechProvider.OPENAI,
+            SpeechProvider.matchingPrimaryAIProvider(AIProvider.OPENAI)
+        )
+        assertEquals(
+            SpeechProvider.GROQ,
+            SpeechProvider.matchingPrimaryAIProvider(AIProvider.GROQ)
+        )
+        assertEquals(
+            SpeechProvider.MISTRAL,
+            SpeechProvider.matchingPrimaryAIProvider(AIProvider.MISTRAL)
+        )
+        assertNull(SpeechProvider.matchingPrimaryAIProvider(AIProvider.ANTHROPIC))
+        assertNull(SpeechProvider.matchingPrimaryAIProvider(AIProvider.OPENROUTER))
+        assertEquals(
+            SpeechProvider.OPENAI,
+            SpeechProvider.migratedV7Selection(AIProvider.OPENAI, SpeechProvider.NATIVE)
+        )
+        assertEquals(
+            SpeechProvider.NATIVE,
+            SpeechProvider.migratedV7Selection(AIProvider.ANTHROPIC, SpeechProvider.NATIVE)
+        )
+        assertEquals(
+            SpeechProvider.DEEPGRAM,
+            SpeechProvider.migratedV7Selection(AIProvider.GEMINI, SpeechProvider.DEEPGRAM)
+        )
+    }
+
+    @Test
     fun geminiSpeechInteractionUsesTheDedicatedTranscriptionSchema() {
         val payload = Json.parseToJsonElement(GeminiAudioClient.interactionPayload(
             model = SpeechProvider.GEMINI.defaultModel,

@@ -15,6 +15,29 @@ enum SpeechProvider: String, CaseIterable, Codable, Identifiable {
         allCases.filter(\.requiresAPIKey)
     }
 
+    /// The STT provider that shares credentials and account ownership with a
+    /// supported Primary AI provider. Providers without a first-party STT route
+    /// intentionally return nil and keep Native speech as the default.
+    static func matchingPrimaryAIProvider(_ provider: AIProvider) -> SpeechProvider? {
+        switch provider {
+        case .gemini: .gemini
+        case .openai: .openai
+        case .groq: .groq
+        case .mistral: .mistral
+        default: nil
+        }
+    }
+
+    var matchingAIProvider: AIProvider? {
+        switch self {
+        case .gemini: .gemini
+        case .openai: .openai
+        case .groq: .groq
+        case .mistral: .mistral
+        case .nativeIOS, .deepgram, .assemblyai: nil
+        }
+    }
+
     /// User-facing provider name. Raw values stay stable because they are also
     /// used for persisted settings and Keychain lookup keys.
     var displayName: String {
@@ -209,6 +232,60 @@ struct SpeechSettings {
     private static let languageKey = "selectedSpeechLanguage"
     private static let languageKeyPrefix = "selectedSpeechLanguage_"
     private static let apiKeyKeychainPrefix = "speechApiKey_"
+    private static let primaryAIProviderKey = "selectedAIProvider"
+    private static let onboardingCompletedKey = "hasCompletedOnboarding"
+    private static let matchingProviderMigrationVersionKey = "matchingSpeechProviderMigrationVersion"
+    private static let currentMatchingProviderMigrationVersion = 1
+
+    /// Existing v7 users receive this once: Native speech is replaced with the
+    /// first-party STT provider matching their Primary AI provider. An explicit
+    /// cloud speech selection is preserved, and incomplete onboarding is left
+    /// unmarked so its final step can apply the new-user default instead.
+    static func migrateMatchingPrimaryProviderIfNeeded(defaults: UserDefaults = .standard) {
+        guard defaults.integer(forKey: matchingProviderMigrationVersionKey)
+                < currentMatchingProviderMigrationVersion,
+              defaults.bool(forKey: onboardingCompletedKey) else {
+            return
+        }
+
+        let currentSpeech = defaults.string(forKey: providerKey)
+            .flatMap(SpeechProvider.init(rawValue:)) ?? .nativeIOS
+        if currentSpeech == .nativeIOS {
+            let primaryAI = defaults.string(forKey: primaryAIProviderKey)
+                .flatMap(AIProvider.init(rawValue:)) ?? .gemini
+            if let matched = SpeechProvider.matchingPrimaryAIProvider(primaryAI) {
+                defaults.set(matched.rawValue, forKey: providerKey)
+                resolveFallbackCollision(with: matched, defaults: defaults)
+            }
+        }
+
+        defaults.set(currentMatchingProviderMigrationVersion, forKey: matchingProviderMigrationVersionKey)
+    }
+
+    /// Called when onboarding completes. This establishes the matching default
+    /// and marks the migration so later Primary AI changes never force STT again.
+    static func setInitialProvider(
+        matching primaryAI: AIProvider,
+        defaults: UserDefaults = .standard
+    ) {
+        let provider = SpeechProvider.matchingPrimaryAIProvider(primaryAI) ?? .nativeIOS
+        defaults.set(provider.rawValue, forKey: providerKey)
+        resolveFallbackCollision(with: provider, defaults: defaults)
+        defaults.set(currentMatchingProviderMigrationVersion, forKey: matchingProviderMigrationVersionKey)
+    }
+
+    private static func resolveFallbackCollision(
+        with provider: SpeechProvider,
+        defaults: UserDefaults
+    ) {
+        let fallback = defaults.string(forKey: fallbackProviderKey)
+            .flatMap(SpeechProvider.init(rawValue:)) ?? .groq
+        guard fallback == provider,
+              let alternate = SpeechProvider.remoteProviders.first(where: { $0 != provider }) else {
+            return
+        }
+        defaults.set(alternate.rawValue, forKey: fallbackProviderKey)
+    }
 
     static var selectedProvider: SpeechProvider {
         get {
@@ -277,7 +354,12 @@ struct SpeechSettings {
     }
 
     static func apiKey(for provider: SpeechProvider) -> String? {
-        KeychainHelper.load(key: apiKeyKeychainPrefix + provider.rawValue)
+        if let dedicatedKey = KeychainHelper.load(key: apiKeyKeychainPrefix + provider.rawValue),
+           !dedicatedKey.isEmpty {
+            return dedicatedKey
+        }
+        guard let aiProvider = provider.matchingAIProvider else { return nil }
+        return AIProviderSettings.apiKey(for: aiProvider)
     }
 
     static func setAPIKey(_ key: String?, for provider: SpeechProvider) {
@@ -300,6 +382,7 @@ struct SpeechSettings {
         UserDefaults.standard.removeObject(forKey: providerKey)
         UserDefaults.standard.removeObject(forKey: fallbackEnabledKey)
         UserDefaults.standard.removeObject(forKey: fallbackProviderKey)
+        UserDefaults.standard.removeObject(forKey: matchingProviderMigrationVersionKey)
         UserDefaults.standard.removeObject(forKey: languageKey)
         for provider in SpeechProvider.allCases {
             UserDefaults.standard.removeObject(forKey: languageKeyPrefix + provider.rawValue)
