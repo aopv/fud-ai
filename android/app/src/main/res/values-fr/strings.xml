@@ -464,10 +464,13 @@
     <!-- Settings -->
     <string name="settings_section_personal">Informations personnelles</string>
     <string name="settings_section_goals">Objectifs et nutrition</string>
+    <string name="settings_section_daily_targets">Objectifs quotidiens</string>
     <string name="settings_section_app">Réglages de l\'app</string>
+    <string name="settings_section_tracking_reminders">Suivi et rappels</string>
     <string name="settings_section_ai">Fournisseur d\'IA</string>
     <string name="settings_section_speech">Reconnaissance vocale</string>
     <string name="settings_section_health">Santé et données</string>
+    <string name="settings_section_data_management">Gestion des données</string>
 
     <string name="settings_gender">Sexe</string>
     <string name="settings_birthday">Date de naissance</string>

@@ -464,10 +464,13 @@
     <!-- Settings -->
     <string name="settings_section_personal">Личные данные</string>
     <string name="settings_section_goals">Цели и питание</string>
+    <string name="settings_section_daily_targets">Ежедневные цели</string>
     <string name="settings_section_app">Настройки приложения</string>
+    <string name="settings_section_tracking_reminders">Отслеживание и напоминания</string>
     <string name="settings_section_ai">ИИ-провайдер</string>
     <string name="settings_section_speech">Речь в текст</string>
     <string name="settings_section_health">Здоровье и данные</string>
+    <string name="settings_section_data_management">Управление данными</string>
 
     <string name="settings_gender">Пол</string>
     <string name="settings_birthday">Дата рождения</string>

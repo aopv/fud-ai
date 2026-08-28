@@ -464,10 +464,13 @@
     <!-- Settings -->
     <string name="settings_section_personal">개인 정보</string>
     <string name="settings_section_goals">목표 및 영양</string>
+    <string name="settings_section_daily_targets">일일 목표</string>
     <string name="settings_section_app">앱 설정</string>
+    <string name="settings_section_tracking_reminders">추적 및 알림</string>
     <string name="settings_section_ai">AI 제공자</string>
     <string name="settings_section_speech">음성 텍스트 변환</string>
     <string name="settings_section_health">건강 및 데이터</string>
+    <string name="settings_section_data_management">데이터 관리</string>
 
     <string name="settings_gender">성별</string>
     <string name="settings_birthday">생일</string>

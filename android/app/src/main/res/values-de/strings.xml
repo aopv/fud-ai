@@ -464,10 +464,13 @@
     <!-- Settings -->
     <string name="settings_section_personal">Persönliche Daten</string>
     <string name="settings_section_goals">Ziele &amp; Ernährung</string>
+    <string name="settings_section_daily_targets">Tägliche Ziele</string>
     <string name="settings_section_app">App-Einstellungen</string>
+    <string name="settings_section_tracking_reminders">Tracking &amp; Erinnerungen</string>
     <string name="settings_section_ai">KI-Anbieter</string>
     <string name="settings_section_speech">Spracherkennung</string>
     <string name="settings_section_health">Gesundheit &amp; Daten</string>
+    <string name="settings_section_data_management">Datenverwaltung</string>
 
     <string name="settings_gender">Geschlecht</string>
     <string name="settings_birthday">Geburtstag</string>

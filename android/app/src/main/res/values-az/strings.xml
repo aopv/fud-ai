@@ -464,10 +464,13 @@
     <!-- Settings -->
     <string name="settings_section_personal">Şəxsi Məlumat</string>
     <string name="settings_section_goals">Hədəflər və Qidalanma</string>
+    <string name="settings_section_daily_targets">Gündəlik Hədəflər</string>
     <string name="settings_section_app">Tətbiq Parametrləri</string>
+    <string name="settings_section_tracking_reminders">İzləmə və Xatırlatmalar</string>
     <string name="settings_section_ai">AI Təminatçısı</string>
     <string name="settings_section_speech">Nitqdən Mətnə</string>
     <string name="settings_section_health">Sağlamlıq və Məlumat</string>
+    <string name="settings_section_data_management">Məlumatların İdarə Edilməsi</string>
 
     <string name="settings_gender">Cins</string>
     <string name="settings_birthday">Doğum Günü</string>

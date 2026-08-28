@@ -508,7 +508,9 @@
     <!-- Settings -->
     <string name="settings_section_personal">Personal Info</string>
     <string name="settings_section_goals">Goals &amp; Nutrition</string>
+    <string name="settings_section_daily_targets">Daily Targets</string>
     <string name="settings_section_app">App Settings</string>
+    <string name="settings_section_tracking_reminders">Tracking &amp; Reminders</string>
     <string name="settings_section_ai">AI Provider</string>
     <string name="settings_section_speech">Speech-to-Text</string>
     <string name="settings_section_workout" translatable="false">Workout</string>
@@ -518,6 +520,7 @@
     <string name="settings_workout_health_access" translatable="false">Workout Burn Sync</string>
     <string name="settings_grant_permission" translatable="false">Grant permission</string>
     <string name="settings_section_health">Health &amp; Data</string>
+    <string name="settings_section_data_management">Data Management</string>
 
     <string name="settings_gender">Gender</string>
     <string name="settings_birthday">Birthday</string>

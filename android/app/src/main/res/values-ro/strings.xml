@@ -464,10 +464,13 @@
     <!-- Settings -->
     <string name="settings_section_personal">Informații personale</string>
     <string name="settings_section_goals">Obiective și nutriție</string>
+    <string name="settings_section_daily_targets">Obiective zilnice</string>
     <string name="settings_section_app">Setări aplicație</string>
+    <string name="settings_section_tracking_reminders">Monitorizare și mementouri</string>
     <string name="settings_section_ai">Furnizor AI</string>
     <string name="settings_section_speech">Voce în text</string>
     <string name="settings_section_health">Sănătate și date</string>
+    <string name="settings_section_data_management">Gestionarea datelor</string>
 
     <string name="settings_gender">Sex</string>
     <string name="settings_birthday">Data nașterii</string>

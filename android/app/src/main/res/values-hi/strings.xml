@@ -464,10 +464,13 @@
     <!-- Settings -->
     <string name="settings_section_personal">व्यक्तिगत जानकारी</string>
     <string name="settings_section_goals">लक्ष्य और पोषण</string>
+    <string name="settings_section_daily_targets">दैनिक लक्ष्य</string>
     <string name="settings_section_app">ऐप सेटिंग्स</string>
+    <string name="settings_section_tracking_reminders">ट्रैकिंग और रिमाइंडर</string>
     <string name="settings_section_ai">AI प्रदाता</string>
     <string name="settings_section_speech">स्पीच-टू-टेक्स्ट</string>
     <string name="settings_section_health">स्वास्थ्य और डेटा</string>
+    <string name="settings_section_data_management">डेटा प्रबंधन</string>
 
     <string name="settings_gender">लिंग</string>
     <string name="settings_birthday">जन्मदिन</string>

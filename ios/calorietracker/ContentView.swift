@@ -3539,7 +3539,8 @@ struct ProfileView: View {
                 }
                 .listRowBackground(AppColors.appCard)
 
-                // Section 2: Goals & Nutrition
+                // Section 2: Goal plan and automation. Daily nutrition targets live in a
+                // separate card below so this section stays easy to scan.
                 Section("Goals & Nutrition") {
                     Picker(selection: profileBinding.goal) {
                         ForEach(WeightGoal.allCases, id: \.self) { goal in
@@ -3689,6 +3690,10 @@ struct ProfileView: View {
                             }
                     }
 
+                }
+                .listRowBackground(AppColors.appCard)
+
+                Section("Daily Targets") {
                     lockableGoalRow(
                         icon: "flame",
                         label: "Calories",
@@ -3756,7 +3761,8 @@ struct ProfileView: View {
                 }
                 .listRowBackground(AppColors.appCard)
 
-                // Section 3: App Settings
+                // Section 3: Display and input preferences. Tracking features are grouped
+                // separately below so the card does not read as one long control wall.
                 Section("App Settings") {
                     Picker(selection: $appearanceMode) {
                         Text("System").tag("system")
@@ -3830,6 +3836,10 @@ struct ProfileView: View {
                     .pickerStyle(.menu)
                     .tint(.secondary)
 
+                }
+                .listRowBackground(AppColors.appCard)
+
+                Section("Tracking & Reminders") {
                     NavigationLink {
                         MealTimeSettingsView()
                     } label: {
@@ -4476,7 +4486,8 @@ struct ProfileView: View {
 
                 WorkoutLoggingSettingsSection()
 
-                // Section 5: Health & Data
+                // Section 5: Health integration. Destructive and transfer actions are kept
+                // in their own card below so they cannot be mistaken for sync preferences.
                 Section("Health & Data") {
                     // Apple Health
                     HStack {
@@ -4494,6 +4505,10 @@ struct ProfileView: View {
                             }
                     }
 
+                }
+                .listRowBackground(AppColors.appCard)
+
+                Section("Data Management") {
                     // Export Food Diary
                     Button {
                         showExportDiary = true

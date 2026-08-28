@@ -464,10 +464,13 @@
     <!-- Settings -->
     <string name="settings_section_personal">المعلومات الشخصية</string>
     <string name="settings_section_goals">الأهداف والتغذية</string>
+    <string name="settings_section_daily_targets">الأهداف اليومية</string>
     <string name="settings_section_app">إعدادات التطبيق</string>
+    <string name="settings_section_tracking_reminders">التتبع والتذكيرات</string>
     <string name="settings_section_ai">مزود الذكاء الاصطناعي</string>
     <string name="settings_section_speech">تحويل الكلام إلى نص</string>
     <string name="settings_section_health">الصحة والبيانات</string>
+    <string name="settings_section_data_management">إدارة البيانات</string>
 
     <string name="settings_gender">الجنس</string>
     <string name="settings_birthday">تاريخ الميلاد</string>

@@ -390,7 +390,7 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                 .padding(padding)
                 .verticalScroll(rememberScrollState())
                 .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp)
+            verticalArrangement = Arrangement.spacedBy(18.dp)
         ) {
             // Section 1 — Personal Info (matches iOS Section "Personal Info")
             SectionCard(title = stringResource(R.string.settings_section_personal)) {
@@ -486,7 +486,11 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                         onInfo = { showHealthEnergyGoalsInfo = true },
                         onChange = ::onHealthEnergyGoalsToggle
                     )
-                    HorizontalDivider()
+                }
+            }
+
+            SectionCard(title = stringResource(R.string.settings_section_daily_targets)) {
+                profile?.let { p ->
                     // The lock glyph is read-only. Saving a value locks it; the picker's Reset
                     // releases it. While Adaptive Goals is on, tapping a row explains that it owns
                     // the targets (so editing would be overwritten weekly) instead of opening.
@@ -638,6 +642,14 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                 )
                 HorizontalDivider()
                 SettingRow(
+                    stringResource(R.string.settings_week_starts),
+                    if (ui.weekStartsOnMonday) stringResource(R.string.settings_week_monday) else stringResource(R.string.settings_week_sunday),
+                    icon = Icons.Outlined.CalendarToday
+                ) { sheet = SettingsSheet.WEEK_START }
+            }
+
+            SectionCard(title = stringResource(R.string.settings_section_tracking_reminders)) {
+                SettingRow(
                     stringResource(R.string.settings_meal_times),
                     stringResource(R.string.settings_meal_times_customize),
                     icon = Icons.Outlined.Schedule
@@ -682,12 +694,6 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                         icon = Icons.Outlined.TrackChanges
                     ) { sheet = SettingsSheet.FASTING_GOAL }
                 }
-                HorizontalDivider()
-                SettingRow(
-                    stringResource(R.string.settings_week_starts),
-                    if (ui.weekStartsOnMonday) stringResource(R.string.settings_week_monday) else stringResource(R.string.settings_week_sunday),
-                    icon = Icons.Outlined.CalendarToday
-                ) { sheet = SettingsSheet.WEEK_START }
                 HorizontalDivider()
                 SettingRow(
                     stringResource(R.string.settings_quick_actions),
@@ -889,20 +895,21 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                     icon = Icons.Outlined.Link,
                     onClick = ::openHealthConnectAccess
                 )
-                HorizontalDivider()
+            }
+
+            SectionCard(title = stringResource(R.string.settings_section_data_management)) {
                 Row(
                     Modifier
                         .fillMaxWidth()
                         .clickable { showExportSheet = true }
-                        .padding(horizontal = 16.dp, vertical = 14.dp),
+                        .padding(horizontal = 16.dp, vertical = 13.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     FudIconBubble(icon = Icons.Outlined.IosShare, size = 22.dp, iconSize = 14.dp, tint = AppColors.Calorie)
                     Spacer(Modifier.width(14.dp))
                     Text(
                         stringResource(R.string.export_diary_title),
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Medium
+                        style = MaterialTheme.typography.bodyLarge
                     )
                 }
                 HorizontalDivider()
@@ -912,15 +919,14 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                         .clickable {
                             importFileLauncher.launch(arrayOf("application/json", "text/plain"))
                         }
-                        .padding(horizontal = 16.dp, vertical = 14.dp),
+                        .padding(horizontal = 16.dp, vertical = 13.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     FudIconBubble(icon = Icons.Outlined.Download, size = 22.dp, iconSize = 14.dp, tint = AppColors.Calorie)
                     Spacer(Modifier.width(14.dp))
                     Text(
                         stringResource(R.string.import_diary_title),
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Medium
+                        style = MaterialTheme.typography.bodyLarge
                     )
                 }
                 HorizontalDivider()
@@ -928,7 +934,7 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                     Modifier
                         .fillMaxWidth()
                         .clickable { showClearFoodDialog = true }
-                        .padding(horizontal = 16.dp, vertical = 14.dp),
+                        .padding(horizontal = 16.dp, vertical = 13.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     val warning = Color(0xFFFF9500)
@@ -937,8 +943,7 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                     Text(
                         stringResource(R.string.settings_clear_food_log),
                         color = warning,
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Medium
+                        style = MaterialTheme.typography.bodyLarge
                     )
                 }
                 HorizontalDivider()
@@ -946,7 +951,7 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                     Modifier
                         .fillMaxWidth()
                         .clickable { showDeleteDialog = true }
-                        .padding(horizontal = 16.dp, vertical = 14.dp),
+                        .padding(horizontal = 16.dp, vertical = 13.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     val destructive = Color(0xFFFF3B30)
@@ -955,8 +960,7 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                     Text(
                         stringResource(R.string.settings_delete_all_data),
                         color = destructive,
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Medium
+                        style = MaterialTheme.typography.bodyLarge
                     )
                 }
             }
@@ -2991,21 +2995,20 @@ private fun MacroField(
 
 @Composable
 private fun SectionCard(title: String, content: @Composable () -> Unit) {
-    // iOS uses sentence-case section titles ("Personal Info", "Goals & Nutrition")
-    // in a small grey caption. Match that — no uppercase transform.
     Column {
         Text(
             title,
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.55f),
-            modifier = Modifier.padding(start = 4.dp, bottom = 6.dp)
+            style = MaterialTheme.typography.labelLarge,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.72f),
+            modifier = Modifier.padding(start = 6.dp, bottom = 8.dp)
         )
         FudGlassSurface(
             modifier = Modifier.fillMaxWidth(),
-            cornerRadius = 18.dp,
+            cornerRadius = 20.dp,
             padding = 0.dp
         ) {
-            Column(Modifier.padding(vertical = 4.dp)) { content() }
+            Column(Modifier.padding(vertical = 2.dp)) { content() }
         }
     }
 }
@@ -3025,7 +3028,7 @@ private fun SettingRow(
         Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 14.dp),
+            .padding(horizontal = 16.dp, vertical = 13.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (icon != null) {
@@ -3035,14 +3038,18 @@ private fun SettingRow(
         Text(
             label,
             modifier = Modifier.weight(1f),
-            style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.Medium
+            style = MaterialTheme.typography.bodyLarge
         )
-        Text(
-            value,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.58f)
-        )
+        if (value.isNotEmpty()) {
+            Text(
+                value,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.58f),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.padding(start = 12.dp)
+            )
+        }
         Icon(
             if (inlineMenu) Icons.Filled.UnfoldMore else Icons.Filled.ChevronRight,
             contentDescription = null,
@@ -3061,7 +3068,7 @@ private fun ActivityLevelSettingRow(
         Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 12.dp),
+            .padding(horizontal = 16.dp, vertical = 11.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         FudIconBubble(icon = Icons.AutoMirrored.Outlined.DirectionsRun, size = 22.dp, iconSize = 14.dp)
@@ -3074,7 +3081,6 @@ private fun ActivityLevelSettingRow(
             Text(
                 stringResource(R.string.settings_activity_level),
                 style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Medium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -3113,7 +3119,7 @@ private fun LockableGoalRow(
         Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 14.dp),
+            .padding(horizontal = 16.dp, vertical = 13.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         FudIconBubble(icon = icon, size = 22.dp, iconSize = 14.dp)
@@ -3121,8 +3127,7 @@ private fun LockableGoalRow(
         Text(
             label,
             modifier = Modifier.weight(1f),
-            style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.Medium
+            style = MaterialTheme.typography.bodyLarge
         )
         Text(
             value,
@@ -3213,8 +3218,7 @@ private fun ToggleRow(
         Text(
             label,
             modifier = Modifier.weight(1f),
-            style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.Medium
+            style = MaterialTheme.typography.bodyLarge
         )
         Switch(checked = checked, onCheckedChange = onChange)
     }
@@ -3240,8 +3244,7 @@ private fun ToggleRowWithInfo(
         Text(
             label,
             modifier = Modifier.weight(1f),
-            style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.Medium
+            style = MaterialTheme.typography.bodyLarge
         )
         IconButton(onClick = onInfo, modifier = Modifier.size(36.dp)) {
             Icon(
@@ -3275,8 +3278,7 @@ private fun EnergyBurnGoalsRow(
         ) {
             Text(
                 stringResource(R.string.settings_energy_goals),
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Medium
+                style = MaterialTheme.typography.bodyLarge
             )
             if (needsHealthConnect) {
                 Text(
@@ -3322,7 +3324,6 @@ private fun AdaptiveGoalsRow(
         Text(
             stringResource(R.string.settings_adaptive_goals),
             style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.Medium,
             modifier = Modifier.weight(1f)
         )
         if (applying) {
