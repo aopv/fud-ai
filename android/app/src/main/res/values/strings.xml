@@ -518,8 +518,9 @@
     <string name="settings_section_daily_targets">Daily Targets</string>
     <string name="settings_section_app">App Settings</string>
     <string name="settings_section_tracking_reminders">Tracking &amp; Reminders</string>
-    <string name="settings_section_ai">AI Provider</string>
-    <string name="settings_section_text_ai">Text AI Provider</string>
+    <string name="settings_section_ai_voice">AI &amp; Voice</string>
+    <string name="settings_section_ai">Primary AI</string>
+    <string name="settings_section_text_ai">Text AI</string>
     <string name="settings_use_separate_text_provider">Use Separate Text Provider</string>
     <string name="settings_text_provider_footer">When enabled, requests without images—including typed food, voice transcripts, Coach chat, goals, and advice—use this provider. Photo requests keep using the AI Provider above. API keys are shared per provider.</string>
     <string name="settings_section_speech">Speech-to-Text</string>
@@ -649,7 +650,7 @@
     <string name="settings_save">Save</string>
     <string name="settings_saved">Saved</string>
 
-    <string name="settings_section_fallback">Fallback Provider</string>
+    <string name="settings_section_fallback">Fallback</string>
     <string name="settings_enable_fallback">Enable Fallback</string>
     <string name="settings_fallback_footer">If your primary provider fails (overload, rate limit, network error), the app retries automatically with this fallback. Same provider as primary is allowed — just pick a different model.</string>
 

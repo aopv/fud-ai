@@ -53,6 +53,9 @@ final class calorietrackerUITests: XCTestCase {
         let providerPicker = app.buttons.matching(
             NSPredicate(format: "label CONTAINS[c] %@", "Native iOS")
         ).firstMatch
+        for _ in 0..<3 where !providerPicker.isHittable {
+            app.swipeUp()
+        }
         XCTAssertTrue(providerPicker.waitForExistence(timeout: 3))
         providerPicker.tap()
 
@@ -88,11 +91,12 @@ final class calorietrackerUITests: XCTestCase {
         XCTAssertTrue(settings.waitForExistence(timeout: 8))
         settings.tap()
 
-        let textProviderSection = app.staticTexts["Text AI Provider"]
+        let textProviderSection = app.staticTexts["Text AI"]
         for _ in 0..<10 where !textProviderSection.exists {
             app.swipeUp()
         }
         XCTAssertTrue(textProviderSection.waitForExistence(timeout: 3))
+        XCTAssertTrue(app.staticTexts["AI & Voice"].exists)
         XCTAssertEqual(app.switches["Use Separate Text Provider"].value as? String, "1")
         XCTAssertTrue(app.staticTexts["DeepSeek"].waitForExistence(timeout: 3))
         XCTAssertTrue(app.staticTexts["deepseek-v4-flash"].waitForExistence(timeout: 3))

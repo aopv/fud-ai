@@ -3318,6 +3318,24 @@ private struct SettingsKeyboardDismissalModifier: ViewModifier {
     }
 }
 
+private struct AISettingsSubsectionHeader: View {
+    let title: String
+    let systemImage: String
+
+    var body: some View {
+        Label {
+            Text(title)
+                .textCase(.uppercase)
+        } icon: {
+            Image(systemName: systemImage)
+        }
+        .font(.system(.subheadline, design: .rounded, weight: .bold))
+        .foregroundStyle(AppColors.calorie)
+        .padding(.vertical, 2)
+        .accessibilityAddTraits(.isHeader)
+    }
+}
+
 struct ProfileView: View {
     @Environment(ProfileStore.self) private var profileStore
     @Environment(ChatStore.self) private var chatStore
@@ -3997,9 +4015,9 @@ struct ProfileView: View {
                 }
                 .listRowBackground(AppColors.appCard)
 
-                Group {
-                    // Section 4: AI Provider
-                    Section("AI Provider") {
+                Section {
+                        AISettingsSubsectionHeader(title: "Primary AI", systemImage: "sparkles")
+
                         Picker(selection: $selectedProvider) {
                             ForEach(AIProvider.visionProviders) { provider in
                                 Label(provider.rawValue, systemImage: provider.icon).tag(provider)
@@ -4173,11 +4191,9 @@ struct ProfileView: View {
                                 maxResponseTokensInput
                             }
                         }
-                    }
-                        .listRowBackground(AppColors.appCard)
-                }
 
-                Section {
+                        AISettingsSubsectionHeader(title: "Text AI", systemImage: "text.bubble.fill")
+
                     Toggle(isOn: $separateTextProviderEnabled) {
                         Label {
                             Text("Use Separate Text Provider")
@@ -4320,50 +4336,9 @@ struct ProfileView: View {
                             }
                         }
                     }
-                } header: {
-                    Text("Text AI Provider")
-                } footer: {
-                    Text("When enabled, requests without images—including typed food, voice transcripts, Coach chat, goals, and advice—use this provider. Photo requests keep using the AI Provider above. API keys are shared per provider.")
-                }
-                .listRowBackground(AppColors.appCard)
 
-                // Custom AI Instructions (User Context) — prepended to every AI request when non-empty
-                Section {
-                    TextField(
-                        "I live in Germany, assume European portion sizes. I'm on a bodybuilding cut.",
-                        text: $customAIInstructions,
-                        axis: .vertical
-                    )
-                    .lineLimit(3...6)
-                    .autocorrectionDisabled(false)
-                    .focused($customInstructionsFocused)
+                        AISettingsSubsectionHeader(title: "Fallback", systemImage: "arrow.triangle.2.circlepath")
 
-                    Button {
-                        AIProviderSettings.userContext = customAIInstructions
-                        let canonical = AIProviderSettings.userContext
-                        customAIInstructions = canonical
-                        savedAIInstructions = canonical
-                        customInstructionsFocused = false
-                    } label: {
-                        HStack {
-                            Spacer()
-                            Label("Save", systemImage: "checkmark.circle.fill")
-                                .font(.system(.body, design: .rounded, weight: .semibold))
-                                .foregroundStyle(customAIInstructions == savedAIInstructions ? .secondary : AppColors.calorie)
-                            Spacer()
-                        }
-                    }
-                    .disabled(customAIInstructions == savedAIInstructions)
-                } header: {
-                    Text("Custom AI Instructions")
-                } footer: {
-                    Text("Optional context sent with every AI request — region, diet, athletic goals, anything you'd otherwise repeat each time. Leave empty to disable.")
-                }
-                .listRowBackground(AppColors.appCard)
-
-                Group {
-                    // Fallback Provider — retry on a second provider when the primary fails
-                    Section {
                         Toggle(isOn: $fallbackEnabled) {
                             Label {
                                 Text("Enable Fallback")
@@ -4548,15 +4523,9 @@ struct ProfileView: View {
                                 }
                             }
                         }
-                    } header: {
-                        Text("Fallback Provider")
-                    } footer: {
-                        Text("If your primary provider fails (overloaded, no credits, network error), the request automatically retries on this fallback. Same provider as primary is allowed — just pick a different model.")
-                    }
-                        .listRowBackground(AppColors.appCard)
 
-                        // Speech-to-Text Provider
-                        Section {
+                        AISettingsSubsectionHeader(title: "Speech-to-Text", systemImage: "waveform")
+
                         Picker(selection: $selectedSpeechProvider) {
                             ForEach(SpeechProvider.allCases) { provider in
                                 Text(provider.displayName).tag(provider)
@@ -4633,13 +4602,46 @@ struct ProfileView: View {
                                 .buttonStyle(.plain)
                             }
                         }
-                    } header: {
-                        Text("Speech-to-Text")
-                    } footer: {
-                        Text("Used when you tap the voice icon to log a meal. Each provider remembers its own language. Provider Auto keeps the provider default; Use iPhone Language sends your current iPhone language when supported.")
-                    }
-                        .listRowBackground(AppColors.appCard)
+                } header: {
+                    Text("AI & Voice")
+                } footer: {
+                    Text("Primary AI handles images and general requests. Text AI can optionally handle requests without images. Fallback retries failed AI requests, while Speech-to-Text controls voice transcription.")
                 }
+                .listRowBackground(AppColors.appCard)
+
+                // Custom AI Instructions (User Context) — prepended to every AI request when non-empty
+                Section {
+                    TextField(
+                        "I live in Germany, assume European portion sizes. I'm on a bodybuilding cut.",
+                        text: $customAIInstructions,
+                        axis: .vertical
+                    )
+                    .lineLimit(3...6)
+                    .autocorrectionDisabled(false)
+                    .focused($customInstructionsFocused)
+
+                    Button {
+                        AIProviderSettings.userContext = customAIInstructions
+                        let canonical = AIProviderSettings.userContext
+                        customAIInstructions = canonical
+                        savedAIInstructions = canonical
+                        customInstructionsFocused = false
+                    } label: {
+                        HStack {
+                            Spacer()
+                            Label("Save", systemImage: "checkmark.circle.fill")
+                                .font(.system(.body, design: .rounded, weight: .semibold))
+                                .foregroundStyle(customAIInstructions == savedAIInstructions ? .secondary : AppColors.calorie)
+                            Spacer()
+                        }
+                    }
+                    .disabled(customAIInstructions == savedAIInstructions)
+                } header: {
+                    Text("Custom AI Instructions")
+                } footer: {
+                    Text("Optional context sent with every AI request — region, diet, athletic goals, anything you'd otherwise repeat each time. Leave empty to disable.")
+                }
+                .listRowBackground(AppColors.appCard)
 
                 WorkoutLoggingSettingsSection()
 

@@ -721,8 +721,13 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                 }
             }
 
-            // Section 4 — AI Provider (matches iOS Section "AI Provider")
-            SectionCard(title = stringResource(R.string.settings_section_ai)) {
+            // Keep the related AI and voice controls in one category while retaining
+            // independent provider, model, key, and routing preferences.
+            SectionCard(title = stringResource(R.string.settings_section_ai_voice)) {
+                SettingsSubsectionHeader(
+                    title = stringResource(R.string.settings_section_ai),
+                    icon = Icons.Outlined.SmartToy
+                )
                 SettingRow(stringResource(R.string.settings_ai_provider), stringResource(ui.selectedAI.displayNameRes), icon = Icons.Outlined.SmartToy) { sheet = SettingsSheet.AI_PROVIDER }
                 HorizontalDivider()
                 SettingRow(stringResource(R.string.settings_ai_model), ui.selectedModel.ifEmpty { stringResource(R.string.settings_ai_model_unset) }, icon = Icons.Outlined.Tune) { sheet = SettingsSheet.AI_MODEL }
@@ -754,9 +759,11 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                         icon = Icons.Outlined.Numbers
                     ) { sheet = SettingsSheet.MAX_TOKENS }
                 }
-            }
-
-            SectionCard(title = stringResource(R.string.settings_section_text_ai)) {
+                HorizontalDivider()
+                SettingsSubsectionHeader(
+                    title = stringResource(R.string.settings_section_text_ai),
+                    icon = Icons.Outlined.SmartToy
+                )
                 ToggleRow(
                     stringResource(R.string.settings_use_separate_text_provider),
                     ui.separateTextProviderEnabled,
@@ -807,25 +814,11 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
                     )
                 }
-            }
-
-            // Section 4b — Custom AI Instructions (matches iOS Section)
-            SectionCard(title = stringResource(R.string.settings_section_custom_instructions)) {
-                CustomInstructionsBlock(
-                    initial = ui.userContext,
-                    placeholder = stringResource(R.string.settings_custom_instructions_placeholder),
-                    onSave = { vm.setUserContext(it) }
+                HorizontalDivider()
+                SettingsSubsectionHeader(
+                    title = stringResource(R.string.settings_section_fallback),
+                    icon = Icons.Outlined.Refresh
                 )
-                Text(
-                    stringResource(R.string.settings_custom_instructions_footer),
-                    fontSize = 12.sp,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
-                )
-            }
-
-            // Section 4c — Fallback Provider (matches iOS Section)
-            SectionCard(title = stringResource(R.string.settings_section_fallback)) {
                 ToggleRow(
                     stringResource(R.string.settings_enable_fallback),
                     ui.fallbackEnabled,
@@ -876,10 +869,11 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
                     )
                 }
-            }
-
-            // Section 5 — Speech-to-Text (matches iOS Section "Speech-to-Text")
-            SectionCard(title = stringResource(R.string.settings_section_speech)) {
+                HorizontalDivider()
+                SettingsSubsectionHeader(
+                    title = stringResource(R.string.settings_section_speech),
+                    icon = Icons.Outlined.Mic
+                )
                 SettingRow(stringResource(R.string.settings_ai_provider), stringResource(ui.selectedSpeech.displayNameRes), icon = Icons.Outlined.Mic) { sheet = SettingsSheet.SPEECH_PROVIDER }
                 HorizontalDivider()
                 SettingRow(
@@ -902,6 +896,22 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                         icon = Icons.Outlined.Key
                     ) { sheet = SettingsSheet.SPEECH_KEY }
                 }
+            }
+
+            // Custom instructions remain a separate writing surface below the
+            // provider category so the configuration card stays easy to scan.
+            SectionCard(title = stringResource(R.string.settings_section_custom_instructions)) {
+                CustomInstructionsBlock(
+                    initial = ui.userContext,
+                    placeholder = stringResource(R.string.settings_custom_instructions_placeholder),
+                    onSave = { vm.setUserContext(it) }
+                )
+                Text(
+                    stringResource(R.string.settings_custom_instructions_footer),
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
+                )
             }
 
             // Workout is permanently available. Keep its only two live
@@ -3104,6 +3114,30 @@ private fun SectionCard(title: String? = null, content: @Composable () -> Unit) 
         ) {
             Column(Modifier.padding(vertical = 2.dp)) { content() }
         }
+    }
+}
+
+@Composable
+private fun SettingsSubsectionHeader(title: String, icon: ImageVector) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = AppColors.Calorie,
+            modifier = Modifier.size(18.dp)
+        )
+        Spacer(Modifier.width(10.dp))
+        Text(
+            text = title.uppercase(),
+            style = MaterialTheme.typography.labelLarge,
+            fontWeight = FontWeight.Bold,
+            color = AppColors.Calorie
+        )
     }
 }
 
