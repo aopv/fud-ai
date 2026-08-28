@@ -54,7 +54,7 @@ private data class HealthEnergyGoalTargetSnapshot(
  * functions for writes. Complex values (profile, entries, history) are stored
  * as JSON strings via kotlinx.serialization.
  */
-class PreferencesStore(private val context: Context) : WorkoutStateStore {
+class PreferencesStore(private val context: Context) : WorkoutStateStore, NutritionSyncStore {
 
     private val json = Json { ignoreUnknownKeys = true }
     private val ds get() = context.fudaiDataStore
@@ -168,7 +168,7 @@ class PreferencesStore(private val context: Context) : WorkoutStateStore {
     suspend fun setLastNotifiedUpdateVersion(v: String) { ds.edit { it[Keys.LAST_NOTIFIED_UPDATE_VERSION] = v } }
 
     // -- Health Connect ---------------------------------------------------
-    val healthConnectEnabled: Flow<Boolean> = ds.data.map { it[Keys.HEALTH_CONNECT_ENABLED] ?: false }
+    override val healthConnectEnabled: Flow<Boolean> = ds.data.map { it[Keys.HEALTH_CONNECT_ENABLED] ?: false }
     suspend fun setHealthConnectEnabled(v: Boolean) { ds.edit { it[Keys.HEALTH_CONNECT_ENABLED] = v } }
 
     val healthPermissionsVersion: Flow<Int> = ds.data.map { it[Keys.HEALTH_TYPES_VERSION] ?: 0 }
@@ -197,6 +197,17 @@ class PreferencesStore(private val context: Context) : WorkoutStateStore {
     /// the restore should be allowed to run again.
     val healthFoodRestoreDone: Flow<Boolean> = ds.data.map { it[Keys.HEALTH_FOOD_RESTORE_DONE] ?: false }
     suspend fun setHealthFoodRestoreDone(v: Boolean) { ds.edit { it[Keys.HEALTH_FOOD_RESTORE_DONE] = v } }
+
+    /// Food entries whose Health Connect write was never confirmed, retried on the next
+    /// foreground sync. Comma-joined UUIDs, matching [healthChangesTokenTypes] — UUIDs
+    /// cannot contain a comma, so the encoding is unambiguous.
+    override val pendingNutritionHealthWrites: Flow<Set<String>> = ds.data.map {
+        it[Keys.PENDING_NUTRITION_HEALTH_WRITES]?.split(",")?.filter { s -> s.isNotBlank() }?.toSet()
+            ?: emptySet()
+    }
+    override suspend fun setPendingNutritionHealthWrites(ids: Set<String>) {
+        ds.edit { it[Keys.PENDING_NUTRITION_HEALTH_WRITES] = ids.joinToString(",") }
+    }
 
     val healthEnergyGoalsEnabled: Flow<Boolean> = ds.data.map { it[Keys.HEALTH_ENERGY_GOALS_ENABLED] ?: false }
     suspend fun setHealthEnergyGoalsEnabled(v: Boolean) { ds.edit { it[Keys.HEALTH_ENERGY_GOALS_ENABLED] = v } }
@@ -536,7 +547,7 @@ class PreferencesStore(private val context: Context) : WorkoutStateStore {
     }
 
     // -- Food entries -----------------------------------------------------
-    val foodEntries: Flow<List<FoodEntry>> = ds.data.map { prefs ->
+    override val foodEntries: Flow<List<FoodEntry>> = ds.data.map { prefs ->
         prefs[Keys.FOOD_ENTRIES]?.let {
             runCatching { json.decodeFromString(ListSerializer(FoodEntry.serializer()), it) }.getOrNull()
         } ?: emptyList()
@@ -715,6 +726,7 @@ class PreferencesStore(private val context: Context) : WorkoutStateStore {
         val HEALTH_CHANGES_TOKEN = stringPreferencesKey("healthChangesToken")
         val HEALTH_CHANGES_TOKEN_TYPES = stringPreferencesKey("healthChangesTokenTypes")
         val HEALTH_FOOD_RESTORE_DONE = booleanPreferencesKey("healthFoodRestoreDone")
+        val PENDING_NUTRITION_HEALTH_WRITES = stringPreferencesKey("pendingNutritionHealthWrites")
         val HEALTH_ENERGY_GOALS_ENABLED = booleanPreferencesKey("healthEnergyGoalsEnabled")
         val HEALTH_ENERGY_GOALS_PREVIOUS_TARGETS = stringPreferencesKey("healthEnergyGoalsPreviousTargets")
         val HEALTH_ENERGY_GOALS_LAST_AUTO_REFRESH_DAY = stringPreferencesKey("healthEnergyGoalsLastAutoRefreshDay")
