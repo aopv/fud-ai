@@ -907,6 +907,34 @@ private struct WorkoutLogExerciseCard: View {
                     }
                     .fixedSize()
                     .accessibilityHint("Adjust from one to twelve sets")
+
+                    HStack(spacing: 0) {
+                        Button(action: toggleSaved) {
+                            Image(systemName: isSaved ? "bookmark.fill" : "bookmark")
+                                .font(.system(size: 17, weight: .bold))
+                                .frame(width: 36, height: 36)
+                                .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
+                        .frame(width: 44, height: 44)
+                        .contentShape(Rectangle())
+                        .foregroundStyle(isSaved ? Color.workoutAccent : Color.workoutMutedText.opacity(0.72))
+                        .accessibilityLabel(isSaved ? "Unsave exercise" : "Save exercise")
+                        .accessibilityHint(isSaved ? "Removes this exercise from Saved" : "Adds this exercise to Saved")
+
+                        Button(role: .destructive, action: removeExercise) {
+                            Image(systemName: "trash")
+                                .font(.system(size: 17, weight: .bold))
+                                .frame(width: 36, height: 36)
+                                .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
+                        .frame(width: 44, height: 44)
+                        .contentShape(Rectangle())
+                        .foregroundStyle(Color(red: 0.78, green: 0.14, blue: 0.12))
+                        .accessibilityLabel("Remove exercise")
+                        .accessibilityHint("Removes this exercise from the selected day")
+                    }
                 }
 
                 VStack(spacing: 0) {
@@ -931,38 +959,6 @@ private struct WorkoutLogExerciseCard: View {
                     }
                 }
 
-                Divider()
-                    .overlay(Color.workoutHairline.opacity(0.5))
-
-                HStack(spacing: 10) {
-                    Button(action: toggleSaved) {
-                        Label(
-                            isSaved ? "Unsave" : "Save",
-                            systemImage: isSaved ? "bookmark.slash.fill" : "bookmark.fill"
-                        )
-                        .font(.system(.subheadline, design: .rounded, weight: .bold))
-                        .frame(maxWidth: .infinity, minHeight: 44)
-                        .contentShape(Rectangle())
-                    }
-                    .buttonStyle(.plain)
-                    .foregroundStyle(isSaved ? Color.workoutMutedText : Color.workoutAccent)
-                    .accessibilityHint(isSaved ? "Removes this exercise from Saved" : "Adds this exercise to Saved")
-
-                    Divider()
-                        .frame(height: 28)
-                        .overlay(Color.workoutHairline.opacity(0.5))
-                        .accessibilityHidden(true)
-
-                    Button(role: .destructive, action: removeExercise) {
-                        Label("Delete", systemImage: "trash.fill")
-                            .font(.system(.subheadline, design: .rounded, weight: .bold))
-                            .frame(maxWidth: .infinity, minHeight: 44)
-                            .contentShape(Rectangle())
-                    }
-                    .buttonStyle(.plain)
-                    .foregroundStyle(Color(red: 0.78, green: 0.14, blue: 0.12))
-                    .accessibilityHint("Removes this exercise from the selected day")
-                }
             }
         }
         .padding(16)
