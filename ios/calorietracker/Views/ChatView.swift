@@ -138,7 +138,6 @@ struct ChatView: View {
                                 lineWidth: 0.8
                             )
                         )
-                        .shadow(color: AppColors.calorie.opacity(0.16), radius: 20, x: 0, y: 9)
                     Image(systemName: "bubble.left.and.bubble.right.fill")
                         .font(.system(size: coachHeroIconSize, weight: .medium))
                         .foregroundStyle(
