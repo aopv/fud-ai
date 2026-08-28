@@ -1041,6 +1041,7 @@ struct BodyFatChartSection: View {
     let goalBodyFatFraction: Double?
     let currentBodyFatFraction: Double?
     let onLogBodyFat: () -> Void
+    @State private var inspectedPoint: TrendPoint?
 
     private func displayPercent(_ fraction: Double) -> Double {
         fraction * 100
@@ -1112,6 +1113,26 @@ struct BodyFatChartSection: View {
                             .foregroundStyle(.green.opacity(0.7))
                             .lineStyle(StrokeStyle(lineWidth: 1.5, dash: [6, 4]))
                     }
+
+                    if let inspectedPoint {
+                        RuleMark(x: .value("Selected date", inspectedPoint.date))
+                            .foregroundStyle(AppColors.calorie.opacity(0.6))
+                            .lineStyle(StrokeStyle(lineWidth: 1.25, dash: [3, 3]))
+
+                        PointMark(
+                            x: .value("Selected date", inspectedPoint.date, unit: .day),
+                            y: .value("Selected body fat", inspectedPoint.value)
+                        )
+                        .foregroundStyle(.primary)
+                        .symbolSize(115)
+
+                        PointMark(
+                            x: .value("Selected date", inspectedPoint.date, unit: .day),
+                            y: .value("Selected body fat", inspectedPoint.value)
+                        )
+                        .foregroundStyle(AppColors.calorie)
+                        .symbolSize(52)
+                    }
                 }
                 .chartYScale(domain: bodyFatYDomain)
                 .chartXAxis {
@@ -1138,6 +1159,46 @@ struct BodyFatChartSection: View {
                 }
                 .frame(height: 190)
                 .clipped()
+                .chartOverlay { proxy in
+                    GeometryReader { geometry in
+                        let plotFrame = proxy.plotFrame.map { geometry[$0] }
+
+                        ZStack(alignment: .topLeading) {
+                            Color.clear
+                                .contentShape(Rectangle())
+                                .simultaneousGesture(
+                                    DragGesture(minimumDistance: 6)
+                                        .onChanged { value in
+                                            guard abs(value.translation.width) > abs(value.translation.height),
+                                                  let plotFrame else { return }
+                                            inspectBodyFat(
+                                                at: value.location.x - plotFrame.minX,
+                                                proxy: proxy,
+                                                points: plottedPoints
+                                            )
+                                        }
+                                        .onEnded { _ in
+                                            withAnimation(.easeOut(duration: 0.16)) {
+                                                inspectedPoint = nil
+                                            }
+                                        }
+                                )
+
+                            if let inspectedPoint,
+                               let plotFrame,
+                               let pointX = proxy.position(forX: inspectedPoint.date) {
+                                bodyFatInspectorLabel(for: inspectedPoint)
+                                    .fixedSize()
+                                    .position(
+                                        x: min(max(plotFrame.minX + pointX, plotFrame.minX + 56), plotFrame.maxX - 56),
+                                        y: plotFrame.minY + 26
+                                    )
+                                    .transition(.opacity.combined(with: .scale(scale: 0.94)))
+                            }
+                        }
+                    }
+                }
+                .animation(.snappy(duration: 0.16), value: inspectedPoint?.date)
             }
         }
         .padding()
@@ -1188,6 +1249,37 @@ struct BodyFatChartSection: View {
 
     private var formattedAverageBodyFat: String {
         String(format: "%.1f%%", averageBodyFat)
+    }
+
+    private func inspectBodyFat(at plotX: CGFloat, proxy: ChartProxy, points: [TrendPoint]) {
+        guard let date: Date = proxy.value(atX: plotX), !points.isEmpty else { return }
+        let nearest = points.min {
+            abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date))
+        }
+        guard let nearest, nearest != inspectedPoint else { return }
+
+        inspectedPoint = nearest
+        UISelectionFeedbackGenerator().selectionChanged()
+    }
+
+    @ViewBuilder
+    private func bodyFatInspectorLabel(for point: TrendPoint) -> some View {
+        VStack(spacing: 1) {
+            Text(point.date.formatted(date: .abbreviated, time: .omitted))
+                .font(.system(.caption2, design: .rounded, weight: .medium))
+                .foregroundStyle(.secondary)
+            Text(String(format: "%.1f%%", point.value))
+                .font(.system(.subheadline, design: .rounded, weight: .bold))
+                .foregroundStyle(.primary)
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 6)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .stroke(AppColors.calorie.opacity(0.22), lineWidth: 0.75)
+        }
+        .shadow(color: .black.opacity(0.12), radius: 8, y: 3)
     }
 }
 

@@ -1683,20 +1683,22 @@ private fun BodyFatSection(
 private fun BodyFatChartCanvas(entries: List<BodyFatEntry>, goalFraction: Double?) {
     // Mirrors WeightChartCanvas — same horizontal grid + tick marks, vertical
     // dashed columns, dashed green goal line, right-side Y-axis labels (with
-    // "%" suffix), and bottom date labels showing first/last point in range.
-    val percents = entries.map { it.bodyFatFraction * 100 } + listOfNotNull(goalFraction?.let { it * 100 })
+    // "%" suffix), draggable inspector, and bottom date labels.
+    val sortedEntries = remember(entries) { entries.sortedBy { it.date } }
+    val percents = sortedEntries.map { it.bodyFatFraction * 100 } + listOfNotNull(goalFraction?.let { it * 100 })
     val minP = percents.min()
     val maxP = percents.max()
     val pad = maxOf((maxP - minP) * 0.15, 1.0)
     val yMin = (minP - pad).coerceAtLeast(0.0)
     val yMax = maxP + pad
-    val tStart = entries.first().date.toEpochMilli()
-    val tEnd = entries.last().date.toEpochMilli()
-    val singleEntry = entries.size == 1
+    val tStart = sortedEntries.first().date.toEpochMilli()
+    val tEnd = sortedEntries.last().date.toEpochMilli()
+    val singleEntry = sortedEntries.size == 1
     val tRange = maxOf(1L, tEnd - tStart)
     val goalLineColor = Color(0xFF34C759).copy(alpha = 0.7f)
     val gridColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.09f)
     val secondaryColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
+    val chartSurfaceColor = MaterialTheme.colorScheme.surface
     val ticks = niceAxisTicks(yMin, yMax, count = 5)
     val zone = ZoneId.systemDefault()
     // Same year-label + downsampling policy as WeightChartCanvas.
@@ -1704,69 +1706,174 @@ private fun BodyFatChartCanvas(entries: List<BodyFatEntry>, goalFraction: Double
     val showsYear = spanDays > 150 &&
         Instant.ofEpochMilli(tStart).atZone(zone).year != Instant.ofEpochMilli(tEnd).atZone(zone).year
     val xLabelFmt = DateTimeFormatter.ofPattern(if (showsYear) "MMM yyyy" else "MMM d", Locale.US).withZone(zone)
-    val points = downsampleTrend(entries.map { TrendPoint(it.date.toEpochMilli(), it.bodyFatFraction * 100) })
+    val points = remember(sortedEntries) {
+        downsampleTrend(sortedEntries.map { TrendPoint(it.date.toEpochMilli(), it.bodyFatFraction * 100) })
+    }
     val showsDots = points.size <= 31
+    val haptic = LocalHapticFeedback.current
+    val density = LocalDensity.current
+    var selectedIndex by remember(points) { mutableStateOf<Int?>(null) }
+    val selectedPoint = selectedIndex?.let(points::getOrNull)
+    val inspectorDateFormat = remember {
+        DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.getDefault()).withZone(ZoneId.systemDefault())
+    }
 
     Row(Modifier.fillMaxWidth().height(190.dp)) {
-        Canvas(
+        BoxWithConstraints(
             Modifier
                 .weight(1f)
                 .fillMaxSize()
                 .clip(RoundedCornerShape(10.dp))
                 .background(AppColors.Calorie.copy(alpha = 0.025f))
         ) {
-            val w = size.width; val h = size.height
-            // Horizontal grid + tick marks
-            ticks.forEach { tick ->
-                val y = h - (((tick - yMin) / (yMax - yMin)).toFloat() * h)
-                drawLine(
-                    color = gridColor,
-                    start = Offset(0f, y), end = Offset(w, y),
-                    strokeWidth = 1f
-                )
+            val canvasWidthPx = with(density) { maxWidth.toPx() }
+            val selectedTargetX = selectedPoint?.let { point ->
+                if (singleEntry) canvasWidthPx / 2f
+                else ((point.timeMs - tStart).toDouble() / tRange * canvasWidthPx).toFloat()
+            } ?: 0f
+            val animatedInspectorX by animateFloatAsState(
+                targetValue = selectedTargetX,
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioNoBouncy,
+                    stiffness = Spring.StiffnessMedium
+                ),
+                label = "bodyFatInspectorX"
+            )
+
+            fun selectNearest(x: Float) {
+                if (points.isEmpty() || canvasWidthPx <= 0f) return
+                val clampedX = x.coerceIn(0f, canvasWidthPx)
+                val nearest = points.indices.minByOrNull { index ->
+                    val pointX = if (singleEntry) canvasWidthPx / 2f else
+                        ((points[index].timeMs - tStart).toDouble() / tRange * canvasWidthPx).toFloat()
+                    kotlin.math.abs(pointX - clampedX)
+                } ?: return
+                if (nearest != selectedIndex) {
+                    selectedIndex = nearest
+                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                }
             }
-            // Vertical grid (4 columns) — faint dashed
-            for (i in 0..4) {
-                val x = (i.toFloat() / 4f) * w
-                drawLine(
-                    color = gridColor,
-                    start = Offset(x, 0f), end = Offset(x, h),
-                    strokeWidth = 1f,
-                    pathEffect = PathEffect.dashPathEffect(floatArrayOf(4f, 6f))
-                )
-            }
-            goalFraction?.let { g ->
-                val gPct = g * 100
-                val y = h - (((gPct - yMin) / (yMax - yMin)).toFloat() * h)
-                drawLine(
-                    color = goalLineColor,
-                    start = Offset(0f, y), end = Offset(w, y),
-                    strokeWidth = 3f,
-                    pathEffect = PathEffect.dashPathEffect(floatArrayOf(18f, 12f))
-                )
-            }
-            val offsets = points.map { p ->
-                Offset(
-                    if (singleEntry) w / 2f
-                    else ((p.timeMs - tStart).toDouble() / tRange * w).toFloat(),
-                    h - (((p.value - yMin) / (yMax - yMin)).toFloat() * h)
-                )
-            }
-            clipRect {
-                drawPath(
-                    smoothTrendAreaPath(offsets, h),
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            AppColors.Calorie.copy(alpha = 0.12f),
-                            AppColors.Calorie.copy(alpha = 0.01f)
-                        ),
-                        startY = 0f,
-                        endY = h
+
+            Canvas(
+                Modifier
+                    .fillMaxSize()
+                    .pointerInput(points, canvasWidthPx) {
+                        var gestureX = 0f
+                        detectHorizontalDragGestures(
+                            onDragStart = { offset ->
+                                gestureX = offset.x
+                                selectNearest(gestureX)
+                            },
+                            onDragEnd = { selectedIndex = null },
+                            onDragCancel = { selectedIndex = null },
+                            onHorizontalDrag = { change, dragAmount ->
+                                gestureX = (gestureX + dragAmount).coerceIn(0f, size.width.toFloat())
+                                selectNearest(gestureX)
+                                change.consume()
+                            }
+                        )
+                    }
+            ) {
+                val w = size.width; val h = size.height
+                // Horizontal grid + tick marks
+                ticks.forEach { tick ->
+                    val y = h - (((tick - yMin) / (yMax - yMin)).toFloat() * h)
+                    drawLine(
+                        color = gridColor,
+                        start = Offset(0f, y), end = Offset(w, y),
+                        strokeWidth = 1f
                     )
-                )
-                drawPath(smoothTrendPath(offsets), AppColors.Calorie, style = Stroke(width = 6f))
-                if (showsDots) {
-                    offsets.forEach { drawCircle(AppColors.Calorie, radius = 6f, center = it) }
+                }
+                // Vertical grid (4 columns) — faint dashed
+                for (i in 0..4) {
+                    val x = (i.toFloat() / 4f) * w
+                    drawLine(
+                        color = gridColor,
+                        start = Offset(x, 0f), end = Offset(x, h),
+                        strokeWidth = 1f,
+                        pathEffect = PathEffect.dashPathEffect(floatArrayOf(4f, 6f))
+                    )
+                }
+                goalFraction?.let { g ->
+                    val gPct = g * 100
+                    val y = h - (((gPct - yMin) / (yMax - yMin)).toFloat() * h)
+                    drawLine(
+                        color = goalLineColor,
+                        start = Offset(0f, y), end = Offset(w, y),
+                        strokeWidth = 3f,
+                        pathEffect = PathEffect.dashPathEffect(floatArrayOf(18f, 12f))
+                    )
+                }
+                val offsets = points.map { p ->
+                    Offset(
+                        if (singleEntry) w / 2f
+                        else ((p.timeMs - tStart).toDouble() / tRange * w).toFloat(),
+                        h - (((p.value - yMin) / (yMax - yMin)).toFloat() * h)
+                    )
+                }
+                clipRect {
+                    drawPath(
+                        smoothTrendAreaPath(offsets, h),
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                AppColors.Calorie.copy(alpha = 0.12f),
+                                AppColors.Calorie.copy(alpha = 0.01f)
+                            ),
+                            startY = 0f,
+                            endY = h
+                        )
+                    )
+                    drawPath(smoothTrendPath(offsets), AppColors.Calorie, style = Stroke(width = 6f))
+                    if (showsDots) {
+                        offsets.forEach { drawCircle(AppColors.Calorie, radius = 6f, center = it) }
+                    }
+
+                    selectedPoint?.let { point ->
+                        val pointY = h - (((point.value - yMin) / (yMax - yMin)).toFloat() * h)
+                        drawLine(
+                            color = AppColors.Calorie.copy(alpha = 0.62f),
+                            start = Offset(animatedInspectorX, 0f),
+                            end = Offset(animatedInspectorX, h),
+                            strokeWidth = 2.5f,
+                            pathEffect = PathEffect.dashPathEffect(floatArrayOf(7f, 7f))
+                        )
+                        drawCircle(chartSurfaceColor, radius = 11f, center = Offset(animatedInspectorX, pointY))
+                        drawCircle(AppColors.Calorie, radius = 6f, center = Offset(animatedInspectorX, pointY))
+                    }
+                }
+            }
+
+            selectedPoint?.let { point ->
+                val tooltipWidth = 116.dp
+                val tooltipWidthPx = with(density) { tooltipWidth.toPx() }
+                val tooltipLeft = (animatedInspectorX - tooltipWidthPx / 2f)
+                    .coerceIn(0f, (canvasWidthPx - tooltipWidthPx).coerceAtLeast(0f))
+                Column(
+                    modifier = Modifier
+                        .offset { IntOffset(tooltipLeft.roundToInt(), with(density) { 6.dp.roundToPx() }) }
+                        .width(tooltipWidth)
+                        .shadow(8.dp, RoundedCornerShape(10.dp))
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.96f))
+                        .border(0.75.dp, AppColors.Calorie.copy(alpha = 0.24f), RoundedCornerShape(10.dp))
+                        .padding(horizontal = 8.dp, vertical = 6.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(1.dp)
+                ) {
+                    Text(
+                        inspectorDateFormat.format(Instant.ofEpochMilli(point.timeMs)),
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = secondaryColor,
+                        maxLines = 1
+                    )
+                    Text(
+                        String.format(Locale.US, "%.1f%%", point.value),
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        maxLines = 1
+                    )
                 }
             }
         }
