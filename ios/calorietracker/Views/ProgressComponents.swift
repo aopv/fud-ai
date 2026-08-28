@@ -351,7 +351,7 @@ struct CalorieChartSection: View {
                 Spacer()
                 if !dailyCalories.isEmpty {
                     let avg = dailyCalories.reduce(0) { $0 + $1.calories } / max(dailyCalories.count, 1)
-                    Text("Avg: \(avg) kcal")
+                    Text("Avg: \(avg.formatted()) kcal")
                         .font(.system(.subheadline, design: .rounded, weight: .medium))
                         .foregroundStyle(.secondary)
                 }

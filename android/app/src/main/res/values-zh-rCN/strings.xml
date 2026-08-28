@@ -48,7 +48,7 @@
     <string name="unit_ft">ft</string>
     <string name="unit_in">in</string>
     <string name="unit_ft_in">ft / in</string>
-    <string name="kcal_value_format">%1$d kcal</string>
+    <string name="kcal_value_format">%1$,d kcal</string>
     <string name="grams_value_format">%1$dg</string>
     <string name="grams_value_decimal_format">%1$.1fg</string>
     <string name="kg_value_format">%1$.1f kg</string>
@@ -450,7 +450,7 @@
     <string name="progress_history_count_format">%1$d 条记录 · 点按以查看或删除</string>
 
     <string name="progress_calories_section">卡路里</string>
-    <string name="progress_avg_format">平均：%1$d kcal</string>
+    <string name="progress_avg_format">平均：%1$,d kcal</string>
     <string name="progress_no_food">尚未记录食物</string>
 
     <string name="progress_macro_averages">宏量平均值</string>

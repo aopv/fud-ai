@@ -34,12 +34,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
-import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Checklist
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ContentCopy
@@ -104,6 +104,7 @@ import com.apoorvdarshan.calorietracker.ui.home.SheetGlassDropdownMenu
 import com.apoorvdarshan.calorietracker.ui.home.SheetGlassDropdownMenuItem
 import com.apoorvdarshan.calorietracker.ui.navigation.BottomNavScrollPadding
 import com.apoorvdarshan.calorietracker.ui.theme.AppColors
+import com.apoorvdarshan.calorietracker.ui.util.formattedWholeNumber
 import coil.compose.AsyncImage
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -462,7 +463,7 @@ private fun WorkoutBurnHero(
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 WorkoutMetric(
                     label = "Sets",
-                    value = state.performedSetCount.toString(),
+                    value = state.performedSetCount.formattedWholeNumber(),
                     icon = Icons.Filled.Checklist,
                     active = state.performedSetCount > 0,
                     modifier = Modifier.weight(1f)
@@ -470,7 +471,7 @@ private fun WorkoutBurnHero(
                 MetricDivider()
                 WorkoutMetric(
                     label = "Workouts",
-                    value = state.exercises.size.toString(),
+                    value = state.exercises.size.formattedWholeNumber(),
                     icon = Icons.Filled.FitnessCenter,
                     active = state.exercises.isNotEmpty(),
                     modifier = Modifier.weight(1f)
@@ -478,7 +479,7 @@ private fun WorkoutBurnHero(
                 MetricDivider()
                 WorkoutMetric(
                     label = "Reps",
-                    value = state.repCount.toString(),
+                    value = state.repCount.formattedWholeNumber(),
                     icon = Icons.Filled.Repeat,
                     active = state.repCount > 0,
                     modifier = Modifier.weight(1f)
@@ -486,7 +487,7 @@ private fun WorkoutBurnHero(
                 MetricDivider()
                 WorkoutMetric(
                     label = "Burn",
-                    value = state.caloriesBurned?.let { "$it kcal" } ?: "-- kcal",
+                    value = state.caloriesBurned?.let { "${it.formattedWholeNumber()} kcal" } ?: "-- kcal",
                     icon = Icons.Filled.LocalFireDepartment,
                     active = state.caloriesBurned != null,
                     modifier = Modifier.weight(1f)
@@ -602,7 +603,11 @@ private fun WorkoutMetric(
             fontSize = 24.sp,
             fontWeight = FontWeight.ExtraBold,
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+            autoSize = TextAutoSize.StepBased(
+                minFontSize = 14.sp,
+                maxFontSize = 24.sp,
+                stepSize = 0.5.sp
+            )
         )
     }
 }
@@ -629,7 +634,7 @@ private fun WorkoutDayHeader(
             .padding(horizontal = 4.dp, vertical = 2.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(Icons.Filled.CalendarMonth, contentDescription = null, tint = AppColors.Calorie, modifier = Modifier.size(19.dp))
+        Icon(Icons.Filled.FitnessCenter, contentDescription = null, tint = AppColors.Calorie, modifier = Modifier.size(19.dp))
         Spacer(Modifier.width(8.dp))
         Text(
             text = selectedDateTitle(selectedDate),

@@ -930,7 +930,7 @@ struct HomeView: View {
                                 .textCase(nil)
                                 // Combined nutrients for this meal (issue #103: chicken + pasta + sauce = one total)
                                 VStack(alignment: .trailing, spacing: 1) {
-                                    Text("\(group.totalCalories) kcal")
+                                    Text("\(group.totalCalories.formatted()) kcal")
                                         .font(.system(.subheadline, design: .rounded, weight: .semibold))
                                         .foregroundStyle(AppColors.calorie)
                                     Text("\(Int(group.totalProtein.rounded()))P · \(Int(group.totalCarbs.rounded()))C · \(Int(group.totalFat.rounded()))F")
@@ -3053,7 +3053,7 @@ struct FoodRow: View {
                 }
 
                 HStack(spacing: 6) {
-                    Text("\(entry.calories) kcal")
+                    Text("\(entry.calories.formatted()) kcal")
                         .font(.system(.subheadline, design: .rounded, weight: .semibold))
                         .foregroundStyle(AppColors.calorie)
 
@@ -3689,7 +3689,13 @@ struct ProfileView: View {
                             }
                     }
 
-                    lockableGoalRow(icon: "flame", label: "Calories", valueText: "\(profile.effectiveCalories) kcal", macro: nil, sheet: .editCalories)
+                    lockableGoalRow(
+                        icon: "flame",
+                        label: "Calories",
+                        valueText: "\(profile.effectiveCalories.formatted()) kcal",
+                        macro: nil,
+                        sheet: .editCalories
+                    )
 
                     lockableGoalRow(icon: "p.circle", label: "Protein", valueText: "\(profile.effectiveProtein)g", macro: .protein, sheet: .editProtein)
                     lockableGoalRow(icon: "c.circle", label: "Carbs", valueText: "\(profile.effectiveCarbs)g", macro: .carbs, sheet: .editCarbs)

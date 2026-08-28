@@ -128,6 +128,7 @@ import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import com.apoorvdarshan.calorietracker.ui.util.clockTimePattern
+import com.apoorvdarshan.calorietracker.ui.util.formattedWholeNumber
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -161,7 +162,6 @@ import com.apoorvdarshan.calorietracker.ui.components.FudGlassTextField
 import com.apoorvdarshan.calorietracker.ui.components.WeekEnergyStrip
 import com.apoorvdarshan.calorietracker.ui.navigation.BottomNavScrollPadding
 import com.apoorvdarshan.calorietracker.ui.theme.AppColors
-import java.text.NumberFormat
 import java.time.DayOfWeek
 import java.time.Instant
 import java.time.LocalDate
@@ -1199,9 +1199,7 @@ private fun shortDay(dow: DayOfWeek): String = when (dow) {
 @Composable
 private fun CalorieHero(current: Int, goal: Int) {
     val ratio = if (goal > 0) (current.toFloat() / goal).coerceIn(0f, 1f) else 0f
-    val formattedCurrent = remember(current) {
-        NumberFormat.getIntegerInstance(Locale.getDefault()).format(current)
-    }
+    val formattedCurrent = current.formattedWholeNumber()
     // Fill-from-zero on app open. lastEpoch is saveable so it survives tab switches
     // (where Home leaves/re-enters composition) — only a real app-open (new epoch)
     // replays the sweep; tab returns snap to the current value.
@@ -1220,8 +1218,8 @@ private fun CalorieHero(current: Int, goal: Int) {
     }
     val statusText = when {
         goal <= 0 -> "No goal"
-        current < goal -> "${goal - current} left"
-        current > goal -> "${current - goal} over"
+        current < goal -> "${(goal - current).formattedWholeNumber()} left"
+        current > goal -> "${(current - goal).formattedWholeNumber()} over"
         else -> "Goal reached"
     }
     val gradientColors = listOf(AppColors.CalorieStart, AppColors.CalorieEnd)
@@ -1290,7 +1288,7 @@ private fun CalorieHero(current: Int, goal: Int) {
             )
             // Flame + calorie status, mirroring iOS HStack(spacing: 5) { flame.fill (11pt) ;
             // Text(statusText) } tinted to AppColors.calorie — a pink monochrome
-            // glyph, not a multicolor emoji, and the count is un-grouped (no thousands comma).
+            // glyph, not a multicolor emoji.
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(5.dp)
@@ -1446,7 +1444,7 @@ private fun MealSectionHeader(
             }
             Column(horizontalAlignment = Alignment.End) {
                 Text(
-                    "$totalCalories kcal",
+                    "${totalCalories.formattedWholeNumber()} kcal",
                     fontSize = 15.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = AppColors.Calorie
@@ -1790,7 +1788,7 @@ private fun FoodRow(
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 Text(
-                    "${entry.calories} kcal",
+                    "${entry.calories.formattedWholeNumber()} kcal",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = AppColors.Calorie
@@ -2134,7 +2132,12 @@ private fun AnalysisResultDialog(
         Text("${analysis.emoji ?: "🍽"}  ${analysis.name}", fontSize = 21.sp, fontWeight = FontWeight.Bold)
         FudGlassSurface(modifier = Modifier.fillMaxWidth(), cornerRadius = 20.dp, padding = 16.dp) {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("${analysis.calories} kcal", fontSize = 30.sp, fontWeight = FontWeight.Bold, color = AppColors.Calorie)
+                Text(
+                    "${analysis.calories.formattedWholeNumber()} kcal",
+                    fontSize = 30.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = AppColors.Calorie
+                )
                 Text(stringResource(R.string.macro_protein_format, MacroValueFormatter.withUnit(analysis.protein)))
                 Text(stringResource(R.string.macro_carbs_format, MacroValueFormatter.withUnit(analysis.carbs)))
                 Text(stringResource(R.string.macro_fat_format, MacroValueFormatter.withUnit(analysis.fat)))

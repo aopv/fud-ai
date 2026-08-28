@@ -48,7 +48,7 @@
     <string name="unit_ft">ft</string>
     <string name="unit_in">in</string>
     <string name="unit_ft_in">ft / in</string>
-    <string name="kcal_value_format">%1$d kcal</string>
+    <string name="kcal_value_format">%1$,d kcal</string>
     <string name="grams_value_format">%1$dg</string>
     <string name="grams_value_decimal_format">%1$.1fg</string>
     <string name="kg_value_format">%1$.1f kg</string>
@@ -450,7 +450,7 @@
     <string name="progress_history_count_format">%1$d registros · toque para ver ou apagar</string>
 
     <string name="progress_calories_section">Calorias</string>
-    <string name="progress_avg_format">Média: %1$d kcal</string>
+    <string name="progress_avg_format">Média: %1$,d kcal</string>
     <string name="progress_no_food">Nenhum alimento registrado ainda</string>
 
     <string name="progress_macro_averages">Médias de macros</string>

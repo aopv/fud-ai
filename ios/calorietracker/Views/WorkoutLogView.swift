@@ -743,15 +743,15 @@ private struct WorkoutLogStatsStrip: View {
 
     var body: some View {
         HStack(spacing: 0) {
-            metric(label: "Sets", value: "\(setCount)", systemImage: "checklist", active: setCount > 0)
+            metric(label: "Sets", value: setCount.formatted(), systemImage: "checklist", active: setCount > 0)
             divider
-            metric(label: "Workouts", value: "\(workoutCount)", systemImage: "dumbbell.fill", active: workoutCount > 0)
+            metric(label: "Workouts", value: workoutCount.formatted(), systemImage: "dumbbell.fill", active: workoutCount > 0)
             divider
-            metric(label: "Reps", value: "\(repCount)", systemImage: "repeat", active: repCount > 0)
+            metric(label: "Reps", value: repCount.formatted(), systemImage: "repeat", active: repCount > 0)
             divider
             metric(
                 label: "Burn",
-                value: caloriesBurned.map { "\($0) kcal" } ?? "-- kcal",
+                value: caloriesBurned.map { "\($0.formatted()) kcal" } ?? "-- kcal",
                 systemImage: "flame.fill",
                 active: caloriesBurned != nil
             )

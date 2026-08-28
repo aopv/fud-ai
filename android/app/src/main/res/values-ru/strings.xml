@@ -48,7 +48,7 @@
     <string name="unit_ft">ft</string>
     <string name="unit_in">in</string>
     <string name="unit_ft_in">ft / in</string>
-    <string name="kcal_value_format">%1$d ккал</string>
+    <string name="kcal_value_format">%1$,d ккал</string>
     <string name="grams_value_format">%1$d г</string>
     <string name="grams_value_decimal_format">%1$.1f г</string>
     <string name="kg_value_format">%1$.1f кг</string>
@@ -450,7 +450,7 @@
     <string name="progress_history_count_format">%1$d записей · коснитесь, чтобы посмотреть или удалить</string>
 
     <string name="progress_calories_section">Калории</string>
-    <string name="progress_avg_format">Сред.: %1$d ккал</string>
+    <string name="progress_avg_format">Сред.: %1$,d ккал</string>
     <string name="progress_no_food">Пока нет записей о еде</string>
 
     <string name="progress_macro_averages">Средние макросы</string>

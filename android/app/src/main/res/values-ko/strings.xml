@@ -48,7 +48,7 @@
     <string name="unit_ft">ft</string>
     <string name="unit_in">in</string>
     <string name="unit_ft_in">ft / in</string>
-    <string name="kcal_value_format">%1$d kcal</string>
+    <string name="kcal_value_format">%1$,d kcal</string>
     <string name="grams_value_format">%1$dg</string>
     <string name="grams_value_decimal_format">%1$.1fg</string>
     <string name="kg_value_format">%1$.1f kg</string>
@@ -450,7 +450,7 @@
     <string name="progress_history_count_format">%1$d개 항목 · 탭하여 보거나 삭제</string>
 
     <string name="progress_calories_section">칼로리</string>
-    <string name="progress_avg_format">평균: %1$d kcal</string>
+    <string name="progress_avg_format">평균: %1$,d kcal</string>
     <string name="progress_no_food">아직 기록된 음식이 없어요</string>
 
     <string name="progress_macro_averages">매크로 평균</string>

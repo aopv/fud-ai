@@ -537,8 +537,8 @@ struct CalorieGauge: View {
 
     private var statusText: String {
         guard goal > 0 else { return "No goal" }
-        if eaten < goal { return "\(goal - eaten) left" }
-        if eaten > goal { return "\(eaten - goal) over" }
+        if eaten < goal { return "\((goal - eaten).formatted()) left" }
+        if eaten > goal { return "\((eaten - goal).formatted()) over" }
         return "Goal reached"
     }
 
@@ -577,7 +577,7 @@ struct CalorieGauge: View {
                     .tracking(0.5)
                     .foregroundStyle(.secondary)
 
-                Text("\(eaten)")
+                Text(eaten.formatted())
                     .font(.system(size: 50, weight: .bold, design: .rounded))
                     .foregroundStyle(
                         LinearGradient(colors: AppColors.calorieGradient,
