@@ -52,7 +52,7 @@ fun ImportDiarySheet(
         onDismissRequest = { if (!importing) onDismiss() },
         sheetState = state,
         shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
-        containerColor = MaterialTheme.colorScheme.surface,
+        containerColor = if (isDark) Color(0xF2141416) else Color(0xFFFAF3EE),
     ) {
         Column(
             Modifier.fillMaxWidth().padding(horizontal = 24.dp).padding(bottom = 32.dp),
@@ -144,6 +144,6 @@ private fun SecondaryAction(text: String, enabled: Boolean, onClick: () -> Unit)
             .padding(vertical = 14.dp),
         contentAlignment = Alignment.Center,
     ) {
-        Text(text, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+        Text(text, color = AppColors.Calorie, fontWeight = FontWeight.Bold, fontSize = 16.sp)
     }
 }

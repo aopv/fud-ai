@@ -12,13 +12,12 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
@@ -35,7 +34,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
@@ -96,9 +94,8 @@ internal fun SheetReviewToolbar(
         Spacer(Modifier.width(itemGap))
         Text(
             title,
-            style = MaterialTheme.typography.titleLarge,
-            fontSize = if (compact) 17.sp else 19.sp,
-            color = AppColors.KitchenEspresso,
+            fontSize = if (compact) 16.sp else 17.sp,
+            fontWeight = FontWeight.SemiBold,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             textAlign = TextAlign.Center,
@@ -120,7 +117,7 @@ private fun SheetToolbarPill(
     compact: Boolean = false,
     onClick: () -> Unit
 ) {
-    val shape = RoundedCornerShape(4.dp)
+    val shape = CircleShape
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
     val horizontalPadding = when {
         compact && bold -> 12.dp
@@ -130,30 +127,35 @@ private fun SheetToolbarPill(
     val modifier = if (bold) {
         Modifier
             .clip(shape)
-            .background(AppColors.KitchenTomato)
-            .border(1.dp, AppColors.KitchenEspresso.copy(alpha = 0.30f), shape)
+            .background(Brush.linearGradient(listOf(AppColors.CalorieStart, AppColors.CalorieEnd)))
     } else {
         Modifier
             .clip(shape)
-            .background(if (isDark) AppColors.KitchenRoastPaper else AppColors.KitchenPaper)
+            .background(if (isDark) MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.42f) else Color(0xFFEDE3DD).copy(alpha = 0.82f))
+            .background(
+                Brush.verticalGradient(
+                    listOf(
+                        Color.White.copy(alpha = if (isDark) 0.08f else 0.24f),
+                        Color.White.copy(alpha = if (isDark) 0.02f else 0.06f)
+                    )
+                )
+            )
             .border(
-                1.dp,
-                if (isDark) AppColors.KitchenBrass.copy(alpha = 0.36f)
-                else AppColors.KitchenEspresso.copy(alpha = 0.22f),
+                0.7.dp,
+                Color.White.copy(alpha = if (isDark) 0.10f else 0.48f),
                 shape
             )
     }
     Box(
         modifier
-            .heightIn(min = 48.dp)
             .clickable(onClick = onClick)
             .padding(horizontal = horizontalPadding, vertical = 8.dp)
     ) {
         Text(
             label,
-            color = if (bold) Color.White else MaterialTheme.colorScheme.secondary,
+            color = if (bold) Color.White else AppColors.Calorie,
             fontSize = if (compact) 15.sp else 16.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = if (bold) FontWeight.SemiBold else FontWeight.Medium
         )
     }
 }
@@ -162,9 +164,9 @@ private fun SheetToolbarPill(
 internal fun SheetSectionHeader(title: String) {
     Text(
         title,
-        style = MaterialTheme.typography.labelMedium,
-        fontWeight = FontWeight.Bold,
-        color = AppColors.KitchenHerb,
+        fontSize = 14.sp,
+        fontWeight = FontWeight.SemiBold,
+        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
         modifier = Modifier.padding(start = 18.dp, top = 8.dp, bottom = 4.dp)
     )
 }
@@ -174,26 +176,32 @@ internal fun SheetPillRow(
     onClick: (() -> Unit)? = null,
     content: @Composable RowScope.() -> Unit
 ) {
-    val shape = RoundedCornerShape(4.dp)
+    val shape = RoundedCornerShape(24.dp)
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
     val rowFill = if (isDark) {
-        AppColors.KitchenRoastPaper
+        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.38f)
     } else {
-        AppColors.KitchenPaper
+        Color(0xFFE9DCD5).copy(alpha = 0.82f)
     }
-    val rowBorder = if (isDark) AppColors.KitchenBrass.copy(alpha = 0.30f)
-                    else AppColors.KitchenEspresso.copy(alpha = 0.18f)
+    val rowSheen = Brush.verticalGradient(
+        listOf(
+            Color.White.copy(alpha = if (isDark) 0.075f else 0.18f),
+            Color.White.copy(alpha = if (isDark) 0.018f else 0.04f),
+            AppColors.Calorie.copy(alpha = if (isDark) 0.022f else 0.060f)
+        )
+    )
+    val rowBorder = Brush.linearGradient(
+        listOf(
+            Color.White.copy(alpha = if (isDark) 0.14f else 0.50f),
+            AppColors.Calorie.copy(alpha = if (isDark) 0.07f else 0.18f)
+        )
+    )
     val base = Modifier
         .fillMaxWidth()
-        .shadow(
-            3.dp,
-            shape,
-            ambientColor = Color.Black.copy(alpha = 0.09f),
-            spotColor = Color.Black.copy(alpha = 0.09f)
-        )
         .clip(shape)
         .background(rowFill)
-        .border(1.dp, rowBorder, shape)
+        .background(rowSheen)
+        .border(0.7.dp, rowBorder, shape)
     val withClick = if (onClick != null) base.clickable(onClick = onClick) else base
     Row(
         withClick.padding(horizontal = 18.dp, vertical = 15.dp),
@@ -204,27 +212,33 @@ internal fun SheetPillRow(
 
 @Composable
 internal fun SheetPillCard(content: @Composable ColumnScope.() -> Unit) {
-    val shape = RoundedCornerShape(4.dp)
+    val shape = RoundedCornerShape(24.dp)
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
     val cardFill = if (isDark) {
-        AppColors.KitchenRoastPaper
+        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.38f)
     } else {
-        AppColors.KitchenPaper
+        Color(0xFFE9DCD5).copy(alpha = 0.82f)
     }
-    val cardBorder = if (isDark) AppColors.KitchenBrass.copy(alpha = 0.30f)
-                     else AppColors.KitchenEspresso.copy(alpha = 0.18f)
+    val cardSheen = Brush.verticalGradient(
+        listOf(
+            Color.White.copy(alpha = if (isDark) 0.075f else 0.18f),
+            Color.White.copy(alpha = if (isDark) 0.018f else 0.04f),
+            AppColors.Calorie.copy(alpha = if (isDark) 0.022f else 0.060f)
+        )
+    )
+    val cardBorder = Brush.linearGradient(
+        listOf(
+            Color.White.copy(alpha = if (isDark) 0.14f else 0.50f),
+            AppColors.Calorie.copy(alpha = if (isDark) 0.07f else 0.18f)
+        )
+    )
     Column(
         Modifier
             .fillMaxWidth()
-            .shadow(
-                3.dp,
-                shape,
-                ambientColor = Color.Black.copy(alpha = 0.09f),
-                spotColor = Color.Black.copy(alpha = 0.09f)
-            )
             .clip(shape)
             .background(cardFill)
-            .border(1.dp, cardBorder, shape)
+            .background(cardSheen)
+            .border(0.7.dp, cardBorder, shape)
             .padding(vertical = 4.dp),
         content = content
     )
@@ -318,7 +332,7 @@ internal fun ServingQuantityCard(
                     fontSize = 17.sp,
                     textAlign = TextAlign.End
                 ),
-                cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+                cursorBrush = SolidColor(AppColors.Calorie),
                 modifier = Modifier
                     .widthIn(min = 80.dp, max = 112.dp)
                     .focusRequester(focusRequester)
@@ -360,7 +374,7 @@ internal fun ServingQuantityCard(
                         Text(
                             selectedUnitLabel,
                             fontSize = 17.sp,
-                            color = MaterialTheme.colorScheme.primary,
+                            color = AppColors.Calorie,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             textAlign = TextAlign.End,
@@ -369,7 +383,7 @@ internal fun ServingQuantityCard(
                         Icon(
                             Icons.Filled.UnfoldMore,
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary
+                            tint = AppColors.Calorie
                         )
                     }
                     SheetGlassDropdownMenu(
@@ -539,30 +553,34 @@ internal fun SheetGlassDropdownMenu(
     val shape = RoundedCornerShape(22.dp)
     val sizedModifier = if (menuWidth != null) modifier.width(menuWidth) else modifier
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
-    val menuContainer = if (isDark) AppColors.KitchenRoastPaper else AppColors.KitchenPaper
+    val menuContainer = if (isDark) Color(0xF2141416) else Color(0xFFFAF3EE).copy(alpha = 0.98f)
     val menuSheen = Brush.verticalGradient(
         colors = if (isDark) {
             listOf(
-                Color.White.copy(alpha = 0.035f),
-                Color.Transparent
+                Color.White.copy(alpha = 0.045f),
+                Color.White.copy(alpha = 0.015f),
+                AppColors.Calorie.copy(alpha = 0.025f)
             )
         } else {
             listOf(
-                Color.White.copy(alpha = 0.28f),
-                AppColors.KitchenBone.copy(alpha = 0.18f)
+                Color.White.copy(alpha = 0.70f),
+                Color.White.copy(alpha = 0.24f),
+                AppColors.Calorie.copy(alpha = 0.040f)
             )
         }
     )
     val menuBorder = Brush.linearGradient(
         colors = if (isDark) {
             listOf(
-                AppColors.KitchenBrass.copy(alpha = 0.32f),
-                AppColors.KitchenBrass.copy(alpha = 0.14f)
+                Color.White.copy(alpha = 0.18f),
+                Color.White.copy(alpha = 0.055f),
+                AppColors.Calorie.copy(alpha = 0.08f)
             )
         } else {
             listOf(
-                AppColors.KitchenEspresso.copy(alpha = 0.22f),
-                AppColors.KitchenEspresso.copy(alpha = 0.10f)
+                Color.White.copy(alpha = 0.95f),
+                Color.White.copy(alpha = 0.40f),
+                AppColors.Calorie.copy(alpha = 0.14f)
             )
         }
     )
@@ -576,7 +594,7 @@ internal fun SheetGlassDropdownMenu(
         shadowElevation = 0.dp,
         modifier = sizedModifier
             .background(menuSheen, shape)
-            .border(1.dp, menuBorder, shape)
+            .border(0.8.dp, menuBorder, shape)
             .padding(vertical = 5.dp),
         content = content
     )
@@ -592,7 +610,8 @@ internal fun SheetGlassDropdownMenuItem(
     reserveSelectionSlot: Boolean = false,
     onClick: () -> Unit
 ) {
-    val checkTint = MaterialTheme.colorScheme.primary
+    val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
+    val checkTint = if (isDark) Color.White else AppColors.Calorie
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -615,7 +634,7 @@ internal fun SheetGlassDropdownMenuItem(
                 Icon(
                     leadingIcon,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
+                    tint = AppColors.Calorie,
                     modifier = Modifier.size(19.dp)
                 )
                 Spacer(Modifier.width(10.dp))

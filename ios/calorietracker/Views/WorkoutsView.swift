@@ -163,14 +163,10 @@ private struct ExerciseLibraryBrowserView: View {
         // Search, filter chips, and the results header stay pinned; only the
         // exercise list scrolls beneath them.
         VStack(alignment: .leading, spacing: 0) {
-            WorkoutLibraryMasthead()
-            .padding(.horizontal, NeoAppMetrics.screenInset)
-            .padding(.top, 6)
-
             filters
-                .padding(.horizontal, NeoAppMetrics.screenInset)
-                .padding(.top, 6)
-                .padding(.bottom, 6)
+                .padding(.horizontal, 20)
+                .padding(.top, 18)
+                .padding(.bottom, 18)
 
             ResultsHeader(
                 count: items.count,
@@ -184,8 +180,8 @@ private struct ExerciseLibraryBrowserView: View {
                     }
                 }
             )
-            .padding(.horizontal, NeoAppMetrics.screenInset)
-            .padding(.bottom, 5)
+            .padding(.horizontal, 20)
+            .padding(.bottom, 4)
 
             scrollingList
         }
@@ -210,7 +206,7 @@ private struct ExerciseLibraryBrowserView: View {
 
     private var scrollingList: some View {
         ScrollView {
-            LazyVStack(alignment: .leading, spacing: 7) {
+            LazyVStack(alignment: .leading, spacing: 0) {
                 if items.isEmpty {
                     ContentUnavailableView {
                         Label("No exercises match", systemImage: "line.3.horizontal.decrease")
@@ -227,11 +223,17 @@ private struct ExerciseLibraryBrowserView: View {
                             ExerciseLibraryRow(item: item)
                         }
                         .buttonStyle(.plain)
-                        .padding(.horizontal, NeoAppMetrics.screenInset)
+                        .padding(.horizontal, 20)
+
+                        if item.id != items.last?.id {
+                            Divider()
+                                .overlay(Color.workoutHairline.opacity(0.28))
+                                .padding(.leading, 144)
+                                .padding(.horizontal, 20)
+                        }
                     }
                 }
             }
-            .padding(.top, 2)
             .padding(.bottom, 112)
         }
         .contentMargins(.bottom, 104, for: .scrollContent)
@@ -247,17 +249,13 @@ private struct ExerciseLibraryBrowserView: View {
                     Button(action: onShowWorkoutLog) {
                         Image(systemName: "figure.strengthtraining.traditional")
                             .font(.system(size: 18, weight: .bold))
-                            .foregroundStyle(KitchenTablePalette.onBrass)
+                            .foregroundStyle(Color.workoutAccent)
                             .frame(width: 50, height: 50)
-                            .background(NeoAppColors.brass, in: RoundedRectangle(cornerRadius: 15, style: .continuous))
-                            .overlay {
-                                RoundedRectangle(cornerRadius: 15, style: .continuous)
-                                    .stroke(KitchenTablePalette.brassDeep, lineWidth: NeoAppMetrics.rule)
-                            }
-                            .contentShape(RoundedRectangle(cornerRadius: 15, style: .continuous))
+                            .contentShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
                     }
                     .buttonStyle(.plain)
                     .workoutPressable()
+                    .workoutLiquidBarSurface(cornerRadius: 22)
                     .accessibilityLabel("Workout log")
                     .accessibilityHint("Opens your workout diary")
                 }
@@ -269,67 +267,130 @@ private struct ExerciseLibraryBrowserView: View {
                         title: bodyPartFilterTitle,
                         value: selectionTitle(selectedSplitGroupTitles),
                         systemImage: "square.grid.2x2",
-                        isActive: !selectedSplitGroupTitles.isEmpty,
-                        items: splitGroupFilterItems
-                    )
+                        isActive: !selectedSplitGroupTitles.isEmpty
+                    ) {
+                        menuChoice(
+                            String(localized: "All \(bodyPartFilterTitle)"),
+                            isSelected: selectedSplitGroupTitles.isEmpty
+                        ) {
+                            selectedSplitGroupTitles.removeAll()
+                        }
+                        ForEach(splitGroups) { group in
+                            muscleMenuChoice(
+                                group.title,
+                                muscles: group.muscles,
+                                isSelected: selectedSplitGroupTitles.contains(group.title)
+                            ) {
+                                selectedSplitGroupTitles = [group.title]
+                            }
+                        }
+                    }
 
                     if shouldShowPrimaryFilter {
                         filterMenuPill(
                             title: String(localized: "Primary"),
                             value: primaryFilterTitle,
                             systemImage: "scope",
-                            isActive: !selectedPrimaryMuscles.isEmpty,
-                            items: primaryFilterItems
-                        )
+                            isActive: !selectedPrimaryMuscles.isEmpty
+                        ) {
+                            menuChoice(allPrimaryMenuTitle, isSelected: selectedPrimaryMuscles.isEmpty) {
+                                selectedPrimaryMuscles.removeAll()
+                            }
+                            ForEach(primaryFilterOptions, id: \.self) { muscle in
+                                muscleMenuChoice(muscle, muscles: [muscle], isSelected: selectedPrimaryMuscles.contains(muscle)) {
+                                    selectedPrimaryMuscles = [muscle]
+                                }
+                            }
+                        }
                     }
 
                     filterMenuPill(
                         title: String(localized: "Secondary"),
                         value: selectionTitle(selectedSecondaryMuscles),
                         systemImage: "scope",
-                        isActive: !selectedSecondaryMuscles.isEmpty,
-                        items: secondaryFilterItems
-                    )
+                        isActive: !selectedSecondaryMuscles.isEmpty
+                    ) {
+                        menuChoice(String(localized: "All Secondary"), isSelected: selectedSecondaryMuscles.isEmpty) {
+                            selectedSecondaryMuscles.removeAll()
+                        }
+                        ForEach(service.availableSecondaryMuscles, id: \.self) { muscle in
+                            muscleMenuChoice(muscle, muscles: [muscle], isSelected: selectedSecondaryMuscles.contains(muscle)) {
+                                selectedSecondaryMuscles = [muscle]
+                            }
+                        }
+                    }
 
                     filterMenuPill(
                         title: String(localized: "Equipment"),
                         value: equipmentFilterTitle,
                         systemImage: "dumbbell.fill",
-                        isActive: !selectedRawEquipment.isEmpty,
-                        items: equipmentFilterItems
-                    )
+                        isActive: !selectedRawEquipment.isEmpty
+                    ) {
+                        menuChoice(allEquipmentMenuTitle, isSelected: selectedRawEquipment.isEmpty) {
+                            selectedRawEquipment.removeAll()
+                        }
+                        ForEach(profileRawEquipmentOptions, id: \.self) { equipment in
+                            menuChoice(equipment, isSelected: selectedRawEquipment.contains(equipment)) {
+                                selectedRawEquipment = [equipment]
+                            }
+                        }
+                    }
 
                     filterMenuPill(
                         title: String(localized: "Level"),
                         value: selectionTitle(selectedLevels),
                         systemImage: "chart.bar.fill",
-                        isActive: !selectedLevels.isEmpty,
-                        items: levelFilterItems
-                    )
+                        isActive: !selectedLevels.isEmpty
+                    ) {
+                        menuChoice(String(localized: "All Levels"), isSelected: selectedLevels.isEmpty) { selectedLevels.removeAll() }
+                        ForEach(service.availableLevels, id: \.self) { level in
+                            menuChoice(level, isSelected: selectedLevels.contains(level)) {
+                                selectedLevels = [level]
+                            }
+                        }
+                    }
 
                     filterMenuPill(
                         title: String(localized: "Force"),
                         value: selectionTitle(selectedForces),
                         systemImage: "arrow.left.arrow.right",
-                        isActive: !selectedForces.isEmpty,
-                        items: forceFilterItems
-                    )
+                        isActive: !selectedForces.isEmpty
+                    ) {
+                        menuChoice(String(localized: "All Forces"), isSelected: selectedForces.isEmpty) { selectedForces.removeAll() }
+                        ForEach(service.availableForces, id: \.self) { force in
+                            menuChoice(force, isSelected: selectedForces.contains(force)) {
+                                selectedForces = [force]
+                            }
+                        }
+                    }
 
                     filterMenuPill(
                         title: String(localized: "Mechanic"),
                         value: selectionTitle(selectedMechanics),
                         systemImage: "gearshape",
-                        isActive: !selectedMechanics.isEmpty,
-                        items: mechanicFilterItems
-                    )
+                        isActive: !selectedMechanics.isEmpty
+                    ) {
+                        menuChoice(String(localized: "All Mechanics"), isSelected: selectedMechanics.isEmpty) { selectedMechanics.removeAll() }
+                        ForEach(service.availableMechanics, id: \.self) { mechanic in
+                            menuChoice(mechanic, isSelected: selectedMechanics.contains(mechanic)) {
+                                selectedMechanics = [mechanic]
+                            }
+                        }
+                    }
 
                     filterMenuPill(
                         title: String(localized: "Category"),
                         value: categoryFilterTitle,
                         systemImage: "tag",
-                        isActive: !selectedCategories.isEmpty,
-                        items: categoryFilterItems
-                    )
+                        isActive: !selectedCategories.isEmpty
+                    ) {
+                        menuChoice(String(localized: "All Categories"), isSelected: selectedCategories.isEmpty) { selectedCategories.removeAll() }
+                        ForEach(service.availableCategoryCounts) { categoryCount in
+                            menuChoice(categoryMenuTitle(categoryCount), isSelected: selectedCategories.contains(categoryCount.category)) {
+                                selectedCategories = [categoryCount.category]
+                            }
+                        }
+                    }
                 }
                 .padding(.vertical, 1)
             }
@@ -429,137 +490,44 @@ private struct ExerciseLibraryBrowserView: View {
         return [value]
     }
 
-    private func filterMenuPill(
+    private func filterMenuPill<Content: View>(
         title: String,
         value: String,
         systemImage: String,
         isActive: Bool,
-        items: [NeoGlassChoiceItem]
+        @ViewBuilder content: () -> Content
     ) -> some View {
-        NeoGlassChoiceMenu(title: title, items: items) {
+        Menu {
+            content()
+        } label: {
             FilterMenuPill(title: title, value: value, systemImage: systemImage, isActive: isActive)
         }
         .workoutPressable()
     }
 
-    private var splitGroupFilterItems: [NeoGlassChoiceItem] {
-        [choiceItem(
-            id: "split.all",
-            title: String(localized: "All \(bodyPartFilterTitle)"),
-            systemImage: "square.grid.2x2",
-            isSelected: selectedSplitGroupTitles.isEmpty
-        ) { selectedSplitGroupTitles.removeAll() }] + splitGroups.map { group in
-            choiceItem(
-                id: "split.\(group.id)",
-                title: group.title,
-                systemImage: "figure.strengthtraining.traditional",
-                isSelected: selectedSplitGroupTitles.contains(group.title)
-            ) { selectedSplitGroupTitles = [group.title] }
-        }
-    }
-
-    private var primaryFilterItems: [NeoGlassChoiceItem] {
-        [choiceItem(id: "primary.all", title: allPrimaryMenuTitle, systemImage: "scope", isSelected: selectedPrimaryMuscles.isEmpty) {
-            selectedPrimaryMuscles.removeAll()
-        }] + primaryFilterOptions.map { muscle in
-            choiceItem(id: "primary.\(muscle)", title: muscle, systemImage: "figure.strengthtraining.traditional", isSelected: selectedPrimaryMuscles.contains(muscle)) {
-                selectedPrimaryMuscles = [muscle]
+    private func menuChoice(_ title: String, isSelected: Bool, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            if isSelected {
+                Label(title, systemImage: "checkmark")
+            } else {
+                Text(title)
             }
         }
     }
 
-    private var secondaryFilterItems: [NeoGlassChoiceItem] {
-        [choiceItem(id: "secondary.all", title: String(localized: "All Secondary"), systemImage: "scope", isSelected: selectedSecondaryMuscles.isEmpty) {
-            selectedSecondaryMuscles.removeAll()
-        }] + service.availableSecondaryMuscles.map { muscle in
-            choiceItem(id: "secondary.\(muscle)", title: muscle, systemImage: "figure.strengthtraining.traditional", isSelected: selectedSecondaryMuscles.contains(muscle)) {
-                selectedSecondaryMuscles = [muscle]
-            }
-        }
-    }
-
-    private var equipmentFilterItems: [NeoGlassChoiceItem] {
-        [choiceItem(id: "equipment.all", title: allEquipmentMenuTitle, systemImage: "dumbbell.fill", isSelected: selectedRawEquipment.isEmpty) {
-            selectedRawEquipment.removeAll()
-        }] + profileRawEquipmentOptions.map { equipment in
-            choiceItem(id: "equipment.\(equipment)", title: equipment, systemImage: "dumbbell", isSelected: selectedRawEquipment.contains(equipment)) {
-                selectedRawEquipment = [equipment]
-            }
-        }
-    }
-
-    private var levelFilterItems: [NeoGlassChoiceItem] {
-        [choiceItem(id: "level.all", title: String(localized: "All Levels"), systemImage: "chart.bar.fill", isSelected: selectedLevels.isEmpty) {
-            selectedLevels.removeAll()
-        }] + service.availableLevels.map { level in
-            choiceItem(id: "level.\(level)", title: level, systemImage: "chart.bar", isSelected: selectedLevels.contains(level)) {
-                selectedLevels = [level]
-            }
-        }
-    }
-
-    private var forceFilterItems: [NeoGlassChoiceItem] {
-        [choiceItem(id: "force.all", title: String(localized: "All Forces"), systemImage: "arrow.left.arrow.right", isSelected: selectedForces.isEmpty) {
-            selectedForces.removeAll()
-        }] + service.availableForces.map { force in
-            choiceItem(id: "force.\(force)", title: force, systemImage: "arrow.left.arrow.right", isSelected: selectedForces.contains(force)) {
-                selectedForces = [force]
-            }
-        }
-    }
-
-    private var mechanicFilterItems: [NeoGlassChoiceItem] {
-        [choiceItem(id: "mechanic.all", title: String(localized: "All Mechanics"), systemImage: "gearshape", isSelected: selectedMechanics.isEmpty) {
-            selectedMechanics.removeAll()
-        }] + service.availableMechanics.map { mechanic in
-            choiceItem(id: "mechanic.\(mechanic)", title: mechanic, systemImage: "gearshape.2", isSelected: selectedMechanics.contains(mechanic)) {
-                selectedMechanics = [mechanic]
-            }
-        }
-    }
-
-    private var categoryFilterItems: [NeoGlassChoiceItem] {
-        [choiceItem(id: "category.all", title: String(localized: "All Categories"), systemImage: "tag", isSelected: selectedCategories.isEmpty) {
-            selectedCategories.removeAll()
-        }] + service.availableCategoryCounts.map { categoryCount in
-            choiceItem(id: "category.\(categoryCount.category)", title: categoryMenuTitle(categoryCount), systemImage: "tag.fill", isSelected: selectedCategories.contains(categoryCount.category)) {
-                selectedCategories = [categoryCount.category]
-            }
-        }
-    }
-
-    private func choiceItem(
-        id: String,
-        title: String,
-        systemImage: String,
+    private func muscleMenuChoice(
+        _ title: String,
+        muscles: Set<String>,
         isSelected: Bool,
         action: @escaping () -> Void
-    ) -> NeoGlassChoiceItem {
-        NeoGlassChoiceItem(
-            id: "workout.filter.\(id)",
-            title: title,
-            systemImage: systemImage,
-            isSelected: isSelected,
-            action: action
-        )
-    }
-}
-
-private struct WorkoutLibraryMasthead: View {
-    var body: some View {
-        VStack(alignment: .leading, spacing: 3) {
-            Text("870+ exercise library")
-                .font(.system(size: 9, weight: .bold, design: .monospaced))
-                .tracking(0.8)
-                .textCase(.uppercase)
-                .foregroundStyle(KitchenTablePalette.tomato)
-            Text("Exercise Library")
-                .font(.system(.title2, design: .serif, weight: .bold))
-                .foregroundStyle(NeoAppColors.ink)
+    ) -> some View {
+        Button(action: action) {
+            if isSelected {
+                Label(title, systemImage: "checkmark")
+            } else {
+                Label(title, image: MuscleGlyphAsset.name(title: title, muscles: muscles))
+            }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, 3)
-        .padding(.vertical, 3)
     }
 }
 
@@ -570,11 +538,11 @@ private struct WorkoutsSearchPill: View {
         HStack(spacing: 8) {
             Image(systemName: "magnifyingglass")
                 .font(.system(size: 14, weight: .bold))
-                .foregroundStyle(Color.workoutAccent)
+                .foregroundStyle(searchText.isEmpty ? Color.workoutSecondaryAccent : Color.workoutAccent)
 
             TextField("Search", text: $searchText)
                 .textFieldStyle(.plain)
-                .font(.system(.subheadline, design: .monospaced, weight: .semibold))
+                .font(.subheadline.weight(.semibold))
                 .foregroundStyle(Color.workoutCharcoal)
                 .lineLimit(1)
                 .frame(maxWidth: .infinity)
@@ -588,16 +556,13 @@ private struct WorkoutsSearchPill: View {
                     Image(systemName: "xmark.circle.fill")
                         .font(.system(size: 15, weight: .bold))
                         .foregroundStyle(Color.workoutMutedText)
-                        .frame(width: 44, height: 44)
-                        .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel("Clear search")
             }
         }
         .padding(.horizontal, 14)
-        .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
-        .kitchenReceiptSurface(accent: KitchenTablePalette.cobalt)
+        .frame(maxWidth: .infinity, minHeight: 50, alignment: .leading)
+        .workoutLiquidBarSurface(cornerRadius: 22)
     }
 }
 
@@ -615,39 +580,42 @@ private struct FilterMenuPill: View {
         HStack(spacing: 9) {
             Image(systemName: systemImage)
                 .font(.system(size: 14, weight: .bold))
-                .foregroundStyle(isDefaultValue ? Color.workoutSecondaryAccent : Color.black)
+                .foregroundStyle(isDefaultValue ? Color.workoutSecondaryAccent : Color.workoutAccent)
                 .frame(width: 18)
 
             VStack(alignment: .leading, spacing: 1) {
                 Text(title)
-                    .font(.system(size: 10, weight: .black, design: .rounded).width(.condensed))
-                    .foregroundStyle(isDefaultValue ? Color.workoutMutedText : Color.black.opacity(0.72))
+                    .font(.caption2.weight(.bold))
+                    .foregroundStyle(Color.workoutMutedText)
                     .textCase(.uppercase)
                     .lineLimit(1)
 
                 Text(value)
-                    .font(.system(.subheadline, design: .rounded, weight: .black).width(.condensed))
-                    .foregroundStyle(isDefaultValue ? Color.workoutCharcoal : Color.black)
+                    .font(.subheadline.weight(.bold))
+                    .foregroundStyle(Color.workoutCharcoal)
                     .lineLimit(1)
                     .minimumScaleFactor(0.78)
             }
 
             Image(systemName: "chevron.down")
                 .font(.caption2.weight(.bold))
-                .foregroundStyle(isDefaultValue ? Color.workoutMutedText : Color.black)
+                .foregroundStyle(Color.workoutMutedText)
                 .padding(.leading, 1)
         }
         .padding(.horizontal, 12)
-        .frame(minWidth: 106, minHeight: 44, alignment: .leading)
-        .background(isDefaultValue ? Color.workoutCard : NeoAppColors.acid.opacity(0.72))
+        .frame(minWidth: 112, minHeight: 46, alignment: .leading)
+        .background(
+            Color.workoutPanel.opacity(isDefaultValue ? 0.30 : 0.46),
+            in: RoundedRectangle(cornerRadius: 17, style: .continuous)
+        )
         .overlay {
-            RoundedRectangle(cornerRadius: 5, style: .continuous)
+            RoundedRectangle(cornerRadius: 17, style: .continuous)
                 .stroke(
-                    Color.workoutHairline,
-                    style: StrokeStyle(lineWidth: NeoAppMetrics.compactRule, dash: [3, 2])
+                    (isDefaultValue ? Color.workoutHairline : Color.workoutAccent).opacity(isDefaultValue ? 0.30 : 0.42),
+                    lineWidth: 0.5
                 )
         }
-        .contentShape(RoundedRectangle(cornerRadius: 5, style: .continuous))
+        .contentShape(RoundedRectangle(cornerRadius: 17, style: .continuous))
     }
 }
 
@@ -663,10 +631,11 @@ private struct ResultsHeader: View {
         HStack(alignment: .firstTextBaseline) {
             VStack(alignment: .leading, spacing: 2) {
                 Text("\(count) \(count == 1 ? noun : String(localized: "\(noun)s"))")
-                    .font(.system(.headline, design: .serif, weight: .bold))
+                    .font(.headline.weight(.semibold))
                     .foregroundStyle(Color.workoutCharcoal)
+                    .textCase(nil)
                 Text(subtitle)
-                    .font(.system(.caption, design: .monospaced, weight: .semibold))
+                    .font(.caption)
                     .foregroundStyle(Color.workoutMutedText)
                     .textCase(nil)
             }
@@ -678,55 +647,52 @@ private struct ResultsHeader: View {
                     onReset()
                 } label: {
                     Label("Reset", systemImage: "arrow.counterclockwise")
-                        .font(.system(.caption, design: .rounded, weight: .black).width(.condensed))
+                        .font(.caption.weight(.bold))
                         .foregroundStyle(canReset ? Color.workoutInferno : Color.workoutMutedText)
                         .lineLimit(1)
                         .padding(.horizontal, 11)
                         .frame(height: 34)
-                        .background(canReset ? Color.workoutInferno.opacity(0.16) : Color.workoutPanel)
+                        .background((canReset ? Color.workoutInferno : Color.workoutPanel).opacity(canReset ? 0.10 : 0.22), in: Capsule())
                         .overlay {
-                            Rectangle()
-                                .stroke(canReset ? Color.workoutInferno : Color.workoutHairline, lineWidth: NeoAppMetrics.compactRule)
+                            Capsule()
+                                .stroke((canReset ? Color.workoutInferno : Color.workoutHairline).opacity(canReset ? 0.28 : 0.24), lineWidth: 0.5)
                         }
-                        .frame(minHeight: 44)
-                        .contentShape(Rectangle())
                 }
                 .disabled(!canReset)
                 .buttonStyle(.plain)
                 .workoutPressable()
 
-                NeoGlassChoiceMenu(
-                    title: String(localized: "Sort Exercises"),
-                    items: ExerciseLibrarySort.allCases.map { sort in
-                        NeoGlassChoiceItem(
-                            id: "workout.results.sort.\(sort.id)",
-                            title: sort.title,
-                            systemImage: "arrow.up.arrow.down",
-                            isSelected: selectedSort == sort
-                        ) { selectedSort = sort }
+                Menu {
+                    ForEach(ExerciseLibrarySort.allCases) { sort in
+                        Button {
+                            selectedSort = sort
+                        } label: {
+                            if selectedSort == sort {
+                                Label(sort.title, systemImage: "checkmark")
+                            } else {
+                                Text(sort.title)
+                            }
+                        }
                     }
-                ) {
+                } label: {
                     Label("Sort", systemImage: "arrow.up.arrow.down")
-                        .font(.system(.caption, design: .rounded, weight: .black).width(.condensed))
-                        .foregroundStyle(count == 0 ? Color.workoutMutedText : (selectedSort == .name ? Color.workoutMutedText : Color.black))
+                        .font(.caption.weight(.bold))
+                        .foregroundStyle(count == 0 ? Color.workoutMutedText : (selectedSort == .name ? Color.workoutMutedText : Color.workoutAccent))
                         .lineLimit(1)
                         .padding(.horizontal, 11)
                         .frame(height: 34)
-                        .background(selectedSort == .name ? Color.workoutPanel : NeoAppColors.acid)
+                        .background(Color.workoutPanel.opacity(selectedSort == .name ? 0.30 : 0.46), in: Capsule())
                         .overlay {
-                            Rectangle()
-                                .stroke(Color.workoutHairline, lineWidth: NeoAppMetrics.compactRule)
+                            Capsule()
+                                .stroke((selectedSort == .name ? Color.workoutHairline : Color.workoutAccent).opacity(0.32), lineWidth: 0.5)
                         }
-                        .frame(minHeight: 44)
-                        .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
                 .workoutPressable()
                 .disabled(count == 0)
             }
         }
-        .padding(8)
-        .kitchenReceiptSurface(accent: KitchenTablePalette.brass)
+        .padding(.top, 6)
     }
 }
 
@@ -734,12 +700,12 @@ private struct ExerciseLibraryRow: View {
     let item: ExerciseLibraryItem
 
     var body: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: 16) {
             thumbnail
 
-            VStack(alignment: .leading, spacing: 5) {
+            VStack(alignment: .leading, spacing: 9) {
                 Text(item.name)
-                    .font(.system(.headline, design: .serif, weight: .bold))
+                    .font(.headline.weight(.semibold))
                     .foregroundStyle(Color.workoutCharcoal)
                     .lineLimit(2)
                     .minimumScaleFactor(0.82)
@@ -758,7 +724,7 @@ private struct ExerciseLibraryRow: View {
                 }
 
                 Label(item.databaseMetadataSummary, systemImage: "server.rack")
-                    .font(.system(.caption, design: .monospaced, weight: .semibold))
+                    .font(.caption.weight(.semibold))
                     .foregroundStyle(Color.workoutSecondaryAccent)
                     .lineLimit(1)
                     .minimumScaleFactor(0.78)
@@ -768,11 +734,10 @@ private struct ExerciseLibraryRow: View {
 
             Image(systemName: "chevron.right")
                 .font(.footnote.weight(.semibold))
-                .foregroundStyle(Color.workoutAccent)
+                .foregroundStyle(Color.workoutHairline)
         }
-        .padding(8)
-        .kitchenWorkoutTicket(accent: KitchenTablePalette.cobalt)
-        .contentShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+        .padding(.vertical, 15)
+        .contentShape(Rectangle())
         .accessibilityElement(children: .combine)
     }
 
@@ -780,16 +745,16 @@ private struct ExerciseLibraryRow: View {
         AnimatedExerciseVisual(
             exerciseName: item.name,
             imagePaths: item.imagePaths,
-            height: 78,
+            height: 104,
             fillsWidth: false,
             allowsDerivedImageLookup: false
         )
-        .frame(width: 78, height: 78)
-        .background(Color.workoutPanel)
-        .clipShape(RoundedRectangle(cornerRadius: 5, style: .continuous))
+        .frame(width: 104, height: 104)
+        .background(Color.workoutPanel.opacity(0.32), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
         .overlay {
-            RoundedRectangle(cornerRadius: 5, style: .continuous)
-                .stroke(Color.workoutHairline, lineWidth: NeoAppMetrics.compactRule)
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .stroke(Color.workoutHairline.opacity(0.38), lineWidth: 0.5)
         }
         .accessibilityHidden(true)
     }
@@ -803,16 +768,16 @@ private struct LibraryTag: View {
 
     var body: some View {
         Label(title, systemImage: systemImage)
-            .font(.system(.caption2, design: .monospaced, weight: .bold))
+            .font(.caption2.weight(.bold))
             .labelStyle(.titleAndIcon)
             .foregroundStyle(tint)
             .lineLimit(1)
             .minimumScaleFactor(0.78)
             .padding(.horizontal, 9)
             .padding(.vertical, 4)
-            .background(Color.workoutPanel, in: Capsule())
+            .background(Color.workoutPanel.opacity(0.28), in: Capsule())
             .overlay {
-                Capsule().stroke(Color.workoutHairline, lineWidth: NeoAppMetrics.compactRule)
+                Capsule().stroke(Color.workoutHairline.opacity(0.22), lineWidth: 0.5)
             }
             .accessibilityElement(children: .combine)
     }
@@ -891,12 +856,12 @@ struct ExerciseLibraryDetailView: View {
             } label: {
                 Image(systemName: "info.circle.fill")
                     .font(.system(size: 20, weight: .bold))
-                    .foregroundStyle(KitchenTablePalette.onBrass)
+                    .foregroundStyle(Color.workoutAccent)
                     .frame(width: 44, height: 44)
-                    .background(NeoAppColors.brass, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                    .background(Color.workoutBackground.opacity(0.78), in: Circle())
                     .overlay {
-                        RoundedRectangle(cornerRadius: 14, style: .continuous)
-                            .stroke(KitchenTablePalette.brassDeep, lineWidth: NeoAppMetrics.rule)
+                        Circle()
+                            .stroke(Color.workoutHairline.opacity(0.42), lineWidth: 0.7)
                     }
             }
             .buttonStyle(.plain)
@@ -907,12 +872,7 @@ struct ExerciseLibraryDetailView: View {
         }
         .frame(width: width, height: 294)
         .animation(.snappy(duration: 0.28), value: isMetricsPresented)
-        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
-        .overlay {
-            RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .stroke(Color.workoutHairline, lineWidth: NeoAppMetrics.rule)
-        }
-        .shadow(color: KitchenTablePalette.shadow, radius: 7, x: 0, y: 3)
+        .clipped()
         .accessibilityElement(children: .combine)
         .accessibilityLabel(Text("\(item.name) exercise visual"))
     }
@@ -945,8 +905,8 @@ private struct ExerciseHeroMetricOverlay: View {
     private func metricButton(title: String, value: String, systemImage: String, compact: Bool = true, valueLineLimit: Int = 1) -> some View {
         let valueFontSize: CGFloat = compact ? 15 : (valueLineLimit > 2 ? 13 : 14)
         let labelColor = colorScheme == .light ? Color.workoutSecondaryAccent : Color.workoutAccent
-        let fillColor = Color.workoutCard
-        let strokeColor = Color.workoutHairline
+        let fillColor = colorScheme == .light ? Color.workoutBackground.opacity(0.92) : Color.workoutBackground.opacity(0.55)
+        let strokeColor = colorScheme == .light ? Color.workoutHairline.opacity(0.45) : Color.workoutHairline.opacity(0.32)
 
         return VStack(alignment: .leading, spacing: 3) {
             Label(title, systemImage: systemImage)
@@ -965,11 +925,21 @@ private struct ExerciseHeroMetricOverlay: View {
         .padding(.horizontal, 12)
         .padding(.vertical, compact ? 6 : 5)
         .frame(maxWidth: .infinity, minHeight: compact ? 44 : (valueLineLimit > 2 ? 50 : 42), alignment: .leading)
-        .background(fillColor, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-        .overlay {
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .stroke(strokeColor, lineWidth: NeoAppMetrics.compactRule)
+        .background {
+            if colorScheme == .light {
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .fill(fillColor)
+            } else {
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .fill(fillColor)
+                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+            }
         }
+        .overlay {
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .stroke(strokeColor, lineWidth: 0.6)
+        }
+        .shadow(color: Color.black.opacity(colorScheme == .light ? 0.12 : 0.32), radius: 9, x: 0, y: 4)
     }
 }
 
@@ -981,17 +951,12 @@ private struct DetailInstructionSection: View {
             HStack(spacing: 10) {
                 Image(systemName: "list.number")
                     .font(.subheadline.weight(.bold))
-                    .foregroundStyle(KitchenTablePalette.onBrass)
+                    .foregroundStyle(Color.workoutAccent)
                     .frame(width: 30, height: 30)
-                    .background(NeoAppColors.brass, in: RoundedRectangle(cornerRadius: 9, style: .continuous))
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 9, style: .continuous)
-                            .stroke(Color.workoutHairline, lineWidth: NeoAppMetrics.compactRule)
-                    }
+                    .background(Color.workoutAccent.opacity(0.12), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
 
                 Text("Instructions")
-                    .font(.system(.title3, design: .rounded, weight: .black).width(.condensed))
-                    .textCase(.uppercase)
+                    .font(.title3.weight(.bold))
                     .foregroundStyle(Color.workoutCharcoal)
 
                 Spacer(minLength: 0)
@@ -999,13 +964,10 @@ private struct DetailInstructionSection: View {
                 Text("\(instructions.count)")
                     .font(.caption.weight(.bold))
                     .monospacedDigit()
-                    .foregroundStyle(Color.black)
+                    .foregroundStyle(Color.workoutSecondaryAccent)
                     .padding(.horizontal, 9)
                     .padding(.vertical, 4)
-                    .background(NeoAppColors.brass, in: Capsule())
-                    .overlay {
-                        Capsule().stroke(Color.workoutHairline, lineWidth: NeoAppMetrics.compactRule)
-                    }
+                    .background(Color.workoutSecondaryAccent.opacity(0.12), in: Capsule())
             }
 
             VStack(alignment: .leading, spacing: 10) {
@@ -1016,7 +978,8 @@ private struct DetailInstructionSection: View {
                             .monospacedDigit()
                             .foregroundStyle(Color.workoutOnAccent)
                             .frame(width: 27, height: 27)
-                            .background(Color.workoutAccent)
+                            .background(Color.workoutAccent, in: Circle())
+                            .shadow(color: Color.workoutAccent.opacity(0.35), radius: 6, y: 2)
 
                         Text(instruction)
                             .font(.callout)
@@ -1026,10 +989,10 @@ private struct DetailInstructionSection: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     .padding(14)
-                    .background(Color.workoutCard)
+                    .background(Color.workoutPanel.opacity(0.16), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
                     .overlay {
-                        Rectangle()
-                            .stroke(Color.workoutHairline, lineWidth: NeoAppMetrics.compactRule)
+                        RoundedRectangle(cornerRadius: 18, style: .continuous)
+                            .stroke(Color.workoutHairline.opacity(0.20), lineWidth: 0.5)
                     }
                 }
             }

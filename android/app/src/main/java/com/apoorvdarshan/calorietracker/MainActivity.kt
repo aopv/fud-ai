@@ -2,6 +2,7 @@ package com.apoorvdarshan.calorietracker
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -12,21 +13,16 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
-import androidx.fragment.app.FragmentActivity
 import com.apoorvdarshan.calorietracker.models.FoodEntry
 import com.apoorvdarshan.calorietracker.models.QuickActionRequest
 import com.apoorvdarshan.calorietracker.services.MealShare
 import com.apoorvdarshan.calorietracker.services.QuickActionShortcutManager
 import com.apoorvdarshan.calorietracker.services.ReviewPrompter
 import com.apoorvdarshan.calorietracker.ui.home.ImportSharedMealSheet
-import com.apoorvdarshan.calorietracker.ui.flutter.AppFlutterBridge
 import com.apoorvdarshan.calorietracker.ui.navigation.FudAINavHost
-import com.apoorvdarshan.calorietracker.ui.progress.ProgressFlutterBridge
 import com.apoorvdarshan.calorietracker.ui.theme.AppThemeColor
 import com.apoorvdarshan.calorietracker.ui.theme.FudAITheme
 import com.google.android.play.core.ktx.launchReview
@@ -37,23 +33,8 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import io.flutter.embedding.android.FlutterEngineConfigurator
-import io.flutter.embedding.engine.FlutterEngine
 
-open class MainActivity : FragmentActivity(), FlutterEngineConfigurator {
-    internal val progressFlutterBridge = ProgressFlutterBridge()
-    internal val appFlutterBridge = AppFlutterBridge()
-
-    override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
-        progressFlutterBridge.attach(flutterEngine)
-        appFlutterBridge.attach(flutterEngine)
-    }
-
-    override fun cleanUpFlutterEngine(flutterEngine: FlutterEngine) {
-        progressFlutterBridge.detach(flutterEngine)
-        appFlutterBridge.detach(flutterEngine)
-    }
-
+open class MainActivity : ComponentActivity() {
     // Shared-meal deep link (issue #107). Non-empty -> the confirm sheet is shown over the app.
     private var pendingSharedMeals by mutableStateOf<List<FoodEntry>>(emptyList())
     private var pendingQuickAction by mutableStateOf<QuickActionRequest?>(null)
@@ -162,12 +143,6 @@ open class MainActivity : FragmentActivity(), FlutterEngineConfigurator {
                 "light" -> false
                 "dark" -> true
                 else -> systemDark
-            }
-            SideEffect {
-                WindowCompat.getInsetsController(window, window.decorView).apply {
-                    isAppearanceLightStatusBars = !darkTheme
-                    isAppearanceLightNavigationBars = !darkTheme
-                }
             }
             FudAITheme(darkTheme = darkTheme, themeColor = themeColor) {
                 Surface(

@@ -32,7 +32,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
@@ -69,15 +68,11 @@ fun <T> OptionPickerSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = state,
-        shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
-        containerColor = AppColors.KitchenBone
+        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
+        containerColor = if (isDark) Color(0xF2141416) else Color(0xFFFAF3EE)
     ) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp)) {
-            Text(
-                title,
-                style = MaterialTheme.typography.headlineMedium,
-                color = AppColors.KitchenEspresso
-            )
+            Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(12.dp))
             LazyColumn(
                 Modifier.fillMaxWidth().heightIn(max = 420.dp),
@@ -130,20 +125,33 @@ private fun OptionPickerRow(
     isDark: Boolean,
     onClick: () -> Unit
 ) {
-    val shape = RoundedCornerShape(4.dp)
+    val shape = RoundedCornerShape(16.dp)
     Row(
         Modifier
             .fillMaxWidth()
-            .shadow(2.dp, shape)
             .clip(shape)
             .background(
-                if (isSelected) AppColors.KitchenBrass.copy(alpha = 0.38f)
-                else AppColors.KitchenPaper
+                if (isSelected) AppColors.Calorie.copy(alpha = 0.13f)
+                else if (isDark) MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.38f)
+                else Color(0xFFEDE3DD).copy(alpha = 0.76f)
+            )
+            .background(
+                Brush.verticalGradient(
+                    listOf(
+                        Color.White.copy(alpha = if (isDark) 0.08f else 0.18f),
+                        Color.White.copy(alpha = if (isDark) 0.02f else 0.04f),
+                        AppColors.Calorie.copy(alpha = if (isSelected) 0.065f else if (isDark) 0.025f else 0.050f)
+                    )
+                )
             )
             .border(
-                1.dp,
-                if (isDark && !isSelected) AppColors.KitchenBrass.copy(alpha = 0.30f)
-                else AppColors.KitchenEspresso.copy(alpha = 0.20f),
+                0.7.dp,
+                Brush.linearGradient(
+                    listOf(
+                        Color.White.copy(alpha = if (isDark) 0.16f else 0.46f),
+                        AppColors.Calorie.copy(alpha = if (isSelected) 0.22f else if (isDark) 0.08f else 0.16f)
+                    )
+                ),
                 shape
             )
             .clickable(onClick = onClick)
@@ -154,8 +162,7 @@ private fun OptionPickerRow(
             Text(
                 label,
                 style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurface,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.Medium
             )
             if (!subtitle.isNullOrBlank()) {
                 Spacer(Modifier.height(2.dp))
@@ -171,7 +178,7 @@ private fun OptionPickerRow(
             Icon(
                 Icons.Filled.Check,
                 contentDescription = stringResource(R.string.sheet_selected_a11y),
-                tint = MaterialTheme.colorScheme.onSurface,
+                tint = AppColors.Calorie,
                 modifier = Modifier.size(20.dp)
             )
         }

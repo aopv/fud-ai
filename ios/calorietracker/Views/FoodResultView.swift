@@ -273,275 +273,61 @@ struct FoodResultView: View {
         selectedServingUnitID = ServingUnitOption.grams.unit
     }
 
-    private var reviewHero: some View {
-        VStack(alignment: .leading, spacing: 9) {
-            ZStack(alignment: .bottom) {
-                reviewPhoto
-                    .frame(maxWidth: .infinity)
-                    .frame(height: images.isEmpty && emoji == nil ? 300 : 360)
-                    .padding(.bottom, 112)
-
-                reviewReceipt
-                    .padding(.horizontal, 16)
-            }
-
-            if images.count > 1 {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 9) {
-                        ForEach(Array(images.dropFirst().enumerated()), id: \.offset) { index, image in
-                            Image(uiImage: image)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 72, height: 58)
-                                .clipShape(RoundedRectangle(cornerRadius: 3, style: .continuous))
-                                .overlay {
-                                    RoundedRectangle(cornerRadius: 3, style: .continuous)
-                                        .stroke(KitchenTablePalette.rule, lineWidth: 1)
-                                }
-                                .accessibilityLabel("Review Food")
-                                .accessibilityValue(Text(verbatim: "\(index + 2) / \(images.count)"))
-                        }
-                    }
-                    .padding(.horizontal, 2)
-                }
-            }
-
-            if !scaledIngredients.isEmpty {
-                reviewIngredientStrip
-            }
-        }
-    }
-
-    private var reviewIngredientStrip: some View {
-        HStack(alignment: .top, spacing: 6) {
-            ForEach(Array(scaledIngredients.prefix(4).enumerated()), id: \.element.id) { index, ingredient in
-                VStack(alignment: .leading, spacing: 4) {
-                    Circle()
-                        .fill([KitchenTablePalette.tomato, KitchenTablePalette.herb, KitchenTablePalette.cobalt, KitchenTablePalette.brass][index % 4])
-                        .frame(width: 7, height: 7)
-
-                    Text(ingredient.name)
-                        .font(.system(size: 9, weight: .semibold, design: .serif))
-                        .foregroundStyle(KitchenTablePalette.espresso)
-                        .lineLimit(2)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-
-                    Text(verbatim: "\(Self.formatGrams(ingredient.grams)) g")
-                        .font(.system(size: 8, weight: .semibold, design: .monospaced))
-                        .foregroundStyle(KitchenTablePalette.mutedEspresso)
-                        .lineLimit(1)
-                }
-                .padding(7)
-                .frame(maxWidth: .infinity, minHeight: 72, alignment: .topLeading)
-                .background(KitchenTablePalette.paperRaised)
-                .overlay {
-                    RoundedRectangle(cornerRadius: 3, style: .continuous)
-                        .stroke(KitchenTablePalette.rule, lineWidth: 0.8)
-                }
-                .shadow(color: KitchenTablePalette.shadow, radius: 2, x: 0, y: 1)
-                .rotationEffect(.degrees(index.isMultiple(of: 2) ? -0.3 : 0.3))
-            }
-        }
-        .padding(.horizontal, 2)
-        .accessibilityElement(children: .contain)
-        .accessibilityLabel(
-            Text("Ingredients", comment: "Accessibility label for the analyzed meal's ingredient list.")
-        )
-    }
-
-    @ViewBuilder
-    private var reviewPhoto: some View {
-        if let image = images.first {
-            Image(uiImage: image)
-                .resizable()
-                .scaledToFill()
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .compositingGroup()
-                .clipShape(RoundedRectangle(cornerRadius: 7, style: .continuous))
-                .overlay {
-                    RoundedRectangle(cornerRadius: 7, style: .continuous)
-                        .stroke(KitchenTablePalette.paperRaised, lineWidth: 6)
-                        .padding(4)
-                }
-                .overlay {
-                    RoundedRectangle(cornerRadius: 7, style: .continuous)
-                        .stroke(KitchenTablePalette.strongRule, lineWidth: 1)
-                }
-                .shadow(color: KitchenTablePalette.shadow, radius: 5, x: 0, y: 3)
-                .clipped()
-                .accessibilityLabel("Review Food")
-        } else {
-            ZStack {
-                RoundedRectangle(cornerRadius: 7, style: .continuous)
-                    .fill(KitchenTablePalette.paperMuted)
-
-                if let emoji {
-                    Text(emoji)
-                        .font(.system(size: 88))
-                } else {
-                    Image(systemName: "fork.knife.circle")
-                        .font(.system(size: 78, weight: .light))
-                        .foregroundStyle(KitchenTablePalette.cobalt)
-                }
-            }
-            .overlay {
-                RoundedRectangle(cornerRadius: 7, style: .continuous)
-                    .stroke(KitchenTablePalette.rule, lineWidth: 1)
-            }
-        }
-    }
-
-    private var reviewReceipt: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack(alignment: .firstTextBaseline) {
-                VStack(alignment: .leading, spacing: 3) {
-                    Text("AI analysis")
-                        .textCase(.uppercase)
-                        .font(.system(size: 9, weight: .semibold, design: .monospaced))
-                        .tracking(1.4)
-                        .foregroundStyle(KitchenTablePalette.mutedEspresso)
-
-                    Group {
-                        if name.isEmpty {
-                            Text("Meal")
-                        } else {
-                            Text(name)
-                        }
-                    }
-                    .font(.system(.title3, design: .serif, weight: .bold))
-                    .foregroundStyle(KitchenTablePalette.espresso)
-                    .lineLimit(2)
-                }
-
-                Spacer(minLength: 12)
-
-                VStack(alignment: .trailing, spacing: 0) {
-                    Text(scaledCalories.formatted())
-                        .font(.system(.title2, design: .serif, weight: .bold))
-                        .monospacedDigit()
-                    Text(verbatim: "kcal")
-                        .textCase(.uppercase)
-                        .font(.system(size: 9, weight: .bold, design: .monospaced))
-                        .tracking(0.8)
-                }
-                .foregroundStyle(KitchenTablePalette.tomatoDeep)
-            }
-
-            Rectangle()
-                .fill(KitchenTablePalette.rule)
-                .frame(height: 1)
-
-            HStack(spacing: 0) {
-                receiptMacro("Protein", value: scaledProtein, tint: KitchenTablePalette.herb)
-                receiptMacro("Carbs", value: scaledCarbs, tint: KitchenTablePalette.cobalt)
-                receiptMacro("Fat", value: scaledFat, tint: KitchenTablePalette.tomato)
-            }
-        }
-        .padding(.horizontal, 18)
-        .padding(.vertical, 15)
-        .background(KitchenTablePalette.paperRaised)
-        .overlay {
-            RoundedRectangle(cornerRadius: 3, style: .continuous)
-                .stroke(KitchenTablePalette.rule, lineWidth: 1)
-        }
-        .shadow(color: KitchenTablePalette.shadow, radius: 5, x: 0, y: 3)
-        .rotationEffect(.degrees(-0.35))
-    }
-
-    private func receiptMacro(_ label: LocalizedStringKey, value: Double, tint: Color) -> some View {
-        VStack(spacing: 2) {
-            Text(label)
-                .textCase(.uppercase)
-                .font(.system(size: 8, weight: .semibold, design: .monospaced))
-                .tracking(0.5)
-                .foregroundStyle(KitchenTablePalette.mutedEspresso)
-            Text(verbatim: "\(MacroValueFormatter.string(value)) g")
-                .font(.system(.headline, design: .serif, weight: .bold))
-                .foregroundStyle(tint)
-                .monospacedDigit()
-        }
-        .frame(maxWidth: .infinity)
-    }
-
-    private var reviewActions: some View {
-        HStack(spacing: 10) {
-            Button("What if?") { showWhatIfSheet = true }
-                .font(.system(.callout, design: .rounded, weight: .semibold))
-                .foregroundStyle(KitchenTablePalette.espresso)
-                .frame(minWidth: 82, minHeight: 50)
-                .padding(.horizontal, 4)
-                .background(KitchenTablePalette.paperRaised, in: RoundedRectangle(cornerRadius: 4, style: .continuous))
-                .overlay {
-                    RoundedRectangle(cornerRadius: 4, style: .continuous)
-                        .stroke(KitchenTablePalette.strongRule, lineWidth: 1)
-                }
-
-            Button(action: logFood) {
-                HStack(spacing: 12) {
-                    Text("Add to Log")
-                    Spacer(minLength: 0)
-                    Text(verbatim: "\(scaledCalories.formatted()) kcal")
-                        .monospacedDigit()
-                }
-                .font(.system(.headline, design: .rounded, weight: .bold))
-                .tracking(0.5)
-                .foregroundStyle(KitchenTablePalette.onStrongAccent)
-                .padding(.horizontal, 18)
-                .frame(maxWidth: .infinity, minHeight: 50)
-                .background(KitchenTablePalette.tomato, in: RoundedRectangle(cornerRadius: 6, style: .continuous))
-                .overlay {
-                    RoundedRectangle(cornerRadius: 6, style: .continuous)
-                        .stroke(KitchenTablePalette.tomatoDeep, lineWidth: 1)
-                }
-                .shadow(color: KitchenTablePalette.tomato.opacity(0.18), radius: 3, x: 0, y: 2)
-            }
-            .accessibilityLabel("Log")
-        }
-        .buttonStyle(KitchenTablePressableButtonStyle())
-        .padding(.horizontal, 12)
-        .padding(.top, 8)
-        .padding(.bottom, 10)
-        .background(KitchenTablePalette.canvas.opacity(0.98))
-    }
-
     var body: some View {
         NavigationStack {
             ScrollViewReader { scrollProxy in
                 List {
-                    Section {
-                        reviewHero
-                        .neoReviewBareRow()
+                    if !images.isEmpty {
+                        Section {
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                LazyHStack(spacing: 12) {
+                                    ForEach(Array(images.enumerated()), id: \.offset) { index, image in
+                                        Image(uiImage: image)
+                                            .resizable()
+                                            .scaledToFill()
+                                            .frame(width: 220, height: 200)
+                                            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                                            .overlay(alignment: .bottomTrailing) {
+                                                if images.count > 1 {
+                                                    Text("\(index + 1)/\(images.count)")
+                                                        .font(.caption2.weight(.semibold))
+                                                        .padding(.horizontal, 8)
+                                                        .padding(.vertical, 5)
+                                                        .background(.ultraThinMaterial, in: Capsule())
+                                                        .padding(8)
+                                                }
+                                            }
+                                    }
+                                }
+                                .scrollTargetLayout()
+                            }
+                            .scrollTargetBehavior(.viewAligned)
+                            .listRowBackground(Color.clear)
+                        }
+                    } else if let emoji {
+                        Section {
+                            HStack {
+                                Spacer()
+                                Text(emoji)
+                                    .font(.system(size: 80))
+                                Spacer()
+                            }
+                            .listRowBackground(Color.clear)
+                        }
                     }
 
-                    Section {
-                        KitchenReviewSectionLabel(title: "Food Details")
-                            .neoReviewBareRow()
-
+                    Section("Food Details") {
                         HStack {
                             Text("Name")
-                                .neoReviewFieldLabel()
                             Spacer()
                             TextField("Food name", text: $name)
                                 .multilineTextAlignment(.trailing)
-                                .font(.system(.body, design: .rounded, weight: .bold))
-                                .padding(.horizontal, 10)
-                                .padding(.vertical, 7)
-                                .background(KitchenTablePalette.paperMuted.opacity(0.62), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
-                                .overlay {
-                                    RoundedRectangle(cornerRadius: 8, style: .continuous)
-                                        .stroke(KitchenTablePalette.rule, lineWidth: NeoAppMetrics.compactRule)
-                                }
                         }
-                        .neoReviewRow()
                     }
 
-                    Section {
-                        KitchenReviewSectionLabel(title: "Serving")
-                            .neoReviewBareRow()
-
+                    Section("Serving") {
                         HStack {
                             Text("Quantity")
-                                .neoReviewFieldLabel()
                             Spacer()
                             ServingUnitEditor(
                                 quantityText: $servingSizeText,
@@ -559,24 +345,17 @@ struct FoodResultView: View {
                             )
                         }
                         .id(ScrollTarget.quantity)
-                        .neoReviewRow()
                         if !selectedServingOption.isGramUnit {
                             HStack {
                                 Text("Total")
-                                    .neoReviewFieldLabel()
                                 Spacer()
                                 Text("~\(Self.formatGrams(servingSizeGrams)) g")
-                                    .font(.system(.body, design: .rounded, weight: .black))
-                                    .foregroundStyle(NeoAppColors.cobalt)
+                                    .foregroundStyle(.secondary)
                             }
-                            .neoReviewRow()
                         }
                     }
 
                     Section {
-                        NeoReviewNutritionBanner(isUnlocked: nutritionUnlocked, action: toggleNutritionLock)
-                            .neoReviewBareRow()
-
                         ReviewNutritionValueRow(
                             label: "Calories",
                             displayValue: "\(scaledCalories)",
@@ -585,7 +364,6 @@ struct FoodResultView: View {
                             isUnlocked: nutritionUnlocked,
                             onEdit: updateBaseCalories
                         )
-                        .neoReviewRow()
                         ReviewNutritionValueRow(
                             label: "Protein",
                             displayValue: MacroValueFormatter.string(scaledProtein),
@@ -594,7 +372,6 @@ struct FoodResultView: View {
                             isUnlocked: nutritionUnlocked,
                             onEdit: { updateBaseDouble(from: $0) { editableProtein = $0 } }
                         )
-                        .neoReviewRow()
                         ReviewNutritionValueRow(
                             label: "Carbs",
                             displayValue: MacroValueFormatter.string(scaledCarbs),
@@ -603,7 +380,6 @@ struct FoodResultView: View {
                             isUnlocked: nutritionUnlocked,
                             onEdit: { updateBaseDouble(from: $0) { editableCarbs = $0 } }
                         )
-                        .neoReviewRow()
                         ReviewNutritionValueRow(
                             label: "Fat",
                             displayValue: MacroValueFormatter.string(scaledFat),
@@ -612,7 +388,18 @@ struct FoodResultView: View {
                             isUnlocked: nutritionUnlocked,
                             onEdit: { updateBaseDouble(from: $0) { editableFat = $0 } }
                         )
-                        .neoReviewRow()
+                    } header: {
+                        HStack {
+                            Text("Nutrition")
+                            Spacer()
+                            Button(action: toggleNutritionLock) {
+                                Image(systemName: nutritionUnlocked ? "lock.open.fill" : "lock.fill")
+                                    .font(.system(size: 14, weight: .semibold))
+                            }
+                            .buttonStyle(.borderless)
+                            .foregroundStyle(nutritionUnlocked ? AppColors.calorie : .secondary)
+                            .accessibilityLabel(nutritionUnlocked ? "Lock nutrition editing" : "Unlock nutrition editing")
+                        }
                     }
 
                     MealIngredientsSection(
@@ -674,15 +461,10 @@ struct FoodResultView: View {
                                 )
                             }
                         }
-                        .font(.system(.body, design: .rounded, weight: .black))
-                        .tint(NeoAppColors.cobalt)
-                        .neoReviewRow()
+                        .tint(AppColors.calorie)
                     }
 
-                    Section {
-                        KitchenReviewSectionLabel(title: "Meal", accent: KitchenTablePalette.herb)
-                            .neoReviewBareRow()
-
+                    Section("Meal") {
                         Picker("Meal Type", selection: $mealType) {
                             ForEach(MealType.allCases, id: \.self) { meal in
                                 Label(meal.displayName, systemImage: meal.icon)
@@ -690,35 +472,36 @@ struct FoodResultView: View {
                             }
                         }
                         .pickerStyle(.menu)
-                        .font(.system(.body, design: .rounded, weight: .black))
-                        .tint(NeoAppColors.cobalt)
-                        .neoReviewRow()
+                        .tint(AppColors.calorie)
                     }
 
                 }
-                .listStyle(.plain)
-                .listSectionSpacing(6)
-                .environment(\.defaultMinListRowHeight, 1)
-                .neoScreen()
+                .scrollContentBackground(.hidden)
+                .background(AppColors.appBackground)
                 .background(KeyboardDismissTapInstaller())
-                .accessibilityIdentifier("neo.reviewFood.screen")
                 .safeAreaInset(edge: .bottom) {
                     if isQuantityEditing {
                         Color.clear.frame(height: 12)
-                    } else {
-                        reviewActions
                     }
                 }
                 .onChange(of: isQuantityEditing) { _, editing in
                     guard editing else { return }
                     scrollQuantityIntoView(scrollProxy)
                 }
-                .navigationTitle("")
+                .navigationTitle("Review Food")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
                         Button("Cancel") { dismiss() }
-                            .tint(KitchenTablePalette.tomato)
+                    }
+                    ToolbarItemGroup(placement: .confirmationAction) {
+                        Button("What if?") { showWhatIfSheet = true }
+                            .font(.system(.body, design: .rounded, weight: .semibold))
+                            .tint(AppColors.protein)
+
+                        Button("Log", action: logFood)
+                            .font(.system(.body, design: .rounded, weight: .semibold))
+                            .tint(AppColors.calorie)
                     }
                 }
                 .sheet(isPresented: $showWhatIfSheet) {
@@ -817,119 +600,6 @@ struct FoodResultView: View {
 
 }
 
-private struct NeoReviewNutritionBanner: View {
-    let isUnlocked: Bool
-    let action: () -> Void
-
-    var body: some View {
-        HStack(spacing: 8) {
-            KitchenReviewSectionLabel(
-                title: "Nutrition",
-                detail: isUnlocked ? "Unlocked" : "Locked",
-                accent: KitchenTablePalette.cobalt
-            )
-
-            Button(action: action) {
-                Image(systemName: isUnlocked ? "lock.open.fill" : "lock.fill")
-                    .font(.system(size: 15, weight: .semibold))
-                    .foregroundStyle(KitchenTablePalette.cobalt)
-                    .frame(width: 44, height: 42)
-                    .background(KitchenTablePalette.paperRaised, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 8, style: .continuous)
-                            .stroke(KitchenTablePalette.rule, lineWidth: NeoAppMetrics.rule)
-                    }
-            }
-            .buttonStyle(KitchenTablePressableButtonStyle())
-            .accessibilityLabel(isUnlocked ? "Lock nutrition editing" : "Unlock nutrition editing")
-        }
-    }
-}
-
-private struct KitchenReviewSectionLabel: View {
-    let title: String
-    var detail: String? = nil
-    var accent: Color = KitchenTablePalette.tomato
-
-    var body: some View {
-        HStack(spacing: 10) {
-            Rectangle()
-                .fill(accent)
-                .frame(width: 4, height: 20)
-
-            Text(LocalizedStringKey(title))
-                .font(.system(.subheadline, design: .serif, weight: .bold))
-                .foregroundStyle(KitchenTablePalette.espresso)
-
-            Spacer(minLength: 8)
-
-            if let detail {
-                Text(LocalizedStringKey(detail))
-                    .textCase(.uppercase)
-                    .font(.system(size: 9, weight: .semibold, design: .monospaced))
-                    .tracking(0.8)
-                    .foregroundStyle(accent)
-            }
-        }
-        .padding(.horizontal, 4)
-        .padding(.vertical, 7)
-        .overlay(alignment: .bottom) {
-            Rectangle()
-                .fill(KitchenTablePalette.rule)
-                .frame(height: 1)
-        }
-    }
-}
-
-private extension View {
-    func neoReviewRow(
-        padding: CGFloat = 12,
-        fill: Color = NeoAppColors.surface
-    ) -> some View {
-        self
-            .padding(padding)
-            .background(fill, in: RoundedRectangle(cornerRadius: 4, style: .continuous))
-            .overlay {
-                RoundedRectangle(cornerRadius: 4, style: .continuous)
-                    .stroke(KitchenTablePalette.rule, lineWidth: 1)
-            }
-            .shadow(color: KitchenTablePalette.shadow.opacity(0.7), radius: 3, x: 0, y: 2)
-            .neoListRow()
-            .listRowBackground(Color.clear)
-            .listRowSeparator(.hidden)
-            .listRowInsets(
-                EdgeInsets(
-                    top: 0,
-                    leading: NeoAppMetrics.screenInset,
-                    bottom: 0,
-                    trailing: NeoAppMetrics.screenInset
-                )
-            )
-    }
-
-    func neoReviewBareRow() -> some View {
-        self
-            .neoListRow()
-            .listRowBackground(Color.clear)
-            .listRowSeparator(.hidden)
-            .listRowInsets(
-                EdgeInsets(
-                    top: 0,
-                    leading: NeoAppMetrics.screenInset,
-                    bottom: 0,
-                    trailing: NeoAppMetrics.screenInset
-                )
-            )
-    }
-
-    func neoReviewFieldLabel() -> some View {
-        self
-            .textCase(.uppercase)
-            .font(.system(.caption, design: .rounded, weight: .black).width(.condensed))
-            .foregroundStyle(NeoAppColors.mutedInk)
-    }
-}
-
 struct IngredientEditorTarget: Identifiable {
     let id = UUID()
     let index: Int?
@@ -943,18 +613,10 @@ struct MealIngredientsSection: View {
 
     var body: some View {
         Section {
-            KitchenReviewSectionLabel(
-                title: "Ingredients",
-                accent: KitchenTablePalette.herb
-            )
-            .neoReviewBareRow()
-
             if ingredients.isEmpty {
                 Text("No ingredient breakdown yet")
-                    .font(.system(.subheadline, design: .rounded, weight: .bold))
-                    .foregroundStyle(NeoAppColors.mutedInk)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .neoReviewRow()
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
             } else {
                 ForEach(Array(ingredients.enumerated()), id: \.element.id) { index, ingredient in
                     Button {
@@ -963,56 +625,44 @@ struct MealIngredientsSection: View {
                         VStack(alignment: .leading, spacing: 6) {
                             HStack {
                                 Text(ingredient.name)
-                                    .font(.system(.body, design: .serif, weight: .semibold))
-                                    .foregroundStyle(NeoAppColors.ink)
+                                    .font(.system(.body, design: .rounded, weight: .semibold))
+                                    .foregroundStyle(.primary)
                                 Spacer()
                                 Text("\(MacroValueFormatter.string(ingredient.grams))g · \(ingredient.calories) kcal")
-                                    .font(.system(.caption, design: .rounded, weight: .bold))
-                                    .foregroundStyle(NeoAppColors.cobalt)
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
                                 Image(systemName: "chevron.right")
-                                    .font(.caption.weight(.black))
-                                    .foregroundStyle(NeoAppColors.ink)
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(.tertiary)
                             }
-                            HStack(spacing: 6) {
-                                macro("P", ingredient.protein, NeoAppColors.cobalt)
-                                macro("C", ingredient.carbs, NeoAppColors.cobalt)
-                                macro("F", ingredient.fat, NeoAppColors.cobalt)
+                            HStack(spacing: 14) {
+                                macro("P", ingredient.protein, AppColors.protein)
+                                macro("C", ingredient.carbs, AppColors.carbs)
+                                macro("F", ingredient.fat, AppColors.fat)
                             }
                         }
                         .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
-                    .neoReviewRow()
                 }
             }
 
             Button(action: onAdd) {
-                Label("Add Ingredient", systemImage: "plus")
+                Label("Add Ingredient", systemImage: "plus.circle.fill")
                     .font(.system(.body, design: .rounded, weight: .semibold))
-                    .foregroundStyle(KitchenTablePalette.herbDeep)
-                    .frame(maxWidth: .infinity)
             }
-            .buttonStyle(.plain)
-            .neoReviewRow(fill: KitchenTablePalette.herb.opacity(0.12))
-
+            .tint(AppColors.calorie)
+        } header: {
+            Text("Ingredients")
+        } footer: {
             Text("Ingredient changes update the meal's calorie and macro totals automatically.")
-                .font(.system(.caption, design: .rounded, weight: .bold))
-                .foregroundStyle(NeoAppColors.mutedInk)
-                .neoReviewRow(fill: NeoAppColors.subtleSurface)
         }
     }
 
     private func macro(_ label: String, _ value: Double, _ color: Color) -> some View {
         Text("\(label) \(MacroValueFormatter.string(value))g")
-            .font(.system(.caption2, design: .monospaced, weight: .semibold))
-            .foregroundStyle(KitchenTablePalette.cobaltDeep)
-            .padding(.horizontal, 7)
-            .padding(.vertical, 4)
-            .background(color.opacity(0.13), in: RoundedRectangle(cornerRadius: 5, style: .continuous))
-            .overlay {
-                RoundedRectangle(cornerRadius: 5, style: .continuous)
-                    .stroke(color.opacity(0.28), lineWidth: NeoAppMetrics.compactRule)
-            }
+            .font(.caption.weight(.semibold))
+            .foregroundStyle(color)
     }
 }
 
@@ -1063,55 +713,16 @@ struct IngredientEditorSheet: View {
 
     var body: some View {
         NavigationStack {
-            List {
-                Section {
-                    NeoScreenHeader(
-                        eyebrow: "Meal builder",
-                        title: target.index == nil ? "Add Ingredient" : "Edit Ingredient",
-                        subtitle: "Ingredient changes recalculate the meal totals"
-                    ) {
-                        Image(systemName: target.index == nil ? "plus" : "square.and.pencil")
-                            .font(.system(size: 22, weight: .black))
-                            .foregroundStyle(KitchenTablePalette.onBrass)
-                            .frame(width: 48, height: 48)
-                            .background(NeoAppColors.brass, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-                            .overlay {
-                                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                                    .stroke(KitchenTablePalette.brassDeep, lineWidth: NeoAppMetrics.rule)
-                            }
-                    }
-                    .neoReviewBareRow()
-                }
-
-                Section {
-                    NeoSectionBanner(title: "Ingredient", detail: "Details")
-                        .neoReviewBareRow()
-
-                    HStack {
-                        Text("Name")
-                            .neoReviewFieldLabel()
-                        Spacer()
-                        TextField("Name", text: $name)
-                            .multilineTextAlignment(.trailing)
-                            .font(.system(.body, design: .rounded, weight: .bold))
-                    }
-                    .neoReviewRow()
+            Form {
+                Section("Ingredient") {
+                    TextField("Name", text: $name)
                     valueRow("Weight", text: $grams, unit: "g")
-                        .neoReviewRow()
                     valueRow("Calories", text: $calories, unit: "kcal")
-                        .neoReviewRow()
                 }
-
-                Section {
-                    NeoSectionBanner(title: "Macros", detail: "Per ingredient", style: .acid)
-                        .neoReviewBareRow()
-
+                Section("Macros") {
                     valueRow("Protein", text: $protein, unit: "g")
-                        .neoReviewRow()
                     valueRow("Carbs", text: $carbs, unit: "g")
-                        .neoReviewRow()
                     valueRow("Fat", text: $fat, unit: "g")
-                        .neoReviewRow()
                 }
                 if let onDelete {
                     Section {
@@ -1119,24 +730,16 @@ struct IngredientEditorSheet: View {
                             onDelete()
                             dismiss()
                         }
-                        .textCase(.uppercase)
-                        .font(.system(.body, design: .rounded, weight: .black).width(.condensed))
-                        .frame(maxWidth: .infinity)
-                        .neoReviewRow(fill: NeoAppColors.warning.opacity(0.14))
                     }
                 }
             }
-            .listStyle(.plain)
-            .listSectionSpacing(10)
-            .environment(\.defaultMinListRowHeight, 1)
-            .neoScreen()
-            .accessibilityIdentifier("neo.ingredientEditor.screen")
-            .navigationTitle("")
+            .scrollContentBackground(.hidden)
+            .background(AppColors.appBackground)
+            .navigationTitle(target.index == nil ? "Add Ingredient" : "Edit Ingredient")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
-                        .tint(NeoAppColors.cobalt)
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
@@ -1145,8 +748,8 @@ struct IngredientEditorSheet: View {
                         dismiss()
                     }
                     .disabled(parsedIngredient == nil)
-                    .font(.system(.body, design: .rounded, weight: .black))
-                    .tint(NeoAppColors.cobalt)
+                    .font(.system(.body, design: .rounded, weight: .semibold))
+                    .tint(AppColors.calorie)
                 }
             }
         }
@@ -1155,22 +758,13 @@ struct IngredientEditorSheet: View {
     private func valueRow(_ label: String, text: Binding<String>, unit: String) -> some View {
         HStack {
             Text(label)
-                .neoReviewFieldLabel()
             Spacer()
             TextField("0", text: text)
                 .keyboardType(.decimalPad)
                 .multilineTextAlignment(.trailing)
-                .font(.system(.body, design: .rounded, weight: .black))
-                .padding(.horizontal, 8)
-                .padding(.vertical, 6)
-                .background(NeoAppColors.subtleSurface)
-                .overlay {
-                    Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
-                }
                 .frame(maxWidth: 110)
             Text(unit)
-                .font(.system(.caption, design: .rounded, weight: .black))
-                .foregroundStyle(NeoAppColors.cobalt)
+                .foregroundStyle(.secondary)
         }
     }
 
@@ -1232,125 +826,79 @@ private struct WhatIfMealImpactSheet: View {
         NavigationStack {
             List {
                 Section {
-                    NeoScreenHeader(
-                        eyebrow: "Meal simulation",
-                        title: "What if?",
-                        subtitle: "Preview this meal against today's goals without logging it"
-                    ) {
-                        Image(systemName: "scope")
-                            .font(.system(size: 23, weight: .black))
-                            .foregroundStyle(KitchenTablePalette.onBrass)
-                            .frame(width: 48, height: 48)
-                            .background(NeoAppColors.brass, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-                            .overlay {
-                                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                                    .stroke(KitchenTablePalette.brassDeep, lineWidth: NeoAppMetrics.rule)
-                            }
-                    }
-                    .neoReviewBareRow()
-                }
-
-                Section {
-                    NeoSectionBanner(title: "Impact on Today", detail: "After meal")
-                        .neoReviewBareRow()
-
                     WhatIfImpactRow(
                         label: "Calories",
                         added: "+\(entry.calories) kcal",
                         after: "\(afterTotals.calories) / \(goals.calories) kcal",
                         remaining: remainingCaloriesText,
                         isOver: afterTotals.calories > goals.calories,
-                        tint: NeoAppColors.cobalt
+                        tint: AppColors.calorie
                     )
-                    .neoReviewRow()
                     WhatIfImpactRow(
                         label: "Protein",
                         added: "+\(MacroValueFormatter.withUnit(entry.protein))",
                         after: "\(MacroValueFormatter.string(afterTotals.protein)) / \(profile.effectiveProtein)g",
                         remaining: remainingMacroText(afterTotals.protein, goal: Double(profile.effectiveProtein)),
                         isOver: false,
-                        tint: NeoAppColors.cobalt
+                        tint: AppColors.protein
                     )
-                    .neoReviewRow()
                     WhatIfImpactRow(
                         label: "Carbs",
                         added: "+\(MacroValueFormatter.withUnit(entry.carbs))",
                         after: "\(MacroValueFormatter.string(afterTotals.carbs)) / \(profile.effectiveCarbs)g",
                         remaining: remainingMacroText(afterTotals.carbs, goal: Double(profile.effectiveCarbs)),
                         isOver: afterTotals.carbs > Double(profile.effectiveCarbs),
-                        tint: NeoAppColors.cobalt
+                        tint: AppColors.carbs
                     )
-                    .neoReviewRow()
                     WhatIfImpactRow(
                         label: "Fat",
                         added: "+\(MacroValueFormatter.withUnit(entry.fat))",
                         after: "\(MacroValueFormatter.string(afterTotals.fat)) / \(profile.effectiveFat)g",
                         remaining: remainingMacroText(afterTotals.fat, goal: Double(profile.effectiveFat)),
                         isOver: afterTotals.fat > Double(profile.effectiveFat),
-                        tint: NeoAppColors.cobalt
+                        tint: AppColors.fat
                     )
-                    .neoReviewRow()
-
+                } header: {
+                    Text("Impact on Today")
+                } footer: {
                     Text("This does not log the meal. It shows what today would look like if you logged \(entry.name).")
-                        .font(.system(.caption, design: .rounded, weight: .bold))
-                        .foregroundStyle(NeoAppColors.mutedInk)
-                        .neoReviewRow(fill: NeoAppColors.subtleSurface)
                 }
 
-                Section {
-                    NeoSectionBanner(title: "AI Suggestion", detail: "Goal fit", style: .acid)
-                        .neoReviewBareRow()
-
+                Section("AI Suggestion") {
                     if isLoadingSuggestion {
                         HStack(spacing: 12) {
                             ProgressView()
-                                .tint(NeoAppColors.cobalt)
                             Text("Checking fit with your goals...")
-                                .font(.system(.body, design: .rounded, weight: .bold))
-                                .foregroundStyle(NeoAppColors.mutedInk)
+                                .foregroundStyle(.secondary)
                         }
-                        .neoReviewRow()
+                        .padding(.vertical, 4)
                     } else if let suggestion {
                         Text(suggestion)
-                            .font(.system(.body, design: .rounded, weight: .medium))
-                            .foregroundStyle(NeoAppColors.ink)
+                            .font(.body)
+                            .foregroundStyle(.primary)
                             .textSelection(.enabled)
-                            .neoReviewRow()
                     } else if let suggestionError {
                         VStack(alignment: .leading, spacing: 10) {
                             Text(suggestionError)
-                                .font(.system(.body, design: .rounded, weight: .bold))
-                                .foregroundStyle(NeoAppColors.mutedInk)
+                                .foregroundStyle(.secondary)
                             Button("Retry") {
                                 Task { await loadSuggestion() }
                             }
-                            .textCase(.uppercase)
-                            .font(.system(.body, design: .rounded, weight: .black).width(.condensed))
-                            .foregroundStyle(KitchenTablePalette.onStrongAccent)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 10)
-                            .background(NeoAppColors.tomato, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-                            .overlay {
-                                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                                    .stroke(KitchenTablePalette.tomatoDeep, lineWidth: NeoAppMetrics.rule)
-                            }
+                            .font(.system(.body, design: .rounded, weight: .semibold))
+                            .tint(AppColors.calorie)
                         }
-                        .neoReviewRow()
                     }
                 }
             }
-            .listStyle(.plain)
-            .listSectionSpacing(10)
-            .environment(\.defaultMinListRowHeight, 1)
-            .neoScreen()
-            .accessibilityIdentifier("neo.reviewFood.whatIf")
-            .navigationTitle("")
+            .scrollContentBackground(.hidden)
+            .background(AppColors.appBackground)
+            .navigationTitle("What if?")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
-                        .font(.system(.body, design: .rounded, weight: .black))
-                        .tint(NeoAppColors.cobalt)
+                        .font(.system(.body, design: .rounded, weight: .semibold))
+                        .tint(AppColors.calorie)
                 }
             }
             .task(id: suggestionTaskID) {
@@ -1407,35 +955,34 @@ private struct WhatIfImpactRow: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            Rectangle()
-                .fill(tint)
-                .frame(width: 7, height: 52)
+            Circle()
+                .fill(tint.opacity(0.18))
+                .frame(width: 30, height: 30)
                 .overlay {
-                    Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                    Circle()
+                        .fill(tint)
+                        .frame(width: 10, height: 10)
                 }
 
             VStack(alignment: .leading, spacing: 3) {
                 Text(LocalizedDisplayText.text(label))
-                    .textCase(.uppercase)
-                    .font(.system(.body, design: .rounded, weight: .black).width(.condensed))
-                    .foregroundStyle(NeoAppColors.ink)
+                    .font(.system(.body, design: .rounded, weight: .semibold))
                 Text(after)
-                    .font(.system(.caption, design: .rounded, weight: .bold))
-                    .foregroundStyle(NeoAppColors.mutedInk)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
 
             Spacer()
 
             VStack(alignment: .trailing, spacing: 3) {
                 Text(added)
-                    .font(.system(.body, design: .rounded, weight: .black))
-                    .foregroundStyle(NeoAppColors.cobalt)
+                    .font(.system(.body, design: .rounded, weight: .semibold))
                 Text(remaining)
-                    .font(.system(.caption, design: .rounded, weight: .bold))
-                    .foregroundStyle(isOver ? NeoAppColors.warning : NeoAppColors.mutedInk)
+                    .font(.caption)
+                    .foregroundStyle(isOver ? Color.red : .secondary)
             }
         }
-        .accessibilityElement(children: .combine)
+        .padding(.vertical, 2)
     }
 }
 
@@ -1618,7 +1165,7 @@ struct EndEditingDecimalTextField: UIViewRepresentable {
             }
 
             let doneItem = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(doneTapped))
-            doneItem.tintColor = Self.cobaltTint
+            doneItem.tintColor = Self.calorieTint
 
             let toolbar = UIToolbar()
             toolbar.items = [flexibleSpace(), doneItem]
@@ -1635,14 +1182,14 @@ struct EndEditingDecimalTextField: UIViewRepresentable {
             let material: UIVisualEffect
             if #available(iOS 26.0, *) {
                 let glass = UIGlassEffect(style: .regular)
-                glass.tintColor = Self.cobaltTint.withAlphaComponent(0.10)
+                glass.tintColor = Self.calorieTint.withAlphaComponent(0.08)
                 material = glass
             } else {
                 material = UIBlurEffect(style: .systemChromeMaterial)
             }
             let glassSurface = UIVisualEffectView(effect: material)
             glassSurface.clipsToBounds = true
-            glassSurface.layer.cornerRadius = 2
+            glassSurface.layer.cornerRadius = 16
             glassSurface.layer.cornerCurve = .continuous
             glassSurface.translatesAutoresizingMaskIntoConstraints = false
             accessory.addSubview(glassSurface)
@@ -1743,14 +1290,12 @@ struct EndEditingDecimalTextField: UIViewRepresentable {
         ) -> UIButton {
             let button = UIButton(type: .system)
             button.setTitle(title, for: .normal)
-            button.setTitleColor(emphasized ? .black : Self.cobaltTint, for: .normal)
-            button.titleLabel?.font = .systemFont(ofSize: 16, weight: .black)
+            button.setTitleColor(emphasized ? .white : Self.calorieTint, for: .normal)
+            button.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
             button.titleLabel?.adjustsFontSizeToFitWidth = true
             button.titleLabel?.minimumScaleFactor = 0.72
-            button.backgroundColor = emphasized ? Self.acidTint : .clear
-            button.layer.cornerRadius = 2
-            button.layer.borderWidth = 1
-            button.layer.borderColor = (emphasized ? UIColor.black : Self.cobaltTint).cgColor
+            button.backgroundColor = emphasized ? Self.calorieTint : .clear
+            button.layer.cornerRadius = 10
             button.accessibilityLabel = accessibilityLabel
             button.addTarget(self, action: action, for: .touchUpInside)
             return button
@@ -1760,12 +1305,7 @@ struct EndEditingDecimalTextField: UIViewRepresentable {
             UIBarButtonItem(systemItem: .flexibleSpace)
         }
 
-        private static let cobaltTint = UIColor { traits in
-            traits.userInterfaceStyle == .dark
-                ? UIColor(red: 0.30, green: 0.47, blue: 1.0, alpha: 1.0)
-                : UIColor(red: 0.024, green: 0.231, blue: 0.922, alpha: 1.0)
-        }
-        private static let acidTint = UIColor(red: 238.0 / 255.0, green: 1.0, blue: 0, alpha: 1.0)
+        private static let calorieTint = UIColor(red: 1.0, green: 55.0 / 255.0, blue: 95.0 / 255.0, alpha: 1.0)
     }
 }
 
@@ -1797,9 +1337,7 @@ private struct ReviewNutritionValueRow: View {
     var body: some View {
         HStack {
             Text(LocalizedDisplayText.text(label))
-                .textCase(.uppercase)
-                .font(.system(.caption, design: .rounded, weight: .black).width(.condensed))
-                .foregroundStyle(dim ? NeoAppColors.mutedInk : NeoAppColors.ink)
+                .foregroundStyle(dim ? .secondary : .primary)
             Spacer()
             if isUnlocked {
                 TextField("0", text: Binding(
@@ -1812,15 +1350,11 @@ private struct ReviewNutritionValueRow: View {
                 .focused($isFocused)
                 .keyboardType(.decimalPad)
                 .multilineTextAlignment(.trailing)
-                .font(.system(.body, design: .rounded, weight: .black))
-                .foregroundStyle(NeoAppColors.ink)
+                .fontWeight(.medium)
                 .frame(minWidth: 76, maxWidth: 118)
                 .padding(.horizontal, 10)
                 .padding(.vertical, 5)
-                .background(NeoAppColors.subtleSurface)
-                .overlay {
-                    Rectangle().stroke(NeoAppColors.cobalt, lineWidth: NeoAppMetrics.compactRule)
-                }
+                .background(AppColors.calorie.opacity(0.10), in: RoundedRectangle(cornerRadius: 9))
                 .onAppear { draft = editValue }
                 .onChange(of: editValue) { _, newValue in
                     if !isFocused {
@@ -1836,13 +1370,10 @@ private struct ReviewNutritionValueRow: View {
                 }
             } else {
                 Text(displayValue)
-                    .font(.system(.body, design: .rounded, weight: .black))
-                    .foregroundStyle(NeoAppColors.cobalt)
-                    .monospacedDigit()
+                    .fontWeight(.medium)
             }
             Text(unit)
-                .font(.system(.caption, design: .rounded, weight: .black))
-                .foregroundStyle(NeoAppColors.mutedInk)
+                .foregroundStyle(.secondary)
                 .frame(width: 36, alignment: .leading)
         }
     }
@@ -1856,17 +1387,11 @@ struct NutritionDisplayRow: View {
     var body: some View {
         HStack {
             Text(LocalizedDisplayText.text(label))
-                .textCase(.uppercase)
-                .font(.system(.caption, design: .rounded, weight: .black).width(.condensed))
-                .foregroundStyle(NeoAppColors.ink)
             Spacer()
             Text(value)
-                .font(.system(.body, design: .rounded, weight: .black))
-                .foregroundStyle(NeoAppColors.cobalt)
-                .monospacedDigit()
+                .fontWeight(.medium)
             Text(unit)
-                .font(.system(.caption, design: .rounded, weight: .black))
-                .foregroundStyle(NeoAppColors.mutedInk)
+                .foregroundStyle(.secondary)
                 .frame(width: 36, alignment: .leading)
         }
     }
@@ -1880,17 +1405,12 @@ struct OptionalNutritionDisplayRow: View {
     var body: some View {
         HStack {
             Text(LocalizedDisplayText.text(label))
-                .textCase(.uppercase)
-                .font(.system(.caption, design: .rounded, weight: .black).width(.condensed))
-                .foregroundStyle(NeoAppColors.mutedInk)
+                .foregroundStyle(.secondary)
             Spacer()
             Text(value.map { String(format: "%.1f", $0) } ?? "—")
-                .font(.system(.body, design: .rounded, weight: .black))
-                .foregroundStyle(NeoAppColors.cobalt)
-                .monospacedDigit()
+                .fontWeight(.medium)
             Text(unit)
-                .font(.system(.caption, design: .rounded, weight: .black))
-                .foregroundStyle(NeoAppColors.mutedInk)
+                .foregroundStyle(.secondary)
                 .frame(width: 36, alignment: .leading)
         }
     }

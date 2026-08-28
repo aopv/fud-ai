@@ -14,80 +14,37 @@ struct ImportSharedMealView: View {
         NavigationStack {
             List {
                 Section {
-                    NeoScreenHeader(
-                        eyebrow: "SHARED FOOD",
-                        title: "Add Meal",
-                        subtitle: "Review every item before it reaches today's diary."
-                    )
-                    .listRowInsets(EdgeInsets())
-                    .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
-                }
-
-                Section {
                     ForEach(meals) { meal in
                         HStack(spacing: 12) {
                             if let emoji = meal.emoji {
-                                Text(emoji)
-                                    .font(.title2)
-                                    .frame(width: 42, height: 42)
-                                    .background(NeoAppColors.subtleSurface)
-                                    .overlay {
-                                        Rectangle()
-                                            .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
-                                    }
+                                Text(emoji).font(.title2)
                             } else {
                                 Image(systemName: "fork.knife")
-                                    .font(.system(size: 18, weight: .black))
-                                    .foregroundStyle(Color.black)
-                                    .frame(width: 42, height: 42)
-                                    .background(NeoAppColors.acid)
-                                    .overlay {
-                                        Rectangle()
-                                            .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
-                                    }
+                                    .foregroundStyle(AppColors.calorie)
+                                    .frame(width: 28)
                             }
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(meal.name)
-                                    .font(.system(.body, design: .rounded, weight: .black))
-                                    .foregroundStyle(NeoAppColors.ink)
+                                    .font(.system(.body, design: .rounded, weight: .semibold))
                                 Text("\(Int(meal.protein.rounded()))P · \(Int(meal.carbs.rounded()))C · \(Int(meal.fat.rounded()))F")
-                                    .font(.system(.caption, design: .rounded, weight: .bold))
-                                    .foregroundStyle(NeoAppColors.mutedInk)
+                                    .font(.system(.caption, design: .rounded))
+                                    .foregroundStyle(.secondary)
                             }
                             Spacer()
                             Text("\(meal.calories) kcal")
-                                .font(.system(.subheadline, design: .rounded, weight: .black))
-                                .foregroundStyle(NeoAppColors.cobalt)
+                                .font(.system(.subheadline, design: .rounded, weight: .semibold))
+                                .foregroundStyle(AppColors.calorie)
                         }
-                        .padding(12)
-                        .background(NeoAppColors.surface)
-                        .overlay {
-                            Rectangle()
-                                .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
-                        }
-                        .listRowInsets(EdgeInsets(top: 5, leading: 14, bottom: 5, trailing: 14))
-                        .listRowBackground(Color.clear)
-                        .listRowSeparator(.hidden)
+                        .listRowBackground(AppColors.appCard)
                     }
                 } header: {
-                    NeoSectionBanner(
-                        title: meals.count == 1 ? "Shared meal" : "\(meals.count) shared meals",
-                        detail: "\(totalCalories) KCAL",
-                        style: .cobalt
-                    )
+                    Text(meals.count == 1 ? "Shared meal" : "\(meals.count) shared meals")
                 } footer: {
                     Text("Adds to your log with the exact nutrients from the sender. No photo is included.")
-                        .font(.system(.footnote, design: .rounded, weight: .bold))
-                        .foregroundStyle(NeoAppColors.mutedInk)
-                        .padding(.top, 6)
                 }
             }
             .scrollContentBackground(.hidden)
-            .listStyle(.plain)
-            .listSectionSpacing(NeoAppMetrics.sectionSpacing)
-            .background(NeoAppColors.canvas)
-            .tint(NeoAppColors.cobalt)
+            .background(AppColors.appBackground)
             .navigationTitle("Add Shared Meal")
             .navigationBarTitleDisplayMode(.inline)
             .safeAreaInset(edge: .bottom) {
@@ -95,28 +52,19 @@ struct ImportSharedMealView: View {
                     onAdd(meals)
                 } label: {
                     Text(meals.count == 1 ? "Add to Log" : "Add \(meals.count) to Log · \(totalCalories) kcal")
-                        .textCase(.uppercase)
-                        .font(.system(.headline, design: .rounded, weight: .black))
-                        .foregroundStyle(Color.black)
+                        .font(.system(.headline, design: .rounded, weight: .semibold))
                         .frame(maxWidth: .infinity)
-                        .frame(minHeight: 52)
-                        .background(NeoAppColors.acid)
-                        .overlay {
-                            Rectangle()
-                                .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
-                        }
+                        .padding(.vertical, 14)
+                        .background(AppColors.calorie, in: RoundedRectangle(cornerRadius: 16))
+                        .foregroundStyle(.white)
                 }
-                .buttonStyle(.plain)
                 .padding(.horizontal)
                 .padding(.bottom, 8)
-                .background(NeoAppColors.canvas)
-                .accessibilityIdentifier("sharedMeal.confirm")
             }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { onCancel() }
-                        .tint(NeoAppColors.cobalt)
-                        .accessibilityIdentifier("sharedMeal.cancel")
+                        .tint(AppColors.calorie)
                 }
             }
         }

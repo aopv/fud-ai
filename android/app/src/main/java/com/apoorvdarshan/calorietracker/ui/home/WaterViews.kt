@@ -53,7 +53,7 @@ fun WaterProgressRow(current: Int, goal: Int, unit: WaterUnit, modifier: Modifie
             Icon(
                 Icons.Filled.WaterDrop,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
+                tint = AppColors.Calorie,
                 modifier = Modifier.size(17.dp)
             )
             Text(
@@ -72,7 +72,7 @@ fun WaterProgressRow(current: Int, goal: Int, unit: WaterUnit, modifier: Modifie
         LinearProgressIndicator(
             progress = { progress },
             modifier = Modifier.fillMaxWidth().height(5.dp).clip(RoundedCornerShape(3.dp)),
-            color = MaterialTheme.colorScheme.primary,
+            color = AppColors.Calorie,
             trackColor = AppColors.Calorie.copy(alpha = 0.16f)
         )
     }

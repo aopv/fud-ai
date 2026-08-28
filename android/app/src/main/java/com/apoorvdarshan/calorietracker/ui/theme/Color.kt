@@ -39,105 +39,48 @@ enum class AppThemeColor(
 }
 
 object AppColors {
-    /**
-     * Fud AI's Kitchen Table palette. The legacy Neo* aliases remain so feature
-     * screens can adopt the new presentation without changing their contracts.
-     */
-    private val LightKitchenBone = Color(0xFFF4E8D2)
-    private val LightKitchenPaper = Color(0xFFFFF8EA)
-    private val LightKitchenEspresso = Color(0xFF2C1E19)
-    private val LightKitchenTomato = Color(0xFFB8412F)
-    private val LightKitchenCobalt = Color(0xFF315BA9)
-    private val LightKitchenHerb = Color(0xFF4F7252)
-    private val LightKitchenBrass = Color(0xFFC7A24A)
-
-    // Dark mode keeps the same table-and-receipt hierarchy, only at night:
-    // roast canvas, lifted brown paper, cream ink, and brighter stamp pigments.
-    private val DarkKitchenBone = Color(0xFF251C18)
-    private val DarkKitchenPaper = Color(0xFF352923)
-    private val DarkKitchenEspresso = Color(0xFFF4E6D0)
-    private val DarkKitchenTomato = Color(0xFFE36A50)
-    private val DarkKitchenCobalt = Color(0xFF82A6ED)
-    private val DarkKitchenHerb = Color(0xFF91B38B)
-    private val DarkKitchenBrass = Color(0xFFDDB866)
-
-    /** Stable light cream for ink placed on tomato controls and camera chrome. */
-    val KitchenCream = LightKitchenPaper
-
-    private var darkKitchen = false
-
-    val KitchenBone: Color
-        get() = if (darkKitchen) DarkKitchenBone else LightKitchenBone
-    val KitchenPaper: Color
-        get() = if (darkKitchen) DarkKitchenPaper else LightKitchenPaper
-    val KitchenEspresso: Color
-        get() = if (darkKitchen) DarkKitchenEspresso else LightKitchenEspresso
-    val KitchenTomato: Color
-        get() = if (darkKitchen) DarkKitchenTomato else LightKitchenTomato
-    val KitchenCobalt: Color
-        get() = if (darkKitchen) DarkKitchenCobalt else LightKitchenCobalt
-    val KitchenHerb: Color
-        get() = if (darkKitchen) DarkKitchenHerb else LightKitchenHerb
-    val KitchenBrass: Color
-        get() = if (darkKitchen) DarkKitchenBrass else LightKitchenBrass
-    val KitchenRoast = Color(0xFF1F1714)
-    val KitchenRoastPaper = Color(0xFF2A211D)
-
-    val NeoCobalt: Color
-        get() = KitchenCobalt
-    val NeoAcid: Color
-        get() = KitchenBrass
-    val NeoInk: Color
-        get() = KitchenEspresso
-    val NeoPaper: Color
-        get() = KitchenBone
-
     private var activeThemeColor: AppThemeColor = AppThemeColor.FUD_PINK
 
     fun setThemeColor(themeColor: AppThemeColor) {
         activeThemeColor = themeColor
     }
 
-    fun setDarkTheme(enabled: Boolean) {
-        darkKitchen = enabled
-    }
-
     val ThemeColor: AppThemeColor
         get() = activeThemeColor
 
     val CalorieStart: Color
-        get() = KitchenTomato
+        get() = activeThemeColor.start
 
     val CalorieEnd: Color
-        get() = Color(0xFFC1533B)
+        get() = activeThemeColor.end
 
     val Calorie: Color
         get() = CalorieStart
 
     val Protein: Color
-        get() = KitchenHerb
+        get() = CalorieStart
 
     val Carbs: Color
-        get() = KitchenBrass
+        get() = CalorieStart
 
     val Fat: Color
-        get() = KitchenCobalt
+        get() = CalorieStart
 
     val CalorieGradient: Brush
         get() = Brush.linearGradient(listOf(CalorieStart, CalorieEnd))
 
-    val AppBackgroundLight = LightKitchenBone
-    val AppBackgroundDark = KitchenRoast
+    val AppBackgroundLight = Color(0xFFF3ECE6)
+    val AppBackgroundDark = Color(0xFF0C0C0C)
 
-    val AppCardLight = LightKitchenPaper
-    val AppCardDark = KitchenRoastPaper
+    val AppCardLight = Color(0xFFFFFFFF)
+    val AppCardDark = Color(0xFF1C1C1E)
 
-    val OnLight = KitchenEspresso
-    val OnDark = Color(0xFFF8ECD8)
+    val OnLight = Color(0xFF1C1C1E)
+    val OnDark = Color(0xFFF2F2F7)
 
-    val MutedLight = Color(0xFF76675D)
-    val MutedDark = Color(0xFFB9AA9D)
+    val MutedLight = Color(0xFF8E8E93)
+    val MutedDark = Color(0xFF8E8E93)
 
-    val DividerLight = Color(0xFFD8C7AF)
-    val DividerDark = Color(0xFF4B3B34)
+    val DividerLight = Color(0xFFE5E5EA)
+    val DividerDark = Color(0xFF2C2C2E)
 }

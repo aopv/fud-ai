@@ -16,7 +16,7 @@ struct OptionalNutrientGoalsSettingsView: View {
                     } label: {
                         HStack(spacing: 12) {
                             Image(systemName: nutrient.iconName)
-                                .foregroundStyle(NeoAppColors.cobalt)
+                                .foregroundStyle(AppColors.calorie)
                                 .frame(width: 22)
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(nutrient.displayName)
@@ -27,29 +27,23 @@ struct OptionalNutrientGoalsSettingsView: View {
                             }
                             Spacer()
                             Text("\(goals.goal(for: nutrient)) \(nutrient.unit)")
-                                .font(.system(.subheadline, design: .rounded, weight: .black))
-                                .foregroundStyle(NeoAppColors.cobalt)
+                                .foregroundStyle(.secondary)
                             Image(systemName: "chevron.right")
                                 .font(.caption)
                                 .foregroundStyle(.tertiary)
                         }
-                        .padding(.vertical, 6)
-                        .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
                 }
             } header: {
-                NeoSectionBanner(title: "Other Nutrients", detail: "Daily targets", style: .cobalt)
+                Text("Other Nutrients")
             } footer: {
                 Text("Separate from calorie, protein, carb, and fat goals.")
             }
-            .neoListRow()
+            .listRowBackground(AppColors.appCard)
         }
-        .listStyle(.plain)
-        .listSectionSpacing(NeoAppMetrics.sectionSpacing)
         .scrollContentBackground(.hidden)
-        .background(NeoAppColors.canvas)
-        .tint(NeoAppColors.cobalt)
+        .background(AppColors.appBackground)
         .navigationTitle("Other Nutrients")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {

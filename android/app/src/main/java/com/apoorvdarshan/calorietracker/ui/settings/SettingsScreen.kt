@@ -118,7 +118,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -129,7 +128,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.text.font.FontWeight
@@ -137,7 +135,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
@@ -179,8 +176,6 @@ import com.apoorvdarshan.calorietracker.ui.components.FudGlassPrimaryButton
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassSurface
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassTextButton
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassTextField
-import com.apoorvdarshan.calorietracker.ui.components.KitchenPageHeader
-import com.apoorvdarshan.calorietracker.ui.components.KitchenSectionLabel
 import com.apoorvdarshan.calorietracker.ui.components.FudIconBubble
 import com.apoorvdarshan.calorietracker.ui.components.FeetInchesWheelPicker
 import com.apoorvdarshan.calorietracker.ui.components.NumericWheelPicker
@@ -216,13 +211,7 @@ private enum class HealthConnectPermissionAction {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(
-    container: AppContainer,
-    nav: NavHostController,
-    vm: SettingsViewModel,
-    initialRow: String? = null,
-    onInitialActionFinished: (() -> Unit)? = null
-) {
+fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: SettingsViewModel) {
     val ui by vm.ui.collectAsState()
     val profile = ui.profile
     val latestMeasurement by container.bodyMeasurementRepository.latest.collectAsState(initial = null)
@@ -245,22 +234,14 @@ fun SettingsScreen(
     var showHealthEnergyGoalsInfo by remember { mutableStateOf(false) }
     var showAdaptiveGoalsInfo by remember { mutableStateOf(false) }
     var pendingHealthPermissionAction by remember { mutableStateOf<HealthConnectPermissionAction?>(null) }
-    var handledInitialRow by remember { mutableStateOf<String?>(null) }
-    val finishInitialAction = {
-        if (initialRow != null) onInitialActionFinished?.invoke()
-    }
     val activityContext = LocalContext.current
-    val resources = LocalResources.current
     val settingsScope = rememberCoroutineScope()
     val importReadFailedMessage = stringResource(R.string.import_read_failed)
 
     val importFileLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument()
     ) { uri ->
-        if (uri == null) {
-            finishInitialAction()
-            return@rememberLauncherForActivityResult
-        }
+        if (uri == null) return@rememberLauncherForActivityResult
         settingsScope.launch {
             val result = runCatching {
                 withContext(Dispatchers.IO) {
@@ -299,7 +280,6 @@ fun SettingsScreen(
     ) { granted ->
         if (granted) vm.setNotificationsEnabled(true)
         else permissionDeniedMessage = notifDeniedMsg
-        finishInitialAction()
     }
 
     // Health Connect honors partial grants: any granted permission connects the app, and
@@ -319,7 +299,6 @@ fun SettingsScreen(
         } else {
             showHealthPermissionHelp = true
         }
-        if (!showHealthPermissionHelp) finishInitialAction()
     }
 
     fun openHealthConnectAccess() {
@@ -390,38 +369,6 @@ fun SettingsScreen(
         healthConnectLauncher.launch(container.health.permissions)
     }
 
-    LaunchedEffect(initialRow) {
-        if (initialRow == null || handledInitialRow == initialRow) return@LaunchedEffect
-        handledInitialRow = initialRow
-        sheet = when (initialRow) {
-            "profile.gender" -> SettingsSheet.GENDER
-            "profile.birthday" -> SettingsSheet.BIRTHDAY
-            "profile.height" -> SettingsSheet.HEIGHT
-            "profile.weight" -> SettingsSheet.WEIGHT
-            "profile.goal" -> SettingsSheet.GOAL
-            "targets.calories" -> SettingsSheet.CALORIES
-            "targets.protein" -> SettingsSheet.PROTEIN
-            "targets.carbs" -> SettingsSheet.CARBS
-            "targets.fat" -> SettingsSheet.FAT
-            "food.mealSchedule" -> SettingsSheet.MEAL_TIMES
-            "ai.apiKey" -> SettingsSheet.API_KEY
-            "workout.split" -> SettingsSheet.WORKOUT_SPLIT
-            "workout.rpe" -> SettingsSheet.WORKOUT_RPE
-            else -> null
-        }
-        when (initialRow) {
-            "targets.recalculate" -> vm.recalculateGoals()
-            "notifications.master" -> onNotificationsToggle(true)
-            "notifications.summary" -> onDailySummaryToggle(true)
-            "health.connect" -> onHealthConnectToggle(true)
-            "health.energy" -> onHealthEnergyGoalsToggle(true)
-            "data.export" -> showExportSheet = true
-            "data.import" -> importFileLauncher.launch(arrayOf("application/json", "text/plain"))
-            "data.clearFood" -> showClearFoodDialog = true
-            "data.deleteAll" -> showDeleteDialog = true
-        }
-    }
-
     fun openBatteryOptimizationSettings() {
         val intents = listOf(
             Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
@@ -435,40 +382,8 @@ fun SettingsScreen(
         }
     }
 
-    // Targeted native routes only host a platform picker, permission prompt, or
-    // import/export flow. Keep the shared v7 identity behind that control rather
-    // than briefly exposing the retired native Settings list.
-    if (initialRow != null) {
-        Box(
-            Modifier
-                .fillMaxSize()
-                .background(Color.Transparent)
-                .padding(24.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            FudGlassSurface(modifier = Modifier.fillMaxWidth(), padding = 22.dp) {
-                Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
-                    Text(
-                        "FÜD AI",
-                        color = AppColors.NeoCobalt,
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Black
-                    )
-                    Text("SETTINGS", fontSize = 34.sp, fontWeight = FontWeight.Black)
-                    Text(
-                        "Complete this native control, then return to your shared settings.",
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.66f)
-                    )
-                    onInitialActionFinished?.let { onFinish ->
-                        FudGlassPrimaryButton(text = "Back to Füd AI", onClick = onFinish)
-                    }
-                }
-            }
-        }
-    } else {
-        // The legacy full-page implementation remains available for deep links
-        // that have not yet been promoted to the shared shell.
-        Scaffold(containerColor = Color.Transparent) { padding ->
+    // iOS Settings: bare List, no NavigationBar visible. Match that — no TopAppBar.
+    Scaffold(containerColor = MaterialTheme.colorScheme.background) { padding ->
         Column(
             Modifier
                 .fillMaxSize()
@@ -477,11 +392,6 @@ fun SettingsScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
-            KitchenPageHeader(
-                title = stringResource(R.string.nav_settings),
-                modifier = Modifier.padding(start = 2.dp, end = 2.dp, bottom = 2.dp)
-            )
-
             // Section 1 — Personal Info (matches iOS Section "Personal Info")
             SectionCard(title = stringResource(R.string.settings_section_personal)) {
                 profile?.let { p ->
@@ -653,7 +563,7 @@ fun SettingsScreen(
                             // row's right edge, not a wrapped line below it.
                             Text(
                                 stringResource(R.string.settings_tap_to_update),
-                                color = MaterialTheme.colorScheme.primary,
+                                color = AppColors.Calorie,
                                 style = MaterialTheme.typography.bodySmall
                             )
                         }
@@ -704,7 +614,7 @@ fun SettingsScreen(
                                             Icon(
                                                 Icons.Filled.Check,
                                                 contentDescription = stringResource(R.string.sheet_selected_a11y),
-                                                tint = MaterialTheme.colorScheme.primary,
+                                                tint = AppColors.Calorie,
                                                 modifier = Modifier.size(18.dp)
                                             )
                                         }
@@ -987,7 +897,7 @@ fun SettingsScreen(
                         .padding(horizontal = 16.dp, vertical = 14.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    FudIconBubble(icon = Icons.Outlined.IosShare, size = 22.dp, iconSize = 14.dp, tint = MaterialTheme.colorScheme.primary)
+                    FudIconBubble(icon = Icons.Outlined.IosShare, size = 22.dp, iconSize = 14.dp, tint = AppColors.Calorie)
                     Spacer(Modifier.width(14.dp))
                     Text(
                         stringResource(R.string.export_diary_title),
@@ -1005,7 +915,7 @@ fun SettingsScreen(
                         .padding(horizontal = 16.dp, vertical = 14.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    FudIconBubble(icon = Icons.Outlined.Download, size = 22.dp, iconSize = 14.dp, tint = MaterialTheme.colorScheme.primary)
+                    FudIconBubble(icon = Icons.Outlined.Download, size = 22.dp, iconSize = 14.dp, tint = AppColors.Calorie)
                     Spacer(Modifier.width(14.dp))
                     Text(
                         stringResource(R.string.import_diary_title),
@@ -1058,7 +968,6 @@ fun SettingsScreen(
             }
 
             Spacer(Modifier.height(BottomNavScrollPadding))
-            }
         }
     }
 
@@ -1066,10 +975,7 @@ fun SettingsScreen(
         ExportDiarySheet(
             container = container,
             profile = profile,
-            onDismiss = {
-                showExportSheet = false
-                finishInitialAction()
-            },
+            onDismiss = { showExportSheet = false },
         )
     }
 
@@ -1082,7 +988,6 @@ fun SettingsScreen(
                 showImportSheet = false
                 importPreview = null
                 importError = null
-                finishInitialAction()
             },
             onImport = { mode: DiaryImportMode ->
                 importPreview?.let { selected ->
@@ -1098,11 +1003,7 @@ fun SettingsScreen(
                             showImportSheet = false
                             importPreview = null
                             importError = null
-                            permissionDeniedMessage = resources.getString(
-                                R.string.import_success,
-                                selected.entries.size
-                            )
-                            finishInitialAction()
+                            permissionDeniedMessage = activityContext.getString(R.string.import_success, selected.entries.size)
                         }.onFailure { error ->
                             importError = error.localizedMessage ?: importReadFailedMessage
                         }
@@ -1118,20 +1019,14 @@ fun SettingsScreen(
             sheet = s,
             ui = ui,
             vm = vm,
-            onDismiss = {
-                sheet = null
-                finishInitialAction()
-            },
+            onDismiss = { sheet = null },
             onInvalidGoalWeight = { invalidGoalWeightMessage = it },
             onRebalanceBlocked = { showRebalanceBlockedAlert = true }
         )
     }
 
     if (showClearFoodDialog) {
-        FudGlassDialog(onDismissRequest = {
-            showClearFoodDialog = false
-            finishInitialAction()
-        }) {
+        FudGlassDialog(onDismissRequest = { showClearFoodDialog = false }) {
             Text(stringResource(R.string.settings_clear_food_title), fontSize = 21.sp, fontWeight = FontWeight.Bold)
             Text(
                 stringResource(R.string.settings_clear_food_message),
@@ -1142,13 +1037,9 @@ fun SettingsScreen(
                 onPrimary = {
                     vm.clearFoodLog()
                     showClearFoodDialog = false
-                    finishInitialAction()
                 },
                 dismissText = stringResource(R.string.action_cancel),
-                onDismiss = {
-                    showClearFoodDialog = false
-                    finishInitialAction()
-                },
+                onDismiss = { showClearFoodDialog = false },
                 destructive = true
             )
         }
@@ -1156,10 +1047,7 @@ fun SettingsScreen(
 
     if (showDeleteDialog) {
         val context = LocalContext.current
-        FudGlassDialog(onDismissRequest = {
-            showDeleteDialog = false
-            finishInitialAction()
-        }) {
+        FudGlassDialog(onDismissRequest = { showDeleteDialog = false }) {
             Text(stringResource(R.string.settings_delete_all_title), fontSize = 21.sp, fontWeight = FontWeight.Bold)
             Text(
                 stringResource(R.string.settings_delete_all_message),
@@ -1170,15 +1058,11 @@ fun SettingsScreen(
                 onPrimary = {
                     vm.deleteAllData {
                         showDeleteDialog = false
-                        finishInitialAction()
                         (context as? android.app.Activity)?.recreate()
                     }
                 },
                 dismissText = stringResource(R.string.action_cancel),
-                onDismiss = {
-                    showDeleteDialog = false
-                    finishInitialAction()
-                },
+                onDismiss = { showDeleteDialog = false },
                 destructive = true
             )
         }
@@ -1323,10 +1207,7 @@ fun SettingsScreen(
     }
 
     if (showHealthPermissionHelp) {
-        FudGlassDialog(onDismissRequest = {
-            showHealthPermissionHelp = false
-            finishInitialAction()
-        }) {
+        FudGlassDialog(onDismissRequest = { showHealthPermissionHelp = false }) {
             Text(stringResource(R.string.settings_permission_title), fontSize = 21.sp, fontWeight = FontWeight.Bold)
             Text(healthDeniedMsg, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.68f))
             FudGlassDialogActions(
@@ -1334,13 +1215,9 @@ fun SettingsScreen(
                 onPrimary = {
                     showHealthPermissionHelp = false
                     openHealthConnectAccess()
-                    finishInitialAction()
                 },
                 dismissText = stringResource(R.string.action_cancel),
-                onDismiss = {
-                    showHealthPermissionHelp = false
-                    finishInitialAction()
-                }
+                onDismiss = { showHealthPermissionHelp = false }
             )
         }
     }
@@ -1471,13 +1348,13 @@ fun OptionalNutrientGoalsScreen(
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
+                            tint = AppColors.Calorie,
                             modifier = Modifier.size(22.dp)
                         )
                         Spacer(Modifier.width(6.dp))
                         Text(
                             stringResource(R.string.nav_settings),
-                            color = MaterialTheme.colorScheme.primary,
+                            color = AppColors.Calorie,
                             fontWeight = FontWeight.SemiBold
                         )
                     }
@@ -1581,13 +1458,13 @@ fun QuickActionsScreen(
                     Icon(
                         Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary,
+                        tint = AppColors.Calorie,
                         modifier = Modifier.size(22.dp)
                     )
                     Spacer(Modifier.width(6.dp))
                     Text(
                         stringResource(R.string.nav_settings),
-                        color = MaterialTheme.colorScheme.primary,
+                        color = AppColors.Calorie,
                         fontWeight = FontWeight.SemiBold
                     )
                 }
@@ -1619,7 +1496,7 @@ fun QuickActionsScreen(
                                         DropdownMenuItem(
                                             text = { Text(action.title) },
                                             trailingIcon = if (action == selected) {
-                                                { Icon(Icons.Filled.Check, contentDescription = null, tint = MaterialTheme.colorScheme.primary) }
+                                                { Icon(Icons.Filled.Check, contentDescription = null, tint = AppColors.Calorie) }
                                             } else null,
                                             onClick = {
                                                 vm.setQuickAction(slot, action)
@@ -1680,11 +1557,11 @@ fun CalculationMethodsScreen(
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
+                            tint = AppColors.Calorie,
                             modifier = Modifier.size(22.dp)
                         )
                         Spacer(Modifier.width(6.dp))
-                        Text(stringResource(R.string.nav_settings), color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold)
+                        Text(stringResource(R.string.nav_settings), color = AppColors.Calorie, fontWeight = FontWeight.SemiBold)
                     }
                 }
             }
@@ -1869,7 +1746,7 @@ private fun CalcFormulaCard(
                         "Open source ↗",
                         style = MaterialTheme.typography.bodySmall,
                         fontWeight = FontWeight.Medium,
-                        color = MaterialTheme.colorScheme.primary,
+                        color = AppColors.Calorie,
                         modifier = Modifier
                             .clip(RoundedCornerShape(6.dp))
                             .clickable { uriHandler.openUri(url) }
@@ -1899,7 +1776,7 @@ private fun SettingsSheets(
         onDismissRequest = onDismiss,
         sheetState = state,
         shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
-        containerColor = MaterialTheme.colorScheme.surface
+        containerColor = if (isDark) Color(0xF2141416) else Color(0xFFFAF3EE)
     ) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp)) {
             when (sheet) {
@@ -2307,7 +2184,7 @@ private fun OptionalNutrientGoalsSheet(
 
     if (nutrient != null) {
         TextButton(onClick = { editing = null }) {
-            Text(stringResource(R.string.settings_other_nutrients), color = MaterialTheme.colorScheme.primary)
+            Text(stringResource(R.string.settings_other_nutrients), color = AppColors.Calorie)
         }
         Spacer(Modifier.height(4.dp))
         NutritionPickerSheet(
@@ -2330,7 +2207,7 @@ private fun OptionalNutrientGoalsSheet(
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Text(stringResource(R.string.settings_other_nutrient_goals), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
         Spacer(Modifier.weight(1f))
-        TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_done), color = MaterialTheme.colorScheme.primary) }
+        TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_done), color = AppColors.Calorie) }
     }
     Text(
         "Separate from calorie, protein, carbs, and fat targets.",
@@ -2427,30 +2304,40 @@ private fun <T> ListSheet(
     customField: ((String) -> Unit)? = null
 ) {
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
-    Text(
-        title.uppercase(),
-        style = MaterialTheme.typography.titleLarge,
-        fontWeight = FontWeight.Black
-    )
+    Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
     Spacer(Modifier.height(12.dp))
     LazyColumn(Modifier.fillMaxWidth().heightIn(max = 420.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         items(items) { item ->
             val isSel = selected(item)
             val rowIcon = icon?.invoke(item)
             val sub = subtitle?.invoke(item)
-            val shape = RoundedCornerShape(14.dp)
+            val shape = RoundedCornerShape(16.dp)
             Row(
                 Modifier
                     .fillMaxWidth()
                     .clip(shape)
                     .background(
-                        if (isSel) AppColors.KitchenBrass.copy(alpha = 0.38f)
-                        else MaterialTheme.colorScheme.surface
+                        if (isSel) AppColors.Calorie.copy(alpha = 0.13f)
+                        else if (isDark) MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.38f)
+                        else Color(0xFFEDE3DD).copy(alpha = 0.76f)
+                    )
+                    .background(
+                        Brush.verticalGradient(
+                            listOf(
+                                Color.White.copy(alpha = if (isDark) 0.08f else 0.18f),
+                                Color.White.copy(alpha = if (isDark) 0.02f else 0.04f),
+                                AppColors.Calorie.copy(alpha = if (isSel) 0.065f else if (isDark) 0.025f else 0.050f)
+                            )
+                        )
                     )
                     .border(
-                        1.dp,
-                        if (isDark && !isSel) AppColors.KitchenBrass.copy(alpha = 0.30f)
-                        else AppColors.KitchenEspresso.copy(alpha = 0.20f),
+                        0.7.dp,
+                        Brush.linearGradient(
+                            listOf(
+                                Color.White.copy(alpha = if (isDark) 0.16f else 0.46f),
+                                AppColors.Calorie.copy(alpha = if (isSel) 0.22f else if (isDark) 0.08f else 0.16f)
+                            )
+                        ),
                         shape
                     )
                     .clickable { onSelect(item) }
@@ -2465,8 +2352,7 @@ private fun <T> ListSheet(
                     Text(
                         label(item),
                         style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.Medium
                     )
                     if (!sub.isNullOrBlank()) {
                         Spacer(Modifier.height(2.dp))
@@ -2481,7 +2367,7 @@ private fun <T> ListSheet(
                     Icon(
                         Icons.Filled.Check,
                         contentDescription = stringResource(R.string.sheet_selected_a11y),
-                        tint = MaterialTheme.colorScheme.onSurface,
+                        tint = AppColors.Calorie,
                         modifier = Modifier.size(20.dp)
                     )
                 }
@@ -2648,7 +2534,7 @@ private fun MealTimesSheet(current: MealSchedule, onSave: (MealSchedule) -> Unit
             text = stringResource(R.string.settings_restore_default_times),
             onClick = { schedule = MealSchedule.Default },
             modifier = Modifier.fillMaxWidth(),
-            color = MaterialTheme.colorScheme.primary
+            color = AppColors.Calorie
         )
         Spacer(Modifier.height(8.dp))
     } else {
@@ -2849,7 +2735,7 @@ private fun GoalSpeedSheet(current: Double, goal: WeightGoal, useMetric: Boolean
                     Icon(
                         Icons.Filled.Check,
                         contentDescription = stringResource(R.string.cd_selected),
-                        tint = MaterialTheme.colorScheme.primary,
+                        tint = AppColors.Calorie,
                         modifier = Modifier.size(20.dp)
                     )
                 }
@@ -2987,7 +2873,7 @@ fun NutritionPickerSheet(
         ) {
             Text(
                 stringResource(if (customMode) R.string.nutrient_use_preset_wheel else R.string.nutrient_custom_amount),
-                color = MaterialTheme.colorScheme.primary,
+                color = AppColors.Calorie,
                 fontWeight = FontWeight.SemiBold
             )
         }
@@ -3098,34 +2984,28 @@ private fun MacroField(
         )
         Spacer(Modifier.height(6.dp))
         TextButton(onClick = { if (pinned) onClearPin?.invoke() else onPin() }) {
-            Text(if (pinned) stringResource(R.string.action_clear) else stringResource(R.string.action_pin), color = MaterialTheme.colorScheme.primary)
+            Text(if (pinned) stringResource(R.string.action_clear) else stringResource(R.string.action_pin), color = AppColors.Calorie)
         }
     }
 }
 
 @Composable
 private fun SectionCard(title: String, content: @Composable () -> Unit) {
+    // iOS uses sentence-case section titles ("Personal Info", "Goals & Nutrition")
+    // in a small grey caption. Match that — no uppercase transform.
     Column {
-        KitchenSectionLabel(title)
-        Spacer(Modifier.height(6.dp))
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .shadow(
-                    4.dp,
-                    RoundedCornerShape(4.dp),
-                    ambientColor = Color.Black.copy(alpha = 0.10f),
-                    spotColor = Color.Black.copy(alpha = 0.10f)
-                )
-                .clip(RoundedCornerShape(4.dp))
-                .background(AppColors.KitchenPaper)
-                .border(
-                    1.dp,
-                    AppColors.KitchenEspresso.copy(alpha = 0.19f),
-                    RoundedCornerShape(4.dp)
-                )
+        Text(
+            title,
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.55f),
+            modifier = Modifier.padding(start = 4.dp, bottom = 6.dp)
+        )
+        FudGlassSurface(
+            modifier = Modifier.fillMaxWidth(),
+            cornerRadius = 18.dp,
+            padding = 0.dp
         ) {
-            Column(Modifier.padding(vertical = 3.dp)) { content() }
+            Column(Modifier.padding(vertical = 4.dp)) { content() }
         }
     }
 }
@@ -3410,7 +3290,7 @@ private fun EnergyBurnGoalsRow(
             CircularProgressIndicator(
                 modifier = Modifier.size(22.dp),
                 strokeWidth = 2.dp,
-                color = MaterialTheme.colorScheme.primary
+                color = AppColors.Calorie
             )
             Spacer(Modifier.width(14.dp))
         }
@@ -3449,7 +3329,7 @@ private fun AdaptiveGoalsRow(
             CircularProgressIndicator(
                 modifier = Modifier.size(22.dp),
                 strokeWidth = 2.dp,
-                color = MaterialTheme.colorScheme.primary
+                color = AppColors.Calorie
             )
             Spacer(Modifier.width(14.dp))
         }

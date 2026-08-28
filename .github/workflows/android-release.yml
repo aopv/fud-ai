@@ -36,15 +36,6 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: "3.47.1"
-          channel: stable
-          cache: true
-
-      - name: Prepare shared Flutter AAR
-        run: ./android/scripts/prepare_flutter_aar.sh
-
       - uses: gradle/actions/setup-gradle@v4
 
       - name: Materialize upload keystore

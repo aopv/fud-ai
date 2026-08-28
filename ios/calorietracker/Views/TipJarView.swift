@@ -34,14 +34,12 @@ struct TipJarSettingsSection: View {
     @State private var didTip = false
 
     var body: some View {
-        Section {
+        Section("Leave a Tip") {
             ForEach(Self.tiers) { tier in
                 tierRow(tier)
             }
-        } header: {
-            NeoSectionBanner(title: "Leave a Tip", detail: "Support FÜD AI", style: .acid)
         }
-        .neoListRow()
+        .listRowBackground(AppColors.appCard)
         .task {
             if products.isEmpty { await loadProducts() }
         }

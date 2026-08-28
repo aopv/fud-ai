@@ -1,7 +1,5 @@
 import SwiftUI
 import Charts
-import ImageIO
-import UIKit
 
 // MARK: - Time Range
 
@@ -133,29 +131,16 @@ struct WeightChartSection: View {
     private var unit: String { useMetric ? "kg" : "lbs" }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 9) {
+        VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Text("Weight")
-                    .font(.system(.title3, design: .serif, weight: .bold))
-                    .foregroundStyle(NeoAppColors.ink)
+                    .font(.system(.headline, design: .rounded, weight: .semibold))
                 Spacer()
                 Button(action: onLogWeight) {
                     Label("Log Weight", systemImage: "plus.circle.fill")
-                        .font(.system(.caption, design: .monospaced, weight: .bold))
-                        .textCase(.uppercase)
-                        .foregroundStyle(KitchenTablePalette.tomatoDeep)
-                        .padding(.horizontal, 9)
-                        .padding(.vertical, 7)
-                        .background(KitchenTablePalette.paper)
-                        .overlay {
-                            RoundedRectangle(cornerRadius: 5, style: .continuous)
-                                .stroke(
-                                    KitchenTablePalette.tomato,
-                                    style: StrokeStyle(lineWidth: 0.9, dash: [3, 2])
-                                )
-                        }
+                        .font(.system(.subheadline, design: .rounded, weight: .medium))
+                        .foregroundStyle(AppColors.calorie)
                 }
-                .buttonStyle(.plain)
             }
 
             if weightEntries.isEmpty {
@@ -180,7 +165,7 @@ struct WeightChartSection: View {
                             x: .value("Date", point.date, unit: .day),
                             y: .value("Weight", point.value)
                         )
-                        .foregroundStyle(NeoAppColors.cobalt)
+                        .foregroundStyle(AppColors.calorie)
                         .interpolationMethod(.catmullRom)
                         .lineStyle(StrokeStyle(lineWidth: 2))
 
@@ -189,20 +174,20 @@ struct WeightChartSection: View {
                                 x: .value("Date", point.date, unit: .day),
                                 y: .value("Weight", point.value)
                             )
-                            .foregroundStyle(NeoAppColors.cobalt)
+                            .foregroundStyle(AppColors.calorie)
                             .symbolSize(30)
                         }
                     }
 
                     if let goalKg = goalWeightKg {
                         RuleMark(y: .value("Goal", displayWeight(goalKg)))
-                            .foregroundStyle(NeoAppColors.success.opacity(0.9))
+                            .foregroundStyle(.green.opacity(0.7))
                             .lineStyle(StrokeStyle(lineWidth: 1.5, dash: [6, 4]))
                     }
 
                     if let inspectedPoint {
                         RuleMark(x: .value("Selected date", inspectedPoint.date))
-                            .foregroundStyle(NeoAppColors.ink.opacity(0.55))
+                            .foregroundStyle(AppColors.calorie.opacity(0.6))
                             .lineStyle(StrokeStyle(lineWidth: 1.25, dash: [3, 3]))
 
                         PointMark(
@@ -216,23 +201,18 @@ struct WeightChartSection: View {
                             x: .value("Selected date", inspectedPoint.date, unit: .day),
                             y: .value("Selected weight", inspectedPoint.value)
                         )
-                        .foregroundStyle(NeoAppColors.cobalt)
+                        .foregroundStyle(AppColors.calorie)
                         .symbolSize(52)
                     }
                 }
                 .chartYScale(domain: weightYDomain)
                 .chartXAxis {
                     AxisMarks(values: .stride(by: .day, count: xAxis.strideDays)) { _ in
-                        AxisGridLine().foregroundStyle(KitchenTablePalette.rule)
+                        AxisGridLine()
                         AxisValueLabel(format: xAxis.labelFormat)
                     }
                 }
-                .chartPlotStyle { plotArea in
-                    plotArea
-                        .background(KitchenTablePalette.paperMuted.opacity(0.26))
-                        .background(KitchenGraphPaper())
-                }
-                .frame(height: 132)
+                .frame(height: 180)
                 .clipped()
                 .chartOverlay { proxy in
                     GeometryReader { geometry in
@@ -276,8 +256,9 @@ struct WeightChartSection: View {
                 .animation(.snappy(duration: 0.16), value: inspectedPoint?.date)
             }
         }
-        .padding(11)
-        .kitchenReceiptSurface(accent: KitchenTablePalette.cobalt)
+        .padding()
+        .background(AppColors.appCard)
+        .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
     /// What actually gets drawn: every entry for short ranges, bucket
@@ -340,639 +321,83 @@ struct WeightChartSection: View {
         VStack(spacing: 1) {
             Text(point.date.formatted(date: .abbreviated, time: .omitted))
                 .font(.system(.caption2, design: .rounded, weight: .medium))
-                .foregroundStyle(Color.black.opacity(0.68))
+                .foregroundStyle(.secondary)
             Text(String(format: "%.1f %@", point.value, unit))
                 .font(.system(.subheadline, design: .rounded, weight: .bold))
-                .foregroundStyle(Color.black)
+                .foregroundStyle(.primary)
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 6)
-        .background(NeoAppColors.brass, in: RoundedRectangle(cornerRadius: 11, style: .continuous))
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
         .overlay {
-            RoundedRectangle(cornerRadius: 11, style: .continuous)
-                .stroke(KitchenTablePalette.brassDeep, lineWidth: NeoAppMetrics.compactRule)
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .stroke(AppColors.calorie.opacity(0.22), lineWidth: 0.75)
         }
+        .shadow(color: .black.opacity(0.12), radius: 8, y: 3)
     }
 }
 
 // MARK: - Calorie Chart Section
 
-private final class OrganizerMealImageBox: @unchecked Sendable {
-    let cgImage: CGImage
-    let cost: Int
-
-    nonisolated init(cgImage: CGImage, cost: Int) {
-        self.cgImage = cgImage
-        self.cost = cost
-    }
-}
-
-private actor OrganizerMealImagePipeline {
-    static let shared = OrganizerMealImagePipeline()
-
-    private let cache: NSCache<NSString, OrganizerMealImageBox>
-
-    private init() {
-        let cache = NSCache<NSString, OrganizerMealImageBox>()
-        cache.countLimit = 84
-        cache.totalCostLimit = 12 * 1_024 * 1_024
-        self.cache = cache
-    }
-
-    func image(data: Data, cacheKey: String, maxPixelSize: Int) -> OrganizerMealImageBox? {
-        let key = cacheKey as NSString
-        if let cached = cache.object(forKey: key) {
-            return cached
-        }
-        guard !Task.isCancelled else { return nil }
-
-        let sourceOptions: [CFString: Any] = [
-            kCGImageSourceShouldCache: false
-        ]
-        guard let source = CGImageSourceCreateWithData(data as CFData, sourceOptions as CFDictionary) else {
-            return nil
-        }
-
-        let thumbnailOptions: [CFString: Any] = [
-            kCGImageSourceCreateThumbnailFromImageAlways: true,
-            kCGImageSourceCreateThumbnailWithTransform: true,
-            kCGImageSourceThumbnailMaxPixelSize: max(maxPixelSize, 1),
-            kCGImageSourceShouldCacheImmediately: true
-        ]
-        guard !Task.isCancelled,
-              let cgImage = CGImageSourceCreateThumbnailAtIndex(source, 0, thumbnailOptions as CFDictionary)
-        else {
-            return nil
-        }
-
-        let box = OrganizerMealImageBox(
-            cgImage: cgImage,
-            cost: cgImage.bytesPerRow * cgImage.height
-        )
-        guard !Task.isCancelled else { return nil }
-        cache.setObject(box, forKey: key, cost: box.cost)
-        return box
-    }
-}
-
-private struct OrganizerMealThumbnail: View {
-    private struct LoadedImage {
-        let requestKey: String
-        let image: UIImage
-    }
-
-    let entryID: UUID
-    let imageData: Data?
-    let imageFilename: String?
-    let emoji: String?
-    let fallbackSystemImage: String
-    let accent: Color
-
-    @Environment(\.displayScale) private var displayScale
-    @State private var loadedImage: LoadedImage?
-
-    private var maxPixelSize: Int {
-        max(Int((36 * displayScale).rounded(.up)), 1)
-    }
-
-    private var requestKey: String {
-        let imageIdentity = imageFilename ?? "inline-\(imageData?.count ?? 0)"
-        return "\(entryID.uuidString)|\(imageIdentity)|\(maxPixelSize)"
-    }
-
-    var body: some View {
-        Group {
-            if let loadedImage, loadedImage.requestKey == requestKey {
-                Image(uiImage: loadedImage.image)
-                    .resizable()
-                    .scaledToFill()
-            } else if let emoji, !emoji.isEmpty {
-                Text(emoji)
-                    .font(.system(size: 18))
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(accent.opacity(0.08))
-            } else {
-                Image(systemName: fallbackSystemImage)
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(accent)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(accent.opacity(0.08))
-            }
-        }
-        .task(id: requestKey) {
-            loadedImage = nil
-            guard let imageData else { return }
-            let result = await OrganizerMealImagePipeline.shared.image(
-                data: imageData,
-                cacheKey: requestKey,
-                maxPixelSize: maxPixelSize
-            )
-            guard !Task.isCancelled, let result else { return }
-            loadedImage = LoadedImage(
-                requestKey: requestKey,
-                image: UIImage(cgImage: result.cgImage)
-            )
-        }
-    }
-}
-
 struct CalorieChartSection: View {
+    let dailyCalories: [(date: Date, calories: Int)]
     let calorieGoal: Int
-    let foodEntries: [FoodEntry]
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-
-    /// `dailyCalories` remains in the initializer for source compatibility
-    /// with the selected-range detail screen. This receipt intentionally
-    /// derives every visible value from its own seven-day `foodEntries` input.
-    init(
-        dailyCalories _: [(date: Date, calories: Int)],
-        calorieGoal: Int,
-        foodEntries: [FoodEntry] = []
-    ) {
-        self.calorieGoal = calorieGoal
-        self.foodEntries = foodEntries
-    }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 9) {
-            weeklyHeader
-
-            calorieOrganizer
-
-            if weeklyCalorieData.isEmpty {
-                Text("No food logged in this week")
-                    .font(.system(size: 9, weight: .semibold, design: .monospaced))
-                    .foregroundStyle(KitchenTablePalette.mutedEspresso)
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .accessibilityLabel("No food logged in this week")
-            } else {
-                HStack(spacing: 8) {
-                    Text("TREND")
-                        .font(.system(size: 8, weight: .bold, design: .monospaced))
-                        .tracking(0.8)
-                    KitchenReceiptRule(color: KitchenTablePalette.rule)
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text("Calories")
+                    .font(.system(.headline, design: .rounded, weight: .semibold))
+                Spacer()
+                if !dailyCalories.isEmpty {
+                    let avg = dailyCalories.reduce(0) { $0 + $1.calories } / max(dailyCalories.count, 1)
+                    Text("Avg: \(avg) kcal")
+                        .font(.system(.subheadline, design: .rounded, weight: .medium))
+                        .foregroundStyle(.secondary)
                 }
-                .foregroundStyle(KitchenTablePalette.mutedEspresso)
+            }
 
+            if dailyCalories.isEmpty {
+                emptyState("No food logged yet")
+            } else {
                 Chart {
-                    ForEach(weeklyCalorieData, id: \.date) { item in
+                    ForEach(dailyCalories, id: \.date) { item in
                         BarMark(
                             x: .value("Date", item.date, unit: .day),
                             y: .value("Calories", item.calories)
                         )
-                        .foregroundStyle(KitchenTablePalette.tomato)
-                        .cornerRadius(5)
+                        .foregroundStyle(
+                            LinearGradient(colors: AppColors.calorieGradient, startPoint: .bottom, endPoint: .top)
+                        )
+                        .cornerRadius(4)
                     }
 
                     RuleMark(y: .value("Goal", calorieGoal))
-                        .foregroundStyle(NeoAppColors.ink.opacity(0.7))
+                        .foregroundStyle(AppColors.calorie.opacity(0.6))
                         .lineStyle(StrokeStyle(lineWidth: 1.5, dash: [6, 4]))
                 }
                 .chartXAxis {
-                    AxisMarks(values: .stride(by: .day)) { _ in
-                        AxisGridLine().foregroundStyle(KitchenTablePalette.rule)
+                    AxisMarks(values: .stride(by: .day, count: calorieXStride)) { _ in
+                        AxisGridLine()
                         AxisValueLabel(format: .dateTime.month(.abbreviated).day())
                     }
                 }
-                .chartXScale(domain: weeklyChartDomain)
-                .accessibilityLabel("Seven-day calorie trend")
-                .chartPlotStyle { plotArea in
-                    plotArea
-                        .background(KitchenTablePalette.paperMuted.opacity(0.26))
-                        .background(KitchenGraphPaper(color: KitchenTablePalette.tomato))
-                }
-                // Dense chart axes stop being legible when each tick scales to
-                // accessibility sizes. VoiceOver still receives the chart's
-                // summary while the visual ticks remain readable and distinct.
-                .dynamicTypeSize(...DynamicTypeSize.large)
-                .frame(height: 96)
+                .frame(height: 180)
             }
         }
-        .padding(11)
-        .background(KitchenTablePalette.paperMuted.opacity(0.24))
-        .background(KitchenGraphPaper(color: KitchenTablePalette.brass))
-        .kitchenReceiptSurface(accent: KitchenTablePalette.herb)
+        .padding()
+        .background(AppColors.appCard)
+        .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
-    @ViewBuilder
-    private var weeklyHeader: some View {
-        if dynamicTypeSize.isAccessibilitySize {
-            VStack(alignment: .leading, spacing: 8) {
-                weeklyTitleBlock
-                if let weeklyAverage {
-                    weeklyAverageBadge(weeklyAverage)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-            }
-        } else {
-            HStack {
-                weeklyTitleBlock
-                Spacer()
-                if let weeklyAverage {
-                    weeklyAverageBadge(weeklyAverage)
-                }
-            }
-        }
+    private var calorieXStride: Int {
+        let count = dailyCalories.count
+        if count <= 7 { return 1 }
+        if count <= 30 { return 5 }
+        if count <= 90 { return 14 }
+        if count <= 180 { return 30 }
+        return 60
     }
-
-    private var weeklyTitleBlock: some View {
-        VStack(alignment: .leading, spacing: 1) {
-            Text("Weekly Intake")
-                .font(.system(.title3, design: .serif, weight: .bold))
-                .foregroundStyle(NeoAppColors.ink)
-                .fixedSize(horizontal: false, vertical: true)
-            if let first = organizerDays.first?.date, let last = organizerDays.last?.date {
-                Text(
-                    "\(first.formatted(.dateTime.month(.abbreviated).day())) – \(last.formatted(.dateTime.month(.abbreviated).day()))",
-                    comment: "Seven-day date range. The first argument is the start date and the second is the end date."
-                )
-                .font(
-                    dynamicTypeSize.isAccessibilitySize
-                        ? .system(.caption, design: .monospaced, weight: .semibold)
-                        : .system(size: 9, weight: .semibold, design: .monospaced)
-                )
-                .foregroundStyle(KitchenTablePalette.mutedEspresso)
-                .fixedSize(horizontal: false, vertical: true)
-            }
-        }
-    }
-
-    private var weeklyAverage: Int? {
-        guard !weeklyCalorieData.isEmpty else { return nil }
-        return weeklyCalorieData.reduce(0) { $0 + $1.calories } / weeklyCalorieData.count
-    }
-
-    private func weeklyAverageBadge(_ average: Int) -> some View {
-        Text(
-            "Avg: \(average) kcal",
-            comment: "Average calorie intake across logged days in the seven-day organizer."
-        )
-        .font(
-            dynamicTypeSize.isAccessibilitySize
-                ? .system(.body, design: .monospaced, weight: .bold)
-                : .system(.caption, design: .monospaced, weight: .bold)
-        )
-        .foregroundStyle(KitchenTablePalette.tomatoDeep)
-        .padding(.horizontal, 8)
-        .padding(.vertical, 5)
-        .background(KitchenTablePalette.paperMuted.opacity(0.55))
-        .overlay {
-            RoundedRectangle(cornerRadius: 4, style: .continuous)
-                .stroke(KitchenTablePalette.tomato.opacity(0.7), lineWidth: 0.8)
-        }
-    }
-
-    private struct OrganizerDay: Identifiable {
-        let date: Date
-        let calories: Int?
-        let mealGroups: [OrganizerMeal]
-
-        var id: Date { date }
-    }
-
-    private struct OrganizerMeal: Identifiable {
-        let mealType: MealType
-        let entries: [FoodEntry]
-        let representative: FoodEntry
-
-        var id: String { mealType.rawValue }
-    }
-
-    private enum OrganizerSlotID: String, Identifiable, CaseIterable {
-        case first
-        case second
-        case third
-
-        var id: String { rawValue }
-
-        var position: Int {
-            switch self {
-            case .first: 0
-            case .second: 1
-            case .third: 2
-            }
-        }
-    }
-
-    private struct OrganizerSlot: Identifiable {
-        let id: OrganizerSlotID
-        let meal: OrganizerMeal?
-        let overflowCount: Int
-    }
-
-    /// Keep the organizer shaped like a complete week even when the log is
-    /// sparse. Empty slots are calendar days with no entry, not fabricated
-    /// nutrition data.
-    private var organizerDays: [OrganizerDay] {
-        let calendar = Calendar.current
-        let endDate = calendar.startOfDay(for: .now)
-        let startDate = calendar.date(byAdding: .day, value: -6, to: endDate) ?? endDate
-        let endExclusive = calendar.date(byAdding: .day, value: 1, to: endDate) ?? endDate
-        let groupedEntries = Dictionary(grouping: foodEntries.filter { entry in
-            entry.timestamp >= startDate && entry.timestamp < endExclusive
-        }) { entry in
-            calendar.startOfDay(for: entry.timestamp)
-        }
-        .mapValues { entries in
-            entries.sorted { $0.timestamp < $1.timestamp }
-        }
-
-        return (-6...0).compactMap { offset in
-            guard let date = calendar.date(byAdding: .day, value: offset, to: endDate) else {
-                return nil
-            }
-            let entries = groupedEntries[date] ?? []
-            return OrganizerDay(
-                date: date,
-                calories: entries.isEmpty ? nil : entries.reduce(0) { $0 + $1.calories },
-                mealGroups: organizerMeals(for: entries)
-            )
-        }
-    }
-
-    private var weeklyCalorieData: [(date: Date, calories: Int)] {
-        organizerDays.compactMap { day in
-            guard let calories = day.calories else { return nil }
-            return (date: day.date, calories: calories)
-        }
-    }
-
-    private var weeklyChartDomain: ClosedRange<Date> {
-        let calendar = Calendar.current
-        let today = calendar.startOfDay(for: .now)
-        let start = calendar.date(byAdding: .day, value: -6, to: today) ?? today
-        let end = calendar.date(byAdding: .day, value: 1, to: today)?.addingTimeInterval(-1) ?? today
-        return start...end
-    }
-
-    private func organizerMeals(for entries: [FoodEntry]) -> [OrganizerMeal] {
-        let grouped = Dictionary(grouping: entries) { $0.mealType.rawValue }
-        return MealType.allCases.compactMap { mealType in
-            guard let entries = grouped[mealType.rawValue], !entries.isEmpty else { return nil }
-            let sortedEntries = entries.sorted { $0.timestamp < $1.timestamp }
-            let representative = sortedEntries.first(where: { $0.imageData != nil })
-                ?? sortedEntries.first(where: { !($0.emoji?.isEmpty ?? true) })
-                ?? sortedEntries[0]
-            return OrganizerMeal(
-                mealType: mealType,
-                entries: sortedEntries,
-                representative: representative
-            )
-        }
-    }
-
-    private func organizerSlots(for mealGroups: [OrganizerMeal]) -> [OrganizerSlot] {
-        let visibleMeals = Array(mealGroups.prefix(3))
-        let hiddenEntryCount = mealGroups.dropFirst(3).reduce(0) { partial, meal in
-            partial + meal.entries.count
-        }
-
-        return OrganizerSlotID.allCases.map { slotID in
-            guard visibleMeals.indices.contains(slotID.position) else {
-                return OrganizerSlot(id: slotID, meal: nil, overflowCount: 0)
-            }
-            let meal = visibleMeals[slotID.position]
-            let hiddenEntriesInMeal = max(meal.entries.count - 1, 0)
-            let hiddenAfterVisibleMeals = slotID == .third ? hiddenEntryCount : 0
-            return OrganizerSlot(
-                id: slotID,
-                meal: meal,
-                overflowCount: hiddenEntriesInMeal + hiddenAfterVisibleMeals
-            )
-        }
-    }
-
-    private var calorieOrganizer: some View {
-        VStack(spacing: 5) {
-            ForEach(Array(organizerDays.enumerated()), id: \.element.id) { index, item in
-                organizerDayContent(item, index: index)
-                .padding(5)
-                .background(KitchenTablePalette.paperRaised.opacity(0.66))
-                .overlay {
-                    RoundedRectangle(cornerRadius: 5, style: .continuous)
-                        .stroke(
-                            index == organizerDays.count - 1 ? KitchenTablePalette.herb : KitchenTablePalette.rule,
-                            lineWidth: index == organizerDays.count - 1 ? 1.1 : 0.7
-                        )
-                }
-                .accessibilityElement(children: .ignore)
-                .accessibilityLabel(item.date.formatted(date: .complete, time: .omitted))
-                .accessibilityValue(organizerAccessibilityValue(for: item))
-            }
-        }
-    }
-
-    @ViewBuilder
-    private func organizerDayContent(_ item: OrganizerDay, index: Int) -> some View {
-        if dynamicTypeSize.isAccessibilitySize {
-            VStack(alignment: .leading, spacing: 8) {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(item.date.formatted(.dateTime.weekday(.wide).month(.abbreviated).day()))
-                        .font(.system(.headline, design: .serif, weight: .bold))
-                        .foregroundStyle(index == organizerDays.count - 1 ? KitchenTablePalette.herb : KitchenTablePalette.espresso)
-                        .fixedSize(horizontal: false, vertical: true)
-
-                    if let calories = item.calories {
-                        Text(verbatim: "\(calories.formatted()) kcal")
-                            .font(.system(.body, design: .serif, weight: .bold))
-                            .foregroundStyle(KitchenTablePalette.tomatoDeep)
-                            .monospacedDigit()
-                    } else {
-                        Text("No calories logged")
-                            .font(.system(.body, design: .serif))
-                            .foregroundStyle(KitchenTablePalette.mutedEspresso)
-                    }
-                }
-
-                if item.mealGroups.isEmpty {
-                    Text("No foods logged")
-                        .font(.system(.body, design: .serif))
-                        .foregroundStyle(KitchenTablePalette.mutedEspresso)
-                        .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
-                } else {
-                    VStack(spacing: 6) {
-                        ForEach(organizerSlots(for: item.mealGroups)) { slot in
-                            if let meal = slot.meal {
-                                organizerAccessibleMealCell(
-                                    meal,
-                                    position: slot.id.position,
-                                    overflowCount: slot.overflowCount
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-        } else {
-            HStack(spacing: 7) {
-                VStack(spacing: 0) {
-                    Text(item.date.formatted(.dateTime.weekday(.abbreviated)))
-                        .font(.system(size: 8, weight: .bold, design: .monospaced))
-                        .textCase(.uppercase)
-                    Text(item.date.formatted(.dateTime.day()))
-                        .font(.system(.headline, design: .serif, weight: .bold))
-                }
-                .foregroundStyle(index == organizerDays.count - 1 ? KitchenTablePalette.herb : KitchenTablePalette.espresso)
-                .frame(width: 34)
-
-                HStack(spacing: 4) {
-                    ForEach(organizerSlots(for: item.mealGroups)) { slot in
-                        if let meal = slot.meal {
-                            organizerMealCell(
-                                meal,
-                                position: slot.id.position,
-                                overflowCount: slot.overflowCount
-                            )
-                        } else {
-                            organizerEmptyCell
-                        }
-                    }
-                }
-
-                Text(item.calories?.formatted() ?? "—")
-                    .font(.system(.subheadline, design: .serif, weight: .bold))
-                    .monospacedDigit()
-                    .frame(width: 62)
-                    .frame(minHeight: 34)
-                    .background(KitchenTablePalette.paperRaised, in: RoundedRectangle(cornerRadius: 4, style: .continuous))
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 4, style: .continuous)
-                            .stroke(KitchenTablePalette.rule, lineWidth: 0.8)
-                    }
-            }
-        }
-    }
-
-    private func organizerAccessibleMealCell(
-        _ meal: OrganizerMeal,
-        position: Int,
-        overflowCount: Int
-    ) -> some View {
-        let entry = meal.representative
-
-        return HStack(spacing: 9) {
-            OrganizerMealThumbnail(
-                entryID: entry.id,
-                imageData: entry.imageData,
-                imageFilename: entry.imageFilename,
-                emoji: entry.emoji,
-                fallbackSystemImage: meal.mealType.icon,
-                accent: mealAccent(for: meal.mealType)
-            )
-            .frame(width: 44, height: 44)
-            .clipShape(RoundedRectangle(cornerRadius: 2, style: .continuous))
-
-            Text(meal.mealType.displayName)
-                .font(.system(.body, design: .serif, weight: .semibold))
-                .foregroundStyle(mealAccent(for: meal.mealType))
-                .fixedSize(horizontal: false, vertical: true)
-
-            Spacer(minLength: 4)
-
-            if overflowCount > 0 {
-                Text(verbatim: "+\(overflowCount.formatted())")
-                    .font(.system(.body, design: .monospaced, weight: .bold))
-                    .foregroundStyle(KitchenTablePalette.paperRaised)
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 4)
-                    .background(KitchenTablePalette.espresso)
-            }
-        }
-        .padding(.horizontal, 8)
-        .padding(.vertical, 6)
-        .frame(maxWidth: .infinity, minHeight: 56, alignment: .leading)
-        .background(KitchenTablePalette.paperRaised)
-        .overlay {
-            RoundedRectangle(cornerRadius: 3, style: .continuous)
-                .stroke(mealAccent(for: meal.mealType).opacity(0.68), lineWidth: 0.8)
-        }
-        .rotationEffect(.degrees(position.isMultiple(of: 2) ? -0.25 : 0.25))
-        .accessibilityHidden(true)
-    }
-
-    private func organizerMealCell(
-        _ meal: OrganizerMeal,
-        position: Int,
-        overflowCount: Int
-    ) -> some View {
-        let entry = meal.representative
-
-        return ZStack(alignment: .bottom) {
-            OrganizerMealThumbnail(
-                entryID: entry.id,
-                imageData: entry.imageData,
-                imageFilename: entry.imageFilename,
-                emoji: entry.emoji,
-                fallbackSystemImage: meal.mealType.icon,
-                accent: mealAccent(for: meal.mealType)
-            )
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-
-            Text(meal.mealType.displayName)
-                .font(.system(size: 5, weight: .bold, design: .monospaced))
-                .tracking(0.25)
-                .foregroundStyle(mealAccent(for: meal.mealType))
-                .lineLimit(1)
-                .padding(.horizontal, 2)
-                .padding(.vertical, 1)
-                .frame(maxWidth: .infinity)
-                .background(KitchenTablePalette.paperRaised.opacity(0.90))
-        }
-        .frame(maxWidth: .infinity, minHeight: 36, maxHeight: 36)
-        .clipped()
-        .background(KitchenTablePalette.paperRaised)
-        .overlay {
-            RoundedRectangle(cornerRadius: 2, style: .continuous)
-                .stroke(mealAccent(for: meal.mealType).opacity(0.68), lineWidth: 0.8)
-        }
-        .rotationEffect(.degrees(position.isMultiple(of: 2) ? -0.4 : 0.4))
-        .overlay(alignment: .topTrailing) {
-            if overflowCount > 0 {
-                Text(verbatim: "+\(overflowCount.formatted())")
-                    .font(.system(size: 6, weight: .bold, design: .monospaced))
-                    .foregroundStyle(KitchenTablePalette.paperRaised)
-                    .padding(.horizontal, 3)
-                    .padding(.vertical, 2)
-                    .background(KitchenTablePalette.espresso)
-            }
-        }
-        .accessibilityHidden(true)
-    }
-
-    private var organizerEmptyCell: some View {
-        Text(verbatim: "—")
-            .font(.system(size: 10, weight: .medium, design: .monospaced))
-            .foregroundStyle(KitchenTablePalette.mutedEspresso.opacity(0.45))
-            .frame(maxWidth: .infinity, minHeight: 36, maxHeight: 36)
-            .background(KitchenTablePalette.paperMuted.opacity(0.42))
-            .overlay {
-                RoundedRectangle(cornerRadius: 2, style: .continuous)
-                    .stroke(KitchenTablePalette.rule.opacity(0.68), style: StrokeStyle(lineWidth: 0.7, dash: [2, 2]))
-            }
-            .accessibilityHidden(true)
-    }
-
-    private func mealAccent(for mealType: MealType) -> Color {
-        switch mealType {
-        case .breakfast: KitchenTablePalette.brassDeep
-        case .lunch: KitchenTablePalette.herbDeep
-        case .dinner: KitchenTablePalette.cobaltDeep
-        case .snack: KitchenTablePalette.tomatoDeep
-        case .other: KitchenTablePalette.espresso
-        }
-    }
-
-    private func organizerAccessibilityValue(for day: OrganizerDay) -> String {
-        guard let calories = day.calories else { return String(localized: "No calories logged") }
-        guard !day.mealGroups.isEmpty else { return String(localized: "\(calories) calories") }
-        let groups = day.mealGroups.map { meal in
-            String(localized: "\(meal.mealType.displayName): \(meal.entries.count) entries")
-        }
-        .formatted()
-        return String(localized: "\(calories) calories. Meal groups: \(groups)")
-    }
-
 }
 
 // MARK: - Macro Averages Section
@@ -986,17 +411,17 @@ struct MacroAveragesSection: View {
     let fatGoal: Int
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 9) {
+        VStack(alignment: .leading, spacing: 12) {
             Text("Macro Averages")
-                .font(.system(.title3, design: .serif, weight: .bold))
-                .foregroundStyle(NeoAppColors.ink)
+                .font(.system(.headline, design: .rounded, weight: .semibold))
 
             MacroProgressRow(label: "Protein", current: avgProtein, goal: proteinGoal, color: AppColors.protein, gradientColors: AppColors.proteinGradient)
             MacroProgressRow(label: "Carbs", current: avgCarbs, goal: carbsGoal, color: AppColors.carbs, gradientColors: AppColors.carbsGradient)
             MacroProgressRow(label: "Fat", current: avgFat, goal: fatGoal, color: AppColors.fat, gradientColors: AppColors.fatGradient)
         }
-        .padding(11)
-        .kitchenReceiptSurface(accent: KitchenTablePalette.herb)
+        .padding()
+        .background(AppColors.appCard)
+        .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 }
 
@@ -1015,27 +440,22 @@ struct MacroProgressRow: View {
         VStack(alignment: .leading, spacing: 6) {
             HStack {
                 Text(LocalizedDisplayText.text(label))
-                    .font(.system(.caption, design: .monospaced, weight: .bold))
-                    .textCase(.uppercase)
-                    .foregroundStyle(NeoAppColors.ink)
+                    .font(.system(.subheadline, design: .rounded, weight: .medium))
                 Spacer()
                 Text("\(MacroValueFormatter.withUnit(current)) / \(goal)g")
-                    .font(.system(.caption, design: .monospaced, weight: .semibold))
-                    .foregroundStyle(NeoAppColors.mutedInk)
+                    .font(.system(.subheadline, design: .rounded))
+                    .foregroundStyle(.secondary)
             }
 
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
-                    RoundedRectangle(cornerRadius: 2, style: .continuous)
-                        .fill(NeoAppColors.subtleSurface)
+                    Capsule()
+                        .fill(color.opacity(0.12))
 
-                    RoundedRectangle(cornerRadius: 2, style: .continuous)
+                    Capsule()
                         .fill(LinearGradient(colors: gradientColors, startPoint: .leading, endPoint: .trailing))
-                        .frame(width: max(4, geo.size.width * progress))
-                }
-                .overlay {
-                    RoundedRectangle(cornerRadius: 2, style: .continuous)
-                        .stroke(NeoAppColors.ink.opacity(0.24), lineWidth: NeoAppMetrics.compactRule)
+                        .frame(width: max(6, geo.size.width * progress))
+                        .shadow(color: color.opacity(0.3), radius: 4, y: 2)
                 }
             }
             .frame(height: 8)
@@ -1054,7 +474,7 @@ struct StatsSection: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Streaks & Stats")
-                .font(.system(.title3, design: .serif, weight: .bold))
+                .font(.system(.headline, design: .rounded, weight: .semibold))
 
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
                 StatTile(icon: "flame.fill", label: "Current Streak", value: "\(streak) days", color: AppColors.calorie)
@@ -1063,8 +483,9 @@ struct StatsSection: View {
                 StatTile(icon: "fork.knife", label: "Total Entries", value: "\(totalEntries)", color: AppColors.fat)
             }
         }
-        .padding(14)
-        .kitchenReceiptSurface(accent: KitchenTablePalette.brass)
+        .padding()
+        .background(AppColors.appCard)
+        .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 }
 
@@ -1090,11 +511,8 @@ struct StatTile: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 12)
-        .background(NeoAppColors.subtleSurface.opacity(0.55), in: RoundedRectangle(cornerRadius: 5, style: .continuous))
-        .overlay {
-            RoundedRectangle(cornerRadius: 5, style: .continuous)
-                .stroke(color.opacity(0.48), style: StrokeStyle(lineWidth: 0.8, dash: [3, 2]))
-        }
+        .background(color.opacity(0.08))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 }
 
@@ -1105,28 +523,16 @@ struct StatBadge: View {
     var body: some View {
         VStack(spacing: 2) {
             Text(value)
-                .font(.system(.subheadline, design: .serif, weight: .bold))
-                .foregroundStyle(NeoAppColors.ink)
+                .font(.system(.subheadline, design: .rounded, weight: .semibold))
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
             Text(LocalizedDisplayText.text(label))
-                .font(.system(.caption2, design: .monospaced, weight: .bold))
-                .textCase(.uppercase)
-                .foregroundStyle(NeoAppColors.mutedInk)
+                .font(.system(.caption2, design: .rounded))
+                .foregroundStyle(.secondary)
                 .lineLimit(1)
                 .minimumScaleFactor(0.75)
         }
         .frame(maxWidth: .infinity)
-        .padding(.horizontal, 4)
-        .padding(.vertical, 6)
-        .background(NeoAppColors.subtleSurface.opacity(0.45), in: RoundedRectangle(cornerRadius: 4, style: .continuous))
-        .overlay {
-            RoundedRectangle(cornerRadius: 4, style: .continuous)
-                .stroke(
-                    KitchenTablePalette.rule,
-                    style: StrokeStyle(lineWidth: NeoAppMetrics.compactRule, dash: [3, 2])
-                )
-        }
     }
 }
 
@@ -1170,16 +576,13 @@ struct LogWeightSheet: View {
         NavigationStack {
             VStack(spacing: 20) {
                 Text("Log Weight")
-                    .font(.system(.title2, design: .rounded, weight: .black).width(.condensed))
-                    .textCase(.uppercase)
-                    .foregroundStyle(NeoAppColors.ink)
+                    .font(.system(.title2, design: .rounded, weight: .bold))
 
                 Picker("Unit", selection: $weightUnitRaw) {
                     Text("kg").tag("kg")
                     Text("lbs").tag("lbs")
                 }
                 .pickerStyle(.segmented)
-                .tint(NeoAppColors.cobalt)
                 .padding(.horizontal, 24)
                 .onChange(of: weightUnitRaw) { _, newValue in
                     // Convert the currently selected value so toggling mid-edit keeps it,
@@ -1222,7 +625,7 @@ struct LogWeightSheet: View {
 
                     Text(unit)
                         .font(.system(.title3, design: .rounded))
-                        .foregroundStyle(NeoAppColors.mutedInk)
+                        .foregroundStyle(.secondary)
                         .padding(.leading, 4)
                 }
 
@@ -1231,28 +634,23 @@ struct LogWeightSheet: View {
                     dismiss()
                 } label: {
                     Text("Save")
-                        .font(.system(.headline, design: .rounded, weight: .black).width(.condensed))
-                        .textCase(.uppercase)
+                        .font(.system(.headline, design: .rounded, weight: .semibold))
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
-                        .background(NeoAppColors.cobalt)
-                        .foregroundStyle(NeoAppColors.onCobalt)
-                        .overlay {
-                            Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
-                        }
+                        .background(
+                            LinearGradient(colors: AppColors.calorieGradient, startPoint: .leading, endPoint: .trailing)
+                        )
+                        .foregroundStyle(.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 14))
                 }
-                .buttonStyle(.plain)
                 .padding(.horizontal, 24)
 
                 Spacer()
             }
             .padding(.top, 24)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(NeoAppColors.canvas)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
-                        .foregroundStyle(NeoAppColors.cobalt)
                 }
             }
         }
@@ -1271,29 +669,24 @@ struct WeightHistoryLink: View {
             HStack(spacing: 12) {
                 Image(systemName: "list.bullet.rectangle")
                     .font(.system(size: 16, weight: .medium))
-                    .foregroundStyle(NeoAppColors.onCobalt)
+                    .foregroundStyle(AppColors.calorie)
                     .frame(width: 28, height: 28)
-                    .background(NeoAppColors.cobalt, in: RoundedRectangle(cornerRadius: 4, style: .continuous))
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 4, style: .continuous)
-                            .stroke(NeoAppColors.cobaltDeep, lineWidth: NeoAppMetrics.compactRule)
-                    }
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Weight History")
-                        .font(.system(.body, design: .serif, weight: .bold))
-                        .foregroundStyle(NeoAppColors.ink)
+                        .font(.system(.body, design: .rounded, weight: .medium))
+                        .foregroundStyle(.primary)
                     Text("\(totalCount) \(totalCount == 1 ? "entry" : "entries") · tap to view or delete")
-                        .font(.system(.caption, design: .monospaced))
-                        .foregroundStyle(NeoAppColors.mutedInk)
+                        .font(.system(.caption, design: .rounded))
+                        .foregroundStyle(.secondary)
                 }
                 Spacer()
                 Image(systemName: "chevron.right")
                     .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(NeoAppColors.cobalt)
+                    .foregroundStyle(.tertiary)
             }
             .padding(.vertical, 12)
             .padding(.horizontal, 14)
-            .kitchenReceiptSurface(accent: KitchenTablePalette.cobalt)
+            .background(AppColors.appCard, in: RoundedRectangle(cornerRadius: 14))
         }
         .buttonStyle(.plain)
     }
@@ -1318,11 +711,10 @@ struct AllWeightHistoryView: View {
                     HStack {
                         VStack(alignment: .leading, spacing: 2) {
                             Text(displayWeight(entry.weightKg, useMetric: useMetric))
-                                .font(.system(.body, design: .rounded, weight: .black).width(.condensed))
-                                .foregroundStyle(NeoAppColors.ink)
+                                .font(.system(.body, design: .rounded, weight: .medium))
                             Text(weightHistoryFormatter.string(from: entry.date))
                                 .font(.system(.caption, design: .rounded))
-                                .foregroundStyle(NeoAppColors.mutedInk)
+                                .foregroundStyle(.secondary)
                         }
                         Spacer()
                     }
@@ -1333,18 +725,14 @@ struct AllWeightHistoryView: View {
                             Label("Delete", systemImage: "trash")
                         }
                     }
-                    .neoListRow()
                 }
             }
-            .listStyle(.plain)
-            .neoScreen()
+            .listStyle(.insetGrouped)
             .navigationTitle("Weight History")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(NeoAppColors.surface, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
-                        .foregroundStyle(NeoAppColors.cobalt)
                 }
             }
         }
@@ -1395,29 +783,24 @@ struct BodyFatHistoryLink: View {
             HStack(spacing: 12) {
                 Image(systemName: "list.bullet.rectangle")
                     .font(.system(size: 16, weight: .medium))
-                    .foregroundStyle(Color.black)
+                    .foregroundStyle(AppColors.calorie)
                     .frame(width: 28, height: 28)
-                    .background(NeoAppColors.acid, in: RoundedRectangle(cornerRadius: 4, style: .continuous))
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 4, style: .continuous)
-                            .stroke(KitchenTablePalette.brassDeep, lineWidth: NeoAppMetrics.compactRule)
-                    }
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Body Fat History")
-                        .font(.system(.body, design: .serif, weight: .bold))
-                        .foregroundStyle(NeoAppColors.ink)
+                        .font(.system(.body, design: .rounded, weight: .medium))
+                        .foregroundStyle(.primary)
                     Text("\(totalCount) \(totalCount == 1 ? "entry" : "entries") · tap to view or delete")
-                        .font(.system(.caption, design: .monospaced))
-                        .foregroundStyle(NeoAppColors.mutedInk)
+                        .font(.system(.caption, design: .rounded))
+                        .foregroundStyle(.secondary)
                 }
                 Spacer()
                 Image(systemName: "chevron.right")
                     .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(NeoAppColors.cobalt)
+                    .foregroundStyle(.tertiary)
             }
             .padding(.vertical, 12)
             .padding(.horizontal, 14)
-            .kitchenReceiptSurface(accent: KitchenTablePalette.brass)
+            .background(AppColors.appCard, in: RoundedRectangle(cornerRadius: 14))
         }
         .buttonStyle(.plain)
     }
@@ -1439,11 +822,10 @@ struct AllBodyFatHistoryView: View {
                     HStack {
                         VStack(alignment: .leading, spacing: 2) {
                             Text(displayBodyFat(entry.bodyFatFraction))
-                                .font(.system(.body, design: .rounded, weight: .black).width(.condensed))
-                                .foregroundStyle(NeoAppColors.ink)
+                                .font(.system(.body, design: .rounded, weight: .medium))
                             Text(weightHistoryFormatter.string(from: entry.date))
                                 .font(.system(.caption, design: .rounded))
-                                .foregroundStyle(NeoAppColors.mutedInk)
+                                .foregroundStyle(.secondary)
                         }
                         Spacer()
                     }
@@ -1454,18 +836,14 @@ struct AllBodyFatHistoryView: View {
                             Label("Delete", systemImage: "trash")
                         }
                     }
-                    .neoListRow()
                 }
             }
-            .listStyle(.plain)
-            .neoScreen()
+            .listStyle(.insetGrouped)
             .navigationTitle("Body Fat History")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(NeoAppColors.surface, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
-                        .foregroundStyle(NeoAppColors.cobalt)
                 }
             }
         }
@@ -1538,7 +916,6 @@ struct BodyMetricsSection: View {
                     }
                 }
                 .pickerStyle(.segmented)
-                .tint(NeoAppColors.cobalt)
             }
 
             // Render the active metric. Both children carry their own card
@@ -1602,26 +979,13 @@ struct BodyFatChartSection: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Text("Body Fat")
-                    .font(.system(.title3, design: .serif, weight: .bold))
-                    .foregroundStyle(NeoAppColors.ink)
+                    .font(.system(.headline, design: .rounded, weight: .semibold))
                 Spacer()
                 Button(action: onLogBodyFat) {
                     Label("Log Body Fat", systemImage: "plus.circle.fill")
-                        .font(.system(.caption, design: .monospaced, weight: .bold))
-                        .textCase(.uppercase)
-                        .foregroundStyle(KitchenTablePalette.tomatoDeep)
-                        .padding(.horizontal, 9)
-                        .padding(.vertical, 7)
-                        .background(KitchenTablePalette.paper)
-                        .overlay {
-                            RoundedRectangle(cornerRadius: 5, style: .continuous)
-                                .stroke(
-                                    KitchenTablePalette.tomato,
-                                    style: StrokeStyle(lineWidth: 0.9, dash: [3, 2])
-                                )
-                        }
+                        .font(.system(.subheadline, design: .rounded, weight: .medium))
+                        .foregroundStyle(AppColors.calorie)
                 }
-                .buttonStyle(.plain)
             }
 
             if entries.isEmpty {
@@ -1644,7 +1008,7 @@ struct BodyFatChartSection: View {
                             x: .value("Date", point.date, unit: .day),
                             y: .value("Body Fat", point.value)
                         )
-                        .foregroundStyle(NeoAppColors.cobalt)
+                        .foregroundStyle(AppColors.calorie)
                         .interpolationMethod(.catmullRom)
                         .lineStyle(StrokeStyle(lineWidth: 2))
 
@@ -1653,35 +1017,31 @@ struct BodyFatChartSection: View {
                                 x: .value("Date", point.date, unit: .day),
                                 y: .value("Body Fat", point.value)
                             )
-                            .foregroundStyle(NeoAppColors.cobalt)
+                            .foregroundStyle(AppColors.calorie)
                             .symbolSize(30)
                         }
                     }
 
                     if let goalFraction = goalBodyFatFraction {
                         RuleMark(y: .value("Goal", displayPercent(goalFraction)))
-                            .foregroundStyle(NeoAppColors.success.opacity(0.9))
+                            .foregroundStyle(.green.opacity(0.7))
                             .lineStyle(StrokeStyle(lineWidth: 1.5, dash: [6, 4]))
                     }
                 }
                 .chartYScale(domain: bodyFatYDomain)
                 .chartXAxis {
                     AxisMarks(values: .stride(by: .day, count: xAxis.strideDays)) { _ in
-                        AxisGridLine().foregroundStyle(KitchenTablePalette.rule)
+                        AxisGridLine()
                         AxisValueLabel(format: xAxis.labelFormat)
                     }
                 }
-                .chartPlotStyle { plotArea in
-                    plotArea
-                        .background(KitchenTablePalette.paperMuted.opacity(0.26))
-                        .background(KitchenGraphPaper())
-                }
-                .frame(height: 158)
+                .frame(height: 180)
                 .clipped()
             }
         }
-        .padding(14)
-        .kitchenReceiptSurface(accent: KitchenTablePalette.cobalt)
+        .padding()
+        .background(AppColors.appCard)
+        .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
     /// Same plotting policy as WeightChartSection — raw entries for short
@@ -1753,9 +1113,7 @@ struct LogBodyFatSheet: View {
         NavigationStack {
             VStack(spacing: 20) {
                 Text("Log Body Fat")
-                    .font(.system(.title2, design: .rounded, weight: .black).width(.condensed))
-                    .textCase(.uppercase)
-                    .foregroundStyle(NeoAppColors.ink)
+                    .font(.system(.title2, design: .rounded, weight: .bold))
 
                 HStack(spacing: 0) {
                     Picker("Percentage", selection: $percentage) {
@@ -1770,7 +1128,7 @@ struct LogBodyFatSheet: View {
 
                     Text("%")
                         .font(.system(.title3, design: .rounded))
-                        .foregroundStyle(NeoAppColors.mutedInk)
+                        .foregroundStyle(.secondary)
                         .padding(.leading, 4)
                 }
 
@@ -1779,28 +1137,23 @@ struct LogBodyFatSheet: View {
                     dismiss()
                 } label: {
                     Text("Save")
-                        .font(.system(.headline, design: .rounded, weight: .black).width(.condensed))
-                        .textCase(.uppercase)
+                        .font(.system(.headline, design: .rounded, weight: .semibold))
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
-                        .background(NeoAppColors.cobalt)
-                        .foregroundStyle(NeoAppColors.onCobalt)
-                        .overlay {
-                            Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
-                        }
+                        .background(
+                            LinearGradient(colors: AppColors.calorieGradient, startPoint: .leading, endPoint: .trailing)
+                        )
+                        .foregroundStyle(.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 14))
                 }
-                .buttonStyle(.plain)
                 .padding(.horizontal, 24)
 
                 Spacer()
             }
             .padding(.top, 24)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(NeoAppColors.canvas)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
-                        .foregroundStyle(NeoAppColors.cobalt)
                 }
             }
         }
@@ -1811,23 +1164,10 @@ struct LogBodyFatSheet: View {
 // MARK: - Helpers
 
 private func emptyState(_ message: String) -> some View {
-    VStack(spacing: 8) {
-        Image(systemName: "chart.line.uptrend.xyaxis")
-            .font(.system(size: 18, weight: .medium))
-            .foregroundStyle(KitchenTablePalette.cobalt)
-        Text(message)
-            .font(.system(.subheadline, design: .serif, weight: .semibold))
-            .foregroundStyle(NeoAppColors.mutedInk)
-    }
-    .frame(maxWidth: .infinity, minHeight: 76)
-    .background(KitchenGraphPaper())
-    .overlay {
-        RoundedRectangle(cornerRadius: 4, style: .continuous)
-            .stroke(
-                KitchenTablePalette.rule,
-                style: StrokeStyle(lineWidth: NeoAppMetrics.compactRule, dash: [3, 2])
-            )
-    }
+    Text(message)
+        .font(.system(.subheadline, design: .rounded))
+        .foregroundStyle(.secondary)
+        .frame(maxWidth: .infinity, minHeight: 80)
 }
 
 // MARK: - Body Measurements
@@ -1901,17 +1241,16 @@ struct BodyMeasurementsDetailView: View {
                     } label: {
                         HStack(spacing: 12) {
                             Image(systemName: "ruler")
-                                .foregroundStyle(NeoAppColors.cobalt)
+                                .foregroundStyle(AppColors.calorie)
                                 .frame(width: 22)
                             Text(site.label)
-                                .font(.system(.body, design: .rounded, weight: .bold))
-                                .foregroundStyle(NeoAppColors.ink)
+                                .foregroundStyle(.primary)
                             Spacer()
                             Text(displayValue(site))
-                                .foregroundStyle(NeoAppColors.mutedInk)
+                                .foregroundStyle(.secondary)
                             Image(systemName: "chevron.right")
                                 .font(.caption)
-                                .foregroundStyle(NeoAppColors.cobalt)
+                                .foregroundStyle(.tertiary)
                         }
                     }
                     .buttonStyle(.plain)
@@ -1921,7 +1260,7 @@ struct BodyMeasurementsDetailView: View {
             } footer: {
                 Text("Optional. Fud AI turns these into waist-to-hip, waist-to-height, body-fat %, and frame size, and reads them when it recalculates your goals and in Coach.")
             }
-            .neoListRow()
+            .listRowBackground(AppColors.appCard)
 
             if let latest {
                 let chips = derivedMetricChips(latest, gender: gender, heightCm: heightCm)
@@ -1932,12 +1271,12 @@ struct BodyMeasurementsDetailView: View {
                                 Text(chip.label)
                                 Spacer()
                                 Text(chip.value)
-                                    .foregroundStyle(NeoAppColors.cobalt)
+                                    .foregroundStyle(AppColors.calorie)
                                     .fontWeight(.semibold)
                             }
                         }
                     }
-                    .neoListRow()
+                    .listRowBackground(AppColors.appCard)
                 }
             }
 
@@ -1948,26 +1287,24 @@ struct BodyMeasurementsDetailView: View {
                     } label: {
                         HStack {
                             Text("Measurement History")
-                                .font(.system(.body, design: .rounded, weight: .bold))
-                                .foregroundStyle(NeoAppColors.ink)
+                                .foregroundStyle(.primary)
                             Spacer()
                             Text("\(store.entries.count)")
-                                .foregroundStyle(NeoAppColors.mutedInk)
+                                .foregroundStyle(.secondary)
                             Image(systemName: "chevron.right")
                                 .font(.caption)
-                                .foregroundStyle(NeoAppColors.cobalt)
+                                .foregroundStyle(.tertiary)
                         }
                     }
                     .buttonStyle(.plain)
                 }
-                .neoListRow()
+                .listRowBackground(AppColors.appCard)
             }
         }
-        .listStyle(.plain)
-        .neoScreen()
+        .scrollContentBackground(.hidden)
+        .background(AppColors.appBackground)
         .navigationTitle("Body Measurements")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbarBackground(NeoAppColors.surface, for: .navigationBar)
         .sheet(item: $editingSite) { site in
             MeasurementEditSheet(
                 site: site,
@@ -2042,7 +1379,6 @@ private struct MeasurementEditSheet: View {
                 Text("in").tag("ftin")
             }
             .pickerStyle(.segmented)
-            .tint(NeoAppColors.cobalt)
             .padding(.horizontal, 24)
             .padding(.top, 20)
 
@@ -2061,8 +1397,6 @@ private struct MeasurementEditSheet: View {
             // converted above (its selection state is set once, in init).
             .id(heightUnitRaw)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(NeoAppColors.canvas)
     }
 }
 
@@ -2084,11 +1418,10 @@ struct AllBodyMeasurementsHistoryView: View {
                 ForEach(visibleEntries) { entry in
                     VStack(alignment: .leading, spacing: 4) {
                         Text(weightHistoryFormatter.string(from: entry.date))
-                            .font(.system(.subheadline, design: .rounded, weight: .black).width(.condensed))
-                            .foregroundStyle(NeoAppColors.ink)
+                            .font(.system(.subheadline, design: .rounded, weight: .semibold))
                         Text(summary(entry))
                             .font(.system(.caption, design: .rounded))
-                            .foregroundStyle(NeoAppColors.mutedInk)
+                            .foregroundStyle(.secondary)
                     }
                     .swipeActions(edge: .trailing) {
                         Button(role: .destructive) {
@@ -2097,18 +1430,14 @@ struct AllBodyMeasurementsHistoryView: View {
                             Label("Delete", systemImage: "trash")
                         }
                     }
-                    .neoListRow()
                 }
             }
-            .listStyle(.plain)
-            .neoScreen()
+            .listStyle(.insetGrouped)
             .navigationTitle("Measurement History")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(NeoAppColors.surface, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
-                        .foregroundStyle(NeoAppColors.cobalt)
                 }
             }
         }

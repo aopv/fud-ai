@@ -74,28 +74,8 @@ enum AIProvider: String, CaseIterable, Codable, Identifiable {
         switch normalizedModelID(model) {
         case "gemini-2.5-flash", "gemini-2.5-pro", "gemini-3.1-flash-lite":
             return "gemini-3.5-flash-lite"
-        default:
-            return nil
-        }
-    }
-
-    /// Provider-scoped replacements for presets removed from the current registry.
-    /// This also covers providers that permit free-form model IDs: those values would
-    /// otherwise remain valid indefinitely and never reach `supportedModelOrDefault`'s
-    /// fixed-list fallback path.
-    static func upgradedLegacyModel(for provider: AIProvider, model: String?) -> String? {
-        guard let model else { return nil }
-        let normalized = normalizedModelID(model)
-
-        switch (provider, normalized) {
-        case (.gemini, "gemini-3.1-flash-lite"):
-            return "gemini-3.5-flash-lite"
-        case (.openrouter, "google/gemini-3.1-flash-lite"):
-            return "google/gemini-3.5-flash-lite"
-        case (.huggingface, "Qwen/Qwen2.5-VL-72B-Instruct"):
-            return "Qwen/Qwen3.8-27B"
-        case (.mistral, "mistral-medium-2604"):
-            return "mistral-medium-3-5"
+        case "gemini-3.1-pro-preview", "gemini-3.5-flash":
+            return "gemini-3.6-flash"
         default:
             return nil
         }
@@ -112,21 +92,18 @@ enum AIProvider: String, CaseIterable, Codable, Identifiable {
 
     /// Only models that are currently in service AND accept image input + return structured text.
     /// Text-only and deprecated models are excluded since this app needs vision for food photos.
-    /// Lineups verified against provider docs on 2026-08-26.
+    /// Lineups verified against provider docs on 2026-07-21.
     var models: [String] {
         switch self {
         case .gemini: [
             "gemini-3.5-flash-lite",         // vision, cheapest current stable model (default)
-            "gemini-3.7-flash",              // vision, latest Flash model
             "gemini-3.6-flash",              // vision, latest stable Flash model
             "gemini-3.5-flash",              // vision, stable Flash model
+            "gemini-3.1-flash-lite",         // vision, supported Flash-Lite model
             "gemini-3.1-pro-preview",        // vision, current flagship (preview)
         ]
         case .openai: [
             "gpt-5.4-mini",              // vision, best price/perf
-            "gpt-5.6-sol",               // vision, latest flagship
-            "gpt-5.6-terra",             // vision, balanced
-            "gpt-5.6-luna",              // vision, lowest-cost 5.6 model
             "gpt-5.5",                   // vision, current flagship
             "gpt-5.4-nano",              // vision, cheapest
             "gpt-4.1",                   // vision, legacy
@@ -135,8 +112,6 @@ enum AIProvider: String, CaseIterable, Codable, Identifiable {
         ]
         case .anthropic: [
             "claude-sonnet-5",             // vision, current Sonnet (default)
-            "claude-opus-5",               // vision, latest flagship
-            "claude-fable-5",              // vision, latest efficient model
             "claude-opus-4-8",             // vision, current flagship
             "claude-haiku-4-5",            // vision, current Haiku, fastest
             "claude-sonnet-4-6",           // vision, prior Sonnet
@@ -144,22 +119,16 @@ enum AIProvider: String, CaseIterable, Codable, Identifiable {
         ]
         case .xai: [
             "grok-4.3",                  // vision, current (grok-4 and grok-2-vision retired)
-            "grok-4.6",                  // vision, latest
         ]
         case .openrouter: [
             "openrouter/free",           // free tier, vision, no credits required
-            "google/gemini-3.5-flash-lite",
-            "google/gemini-3.7-flash",
-            "openai/gpt-5.6-luna",
-            "qwen/qwen3.8-27b",
+            "google/gemini-3.1-flash-lite",
             "openai/gpt-5-mini",
             "anthropic/claude-sonnet-5",
             "qwen/qwen3-vl-8b-instruct",
         ]
         case .togetherai: [
             "Qwen/Qwen3.5-9B",                                    // vision
-            "moonshotai/Kimi-K3",                                 // vision
-            "Qwen/Qwen3.8-2.4T-A95B",                             // vision
             "google/gemma-4-31B-it",                              // vision
             "MiniMaxAI/MiniMax-M3",                               // vision
         ]
@@ -168,34 +137,27 @@ enum AIProvider: String, CaseIterable, Codable, Identifiable {
         ]
         case .huggingface: [
             "google/gemma-4-31B-it",                              // vision, widest provider coverage
-            "Qwen/Qwen3.8-27B",                                   // vision, tool calling
-            "moonshotai/Kimi-K3",                                 // vision, tool calling
             "google/gemma-3-27b-it",                              // vision, open-weight Gemma 3
             "Qwen/Qwen3.5-9B",                                    // vision, open-weight Qwen
+            "Qwen/Qwen2.5-VL-72B-Instruct",                       // vision, open-weight Qwen VL
         ]
         case .fireworks: [
             "accounts/fireworks/models/qwen3p7-plus",             // vision, serverless
-            "accounts/fireworks/models/kimi-k3",                  // vision, serverless
-            "accounts/fireworks/models/muse-glimmer-30b",         // vision, serverless
             "accounts/fireworks/models/minimax-m3",               // vision, serverless
             "accounts/fireworks/models/kimi-k2p6",                // vision, serverless
         ]
         case .deepinfra: [
             "google/gemma-3-27b-it",                              // vision, cheapest
-            "Qwen/Qwen3.8-27B",                                   // vision
-            "MiniMaxAI/MiniMax-M3",                               // vision
             "google/gemma-4-31B-it",                              // vision
             "google/gemma-4-26B-A4B-it",                          // vision
         ]
         case .mistral: [
             "mistral-small-2603",                                 // vision, best value (Pixtral line retired)
-            "mistral-medium-3-5",                                 // vision, frontier
-            "mistral-large-2512",                                 // vision, flagship
+            "mistral-medium-2604",                                // vision, frontier
             "ministral-14b-2512",                                 // vision, small
         ]
         case .ollama: [
             "qwen3-vl",
-            "qwen3.8",
             "gemma4",
             "llama3.2-vision",
             "llava",
@@ -300,8 +262,6 @@ struct AIProviderSettings {
     private static let fallbackProviderKey = "selectedFallbackAIProvider"
     private static let fallbackModelKey = "selectedFallbackAIModel"
     private static let geminiModelMigrationVersionKey = "geminiModelMigrationVersion"
-    private static let modelRegistryMigrationVersionKey = "aiModelRegistryMigrationVersion"
-    private static let currentModelRegistryMigrationVersion = 1
     private static let maxResponseTokensKey = "aiMaxResponseTokens"
     private static let requestTimeoutSecondsKey = "aiRequestTimeoutSeconds"
 
@@ -346,60 +306,21 @@ struct AIProviderSettings {
     /// Upgrades legacy Gemini choices exactly once, including the fallback.
     /// A marker prevents a later manual choice of a still-supported older model
     /// from being overwritten on every launch.
-    static func migrateLegacyGeminiModelsIfNeeded(defaults: UserDefaults = .standard) {
-        if defaults.integer(forKey: geminiModelMigrationVersionKey) < 1 {
-            if (storedProvider(in: defaults, key: providerKey) ?? .gemini) == .gemini,
-               let upgraded = AIProvider.upgradedLegacyGeminiModel(defaults.string(forKey: modelKey)) {
-                defaults.set(upgraded, forKey: modelKey)
-            }
+    static func migrateLegacyGeminiModelsIfNeeded() {
+        let defaults = UserDefaults.standard
+        guard defaults.integer(forKey: geminiModelMigrationVersionKey) < 1 else { return }
 
-            if storedProvider(in: defaults, key: fallbackProviderKey) == .gemini,
-               let upgraded = AIProvider.upgradedLegacyGeminiModel(defaults.string(forKey: fallbackModelKey)) {
-                defaults.set(upgraded, forKey: fallbackModelKey)
-            }
-
-            defaults.set(1, forKey: geminiModelMigrationVersionKey)
-        }
-
-        migrateModelRegistryIfNeeded(defaults: defaults)
-    }
-
-    /// Migrates removed presets exactly once without touching credentials, endpoints,
-    /// user context, or any other app data. Primary and fallback selections are handled
-    /// independently and only with the migration table for their saved provider.
-    static func migrateModelRegistryIfNeeded(defaults: UserDefaults = .standard) {
-        guard defaults.integer(forKey: modelRegistryMigrationVersionKey) < currentModelRegistryMigrationVersion else {
-            return
-        }
-
-        let primaryProvider = storedProvider(in: defaults, key: providerKey) ?? .gemini
-        if let upgraded = AIProvider.upgradedLegacyModel(
-            for: primaryProvider,
-            model: defaults.string(forKey: modelKey)
-        ) {
+        if selectedProvider == .gemini,
+           let upgraded = AIProvider.upgradedLegacyGeminiModel(defaults.string(forKey: modelKey)) {
             defaults.set(upgraded, forKey: modelKey)
         }
 
-        if let fallbackProvider = storedProvider(in: defaults, key: fallbackProviderKey),
-           let upgraded = AIProvider.upgradedLegacyModel(
-               for: fallbackProvider,
-               model: defaults.string(forKey: fallbackModelKey)
-           ) {
+        if selectedFallbackProvider == .gemini,
+           let upgraded = AIProvider.upgradedLegacyGeminiModel(defaults.string(forKey: fallbackModelKey)) {
             defaults.set(upgraded, forKey: fallbackModelKey)
         }
 
-        defaults.set(currentModelRegistryMigrationVersion, forKey: modelRegistryMigrationVersionKey)
-    }
-
-    private static func storedProvider(
-        in defaults: UserDefaults,
-        key: String
-    ) -> AIProvider? {
-        guard let rawValue = defaults.string(forKey: key),
-              let provider = AIProvider(rawValue: rawValue) else {
-            return nil
-        }
-        return provider
+        defaults.set(1, forKey: geminiModelMigrationVersionKey)
     }
 
     static var selectedModel: String {

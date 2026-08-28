@@ -50,52 +50,32 @@ class ProgressViewModel(private val container: AppContainer) : ViewModel() {
         }.onEach { _ui.value = it }.launchIn(viewModelScope)
     }
 
-    fun addWeight(kg: Double, onComplete: () -> Unit = {}) {
+    fun addWeight(kg: Double) {
         viewModelScope.launch {
-            try {
-                val event = container.weightRepository.addEntry(WeightEntry(weightKg = kg))
-                if (event != null) {
-                    _ui.value = _ui.value.copy(goalReached = true)
-                    if (container.prefs.notificationsEnabled.first() &&
-                        container.prefs.goalReachedNotificationsEnabled.first()
-                    ) {
-                        container.notifications.showGoalReached()
-                    }
+            val event = container.weightRepository.addEntry(WeightEntry(weightKg = kg))
+            if (event != null) {
+                _ui.value = _ui.value.copy(goalReached = true)
+                if (container.prefs.notificationsEnabled.first() &&
+                    container.prefs.goalReachedNotificationsEnabled.first()
+                ) {
+                    container.notifications.showGoalReached()
                 }
-            } finally {
-                onComplete()
             }
         }
     }
 
-    fun deleteWeight(id: UUID, onComplete: () -> Unit = {}) {
+    fun deleteWeight(id: UUID) {
+        viewModelScope.launch { container.weightRepository.deleteEntry(id) }
+    }
+
+    fun addBodyFat(fraction: Double) {
         viewModelScope.launch {
-            try {
-                container.weightRepository.deleteEntry(id)
-            } finally {
-                onComplete()
-            }
+            container.bodyFatRepository.addEntry(BodyFatEntry(bodyFatFraction = fraction))
         }
     }
 
-    fun addBodyFat(fraction: Double, onComplete: () -> Unit = {}) {
-        viewModelScope.launch {
-            try {
-                container.bodyFatRepository.addEntry(BodyFatEntry(bodyFatFraction = fraction))
-            } finally {
-                onComplete()
-            }
-        }
-    }
-
-    fun deleteBodyFat(id: UUID, onComplete: () -> Unit = {}) {
-        viewModelScope.launch {
-            try {
-                container.bodyFatRepository.deleteEntry(id)
-            } finally {
-                onComplete()
-            }
-        }
+    fun deleteBodyFat(id: UUID) {
+        viewModelScope.launch { container.bodyFatRepository.deleteEntry(id) }
     }
 
     fun addBodyMeasurement(entry: BodyMeasurement) {
@@ -106,14 +86,8 @@ class ProgressViewModel(private val container: AppContainer) : ViewModel() {
         viewModelScope.launch { container.bodyMeasurementRepository.deleteEntry(id) }
     }
 
-    fun deleteWorkoutBurn(id: UUID, onComplete: () -> Unit = {}) {
-        viewModelScope.launch {
-            try {
-                container.workoutRepository.deleteSession(id)
-            } finally {
-                onComplete()
-            }
-        }
+    fun deleteWorkoutBurn(id: UUID) {
+        viewModelScope.launch { container.workoutRepository.deleteSession(id) }
     }
 
     fun dismissGoalReached() {

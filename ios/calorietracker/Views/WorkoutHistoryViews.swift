@@ -14,32 +14,27 @@ struct WorkoutHistoryLink: View {
             HStack(spacing: 12) {
                 Image(systemName: "flame.fill")
                     .font(.system(size: 16, weight: .medium))
-                    .foregroundStyle(Color.black)
+                    .foregroundStyle(AppColors.calorie)
                     .frame(width: 28, height: 28)
-                    .background(NeoAppColors.acid.opacity(0.78), in: RoundedRectangle(cornerRadius: 4, style: .continuous))
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 4, style: .continuous)
-                            .stroke(KitchenTablePalette.brassDeep, lineWidth: NeoAppMetrics.compactRule)
-                    }
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Workout History")
-                        .font(.system(.body, design: .serif, weight: .bold))
-                        .foregroundStyle(NeoAppColors.ink)
+                        .font(.system(.body, design: .rounded, weight: .medium))
+                        .foregroundStyle(.primary)
                     Text("\(burnRecordCount) \(burnRecordCount == 1 ? "entry" : "entries") · tap to view or delete")
-                        .font(.system(.caption, design: .monospaced))
-                        .foregroundStyle(NeoAppColors.mutedInk)
+                        .font(.system(.caption, design: .rounded))
+                        .foregroundStyle(.secondary)
                 }
 
                 Spacer()
 
                 Image(systemName: "chevron.right")
                     .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(NeoAppColors.cobalt)
+                    .foregroundStyle(.tertiary)
             }
             .padding(.vertical, 12)
             .padding(.horizontal, 14)
-            .kitchenReceiptSurface(accent: KitchenTablePalette.tomato)
+            .background(AppColors.appCard, in: RoundedRectangle(cornerRadius: 14))
         }
         .buttonStyle(.plain)
         .accessibilityHint("Opens workout calorie history")
@@ -62,11 +57,10 @@ struct WorkoutHistoryView: View {
                     HStack {
                         VStack(alignment: .leading, spacing: 2) {
                             Text("\((session.caloriesBurned ?? 0).formatted()) kcal")
-                                .font(.system(.body, design: .rounded, weight: .black).width(.condensed))
-                                .foregroundStyle(NeoAppColors.ink)
+                                .font(.system(.body, design: .rounded, weight: .medium))
                             Text(workoutHistoryFormatter.string(from: session.calendarDiaryDate))
                                 .font(.system(.caption, design: .rounded))
-                                .foregroundStyle(NeoAppColors.mutedInk)
+                                .foregroundStyle(.secondary)
                         }
                         Spacer()
                     }
@@ -77,18 +71,14 @@ struct WorkoutHistoryView: View {
                             Label("Delete", systemImage: "trash")
                         }
                     }
-                    .neoListRow()
                 }
             }
-            .listStyle(.plain)
-            .neoScreen()
+            .listStyle(.insetGrouped)
             .navigationTitle("Workout History")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(NeoAppColors.surface, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
-                        .foregroundStyle(NeoAppColors.cobalt)
                 }
             }
         }

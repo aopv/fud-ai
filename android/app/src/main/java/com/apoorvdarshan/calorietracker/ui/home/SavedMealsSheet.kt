@@ -152,7 +152,7 @@ fun SavedMealsSheet(
         }
     }
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
-    val sheetSurface = if (isDark) AppColors.NeoInk else AppColors.NeoPaper
+    val sheetSurface = if (isDark) MaterialTheme.colorScheme.surface else Color(0xFFFAF3EE)
     val searchSurface = if (isDark) Color.Transparent else Color(0xFFF2E9E3).copy(alpha = 0.78f)
 
     ModalBottomSheet(
@@ -592,7 +592,7 @@ private fun SavedMealRow(
                     Icon(
                         Icons.Filled.Favorite,
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary,
+                        tint = AppColors.Calorie,
                         modifier = Modifier.size(11.dp)
                     )
                 }
@@ -605,7 +605,7 @@ private fun SavedMealRow(
                     "${entry.calories} kcal",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.primary
+                    color = AppColors.Calorie
                 )
                 if (subtitle != null) {
                     Text("·", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f))
@@ -629,7 +629,7 @@ private fun SavedMealRow(
             Icon(
                 Icons.Filled.AddCircle,
                 contentDescription = stringResource(R.string.cd_log),
-                tint = MaterialTheme.colorScheme.primary,
+                tint = AppColors.Calorie,
                 modifier = Modifier.size(22.dp)
             )
         }
@@ -665,7 +665,7 @@ private fun Thumbnail(emoji: String?, imageFilename: String?, imageStore: FoodIm
             else -> Icon(
                 Icons.Filled.Restaurant,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
+                tint = AppColors.Calorie,
                 modifier = Modifier.size(22.dp)
             )
         }
@@ -702,7 +702,7 @@ private fun EmptyState(icon: ImageVector, text: String) {
             Icon(
                 icon,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+                tint = AppColors.Calorie.copy(alpha = 0.4f),
                 modifier = Modifier.size(32.dp)
             )
             Text(

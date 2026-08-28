@@ -70,7 +70,6 @@ struct WorkoutLogView: View {
     @Environment(ProfileStore.self) private var profileStore
     @AppStorage(WeightUnit.storageKey) private var weightUnitRaw = WeightUnit.lbs.rawValue
     @AppStorage(AppThemeColor.storageKey) private var appThemeColorRaw = AppThemeColor.defaultColor.rawValue
-    @AppStorage("weekStartsOnMonday") private var weekStartsOnMonday = true
 
     @State private var pickerRequest: WorkoutLogPickerRequest?
     @State private var isCopySheetPresented = false
@@ -174,59 +173,13 @@ struct WorkoutLogView: View {
         ScrollViewReader { proxy in
                 List {
                     Section {
-                        WorkoutLogMasthead(
-                            subtitle: weekRangeTitle,
-                            showsLibrary: onShowLibrary != nil,
-                            openLibrary: {
-                                guard let onShowLibrary else { return }
-                                guard focusedSetField == nil else {
-                                    dismissSetKeyboard()
-                                    return
-                                }
-                                onShowLibrary()
-                            }
-                        )
-                        .listRowBackground(Color.clear)
-                        .listRowSeparator(.hidden)
-                        .listRowInsets(
-                            EdgeInsets(
-                                top: 6,
-                                leading: NeoAppMetrics.screenInset,
-                                bottom: 5,
-                                trailing: NeoAppMetrics.screenInset
-                            )
-                        )
-
                         WorkoutLogWeekStrip(
                             selectedDate: selectedDateBinding,
                             workoutCountForDate: workoutStore.workoutCount
                         )
                         .listRowBackground(Color.clear)
                         .listRowSeparator(.hidden)
-                        .listRowInsets(
-                            EdgeInsets(
-                                top: 0,
-                                leading: NeoAppMetrics.screenInset,
-                                bottom: 0,
-                                trailing: NeoAppMetrics.screenInset
-                            )
-                        )
-
-                        WorkoutLogWeekOverview(
-                            selectedDate: selectedDateBinding,
-                            exercisesForDate: workoutStore.exercises,
-                            caloriesForDate: workoutStore.caloriesBurned
-                        )
-                        .listRowBackground(Color.clear)
-                        .listRowSeparator(.hidden)
-                        .listRowInsets(
-                            EdgeInsets(
-                                top: 5,
-                                leading: NeoAppMetrics.screenInset,
-                                bottom: 3,
-                                trailing: NeoAppMetrics.screenInset
-                            )
-                        )
+                        .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
                     }
 
                     Section {
@@ -241,14 +194,7 @@ struct WorkoutLogView: View {
                         )
                         .listRowBackground(Color.clear)
                         .listRowSeparator(.hidden)
-                        .listRowInsets(
-                            EdgeInsets(
-                                top: 0,
-                                leading: NeoAppMetrics.screenInset,
-                                bottom: 0,
-                                trailing: NeoAppMetrics.screenInset
-                            )
-                        )
+                        .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
                     }
 
                     Section {
@@ -258,14 +204,7 @@ struct WorkoutLogView: View {
                                 .simultaneousGesture(daySwipeGesture)
                                 .listRowBackground(Color.clear)
                                 .listRowSeparator(.hidden)
-                                .listRowInsets(
-                                    EdgeInsets(
-                                        top: 4,
-                                        leading: NeoAppMetrics.screenInset,
-                                        bottom: 4,
-                                        trailing: NeoAppMetrics.screenInset
-                                    )
-                                )
+                                .listRowInsets(EdgeInsets(top: 7, leading: 16, bottom: 7, trailing: 16))
                         } else {
                             ForEach(selectedExercises) { exercise in
                                 WorkoutLogExerciseCard(
@@ -323,21 +262,14 @@ struct WorkoutLogView: View {
                                 .id(exercise.id)
                                 .listRowBackground(Color.clear)
                                 .listRowSeparator(.hidden)
-                                .listRowInsets(
-                                    EdgeInsets(
-                                        top: 4,
-                                        leading: NeoAppMetrics.screenInset,
-                                        bottom: 4,
-                                        trailing: NeoAppMetrics.screenInset
-                                    )
-                                )
+                                .listRowInsets(EdgeInsets(top: 7, leading: 16, bottom: 7, trailing: 16))
                                 .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                                     Button(role: .destructive) {
                                         workoutStore.removeExercise(exercise.id, on: selectedDate)
                                     } label: {
                                         Label("Delete", systemImage: "trash.fill")
                                     }
-                                    .tint(NeoAppColors.warning)
+                                    .tint(Color(red: 0.58, green: 0.10, blue: 0.08))
 
                                     Button {
                                         workoutStore.toggleSaved(exercise.itemID)
@@ -348,54 +280,28 @@ struct WorkoutLogView: View {
                                             systemImage: isSaved ? "bookmark.slash.fill" : "bookmark.fill"
                                         )
                                     }
-                                    .tint(NeoAppColors.cobalt)
+                                    .tint(Color(red: 0.18, green: 0.42, blue: 0.16))
                                 }
                             }
                         }
                     } header: {
-                        HStack(alignment: .center, spacing: 10) {
+                        HStack(alignment: .center) {
                             Label(selectedDateTitle, systemImage: "dumbbell.fill")
-                                .font(.system(size: 15, weight: .bold, design: .serif))
                             Spacer()
                             Text("\(selectedExercises.count) workout\(selectedExercises.count == 1 ? "" : "s")")
-                                .font(.system(size: 10, weight: .bold, design: .monospaced))
-                                .textCase(.uppercase)
-                        }
-                        .foregroundStyle(NeoAppColors.ink)
-                        .padding(.horizontal, 12)
-                        .frame(minHeight: 38)
-                        .background(KitchenTablePalette.paperMuted.opacity(0.55))
-                        .overlay(alignment: .bottom) {
-                            KitchenReceiptRule(color: KitchenTablePalette.strongRule)
+                                .font(.caption.weight(.bold))
                         }
                         .textCase(nil)
                         .contentShape(Rectangle())
                         .simultaneousGesture(daySwipeGesture)
                     }
-
-                    Section {
-                        addExerciseMenu
-                            .listRowBackground(Color.clear)
-                            .listRowSeparator(.hidden)
-                            .listRowInsets(
-                                EdgeInsets(
-                                    top: 4,
-                                    leading: NeoAppMetrics.screenInset,
-                                    bottom: 8,
-                                    trailing: NeoAppMetrics.screenInset
-                                )
-                            )
-                            .simultaneousGesture(
-                                TapGesture().onEnded(dismissSetKeyboard)
-                            )
-                    }
                 }
                 .coordinateSpace(name: WorkoutLogLayout.coordinateSpace)
                 .scrollContentBackground(.hidden)
-                .background(KitchenTableBackdrop())
-                .listSectionSpacing(6)
+                .background(Color.workoutBackground.ignoresSafeArea())
+                .listSectionSpacing(8)
                 .scrollDismissesKeyboard(.interactively)
-                .contentMargins(.bottom, 12, for: .scrollContent)
+                .contentMargins(.bottom, 96, for: .scrollContent)
                 .animation(.snappy, value: selectedDate)
                 .onPreferenceChange(WorkoutLogCardFramePreferenceKey.self) { frames in
                     workoutCardFrames = frames
@@ -423,12 +329,37 @@ struct WorkoutLogView: View {
                         }
                     }
                 }
+                .overlay(alignment: .bottomTrailing) {
+                    addExerciseMenu
+                        .padding(24)
+                        .simultaneousGesture(
+                            TapGesture().onEnded(dismissSetKeyboard)
+                        )
+                }
             }
             // Keep the chrome quiet: the date strip and burn calculator lead.
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar(.hidden, for: .navigationBar)
+            .toolbar(.visible, for: .navigationBar)
             .toolbar {
+                if let onShowLibrary {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            guard focusedSetField == nil else {
+                                dismissSetKeyboard()
+                                return
+                            }
+                            onShowLibrary()
+                        } label: {
+                            Image(systemName: "dumbbell.fill")
+                                .font(.system(size: 18, weight: .bold))
+                        }
+                        .tint(Color.workoutAccent)
+                        .accessibilityLabel("Exercise library")
+                        .accessibilityHint("Switches back to the workout library")
+                    }
+                }
+
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
                     Button("Done") {
@@ -469,74 +400,50 @@ struct WorkoutLogView: View {
         }
 
     private var addExerciseMenu: some View {
-        NeoGlassChoiceMenu(title: String(localized: "Add Workout"), items: addExerciseItems) {
-            Label("Add workout", systemImage: "plus")
-                .textCase(.uppercase)
-                .font(.system(size: 14, weight: .bold, design: .monospaced))
-                .foregroundStyle(KitchenTablePalette.tomatoDeep)
-                .padding(.horizontal, 16)
-                .frame(maxWidth: .infinity, minHeight: 44)
-                .background(KitchenTablePalette.paperRaised, in: RoundedRectangle(cornerRadius: 5, style: .continuous))
-                .overlay {
-                    RoundedRectangle(cornerRadius: 5, style: .continuous)
-                        .stroke(
-                            KitchenTablePalette.tomato,
-                            style: StrokeStyle(lineWidth: 1, dash: [4, 2])
-                        )
+        Menu {
+            Section {
+                Button {
+                    pickerRequest = WorkoutLogPickerRequest(context: .saved, initialSource: .saved)
+                } label: {
+                    WorkoutLogPickerContextMenuLabel(context: .saved)
                 }
-                .shadow(color: KitchenTablePalette.shadow, radius: 4, x: 0, y: 2)
-        }
-        .tint(NeoAppColors.cobalt)
-        .buttonStyle(WorkoutPressableButtonStyle())
-        .accessibilityLabel("Add workout")
-    }
 
-    private var addExerciseItems: [NeoGlassChoiceItem] {
-        var items = [
-            NeoGlassChoiceItem(
-                id: "workout.add.saved",
-                title: String(localized: "Saved Exercises"),
-                subtitle: String(localized: "Choose from your saved workout list"),
-                systemImage: "bookmark.fill"
-            ) {
-                pickerRequest = WorkoutLogPickerRequest(context: .saved, initialSource: .saved)
-            },
-            NeoGlassChoiceItem(
-                id: "workout.add.copyDay",
-                title: String(localized: "Copy from Day"),
-                subtitle: String(localized: "Reuse a previous workout plan"),
-                systemImage: "calendar.badge.plus"
-            ) {
-                isCopySheetPresented = true
+                Button {
+                    isCopySheetPresented = true
+                } label: {
+                    Label("Copy from day", systemImage: "calendar.badge.plus")
+                }
+
+                if splitGroups.isEmpty {
+                    Button {
+                        pickerRequest = WorkoutLogPickerRequest(context: .all, initialSource: .dataset)
+                    } label: {
+                        WorkoutLogPickerContextMenuLabel(context: .all)
+                    }
+                } else {
+                    ForEach(splitGroups) { group in
+                        Button {
+                            pickerRequest = WorkoutLogPickerRequest(
+                                context: WorkoutLogPickerContext(title: group.title, muscles: group.muscles),
+                                initialSource: .dataset
+                            )
+                        } label: {
+                            WorkoutLogPickerContextMenuLabel(
+                                context: WorkoutLogPickerContext(title: group.title, muscles: group.muscles)
+                            )
+                        }
+                    }
+                }
             }
-        ]
-
-        if splitGroups.isEmpty {
-            items.append(
-                NeoGlassChoiceItem(
-                    id: "workout.add.all",
-                    title: String(localized: "All Exercises"),
-                    systemImage: "figure.strengthtraining.traditional"
-                ) {
-                    pickerRequest = WorkoutLogPickerRequest(context: .all, initialSource: .dataset)
-                }
-            )
-        } else {
-            items.append(contentsOf: splitGroups.map { group in
-                NeoGlassChoiceItem(
-                    id: "workout.add.group.\(group.id)",
-                    title: group.title,
-                    systemImage: "figure.strengthtraining.traditional"
-                ) {
-                    pickerRequest = WorkoutLogPickerRequest(
-                        context: WorkoutLogPickerContext(title: group.title, muscles: group.muscles),
-                        initialSource: .dataset
-                    )
-                }
-            })
+        } label: {
+            Image(systemName: "plus")
+                .font(.system(size: 26, weight: .semibold))
+                .foregroundStyle(.white)
+                .frame(width: 60, height: 60)
+                .background(Color.workoutAccent, in: Circle())
         }
-
-        return items
+        .tint(Color.workoutAccent)
+        .accessibilityLabel("Add workout")
     }
 
     private var selectedDateTitle: String {
@@ -544,17 +451,6 @@ struct WorkoutLogView: View {
         if Calendar.current.isDateInTomorrow(selectedDate) { return "Tomorrow" }
         if Calendar.current.isDateInYesterday(selectedDate) { return "Yesterday" }
         return selectedDate.formatted(.dateTime.weekday(.wide).month(.abbreviated).day())
-    }
-
-    private var weekRangeTitle: String {
-        var calendar = Calendar.current
-        calendar.firstWeekday = weekStartsOnMonday ? 2 : 1
-        let day = calendar.startOfDay(for: selectedDate)
-        let weekday = calendar.component(.weekday, from: day)
-        let daysBack = (weekday - calendar.firstWeekday + 7) % 7
-        let start = calendar.date(byAdding: .day, value: -daysBack, to: day) ?? day
-        let end = calendar.date(byAdding: .day, value: 6, to: start) ?? start
-        return "\(start.formatted(.dateTime.month(.abbreviated).day())) – \(end.formatted(.dateTime.month(.abbreviated).day()))"
     }
 
     private func changeDay(by delta: Int) {
@@ -616,56 +512,6 @@ struct WorkoutLogView: View {
     }
 }
 
-private struct WorkoutLogMasthead: View {
-    let subtitle: String
-    let showsLibrary: Bool
-    let openLibrary: () -> Void
-
-    var body: some View {
-        HStack(alignment: .center, spacing: 12) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text("This Week")
-                    .font(.system(.title2, design: .serif, weight: .bold))
-                    .foregroundStyle(NeoAppColors.ink)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.78)
-
-                Text(subtitle)
-                    .font(.system(.caption, design: .monospaced, weight: .semibold))
-                    .foregroundStyle(NeoAppColors.mutedInk)
-            }
-
-            Spacer(minLength: 8)
-
-            if showsLibrary {
-                Button(action: openLibrary) {
-                    VStack(spacing: 2) {
-                        Image(systemName: "calendar.badge.plus")
-                            .font(.system(size: 16, weight: .semibold))
-                    }
-                    .foregroundStyle(KitchenTablePalette.cobaltDeep)
-                    .frame(width: 42, height: 38)
-                    .background(KitchenTablePalette.paperRaised)
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 4, style: .continuous)
-                            .stroke(
-                                KitchenTablePalette.cobalt.opacity(0.72),
-                                style: StrokeStyle(lineWidth: 0.9, dash: [3, 2])
-                            )
-                    }
-                    .frame(width: 44, height: 44)
-                    .contentShape(Rectangle())
-                }
-                .buttonStyle(WorkoutPressableButtonStyle())
-                .accessibilityLabel("Open exercise library")
-                .accessibilityHint("Choose an exercise to add to this day")
-            }
-        }
-        .padding(.horizontal, 3)
-        .padding(.vertical, 3)
-    }
-}
-
 // MARK: - 53-week diary strip
 
 private struct WorkoutLogWeekStrip: View {
@@ -711,8 +557,6 @@ private struct WorkoutLogWeekStrip: View {
                 withAnimation(.snappy) { scrolledWeek = target }
             }
         }
-        .padding(.vertical, 4)
-        .kitchenReceiptSurface(accent: KitchenTablePalette.brass)
         .accessibilityElement(children: .contain)
         .accessibilityLabel("Workout diary dates")
     }
@@ -736,33 +580,30 @@ private struct WorkoutLogWeekStrip: View {
                 selectedDate = date
             }
         } label: {
-            VStack(spacing: 5) {
+            VStack(spacing: 6) {
                 Text(date.formatted(.dateTime.weekday(.narrow)))
-                    .font(.system(size: 9, weight: .bold, design: .monospaced))
-                    .foregroundStyle(isSelected ? KitchenTablePalette.onBrass : NeoAppColors.mutedInk)
+                    .font(.system(.caption2, design: .rounded, weight: .medium))
+                    .foregroundStyle(isSelected ? Color.workoutAccent : Color.workoutMutedText.opacity(0.62))
 
                 Text(date.formatted(.dateTime.day()))
-                    .font(.system(size: 18, weight: .bold, design: .serif))
-                    .foregroundStyle(isSelected ? KitchenTablePalette.onBrass : (isToday ? NeoAppColors.cobalt : NeoAppColors.ink))
-                    .frame(width: 33, height: 32)
+                    .font(.system(.body, design: .rounded, weight: .semibold))
+                    .foregroundStyle(isSelected ? Color.workoutOnAccent : (isToday ? Color.workoutAccent : Color.workoutCharcoal))
+                    .frame(width: 36, height: 36)
                     .background {
                         if isSelected {
-                            RoundedRectangle(cornerRadius: 5, style: .continuous)
-                                .fill(NeoAppColors.acid)
+                            Circle()
+                                .fill(Color.workoutAccent)
+                                .shadow(color: Color.workoutAccent.opacity(0.28), radius: 6, y: 3)
                         } else if isToday {
-                            RoundedRectangle(cornerRadius: 5, style: .continuous)
-                                .strokeBorder(
-                                    NeoAppColors.cobalt,
-                                    style: StrokeStyle(lineWidth: NeoAppMetrics.rule, dash: [3, 2])
-                                )
+                            Circle()
+                                .strokeBorder(Color.workoutAccent.opacity(0.35), lineWidth: 1.5)
                         }
                     }
 
-                Capsule()
-                    .fill(workoutCount > 0 ? NeoAppColors.cobalt : Color.clear)
-                    .frame(width: 13, height: 2)
+                Circle()
+                    .fill(workoutCount > 0 ? Color.workoutAccent : Color.clear)
+                    .frame(width: 4, height: 4)
             }
-            .frame(maxWidth: .infinity)
         }
         .buttonStyle(.plain)
         .frame(maxWidth: .infinity)
@@ -794,172 +635,6 @@ private struct WorkoutLogWeekStrip: View {
     }
 }
 
-private struct WorkoutLogWeekDay: Identifiable {
-    let date: Date
-    let exercises: [StrengthPlannedExercise]
-    let calories: Int?
-
-    var id: Date { date }
-}
-
-/// A real-data weekly organizer: only planned/logged workout days become
-/// tickets, so the screen matches the paper diary reference without inventing
-/// sessions for an empty week.
-private struct WorkoutLogWeekOverview: View {
-    @Binding var selectedDate: Date
-    let exercisesForDate: (Date) -> [StrengthPlannedExercise]
-    let caloriesForDate: (Date) -> Int?
-    @AppStorage("weekStartsOnMonday") private var weekStartsOnMonday = true
-
-    private var calendar: Calendar {
-        var value = Calendar.current
-        value.firstWeekday = weekStartsOnMonday ? 2 : 1
-        return value
-    }
-
-    private var activeDays: [WorkoutLogWeekDay] {
-        weekDates.compactMap { date in
-            let exercises = exercisesForDate(date)
-            guard !exercises.isEmpty else { return nil }
-            return WorkoutLogWeekDay(
-                date: date,
-                exercises: exercises,
-                calories: caloriesForDate(date)
-            )
-        }
-    }
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 7) {
-            if activeDays.isEmpty {
-                emptyStatusTicket(
-                    icon: "calendar",
-                    title: "Week open",
-                    detail: "0 workout days planned across this week",
-                    accent: KitchenTablePalette.cobalt
-                )
-                emptyStatusTicket(
-                    icon: "dumbbell",
-                    title: "No sets logged",
-                    detail: "Reps and load stay blank until you train",
-                    accent: KitchenTablePalette.herb
-                )
-                emptyStatusTicket(
-                    icon: "plus",
-                    title: "Ready to plan",
-                    detail: "Choose a date, then add from the exercise library",
-                    accent: KitchenTablePalette.tomato
-                )
-            } else {
-                ForEach(activeDays) { day in
-                    weekTicket(day)
-                }
-            }
-        }
-        .accessibilityElement(children: .contain)
-        .accessibilityLabel("This week's workouts")
-    }
-
-    private func emptyStatusTicket(
-        icon: String,
-        title: LocalizedStringKey,
-        detail: LocalizedStringKey,
-        accent: Color
-    ) -> some View {
-        HStack(spacing: 10) {
-            Image(systemName: icon)
-                .font(.system(size: 14, weight: .semibold))
-                .foregroundStyle(accent)
-                .frame(width: 28, height: 28)
-                .overlay {
-                    Rectangle()
-                        .stroke(accent.opacity(0.72), lineWidth: 0.8)
-                }
-                .accessibilityHidden(true)
-
-            VStack(alignment: .leading, spacing: 1) {
-                Text(title)
-                    .font(.system(.subheadline, design: .serif, weight: .bold))
-                Text(detail)
-                    .font(.system(.caption2, design: .monospaced, weight: .semibold))
-                    .foregroundStyle(KitchenTablePalette.mutedEspresso)
-                    .lineLimit(2)
-            }
-
-            Spacer(minLength: 2)
-        }
-        .padding(.horizontal, 9)
-        .padding(.vertical, 7)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .kitchenWorkoutTicket(accent: accent)
-        .accessibilityElement(children: .combine)
-    }
-
-    private func weekTicket(_ day: WorkoutLogWeekDay) -> some View {
-        let isSelected = calendar.isDate(day.date, inSameDayAs: selectedDate)
-        let performedSets = day.exercises.flatMap(\.sets).filter { !$0.reps.isEmpty }.count
-
-        return Button {
-            selectedDate = day.date
-        } label: {
-            HStack(alignment: .top, spacing: 10) {
-                VStack(spacing: 0) {
-                    Text(day.date.formatted(.dateTime.weekday(.abbreviated)))
-                        .font(.system(size: 8, weight: .bold, design: .monospaced))
-                    Text(day.date.formatted(.dateTime.day()))
-                        .font(.system(.headline, design: .serif, weight: .bold))
-                }
-                .foregroundStyle(isSelected ? KitchenTablePalette.tomatoDeep : KitchenTablePalette.espresso)
-                .frame(width: 34)
-
-                VStack(alignment: .leading, spacing: 5) {
-                    HStack(alignment: .firstTextBaseline) {
-                        Text(day.exercises.first?.name ?? String(localized: "Workout"))
-                            .font(.system(.headline, design: .serif, weight: .bold))
-                            .lineLimit(1)
-                        Spacer(minLength: 8)
-                        Text("\(day.exercises.count) exercises")
-                            .font(.system(size: 8, weight: .bold, design: .monospaced))
-                            .foregroundStyle(KitchenTablePalette.mutedEspresso)
-                    }
-
-                    KitchenReceiptRule(color: KitchenTablePalette.rule)
-
-                    HStack(spacing: 8) {
-                        Text(day.exercises.prefix(2).map(\.name).joined(separator: " · "))
-                            .font(.system(size: 9, weight: .semibold, design: .monospaced))
-                            .lineLimit(1)
-                        Spacer(minLength: 4)
-                        if performedSets > 0 {
-                            Text("\(performedSets) sets")
-                                .foregroundStyle(KitchenTablePalette.tomatoDeep)
-                        } else if let calories = day.calories {
-                            Text("\(calories) kcal")
-                                .foregroundStyle(KitchenTablePalette.herb)
-                        }
-                    }
-                    .font(.system(size: 8, weight: .bold, design: .monospaced))
-                }
-                .foregroundStyle(KitchenTablePalette.espresso)
-            }
-            .padding(9)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .kitchenWorkoutTicket(accent: isSelected ? KitchenTablePalette.tomato : KitchenTablePalette.cobalt)
-        }
-        .buttonStyle(WorkoutPressableButtonStyle())
-        .accessibilityLabel(day.date.formatted(date: .complete, time: .omitted))
-        .accessibilityValue("\(day.exercises.count) exercises, \(performedSets) performed sets")
-    }
-
-    private var weekDates: [Date] {
-        let day = calendar.startOfDay(for: selectedDate)
-        let weekday = calendar.component(.weekday, from: day)
-        let daysBack = (weekday - calendar.firstWeekday + 7) % 7
-        let start = calendar.date(byAdding: .day, value: -daysBack, to: day) ?? day
-        return (0..<7).compactMap { calendar.date(byAdding: .day, value: $0, to: start) }
-    }
-}
-
 // MARK: - Signature burn calculator and stats
 
 private struct WorkoutLogBurnHero: View {
@@ -972,17 +647,8 @@ private struct WorkoutLogBurnHero: View {
     let changeDay: (Int) -> Void
 
     var body: some View {
-        VStack(spacing: 6) {
-            HStack(spacing: 8) {
-                Text("CALORIE BURN")
-                    .font(.system(size: 13, weight: .bold, design: .serif))
-                Spacer(minLength: 8)
-                Text("PERFORMED SETS")
-                    .font(.system(size: 8, weight: .bold, design: .monospaced))
-            }
-            .foregroundStyle(NeoAppColors.ink)
-
-            KitchenReceiptRule(color: KitchenTablePalette.strongRule)
+        VStack(spacing: 22) {
+            WorkoutLogBurnButton(isCalculating: isCalculatingBurn, action: calculateBurn)
 
             WorkoutLogStatsStrip(
                 setCount: setCount,
@@ -990,13 +656,11 @@ private struct WorkoutLogBurnHero: View {
                 repCount: repCount,
                 caloriesBurned: caloriesBurned
             )
-
-            WorkoutLogBurnButton(isCalculating: isCalculatingBurn, action: calculateBurn)
         }
-        .padding(9)
         .frame(maxWidth: .infinity)
-        .kitchenWorkoutTicket(accent: KitchenTablePalette.tomato)
-        .contentShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+        .padding(.top, 18)
+        .padding(.bottom, 10)
+        .contentShape(Rectangle())
         .simultaneousGesture(daySwipeGesture)
     }
 
@@ -1013,79 +677,60 @@ private struct WorkoutLogBurnButton: View {
     let isCalculating: Bool
     let action: () -> Void
 
-    private var title: LocalizedStringResource {
-        isCalculating ? "Calculating…" : "Calculate Burn"
-    }
-
-    private var accessibilityState: LocalizedStringResource {
-        isCalculating ? "Calculating" : "Ready"
-    }
-
     var body: some View {
         Button(action: action) {
-            HStack(spacing: 10) {
+            VStack(spacing: 5) {
                 Group {
                     if isCalculating {
                         ProgressView()
-                            .tint(KitchenTablePalette.tomato)
+                            .tint(.white)
+                            .scaleEffect(1.05)
                     } else {
                         Image(systemName: "flame.fill")
-                            .font(.system(size: 17, weight: .bold))
-                            .foregroundStyle(KitchenTablePalette.tomato)
+                            .font(.system(size: 27, weight: .black))
+                            .foregroundStyle(Color.white)
+                            .shadow(color: Color.black.opacity(0.52), radius: 2, y: 1)
                     }
                 }
-                .frame(width: 24, height: 24)
+                .frame(height: 32)
 
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(title)
-                        .font(.system(size: 12, weight: .bold, design: .monospaced))
-                        .textCase(.uppercase)
-                        .contentTransition(.opacity)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.78)
+                Text(isCalculating ? "Calculating…" : "Calculate")
+                    .font(.system(size: isCalculating ? 18 : 22, weight: .black, design: .rounded))
+                    .foregroundStyle(Color.white)
+                    .contentTransition(.opacity)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.9)
+                    .frame(width: 118)
+                    .shadow(color: Color.black.opacity(0.62), radius: 2, y: 1)
 
-                    Text("USES LOAD + REPS + EFFORT")
-                        .font(.system(size: 8, weight: .semibold, design: .monospaced))
-                        .tracking(0.4)
-                        .foregroundStyle(NeoAppColors.mutedInk)
-                        .lineLimit(1)
-                }
-
-                Spacer(minLength: 4)
-
-                Image(systemName: "arrow.right")
-                    .font(.system(size: 13, weight: .bold))
+                Text("CALORIE BURN")
+                    .font(.system(size: 9, weight: .black, design: .rounded))
+                    .tracking(0.4)
+                    .foregroundStyle(Color.white.opacity(0.90))
+                    .lineLimit(1)
             }
-            .foregroundStyle(KitchenTablePalette.tomatoDeep)
-            .padding(.horizontal, 12)
-            .frame(maxWidth: .infinity, minHeight: 38)
-            .background(KitchenTablePalette.paper)
-            .overlay {
-                RoundedRectangle(cornerRadius: 5, style: .continuous)
-                    .stroke(
-                        KitchenTablePalette.tomato,
-                        style: StrokeStyle(lineWidth: 0.9, dash: [4, 2])
-                    )
+            .frame(width: 156, height: 156)
+            .background {
+                Image("timer_button_red")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 176, height: 176)
+                    .shadow(color: Color.black.opacity(0.34), radius: 16, y: 8)
             }
-            .frame(minHeight: 44)
-            .contentShape(Rectangle())
         }
         .buttonStyle(WorkoutLogBurnButtonStyle())
         .disabled(isCalculating)
         .accessibilityLabel("Calculate calorie burn")
-        .accessibilityValue(Text(accessibilityState))
+        .accessibilityValue(isCalculating ? "Calculating" : "Ready")
         .accessibilityHint("Uses performed sets, repetitions, effort, load, and current body weight")
     }
 }
 
 private struct WorkoutLogBurnButtonStyle: ButtonStyle {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .scaleEffect(reduceMotion ? 1 : (configuration.isPressed ? 0.985 : 1))
-            .opacity(configuration.isPressed ? 0.76 : 1)
-            .animation(reduceMotion ? nil : .snappy(duration: 0.12), value: configuration.isPressed)
+            .scaleEffect(configuration.isPressed ? 0.88 : 1)
+            .animation(.snappy(duration: 0.12), value: configuration.isPressed)
     }
 }
 
@@ -1094,54 +739,70 @@ private struct WorkoutLogStatsStrip: View {
     let workoutCount: Int
     let repCount: Int
     let caloriesBurned: Int?
+    @Environment(\.colorScheme) private var colorScheme
+
     var body: some View {
         HStack(spacing: 0) {
-            metric(label: "Sets", value: "\(setCount)", active: setCount > 0)
+            metric(label: "Sets", value: "\(setCount)", systemImage: "checklist", active: setCount > 0)
             divider
-            metric(label: "Workouts", value: "\(workoutCount)", active: workoutCount > 0)
+            metric(label: "Workouts", value: "\(workoutCount)", systemImage: "dumbbell.fill", active: workoutCount > 0)
             divider
-            metric(label: "Reps", value: "\(repCount)", active: repCount > 0)
+            metric(label: "Reps", value: "\(repCount)", systemImage: "repeat", active: repCount > 0)
             divider
             metric(
                 label: "Burn",
                 value: caloriesBurned.map { "\($0) kcal" } ?? "-- kcal",
+                systemImage: "flame.fill",
                 active: caloriesBurned != nil
             )
         }
         .frame(maxWidth: .infinity)
-        .background(NeoAppColors.subtleSurface.opacity(0.42))
+        .padding(.horizontal, 8)
+        .padding(.vertical, 10)
+        .background(Color.workoutPanel.opacity(0.84), in: RoundedRectangle(cornerRadius: 26, style: .continuous))
         .overlay {
-            RoundedRectangle(cornerRadius: 4, style: .continuous)
-                .stroke(KitchenTablePalette.rule, lineWidth: NeoAppMetrics.compactRule)
+            RoundedRectangle(cornerRadius: 26, style: .continuous)
+                .stroke(Color.workoutHairline.opacity(0.72), lineWidth: 0.8)
         }
+        .shadow(color: shadowColor, radius: colorScheme == .light ? 0 : 12, x: 0, y: colorScheme == .light ? 0 : 8)
         .accessibilityElement(children: .contain)
+    }
+
+    private var shadowColor: Color {
+        colorScheme == .light ? .clear : Color.black.opacity(0.18)
     }
 
     private var divider: some View {
         Rectangle()
-            .fill(KitchenTablePalette.rule)
-            .frame(width: NeoAppMetrics.compactRule)
+            .fill(Color.workoutHairline.opacity(0.52))
+            .frame(width: 1, height: 44)
+            .padding(.horizontal, 2)
             .accessibilityHidden(true)
     }
 
-    private func metric(label: String, value: String, active: Bool) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(label)
-                .font(.system(size: 8, weight: .bold, design: .monospaced))
-                .foregroundStyle(active ? KitchenTablePalette.cobaltDeep : NeoAppColors.mutedInk)
-                .textCase(.uppercase)
-                .lineLimit(1)
-                .minimumScaleFactor(0.68)
+    private func metric(label: String, value: String, systemImage: String, active: Bool) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(spacing: 4) {
+                Image(systemName: systemImage)
+                    .font(.system(size: 11, weight: .heavy))
+                    .foregroundStyle(active ? Color.workoutAccent : Color.workoutMutedText.opacity(0.72))
+                    .frame(width: 14, height: 14)
+                Text(label)
+                    .font(.system(size: 10, weight: .heavy, design: .rounded))
+                    .foregroundStyle(Color.workoutMutedText)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
+            }
+
             Text(value)
-                .font(.system(size: 16, weight: .bold, design: .serif))
-                .foregroundStyle(active ? NeoAppColors.cobalt : NeoAppColors.ink)
+                .font(.system(size: 24, weight: .black, design: .rounded))
+                .foregroundStyle(active ? Color.workoutAccent : Color.workoutCharcoal)
                 .contentTransition(.numericText())
                 .minimumScaleFactor(0.5)
                 .lineLimit(1)
         }
-        .frame(maxWidth: .infinity, minHeight: 40, alignment: .leading)
+        .frame(maxWidth: .infinity, minHeight: 58, alignment: .leading)
         .padding(.horizontal, 7)
-        .padding(.vertical, 4)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(label)
         .accessibilityValue(value)
@@ -1168,9 +829,10 @@ private struct WorkoutLogExerciseCard: View {
     let updateWeight: (UUID, String) -> Void
     let updateReps: (UUID, String) -> Void
     let updateRPE: (UUID, String) -> Void
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        VStack(alignment: .leading, spacing: 12) {
             Button(action: openDetail) {
                 HStack(alignment: .center, spacing: 12) {
                     AnimatedExerciseVisual(
@@ -1180,11 +842,11 @@ private struct WorkoutLogExerciseCard: View {
                         fillsWidth: false,
                         allowsDerivedImageLookup: false
                     )
-                    .frame(width: 60, height: 60)
-                    .clipShape(RoundedRectangle(cornerRadius: 5, style: .continuous))
+                    .frame(width: 64, height: 64)
+                    .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
                     .overlay {
-                        RoundedRectangle(cornerRadius: 5, style: .continuous)
-                            .stroke(KitchenTablePalette.rule, lineWidth: NeoAppMetrics.compactRule)
+                        RoundedRectangle(cornerRadius: 16, style: .continuous)
+                            .stroke(Color.workoutHairline.opacity(0.48), lineWidth: 0.7)
                     }
                     .clipped()
                     .layoutPriority(0)
@@ -1192,14 +854,13 @@ private struct WorkoutLogExerciseCard: View {
 
                     VStack(alignment: .leading, spacing: 6) {
                         Text(exercise.name)
-                            .font(.system(size: 17, weight: .bold, design: .serif))
-                            .foregroundStyle(NeoAppColors.ink)
+                            .font(.system(.headline, design: .rounded, weight: .semibold))
+                            .foregroundStyle(Color.workoutCharcoal)
                             .lineLimit(2)
 
                         Text("\(exercise.primaryMuscles.joined(separator: ", ")) - \(exercise.rawEquipment)")
-                            .font(.system(size: 9, weight: .bold, design: .monospaced))
-                            .foregroundStyle(NeoAppColors.mutedInk)
-                            .textCase(.uppercase)
+                            .font(.system(.caption, design: .rounded, weight: .semibold))
+                            .foregroundStyle(Color.workoutMutedText)
                             .lineLimit(1)
                             .minimumScaleFactor(0.72)
                     }
@@ -1208,16 +869,8 @@ private struct WorkoutLogExerciseCard: View {
 
                     Image(systemName: "chevron.right")
                         .font(.caption.weight(.bold))
-                        .foregroundStyle(NeoAppColors.cobalt)
-                        .frame(width: 28, height: 28)
-                        .background(KitchenTablePalette.paperMuted.opacity(0.48), in: RoundedRectangle(cornerRadius: 4, style: .continuous))
-                        .overlay {
-                            RoundedRectangle(cornerRadius: 4, style: .continuous)
-                                .stroke(NeoAppColors.cobalt.opacity(0.6), lineWidth: NeoAppMetrics.compactRule)
-                        }
+                        .foregroundStyle(Color.workoutMutedText.opacity(0.72))
                 }
-                .padding(11)
-                .background(NeoAppColors.surface.opacity(0.68))
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
@@ -1227,9 +880,8 @@ private struct WorkoutLogExerciseCard: View {
             VStack(alignment: .leading, spacing: 10) {
                 HStack(alignment: .center, spacing: 10) {
                     Label("Sets", systemImage: "list.number")
-                        .textCase(.uppercase)
-                        .font(.system(size: 10, weight: .bold, design: .monospaced))
-                        .foregroundStyle(KitchenTablePalette.onBrass)
+                        .font(.caption.weight(.heavy))
+                        .foregroundStyle(Color.workoutMutedText)
 
                     Spacer(minLength: 8)
 
@@ -1238,21 +890,12 @@ private struct WorkoutLogExerciseCard: View {
                         in: 1...12
                     ) {
                         Text("\(exercise.sets.count) \(exercise.sets.count == 1 ? "set" : "sets")")
-                            .textCase(.uppercase)
-                            .font(.system(size: 10, weight: .bold, design: .monospaced))
-                            .foregroundStyle(KitchenTablePalette.onBrass)
+                            .font(.caption.weight(.heavy))
+                            .foregroundStyle(Color.workoutCharcoal)
                             .lineLimit(1)
                     }
-                    .tint(NeoAppColors.cobalt)
                     .fixedSize()
                     .accessibilityHint("Adjust from one to twelve sets")
-                }
-                .padding(.horizontal, 10)
-                .frame(minHeight: 38)
-                .background(NeoAppColors.brass.opacity(0.78), in: RoundedRectangle(cornerRadius: 4, style: .continuous))
-                .overlay {
-                    RoundedRectangle(cornerRadius: 4, style: .continuous)
-                        .stroke(KitchenTablePalette.brassDeep, lineWidth: NeoAppMetrics.rule)
                 }
 
                 VStack(spacing: 0) {
@@ -1271,21 +914,25 @@ private struct WorkoutLogExerciseCard: View {
 
                         if index < exercise.sets.count - 1 {
                             Divider()
-                                .overlay(NeoAppColors.ink)
+                                .overlay(Color.workoutHairline.opacity(0.5))
+                                .padding(.leading, 64)
                         }
                     }
                 }
-                .background(NeoAppColors.subtleSurface.opacity(0.45), in: RoundedRectangle(cornerRadius: 4, style: .continuous))
-                .overlay {
-                    RoundedRectangle(cornerRadius: 4, style: .continuous)
-                        .stroke(KitchenTablePalette.rule, lineWidth: NeoAppMetrics.compactRule)
-                }
             }
-            .padding(11)
-            .background(NeoAppColors.subtleSurface.opacity(0.28))
         }
+        .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .kitchenWorkoutTicket(accent: NeoAppColors.cobalt)
+        .background(Color.workoutPanel, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                .stroke(Color.workoutHairline.opacity(0.82), lineWidth: 0.8)
+        }
+        .shadow(color: shadowColor, radius: colorScheme == .light ? 0 : 12, x: 0, y: colorScheme == .light ? 0 : 7)
+    }
+
+    private var shadowColor: Color {
+        colorScheme == .light ? .clear : Color.black.opacity(0.22)
     }
 }
 
@@ -1303,17 +950,11 @@ private struct WorkoutLogSetRow: View {
     var body: some View {
         HStack(spacing: 8) {
             Text("Set \(setIndex + 1)")
-                .textCase(.uppercase)
-                .font(.system(size: 10, weight: .bold, design: .monospaced))
-                .foregroundStyle(NeoAppColors.cobaltDeep)
+                .font(.system(.subheadline, design: .rounded, weight: .bold))
+                .foregroundStyle(Color.workoutMutedText)
                 .lineLimit(1)
                 .minimumScaleFactor(0.82)
-                .frame(width: 48, height: 36)
-                .background(KitchenTablePalette.paper)
-                .overlay {
-                    RoundedRectangle(cornerRadius: 4, style: .continuous)
-                        .stroke(NeoAppColors.cobalt, lineWidth: NeoAppMetrics.compactRule)
-                }
+                .frame(width: 46, alignment: .leading)
 
             WorkoutLogSetValueField(
                 placeholder: weightUnit.rawValue,
@@ -1342,7 +983,7 @@ private struct WorkoutLogSetRow: View {
             )
             .frame(maxWidth: .infinity)
         }
-        .padding(8)
+        .padding(.vertical, 7)
         .contentShape(Rectangle())
         .accessibilityHint("Opens set weight, reps and RPE input")
     }
@@ -1371,15 +1012,10 @@ private struct WorkoutLogSetValueField: View {
         }
         .padding(.horizontal, 10)
         .frame(height: 36)
-        .background(NeoAppColors.surface)
+        .background(Color.workoutCard.opacity(0.74), in: RoundedRectangle(cornerRadius: 11, style: .continuous))
         .overlay {
-            RoundedRectangle(cornerRadius: 4, style: .continuous)
-                .stroke(
-                    focusedField.wrappedValue == focus ? NeoAppColors.cobalt : NeoAppColors.ink,
-                    lineWidth: focusedField.wrappedValue == focus
-                        ? NeoAppMetrics.rule
-                        : NeoAppMetrics.compactRule
-                )
+            RoundedRectangle(cornerRadius: 11, style: .continuous)
+                .stroke(Color.workoutHairline.opacity(0.4), lineWidth: 0.6)
         }
     }
 
@@ -1387,8 +1023,8 @@ private struct WorkoutLogSetValueField: View {
         TextField(placeholder, text: $text)
             .keyboardType(keyboardType)
             .textFieldStyle(.plain)
-            .font(.system(size: 13, weight: .black, design: .rounded).width(.condensed).monospacedDigit())
-            .foregroundStyle(NeoAppColors.ink)
+            .font(.system(.subheadline, design: .rounded, weight: .bold).monospacedDigit())
+            .foregroundStyle(Color.workoutCharcoal)
             .multilineTextAlignment(.center)
             .focused(focusedField, equals: focus)
     }
@@ -1407,8 +1043,8 @@ private struct WorkoutLogSetSelectionTextField: View {
         TextField(placeholder, text: $text, selection: $selection)
             .keyboardType(keyboardType)
             .textFieldStyle(.plain)
-            .font(.system(size: 13, weight: .black, design: .rounded).width(.condensed).monospacedDigit())
-            .foregroundStyle(NeoAppColors.ink)
+            .font(.system(.subheadline, design: .rounded, weight: .bold).monospacedDigit())
+            .foregroundStyle(Color.workoutCharcoal)
             .multilineTextAlignment(.center)
             .focused(focusedField, equals: focus)
             .onTapGesture {
@@ -1433,33 +1069,37 @@ private struct WorkoutLogSetSelectionTextField: View {
 
 private struct WorkoutLogEmptyRoutineRow: View {
     let splitTitle: String
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         HStack(spacing: 12) {
-            Image(systemName: "plus")
-                .font(.headline.weight(.bold))
-                .foregroundStyle(Color.black)
-                .frame(width: 40, height: 40)
-                .background(NeoAppColors.acid.opacity(0.78), in: RoundedRectangle(cornerRadius: 5, style: .continuous))
-                .overlay {
-                    RoundedRectangle(cornerRadius: 5, style: .continuous)
-                        .stroke(KitchenTablePalette.brassDeep, lineWidth: NeoAppMetrics.rule)
-                }
+            Image(systemName: "plus.circle")
+                .font(.title2.weight(.semibold))
+                .foregroundStyle(Color.workoutAccent)
 
             VStack(alignment: .leading, spacing: 3) {
                 Text("No workouts logged")
-                    .font(.system(size: 17, weight: .bold, design: .serif))
-                    .foregroundStyle(NeoAppColors.ink)
+                    .font(.headline.weight(.semibold))
+                    .foregroundStyle(Color.workoutCharcoal)
                 Text("Use + to pick \(splitTitle) workouts for this day")
-                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
-                    .foregroundStyle(NeoAppColors.mutedInk)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(Color.workoutMutedText)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .padding(9)
+        .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .kitchenWorkoutTicket(accent: NeoAppColors.cobalt)
+        .background(Color.workoutPanel.opacity(0.94), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .stroke(Color.workoutHairline.opacity(0.95), lineWidth: 1)
+        }
+        .shadow(color: shadowColor, radius: colorScheme == .light ? 0 : 10, x: 0, y: colorScheme == .light ? 0 : 5)
         .accessibilityElement(children: .combine)
+    }
+
+    private var shadowColor: Color {
+        colorScheme == .light ? .clear : Color.black.opacity(0.16)
     }
 }
 
@@ -1653,97 +1293,27 @@ private struct WorkoutLogExercisePickerSheet: View {
                             }
                         }
                         .pickerStyle(.segmented)
-                        .tint(NeoAppColors.cobalt)
-                        .padding(8)
-                        .background(NeoAppColors.surface)
-                        .overlay {
-                            Rectangle()
-                                .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
-                        }
-                        .listRowInsets(
-                            EdgeInsets(
-                                top: 10,
-                                leading: NeoAppMetrics.screenInset,
-                                bottom: 4,
-                                trailing: NeoAppMetrics.screenInset
-                            )
-                        )
+                        .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 4, trailing: 20))
                         .listRowBackground(Color.clear)
                         .listRowSeparator(.hidden)
                     }
 
                     filterStrip
-                        .padding(8)
-                        .background(NeoAppColors.surface)
-                        .overlay {
-                            Rectangle()
-                                .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
-                        }
-                        .listRowInsets(
-                            EdgeInsets(
-                                top: 4,
-                                leading: NeoAppMetrics.screenInset,
-                                bottom: 6,
-                                trailing: NeoAppMetrics.screenInset
-                            )
-                        )
+                        .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 6, trailing: 20))
                         .listRowBackground(Color.clear)
                         .listRowSeparator(.hidden)
 
                     resultsHeader
-                        .padding(10)
-                        .background(NeoAppColors.subtleSurface)
-                        .overlay {
-                            Rectangle()
-                                .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
-                        }
-                        .listRowInsets(
-                            EdgeInsets(
-                                top: 0,
-                                leading: NeoAppMetrics.screenInset,
-                                bottom: 10,
-                                trailing: NeoAppMetrics.screenInset
-                            )
-                        )
+                        .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 10, trailing: 20))
                         .listRowBackground(Color.clear)
                         .listRowSeparator(.hidden)
                 }
 
                 Section {
                     if filteredExercises.isEmpty {
-                        HStack(spacing: 12) {
-                            Image(systemName: "magnifyingglass")
-                                .font(.title3.weight(.black))
-                                .foregroundStyle(Color.black)
-                                .frame(width: 44, height: 44)
-                                .background(NeoAppColors.acid)
-                                .overlay {
-                                    Rectangle()
-                                        .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
-                                }
-
-                            Text(!showsSourcePicker || source == .saved ? "No saved workouts yet." : "No dataset workouts found.")
-                                .textCase(.uppercase)
-                                .font(.system(size: 15, weight: .black, design: .rounded).width(.condensed))
-                                .foregroundStyle(NeoAppColors.ink)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                        }
-                        .padding(12)
-                        .background(NeoAppColors.surface)
-                        .overlay {
-                            Rectangle()
-                                .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
-                        }
-                        .listRowInsets(
-                            EdgeInsets(
-                                top: 5,
-                                leading: NeoAppMetrics.screenInset,
-                                bottom: 5,
-                                trailing: NeoAppMetrics.screenInset
-                            )
-                        )
-                        .listRowBackground(Color.clear)
-                        .listRowSeparator(.hidden)
+                        Text(!showsSourcePicker || source == .saved ? "No saved workouts yet." : "No dataset workouts found.")
+                            .foregroundStyle(Color.workoutMutedText)
+                            .listRowBackground(Color.workoutPanel.opacity(0.22))
                     } else {
                         ForEach(filteredExercises.prefix(120)) { item in
                             WorkoutLogPickerRow(
@@ -1757,16 +1327,9 @@ private struct WorkoutLogExercisePickerSheet: View {
                                     previewItem = item
                                 }
                             )
-                            .listRowInsets(
-                                EdgeInsets(
-                                    top: 5,
-                                    leading: NeoAppMetrics.screenInset,
-                                    bottom: 5,
-                                    trailing: NeoAppMetrics.screenInset
-                                )
+                            .listRowBackground(
+                                Color.workoutPanel.opacity(workoutStore.containsExercise(item.id, on: selectedDate) ? 0.28 : 0.18)
                             )
-                            .listRowBackground(Color.clear)
-                            .listRowSeparator(.hidden)
                             .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                                 Button {
                                     workoutStore.toggleSaved(item.id)
@@ -1777,7 +1340,7 @@ private struct WorkoutLogExercisePickerSheet: View {
                                         systemImage: isSaved ? "bookmark.slash.fill" : "bookmark.fill"
                                     )
                                 }
-                                .tint(NeoAppColors.cobalt)
+                                .tint(Color.workoutAccent)
                             }
                         }
                     }
@@ -1786,7 +1349,7 @@ private struct WorkoutLogExercisePickerSheet: View {
             .scrollContentBackground(.hidden)
             .listStyle(.plain)
             .contentMargins(.top, 0, for: .scrollContent)
-            .background(NeoAppColors.canvas)
+            .background(Color.workoutBackground)
             .scrollDismissesKeyboard(.immediately)
             .contentShape(Rectangle())
             .onTapGesture {
@@ -1811,10 +1374,9 @@ private struct WorkoutLogExercisePickerSheet: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Done", action: onDone)
                         .font(.headline.weight(.heavy))
-                        .foregroundStyle(NeoAppColors.cobalt)
+                        .foregroundStyle(Color.workoutAccent)
                 }
             }
-            .tint(NeoAppColors.cobalt)
             .keepsWorkoutLogToolbarDuringSearch()
         }
         .onAppear {
@@ -1839,14 +1401,13 @@ private struct WorkoutLogExercisePickerSheet: View {
         HStack(alignment: .firstTextBaseline) {
             VStack(alignment: .leading, spacing: 2) {
                 Text("\(filteredExercises.count) \(filteredExercises.count == 1 ? "exercise" : "exercises")")
-                    .textCase(.uppercase)
-                    .font(.system(size: 17, weight: .black, design: .rounded).width(.condensed))
-                    .foregroundStyle(NeoAppColors.ink)
+                    .font(.headline.weight(.semibold))
+                    .foregroundStyle(Color.workoutCharcoal)
                     .textCase(nil)
 
                 Text(selectedSort.title)
-                    .font(.system(size: 10, weight: .black, design: .rounded).width(.condensed))
-                    .foregroundStyle(NeoAppColors.mutedInk)
+                    .font(.caption)
+                    .foregroundStyle(Color.workoutMutedText)
                     .textCase(nil)
             }
 
@@ -1854,44 +1415,47 @@ private struct WorkoutLogExercisePickerSheet: View {
 
             Button(action: resetFilters) {
                 Label("Reset", systemImage: "arrow.counterclockwise")
-                    .textCase(.uppercase)
-                    .font(.system(size: 10, weight: .black, design: .rounded).width(.condensed))
-                    .foregroundStyle(hasActiveFilters ? Color.black : NeoAppColors.mutedInk)
+                    .font(.caption.weight(.bold))
+                    .foregroundStyle(hasActiveFilters ? Color.workoutInferno : Color.workoutMutedText)
                     .lineLimit(1)
                     .padding(.horizontal, 11)
                     .frame(height: 34)
-                    .background(hasActiveFilters ? NeoAppColors.acid : NeoAppColors.surface)
+                    .background(
+                        (hasActiveFilters ? Color.workoutInferno : Color.workoutPanel).opacity(hasActiveFilters ? 0.10 : 0.22),
+                        in: Capsule()
+                    )
                     .overlay {
-                        Rectangle()
-                            .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                        Capsule()
+                            .stroke(
+                                (hasActiveFilters ? Color.workoutInferno : Color.workoutHairline).opacity(hasActiveFilters ? 0.28 : 0.24),
+                                lineWidth: 0.5
+                            )
                     }
             }
             .disabled(!hasActiveFilters)
             .buttonStyle(.plain)
             .workoutPressable()
 
-            NeoGlassChoiceMenu(
-                title: String(localized: "Sort Exercises"),
-                items: ExerciseLibrarySort.allCases.map { sort in
-                    NeoGlassChoiceItem(
-                        id: "workout.log.sort.\(sort.id)",
-                        title: sort.title,
-                        systemImage: "arrow.up.arrow.down",
-                        isSelected: selectedSort == sort
-                    ) { selectedSort = sort }
+            Menu {
+                ForEach(ExerciseLibrarySort.allCases) { sort in
+                    menuChoice(sort.title, isSelected: selectedSort == sort) {
+                        selectedSort = sort
+                    }
                 }
-            ) {
+            } label: {
                 Label("Sort", systemImage: "arrow.up.arrow.down")
-                    .textCase(.uppercase)
-                    .font(.system(size: 10, weight: .black, design: .rounded).width(.condensed))
-                    .foregroundStyle(selectedSort == .name ? NeoAppColors.mutedInk : NeoAppColors.onCobalt)
+                    .font(.caption.weight(.bold))
+                    .foregroundStyle(selectedSort == .name ? Color.workoutMutedText : Color.workoutAccent)
                     .lineLimit(1)
                     .padding(.horizontal, 11)
                     .frame(height: 34)
-                    .background(selectedSort == .name ? NeoAppColors.surface : NeoAppColors.cobalt)
+                    .background(Color.workoutPanel.opacity(selectedSort == .name ? 0.30 : 0.46), in: Capsule())
                     .overlay {
-                        Rectangle()
-                            .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                        Capsule()
+                            .stroke(
+                                (selectedSort == .name ? Color.workoutHairline : Color.workoutAccent).opacity(0.32),
+                                lineWidth: 0.5
+                            )
                     }
             }
             .buttonStyle(.plain)
@@ -2132,35 +1696,41 @@ private struct WorkoutLogFilterPill: View {
         HStack(spacing: 9) {
             Image(systemName: systemImage)
                 .font(.system(size: 14, weight: .bold))
-                .foregroundStyle(isActive ? Color.black : NeoAppColors.cobalt)
+                .foregroundStyle(isActive ? Color.workoutAccent : Color.workoutSecondaryAccent)
                 .frame(width: 18)
 
             VStack(alignment: .leading, spacing: 1) {
                 Text(title)
-                    .font(.system(size: 9, weight: .black, design: .rounded).width(.condensed))
-                    .foregroundStyle(isActive ? Color.black.opacity(0.70) : NeoAppColors.mutedInk)
+                    .font(.caption2.weight(.bold))
+                    .foregroundStyle(Color.workoutMutedText)
                     .textCase(.uppercase)
                     .lineLimit(1)
                 Text(value)
-                    .font(.system(size: 12, weight: .black, design: .rounded).width(.condensed))
-                    .foregroundStyle(isActive ? Color.black : NeoAppColors.ink)
+                    .font(.subheadline.weight(.bold))
+                    .foregroundStyle(Color.workoutCharcoal)
                     .lineLimit(1)
                     .minimumScaleFactor(0.78)
             }
 
             Image(systemName: "chevron.down")
                 .font(.caption2.weight(.bold))
-                .foregroundStyle(isActive ? Color.black : NeoAppColors.mutedInk)
+                .foregroundStyle(Color.workoutMutedText)
                 .padding(.leading, 1)
         }
         .padding(.horizontal, 12)
         .frame(minWidth: 112, minHeight: 46, alignment: .leading)
-        .background(isActive ? NeoAppColors.acid : NeoAppColors.surface)
+        .background(
+            Color.workoutPanel.opacity(isActive ? 0.46 : 0.30),
+            in: RoundedRectangle(cornerRadius: 17, style: .continuous)
+        )
         .overlay {
-            Rectangle()
-                .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+            RoundedRectangle(cornerRadius: 17, style: .continuous)
+                .stroke(
+                    (isActive ? Color.workoutAccent : Color.workoutHairline).opacity(isActive ? 0.42 : 0.30),
+                    lineWidth: 0.5
+                )
         }
-        .contentShape(Rectangle())
+        .contentShape(RoundedRectangle(cornerRadius: 17, style: .continuous))
     }
 }
 
@@ -2181,42 +1751,31 @@ private struct WorkoutLogPickerRow: View {
                         fillsWidth: false,
                         allowsDerivedImageLookup: false
                     )
-                    .frame(width: 64, height: 58)
-                    .clipShape(Rectangle())
-                    .overlay {
-                        Rectangle()
-                            .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
-                    }
+                    .frame(width: 76, height: 58)
+                    .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
                     .clipped()
                     .layoutPriority(0)
                     .accessibilityHidden(true)
 
                     VStack(alignment: .leading, spacing: 5) {
                         Text(item.name)
-                            .textCase(.uppercase)
-                            .font(.system(size: 15, weight: .black, design: .rounded).width(.condensed))
-                            .foregroundStyle(NeoAppColors.ink)
+                            .font(.headline.weight(.semibold))
+                            .foregroundStyle(Color.workoutCharcoal)
                             .lineLimit(2)
 
                         Text("\(item.primaryMusclesTitle) - \(item.rawEquipment)")
-                            .textCase(.uppercase)
-                            .font(.system(size: 9, weight: .black, design: .rounded).width(.condensed))
-                            .foregroundStyle(NeoAppColors.mutedInk)
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(Color.workoutMutedText)
                             .lineLimit(1)
                             .minimumScaleFactor(0.72)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .layoutPriority(1)
 
-                    Image(systemName: isSelected ? "checkmark" : "plus")
-                        .font(.title3.weight(.black))
-                        .foregroundStyle(isSelected ? Color.black : NeoAppColors.onCobalt)
+                    Image(systemName: isSelected ? "checkmark.circle.fill" : "plus.circle.fill")
+                        .font(.title3.weight(.bold))
+                        .foregroundStyle(isSelected ? Color.workoutAccent : Color.workoutMutedText)
                         .frame(width: 34, height: 34)
-                        .background(isSelected ? NeoAppColors.acid : NeoAppColors.cobalt)
-                        .overlay {
-                            Rectangle()
-                                .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
-                        }
                 }
                 .contentShape(Rectangle())
             }
@@ -2226,30 +1785,20 @@ private struct WorkoutLogPickerRow: View {
             .accessibilityHint(isSelected ? "Double tap to remove from this day" : "Double tap to add to this day")
 
             Button(action: previewAction) {
-                Image(systemName: "info")
+                Image(systemName: "info.circle.fill")
                     .font(.system(size: 19, weight: .bold))
-                    .foregroundStyle(NeoAppColors.onCobalt)
+                    .foregroundStyle(Color.workoutAccent)
                     .frame(width: 34, height: 34)
-                    .background(NeoAppColors.cobalt)
+                    .background(Color.workoutPanel.opacity(0.36), in: Circle())
                     .overlay {
-                        Rectangle()
-                            .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                        Circle()
+                            .stroke(Color.workoutHairline.opacity(0.28), lineWidth: 0.5)
                     }
             }
             .buttonStyle(.plain)
             .accessibilityLabel("Preview \(item.name)")
         }
-        .padding(10)
-        .background(isSelected ? NeoAppColors.subtleSurface : NeoAppColors.surface)
-        .overlay {
-            Rectangle()
-                .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
-        }
-        .overlay(alignment: .leading) {
-            Rectangle()
-                .fill(isSelected ? NeoAppColors.acid : NeoAppColors.cobalt)
-                .frame(width: 5)
-        }
+        .padding(.vertical, 4)
     }
 }
 
@@ -2263,27 +1812,27 @@ private struct WorkoutLogPreviewActionBar: View {
                 isSelected ? "Remove from day" : "Add exercise",
                 systemImage: isSelected ? "checkmark.circle.fill" : "plus.circle.fill"
             )
-            .textCase(.uppercase)
-            .font(.system(size: 16, weight: .black, design: .rounded).width(.condensed))
-            .foregroundStyle(Color.black)
+            .font(.headline.weight(.heavy))
+            .foregroundStyle(isSelected ? Color.workoutCharcoal : Color.white)
             .frame(maxWidth: .infinity, minHeight: 52)
-            .background(isSelected ? NeoAppColors.surface : NeoAppColors.acid)
+            .background(
+                isSelected ? Color.workoutPanel.opacity(0.92) : Color.workoutAccent,
+                in: Capsule()
+            )
             .overlay {
-                Rectangle()
-                    .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+                Capsule()
+                    .stroke(
+                        isSelected ? Color.workoutHairline.opacity(0.38) : Color.workoutAccent.opacity(0.55),
+                        lineWidth: 0.7
+                    )
             }
         }
         .buttonStyle(.plain)
         .workoutPressable()
-        .padding(.horizontal, NeoAppMetrics.screenInset)
+        .padding(.horizontal, 20)
         .padding(.top, 10)
         .padding(.bottom, 12)
-        .background(NeoAppColors.canvas)
-        .overlay(alignment: .top) {
-            Rectangle()
-                .fill(NeoAppColors.ink)
-                .frame(height: NeoAppMetrics.rule)
-        }
+        .background(.ultraThinMaterial)
     }
 }
 
@@ -2306,37 +1855,7 @@ private struct WorkoutLogCopySheet: View {
         NavigationStack {
             List {
                 if days.isEmpty {
-                    VStack(spacing: 12) {
-                        Image(systemName: "calendar.badge.exclamationmark")
-                            .font(.system(size: 28, weight: .black))
-                            .foregroundStyle(Color.black)
-                            .frame(width: 58, height: 58)
-                            .background(NeoAppColors.acid)
-                            .overlay {
-                                Rectangle()
-                                    .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
-                            }
-
-                        Text("No previous workouts")
-                            .textCase(.uppercase)
-                            .font(.system(size: 18, weight: .black, design: .rounded).width(.condensed))
-                            .foregroundStyle(NeoAppColors.ink)
-                    }
-                    .padding(20)
-                    .frame(maxWidth: .infinity)
-                    .background(NeoAppColors.surface)
-                    .overlay {
-                        Rectangle()
-                            .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
-                    }
-                    .listRowInsets(
-                        EdgeInsets(
-                            top: 12,
-                            leading: NeoAppMetrics.screenInset,
-                            bottom: 12,
-                            trailing: NeoAppMetrics.screenInset
-                        )
-                    )
+                    ContentUnavailableView("No previous workouts", systemImage: "calendar.badge.exclamationmark")
                         .listRowBackground(Color.clear)
                         .listRowSeparator(.hidden)
                 } else {
@@ -2347,32 +1866,23 @@ private struct WorkoutLogCopySheet: View {
                             WorkoutLogCopyDayRow(day: day)
                         }
                         .buttonStyle(.plain)
-                        .listRowInsets(
-                            EdgeInsets(
-                                top: 5,
-                                leading: NeoAppMetrics.screenInset,
-                                bottom: 5,
-                                trailing: NeoAppMetrics.screenInset
-                            )
-                        )
-                        .listRowBackground(Color.clear)
-                        .listRowSeparator(.hidden)
+                        .listRowBackground(Color.workoutPanel.opacity(0.24))
+                        .listRowSeparatorTint(Color.workoutHairline.opacity(0.28))
                     }
                 }
             }
             .scrollContentBackground(.hidden)
             .listStyle(.plain)
-            .background(NeoAppColors.canvas)
+            .background(Color.workoutBackground)
             .navigationTitle("Copy to \(targetTitle)")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Done", action: onClose)
                         .font(.headline.weight(.heavy))
-                        .foregroundStyle(NeoAppColors.cobalt)
+                        .foregroundStyle(Color.workoutAccent)
                 }
             }
-            .tint(NeoAppColors.cobalt)
         }
     }
 }
@@ -2390,53 +1900,42 @@ private struct WorkoutLogCopyDayRow: View {
         HStack(alignment: .center, spacing: 12) {
             Image(systemName: "calendar")
                 .font(.headline.weight(.black))
-                .foregroundStyle(NeoAppColors.onCobalt)
+                .foregroundStyle(Color.workoutAccent)
                 .frame(width: 38, height: 38)
-                .background(NeoAppColors.cobalt)
+                .background(Color.workoutCard.opacity(0.60), in: Circle())
                 .overlay {
-                    Rectangle()
-                        .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                    Circle()
+                        .stroke(Color.workoutHairline.opacity(0.34), lineWidth: 0.7)
                 }
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(dayTitle)
-                    .textCase(.uppercase)
-                    .font(.system(size: 15, weight: .black, design: .rounded).width(.condensed))
-                    .foregroundStyle(NeoAppColors.ink)
+                    .font(.headline.weight(.semibold))
+                    .foregroundStyle(Color.workoutCharcoal)
                     .lineLimit(1)
                 Text(workoutNames)
-                    .font(.system(size: 10, weight: .bold, design: .rounded))
-                    .foregroundStyle(NeoAppColors.mutedInk)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(Color.workoutMutedText)
                     .lineLimit(2)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
             VStack(alignment: .trailing, spacing: 4) {
                 Text("\(day.exercises.count)")
-                    .font(.system(size: 19, weight: .black, design: .rounded).width(.condensed).monospacedDigit())
-                    .foregroundStyle(NeoAppColors.cobalt)
+                    .font(.system(.title3, design: .rounded, weight: .black).monospacedDigit())
+                    .foregroundStyle(Color.workoutAccent)
                 Text(day.exercises.count == 1 ? "workout" : "workouts")
-                    .textCase(.uppercase)
-                    .font(.system(size: 8, weight: .black, design: .rounded).width(.condensed))
-                    .foregroundStyle(NeoAppColors.mutedInk)
+                    .font(.caption2.weight(.heavy))
+                    .foregroundStyle(Color.workoutMutedText)
             }
 
             Image(systemName: "plus")
                 .font(.caption.weight(.black))
-                .foregroundStyle(Color.black)
+                .foregroundStyle(Color.workoutOnAccent)
                 .frame(width: 28, height: 28)
-                .background(NeoAppColors.acid)
-                .overlay {
-                    Rectangle()
-                        .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
-                }
+                .background(Color.workoutAccent, in: Circle())
         }
-        .padding(12)
-        .background(NeoAppColors.surface)
-        .overlay {
-            Rectangle()
-                .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
-        }
+        .padding(.vertical, 4)
     }
 
     private var dayTitle: String {

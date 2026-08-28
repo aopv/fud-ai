@@ -7,7 +7,6 @@ struct WeekEnergyStrip: View {
     let caloriesForDate: (Date) -> Int
     let calorieGoal: Int
     @AppStorage("weekStartsOnMonday") private var weekStartsOnMonday = true
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     /// Two-way scroll position (the visible week's index). Driven programmatically when the selected
     /// day moves to another week, and updated by the user's own paging.
     @State private var scrolledWeek: Int?
@@ -82,7 +81,7 @@ struct WeekEnergyStrip: View {
         .onChange(of: selectedDate) { _, newValue in
             let target = weekIndex(for: newValue)
             if scrolledWeek != target {
-                withAnimation(reduceMotion ? nil : .snappy) { scrolledWeek = target }
+                withAnimation(.snappy) { scrolledWeek = target }
             }
         }
     }
@@ -107,39 +106,29 @@ struct WeekEnergyStrip: View {
                 selectedDate = date
             }
         } label: {
-            VStack(spacing: 3) {
+            VStack(spacing: 6) {
                 Text(date.formatted(.dateTime.weekday(.narrow)))
-                    .font(.system(size: 9, weight: .semibold, design: .monospaced))
-                    .foregroundStyle(isSelected ? NeoHomeColors.ink : NeoHomeColors.mutedInk)
+                    .font(.system(.caption2, design: .rounded, weight: .medium))
+                    .foregroundStyle(isSelected ? AppColors.calorie : Color.secondary.opacity(0.6))
 
                 Text(date.formatted(.dateTime.day()))
-                    .font(.system(.body, design: .serif, weight: .semibold))
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.65)
-                    .foregroundStyle(isSelected ? Color.black : (isToday ? NeoHomeColors.cobalt : NeoHomeColors.ink))
-                    .frame(width: 35, height: 34)
+                    .font(.system(.body, design: .rounded, weight: .semibold))
+                    .foregroundStyle(isSelected ? .white : (isToday ? AppColors.calorie : .primary))
+                    .frame(width: 36, height: 36)
                     .background {
                         if isSelected {
-                            RoundedRectangle(cornerRadius: 9, style: .continuous)
-                                .fill(NeoHomeColors.acidYellow.opacity(0.88))
-                                .overlay {
-                                    RoundedRectangle(cornerRadius: 9, style: .continuous)
-                                        .strokeBorder(KitchenTablePalette.brassDeep, lineWidth: NeoHomeMetrics.compactRule)
-                                }
+                            Circle()
+                                .fill(LinearGradient(colors: AppColors.calorieGradient, startPoint: .topLeading, endPoint: .bottomTrailing))
+                                .shadow(color: AppColors.calorie.opacity(0.35), radius: 6, y: 3)
                         } else if isToday {
-                            RoundedRectangle(cornerRadius: 9, style: .continuous)
-                                .strokeBorder(NeoHomeColors.cobalt, lineWidth: NeoHomeMetrics.rule)
+                            Circle()
+                                .strokeBorder(AppColors.calorie.opacity(0.35), lineWidth: 1.5)
                         }
                     }
             }
-            .padding(.vertical, 4)
         }
         .buttonStyle(.plain)
         .frame(maxWidth: .infinity)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(date.formatted(.dateTime.weekday(.wide).month(.wide).day()))
-        .accessibilityValue("\(caloriesForDate(date)) calories")
-        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }
 
@@ -367,52 +356,19 @@ struct HomeNutrientPickerSheet: View {
     var body: some View {
         NavigationStack {
             List {
-                Section {
-                    NeoScreenHeader(
-                        eyebrow: "HOME DISPLAY",
-                        title: "Nutrients",
-                        subtitle: "Choose the four metrics shown in your daily summary."
-                    )
-                    .listRowInsets(EdgeInsets())
-                    .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
-                }
-
-                Section {
+                Section("Shown on Home") {
                     ForEach(Array(draftSelection.enumerated()), id: \.element.id) { index, nutrient in
                         HStack(spacing: 12) {
-                            Text("\(index + 1)")
-                                .font(.system(.body, design: .rounded, weight: .black))
-                                .foregroundStyle(Color.black)
-                                .frame(width: 34, height: 34)
-                                .background(NeoAppColors.acid)
-                                .overlay {
-                                    Rectangle()
-                                        .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
-                                }
-
                             Label(nutrient.displayName, systemImage: nutrient.iconName)
-                                .font(.system(.body, design: .rounded, weight: .black))
-                                .foregroundStyle(NeoAppColors.ink)
+                                .foregroundStyle(.primary)
                             Spacer()
-                            Text(nutrient.unit)
-                                .textCase(.uppercase)
-                                .font(.system(.caption, design: .rounded, weight: .black))
-                                .foregroundStyle(NeoAppColors.cobalt)
+                            Text("\(index + 1)")
+                                .font(.system(.caption, design: .rounded, weight: .semibold))
+                                .foregroundStyle(.secondary)
                         }
-                        .padding(12)
-                        .background(NeoAppColors.surface)
-                        .overlay {
-                            Rectangle()
-                                .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
-                        }
-                        .listRowInsets(EdgeInsets(top: 4, leading: 14, bottom: 4, trailing: 14))
-                        .listRowBackground(Color.clear)
-                        .listRowSeparator(.hidden)
                     }
-                } header: {
-                    NeoSectionBanner(title: "Shown on Home", detail: "ORDER", style: .cobalt)
                 }
+                .listRowBackground(AppColors.appCard)
 
                 Section {
                     ForEach(HomeTopNutrient.allCases) { nutrient in
@@ -421,55 +377,27 @@ struct HomeNutrientPickerSheet: View {
                         } label: {
                             HStack(spacing: 12) {
                                 Label(nutrient.displayName, systemImage: nutrient.iconName)
-                                    .font(.system(.body, design: .rounded, weight: .bold))
-                                    .foregroundStyle(NeoAppColors.ink)
+                                    .foregroundStyle(.primary)
                                 Spacer()
                                 if draftSelection.contains(nutrient) {
-                                    Image(systemName: "checkmark")
-                                        .font(.system(size: 13, weight: .black))
-                                        .foregroundStyle(Color.black)
-                                        .frame(width: 28, height: 28)
-                                        .background(NeoAppColors.acid)
-                                        .overlay {
-                                            Rectangle()
-                                                .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
-                                        }
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .foregroundStyle(AppColors.calorie)
                                 }
                             }
-                            .padding(12)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .contentShape(Rectangle())
-                            .background(
-                                draftSelection.contains(nutrient)
-                                    ? NeoAppColors.subtleSurface
-                                    : NeoAppColors.surface
-                            )
-                            .overlay {
-                                Rectangle()
-                                    .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
-                            }
                         }
                         .buttonStyle(.plain)
-                        .listRowInsets(EdgeInsets(top: 4, leading: 14, bottom: 4, trailing: 14))
-                        .listRowBackground(Color.clear)
-                        .listRowSeparator(.hidden)
-                        .accessibilityValue(draftSelection.contains(nutrient) ? "Selected" : "Not selected")
-                        .accessibilityIdentifier("homeNutrient.\(nutrient.rawValue)")
                     }
                 } header: {
-                    NeoSectionBanner(title: "Choose 4 Nutrients", detail: "\(draftSelection.count)/4", style: .acid)
+                    Text("Choose 4 Nutrients")
                 } footer: {
                     Text("Pick exactly four nutrients for the Home summary row.")
-                        .font(.system(.footnote, design: .rounded, weight: .bold))
-                        .foregroundStyle(NeoAppColors.mutedInk)
-                        .padding(.top, 6)
                 }
+                .listRowBackground(AppColors.appCard)
             }
             .scrollContentBackground(.hidden)
-            .listStyle(.plain)
-            .listSectionSpacing(NeoAppMetrics.sectionSpacing)
-            .background(NeoAppColors.canvas)
-            .tint(NeoAppColors.cobalt)
+            .background(AppColors.appBackground)
             .navigationTitle("Home Nutrients")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -481,7 +409,7 @@ struct HomeNutrientPickerSheet: View {
                     Button("Reset") {
                         draftSelection = HomeTopNutrient.defaultSelection
                     }
-                    .tint(NeoAppColors.cobalt)
+                    .tint(AppColors.calorie)
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
@@ -489,7 +417,7 @@ struct HomeNutrientPickerSheet: View {
                         selectionRawValue = HomeTopNutrient.storageValue(for: draftSelection)
                         dismiss()
                     }
-                    .tint(NeoAppColors.cobalt)
+                    .tint(AppColors.calorie)
                     .disabled(draftSelection.count != 4)
                 }
             }

@@ -40,11 +40,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.onClick
-import androidx.compose.ui.semantics.role
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -255,26 +250,15 @@ fun CoachMicButton(controller: CoachVoiceController) {
     ) { /* granted -> the next press records */ }
 
     val holding = controller.phase == VoicePhase.Holding
-    val microphoneDescription = stringResource(R.string.cd_hold_to_record)
     Box(
         modifier = Modifier
-            .size(48.dp)
-            .semantics {
-                role = Role.Button
-                contentDescription = microphoneDescription
-                onClick(label = microphoneDescription) {
-                    if (!controller.hasMicPermission()) {
-                        micPermission.launch(Manifest.permission.RECORD_AUDIO)
-                    } else {
-                        // Accessibility services cannot perform the raw hold gesture.
-                        // A semantic click mirrors the existing quick-tap path and
-                        // enters hands-free recording with explicit send/cancel actions.
-                        controller.begin()
-                        controller.lock()
-                    }
-                    true
-                }
-            }
+            .size(34.dp)
+            .scale(if (holding) 1.18f else 1f)
+            .clip(CircleShape)
+            .background(
+                if (holding) AppColors.Calorie
+                else AppColors.Calorie.copy(alpha = 0.12f)
+            )
             .pointerInput(Unit) {
                 awaitEachGesture {
                     val down = awaitFirstDown(requireUnconsumed = false)
@@ -309,24 +293,12 @@ fun CoachMicButton(controller: CoachVoiceController) {
             },
         contentAlignment = Alignment.Center
     ) {
-        Box(
-            modifier = Modifier
-                .size(34.dp)
-                .scale(if (holding) 1.18f else 1f)
-                .clip(CircleShape)
-                .background(
-                    if (holding) AppColors.Calorie
-                    else AppColors.Calorie.copy(alpha = 0.12f)
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                Icons.Filled.Mic,
-                contentDescription = null,
-                tint = if (holding) Color.White else AppColors.Calorie,
-                modifier = Modifier.size(18.dp)
-            )
-        }
+        Icon(
+            Icons.Filled.Mic,
+            contentDescription = stringResource(R.string.cd_hold_to_record),
+            tint = if (holding) Color.White else AppColors.Calorie,
+            modifier = Modifier.size(18.dp)
+        )
     }
 }
 
@@ -396,23 +368,17 @@ fun CoachRecordingIndicator(controller: CoachVoiceController, modifier: Modifier
 fun CoachVoiceCancelButton(onClick: () -> Unit) {
     Box(
         Modifier
-            .size(48.dp)
+            .size(34.dp)
+            .clip(CircleShape)
+            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f))
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
-        Box(
-            Modifier
-                .size(34.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f)),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                Icons.Filled.Delete,
-                contentDescription = stringResource(R.string.cd_cancel_recording),
-                tint = Color(0xFFFF3B30),
-                modifier = Modifier.size(18.dp)
-            )
-        }
+        Icon(
+            Icons.Filled.Delete,
+            contentDescription = stringResource(R.string.cd_cancel_recording),
+            tint = Color(0xFFFF3B30),
+            modifier = Modifier.size(18.dp)
+        )
     }
 }

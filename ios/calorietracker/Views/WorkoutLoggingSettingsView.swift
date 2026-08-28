@@ -23,10 +23,9 @@ struct WorkoutLoggingSettingsSection: View {
 
             rpeScaleGuide
         } header: {
-            NeoSectionBanner(title: "Workout", detail: "Training preferences", style: .cobalt)
+            Text("Workout")
         }
-        .neoListRow()
-        .tint(NeoAppColors.cobalt)
+        .listRowBackground(AppColors.appCard)
         .onAppear(perform: loadPreferences)
         .onChange(of: draft) { _, newValue in
             guard hasLoaded else { return }
@@ -46,19 +45,12 @@ struct WorkoutLoggingSettingsSection: View {
             Text("**CR10 0–10:** General effort from rest to maximum.")
             Text("**Borg 6–20:** Endurance effort linked to breathing and heart rate.")
         }
-        .font(.system(.footnote, design: .monospaced))
+        .font(.system(.footnote, design: .rounded))
         .foregroundStyle(.secondary)
         .lineSpacing(1)
         .fixedSize(horizontal: false, vertical: true)
-        .padding(10)
-        .background(KitchenTablePalette.paperMuted.opacity(0.34))
-        .overlay {
-            RoundedRectangle(cornerRadius: 5, style: .continuous)
-                .stroke(
-                    KitchenTablePalette.rule,
-                    style: StrokeStyle(lineWidth: NeoAppMetrics.compactRule, dash: [3, 2])
-                )
-        }
+        .padding(.leading, 32)
+        .padding(.vertical, 4)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(
             "RPE scale guide. Strength 1 to 10 measures lifting effort by reps left. "

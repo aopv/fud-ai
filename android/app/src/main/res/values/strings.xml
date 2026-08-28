@@ -315,13 +315,8 @@
     <string name="home_menu_voice">Voice</string>
     <string name="home_menu_manual_entry">Manual Entry</string>
     <string name="home_menu_saved_meals">Saved Meals</string>
-    <string name="home_add_group_photo_scan">Photo &amp; Scan</string>
-    <string name="home_add_group_describe">Describe Meal</string>
-    <string name="home_add_group_reuse">Reuse Meal</string>
-    <string name="home_add_barcode">Barcode</string>
     <string name="home_kcal_of_format">of %1$s kcal</string>
     <string name="home_kcal_left_format">%1$s left</string>
-    <string name="home_calorie_summary_a11y">%1$d of %2$d calories</string>
     <string name="home_view_more">View More</string>
     <string name="home_todays_food">Today\'s Food</string>
     <string name="home_no_foods_logged">No foods logged</string>
@@ -453,12 +448,6 @@
     <string name="coach_input_placeholder">Ask Coach…</string>
     <string name="coach_empty_title">Ask your Coach</string>
     <string name="coach_empty_subtitle">Your coach can see your weight history, calorie log, and goals. Ask about expected weight, what to eat, or how to hit your target.</string>
-    <string name="coach_summary_headline_format">%1$s logged today.</string>
-    <string name="coach_summary_with_target_format">%1$s logged · %2$s target</string>
-    <string name="coach_summary_without_target_format">%1$s logged · target not set</string>
-    <string name="coach_summary_provenance">Based on today\'s diary</string>
-    <string name="coach_more_prompts">More prompts</string>
-    <string name="coach_fewer_prompts">Fewer prompts</string>
     <string name="coach_reset_dialog_title">Reset Chat</string>
     <string name="coach_reset_dialog_message">Clear all messages and start fresh? This can\'t be undone.</string>
     <string name="coach_reset_confirm">Reset</string>
@@ -481,12 +470,6 @@
     <string name="coach_chip_training" translatable="false">How is my recent training?</string>
 
     <!-- Progress -->
-    <string name="progress_eyebrow">Your data</string>
-    <string name="progress_subtitle">Trends, targets, and training history</string>
-    <string name="progress_history_entry">entry</string>
-    <string name="progress_history_entries">entries</string>
-    <string name="progress_history_tap_to_view">tap to view or delete</string>
-    <string name="progress_average_prefix">Avg</string>
     <string name="progress_range_week">1W</string>
     <string name="progress_range_month">1M</string>
     <string name="progress_range_3m">3M</string>
@@ -499,13 +482,6 @@
     <string name="progress_stat_current">Current</string>
     <string name="progress_stat_goal">Goal</string>
     <string name="progress_stat_net_change">Net Change</string>
-    <plurals name="progress_more_meal_groups">
-        <item quantity="one">%1$d more meal group</item>
-        <item quantity="other">%1$d more meal groups</item>
-    </plurals>
-    <string name="progress_calorie_summary_a11y">%1$d of %2$d calories</string>
-    <string name="progress_previous_week_a11y">Previous week</string>
-    <string name="progress_next_week_a11y">Next week</string>
     <string name="progress_stat_average">Average</string>
     <string name="progress_log_first_weight">Log your first weight to see trends</string>
 
@@ -812,7 +788,6 @@
 
     <!-- Workouts tab (exercise library ported from Delts) -->
     <string name="nav_workouts">Workouts</string>
-    <string name="workout_add_workout">Add workout</string>
     <string name="back">Back</string>
     <string name="clear_search">Clear search</string>
     <string name="empty_subtitle">Try a different muscle, equipment, or search — or reset the filters above.</string>
@@ -1098,59 +1073,8 @@
     <string name="progressive_meal_description">Photo 1 → 2 → 3 follows each ingredient added to the same plate. Visible scale differences become ingredient weights.</string>
     <string name="progressive_meal_info_title">How Progressive Meal works</string>
     <string name="progressive_meal_info_body">Use this when every photo shows the same plate after another ingredient is added. Keep the photos in order and make the scale display visible. Fud AI uses the difference between consecutive scale totals to estimate each new ingredient. Leave this off when the photos are only different angles of the same meal.</string>
-    <string name="capture_photo_description">Photo %1$d</string>
-    <string name="capture_photo_label">Photo %1$d</string>
-    <plurals name="capture_photo_count">
-        <item quantity="one">%1$d of %2$d photo</item>
-        <item quantity="other">%1$d of %2$d photos</item>
-    </plurals>
-    <string name="capture_add_photo">Add photo</string>
-    <string name="capture_add_photos">Add photos</string>
-    <string name="capture_progressive_ready">Same plate · additions in order</string>
-    <string name="capture_progressive_needs_second">Add photo 2 for ingredient steps</string>
     <string name="settings_quick_actions">Quick Actions</string>
     <string name="settings_app_icon_shortcuts">App Icon Shortcuts</string>
     <string name="settings_quick_action_number">Quick Action %1$d</string>
     <string name="settings_quick_actions_footer">Hold the Fud AI app icon to use these shortcuts. Each slot opens its selected logging method directly.</string>
-    <string name="workout_this_week">This week</string>
-    <string name="workout_menu_all_exercises">All exercises</string>
-    <string name="workout_menu_copy_from_day">Copy from day</string>
-    <string name="workout_menu_saved">Saved</string>
-    <string name="workout_log_reps_first">Log reps first</string>
-    <string name="workout_calculate_burn">Calculate burn</string>
-    <string name="workout_metric_sets">Sets</string>
-    <string name="workout_metric_workouts">Workouts</string>
-    <string name="workout_metric_reps">Reps</string>
-    <string name="workout_metric_burn">Burn</string>
-    <string name="workout_calculating_burn_a11y">Calculating calorie burn</string>
-    <string name="workout_calculate_burn_a11y">Calculate calorie burn</string>
-    <string name="workout_calorie_burn_label">Calorie burn</string>
-    <string name="workout_calculating">Calculating…</string>
-    <string name="workout_calculate">Calculate</string>
-    <string name="workout_today">Today</string>
-    <string name="workout_tomorrow">Tomorrow</string>
-    <string name="workout_yesterday">Yesterday</string>
-    <plurals name="workout_count">
-        <item quantity="one">%1$d workout</item>
-        <item quantity="other">%1$d workouts</item>
-    </plurals>
-    <string name="workout_empty_title">No workouts logged</string>
-    <string name="workout_empty_body_format">Use + to pick %1$s exercises for this day</string>
-    <string name="workout_fallback_label">Workout</string>
-    <string name="workout_unspecified">Unspecified</string>
-    <string name="workout_open_exercise_a11y">Open exercise instructions</string>
-    <string name="workout_sets_label">Sets</string>
-    <string name="workout_remove_set_a11y">Remove set</string>
-    <string name="workout_add_set_a11y">Add blank set</string>
-    <plurals name="workout_set_count">
-        <item quantity="one">%1$d set</item>
-        <item quantity="other">%1$d sets</item>
-    </plurals>
-    <string name="workout_unsave_exercise_a11y">Unsave exercise</string>
-    <string name="workout_save_exercise_a11y">Save exercise</string>
-    <string name="workout_remove_exercise_a11y">Remove exercise</string>
-    <string name="workout_set_number_format">Set %1$d</string>
-    <string name="workout_reps_placeholder">Reps</string>
-    <string name="workout_show_library_a11y">Show exercise library</string>
-    <string name="workout_show_log_a11y">Show workout log</string>
 </resources>

@@ -14,7 +14,7 @@
   <img src="https://img.shields.io/badge/Android-8.0+-green?logo=android" alt="Android">
   <img src="https://img.shields.io/badge/swift-5-orange?logo=swift" alt="Swift">
   <img src="https://img.shields.io/badge/kotlin-2.2-7F52FF?logo=kotlin" alt="Kotlin">
-  <img src="https://img.shields.io/badge/UI-SwiftUI%20%2F%20Compose%20%2F%20Flutter-purple" alt="UI">
+  <img src="https://img.shields.io/badge/UI-SwiftUI%20%2F%20Compose-purple" alt="UI">
   <img src="https://img.shields.io/badge/privacy-local--first-brightgreen" alt="Local-first privacy">
   <img src="https://img.shields.io/badge/languages-iOS%2016%20%2F%20Android%2015-blue" alt="iOS 16 languages / Android 15 languages">
   <img src="https://img.shields.io/badge/license-MIT-green" alt="License">
@@ -27,7 +27,7 @@
 
 Open-source, privacy-first calorie tracker for iOS and Android. Bring your own AI provider — 13 supported including Gemini, OpenAI, Claude, Grok, Groq, Hugging Face, Fireworks AI, DeepInfra, Mistral, and any custom OpenAI-compatible endpoint. Capture or import up to 10 food photos with an optional note, scan a barcode, ask your AI coach how to hit your goal, speak your lunch, or use Siri Shortcuts on iOS to log food and weight. On supported iPhones, food-description analysis for text, voice-transcribed, and Siri food logs can use Apple Intelligence on-device as the final fallback after BYOK provider/fallback attempts fail. No accounts, Fud AI cloud sync, tracking, or ads — completely free.
 
-iOS 7.0 (build 34) and Android 7.0 (versionCode 35) introduce the neo-brutalist visual system. Android's five main surfaces and themed right-side navigation rail use the shared Flutter presentation, while targeted Kotlin screens retain camera, voice, Health Connect, import/export, and other OS-owned flows. iOS retains its SwiftUI shell, native Liquid Glass navigation rail, and shared Progress renderer. Every persisted store remains native, so normal updates preserve existing local and Health data.
+iOS and Android 6.1 (build/versionCode 34) add an optional intermittent-fasting tracker alongside the existing nutrition and workout tools. Choose a goal from 1–168 hours, start, end, or cancel a fast from the Home + menu, keep the timer across app restarts, and review or edit completed sessions. Goal alerts are optional local notifications, and fasting remains separate from calories, macros, Apple Health, and Health Connect.
 
 The app also includes faster Saved Meal reuse, current-time meal copying, export of every stored nutrient, selectable water units, water progress on Apple Watch, current AI model presets, configurable timeouts for Ollama/custom endpoints, and reliability fixes across widgets, settings, images, and provider responses. Normal updates preserve existing local and Health data.
 
@@ -262,10 +262,9 @@ All values can be manually overridden in Settings, with a **Recalculate Goals** 
 
 ```
 fud-ai/
-├── ios/            # SwiftUI iOS app (v7.0 build 34)
-├── android/        # Kotlin + Jetpack Compose app (Android 8.0+, v7.0 / versionCode 35)
-├── flutter_shared/ # Shared neo presentation (full Android shell + Progress on iOS)
-├── web/            # Marketing site — https://fud-ai.app (static HTML/CSS, Cloudflare Workers)
+├── ios/          # SwiftUI iOS app (v6.1 build 34)
+├── android/      # Kotlin + Jetpack Compose app (min SDK 26 / Android 8.0, v6.1 / versionCode 34)
+├── web/          # Marketing site — https://fud-ai.app (static HTML/CSS, Cloudflare Workers)
 ├── APPSTORE.md   # App Store Connect listing copy (iOS)
 ├── PLAYSTORE.md  # Google Play Console listing copy (Android)
 └── README, LICENSE, CONTRIBUTING, SECURITY, .github/
@@ -339,10 +338,6 @@ Open `ios/calorietracker.xcodeproj` in Xcode, select your device, and run.
 Open `android/` in Android Studio (Narwhal or newer), let Gradle sync, hit ▶ Run. Or from the CLI:
 
 ```bash
-# Generate the ignored local Maven repository with Flutter 3.47.1 first.
-FUD_AI_FLUTTER_BIN=/absolute/path/to/flutter \
-  ./android/scripts/prepare_flutter_aar.sh
-
 export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"
 cd android
 ./gradlew :app:assembleDebug

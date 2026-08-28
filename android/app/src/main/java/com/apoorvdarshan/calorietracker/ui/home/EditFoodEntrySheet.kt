@@ -47,7 +47,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.luminance
@@ -150,7 +149,7 @@ fun EditFoodEntrySheet(
     var showDatePicker by remember { mutableStateOf(false) }
     var showTimePicker by remember { mutableStateOf(false) }
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
-    val sheetSurface = if (isDark) AppColors.NeoInk else AppColors.NeoPaper
+    val sheetSurface = if (isDark) MaterialTheme.colorScheme.surface else Color(0xFFFAF3EE)
     val context = LocalContext.current
     val reprocessingFailed = stringResource(R.string.edit_reprocessing_failed)
     val dateFormatter = remember { DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.US) }
@@ -278,7 +277,7 @@ fun EditFoodEntrySheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = state,
-        shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
+        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
         containerColor = sheetSurface
     ) {
         // While the note differs from what's saved, the primary button becomes
@@ -368,11 +367,8 @@ fun EditFoodEntrySheet(
                                         contentDescription = "Photo ${index + 1}",
                                         contentScale = androidx.compose.ui.layout.ContentScale.Crop,
                                         modifier = Modifier
-                                            .size(280.dp)
-                                            .shadow(6.dp, RoundedCornerShape(4.dp))
-                                            .background(AppColors.KitchenPaper)
-                                            .padding(7.dp)
-                                            .clip(RoundedCornerShape(2.dp))
+                                            .size(240.dp)
+                                            .clip(RoundedCornerShape(20.dp))
                                     )
                                     if (bitmaps.size > 1) {
                                         Text(
@@ -410,7 +406,7 @@ fun EditFoodEntrySheet(
                             fontSize = 17.sp,
                             textAlign = androidx.compose.ui.text.style.TextAlign.End
                         ),
-                        cursorBrush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.primary),
+                        cursorBrush = androidx.compose.ui.graphics.SolidColor(AppColors.Calorie),
                         modifier = Modifier.weight(2f)
                     )
                 }
@@ -513,21 +509,21 @@ fun EditFoodEntrySheet(
                             Icon(
                                 sheetMealIcon(mealType),
                                 contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary,
+                                tint = AppColors.Calorie,
                                 modifier = Modifier.size(20.dp)
                             )
                             Spacer(Modifier.width(6.dp))
                             Text(
                                 stringResource(mealType.displayNameRes),
                                 fontSize = 17.sp,
-                                color = MaterialTheme.colorScheme.primary,
+                                color = AppColors.Calorie,
                                 fontWeight = FontWeight.Medium
                             )
                             Spacer(Modifier.width(6.dp))
                             Icon(
                                 Icons.Filled.UnfoldMore,
                                 contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary
+                                tint = AppColors.Calorie
                             )
                         }
                         SheetGlassDropdownMenu(
@@ -590,7 +586,7 @@ fun EditFoodEntrySheet(
                         Text(
                             loggedDate.format(dateFormatter),
                             fontSize = 17.sp,
-                            color = MaterialTheme.colorScheme.primary,
+                            color = AppColors.Calorie,
                             fontWeight = FontWeight.Medium
                         )
                     }
@@ -609,7 +605,7 @@ fun EditFoodEntrySheet(
                         Text(
                             loggedTime.format(timeFormatter),
                             fontSize = 17.sp,
-                            color = MaterialTheme.colorScheme.primary,
+                            color = AppColors.Calorie,
                             fontWeight = FontWeight.Medium
                         )
                     }
@@ -630,7 +626,7 @@ fun EditFoodEntrySheet(
                         Icon(
                             Icons.Filled.IosShare,
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
+                            tint = AppColors.Calorie,
                             modifier = Modifier.size(20.dp)
                         )
                         Spacer(Modifier.width(12.dp))

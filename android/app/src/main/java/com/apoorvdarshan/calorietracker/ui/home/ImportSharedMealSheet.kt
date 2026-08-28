@@ -50,7 +50,7 @@ fun ImportSharedMealSheet(
         onDismissRequest = onDismiss,
         sheetState = state,
         shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
-        containerColor = MaterialTheme.colorScheme.surface,
+        containerColor = if (isDark) Color(0xF2141416) else Color(0xFFFAF3EE),
     ) {
         Column(
             Modifier.fillMaxWidth().padding(horizontal = 24.dp).padding(bottom = 28.dp),
@@ -79,7 +79,7 @@ fun ImportSharedMealSheet(
                         "${meal.calories} kcal",
                         fontSize = 15.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.primary,
+                        color = AppColors.Calorie,
                     )
                 }
             }

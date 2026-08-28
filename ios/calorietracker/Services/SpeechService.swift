@@ -75,12 +75,7 @@ struct SpeechService {
         case .deepgram:
             return try await callDeepgram(model: provider.defaultModel, audioData: audioData, apiKey: resolvedAPIKey, languageCode: languageCode)
         case .assemblyai:
-            return try await callAssemblyAI(
-                speechModels: [provider.defaultModel, "universal-2"],
-                audioData: audioData,
-                apiKey: resolvedAPIKey,
-                languageCode: languageCode
-            )
+            return try await callAssemblyAI(audioData: audioData, apiKey: resolvedAPIKey, languageCode: languageCode)
         }
     }
 
@@ -222,29 +217,7 @@ struct SpeechService {
 
     // MARK: - AssemblyAI (2-step: upload then transcribe-and-poll)
 
-    static func assemblyAITranscriptBody(
-        audioURL: String,
-        speechModels: [String],
-        languageCode: String?
-    ) -> [String: Any] {
-        var body: [String: Any] = [
-            "audio_url": audioURL,
-            "speech_models": speechModels,
-        ]
-        if let languageCode {
-            body["language_code"] = languageCode
-        } else {
-            body["language_detection"] = true
-        }
-        return body
-    }
-
-    private static func callAssemblyAI(
-        speechModels: [String],
-        audioData: Data,
-        apiKey: String,
-        languageCode: String?
-    ) async throws -> String {
+    private static func callAssemblyAI(audioData: Data, apiKey: String, languageCode: String?) async throws -> String {
         // 1. Upload raw audio, get a temporary upload URL.
         guard let uploadURL = URL(string: "https://api.assemblyai.com/v2/upload") else {
             throw SpeechError.apiError("Invalid URL.")
@@ -270,11 +243,10 @@ struct SpeechService {
         submitReq.httpMethod = "POST"
         submitReq.setValue(apiKey, forHTTPHeaderField: "Authorization")
         submitReq.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        let submitBody = assemblyAITranscriptBody(
-            audioURL: audioRef,
-            speechModels: speechModels,
-            languageCode: languageCode
-        )
+        var submitBody: [String: Any] = ["audio_url": audioRef]
+        if let languageCode {
+            submitBody["language_code"] = languageCode
+        }
         submitReq.httpBody = try JSONSerialization.data(withJSONObject: submitBody)
         let (submitData, submitResp) = try await send(submitReq)
         guard let submitHttp = submitResp as? HTTPURLResponse, submitHttp.statusCode == 200,

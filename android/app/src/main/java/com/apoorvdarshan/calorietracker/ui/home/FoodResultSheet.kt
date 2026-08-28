@@ -43,7 +43,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.luminance
@@ -170,7 +169,7 @@ fun FoodResultSheet(
     var mealMenuExpanded by remember { mutableStateOf(false) }
     var servingMenuExpanded by remember { mutableStateOf(false) }
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
-    val sheetSurface = if (isDark) AppColors.NeoInk else AppColors.NeoPaper
+    val sheetSurface = if (isDark) MaterialTheme.colorScheme.surface else Color(0xFFFAF3EE)
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
     val dismissKeyboard = {
@@ -282,7 +281,7 @@ fun FoodResultSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = state,
-        shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
+        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
         containerColor = sheetSurface
     ) {
         SheetReviewToolbar(
@@ -332,11 +331,8 @@ fun FoodResultSheet(
                                         contentDescription = "Photo ${index + 1}",
                                         contentScale = androidx.compose.ui.layout.ContentScale.Crop,
                                         modifier = Modifier
-                                            .size(280.dp)
-                                            .shadow(6.dp, RoundedCornerShape(4.dp))
-                                            .background(AppColors.KitchenPaper)
-                                            .padding(7.dp)
-                                            .clip(RoundedCornerShape(2.dp))
+                                            .size(240.dp)
+                                            .clip(RoundedCornerShape(20.dp))
                                     )
                                     if (bitmaps.size > 1) {
                                         Text(
@@ -374,7 +370,7 @@ fun FoodResultSheet(
                             fontSize = 17.sp,
                             textAlign = androidx.compose.ui.text.style.TextAlign.End
                         ),
-                        cursorBrush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.primary),
+                        cursorBrush = androidx.compose.ui.graphics.SolidColor(AppColors.Calorie),
                         modifier = Modifier.weight(2f)
                     )
                 }
@@ -558,21 +554,21 @@ fun FoodResultSheet(
                             Icon(
                                 sheetMealIcon(mealType),
                                 contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary,
+                                tint = AppColors.Calorie,
                                 modifier = Modifier.size(20.dp)
                             )
                             Spacer(Modifier.width(6.dp))
                             Text(
                                 stringResource(mealType.displayNameRes),
                                 fontSize = 17.sp,
-                                color = MaterialTheme.colorScheme.primary,
+                                color = AppColors.Calorie,
                                 fontWeight = FontWeight.Medium
                             )
                             Spacer(Modifier.width(6.dp))
                             Icon(
                                 Icons.Filled.UnfoldMore,
                                 contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary
+                                tint = AppColors.Calorie
                             )
                         }
                         SheetGlassDropdownMenu(
@@ -726,7 +722,7 @@ private fun ReviewNutritionValueRow(
                     textAlign = TextAlign.End
                 ),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                cursorBrush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.primary),
+                cursorBrush = androidx.compose.ui.graphics.SolidColor(AppColors.Calorie),
                 modifier = Modifier.width(92.dp)
             )
         } else {
@@ -868,7 +864,7 @@ private fun WhatIfMealImpactDialog(
                                 CircularProgressIndicator(
                                     modifier = Modifier.size(18.dp),
                                     strokeWidth = 2.dp,
-                                    color = MaterialTheme.colorScheme.primary
+                                    color = AppColors.Calorie
                                 )
                                 Text(
                                     stringResource(R.string.what_if_loading),
@@ -888,7 +884,7 @@ private fun WhatIfMealImpactDialog(
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.action_done), color = MaterialTheme.colorScheme.primary)
+                Text(stringResource(R.string.action_done), color = AppColors.Calorie)
             }
         }
     )
@@ -911,7 +907,7 @@ private fun WhatIfImpactRow(
             Text(
                 added,
                 fontSize = 13.sp,
-                color = MaterialTheme.colorScheme.primary,
+                color = AppColors.Calorie,
                 fontWeight = FontWeight.Medium
             )
         }

@@ -35,7 +35,6 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material.icons.filled.Tag
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -55,7 +54,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.apoorvdarshan.calorietracker.R
-import com.apoorvdarshan.calorietracker.ui.theme.AppColors
 import com.apoorvdarshan.calorietracker.ui.navigation.BottomNavScrollPadding
 import com.apoorvdarshan.calorietracker.data.ExerciseItem
 import com.apoorvdarshan.calorietracker.ui.workouts.AnimatedExerciseImage
@@ -67,10 +65,10 @@ fun ExerciseDetailScreen(item: ExerciseItem, onBack: () -> Unit, modifier: Modif
     val colors = workoutsColors()
     var showMetrics by remember { mutableStateOf(false) }
 
-    Column(modifier.fillMaxSize().background(Color.Transparent).statusBarsPadding()) {
+    Column(modifier.fillMaxSize().background(colors.background).statusBarsPadding()) {
         // Top bar: back (start) + centered title
         Box(
-            Modifier.fillMaxWidth().background(Color.Transparent).padding(vertical = 8.dp, horizontal = 8.dp),
+            Modifier.fillMaxWidth().background(colors.background).padding(vertical = 8.dp, horizontal = 8.dp),
             contentAlignment = Alignment.Center
         ) {
             Icon(
@@ -111,14 +109,13 @@ fun ExerciseDetailScreen(item: ExerciseItem, onBack: () -> Unit, modifier: Modif
 @Composable
 private fun Hero(item: ExerciseItem, showMetrics: Boolean, onToggle: () -> Unit) {
     val colors = workoutsColors()
-    val shape = RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
     Box(
         Modifier
             .fillMaxWidth()
             .height(HERO_HEIGHT)
-            .clip(shape)
+            .clip(RoundedCornerShape(20.dp))
             .background(colors.panel.copy(alpha = 0.32f))
-            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, shape)
+            .border(0.5.dp, colors.hairline.copy(alpha = 0.35f), RoundedCornerShape(20.dp))
     ) {
         AnimatedExerciseImage(item.imagePaths, Modifier.fillMaxSize(), fallbackLabel = item.name)
 
@@ -143,14 +140,14 @@ private fun Hero(item: ExerciseItem, showMetrics: Boolean, onToggle: () -> Unit)
         Icon(
             Icons.Filled.Info,
             contentDescription = stringResource(if (showMetrics) R.string.hide_details else R.string.show_details),
-            tint = AppColors.KitchenRoast,
+            tint = colors.accent,
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .padding(16.dp)
                 .size(44.dp)
-                .clip(RoundedCornerShape(14.dp))
-                .background(AppColors.KitchenBrass)
-                .border(1.dp, AppColors.KitchenEspresso.copy(alpha = 0.28f), RoundedCornerShape(14.dp))
+                .clip(CircleShape)
+                .background(colors.background.copy(alpha = 0.78f))
+                .border(0.7.dp, colors.hairline.copy(alpha = 0.42f), CircleShape)
                 .clickable { onToggle() }
                 .padding(12.dp)
         )
@@ -181,12 +178,12 @@ private fun MetricCard(title: String, value: String, icon: ImageVector, valueMax
     val labelColor = if (dark) colors.accent else colors.secondaryAccent
     val fill = if (dark) colors.background.copy(alpha = 0.55f) else colors.background.copy(alpha = 0.92f)
     val stroke = if (dark) colors.hairline.copy(alpha = 0.32f) else colors.hairline.copy(alpha = 0.45f)
-    val shape = RoundedCornerShape(12.dp)
     Column(
         modifier
-            .clip(shape)
+            .shadow(6.dp, RoundedCornerShape(16.dp), clip = false)
+            .clip(RoundedCornerShape(16.dp))
             .background(fill)
-            .border(1.dp, stroke, shape)
+            .border(0.6.dp, stroke, RoundedCornerShape(16.dp))
             .padding(horizontal = 12.dp, vertical = 6.dp),
         verticalArrangement = Arrangement.spacedBy(3.dp)
     ) {
@@ -211,26 +208,17 @@ private fun InstructionSection(instructions: List<String>, modifier: Modifier = 
     Column(modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             Box(
-                Modifier.size(30.dp).clip(RoundedCornerShape(10.dp)).background(AppColors.KitchenCobalt),
+                Modifier.size(30.dp).clip(RoundedCornerShape(10.dp)).background(colors.accent.copy(alpha = 0.12f)),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    Icons.Filled.FormatListNumbered,
-                    null,
-                    tint = MaterialTheme.colorScheme.onSecondary,
-                    modifier = Modifier.size(18.dp)
-                )
+                Icon(Icons.Filled.FormatListNumbered, null, tint = colors.accent, modifier = Modifier.size(18.dp))
             }
             Text(stringResource(R.string.instructions), color = colors.charcoal, fontSize = 20.sp, fontWeight = FontWeight.Bold)
             Spacer(Modifier.weight(1f))
             Box(
-                Modifier
-                    .clip(RoundedCornerShape(9.dp))
-                    .background(AppColors.KitchenBrass.copy(alpha = 0.72f))
-                    .border(1.dp, AppColors.KitchenEspresso.copy(alpha = 0.20f), RoundedCornerShape(9.dp))
-                    .padding(horizontal = 9.dp, vertical = 4.dp)
+                Modifier.clip(CircleShape).background(colors.secondaryAccent.copy(alpha = 0.12f)).padding(horizontal = 9.dp, vertical = 4.dp)
             ) {
-                Text("${instructions.size}", color = AppColors.KitchenRoast, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                Text("${instructions.size}", color = colors.secondaryAccent, fontSize = 12.sp, fontWeight = FontWeight.Bold)
             }
         }
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -238,22 +226,17 @@ private fun InstructionSection(instructions: List<String>, modifier: Modifier = 
                 Row(
                     Modifier
                         .fillMaxWidth()
-                        .clip(RoundedCornerShape(16.dp))
+                        .clip(RoundedCornerShape(18.dp))
                         .background(colors.panel.copy(alpha = 0.16f))
-                        .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(16.dp))
+                        .border(0.5.dp, colors.hairline.copy(alpha = 0.20f), RoundedCornerShape(18.dp))
                         .padding(14.dp),
                     horizontalArrangement = Arrangement.spacedBy(13.dp)
                 ) {
                     Box(
-                        Modifier.size(27.dp).clip(RoundedCornerShape(9.dp)).background(AppColors.KitchenCobalt),
+                        Modifier.size(27.dp).shadow(6.dp, CircleShape, clip = false).clip(CircleShape).background(colors.accent),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(
-                            "${index + 1}",
-                            color = MaterialTheme.colorScheme.onSecondary,
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.Black
-                        )
+                        Text("${index + 1}", color = colors.onAccent, fontSize = 15.sp, fontWeight = FontWeight.Black)
                     }
                     Text(
                         instruction,

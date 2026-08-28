@@ -1,6 +1,5 @@
 package com.apoorvdarshan.calorietracker.ui.navigation
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -32,13 +31,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.NavType
-import androidx.navigation.navArgument
 import com.apoorvdarshan.calorietracker.AppContainer
 import com.apoorvdarshan.calorietracker.services.update.AndroidUpdateChecker
 import com.apoorvdarshan.calorietracker.services.update.AndroidUpdateState
 import com.apoorvdarshan.calorietracker.ui.coach.CoachScreen
-import com.apoorvdarshan.calorietracker.ui.flutter.NativeFlutterDestination
 import com.apoorvdarshan.calorietracker.ui.home.HomeScreen
 import com.apoorvdarshan.calorietracker.ui.onboarding.OnboardingScreen
 import com.apoorvdarshan.calorietracker.ui.progress.BodyMeasurementsScreen
@@ -48,7 +44,6 @@ import com.apoorvdarshan.calorietracker.ui.settings.OptionalNutrientGoalsScreen
 import com.apoorvdarshan.calorietracker.ui.settings.SettingsScreen
 import com.apoorvdarshan.calorietracker.ui.settings.SettingsViewModel
 import com.apoorvdarshan.calorietracker.ui.workouts.WorkoutsScreen
-import com.apoorvdarshan.calorietracker.ui.components.KitchenTableBackground
 import com.apoorvdarshan.calorietracker.models.WorkoutTabMode
 import com.apoorvdarshan.calorietracker.models.QuickActionRequest
 import com.apoorvdarshan.calorietracker.ui.settings.QuickActionsScreen
@@ -64,7 +59,6 @@ val LocalLaunchFillEpoch = compositionLocalOf { 1 }
 private const val WORKOUT_UI_PREFS = "fudai_workouts"
 private const val WORKOUT_MODE_V2_DEFAULT_KEY = "mode.diary_default.v2"
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun FudAINavHost(
     container: AppContainer,
@@ -96,9 +90,6 @@ fun FudAINavHost(
     // Match iOS's versioned AppStorage key: reset the former library-first
     // default once, then keep every user switch persistent after that.
     val workoutMode = if (workoutModeV2Initialized) persistedWorkoutMode else WorkoutTabMode.LOG
-    // The five existing Compose destinations form the v7 shell. Capability
-    // drill-ins keep the bar hidden so camera, editor, and picker surfaces have
-    // their normal platform-native focus.
     val showTabs = currentRoute in FudAIRoutes.bottomTabs && !analyzing
     val currentVersion = remember(context) { AndroidUpdateChecker.currentVersion(context) }
     var updateAvailable by remember { mutableStateOf(false) }
@@ -114,14 +105,13 @@ fun FudAINavHost(
     }
 
     LaunchedEffect(quickActionRequest?.id, currentRoute) {
-        if (quickActionRequest != null && currentRoute != FudAIRoutes.ONBOARDING &&
-            currentRoute != FudAIRoutes.HOME
+        if (quickActionRequest != null &&
+            currentRoute != FudAIRoutes.HOME &&
+            currentRoute != FudAIRoutes.ONBOARDING
         ) {
-            // The Compose shell now owns Home, so app shortcuts return to the
-            // real tab instead of opening the former Flutter capability route
-            // (which intentionally has no bottom navigation).
-            if (!nav.popBackStack(FudAIRoutes.HOME, inclusive = false)) {
-                nav.navigate(FudAIRoutes.HOME) { launchSingleTop = true }
+            nav.navigate(FudAIRoutes.HOME) {
+                popUpTo(FudAIRoutes.HOME) { inclusive = false }
+                launchSingleTop = true
             }
         }
     }
@@ -239,114 +229,6 @@ fun FudAINavHost(
                     BodyMeasurementsScreen(container = container, onBack = { nav.popBackStack() })
                 }
                 composable(FudAIRoutes.WORKOUTS) { TabInset { WorkoutsScreen(container = container) } }
-                composable(NativeFlutterDestination.HOME) {
-                    TabInset {
-                        HomeScreen(container = container)
-                    }
-                }
-                composable(
-                    route = NativeFlutterDestination.HOME_ACTION,
-                    arguments = listOf(navArgument("action") { type = NavType.StringType })
-                ) { entry ->
-                    val action = entry.arguments?.getString("action")
-                        ?.let { runCatching { com.apoorvdarshan.calorietracker.models.QuickAction.valueOf(it) }.getOrNull() }
-                    TabInset {
-                        HomeScreen(
-                            container = container,
-                            quickActionRequest = action?.let(::QuickActionRequest),
-                            capabilityOnly = true,
-                            onCapabilityClose = { nav.popBackStack() }
-                        )
-                    }
-                }
-                composable(
-                    route = NativeFlutterDestination.HOME_ENTRY,
-                    arguments = listOf(navArgument("entryId") { type = NavType.StringType })
-                ) { entry ->
-                    TabInset {
-                        HomeScreen(
-                            container = container,
-                            initialEntryId = entry.arguments?.getString("entryId"),
-                            capabilityOnly = true,
-                            onCapabilityClose = { nav.popBackStack() }
-                        )
-                    }
-                }
-                composable(NativeFlutterDestination.PROGRESS) {
-                    TabInset { ProgressScreen(container = container) }
-                }
-                composable(
-                    route = NativeFlutterDestination.PROGRESS_ACTION,
-                    arguments = listOf(navArgument("action") { type = NavType.StringType })
-                ) { entry ->
-                    val action = entry.arguments?.getString("action")
-                        ?.let { runCatching { com.apoorvdarshan.calorietracker.ui.progress.FlutterProgressAction.valueOf(it) }.getOrNull() }
-                    TabInset {
-                        ProgressScreen(
-                            container = container,
-                            initialAction = action,
-                            onActionFinished = { nav.popBackStack() }
-                        )
-                    }
-                }
-                composable(NativeFlutterDestination.COACH) {
-                    TabInset { CoachScreen(container = container) }
-                }
-                composable(
-                    route = NativeFlutterDestination.COACH_ACTION,
-                    arguments = listOf(navArgument("action") { type = NavType.StringType })
-                ) { entry ->
-                    TabInset {
-                        CoachScreen(
-                            container = container,
-                            initialAction = entry.arguments?.getString("action")
-                        )
-                    }
-                }
-                composable(NativeFlutterDestination.SETTINGS) {
-                    TabInset {
-                        SettingsScreen(container = container, nav = nav, vm = settingsViewModel)
-                    }
-                }
-                composable(
-                    route = NativeFlutterDestination.SETTINGS_ROW,
-                    arguments = listOf(navArgument("rowId") { type = NavType.StringType })
-                ) { entry ->
-                    TabInset {
-                        SettingsScreen(
-                            container = container,
-                            nav = nav,
-                            vm = settingsViewModel,
-                            initialRow = entry.arguments?.getString("rowId"),
-                            onInitialActionFinished = { nav.popBackStack() }
-                        )
-                    }
-                }
-                composable(NativeFlutterDestination.WORKOUTS) {
-                    TabInset { WorkoutsScreen(container = container) }
-                }
-                composable(
-                    route = NativeFlutterDestination.WORKOUTS_ACTION,
-                    arguments = listOf(navArgument("action") { type = NavType.StringType })
-                ) { entry ->
-                    TabInset {
-                        WorkoutsScreen(
-                            container = container,
-                            initialAction = entry.arguments?.getString("action")
-                        )
-                    }
-                }
-                composable(
-                    route = NativeFlutterDestination.WORKOUT_EXERCISE,
-                    arguments = listOf(navArgument("itemId") { type = NavType.StringType })
-                ) { entry ->
-                    TabInset {
-                        WorkoutsScreen(
-                            container = container,
-                            initialExerciseItemId = entry.arguments?.getString("itemId")
-                        )
-                    }
-                }
             }
         }
     }
@@ -364,9 +246,7 @@ fun FudAINavHost(
 @Composable
 private fun TabInset(content: @Composable () -> Unit) {
     Column(Modifier.fillMaxSize().statusBarsPadding()) {
-        KitchenTableBackground(
-            Modifier.weight(1f).consumeWindowInsets(WindowInsets.statusBars)
-        ) { content() }
+        Box(Modifier.weight(1f).consumeWindowInsets(WindowInsets.statusBars)) { content() }
     }
 }
 

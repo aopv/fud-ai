@@ -22,7 +22,6 @@ struct VoiceInputView: View {
     // Remote path (file-based recorder)
     @State private var audioRecorder: AVAudioRecorder?
     @State private var recordedFileURL: URL?
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var onCancel: () -> Void
     var onSubmit: (String) -> Void
@@ -45,9 +44,7 @@ struct VoiceInputView: View {
     }
 
     var body: some View {
-        VStack(spacing: 14) {
-            NeoSectionBanner(title: "Voice Log", detail: "LIVE INPUT", style: .cobalt)
-
+        VStack(spacing: 20) {
             // Provider badge
             HStack(spacing: 6) {
                 Image(systemName: provider.icon)
@@ -55,25 +52,19 @@ struct VoiceInputView: View {
                 Text(provider.rawValue)
                     .font(.system(.caption2, design: .rounded, weight: .medium))
             }
-            .textCase(.uppercase)
-            .fontWeight(.black)
-            .foregroundStyle(NeoAppColors.onCobalt)
+            .foregroundStyle(AppColors.calorie)
             .padding(.horizontal, 10)
-            .padding(.vertical, 7)
-            .background(NeoAppColors.cobalt, in: Capsule())
-            .overlay {
-                Capsule()
-                    .stroke(KitchenTablePalette.rule, lineWidth: NeoAppMetrics.compactRule)
-            }
+            .padding(.vertical, 4)
+            .background(Capsule().fill(AppColors.calorie.opacity(0.12)))
 
             // Transcription area
             ZStack(alignment: .topLeading) {
                 if transcription.isEmpty && !isTranscribing {
                     Text(isRecording ? "Listening…" : "Tap the mic to start")
-                        .foregroundStyle(NeoAppColors.mutedInk)
-                        .font(.system(.body, design: .rounded, weight: .medium))
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 14)
+                        .foregroundStyle(.tertiary)
+                        .font(.body)
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 10)
                         .allowsHitTesting(false)
                 }
 
@@ -82,29 +73,24 @@ struct VoiceInputView: View {
                         ProgressView()
                         Text("Transcribing via \(provider.rawValue)…")
                             .font(.footnote)
-                            .foregroundStyle(NeoAppColors.mutedInk)
+                            .foregroundStyle(.secondary)
                     }
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 14)
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 10)
                 }
 
                 Text(transcription)
-                    .font(.system(.body, design: .rounded, weight: .semibold))
-                    .foregroundStyle(NeoAppColors.ink)
+                    .font(.body)
                     .frame(maxWidth: .infinity, alignment: .topLeading)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 14)
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 10)
             }
+            .padding(12)
             .frame(minHeight: 100, alignment: .topLeading)
-            .kitchenTableSurface(
-                fill: NeoAppColors.surface,
-                border: KitchenTablePalette.rule,
-                cornerRadius: 16,
-                lineWidth: NeoAppMetrics.rule,
-                shadowRadius: 4,
-                shadowY: 2
+            .background(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(Color(.quaternarySystemFill))
             )
-            .accessibilityIdentifier("quickAdd.voice.transcription")
 
             // Mic button
             Button {
@@ -115,24 +101,18 @@ struct VoiceInputView: View {
                 }
             } label: {
                 Image(systemName: isRecording ? "mic.fill" : "mic")
-                    .font(.system(size: 28, weight: .black))
-                    .foregroundStyle(isRecording ? KitchenTablePalette.onStrongAccent : KitchenTablePalette.onBrass)
+                    .font(.system(size: 28))
+                    .foregroundStyle(.white)
                     .frame(width: 72, height: 72)
-                    .background(isRecording ? NeoAppColors.tomato : NeoAppColors.brass, in: Circle())
-                    .overlay {
+                    .background(
                         Circle()
-                            .stroke(KitchenTablePalette.strongRule, lineWidth: NeoAppMetrics.rule)
-                    }
-                    .shadow(color: (isRecording ? NeoAppColors.tomato : NeoAppColors.brass).opacity(0.24), radius: 9, x: 0, y: 4)
+                            .fill(isRecording ? Color.red : AppColors.calorie)
+                    )
                     .scaleEffect(pulseScale)
             }
-            .buttonStyle(KitchenTablePressableButtonStyle())
             .disabled(isTranscribing)
-            .accessibilityLabel(isRecording ? "Stop recording" : "Start recording")
-            .accessibilityValue(isTranscribing ? "Transcribing" : (isRecording ? "Recording" : "Idle"))
-            .accessibilityIdentifier("quickAdd.voice.microphone")
             .onChange(of: isRecording) { _, recording in
-                if recording && !reduceMotion {
+                if recording {
                     withAnimation(.easeInOut(duration: 0.8).repeatForever(autoreverses: true)) {
                         pulseScale = 1.15
                     }
@@ -146,23 +126,14 @@ struct VoiceInputView: View {
             if let error = permissionError {
                 Text(error)
                     .font(.caption)
-                    .fontWeight(.bold)
-                    .foregroundStyle(NeoAppColors.warning)
+                    .foregroundStyle(.red)
                     .multilineTextAlignment(.center)
-                    .padding(10)
-                    .frame(maxWidth: .infinity)
-                    .background(NeoAppColors.warning.opacity(0.12), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 12, style: .continuous)
-                            .stroke(NeoAppColors.warning, lineWidth: NeoAppMetrics.compactRule)
-                    }
             }
 
             if let notice = remoteNotice {
                 Text(notice)
                     .font(.caption)
-                    .fontWeight(.bold)
-                    .foregroundStyle(NeoAppColors.mutedInk)
+                    .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
             }
 
@@ -176,43 +147,22 @@ struct VoiceInputView: View {
                 onSubmit(transcription)
             } label: {
                 Text(analyzeButtonLabel)
-                    .textCase(.uppercase)
-                    .font(.system(.headline, design: .rounded, weight: .black))
-                    .foregroundStyle(KitchenTablePalette.onStrongAccent)
+                    .font(.headline)
                     .frame(maxWidth: .infinity)
-                    .frame(minHeight: 50)
-                    .background(NeoAppColors.tomato, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 16, style: .continuous)
-                            .stroke(KitchenTablePalette.tomatoDeep, lineWidth: NeoAppMetrics.rule)
-                    }
             }
-            .buttonStyle(KitchenTablePressableButtonStyle())
+            .buttonStyle(.borderedProminent)
+            .tint(AppColors.calorie)
+            .controlSize(.large)
             .disabled(analyzeButtonDisabled)
-            .opacity(analyzeButtonDisabled ? 0.45 : 1)
-            .accessibilityIdentifier("quickAdd.voice.analyze")
 
-            Button {
-                cancel()
-            } label: {
-                Text("Cancel")
-                    .textCase(.uppercase)
-                    .font(.system(.subheadline, design: .rounded, weight: .black))
-                    .foregroundStyle(NeoAppColors.cobalt)
-                    .frame(maxWidth: .infinity)
-                    .frame(minHeight: 44)
-                    .background(NeoAppColors.surface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 14, style: .continuous)
-                            .stroke(NeoAppColors.cobalt, lineWidth: NeoAppMetrics.rule)
-                    }
+            Button("Cancel") {
+                stopRecording()
+                onCancel()
             }
-            .buttonStyle(KitchenTablePressableButtonStyle())
-            .accessibilityIdentifier("quickAdd.voice.cancel")
+            .foregroundStyle(.secondary)
         }
-        .padding(14)
+        .padding(20)
         .frame(width: 320)
-        .background(KitchenTableBackdrop())
         .onAppear { startRecording() }
         .onDisappear { stopRecording() }
     }
@@ -240,11 +190,6 @@ struct VoiceInputView: View {
         } else {
             stopRemoteRecording()
         }
-    }
-
-    private func cancel() {
-        stopRecording()
-        onCancel()
     }
 
     // MARK: - Native (streaming, on-device)

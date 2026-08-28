@@ -38,9 +38,9 @@ fun workoutsColors(): WorkoutsColors {
         card = if (isDark) AppColors.AppCardDark else AppColors.AppCardLight,
         panel = if (isDark) Color(0xFF2A2A2E) else Color(0xFFEFE7DF),
         hairline = if (isDark) AppColors.DividerDark else AppColors.DividerLight,
-        accent = MaterialTheme.colorScheme.primary,
-        secondaryAccent = MaterialTheme.colorScheme.secondary,
-        onAccent = MaterialTheme.colorScheme.onPrimary,
+        accent = AppColors.Calorie,
+        secondaryAccent = AppColors.CalorieEnd,
+        onAccent = Color.White,
         mutedText = if (isDark) AppColors.MutedDark else AppColors.MutedLight,
         isDark = isDark
     )

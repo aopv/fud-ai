@@ -49,17 +49,6 @@ struct RecentsView: View {
     var body: some View {
         NavigationStack {
             List {
-                Section {
-                    NeoScreenHeader(
-                        eyebrow: "SAVED FOOD",
-                        title: mode.rawValue,
-                        subtitle: "Tap any meal to review it before logging."
-                    )
-                }
-                .listRowInsets(EdgeInsets(top: 12, leading: 14, bottom: 2, trailing: 14))
-                .listRowBackground(Color.clear)
-                .listRowSeparator(.hidden)
-
                 switch mode {
                 case .recent:
                     if recentItems.isEmpty {
@@ -70,20 +59,17 @@ struct RecentsView: View {
                     } else {
                         Section {
                             ForEach(recentItems) { entry in
-                                Button {
-                                    logEntry(entry)
-                                } label: {
-                                    SavedMealRow(entry: entry, isFavorite: foodStore.isFavorite(entry))
-                                }
-                                    .buttonStyle(.plain)
-                                    .savedMealRowStyle(entry: entry, isFavorite: foodStore.isFavorite(entry))
+                                SavedMealRow(entry: entry, isFavorite: foodStore.isFavorite(entry))
+                                    .listRowBackground(AppColors.appCard)
+                                    .contentShape(Rectangle())
+                                    .onTapGesture { logEntry(entry) }
                                     .swipeActions(edge: .trailing) {
                                         Button {
                                             withAnimation { foodStore.toggleFavorite(entry) }
                                         } label: {
                                             Label(foodStore.isFavorite(entry) ? "Unfavorite" : "Favorite", systemImage: foodStore.isFavorite(entry) ? "heart.slash.fill" : "heart.fill")
                                         }
-                                        .tint(NeoAppColors.cobalt)
+                                        .tint(AppColors.calorie)
                                     }
                             }
                         }
@@ -98,24 +84,17 @@ struct RecentsView: View {
                     } else {
                         Section {
                             ForEach(frequentItems) { group in
-                                Button {
-                                    logEntry(group.template)
-                                } label: {
-                                    SavedMealRow(
-                                        entry: group.template,
-                                        isFavorite: foodStore.isFavorite(group.template),
-                                        subtitle: "\(group.count)× logged"
-                                    )
-                                }
-                                    .buttonStyle(.plain)
-                                    .savedMealRowStyle(entry: group.template, isFavorite: foodStore.isFavorite(group.template))
+                                SavedMealRow(entry: group.template, isFavorite: foodStore.isFavorite(group.template), subtitle: "\(group.count)× logged")
+                                    .listRowBackground(AppColors.appCard)
+                                    .contentShape(Rectangle())
+                                    .onTapGesture { logEntry(group.template) }
                                     .swipeActions(edge: .trailing) {
                                         Button {
                                             withAnimation { foodStore.toggleFavorite(group.template) }
                                         } label: {
                                             Label(foodStore.isFavorite(group.template) ? "Unfavorite" : "Favorite", systemImage: foodStore.isFavorite(group.template) ? "heart.slash.fill" : "heart.fill")
                                         }
-                                        .tint(NeoAppColors.cobalt)
+                                        .tint(AppColors.calorie)
                                     }
                             }
                         }
@@ -130,13 +109,10 @@ struct RecentsView: View {
                     } else {
                         Section {
                             ForEach(favoriteItems) { entry in
-                                Button {
-                                    logEntry(entry)
-                                } label: {
-                                    SavedMealRow(entry: entry, isFavorite: true)
-                                }
-                                    .buttonStyle(.plain)
-                                    .savedMealRowStyle(entry: entry, isFavorite: true)
+                                SavedMealRow(entry: entry, isFavorite: true)
+                                    .listRowBackground(AppColors.appCard)
+                                    .contentShape(Rectangle())
+                                    .onTapGesture { logEntry(entry) }
                                     .swipeActions(edge: .trailing) {
                                         Button(role: .destructive) {
                                             withAnimation { foodStore.toggleFavorite(entry) }
@@ -156,13 +132,11 @@ struct RecentsView: View {
                     }
                 }
             }
-            .listStyle(.plain)
-            .listSectionSpacing(NeoAppMetrics.sectionSpacing)
-            .neoScreen()
+            .scrollContentBackground(.hidden)
+            .background(AppColors.appBackground)
             .navigationTitle(mode.rawValue)
             .navigationBarTitleDisplayMode(.inline)
             .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: Text("Search saved foods"))
-            .tint(NeoAppColors.cobalt)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Done") { dismiss() }
@@ -193,41 +167,17 @@ struct RecentsView: View {
         Section {
             VStack(spacing: 12) {
                 Image(systemName: icon)
-                    .font(.system(size: 32, weight: .black))
-                    .foregroundStyle(NeoAppColors.cobalt)
+                    .font(.system(size: 32))
+                    .foregroundStyle(AppColors.calorie.opacity(0.4))
                 Text(message)
-                    .font(.system(.subheadline, design: .rounded, weight: .bold))
-                    .foregroundStyle(NeoAppColors.mutedInk)
+                    .font(.system(.subheadline, design: .rounded))
+                    .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 24)
-            .neoPanel(fill: NeoAppColors.surface)
-            .accessibilityElement(children: .combine)
+            .listRowBackground(AppColors.appCard)
         }
-        .listRowInsets(EdgeInsets(top: 0, leading: 14, bottom: 0, trailing: 14))
-        .listRowBackground(Color.clear)
-        .listRowSeparator(.hidden)
-    }
-}
-
-private extension View {
-    func savedMealRowStyle(entry: FoodEntry, isFavorite: Bool) -> some View {
-        self
-            .padding(12)
-            .background(NeoAppColors.surface)
-            .overlay {
-                Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
-            }
-            .contentShape(Rectangle())
-            .listRowInsets(EdgeInsets(top: 4, leading: 14, bottom: 4, trailing: 14))
-            .listRowBackground(Color.clear)
-            .listRowSeparator(.hidden)
-            .accessibilityElement(children: .ignore)
-            .accessibilityLabel(entry.name)
-            .accessibilityValue("\(entry.calories) calories\(isFavorite ? ", favorite" : "")")
-            .accessibilityHint("Reviews this food before logging")
-            .accessibilityIdentifier("savedMeal.\(entry.id)")
     }
 }
 
@@ -246,55 +196,48 @@ private struct SavedMealRow: View {
                     .resizable()
                     .scaledToFill()
                     .frame(width: 56, height: 56)
-                    .clipShape(Rectangle())
+                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                     .overlay(
-                        Rectangle()
-                            .strokeBorder(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
+                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                            .strokeBorder(AppColors.calorie.opacity(0.15), lineWidth: 1)
                     )
             } else if let emoji = entry.emoji {
                 Text(emoji)
                     .font(.system(size: 28))
                     .frame(width: 56, height: 56)
-                    .background(NeoAppColors.subtleSurface)
-                    .overlay {
-                        Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
-                    }
+                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
             } else {
                 Image(systemName: "fork.knife")
-                    .font(.title3.weight(.black))
-                    .foregroundStyle(NeoAppColors.cobalt)
+                    .font(.title3)
+                    .foregroundStyle(AppColors.calorie)
                     .frame(width: 56, height: 56)
-                    .background(NeoAppColors.subtleSurface)
-                    .overlay {
-                        Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
-                    }
+                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
             }
 
             // Info
             VStack(alignment: .leading, spacing: 3) {
                 HStack(spacing: 4) {
                     Text(entry.name)
-                        .font(.system(.body, design: .rounded, weight: .black))
-                        .foregroundStyle(NeoAppColors.ink)
+                        .font(.system(.body, design: .rounded, weight: .medium))
                         .fixedSize(horizontal: false, vertical: true)
                     if isFavorite {
                         Image(systemName: "heart.fill")
                             .font(.caption2)
-                            .foregroundStyle(NeoAppColors.cobalt)
+                            .foregroundStyle(AppColors.calorie)
                     }
                 }
 
                 HStack(spacing: 6) {
                     Text("\(entry.calories) kcal")
-                        .font(.system(.subheadline, design: .rounded, weight: .black))
-                        .foregroundStyle(NeoAppColors.cobalt)
+                        .font(.system(.subheadline, design: .rounded, weight: .semibold))
+                        .foregroundStyle(AppColors.calorie)
 
                     if let subtitle {
                         Text("·")
                             .foregroundStyle(.tertiary)
                         Text(subtitle)
                             .font(.system(.caption, design: .rounded))
-                            .foregroundStyle(NeoAppColors.mutedInk)
+                            .foregroundStyle(.secondary)
                     }
                 }
 
@@ -308,14 +251,9 @@ private struct SavedMealRow: View {
             Spacer(minLength: 0)
 
             // Log button
-            Image(systemName: "plus")
-                .font(.system(size: 17, weight: .black))
-                .foregroundStyle(Color.black)
-                .frame(width: 36, height: 36)
-                .background(NeoAppColors.acid)
-                .overlay {
-                    Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
-                }
+            Image(systemName: "plus.circle.fill")
+                .font(.title3)
+                .foregroundStyle(AppColors.calorie)
         }
         .padding(.vertical, 4)
     }
@@ -329,13 +267,10 @@ private struct MacroTag: View {
 
     var body: some View {
         Text("\(label) \(MacroValueFormatter.withUnit(value))")
-            .font(.system(.caption2, design: .rounded, weight: .black))
-            .foregroundStyle(NeoAppColors.ink)
+            .font(.system(.caption2, design: .rounded, weight: .medium))
+            .foregroundStyle(.secondary)
             .padding(.horizontal, 6)
             .padding(.vertical, 2)
-            .background(NeoAppColors.acid.opacity(0.48))
-            .overlay {
-                Rectangle().stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.compactRule)
-            }
+            .background(AppColors.calorie.opacity(0.08), in: Capsule())
     }
 }

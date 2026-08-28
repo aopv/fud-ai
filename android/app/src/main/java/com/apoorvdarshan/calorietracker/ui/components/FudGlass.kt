@@ -28,7 +28,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
@@ -47,43 +46,44 @@ import com.apoorvdarshan.calorietracker.ui.theme.AppColors
 @Composable
 fun FudGlassSurface(
     modifier: Modifier = Modifier,
-    cornerRadius: Dp = 20.dp,
+    cornerRadius: Dp = 24.dp,
     padding: Dp = 16.dp,
     contentAlignment: Alignment = Alignment.TopStart,
     content: @Composable BoxScope.() -> Unit
 ) {
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
-    val resolvedCornerRadius = if (cornerRadius > 8.dp) 8.dp else cornerRadius
-    val shape = RoundedCornerShape(resolvedCornerRadius)
-    val baseColor = if (isDark) AppColors.KitchenRoastPaper else AppColors.KitchenPaper
-    val shadowColor = Color.Black.copy(alpha = if (isDark) 0.24f else 0.10f)
-    val borderColor = if (isDark) {
-        AppColors.KitchenBrass.copy(alpha = 0.30f)
-    } else {
-        AppColors.KitchenEspresso.copy(alpha = 0.18f)
-    }
-    val fibreColor = if (isDark) Color.White.copy(alpha = 0.018f)
-                     else AppColors.KitchenEspresso.copy(alpha = 0.018f)
+    val shape = RoundedCornerShape(cornerRadius)
+    val baseColor = if (isDark) Color(0xFF17171B).copy(alpha = 0.84f)
+                    else Color(0xFFFAF2EC).copy(alpha = 0.98f)
+    val shadowColor = if (isDark) Color.Black.copy(alpha = 0.28f)
+                      else Color.Black.copy(alpha = 0.11f)
+    val sheen = Brush.verticalGradient(
+        listOf(
+            Color.White.copy(alpha = if (isDark) 0.070f else 0.34f),
+            Color.White.copy(alpha = if (isDark) 0.018f else 0.08f),
+            AppColors.Calorie.copy(alpha = if (isDark) 0.026f else 0.045f)
+        )
+    )
+    val border = Brush.linearGradient(
+        listOf(
+            Color.White.copy(alpha = if (isDark) 0.18f else 0.78f),
+            Color.White.copy(alpha = if (isDark) 0.045f else 0.28f),
+            AppColors.Calorie.copy(alpha = if (isDark) 0.075f else 0.14f)
+        )
+    )
 
     Box(
         modifier = modifier
             .shadow(
-                elevation = 5.dp,
+                elevation = if (isDark) 14.dp else 10.dp,
                 shape = shape,
                 ambientColor = shadowColor,
                 spotColor = shadowColor
             )
             .clip(shape)
             .background(baseColor)
-            .drawBehind {
-                val gap = 11.dp.toPx()
-                var y = gap * 0.7f
-                while (y < size.height) {
-                    drawLine(fibreColor, start = androidx.compose.ui.geometry.Offset(0f, y), end = androidx.compose.ui.geometry.Offset(size.width, y), strokeWidth = 1f)
-                    y += gap
-                }
-            }
-            .border(1.dp, borderColor, shape)
+            .background(sheen)
+            .border(0.8.dp, border, shape)
             .padding(padding),
         contentAlignment = contentAlignment,
         content = content
@@ -93,7 +93,7 @@ fun FudGlassSurface(
 @Composable
 fun FudGlassColumn(
     modifier: Modifier = Modifier,
-    cornerRadius: Dp = 20.dp,
+    cornerRadius: Dp = 24.dp,
     padding: Dp = 16.dp,
     content: @Composable ColumnScope.() -> Unit
 ) {
@@ -112,22 +112,17 @@ fun FudIconBubble(
     modifier: Modifier = Modifier,
     size: Dp = 34.dp,
     iconSize: Dp = 19.dp,
-    tint: Color = Color.Unspecified
+    tint: Color = AppColors.Calorie
 ) {
-    val resolvedTint = if (tint == Color.Unspecified) MaterialTheme.colorScheme.secondary else tint
     val plainIconSize = if (iconSize < size * 0.88f) size * 0.88f else iconSize
     Box(
-        modifier = modifier
-            .size(size)
-            .clip(RoundedCornerShape(4.dp))
-            .background(resolvedTint.copy(alpha = 0.11f))
-            .border(1.dp, resolvedTint.copy(alpha = 0.28f), RoundedCornerShape(4.dp)),
+        modifier = modifier.size(size),
         contentAlignment = Alignment.Center
     ) {
         Icon(
             icon,
             contentDescription = null,
-            tint = resolvedTint,
+            tint = tint,
             modifier = Modifier.size(plainIconSize)
         )
     }
@@ -150,15 +145,26 @@ fun FudGlassTextField(
         fontWeight = FontWeight.Medium
     )
 ) {
-    val shape = RoundedCornerShape(4.dp)
+    val shape = RoundedCornerShape(18.dp)
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
     val fieldFill = if (isDark) {
-        AppColors.KitchenRoastPaper
+        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.38f)
     } else {
-        AppColors.KitchenPaper
+        Color(0xFFEDE3DD).copy(alpha = 0.72f)
     }
-    val fieldBorder = if (isDark) AppColors.KitchenBrass.copy(alpha = 0.36f)
-                      else AppColors.KitchenEspresso.copy(alpha = 0.24f)
+    val fieldSheen = Brush.verticalGradient(
+        listOf(
+            Color.White.copy(alpha = if (isDark) 0.09f else 0.24f),
+            Color.White.copy(alpha = if (isDark) 0.02f else 0.06f),
+            AppColors.Calorie.copy(alpha = if (isDark) 0.025f else 0.040f)
+        )
+    )
+    val fieldBorder = Brush.linearGradient(
+        listOf(
+            Color.White.copy(alpha = if (isDark) 0.16f else 0.62f),
+            AppColors.Calorie.copy(alpha = if (isDark) 0.09f else 0.14f)
+        )
+    )
     BasicTextField(
         value = value,
         onValueChange = onValueChange,
@@ -168,13 +174,14 @@ fun FudGlassTextField(
         keyboardOptions = keyboardOptions,
         visualTransformation = visualTransformation,
         textStyle = textStyle,
-        cursorBrush = SolidColor(MaterialTheme.colorScheme.secondary),
+        cursorBrush = SolidColor(AppColors.Calorie),
         modifier = modifier
             .fillMaxWidth()
             .heightIn(min = if (singleLine) 52.dp else 118.dp)
             .clip(shape)
             .background(fieldFill)
-            .border(1.dp, fieldBorder, shape)
+            .background(fieldSheen)
+            .border(0.7.dp, fieldBorder, shape)
             .padding(horizontal = 16.dp, vertical = 14.dp),
         decorationBox = { inner ->
             Box(
@@ -209,7 +216,7 @@ fun FudGlassDialog(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(horizontal = 24.dp),
-            cornerRadius = 6.dp,
+            cornerRadius = 28.dp,
             padding = 20.dp
         ) {
             Column(
@@ -230,21 +237,20 @@ fun FudGlassPrimaryButton(
     content: (@Composable RowScope.() -> Unit)? = null
 ) {
     val brush = if (enabled) {
-        AppColors.CalorieGradient
+        Brush.linearGradient(listOf(AppColors.CalorieStart, AppColors.CalorieEnd))
     } else {
         Brush.linearGradient(
             listOf(
-                AppColors.KitchenTomato.copy(alpha = 0.35f),
-                AppColors.KitchenTomato.copy(alpha = 0.35f)
+                AppColors.Calorie.copy(alpha = 0.35f),
+                AppColors.Calorie.copy(alpha = 0.35f)
             )
         )
     }
     Row(
         modifier
             .height(height)
-            .clip(RoundedCornerShape(4.dp))
+            .clip(RoundedCornerShape(16.dp))
             .background(brush)
-            .border(1.dp, AppColors.KitchenEspresso.copy(alpha = 0.32f), RoundedCornerShape(4.dp))
             .clickable(enabled = enabled, onClick = onClick)
             .padding(horizontal = 18.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -253,7 +259,7 @@ fun FudGlassPrimaryButton(
         if (content != null) {
             content()
         } else {
-            Text(text, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            Text(text, color = Color.White, fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
         }
     }
 }
@@ -263,32 +269,30 @@ fun FudGlassTextButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    color: Color = Color.Unspecified
+    color: Color = AppColors.Calorie
 ) {
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
-    val shape = RoundedCornerShape(4.dp)
+    val shape = RoundedCornerShape(14.dp)
     val fill = if (isDark) {
-        AppColors.KitchenRoastPaper
+        Color.White.copy(alpha = 0.035f)
     } else {
-        AppColors.KitchenPaper
+        Color(0xFFEDE3DD).copy(alpha = 0.42f)
     }
     val border = if (isDark) {
-        AppColors.KitchenBrass.copy(alpha = 0.36f)
+        Color.White.copy(alpha = 0.08f)
     } else {
-        AppColors.KitchenEspresso.copy(alpha = 0.22f)
+        Color.White.copy(alpha = 0.38f)
     }
-    val resolvedColor = if (color == Color.Unspecified) MaterialTheme.colorScheme.secondary else color
     Box(
         modifier
-            .heightIn(min = 48.dp)
             .clip(shape)
             .background(fill)
-            .border(1.dp, border, shape)
+            .border(0.6.dp, border, shape)
             .clickable(onClick = onClick)
             .padding(horizontal = 14.dp, vertical = 10.dp),
         contentAlignment = Alignment.Center
     ) {
-        Text(text, color = resolvedColor, fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
+        Text(text, color = color, fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
     }
 }
 
@@ -314,7 +318,7 @@ fun FudGlassDialogActions(
             )
             Spacer(Modifier.width(6.dp))
         }
-        val primaryColor = if (destructive) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.secondary
+        val primaryColor = if (destructive) Color(0xFFFF453A) else AppColors.Calorie
         FudGlassTextButton(text = primaryText, onClick = onPrimary, color = primaryColor)
     }
 }

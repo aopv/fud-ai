@@ -31,8 +31,10 @@ struct ManualEntryView: View {
     }
 
     var body: some View {
-        VStack(spacing: 14) {
-            NeoSectionBanner(title: "Manual Entry", detail: "FOOD LOG", style: .cobalt)
+        VStack(spacing: 16) {
+            Text("Manual Entry")
+                .font(.headline)
+                .frame(maxWidth: .infinity, alignment: .leading)
 
             field(label: "Name", text: $name, placeholder: "e.g. Homemade salad", keyboard: .default, focus: .name)
 
@@ -57,13 +59,10 @@ struct ManualEntryView: View {
             // (defaults to whatever currentMeal returns for the time of day).
             VStack(alignment: .leading, spacing: 4) {
                 Text("Meal")
-                    .textCase(.uppercase)
-                    .font(.system(.caption, design: .rounded, weight: .black))
-                    .foregroundStyle(NeoAppColors.cobalt)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
                 HStack {
                     Text("Meal Type")
-                        .font(.system(.body, design: .rounded, weight: .bold))
-                        .foregroundStyle(NeoAppColors.ink)
                     Spacer()
                     Picker("Meal Type", selection: $mealType) {
                         ForEach(MealType.allCases, id: \.self) { meal in
@@ -71,18 +70,11 @@ struct ManualEntryView: View {
                         }
                     }
                     .pickerStyle(.menu)
-                    .tint(NeoAppColors.cobalt)
+                    .tint(AppColors.calorie)
                     .labelsHidden()
                 }
-                .padding(12)
-                .kitchenTableSurface(
-                    fill: NeoAppColors.surface,
-                    border: KitchenTablePalette.rule,
-                    cornerRadius: 14,
-                    lineWidth: NeoAppMetrics.rule,
-                    shadowRadius: 3,
-                    shadowY: 1
-                )
+                .padding(10)
+                .background(RoundedRectangle(cornerRadius: 10).fill(Color(.quaternarySystemFill)))
             }
 
             Button {
@@ -100,41 +92,19 @@ struct ManualEntryView: View {
                 onSave(entry)
             } label: {
                 Text("Save")
-                    .textCase(.uppercase)
-                    .font(.system(.headline, design: .rounded, weight: .black))
-                    .foregroundStyle(KitchenTablePalette.onStrongAccent)
+                    .font(.headline)
                     .frame(maxWidth: .infinity)
-                    .frame(minHeight: 50)
-                    .background(NeoAppColors.tomato, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 16, style: .continuous)
-                            .stroke(KitchenTablePalette.tomatoDeep, lineWidth: NeoAppMetrics.rule)
-                    }
             }
-            .buttonStyle(KitchenTablePressableButtonStyle())
+            .buttonStyle(.borderedProminent)
+            .tint(AppColors.calorie)
+            .controlSize(.large)
             .disabled(!canSave)
-            .opacity(canSave ? 1 : 0.45)
-            .accessibilityIdentifier("quickAdd.manual.save")
 
-            Button(action: onCancel) {
-                Text("Cancel")
-                    .textCase(.uppercase)
-                    .font(.system(.subheadline, design: .rounded, weight: .black))
-                    .foregroundStyle(NeoAppColors.cobalt)
-                    .frame(maxWidth: .infinity)
-                    .frame(minHeight: 44)
-                    .background(NeoAppColors.surface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 14, style: .continuous)
-                            .stroke(NeoAppColors.cobalt, lineWidth: NeoAppMetrics.rule)
-                    }
-            }
-            .buttonStyle(KitchenTablePressableButtonStyle())
-            .accessibilityIdentifier("quickAdd.manual.cancel")
+            Button("Cancel") { onCancel() }
+                .foregroundStyle(.secondary)
         }
-        .padding(14)
+        .padding(20)
         .frame(width: 340)
-        .background(KitchenTableBackdrop())
         .onAppear { focused = .name }
     }
 
@@ -142,25 +112,15 @@ struct ManualEntryView: View {
     private func field(label: String, text: Binding<String>, placeholder: String, keyboard: UIKeyboardType, focus: Field) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(LocalizedDisplayText.text(label))
-                .textCase(.uppercase)
-                .font(.system(.caption, design: .rounded, weight: .black))
-                .foregroundStyle(NeoAppColors.cobalt)
+                .font(.caption)
+                .foregroundStyle(.secondary)
             TextField(placeholder, text: text)
                 .keyboardType(keyboard)
                 .textFieldStyle(.plain)
-                .font(.system(.body, design: .rounded, weight: .semibold))
-                .foregroundStyle(NeoAppColors.ink)
                 .autocorrectionDisabled()
                 .focused($focused, equals: focus)
-                .padding(12)
-                .kitchenTableSurface(
-                    fill: NeoAppColors.surface,
-                    border: KitchenTablePalette.rule,
-                    cornerRadius: 14,
-                    lineWidth: NeoAppMetrics.rule,
-                    shadowRadius: 3,
-                    shadowY: 1
-                )
+                .padding(10)
+                .background(RoundedRectangle(cornerRadius: 10).fill(Color(.quaternarySystemFill)))
         }
     }
 
@@ -168,24 +128,14 @@ struct ManualEntryView: View {
     private func numberField(label: String, text: Binding<String>, focus: Field) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(LocalizedDisplayText.text(label))
-                .textCase(.uppercase)
-                .font(.system(.caption, design: .rounded, weight: .black))
-                .foregroundStyle(NeoAppColors.cobalt)
+                .font(.caption)
+                .foregroundStyle(.secondary)
             TextField("0", text: text)
                 .keyboardType(focus == .calories ? .numberPad : .decimalPad)
                 .textFieldStyle(.plain)
-                .font(.system(.body, design: .rounded, weight: .semibold))
-                .foregroundStyle(NeoAppColors.ink)
                 .focused($focused, equals: focus)
-                .padding(12)
-                .kitchenTableSurface(
-                    fill: NeoAppColors.surface,
-                    border: KitchenTablePalette.rule,
-                    cornerRadius: 14,
-                    lineWidth: NeoAppMetrics.rule,
-                    shadowRadius: 3,
-                    shadowY: 1
-                )
+                .padding(10)
+                .background(RoundedRectangle(cornerRadius: 10).fill(Color(.quaternarySystemFill)))
         }
     }
 }

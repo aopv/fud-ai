@@ -21,7 +21,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -36,12 +35,10 @@ import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.interaction.DragInteraction
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -52,7 +49,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.AutoAwesome
@@ -70,12 +66,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -96,7 +93,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -114,23 +110,14 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.apoorvdarshan.calorietracker.AppContainer
 import com.apoorvdarshan.calorietracker.models.ChatMessage
-import com.apoorvdarshan.calorietracker.models.MacroValueFormatter
 import com.apoorvdarshan.calorietracker.ui.components.InAppCameraCaptureDialog
-import com.apoorvdarshan.calorietracker.ui.components.KitchenReceiptRule
 import com.apoorvdarshan.calorietracker.models.SpeechLanguage
 import com.apoorvdarshan.calorietracker.models.SpeechProvider
 import com.apoorvdarshan.calorietracker.ui.navigation.BottomNavDockedControlPadding
 import com.apoorvdarshan.calorietracker.ui.theme.AppColors
 import java.io.ByteArrayOutputStream
-import java.text.NumberFormat
 import java.util.Base64
-import java.util.Locale
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.time.LocalDate
-import java.time.ZoneId
 
 /**
  * Verbatim port of struct ChatView in
@@ -144,22 +131,17 @@ import java.time.ZoneId
  */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-fun CoachScreen(container: AppContainer, initialAction: String? = null) {
+fun CoachScreen(container: AppContainer) {
     val vm: CoachViewModel = viewModel(factory = CoachViewModel.Factory(container))
     val ui by vm.ui.collectAsState()
-    val foods by container.foodRepository.entries.collectAsState(initial = emptyList())
-    val profile by container.profileRepository.profile.collectAsState(initial = null)
     var input by remember { mutableStateOf("") }
     var attachedImageBytes by remember { mutableStateOf<ByteArray?>(null) }
     var showCameraCapture by remember { mutableStateOf(false) }
     val listState = rememberLazyListState()
     var showResetConfirm by remember { mutableStateOf(false) }
-    var handledInitialAction by remember { mutableStateOf<String?>(null) }
-    var preparingAttachment by remember { mutableStateOf(false) }
     val ctx = LocalContext.current
     val focusManager = LocalFocusManager.current
     val keyboard = LocalSoftwareKeyboardController.current
-    val imageScope = rememberCoroutineScope()
 
     // Dismiss the keyboard when the USER drags the chat (DragInteraction only —
     // the auto-scroll after sending a message must not steal focus).
@@ -181,15 +163,8 @@ fun CoachScreen(container: AppContainer, initialAction: String? = null) {
         ActivityResultContracts.PickVisualMedia()
     ) { uri: Uri? ->
         if (uri != null) {
-            imageScope.launch {
-                val bytes = withContext(Dispatchers.IO) {
-                    ctx.contentResolver.openInputStream(uri)?.use { stream ->
-                        val original = stream.readBytes()
-                        resizedJpeg(original, maxDimension = 1800, quality = 86) ?: original
-                    }
-                }
-                if (bytes != null) attachedImageBytes = bytes
-            }
+            val bytes = ctx.contentResolver.openInputStream(uri)?.use { it.readBytes() }
+            if (bytes != null) attachedImageBytes = resizedJpeg(bytes, maxDimension = 1800, quality = 86) ?: bytes
         }
     }
 
@@ -211,26 +186,13 @@ fun CoachScreen(container: AppContainer, initialAction: String? = null) {
         val image = attachedImageBytes
         val trimmed = (textOverride ?: input).trim()
         if (trimmed.isEmpty() && image == null) return
-        if (ui.sending || preparingAttachment) return
+        if (ui.sending) return
+        val imageForAi = image?.let { resizedJpeg(it, maxDimension = 1600, quality = 78) ?: it }
+        val thumbnail = image?.let { resizedJpeg(it, maxDimension = 700, quality = 68) ?: it }
         hideKeyboard()
         input = ""
         attachedImageBytes = null
-        if (image == null) {
-            vm.send(trimmed)
-            return
-        }
-        preparingAttachment = true
-        imageScope.launch {
-            try {
-                val (imageForAi, thumbnail) = withContext(Dispatchers.Default) {
-                    (resizedJpeg(image, maxDimension = 1600, quality = 78) ?: image) to
-                        (resizedJpeg(image, maxDimension = 700, quality = 68) ?: image)
-                }
-                vm.send(trimmed, imageBytes = imageForAi, thumbnailBytes = thumbnail)
-            } finally {
-                preparingAttachment = false
-            }
-        }
+        vm.send(trimmed, imageBytes = imageForAi, thumbnailBytes = thumbnail)
     }
 
     // Inline (WhatsApp-style) voice recorder — records with whatever STT provider
@@ -246,23 +208,44 @@ fun CoachScreen(container: AppContainer, initialAction: String? = null) {
         voice.nativeLocale = voiceLanguage.nativeLocaleTag()
     }
 
-    LaunchedEffect(initialAction, voice) {
-        if (initialAction == null || handledInitialAction == initialAction) return@LaunchedEffect
-        handledInitialAction = initialAction
-        when (initialAction) {
-            "camera" -> openCamera()
-            "photos" -> photoPicker.launch(
-                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-            )
-            "voice" -> voice.begin()
-        }
-    }
-
     LaunchedEffect(ui.messages.size, ui.sending) {
         if (ui.messages.isNotEmpty()) listState.animateScrollToItem(ui.messages.size - 1)
     }
 
-    Scaffold(containerColor = Color.Transparent) { padding ->
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
+        topBar = {
+            // iOS Coach: centered "Coach" title, with a small circular dark
+            // chip on the right wrapping a counterclockwise arrow reset icon.
+            CenterAlignedTopAppBar(
+                title = { Text(stringResource(R.string.coach_title), fontWeight = FontWeight.SemiBold) },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background
+                ),
+                actions = {
+                    val canReset = ui.messages.isNotEmpty()
+                    Box(
+                        modifier = Modifier
+                            .padding(end = 12.dp)
+                            .size(34.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.10f))
+                            .clickable(enabled = canReset) { showResetConfirm = true },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            Icons.Filled.Replay,
+                            contentDescription = stringResource(R.string.coach_reset_chat_a11y),
+                            tint = if (canReset)
+                                MaterialTheme.colorScheme.onBackground
+                            else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f),
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
+                }
+            )
+        }
+    ) { padding ->
         // The app is edge-to-edge, so the IME would otherwise overlay the input bar.
         // Lift the whole column above the keyboard (imePadding) with a small gap; when
         // the keyboard is down, keep the docked-nav clearance instead.
@@ -272,7 +255,7 @@ fun CoachScreen(container: AppContainer, initialAction: String? = null) {
         Column(
             Modifier
                 .fillMaxSize()
-                .padding(top = padding.calculateTopPadding() + 6.dp)
+                .padding(top = padding.calculateTopPadding())
                 // Track the keyboard rigidly: bottom inset = max(ime, rest clearance).
                 // windowInsetsPadding animates it in the layout phase, so the bar sits
                 // tight on the keyboard with no bounce and no floaty gap (a plain
@@ -283,87 +266,18 @@ fun CoachScreen(container: AppContainer, initialAction: String? = null) {
                         .only(WindowInsetsSides.Bottom)
                 )
         ) {
-            val resolvedChips = ui.suggestions.map { stringResource(it) }
-            val todayFoods = remember(foods) {
-                val today = LocalDate.now()
-                val zone = ZoneId.systemDefault()
-                foods.filter { it.timestamp.atZone(zone).toLocalDate() == today }
-            }
-            val todayCalories = todayFoods.sumOf { it.calories }
-            val todayProtein = todayFoods.sumOf { it.protein }
-            val todayCarbs = todayFoods.sumOf { it.carbs }
-            val calorieUnit = stringResource(R.string.unit_kcal)
-            val gramUnit = stringResource(R.string.unit_g)
-            val calorieValue = "${formatWhole(todayCalories)} $calorieUnit"
-            val proteinValue = "${MacroValueFormatter.string(todayProtein)} $gramUnit"
-            val carbsValue = "${MacroValueFormatter.string(todayCarbs)} $gramUnit"
-            val coachInsights = listOf(
-                CoachInsight(
-                    stringResource(R.string.macro_calories),
-                    profile?.effectiveCalories?.let { target ->
-                        stringResource(
-                            R.string.coach_summary_with_target_format,
-                            calorieValue,
-                            "${formatWhole(target)} $calorieUnit"
-                        )
-                    } ?: stringResource(R.string.coach_summary_without_target_format, calorieValue)
-                ),
-                CoachInsight(
-                    stringResource(R.string.macro_protein),
-                    profile?.effectiveProtein?.let { target ->
-                        stringResource(
-                            R.string.coach_summary_with_target_format,
-                            proteinValue,
-                            "$target $gramUnit"
-                        )
-                    } ?: stringResource(R.string.coach_summary_without_target_format, proteinValue)
-                ),
-                CoachInsight(
-                    stringResource(R.string.macro_carbs),
-                    profile?.effectiveCarbs?.let { target ->
-                        stringResource(
-                            R.string.coach_summary_with_target_format,
-                            carbsValue,
-                            "$target $gramUnit"
-                        )
-                    } ?: stringResource(R.string.coach_summary_without_target_format, carbsValue)
-                )
-            )
-            if (ui.messages.isEmpty()) {
-                BoxWithConstraints(Modifier.fillMaxWidth().weight(1f)) {
-                    val noteMinimumHeight = (maxHeight * 0.68f).coerceIn(380.dp, 455.dp)
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .verticalScroll(rememberScrollState())
-                    ) {
-                        EmptyState(
-                            headline = stringResource(R.string.coach_summary_headline_format, calorieValue),
-                            insights = coachInsights,
-                            minimumHeight = noteMinimumHeight,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                        PromptChipRow(
-                            chips = resolvedChips,
-                            enabled = !ui.sending && !preparingAttachment,
-                            onTap = { chip ->
-                                hideKeyboard()
-                                input = ""
-                                attachedImageBytes = null
-                                vm.send(chip)
-                            }
-                        )
+            // Top region — empty state OR message list
+            Box(
+                Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .pointerInput(Unit) {
+                        detectTapGestures(onTap = { hideKeyboard() })
                     }
-                }
-            } else {
-                Box(
-                    Modifier
-                        .weight(1f)
-                        .fillMaxWidth()
-                        .pointerInput(Unit) {
-                            detectTapGestures(onTap = { hideKeyboard() })
-                        }
-                ) {
+            ) {
+                if (ui.messages.isEmpty()) {
+                    EmptyState(modifier = Modifier.fillMaxSize())
+                } else {
                     val resolvedError = ui.error ?: ui.errorRes?.let { stringResource(it) }
                     MessageList(
                         messages = ui.messages,
@@ -373,31 +287,32 @@ fun CoachScreen(container: AppContainer, initialAction: String? = null) {
                         modifier = Modifier.fillMaxSize()
                     )
                 }
-                PromptChipRow(
-                    chips = resolvedChips,
-                    enabled = !ui.sending && !preparingAttachment,
-                    onTap = { chip ->
-                        hideKeyboard()
-                        input = ""
-                        attachedImageBytes = null
-                        vm.send(chip)
-                    }
-                )
             }
+
+            // promptChips — horizontal scrolling, ALWAYS visible (matches iOS)
+            val resolvedChips = ui.suggestions.map { stringResource(it) }
+            PromptChipRow(
+                chips = resolvedChips,
+                enabled = !ui.sending,
+                onTap = { chip ->
+                    hideKeyboard()
+                    input = ""
+                    attachedImageBytes = null
+                    vm.send(chip)
+                }
+            )
 
             // input bar — capsule with gradient send button
             InputBar(
                 value = input,
                 onValueChange = { input = it },
                 attachedImageBytes = attachedImageBytes,
-                sending = ui.sending || preparingAttachment,
+                sending = ui.sending,
                 onPickImage = {
                     photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
                 },
                 onCaptureImage = { openCamera() },
                 voice = voice,
-                canReset = ui.messages.isNotEmpty(),
-                onReset = { showResetConfirm = true },
                 onRemoveImage = { attachedImageBytes = null },
                 onSend = { sendCurrentDraft() }
             )
@@ -408,11 +323,7 @@ fun CoachScreen(container: AppContainer, initialAction: String? = null) {
         InAppCameraCaptureDialog(
             onCapture = { bytes ->
                 showCameraCapture = false
-                imageScope.launch {
-                    attachedImageBytes = withContext(Dispatchers.Default) {
-                        resizedJpeg(bytes, maxDimension = 1800, quality = 86) ?: bytes
-                    }
-                }
+                attachedImageBytes = resizedJpeg(bytes, maxDimension = 1800, quality = 86) ?: bytes
             },
             onDismiss = { showCameraCapture = false }
         )
@@ -442,111 +353,54 @@ fun CoachScreen(container: AppContainer, initialAction: String? = null) {
  * 108dp glassy disc with bubble.left.and.bubble.right.fill (44sp) icon,
  * "Ask your Coach" title (rounded title2 semibold), subtitle.
  */
-private data class CoachInsight(val label: String, val observation: String)
-
-private fun formatWhole(value: Int): String = NumberFormat.getIntegerInstance().format(value)
-
 @Composable
-private fun EmptyState(
-    headline: String,
-    insights: List<CoachInsight>,
-    minimumHeight: Dp,
-    modifier: Modifier = Modifier
-) {
-    val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
-    val notePaper = if (isDark) Color(0xFF263A61) else Color(0xFFD7E3F6)
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(start = 32.dp, top = 4.dp, end = 32.dp, bottom = 5.dp),
-        contentAlignment = Alignment.TopCenter
+private fun EmptyState(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier.fillMaxWidth().padding(horizontal = 32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .widthIn(max = 340.dp)
+            Modifier
+                .size(108.dp)
                 .shadow(
-                    8.dp,
-                    RoundedCornerShape(3.dp),
-                    ambientColor = Color.Black.copy(alpha = 0.14f),
-                    spotColor = Color.Black.copy(alpha = 0.14f)
+                    elevation = 16.dp,
+                    shape = CircleShape,
+                    ambientColor = AppColors.Calorie.copy(alpha = 0.18f),
+                    spotColor = AppColors.Calorie.copy(alpha = 0.18f)
                 )
-                .clip(RoundedCornerShape(3.dp))
-                .background(notePaper)
-                .border(1.dp, AppColors.KitchenCobalt.copy(alpha = 0.28f), RoundedCornerShape(3.dp))
+                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.85f))
+                .border(
+                    0.8.dp,
+                    Brush.linearGradient(
+                        listOf(Color.White.copy(alpha = 0.35f), Color.White.copy(alpha = 0.05f))
+                    ),
+                    CircleShape
+                ),
+            contentAlignment = Alignment.Center
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = minimumHeight)
-                    .padding(horizontal = 24.dp, vertical = 30.dp),
-                horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                Text(
-                    headline,
-                    style = MaterialTheme.typography.headlineLarge.copy(lineHeight = 34.sp),
-                    color = AppColors.KitchenCobalt
-                )
-                KitchenReceiptRule(color = AppColors.KitchenCobalt)
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    insights.forEach { insight ->
-                        Row(
-                            modifier = Modifier.fillMaxWidth().heightIn(min = 60.dp),
-                            verticalAlignment = Alignment.Top,
-                            horizontalArrangement = Arrangement.spacedBy(11.dp)
-                        ) {
-                            Box(
-                                Modifier
-                                    .padding(top = 2.dp)
-                                    .size(21.dp)
-                                    .border(1.dp, AppColors.KitchenCobalt, CircleShape),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text("✓", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = AppColors.KitchenCobalt)
-                            }
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text(
-                                    insight.label.uppercase(Locale.getDefault()),
-                                    fontSize = 10.sp,
-                                    letterSpacing = 1.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = AppColors.KitchenCobalt
-                                )
-                                Text(
-                                    insight.observation,
-                                    fontSize = 13.sp,
-                                    lineHeight = 18.sp,
-                                    fontWeight = FontWeight.Medium,
-                                    color = AppColors.KitchenEspresso.copy(alpha = 0.88f)
-                                )
-                            }
-                        }
-                    }
-                }
-                KitchenReceiptRule(color = AppColors.KitchenCobalt)
-                Text(
-                    stringResource(R.string.coach_summary_provenance).uppercase(Locale.getDefault()),
-                    fontSize = 9.sp,
-                    letterSpacing = 1.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = AppColors.KitchenCobalt.copy(alpha = 0.78f)
-                )
-            }
-            Box(
-                Modifier
-                    .align(Alignment.TopCenter)
-                    .padding(top = 8.dp)
-                    .size(15.dp)
-                    .shadow(3.dp, CircleShape)
-                    .clip(CircleShape)
-                    .background(AppColors.KitchenCobalt)
-                    .border(1.dp, Color.White.copy(alpha = 0.38f), CircleShape)
+            Icon(
+                Icons.Filled.Forum,
+                contentDescription = null,
+                modifier = Modifier.size(44.dp),
+                tint = AppColors.Calorie
             )
         }
+        Spacer(Modifier.height(16.dp))
+        Text(
+            stringResource(R.string.coach_empty_title),
+            fontSize = 22.sp,
+            fontWeight = FontWeight.SemiBold
+        )
+        Spacer(Modifier.height(8.dp))
+        Text(
+            stringResource(R.string.coach_empty_subtitle),
+            fontSize = 15.sp,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+            textAlign = TextAlign.Center,
+            lineHeight = 21.sp
+        )
     }
 }
 
@@ -574,12 +428,12 @@ private fun MessageList(
                 ) {
                     Box(
                         Modifier
-                            .clip(RoundedCornerShape(3.dp))
-                            .background(AppColors.KitchenPaper)
+                            .clip(RoundedCornerShape(18.dp))
+                            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.85f))
                             .border(
-                                1.dp,
-                                MaterialTheme.colorScheme.outlineVariant,
-                                RoundedCornerShape(3.dp)
+                                0.5.dp,
+                                Color.White.copy(alpha = 0.15f),
+                                RoundedCornerShape(18.dp)
                             )
                             .padding(horizontal = 14.dp, vertical = 10.dp)
                     ) { TypingIndicator() }
@@ -676,15 +530,15 @@ private fun AssistantBadge() {
             .padding(top = 8.dp)
             .size(26.dp)
             .clip(CircleShape)
-            .background(AppColors.KitchenHerb.copy(alpha = 0.14f))
-            .border(1.dp, AppColors.KitchenHerb.copy(alpha = 0.26f), CircleShape),
+            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.85f))
+            .border(0.5.dp, Color.White.copy(alpha = 0.18f), CircleShape),
         contentAlignment = Alignment.Center
     ) {
         Icon(
             Icons.Filled.AutoAwesome,
             contentDescription = null,
             modifier = Modifier.size(11.dp),
-            tint = MaterialTheme.colorScheme.tertiary
+            tint = AppColors.Calorie
         )
     }
 }
@@ -702,15 +556,15 @@ private fun AssistantBadge() {
  */
 @Composable
 private fun Bubble(content: String, isUser: Boolean, attachmentImageBase64: String? = null) {
-    val shape = if (isUser) {
-        RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp, bottomStart = 4.dp, bottomEnd = 1.dp)
-    } else {
-        RoundedCornerShape(topStart = 1.dp, topEnd = 4.dp, bottomStart = 4.dp, bottomEnd = 4.dp)
-    }
-    val borderColor = if (isUser) AppColors.KitchenEspresso.copy(alpha = 0.20f)
-                      else MaterialTheme.colorScheme.outlineVariant
-    val shadowElevation = if (isUser) 5.dp else 3.dp
-    val shadowColor = Color.Black.copy(alpha = if (isUser) 0.13f else 0.08f)
+    val shape = RoundedCornerShape(20.dp)
+    val borderBrush = Brush.linearGradient(
+        listOf(
+            Color.White.copy(alpha = if (isUser) 0.45f else 0.22f),
+            Color.White.copy(alpha = if (isUser) 0.05f else 0.04f)
+        )
+    )
+    val shadowElevation = if (isUser) 10.dp else 6.dp
+    val shadowColor = if (isUser) AppColors.Calorie.copy(alpha = 0.28f) else Color.Black.copy(alpha = 0.12f)
 
     Box(
         modifier = Modifier
@@ -724,26 +578,42 @@ private fun Bubble(content: String, isUser: Boolean, attachmentImageBase64: Stri
             .clip(shape)
             .then(
                 if (isUser) {
-                    Modifier.background(AppColors.KitchenTomato)
+                    Modifier.background(AppColors.CalorieGradient)
                 } else {
-                    Modifier.background(AppColors.KitchenPaper)
+                    Modifier
+                        .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.85f))
+                        .background(AppColors.Calorie.copy(alpha = 0.035f))
                 }
             )
-            .border(1.dp, borderColor, shape)
+            .border(0.7.dp, borderBrush, shape)
     ) {
+        if (isUser) {
+            // Top white highlight — fakes SwiftUI .blendMode(.plusLighter).
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .height(28.dp)
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                Color.White.copy(alpha = 0.35f),
+                                Color.Transparent
+                            )
+                        )
+                    )
+            )
+        }
         Column(Modifier.padding(horizontal = 16.dp, vertical = 11.dp)) {
             attachmentImageBase64?.let { encoded ->
-                val bitmap by produceState<Bitmap?>(initialValue = null, key1 = encoded) {
-                    value = withContext(Dispatchers.Default) {
-                        runCatching {
-                            val bytes = Base64.getDecoder().decode(encoded)
-                            BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-                        }.getOrNull()
-                    }
+                val bitmap = remember(encoded) {
+                    runCatching {
+                        val bytes = Base64.getDecoder().decode(encoded)
+                        BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                    }.getOrNull()
                 }
-                bitmap?.let { decodedBitmap ->
+                if (bitmap != null) {
                     Image(
-                        bitmap = decodedBitmap.asImageBitmap(),
+                        bitmap = bitmap.asImageBitmap(),
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
@@ -780,89 +650,38 @@ private fun Bubble(content: String, isUser: Boolean, attachmentImageBase64: Stri
 @Composable
 private fun PromptChipRow(chips: List<String>, enabled: Boolean, onTap: (String) -> Unit) {
     if (chips.isEmpty()) return
-    var showMore by remember(chips) { mutableStateOf(false) }
-    Column(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp),
-        verticalArrangement = Arrangement.spacedBy(7.dp)
+    LazyRow(
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        chips.take(2).forEach { chip ->
-            PromptChip(
-                text = chip,
-                enabled = enabled,
-                onTap = onTap,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-        if (chips.size > 2) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 48.dp)
-                    .clickable(enabled = enabled) { showMore = !showMore }
-                    .padding(horizontal = 4.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    stringResource(if (showMore) R.string.coach_fewer_prompts else R.string.coach_more_prompts),
-                    modifier = Modifier.weight(1f),
-                    style = MaterialTheme.typography.labelMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = AppColors.KitchenCobalt
-                )
-                Text(
-                    if (showMore) "−" else "+",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = AppColors.KitchenCobalt
-                )
-            }
-            if (showMore) {
-                LazyRow(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    items(chips.drop(2)) { chip ->
-                        PromptChip(
-                            text = chip,
-                            enabled = enabled,
-                            onTap = onTap,
-                            modifier = Modifier.width(238.dp)
-                        )
-                    }
-                }
-            }
-        }
+        items(chips) { chip -> PromptChip(chip, enabled, onTap) }
     }
 }
 
 @Composable
-private fun PromptChip(
-    text: String,
-    enabled: Boolean,
-    onTap: (String) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val shape = RoundedCornerShape(3.dp)
+private fun PromptChip(text: String, enabled: Boolean, onTap: (String) -> Unit) {
+    val shape = RoundedCornerShape(20.dp)
+    val strokeBrush = Brush.linearGradient(
+        listOf(
+            AppColors.Calorie.copy(alpha = 0.35f),
+            AppColors.Calorie.copy(alpha = 0.10f)
+        )
+    )
     Box(
-        modifier
-            .heightIn(min = 50.dp)
+        Modifier
             .clip(shape)
-            .background(AppColors.KitchenPaper)
-            .border(1.dp, AppColors.KitchenBrass.copy(alpha = 0.62f), shape)
+            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.85f))
+            .background(AppColors.Calorie.copy(alpha = 0.10f))
+            .border(0.6.dp, strokeBrush, shape)
             .clickable(enabled = enabled) { onTap(text) }
-            .padding(horizontal = 15.dp, vertical = 10.dp),
-        contentAlignment = Alignment.CenterStart
+            .padding(horizontal = 14.dp, vertical = 9.dp)
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text,
-                modifier = Modifier.weight(1f),
-                fontSize = 13.sp,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            Text("›", fontSize = 24.sp, color = AppColors.KitchenEspresso.copy(alpha = 0.55f))
-        }
+        Text(
+            text,
+            fontSize = 13.sp,
+            fontWeight = FontWeight.Medium,
+            color = AppColors.Calorie
+        )
     }
 }
 
@@ -881,13 +700,11 @@ private fun InputBar(
     onPickImage: () -> Unit,
     onCaptureImage: () -> Unit,
     voice: CoachVoiceController,
-    canReset: Boolean,
-    onReset: () -> Unit,
     onRemoveImage: () -> Unit,
     onSend: () -> Unit
 ) {
     val canSend = !sending && (value.trim().isNotEmpty() || attachedImageBytes != null)
-    val capsule = RoundedCornerShape(4.dp)
+    val capsule = RoundedCornerShape(28.dp)
 
     Column(
         modifier = Modifier
@@ -895,27 +712,25 @@ private fun InputBar(
             .padding(top = 4.dp, bottom = 10.dp)
             .fillMaxWidth()
             .shadow(
-                elevation = 6.dp,
+                elevation = 14.dp,
                 shape = capsule,
                 ambientColor = Color.Black.copy(alpha = 0.18f),
                 spotColor = Color.Black.copy(alpha = 0.18f)
             )
             .clip(capsule)
-            .background(AppColors.KitchenPaper)
+            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.85f))
             .border(
-                1.dp,
-                MaterialTheme.colorScheme.outlineVariant,
+                0.8.dp,
+                Brush.linearGradient(
+                    listOf(Color.White.copy(alpha = 0.25f), Color.White.copy(alpha = 0.05f))
+                ),
                 capsule
             )
             .padding(start = 4.dp, end = 5.dp, top = 4.dp, bottom = 4.dp),
     ) {
         attachedImageBytes?.let { bytes ->
-            val bitmap by produceState<Bitmap?>(initialValue = null, key1 = bytes) {
-                this.value = withContext(Dispatchers.Default) {
-                    BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-                }
-            }
-            bitmap?.let { decodedBitmap ->
+            val bitmap = remember(bytes) { BitmapFactory.decodeByteArray(bytes, 0, bytes.size) }
+            if (bitmap != null) {
                 Box(
                     modifier = Modifier
                         .padding(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 4.dp)
@@ -923,7 +738,7 @@ private fun InputBar(
                         .clip(RoundedCornerShape(16.dp))
                 ) {
                     Image(
-                        bitmap = decodedBitmap.asImageBitmap(),
+                        bitmap = bitmap.asImageBitmap(),
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxSize()
@@ -932,17 +747,12 @@ private fun InputBar(
                         onClick = onRemoveImage,
                         modifier = Modifier
                             .align(Alignment.TopEnd)
-                            .size(48.dp)
+                            .padding(4.dp)
+                            .size(24.dp)
+                            .clip(CircleShape)
+                            .background(Color.Black.copy(alpha = 0.55f))
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .size(24.dp)
-                                .clip(CircleShape)
-                                .background(Color.Black.copy(alpha = 0.55f)),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(Icons.Filled.Close, contentDescription = stringResource(R.string.cd_remove_image), tint = Color.White, modifier = Modifier.size(14.dp))
-                        }
+                        Icon(Icons.Filled.Close, contentDescription = stringResource(R.string.cd_remove_image), tint = Color.White, modifier = Modifier.size(14.dp))
                     }
                 }
             }
@@ -957,14 +767,6 @@ private fun InputBar(
                 // recording indicator (timer + slide-to-cancel hint / live text).
                 CoachRecordingIndicator(voice, Modifier.weight(1f))
             } else {
-                if (canReset) {
-                    CoachMediaActionButton(
-                        icon = Icons.Filled.Replay,
-                        contentDescription = stringResource(R.string.coach_reset_chat_a11y),
-                        enabled = !sending,
-                        onClick = onReset
-                    )
-                }
                 CoachMediaActions(
                     enabled = !sending,
                     onPickImage = onPickImage,
@@ -987,7 +789,7 @@ private fun InputBar(
                             fontSize = 17.sp,
                             fontWeight = FontWeight.Normal
                         ),
-                        cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+                        cursorBrush = SolidColor(AppColors.Calorie),
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
                         keyboardActions = KeyboardActions(onSend = { onSend() }),
                         maxLines = 5,
@@ -1020,8 +822,20 @@ private fun CoachMediaActions(
     val shape = RoundedCornerShape(19.dp)
     Row(
         modifier = Modifier
-            .clip(shape),
-        horizontalArrangement = Arrangement.spacedBy(0.dp),
+            .clip(shape)
+            .background(AppColors.Calorie.copy(alpha = 0.075f))
+            .border(
+                0.6.dp,
+                Brush.linearGradient(
+                    listOf(
+                        Color.White.copy(alpha = 0.16f),
+                        AppColors.Calorie.copy(alpha = 0.12f)
+                    )
+                ),
+                shape
+            )
+            .padding(2.dp),
+        horizontalArrangement = Arrangement.spacedBy(2.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         CoachMediaActionButton(
@@ -1048,81 +862,60 @@ private fun CoachMediaActionButton(
 ) {
     Box(
         modifier = Modifier
-            .size(48.dp)
+            .size(30.dp)
+            .clip(CircleShape)
+            .background(
+                if (enabled) AppColors.Calorie.copy(alpha = 0.11f)
+                else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f)
+            )
             .clickable(enabled = enabled, onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
-        Box(
-            modifier = Modifier
-                .size(30.dp)
-                .clip(CircleShape)
-                .background(
-                    if (enabled) AppColors.Calorie.copy(alpha = 0.11f)
-                    else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f)
-                )
-                .border(
-                    0.6.dp,
-                    Brush.linearGradient(
-                        listOf(
-                            Color.White.copy(alpha = 0.16f),
-                            AppColors.Calorie.copy(alpha = 0.12f)
-                        )
-                    ),
-                    CircleShape
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                icon,
-                contentDescription = contentDescription,
-                tint = if (enabled) AppColors.Calorie else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.32f),
-                modifier = Modifier.size(17.dp)
-            )
-        }
+        Icon(
+            icon,
+            contentDescription = contentDescription,
+            tint = if (enabled) AppColors.Calorie else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.32f),
+            modifier = Modifier.size(17.dp)
+        )
     }
 }
 
 @Composable
 private fun SendButton(canSend: Boolean, onClick: () -> Unit) {
+    val size: Dp = 34.dp
     val shape = CircleShape
     Box(
         Modifier
-            .size(48.dp)
+            .size(size)
+            .then(
+                if (canSend) {
+                    Modifier.shadow(
+                        elevation = 8.dp,
+                        shape = shape,
+                        ambientColor = AppColors.Calorie.copy(alpha = 0.35f),
+                        spotColor = AppColors.Calorie.copy(alpha = 0.35f)
+                    )
+                } else Modifier
+            )
+            .clip(shape)
+            .then(
+                if (canSend) Modifier.background(AppColors.CalorieGradient)
+                else Modifier.background(Color.Gray.copy(alpha = 0.35f))
+            )
+            .border(
+                0.6.dp,
+                Color.White.copy(alpha = if (canSend) 0.25f else 0.10f),
+                shape
+            )
             .clickable(enabled = canSend, onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
-        Box(
-            Modifier
-                .size(34.dp)
-                .then(
-                    if (canSend) {
-                        Modifier.shadow(
-                            elevation = 8.dp,
-                            shape = shape,
-                            ambientColor = AppColors.Calorie.copy(alpha = 0.35f),
-                            spotColor = AppColors.Calorie.copy(alpha = 0.35f)
-                        )
-                    } else Modifier
-                )
-                .clip(shape)
-                .then(
-                    if (canSend) Modifier.background(AppColors.CalorieGradient)
-                    else Modifier.background(Color.Gray.copy(alpha = 0.35f))
-                )
-                .border(
-                    0.6.dp,
-                    Color.White.copy(alpha = if (canSend) 0.25f else 0.10f),
-                    shape
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                Icons.Filled.ArrowUpward,
-                contentDescription = stringResource(R.string.coach_send_a11y),
-                tint = Color.White,
-                modifier = Modifier.size(16.dp)
-            )
-        }
+        Icon(
+            Icons.Filled.ArrowUpward,
+            contentDescription = stringResource(R.string.coach_send_a11y),
+            tint = Color.White,
+            modifier = Modifier.size(16.dp)
+        )
     }
 }
 

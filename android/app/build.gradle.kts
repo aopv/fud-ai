@@ -29,8 +29,8 @@ android {
         applicationId = "com.apoorvdarshan.calorietracker"
         minSdk = 26
         targetSdk = 36
-        versionCode = 35
-        versionName = "7.0"
+        versionCode = 34
+        versionName = "6.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -63,11 +63,12 @@ android {
             signingConfigs.findByName("release")?.let { signingConfig = it }
         }
         debug {
-            // Suffix the package so the debug build installs side-by-side
+            // Suffix the package + version so the debug build installs side-by-side
             // with the production app pulled from Play Store. Launcher label stays
             // "Fud AI" (same as release) — distinguish the two by the install order
             // / icon position rather than a separate label.
             applicationIdSuffix = ".debug"
+            versionNameSuffix = "-debug"
         }
         create("debug2") {
             initWith(getByName("debug"))
@@ -111,23 +112,7 @@ kotlin {
     jvmToolchain(17)
 }
 
-configurations.configureEach {
-    // The local Flutter AAR keeps a stable Maven coordinate. Recheck it on
-    // every build so freshly generated Dart assets cannot be hidden by cache.
-    resolutionStrategy.cacheChangingModulesFor(0, "seconds")
-}
-
 dependencies {
-    debugImplementation("com.apoorvdarshan.fud_ai_shared:flutter_debug:1.0") {
-        isChanging = true
-    }
-    add("debug2Implementation", "com.apoorvdarshan.fud_ai_shared:flutter_debug:1.0") {
-        isChanging = true
-    }
-    releaseImplementation("com.apoorvdarshan.fud_ai_shared:flutter_release:1.0") {
-        isChanging = true
-    }
-
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.play.review.ktx)
     implementation(libs.androidx.activity.compose)

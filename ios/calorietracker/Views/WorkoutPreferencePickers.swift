@@ -12,19 +12,23 @@ struct WorkoutPreferenceMenuRow<Option: Hashable>: View {
 
     var body: some View {
         WorkoutPreferenceFieldRow(title: title, systemImage: systemImage) {
-            NeoGlassChoiceMenu(
-                title: title,
-                eyebrow: "Workout Setup",
-                items: options.map { option in
-                    NeoGlassChoiceItem(
-                        id: "workoutPreference.\(String(describing: option))",
-                        title: label(option),
-                        systemImage: systemImage,
-                        isSelected: option == selection,
-                        action: { selection = option }
-                    )
+            Menu {
+                ForEach(options, id: \.self) { option in
+                    Button {
+                        selection = option
+                    } label: {
+                        if option == selection {
+                            Label {
+                                WorkoutPreferenceMenuOptionText(text: label(option))
+                            } icon: {
+                                Image(systemName: "checkmark")
+                            }
+                        } else {
+                            WorkoutPreferenceMenuOptionText(text: label(option))
+                        }
+                    }
                 }
-            ) {
+            } label: {
                 WorkoutPreferenceMenuValueLabel(text: label(selection))
             }
             .workoutPressable()
@@ -56,22 +60,22 @@ struct WorkoutIssueMultiSelectRow: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             WorkoutPreferenceFieldRow(title: title, systemImage: systemImage) {
-                NeoGlassChoiceMenu(
-                    title: title,
-                    eyebrow: "Workout Setup",
-                    items: StrengthWorkoutIssue.allCases.map { option in
-                        NeoGlassChoiceItem(
-                            id: "workoutIssue.\(option.id)",
-                            title: option.rawValue,
-                            systemImage: "cross.case.fill",
-                            isSelected: selection.contains(option),
-                            action: { toggle(option) }
-                        )
-                    },
-                    dismissOnSelection: false
-                ) {
+                Menu {
+                    ForEach(StrengthWorkoutIssue.allCases) { option in
+                        Button {
+                            toggle(option)
+                        } label: {
+                            if selection.contains(option) {
+                                Label(option.rawValue, systemImage: "checkmark")
+                            } else {
+                                Text(option.rawValue)
+                            }
+                        }
+                    }
+                } label: {
                     WorkoutPreferenceMenuValueLabel(text: summary)
                 }
+                .menuActionDismissBehavior(.disabled)
                 .workoutPressable()
                 .accessibilityLabel(title)
                 .accessibilityValue(summary)

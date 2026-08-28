@@ -27,11 +27,10 @@ struct AnimatedExerciseVisual: View {
         }
         .frame(maxWidth: fillsWidth ? .infinity : nil)
         .frame(height: height)
-        .compositingGroup()
-        .clipShape(Rectangle())
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
         .overlay(
-            Rectangle()
-                .stroke(NeoAppColors.ink, lineWidth: NeoAppMetrics.rule)
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .stroke(Color(uiColor: .separator).opacity(0.35), lineWidth: 0.5)
         )
     }
 
