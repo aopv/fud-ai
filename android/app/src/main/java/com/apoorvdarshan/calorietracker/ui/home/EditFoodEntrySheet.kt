@@ -22,6 +22,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
 import com.apoorvdarshan.calorietracker.services.ai.FoodAnalysis
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DeleteOutline
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.IosShare
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowRight
@@ -89,15 +92,18 @@ import kotlin.math.roundToInt
  * experience. Differences from FoodResultSheet:
  *   - Top-right action says "Save" instead of "Log".
  *   - Initial values come from the existing entry; save mutates it via onSave.
- * Deletion is handled by swipe-to-delete on the Home food log list.
+ *   - Favorite and delete actions are also visible in the sheet for discoverability.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditFoodEntrySheet(
     entry: FoodEntry,
     preferGramsByDefault: Boolean = false,
+    isFavorite: Boolean,
     onReprocess: suspend (updatedNote: String) -> FoodAnalysis,
     onSave: (FoodEntry) -> Unit,
+    onToggleFavorite: () -> Unit,
+    onDelete: () -> Unit,
     onDismiss: () -> Unit
 ) {
     val state = rememberModalBottomSheetState(
@@ -148,6 +154,7 @@ fun EditFoodEntrySheet(
     var loggedTime by remember(entry.id, entry.timestamp) { mutableStateOf(initialLoggedAt.toLocalTime().withSecond(0).withNano(0)) }
     var showDatePicker by remember { mutableStateOf(false) }
     var showTimePicker by remember { mutableStateOf(false) }
+    var showDeleteConfirmation by remember { mutableStateOf(false) }
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
     val sheetSurface = if (isDark) MaterialTheme.colorScheme.surface else Color(0xFFFAF3EE)
     val context = LocalContext.current
@@ -612,6 +619,55 @@ fun EditFoodEntrySheet(
                 }
             }
 
+            item { SheetSectionHeader("Actions") }
+            item {
+                SheetPillCard {
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .clickable(onClick = onToggleFavorite)
+                            .padding(horizontal = 18.dp, vertical = 14.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            if (isFavorite) Icons.Filled.FavoriteBorder else Icons.Filled.Favorite,
+                            contentDescription = null,
+                            tint = AppColors.Calorie,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(Modifier.width(12.dp))
+                        Text(
+                            if (isFavorite) "Remove from Favorites" else "Save to Favorites",
+                            fontSize = 17.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = AppColors.Calorie
+                        )
+                    }
+                    SheetHairline()
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .clickable { showDeleteConfirmation = true }
+                            .padding(horizontal = 18.dp, vertical = 14.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            Icons.Filled.DeleteOutline,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(Modifier.width(12.dp))
+                        Text(
+                            "Delete Food Log",
+                            fontSize = 17.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
+                }
+            }
+
             // Share this meal as a fudai://add-meal link (issue #107)
             item { SheetSectionHeader(stringResource(R.string.section_share)) }
             item {
@@ -679,6 +735,27 @@ fun EditFoodEntrySheet(
             },
             onDismiss = { showTimePicker = false }
         )
+    }
+    if (showDeleteConfirmation) {
+        FudGlassDialog(onDismissRequest = { showDeleteConfirmation = false }) {
+            Text("Delete Food Log?", fontSize = 21.sp, fontWeight = FontWeight.Bold)
+            Text(
+                "This removes the food from your diary. Saved favorites are kept.",
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.68f),
+                fontSize = 15.sp,
+                lineHeight = 21.sp
+            )
+            FudGlassDialogActions(
+                primaryText = stringResource(R.string.action_delete),
+                onPrimary = {
+                    showDeleteConfirmation = false
+                    onDelete()
+                },
+                dismissText = stringResource(R.string.action_cancel),
+                onDismiss = { showDeleteConfirmation = false },
+                destructive = true
+            )
+        }
     }
     ingredientEditor?.let { target ->
         MealIngredientEditorDialog(

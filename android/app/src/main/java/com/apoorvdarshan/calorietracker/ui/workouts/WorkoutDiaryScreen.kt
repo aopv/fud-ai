@@ -18,10 +18,12 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -58,6 +60,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -79,6 +82,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
@@ -91,6 +95,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.sp
 import com.apoorvdarshan.calorietracker.data.ExerciseRepository
 import com.apoorvdarshan.calorietracker.R
@@ -112,6 +117,8 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.Locale
 import java.util.UUID
+import kotlin.math.abs
+import kotlin.math.roundToInt
 
 private const val WORKOUT_WEEKS = 53
 private const val CURRENT_WORKOUT_WEEK = WORKOUT_WEEKS - 1
@@ -245,25 +252,35 @@ internal fun WorkoutDiaryScreen(
                 }
             } else {
                 items(state.exercises, key = { it.id }) { exercise ->
-                    WorkoutExerciseCard(
-                        exercise = exercise,
+                    val isSaved = exercise.itemId in state.savedExerciseIds
+                    val toggleSaved = { viewModel.toggleSaved(exercise.itemId) }
+                    val removeExercise = {
+                        dismissKeyboard()
+                        viewModel.removeExercise(exercise.id)
+                    }
+                    SwipeableWorkoutExerciseCard(
+                        exerciseId = exercise.id,
+                        isSaved = isSaved,
                         modifier = Modifier.onGloballyPositioned { coordinates ->
                             exerciseCardBounds[exercise.id] = coordinates.boundsInRoot()
                         },
-                        weightUnit = state.weightUnit,
-                        rpePlaceholder = state.preferences.rpeScale.inputPlaceholder,
-                        isSaved = exercise.itemId in state.savedExerciseIds,
-                        onOpen = { viewModel.openDiaryExercise(exercise) },
-                        onToggleSaved = { viewModel.toggleSaved(exercise.itemId) },
-                        onRemove = {
-                            dismissKeyboard()
-                            viewModel.removeExercise(exercise.id)
-                        },
-                        onSetCount = { viewModel.setSetCount(exercise.id, it) },
-                        onWeight = { setId, value -> viewModel.updateWeight(exercise.id, setId, value) },
-                        onReps = { setId, value -> viewModel.updateReps(exercise.id, setId, value) },
-                        onRpe = { setId, value -> viewModel.updateRpe(exercise.id, setId, value) }
-                    )
+                        onToggleSaved = toggleSaved,
+                        onRemove = removeExercise
+                    ) {
+                        WorkoutExerciseCard(
+                            exercise = exercise,
+                            weightUnit = state.weightUnit,
+                            rpePlaceholder = state.preferences.rpeScale.inputPlaceholder,
+                            isSaved = isSaved,
+                            onOpen = { viewModel.openDiaryExercise(exercise) },
+                            onToggleSaved = toggleSaved,
+                            onRemove = removeExercise,
+                            onSetCount = { viewModel.setSetCount(exercise.id, it) },
+                            onWeight = { setId, value -> viewModel.updateWeight(exercise.id, setId, value) },
+                            onReps = { setId, value -> viewModel.updateReps(exercise.id, setId, value) },
+                            onRpe = { setId, value -> viewModel.updateRpe(exercise.id, setId, value) }
+                        )
+                    }
                 }
             }
 
@@ -680,6 +697,94 @@ private fun WorkoutEmptyState(
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Medium
                 )
+            }
+        }
+    }
+}
+
+/**
+ * Adds iOS-style row gestures without hiding the card's visible Save and Delete buttons.
+ * A leading swipe toggles Saved; a trailing swipe removes the exercise from this day.
+ */
+@Composable
+private fun SwipeableWorkoutExerciseCard(
+    exerciseId: UUID,
+    isSaved: Boolean,
+    onToggleSaved: () -> Unit,
+    onRemove: () -> Unit,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
+    val density = LocalDensity.current
+    val saveTriggerPx = with(density) { 120.dp.toPx() }
+    val deleteTriggerPx = with(density) { 160.dp.toPx() }
+    var offsetPx by remember(exerciseId) { mutableFloatStateOf(0f) }
+
+    BoxWithConstraints(modifier.fillMaxWidth()) {
+        val maxSwipePx = with(density) { maxWidth.toPx() * 0.58f }
+        Box(Modifier.fillMaxWidth()) {
+            WorkoutExerciseSwipeBackground(offsetPx = offsetPx, isSaved = isSaved)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .offset { IntOffset(offsetPx.roundToInt(), 0) }
+                    .pointerInput(exerciseId, isSaved, maxSwipePx) {
+                        detectHorizontalDragGestures(
+                            onHorizontalDrag = { change, dragAmount ->
+                                change.consume()
+                                offsetPx = (offsetPx + dragAmount).coerceIn(-maxSwipePx, maxSwipePx)
+                            },
+                            onDragEnd = {
+                                val finalOffset = offsetPx
+                                offsetPx = 0f
+                                when {
+                                    finalOffset <= -deleteTriggerPx -> onRemove()
+                                    finalOffset >= saveTriggerPx -> onToggleSaved()
+                                }
+                            },
+                            onDragCancel = { offsetPx = 0f }
+                        )
+                    }
+            ) {
+                content()
+            }
+        }
+    }
+}
+
+@Composable
+private fun WorkoutExerciseSwipeBackground(offsetPx: Float, isSaved: Boolean) {
+    if (offsetPx == 0f) return
+
+    val density = LocalDensity.current
+    val trailing = offsetPx < 0f
+    val revealWidth = with(density) { abs(offsetPx).toDp() }
+    val background = if (trailing) Color(0xFFD32F2F) else Color(0xFF2E7D32)
+    val icon = when {
+        trailing -> Icons.Filled.DeleteOutline
+        isSaved -> Icons.Filled.Bookmark
+        else -> Icons.Filled.Save
+    }
+    val label = when {
+        trailing -> "Delete"
+        isSaved -> "Unsave"
+        else -> "Save"
+    }
+
+    Box(Modifier.fillMaxSize().clip(RoundedCornerShape(24.dp))) {
+        Column(
+            modifier = Modifier
+                .align(if (trailing) Alignment.CenterEnd else Alignment.CenterStart)
+                .fillMaxHeight()
+                .width(revealWidth)
+                .background(background),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Icon(icon, contentDescription = null, tint = Color.White, modifier = Modifier.size(22.dp))
+            if (revealWidth >= 76.dp) {
+                Spacer(Modifier.height(4.dp))
+                Text(label, color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold)
             }
         }
     }

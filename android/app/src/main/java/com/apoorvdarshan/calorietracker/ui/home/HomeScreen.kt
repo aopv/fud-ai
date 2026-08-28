@@ -766,11 +766,17 @@ fun HomeScreen(
         EditFoodEntrySheet(
             entry = entry,
             preferGramsByDefault = ui.preferGramsByDefault,
+            isFavorite = ui.isFavorite(entry),
             onReprocess = { updatedNote ->
                 vm.reprocessFoodEntry(entry, updatedNote)
             },
             onSave = { updated ->
                 vm.updateEntry(updated)
+                editingEntry = null
+            },
+            onToggleFavorite = { vm.toggleFavorite(entry) },
+            onDelete = {
+                vm.deleteEntry(entry.id)
                 editingEntry = null
             },
             onDismiss = { editingEntry = null }

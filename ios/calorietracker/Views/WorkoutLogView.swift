@@ -211,10 +211,18 @@ struct WorkoutLogView: View {
                                     exercise: exercise,
                                     weightUnit: weightUnit,
                                     rpeScale: workoutStore.preferences.rpeScale,
+                                    isSaved: workoutStore.savedExerciseIDs.contains(exercise.itemID),
                                     focusedField: $focusedSetField,
                                     openDetail: {
                                         guard focusedSetField == nil else { return }
                                         selectedDetailItem = exercise.libraryItem
+                                    },
+                                    toggleSaved: {
+                                        workoutStore.toggleSaved(exercise.itemID)
+                                    },
+                                    removeExercise: {
+                                        focusedSetField = nil
+                                        workoutStore.removeExercise(exercise.id, on: selectedDate)
                                     },
                                     updateSetCount: { count in
                                         workoutStore.setSetCount(count, exerciseID: exercise.id, on: selectedDate)
@@ -823,8 +831,11 @@ private struct WorkoutLogExerciseCard: View {
     let exercise: StrengthPlannedExercise
     let weightUnit: WeightUnit
     let rpeScale: StrengthWorkoutRPEScale
+    let isSaved: Bool
     let focusedField: FocusState<WorkoutLogSetFocus?>.Binding
     let openDetail: () -> Void
+    let toggleSaved: () -> Void
+    let removeExercise: () -> Void
     let updateSetCount: (Int) -> Void
     let updateWeight: (UUID, String) -> Void
     let updateReps: (UUID, String) -> Void
@@ -918,6 +929,39 @@ private struct WorkoutLogExerciseCard: View {
                                 .padding(.leading, 64)
                         }
                     }
+                }
+
+                Divider()
+                    .overlay(Color.workoutHairline.opacity(0.5))
+
+                HStack(spacing: 10) {
+                    Button(action: toggleSaved) {
+                        Label(
+                            isSaved ? "Unsave" : "Save",
+                            systemImage: isSaved ? "bookmark.slash.fill" : "bookmark.fill"
+                        )
+                        .font(.system(.subheadline, design: .rounded, weight: .bold))
+                        .frame(maxWidth: .infinity, minHeight: 44)
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .foregroundStyle(isSaved ? Color.workoutMutedText : Color.workoutAccent)
+                    .accessibilityHint(isSaved ? "Removes this exercise from Saved" : "Adds this exercise to Saved")
+
+                    Divider()
+                        .frame(height: 28)
+                        .overlay(Color.workoutHairline.opacity(0.5))
+                        .accessibilityHidden(true)
+
+                    Button(role: .destructive, action: removeExercise) {
+                        Label("Delete", systemImage: "trash.fill")
+                            .font(.system(.subheadline, design: .rounded, weight: .bold))
+                            .frame(maxWidth: .infinity, minHeight: 44)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .foregroundStyle(Color(red: 0.78, green: 0.14, blue: 0.12))
+                    .accessibilityHint("Removes this exercise from the selected day")
                 }
             }
         }

@@ -48,6 +48,7 @@ struct EditFoodEntryView: View {
     @State private var savedNote: String
     @State private var isReprocessing: Bool = false
     @State private var reprocessingError: String? = nil
+    @State private var isDeleteConfirmationPresented = false
 
     @State private var name: String
     @State private var servingSizeGrams: Double
@@ -355,6 +356,26 @@ struct EditFoodEntryView: View {
                             .tint(AppColors.calorie)
                     }
 
+                    Section("Actions") {
+                        Button {
+                            withAnimation(.snappy) {
+                                foodStore.toggleFavorite(entry)
+                            }
+                        } label: {
+                            Label(
+                                foodStore.isFavorite(entry) ? "Remove from Favorites" : "Save to Favorites",
+                                systemImage: foodStore.isFavorite(entry) ? "heart.slash.fill" : "heart.fill"
+                            )
+                        }
+                        .tint(AppColors.calorie)
+
+                        Button(role: .destructive) {
+                            isDeleteConfirmationPresented = true
+                        } label: {
+                            Label("Delete Food Log", systemImage: "trash.fill")
+                        }
+                    }
+
                     // Share this meal as a fudai://add-meal link (issue #107)
                     Section {
                         Button {
@@ -384,6 +405,15 @@ struct EditFoodEntryView: View {
                 .disabled(isReprocessing)
                 .navigationTitle("Edit Food")
                 .navigationBarTitleDisplayMode(.inline)
+                .alert("Delete Food Log?", isPresented: $isDeleteConfirmationPresented) {
+                    Button("Delete", role: .destructive) {
+                        foodStore.deleteEntry(entry)
+                        dismiss()
+                    }
+                    Button("Cancel", role: .cancel) { }
+                } message: {
+                    Text("This removes the food from your diary. Saved favorites are kept.")
+                }
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
                         Button("Cancel") { dismiss() }
