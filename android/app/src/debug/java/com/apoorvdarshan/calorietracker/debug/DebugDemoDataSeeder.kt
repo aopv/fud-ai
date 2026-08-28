@@ -1,6 +1,5 @@
 package com.apoorvdarshan.calorietracker.debug
 
-import android.content.Context
 import com.apoorvdarshan.calorietracker.FudAIApp
 import com.apoorvdarshan.calorietracker.models.BodyFatEntry
 import com.apoorvdarshan.calorietracker.models.BodyMeasurement
@@ -12,8 +11,10 @@ import com.apoorvdarshan.calorietracker.models.FoodSource
 import com.apoorvdarshan.calorietracker.models.MealType
 import com.apoorvdarshan.calorietracker.models.PlannedExercise
 import com.apoorvdarshan.calorietracker.models.PlannedSet
+import com.apoorvdarshan.calorietracker.models.UserProfile
 import com.apoorvdarshan.calorietracker.models.WaterEntry
 import com.apoorvdarshan.calorietracker.models.WeightEntry
+import com.apoorvdarshan.calorietracker.models.WeightGoal
 import com.apoorvdarshan.calorietracker.models.WorkoutDayPlan
 import com.apoorvdarshan.calorietracker.models.WorkoutPreferences
 import com.apoorvdarshan.calorietracker.models.WorkoutRpeScale
@@ -50,37 +51,37 @@ internal data class DebugSeedReport(
  * Builds a realistic, stable year of local demo history without calling any sync API.
  *
  * This file lives under src/debug, so neither the dataset nor its launch hook can be packaged in
- * release. UUIDs are deterministic and an anchor date is remembered, making repeated ADB launches
- * safe: generated rows are merged by id and existing user-created debug rows are preserved.
+ * release. UUIDs are deterministic, making repeated ADB launches safe: generated rows are merged
+ * by id and existing user-created debug rows are preserved. The seed rolls forward with the current
+ * date so short progress ranges never become stale between debug sessions.
  */
 internal class DebugDemoDataSeeder(private val application: FudAIApp) {
     private val container get() = application.container
     private val zone: ZoneId = ZoneId.systemDefault()
-    private val marker = application.getSharedPreferences(MARKER_FILE, Context.MODE_PRIVATE)
 
     suspend fun seed(): DebugSeedReport {
-        val anchor = marker.getLong(ANCHOR_KEY, Long.MIN_VALUE)
-            .takeUnless { it == Long.MIN_VALUE }
-            ?.let(LocalDate::ofEpochDay)
-            ?: LocalDate.now(zone)
+        val anchor = LocalDate.now(zone)
         val dates = (YEAR_DAYS - 1 downTo 0).map { offset -> anchor.minusDays(offset.toLong()) }
 
         val foods = dates.flatMapIndexed(::foodsForDate)
-        val weights = sampleDates(dates, 7).mapIndexed { index, date ->
-            val progress = index.toDouble() / sampleDates(dates, 7).lastIndex.coerceAtLeast(1)
+        val firstDate = dates.first()
+        val totalDays = (YEAR_DAYS - 1).toDouble()
+        val weights = sampleDates(dates, intervalDays = 7, denseTailDays = 14).map { date ->
+            val elapsedDays = java.time.temporal.ChronoUnit.DAYS.between(firstDate, date).toDouble()
+            val progress = elapsedDays / totalDays
             WeightEntry(
                 id = stableId("weight:$date"),
                 date = instant(date, LocalTime.of(7, 10)),
-                weightKg = oneDecimal(79.2 - 8.1 * progress + sin(index * 0.73) * 0.35)
+                weightKg = oneDecimal(79.2 - 8.1 * progress + sin(elapsedDays / 7.0 * 0.73) * 0.35)
             )
         }
-        val bodyFat = sampleDates(dates, 14).mapIndexed { index, date ->
-            val count = sampleDates(dates, 14).lastIndex.coerceAtLeast(1)
-            val progress = index.toDouble() / count
+        val bodyFat = sampleDates(dates, intervalDays = 14, denseTailDays = 14).map { date ->
+            val elapsedDays = java.time.temporal.ChronoUnit.DAYS.between(firstDate, date).toDouble()
+            val progress = elapsedDays / totalDays
             BodyFatEntry(
                 id = stableId("body-fat:$date"),
                 date = instant(date, LocalTime.of(7, 15)),
-                bodyFatFraction = (0.247 - 0.056 * progress + sin(index * 0.51) * 0.0025)
+                bodyFatFraction = (0.247 - 0.056 * progress + sin(elapsedDays / 14.0 * 0.51) * 0.0025)
                     .coerceIn(0.12, 0.35)
             )
         }
@@ -127,6 +128,25 @@ internal class DebugDemoDataSeeder(private val application: FudAIApp) {
             sort()
         }
         val workoutSessions = workoutDates.mapIndexed(::workoutForDate)
+
+        if (container.profileRepository.current() == null) {
+            container.profileRepository.save(
+                UserProfile.Default.copy(
+                    name = "Debug Athlete",
+                    weightKg = weights.last().weightKg,
+                    bodyFatPercentage = bodyFat.last().bodyFatFraction,
+                    goalBodyFatPercentage = 0.17,
+                    goal = WeightGoal.LOSE,
+                    weeklyChangeKg = 0.5,
+                    goalWeightKg = 68.0,
+                    customCalories = 2_330,
+                    customProtein = 156,
+                    customCarbs = 268,
+                    customFat = 70
+                )
+            )
+        }
+        container.prefs.setOnboardingCompleted(true)
 
         container.foodRepository.replaceAll(
             mergeById(container.foodRepository.entries.first(), foods) { it.id }
@@ -186,7 +206,6 @@ internal class DebugDemoDataSeeder(private val application: FudAIApp) {
             }
         )
 
-        marker.edit().putLong(ANCHOR_KEY, anchor.toEpochDay()).apply()
         return DebugSeedReport(
             days = dates.size,
             foodEntries = foods.size,
@@ -308,11 +327,19 @@ internal class DebugDemoDataSeeder(private val application: FudAIApp) {
 
     private fun instant(date: LocalDate, time: LocalTime): Instant = date.atTime(time).atZone(zone).toInstant()
 
-    private fun sampleDates(dates: List<LocalDate>, intervalDays: Int): List<LocalDate> =
-        dates.filterIndexed { index, _ -> index % intervalDays == 0 }.toMutableList().apply {
+    private fun sampleDates(
+        dates: List<LocalDate>,
+        intervalDays: Int,
+        denseTailDays: Int = 0
+    ): List<LocalDate> {
+        val denseTailStart = dates.last().minusDays((denseTailDays - 1).coerceAtLeast(0).toLong())
+        return dates.filterIndexed { index, date ->
+            index % intervalDays == 0 || (denseTailDays > 0 && !date.isBefore(denseTailStart))
+        }.toMutableList().apply {
             val last = dates.last()
             if (last !in this) add(last)
         }
+    }
 
     private fun stableId(key: String): UUID = UUID.nameUUIDFromBytes(
         "$SEED_NAMESPACE:$key".toByteArray(StandardCharsets.UTF_8)
@@ -366,8 +393,6 @@ internal class DebugDemoDataSeeder(private val application: FudAIApp) {
 
     private companion object {
         const val YEAR_DAYS = 365
-        const val MARKER_FILE = "fud_ai_debug_demo_seed"
-        const val ANCHOR_KEY = "anchor_epoch_day_v1"
         const val SEED_NAMESPACE = "fud-ai-android-debug-year-v1"
 
         val demoWorkoutPreferences = WorkoutPreferences(
