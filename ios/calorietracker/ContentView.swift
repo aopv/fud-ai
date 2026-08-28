@@ -3169,7 +3169,7 @@ struct ProgressTabView: View {
         let _ = profileStore.profile
         return NavigationStack {
             ScrollView {
-                VStack(spacing: 16) {
+                VStack(spacing: 18) {
                     // Segmented Picker
                     Picker("Time Range", selection: $timeRange) {
                         ForEach(TimeRange.allCases, id: \.self) { range in
@@ -3177,6 +3177,7 @@ struct ProgressTabView: View {
                         }
                     }
                     .pickerStyle(.segmented)
+                    .tint(AppColors.calorie)
                     .padding(.horizontal)
 
                     // Weight / Body Fat Trend — single card with a segmented

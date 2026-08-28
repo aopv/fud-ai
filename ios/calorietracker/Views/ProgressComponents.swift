@@ -114,6 +114,27 @@ private struct TrendXAxis {
     }
 }
 
+private struct ProgressCardStyle: ViewModifier {
+    let cornerRadius: CGFloat
+
+    func body(content: Content) -> some View {
+        let shape = RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+        content
+            .background(AppColors.appCard)
+            .overlay {
+                shape.stroke(AppColors.calorie.opacity(0.09), lineWidth: 0.75)
+            }
+            .compositingGroup()
+            .clipShape(shape)
+    }
+}
+
+private extension View {
+    func progressCardStyle(cornerRadius: CGFloat = 20) -> some View {
+        modifier(ProgressCardStyle(cornerRadius: cornerRadius))
+    }
+}
+
 struct WeightChartSection: View {
     let weightEntries: [WeightEntry]
     let goalWeightKg: Double?
@@ -161,13 +182,27 @@ struct WeightChartSection: View {
 
                 Chart {
                     ForEach(chartPoints) { point in
+                        AreaMark(
+                            x: .value("Date", point.date, unit: .day),
+                            yStart: .value("Visible range minimum", weightYDomain.lowerBound),
+                            yEnd: .value("Weight", point.value)
+                        )
+                        .foregroundStyle(
+                            LinearGradient(
+                                colors: [AppColors.calorie.opacity(0.12), AppColors.calorie.opacity(0.01)],
+                                startPoint: .top,
+                                endPoint: .bottom
+                            )
+                        )
+                        .interpolationMethod(.catmullRom)
+
                         LineMark(
                             x: .value("Date", point.date, unit: .day),
                             y: .value("Weight", point.value)
                         )
                         .foregroundStyle(AppColors.calorie)
                         .interpolationMethod(.catmullRom)
-                        .lineStyle(StrokeStyle(lineWidth: 2))
+                        .lineStyle(StrokeStyle(lineWidth: 2.5, lineCap: .round, lineJoin: .round))
 
                         if chartPoints.count <= 31 {
                             PointMark(
@@ -175,7 +210,7 @@ struct WeightChartSection: View {
                                 y: .value("Weight", point.value)
                             )
                             .foregroundStyle(AppColors.calorie)
-                            .symbolSize(30)
+                            .symbolSize(38)
                         }
                     }
 
@@ -208,11 +243,27 @@ struct WeightChartSection: View {
                 .chartYScale(domain: weightYDomain)
                 .chartXAxis {
                     AxisMarks(values: .stride(by: .day, count: xAxis.strideDays)) { _ in
-                        AxisGridLine()
+                        AxisGridLine(stroke: StrokeStyle(lineWidth: 0.6, dash: [3, 4]))
+                            .foregroundStyle(Color.primary.opacity(0.11))
                         AxisValueLabel(format: xAxis.labelFormat)
+                            .foregroundStyle(Color.secondary)
                     }
                 }
-                .frame(height: 180)
+                .chartYAxis {
+                    AxisMarks(position: .trailing, values: .automatic(desiredCount: 5)) {
+                        AxisGridLine(stroke: StrokeStyle(lineWidth: 0.6))
+                            .foregroundStyle(Color.primary.opacity(0.10))
+                        AxisValueLabel()
+                            .foregroundStyle(Color.secondary)
+                    }
+                }
+                .chartPlotStyle { plotArea in
+                    plotArea.background(
+                        AppColors.calorie.opacity(0.025),
+                        in: RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    )
+                }
+                .frame(height: 190)
                 .clipped()
                 .chartOverlay { proxy in
                     GeometryReader { geometry in
@@ -257,8 +308,7 @@ struct WeightChartSection: View {
             }
         }
         .padding()
-        .background(AppColors.appCard)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .progressCardStyle()
     }
 
     /// What actually gets drawn: every entry for short ranges, bucket
@@ -378,16 +428,31 @@ struct CalorieChartSection: View {
                 }
                 .chartXAxis {
                     AxisMarks(values: .stride(by: .day, count: calorieXStride)) { _ in
-                        AxisGridLine()
+                        AxisGridLine(stroke: StrokeStyle(lineWidth: 0.6, dash: [3, 4]))
+                            .foregroundStyle(Color.primary.opacity(0.11))
                         AxisValueLabel(format: .dateTime.month(.abbreviated).day())
+                            .foregroundStyle(Color.secondary)
                     }
                 }
-                .frame(height: 180)
+                .chartYAxis {
+                    AxisMarks(position: .trailing, values: .automatic(desiredCount: 5)) {
+                        AxisGridLine(stroke: StrokeStyle(lineWidth: 0.6))
+                            .foregroundStyle(Color.primary.opacity(0.10))
+                        AxisValueLabel()
+                            .foregroundStyle(Color.secondary)
+                    }
+                }
+                .chartPlotStyle { plotArea in
+                    plotArea.background(
+                        AppColors.calorie.opacity(0.025),
+                        in: RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    )
+                }
+                .frame(height: 190)
             }
         }
         .padding()
-        .background(AppColors.appCard)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .progressCardStyle()
     }
 
     private var calorieXStride: Int {
@@ -420,8 +485,7 @@ struct MacroAveragesSection: View {
             MacroProgressRow(label: "Fat", current: avgFat, goal: fatGoal, color: AppColors.fat, gradientColors: AppColors.fatGradient)
         }
         .padding()
-        .background(AppColors.appCard)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .progressCardStyle()
     }
 }
 
@@ -533,6 +597,12 @@ struct StatBadge: View {
                 .minimumScaleFactor(0.75)
         }
         .frame(maxWidth: .infinity)
+        .padding(.horizontal, 4)
+        .padding(.vertical, 8)
+        .background(
+            AppColors.calorie.opacity(0.055),
+            in: RoundedRectangle(cornerRadius: 10, style: .continuous)
+        )
     }
 }
 
@@ -686,7 +756,7 @@ struct WeightHistoryLink: View {
             }
             .padding(.vertical, 12)
             .padding(.horizontal, 14)
-            .background(AppColors.appCard, in: RoundedRectangle(cornerRadius: 14))
+            .progressCardStyle(cornerRadius: 18)
         }
         .buttonStyle(.plain)
     }
@@ -800,7 +870,7 @@ struct BodyFatHistoryLink: View {
             }
             .padding(.vertical, 12)
             .padding(.horizontal, 14)
-            .background(AppColors.appCard, in: RoundedRectangle(cornerRadius: 14))
+            .progressCardStyle(cornerRadius: 18)
         }
         .buttonStyle(.plain)
     }
@@ -908,7 +978,7 @@ struct BodyMetricsSection: View {
     @State private var metric: BodyMetric = .weight
 
     var body: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: 10) {
             if bodyFatAvailable {
                 Picker("Metric", selection: $metric.animation(.snappy)) {
                     ForEach(BodyMetric.allCases) { m in
@@ -916,6 +986,7 @@ struct BodyMetricsSection: View {
                     }
                 }
                 .pickerStyle(.segmented)
+                .tint(AppColors.calorie)
             }
 
             // Render the active metric. Both children carry their own card
@@ -1004,13 +1075,27 @@ struct BodyFatChartSection: View {
 
                 Chart {
                     ForEach(plottedPoints) { point in
+                        AreaMark(
+                            x: .value("Date", point.date, unit: .day),
+                            yStart: .value("Visible range minimum", bodyFatYDomain.lowerBound),
+                            yEnd: .value("Body Fat", point.value)
+                        )
+                        .foregroundStyle(
+                            LinearGradient(
+                                colors: [AppColors.calorie.opacity(0.12), AppColors.calorie.opacity(0.01)],
+                                startPoint: .top,
+                                endPoint: .bottom
+                            )
+                        )
+                        .interpolationMethod(.catmullRom)
+
                         LineMark(
                             x: .value("Date", point.date, unit: .day),
                             y: .value("Body Fat", point.value)
                         )
                         .foregroundStyle(AppColors.calorie)
                         .interpolationMethod(.catmullRom)
-                        .lineStyle(StrokeStyle(lineWidth: 2))
+                        .lineStyle(StrokeStyle(lineWidth: 2.5, lineCap: .round, lineJoin: .round))
 
                         if showsPointMarks {
                             PointMark(
@@ -1018,7 +1103,7 @@ struct BodyFatChartSection: View {
                                 y: .value("Body Fat", point.value)
                             )
                             .foregroundStyle(AppColors.calorie)
-                            .symbolSize(30)
+                            .symbolSize(38)
                         }
                     }
 
@@ -1031,17 +1116,32 @@ struct BodyFatChartSection: View {
                 .chartYScale(domain: bodyFatYDomain)
                 .chartXAxis {
                     AxisMarks(values: .stride(by: .day, count: xAxis.strideDays)) { _ in
-                        AxisGridLine()
+                        AxisGridLine(stroke: StrokeStyle(lineWidth: 0.6, dash: [3, 4]))
+                            .foregroundStyle(Color.primary.opacity(0.11))
                         AxisValueLabel(format: xAxis.labelFormat)
+                            .foregroundStyle(Color.secondary)
                     }
                 }
-                .frame(height: 180)
+                .chartYAxis {
+                    AxisMarks(position: .trailing, values: .automatic(desiredCount: 5)) {
+                        AxisGridLine(stroke: StrokeStyle(lineWidth: 0.6))
+                            .foregroundStyle(Color.primary.opacity(0.10))
+                        AxisValueLabel()
+                            .foregroundStyle(Color.secondary)
+                    }
+                }
+                .chartPlotStyle { plotArea in
+                    plotArea.background(
+                        AppColors.calorie.opacity(0.025),
+                        in: RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    )
+                }
+                .frame(height: 190)
                 .clipped()
             }
         }
         .padding()
-        .background(AppColors.appCard)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .progressCardStyle()
     }
 
     /// Same plotting policy as WeightChartSection — raw entries for short

@@ -214,7 +214,7 @@ fun ProgressScreen(container: AppContainer) {
                 end = 16.dp,
                 bottom = BottomNavScrollPadding
             ),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(18.dp)
         ) {
             // 1. Segmented TimeRange picker
             item { TimeRangePicker(selected = range, onSelect = { range = it }) }
@@ -225,7 +225,7 @@ fun ProgressScreen(container: AppContainer) {
             //    haven't.
             item {
                 if (bodyFatAvailable) {
-                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                         BodyMetricToggle(selected = bodyMetric, onSelect = { bodyMetric = it })
                         CardSection {
                             when (bodyMetric) {
@@ -471,7 +471,7 @@ private fun TimeRangePicker(selected: TimeRange, onSelect: (TimeRange) -> Unit) 
 private fun CardSection(content: @Composable () -> Unit) {
     FudGlassSurface(
         modifier = Modifier.fillMaxWidth(),
-        cornerRadius = 16.dp,
+        cornerRadius = 20.dp,
         padding = 16.dp
     ) { content() }
 }
@@ -551,7 +551,10 @@ private fun StatBadgeRow(items: List<Pair<String, String>>) {
 @Composable
 private fun StatBadge(label: String, value: String, modifier: Modifier = Modifier) {
     Column(
-        modifier = modifier,
+        modifier = modifier
+            .clip(RoundedCornerShape(10.dp))
+            .background(AppColors.Calorie.copy(alpha = 0.055f))
+            .padding(horizontal = 4.dp, vertical = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {
@@ -596,7 +599,7 @@ private fun WeightChartCanvas(entries: List<WeightEntry>, goalKg: Double?, useMe
     val singleEntry = sortedEntries.size == 1
     val tRange = maxOf(1L, tEnd - tStart)
     val goalLineColor = Color(0xFF34C759).copy(alpha = 0.7f)
-    val gridColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.10f)
+    val gridColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.09f)
     val secondaryColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
     val chartSurfaceColor = MaterialTheme.colorScheme.surface
     val ticks = remember(yMin, yMax) { niceAxisTicks(yMin, yMax, count = 5) }
@@ -625,8 +628,14 @@ private fun WeightChartCanvas(entries: List<WeightEntry>, goalKg: Double?, useMe
         DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.getDefault()).withZone(ZoneId.systemDefault())
     }
 
-    Row(Modifier.fillMaxWidth().height(180.dp)) {
-        BoxWithConstraints(Modifier.weight(1f).fillMaxSize()) {
+    Row(Modifier.fillMaxWidth().height(190.dp)) {
+        BoxWithConstraints(
+            Modifier
+                .weight(1f)
+                .fillMaxSize()
+                .clip(RoundedCornerShape(10.dp))
+                .background(AppColors.Calorie.copy(alpha = 0.025f))
+        ) {
             val canvasWidthPx = with(density) { maxWidth.toPx() }
             val selectedTargetX = selectedPoint?.let { point ->
                 if (singleEntry) canvasWidthPx / 2f
@@ -719,9 +728,24 @@ private fun WeightChartCanvas(entries: List<WeightEntry>, goalKg: Double?, useMe
                 // clipRect: the smoothed curve can overshoot the value range a
                 // touch between points — keep it inside the plot like iOS .clipped()
                 clipRect {
-                    drawPath(smoothTrendPath(offsets), AppColors.Calorie, style = Stroke(width = 5f))
+                    drawPath(
+                        smoothTrendAreaPath(offsets, h),
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                AppColors.Calorie.copy(alpha = 0.12f),
+                                AppColors.Calorie.copy(alpha = 0.01f)
+                            ),
+                            startY = 0f,
+                            endY = h
+                        )
+                    )
+                    drawPath(
+                        smoothTrendPath(offsets),
+                        AppColors.Calorie,
+                        style = Stroke(width = 6f)
+                    )
                     if (showsDots) {
-                        offsets.forEach { drawCircle(AppColors.Calorie, radius = 5.5f, center = it) }
+                        offsets.forEach { drawCircle(AppColors.Calorie, radius = 6f, center = it) }
                     }
 
                     selectedPoint?.let { point ->
@@ -879,6 +903,29 @@ private fun smoothTrendPath(points: List<Offset>): Path {
     return path
 }
 
+/** The same smoothed trend closed against the plot floor, used for the quiet
+ *  accent wash beneath weight and body-fat lines. */
+private fun smoothTrendAreaPath(points: List<Offset>, bottomY: Float): Path {
+    val path = Path()
+    if (points.isEmpty()) return path
+    path.moveTo(points.first().x, bottomY)
+    path.lineTo(points.first().x, points.first().y)
+    for (i in 1 until points.size) {
+        val p0 = points[maxOf(i - 2, 0)]
+        val p1 = points[i - 1]
+        val p2 = points[i]
+        val p3 = points[minOf(i + 1, points.size - 1)]
+        path.cubicTo(
+            p1.x + (p2.x - p0.x) / 6f, p1.y + (p2.y - p0.y) / 6f,
+            p2.x - (p3.x - p1.x) / 6f, p2.y - (p3.y - p1.y) / 6f,
+            p2.x, p2.y
+        )
+    }
+    path.lineTo(points.last().x, bottomY)
+    path.close()
+    return path
+}
+
 /** Compute "nice" axis tick values across [min, max] with approx [count] divisions. */
 private fun niceAxisTicks(min: Double, max: Double, count: Int): List<Double> {
     val range = max - min
@@ -913,7 +960,7 @@ private fun WeightHistoryLink(count: Int, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick),
-        cornerRadius = 16.dp,
+        cornerRadius = 18.dp,
         padding = 14.dp
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -947,7 +994,7 @@ private fun BodyFatHistoryLink(count: Int, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick),
-        cornerRadius = 16.dp,
+        cornerRadius = 18.dp,
         padding = 14.dp
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -979,7 +1026,7 @@ private fun BodyFatHistoryLink(count: Int, onClick: () -> Unit) {
 private fun WorkoutHistoryLink(count: Int, onClick: () -> Unit) {
     FudGlassSurface(
         modifier = Modifier.fillMaxWidth().clickable(onClick = onClick),
-        cornerRadius = 16.dp,
+        cornerRadius = 18.dp,
         padding = 14.dp
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -1047,7 +1094,7 @@ private fun CalorieBarChart(dailyCalories: List<Pair<LocalDate, Int>>, goal: Int
     val gradientStart = AppColors.CalorieStart
     val gradientEnd = AppColors.CalorieEnd
     val goalColor = AppColors.Calorie.copy(alpha = 0.4f)
-    val gridColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.10f)
+    val gridColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.09f)
     val secondaryColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
     val density = androidx.compose.ui.platform.LocalDensity.current
     val ticks = niceAxisTicks(0.0, maxValue, count = 5)
@@ -1055,8 +1102,14 @@ private fun CalorieBarChart(dailyCalories: List<Pair<LocalDate, Int>>, goal: Int
     val xLabelFmt = DateTimeFormatter.ofPattern("MMM d", Locale.US)
 
     Column {
-        Row(Modifier.fillMaxWidth().height(180.dp)) {
-            BoxWithConstraints(Modifier.weight(1f).fillMaxSize()) {
+        Row(Modifier.fillMaxWidth().height(190.dp)) {
+            BoxWithConstraints(
+                Modifier
+                    .weight(1f)
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(AppColors.Calorie.copy(alpha = 0.025f))
+            ) {
                 val barAreaWidthPx = with(density) { maxWidth.toPx() }
                 val n = dailyCalories.size
                 val gap = 4f
@@ -1103,7 +1156,7 @@ private fun CalorieBarChart(dailyCalories: List<Pair<LocalDate, Int>>, goal: Int
                             ),
                             topLeft = Offset(x, y),
                             size = Size(barWidth, barH),
-                            cornerRadius = androidx.compose.ui.geometry.CornerRadius(4f, 4f)
+                            cornerRadius = androidx.compose.ui.geometry.CornerRadius(7f, 7f)
                         )
                     }
                 }
@@ -1642,7 +1695,7 @@ private fun BodyFatChartCanvas(entries: List<BodyFatEntry>, goalFraction: Double
     val singleEntry = entries.size == 1
     val tRange = maxOf(1L, tEnd - tStart)
     val goalLineColor = Color(0xFF34C759).copy(alpha = 0.7f)
-    val gridColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.10f)
+    val gridColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.09f)
     val secondaryColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
     val ticks = niceAxisTicks(yMin, yMax, count = 5)
     val zone = ZoneId.systemDefault()
@@ -1654,8 +1707,14 @@ private fun BodyFatChartCanvas(entries: List<BodyFatEntry>, goalFraction: Double
     val points = downsampleTrend(entries.map { TrendPoint(it.date.toEpochMilli(), it.bodyFatFraction * 100) })
     val showsDots = points.size <= 31
 
-    Row(Modifier.fillMaxWidth().height(180.dp)) {
-        Canvas(Modifier.weight(1f).fillMaxSize()) {
+    Row(Modifier.fillMaxWidth().height(190.dp)) {
+        Canvas(
+            Modifier
+                .weight(1f)
+                .fillMaxSize()
+                .clip(RoundedCornerShape(10.dp))
+                .background(AppColors.Calorie.copy(alpha = 0.025f))
+        ) {
             val w = size.width; val h = size.height
             // Horizontal grid + tick marks
             ticks.forEach { tick ->
@@ -1694,9 +1753,20 @@ private fun BodyFatChartCanvas(entries: List<BodyFatEntry>, goalFraction: Double
                 )
             }
             clipRect {
-                drawPath(smoothTrendPath(offsets), AppColors.Calorie, style = Stroke(width = 5f))
+                drawPath(
+                    smoothTrendAreaPath(offsets, h),
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            AppColors.Calorie.copy(alpha = 0.12f),
+                            AppColors.Calorie.copy(alpha = 0.01f)
+                        ),
+                        startY = 0f,
+                        endY = h
+                    )
+                )
+                drawPath(smoothTrendPath(offsets), AppColors.Calorie, style = Stroke(width = 6f))
                 if (showsDots) {
-                    offsets.forEach { drawCircle(AppColors.Calorie, radius = 5.5f, center = it) }
+                    offsets.forEach { drawCircle(AppColors.Calorie, radius = 6f, center = it) }
                 }
             }
         }

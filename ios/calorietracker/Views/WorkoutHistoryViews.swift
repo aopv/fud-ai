@@ -34,7 +34,13 @@ struct WorkoutHistoryLink: View {
             }
             .padding(.vertical, 12)
             .padding(.horizontal, 14)
-            .background(AppColors.appCard, in: RoundedRectangle(cornerRadius: 14))
+            .background(AppColors.appCard)
+            .overlay {
+                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .stroke(AppColors.calorie.opacity(0.09), lineWidth: 0.75)
+            }
+            .compositingGroup()
+            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
         }
         .buttonStyle(.plain)
         .accessibilityHint("Opens workout calorie history")
