@@ -1371,11 +1371,12 @@ private fun MealSectionHeader(
     onSortDismiss: () -> Unit = {},
     onSortOrderSelected: (FoodLogSortOrder) -> Unit = {}
 ) {
+    val trailingClearance = if (totalCalories != null) 96.dp else 30.dp
     // iOS layout: small dim icon + sentence-case label, regular weight ~17sp.
     Row(
         Modifier
             .fillMaxWidth()
-            .padding(start = 22.dp, end = 30.dp, top = 18.dp, bottom = 10.dp),
+            .padding(start = 22.dp, end = trailingClearance, top = 18.dp, bottom = 10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
