@@ -123,6 +123,22 @@ struct AIRequestConfigurationTests {
         #expect(text?.model == "System Language Model")
     }
 
+    @Test func aiSettingsInfoExplainsEveryRequestRoute() {
+        let expectedPhrases: [(AISettingsInfoTopic, String)] = [
+            (.primaryAI, "includes a photo"),
+            (.textAI, "requests without photos"),
+            (.textFallback, "backs up Primary AI"),
+            (.imageFallback, "never used for text-only requests"),
+            (.speechToText, "Converts microphone audio into text only"),
+            (.speechFallback, "only produces a transcript"),
+        ]
+
+        for (topic, phrase) in expectedPhrases {
+            #expect(!topic.title.isEmpty)
+            #expect(topic.message.localizedCaseInsensitiveContains(phrase))
+        }
+    }
+
     @Test func speechFallbackRejectsNativeAsAProvider() {
         let original = SpeechSettings.selectedFallbackProvider
         defer { SpeechSettings.selectedFallbackProvider = original }

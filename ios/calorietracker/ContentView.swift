@@ -3318,21 +3318,81 @@ private struct SettingsKeyboardDismissalModifier: ViewModifier {
     }
 }
 
+enum AISettingsInfoTopic {
+    case primaryAI
+    case textAI
+    case textFallback
+    case imageFallback
+    case speechToText
+    case speechFallback
+
+    var title: String {
+        switch self {
+        case .primaryAI: "Primary AI"
+        case .textAI: "Text AI"
+        case .textFallback: "Text AI Fallback"
+        case .imageFallback: "Image AI Fallback"
+        case .speechToText: "Speech-to-Text"
+        case .speechFallback: "STT Fallback"
+        }
+    }
+
+    var message: String {
+        switch self {
+        case .primaryAI:
+            "Handles every request that includes a photo. It also handles text-only requests when Use Separate Text Provider is off. When that switch is on, Text AI handles text-only work instead."
+        case .textAI:
+            "An optional provider for requests without photos, including typed food, Coach chat, voice transcripts, goals, and advice. When Use Separate Text Provider is off, Primary AI handles these requests."
+        case .textFallback:
+            "Retries a failed text-only request once. It backs up Text AI when the separate provider is enabled; otherwise it backs up Primary AI for text-only work. It never receives photos."
+        case .imageFallback:
+            "Retries a failed request containing one or more photos. The first attempt always uses Primary AI. This fallback is never used for text-only requests. You may use the same provider with a different model."
+        case .speechToText:
+            "Converts microphone audio into text only. The transcript then follows the normal text route: Text AI when enabled, otherwise Primary AI. Matching provider API keys are reused unless you save a separate STT key."
+        case .speechFallback:
+            "Retries transcription when the selected remote STT provider fails. It only produces a transcript; that transcript still follows the normal text AI route. Native iOS speech already uses Apple's offline and online recognition recovery, so a separate STT fallback is available only for remote providers."
+        }
+    }
+}
+
 private struct AISettingsSubsectionHeader: View {
     let title: String
     let systemImage: String
+    let infoTopic: AISettingsInfoTopic
+
+    @State private var isShowingInfo = false
 
     var body: some View {
-        Label {
-            Text(title)
-                .textCase(.uppercase)
-        } icon: {
-            Image(systemName: systemImage)
+        HStack(spacing: 8) {
+            Label {
+                Text(title)
+                    .textCase(.uppercase)
+            } icon: {
+                Image(systemName: systemImage)
+            }
+            .accessibilityAddTraits(.isHeader)
+
+            Spacer(minLength: 8)
+
+            Button {
+                isShowingInfo = true
+            } label: {
+                Image(systemName: "info.circle")
+                    .font(.system(size: 17, weight: .semibold))
+                    .frame(width: 44, height: 44)
+                    .contentShape(.rect)
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("About \(title)")
+            .accessibilityHint("Shows how this provider is used")
         }
         .font(.system(.subheadline, design: .rounded, weight: .bold))
         .foregroundStyle(AppColors.calorie)
-        .padding(.vertical, 2)
-        .accessibilityAddTraits(.isHeader)
+        .alert(infoTopic.title, isPresented: $isShowingInfo) {
+            Button("Got it", role: .cancel) { }
+        } message: {
+            Text(infoTopic.message)
+        }
     }
 }
 
@@ -4027,7 +4087,11 @@ struct ProfileView: View {
                 .listRowBackground(AppColors.appCard)
 
                 Section {
-                        AISettingsSubsectionHeader(title: "Primary AI", systemImage: "sparkles")
+                        AISettingsSubsectionHeader(
+                            title: "Primary AI",
+                            systemImage: "sparkles",
+                            infoTopic: .primaryAI
+                        )
 
                         Picker(selection: $selectedProvider) {
                             ForEach(AIProvider.visionProviders) { provider in
@@ -4203,7 +4267,11 @@ struct ProfileView: View {
                             }
                         }
 
-                        AISettingsSubsectionHeader(title: "Text AI", systemImage: "text.bubble.fill")
+                        AISettingsSubsectionHeader(
+                            title: "Text AI",
+                            systemImage: "text.bubble.fill",
+                            infoTopic: .textAI
+                        )
 
                     Toggle(isOn: $separateTextProviderEnabled) {
                         Label {
@@ -4357,10 +4425,18 @@ struct ProfileView: View {
                         }
                     }
 
-                        AISettingsSubsectionHeader(title: "Text AI Fallback", systemImage: "text.bubble.fill")
+                        AISettingsSubsectionHeader(
+                            title: "Text AI Fallback",
+                            systemImage: "text.bubble.fill",
+                            infoTopic: .textFallback
+                        )
                         textFallbackSettingsRows
 
-                        AISettingsSubsectionHeader(title: "Image AI Fallback", systemImage: "photo.badge.arrow.down")
+                        AISettingsSubsectionHeader(
+                            title: "Image AI Fallback",
+                            systemImage: "photo.badge.arrow.down",
+                            infoTopic: .imageFallback
+                        )
 
                         Toggle(isOn: $fallbackEnabled) {
                             Label {
@@ -4547,7 +4623,11 @@ struct ProfileView: View {
                             }
                         }
 
-                        AISettingsSubsectionHeader(title: "Speech-to-Text", systemImage: "waveform")
+                        AISettingsSubsectionHeader(
+                            title: "Speech-to-Text",
+                            systemImage: "waveform",
+                            infoTopic: .speechToText
+                        )
 
                         Picker(selection: $selectedSpeechProvider) {
                             ForEach(SpeechProvider.allCases) { provider in
@@ -4572,11 +4652,6 @@ struct ProfileView: View {
                                 selectSpeechFallbackProvider(alternate)
                             }
                         }
-
-                        Text(selectedSpeechProvider.description)
-                            .font(.system(.caption, design: .rounded))
-                            .foregroundStyle(.secondary)
-                            .fixedSize(horizontal: false, vertical: true)
 
                         Picker(selection: $selectedSpeechLanguage) {
                             ForEach(SpeechLanguage.allCases) { language in
@@ -4633,8 +4708,6 @@ struct ProfileView: View {
                         speechFallbackSettingsRows
                 } header: {
                     Text("AI & Voice")
-                } footer: {
-                    Text("Image, text, and remote speech requests each have their own optional fallback. Apple Intelligence is available only as an explicit iOS Text AI choice on supported iPhones.")
                 }
                 .listRowBackground(AppColors.appCard)
 
@@ -5172,14 +5245,13 @@ struct ProfileView: View {
 
     @ViewBuilder
     private var speechFallbackSettingsRows: some View {
-        AISettingsSubsectionHeader(title: "STT Fallback", systemImage: "waveform.badge.plus")
+        AISettingsSubsectionHeader(
+            title: "STT Fallback",
+            systemImage: "waveform.badge.plus",
+            infoTopic: .speechFallback
+        )
 
-        if selectedSpeechProvider == .nativeIOS {
-            Text("Native iOS already retries through Apple's offline and online recognizers. Select a remote STT provider to configure a separate provider fallback.")
-                .font(.system(.caption, design: .rounded))
-                .foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
-        } else {
+        if selectedSpeechProvider != .nativeIOS {
             Toggle(isOn: $speechFallbackEnabled) {
                 Label("Enable STT Fallback", systemImage: "arrow.triangle.2.circlepath")
             }

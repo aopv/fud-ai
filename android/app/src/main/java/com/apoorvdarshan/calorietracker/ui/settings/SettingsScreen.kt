@@ -728,7 +728,8 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
             SectionCard(title = stringResource(R.string.settings_section_ai_voice)) {
                 SettingsSubsectionHeader(
                     title = stringResource(R.string.settings_section_ai),
-                    icon = Icons.Outlined.SmartToy
+                    icon = Icons.Outlined.SmartToy,
+                    infoText = stringResource(R.string.settings_info_primary_ai)
                 )
                 SettingRow(stringResource(R.string.settings_ai_provider), stringResource(ui.selectedAI.displayNameRes), icon = Icons.Outlined.SmartToy) { sheet = SettingsSheet.AI_PROVIDER }
                 HorizontalDivider()
@@ -764,7 +765,8 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                 HorizontalDivider()
                 SettingsSubsectionHeader(
                     title = stringResource(R.string.settings_section_text_ai),
-                    icon = Icons.Outlined.SmartToy
+                    icon = Icons.Outlined.SmartToy,
+                    infoText = stringResource(R.string.settings_info_text_ai)
                 )
                 ToggleRow(
                     stringResource(R.string.settings_use_separate_text_provider),
@@ -809,17 +811,12 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                             ) { sheet = SettingsSheet.REQUEST_TIMEOUT }
                         }
                     }
-                    Text(
-                        stringResource(R.string.settings_text_provider_footer),
-                        fontSize = 12.sp,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
-                    )
                 }
                 HorizontalDivider()
                 SettingsSubsectionHeader(
                     title = stringResource(R.string.settings_section_text_fallback),
-                    icon = Icons.Outlined.Refresh
+                    icon = Icons.Outlined.Refresh,
+                    infoText = stringResource(R.string.settings_info_text_fallback)
                 )
                 ToggleRow(
                     stringResource(R.string.settings_enable_fallback),
@@ -856,17 +853,12 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                             icon = Icons.Outlined.Link
                         ) { sheet = SettingsSheet.TEXT_FALLBACK_BASE_URL }
                     }
-                    Text(
-                        stringResource(R.string.settings_text_fallback_footer),
-                        fontSize = 12.sp,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
-                    )
                 }
                 HorizontalDivider()
                 SettingsSubsectionHeader(
                     title = stringResource(R.string.settings_section_fallback),
-                    icon = Icons.Outlined.Refresh
+                    icon = Icons.Outlined.Refresh,
+                    infoText = stringResource(R.string.settings_info_image_fallback)
                 )
                 ToggleRow(
                     stringResource(R.string.settings_enable_fallback),
@@ -911,17 +903,12 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                             ) { sheet = SettingsSheet.REQUEST_TIMEOUT }
                         }
                     }
-                    Text(
-                        stringResource(R.string.settings_fallback_footer),
-                        fontSize = 12.sp,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
-                    )
                 }
                 HorizontalDivider()
                 SettingsSubsectionHeader(
                     title = stringResource(R.string.settings_section_speech),
-                    icon = Icons.Outlined.Mic
+                    icon = Icons.Outlined.Mic,
+                    infoText = stringResource(R.string.settings_info_speech_to_text)
                 )
                 SettingRow(stringResource(R.string.settings_ai_provider), stringResource(ui.selectedSpeech.displayNameRes), icon = Icons.Outlined.Mic) { sheet = SettingsSheet.SPEECH_PROVIDER }
                 HorizontalDivider()
@@ -930,13 +917,6 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                     stringResource(ui.selectedSpeechLanguage.displayNameRes),
                     icon = Icons.Outlined.Language
                 ) { sheet = SettingsSheet.SPEECH_LANGUAGE }
-                HorizontalDivider()
-                Text(
-                    stringResource(ui.selectedSpeech.descriptionRes),
-                    fontSize = 12.sp,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
-                )
                 if (ui.selectedSpeech.requiresApiKey) {
                     HorizontalDivider()
                     SettingRow(
@@ -948,16 +928,10 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                 HorizontalDivider()
                 SettingsSubsectionHeader(
                     title = stringResource(R.string.settings_section_speech_fallback),
-                    icon = Icons.Outlined.Refresh
+                    icon = Icons.Outlined.Refresh,
+                    infoText = stringResource(R.string.settings_info_speech_fallback)
                 )
-                if (ui.selectedSpeech == SpeechProvider.NATIVE) {
-                    Text(
-                        stringResource(R.string.settings_native_speech_fallback_footer),
-                        fontSize = 12.sp,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
-                    )
-                } else {
+                if (ui.selectedSpeech != SpeechProvider.NATIVE) {
                     ToggleRow(
                         stringResource(R.string.settings_enable_fallback),
                         ui.speechFallbackEnabled,
@@ -983,12 +957,6 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                             ui.speechFallbackApiKeyMasked.ifEmpty { stringResource(R.string.settings_not_set) },
                             icon = Icons.Outlined.Key
                         ) { sheet = SettingsSheet.SPEECH_FALLBACK_KEY }
-                        Text(
-                            stringResource(R.string.settings_speech_fallback_footer),
-                            fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
-                        )
                     }
                 }
             }
@@ -3280,7 +3248,13 @@ private fun SectionCard(title: String? = null, content: @Composable () -> Unit) 
 }
 
 @Composable
-private fun SettingsSubsectionHeader(title: String, icon: ImageVector) {
+private fun SettingsSubsectionHeader(
+    title: String,
+    icon: ImageVector,
+    infoText: String
+) {
+    var showInfo by remember { mutableStateOf(false) }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -3300,6 +3274,37 @@ private fun SettingsSubsectionHeader(title: String, icon: ImageVector) {
             fontWeight = FontWeight.Bold,
             color = AppColors.Calorie
         )
+        Spacer(Modifier.weight(1f))
+        IconButton(
+            onClick = { showInfo = true },
+            modifier = Modifier.size(40.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.Info,
+                contentDescription = stringResource(R.string.settings_info_about_format, title),
+                tint = AppColors.Calorie,
+                modifier = Modifier.size(20.dp)
+            )
+        }
+    }
+
+    if (showInfo) {
+        FudGlassDialog(onDismissRequest = { showInfo = false }) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = infoText,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.78f)
+            )
+            FudGlassDialogActions(
+                primaryText = stringResource(R.string.action_done),
+                onPrimary = { showInfo = false }
+            )
+        }
     }
 }
 
