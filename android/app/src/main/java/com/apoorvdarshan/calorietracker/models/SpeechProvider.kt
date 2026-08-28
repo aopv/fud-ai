@@ -11,6 +11,7 @@ enum class SpeechProvider {
     @SerialName("Gemini Audio") GEMINI,
     @SerialName("OpenAI Whisper") OPENAI,
     @SerialName("Groq (Whisper)") GROQ,
+    @SerialName("Mistral Voxtral") MISTRAL,
     @SerialName("Deepgram") DEEPGRAM,
     @SerialName("AssemblyAI") ASSEMBLY_AI;
 
@@ -20,6 +21,7 @@ enum class SpeechProvider {
         GEMINI -> R.string.speech_provider_gemini
         OPENAI -> R.string.speech_provider_openai
         GROQ -> R.string.speech_provider_groq
+        MISTRAL -> R.string.speech_provider_mistral
         DEEPGRAM -> R.string.speech_provider_deepgram
         ASSEMBLY_AI -> R.string.speech_provider_assemblyai
     }
@@ -32,15 +34,17 @@ enum class SpeechProvider {
         GEMINI -> R.string.speech_key_placeholder_gemini
         OPENAI -> R.string.speech_key_placeholder_openai
         GROQ -> R.string.speech_key_placeholder_groq
+        MISTRAL -> R.string.speech_key_placeholder_mistral
         DEEPGRAM -> R.string.speech_key_placeholder_deepgram
         ASSEMBLY_AI -> R.string.speech_key_placeholder_assemblyai
     }
 
     val defaultModel: String get() = when (this) {
         NATIVE -> ""
-        GEMINI -> "gemini-3.5-flash"           // 2.5-flash deprecated, shutdown Oct 2026
-        OPENAI -> "gpt-4o-mini-transcribe"     // same $/min as whisper-1, better accuracy
+        GEMINI -> "gemini-3.5-transcribe"
+        OPENAI -> "gpt-transcribe"
         GROQ -> "whisper-large-v3"
+        MISTRAL -> "voxtral-mini-2602"
         DEEPGRAM -> "nova-3"
         ASSEMBLY_AI -> "universal-3-pro"
     }
@@ -51,6 +55,7 @@ enum class SpeechProvider {
         GEMINI -> R.string.speech_description_gemini
         OPENAI -> R.string.speech_description_openai
         GROQ -> R.string.speech_description_groq
+        MISTRAL -> R.string.speech_description_mistral
         DEEPGRAM -> R.string.speech_description_deepgram
         ASSEMBLY_AI -> R.string.speech_description_assemblyai
     }

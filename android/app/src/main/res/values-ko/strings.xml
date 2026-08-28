@@ -136,7 +136,7 @@
 
     <!-- Speech Provider -->
     <string name="speech_provider_native">기본 (기기 내장)</string>
-    <string name="speech_provider_openai">OpenAI Whisper</string>
+    <string name="speech_provider_openai">OpenAI GPT-Transcribe</string>
     <string name="speech_provider_groq">Groq (Whisper)</string>
     <string name="speech_provider_deepgram">Deepgram</string>
     <string name="speech_provider_assemblyai">AssemblyAI</string>
@@ -148,7 +148,7 @@
     <string name="speech_key_placeholder_assemblyai">AssemblyAI 키</string>
 
     <string name="speech_description_native">Android의 기기 내장 음성 인식. 무료이며 대부분의 기기에서 오프라인으로 작동하고 실시간 부분 결과를 제공합니다. 권장 기본값.</string>
-    <string name="speech_description_openai">OpenAI Whisper API. 높은 정확도, 99개 이상의 언어 지원, 분당 유료.</string>
+    <string name="speech_description_openai">OpenAI GPT-Transcribe API. 높은 정확도, 99개 이상의 언어 지원, 분당 유료.</string>
     <string name="speech_description_groq">Groq에서 호스팅하는 Whisper Large v3. 매우 빠른 추론, 무료 등급 제공.</string>
     <string name="speech_description_deepgram">Deepgram Nova. 실시간 및 일괄 모드 지원, 빠르고 정확함.</string>
     <string name="speech_description_assemblyai">AssemblyAI Universal 모델. 높은 정확도, 무료 등급 제공.</string>

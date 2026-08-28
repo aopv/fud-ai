@@ -32,6 +32,48 @@ final class calorietrackerUITests: XCTestCase {
     }
 
     @MainActor
+    func testSpeechProviderPickerShowsCurrentRegistry() throws {
+        let app = XCUIApplication()
+        app.launchArguments += [
+            "-AppleLanguages", "(en)",
+            "-selectedSpeechProvider", "Native iOS (On-Device)",
+        ]
+        app.launch()
+
+        let settings = app.tabBars.buttons["Settings"]
+        XCTAssertTrue(settings.waitForExistence(timeout: 8))
+        settings.tap()
+
+        let speechSection = app.staticTexts["Speech-to-Text"]
+        for _ in 0..<12 where !speechSection.exists {
+            app.swipeUp()
+        }
+        XCTAssertTrue(speechSection.waitForExistence(timeout: 3))
+
+        let providerPicker = app.buttons.matching(
+            NSPredicate(format: "label CONTAINS[c] %@", "Native iOS")
+        ).firstMatch
+        XCTAssertTrue(providerPicker.waitForExistence(timeout: 3))
+        providerPicker.tap()
+
+        for provider in [
+            "Native iOS (On-Device)",
+            "Gemini Audio",
+            "OpenAI GPT-Transcribe",
+            "Groq (Whisper)",
+            "Mistral Voxtral",
+            "Deepgram",
+            "AssemblyAI",
+        ] {
+            let providerButton = app.buttons[provider]
+            if !providerButton.exists {
+                app.swipeUp()
+            }
+            XCTAssertTrue(providerButton.waitForExistence(timeout: 3), "Missing \(provider)")
+        }
+    }
+
+    @MainActor
     func testLaunchPerformance() throws {
         // This measures how long it takes to launch your application.
         measure(metrics: [XCTApplicationLaunchMetric()]) {

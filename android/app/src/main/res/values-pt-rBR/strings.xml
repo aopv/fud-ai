@@ -136,7 +136,7 @@
 
     <!-- Speech Provider -->
     <string name="speech_provider_native">Nativo (no dispositivo)</string>
-    <string name="speech_provider_openai">OpenAI Whisper</string>
+    <string name="speech_provider_openai">OpenAI GPT-Transcribe</string>
     <string name="speech_provider_groq">Groq (Whisper)</string>
     <string name="speech_provider_deepgram">Deepgram</string>
     <string name="speech_provider_assemblyai">AssemblyAI</string>
@@ -148,7 +148,7 @@
     <string name="speech_key_placeholder_assemblyai">Sua chave AssemblyAI</string>
 
     <string name="speech_description_native">Reconhecimento de voz no dispositivo do Android. Grátis, funciona offline na maioria dos celulares, com resultados parciais em tempo real. Padrão recomendado.</string>
-    <string name="speech_description_openai">API do OpenAI Whisper. Alta precisão, mais de 99 idiomas, cobrado por minuto.</string>
+    <string name="speech_description_openai">API do OpenAI GPT-Transcribe. Alta precisão, mais de 99 idiomas, cobrado por minuto.</string>
     <string name="speech_description_groq">Whisper Large v3 hospedado no Groq. Inferência muito rápida, com camada gratuita.</string>
     <string name="speech_description_deepgram">Deepgram Nova. Modos em tempo real e em lote, rápido e preciso.</string>
     <string name="speech_description_assemblyai">Modelo Universal da AssemblyAI. Boa precisão, com camada gratuita disponível.</string>

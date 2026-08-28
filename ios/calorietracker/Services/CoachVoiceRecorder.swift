@@ -56,7 +56,7 @@ final class CoachVoiceRecorder {
             startNative()
         } else {
             guard SpeechSettings.apiKey(for: provider) != nil else {
-                fail("No API key for \(provider.rawValue). Add one in Settings → Speech-to-Text.")
+                fail("No API key for \(provider.displayName). Add one in Settings → Speech-to-Text.")
                 return
             }
             startRemote()

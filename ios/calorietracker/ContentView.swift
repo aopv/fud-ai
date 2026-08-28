@@ -4403,7 +4403,7 @@ struct ProfileView: View {
                         Section {
                         Picker(selection: $selectedSpeechProvider) {
                             ForEach(SpeechProvider.allCases) { provider in
-                                Text(provider.rawValue).tag(provider)
+                                Text(provider.displayName).tag(provider)
                             }
                         } label: {
                             Label {

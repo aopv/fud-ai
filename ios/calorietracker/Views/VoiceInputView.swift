@@ -49,7 +49,7 @@ struct VoiceInputView: View {
             HStack(spacing: 6) {
                 Image(systemName: provider.icon)
                     .font(.system(size: 11, weight: .semibold))
-                Text(provider.rawValue)
+                Text(provider.displayName)
                     .font(.system(.caption2, design: .rounded, weight: .medium))
             }
             .foregroundStyle(AppColors.calorie)
@@ -71,7 +71,7 @@ struct VoiceInputView: View {
                 if isTranscribing {
                     HStack(spacing: 10) {
                         ProgressView()
-                        Text("Transcribing via \(provider.rawValue)…")
+                        Text("Transcribing via \(provider.displayName)…")
                             .font(.footnote)
                             .foregroundStyle(.secondary)
                     }
@@ -177,7 +177,7 @@ struct VoiceInputView: View {
             startNativeRecording()
         } else {
             if SpeechSettings.apiKey(for: provider) == nil {
-                permissionError = "No API key configured for \(provider.rawValue). Add one in Settings → Speech-to-Text."
+                permissionError = "No API key configured for \(provider.displayName). Add one in Settings → Speech-to-Text."
                 return
             }
             startRemoteRecording()

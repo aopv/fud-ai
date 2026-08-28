@@ -217,9 +217,10 @@ struct AIModelRegistryTests {
     @Test func speechProviderDefaultsMatchTheApprovedModels() {
         let defaults: [(provider: SpeechProvider, model: String)] = [
             (.nativeIOS, ""),
-            (.gemini, "gemini-3.5-flash"),
-            (.openai, "gpt-4o-mini-transcribe"),
+            (.gemini, "gemini-3.5-transcribe"),
+            (.openai, "gpt-transcribe"),
             (.groq, "whisper-large-v3"),
+            (.mistral, "voxtral-mini-2602"),
             (.deepgram, "nova-3"),
             (.assemblyai, "universal-3-pro"),
         ]
@@ -228,6 +229,37 @@ struct AIModelRegistryTests {
         for entry in defaults {
             #expect(entry.provider.defaultModel == entry.model)
         }
+    }
+
+    @Test func geminiSpeechInteractionUsesTheDedicatedTranscriptionSchema() throws {
+        let body = SpeechService.geminiInteractionBody(
+            model: SpeechProvider.gemini.defaultModel,
+            fileURI: "https://generativelanguage.googleapis.com/v1beta/files/audio",
+            mimeType: "audio/m4a",
+            languageCode: "hi"
+        )
+
+        #expect(body["model"] as? String == "gemini-3.5-transcribe")
+        let input = try #require(body["input"] as? [[String: Any]])
+        #expect(input.first?["type"] as? String == "audio")
+        #expect(input.first?["mime_type"] as? String == "audio/m4a")
+
+        let generationConfig = try #require(body["generation_config"] as? [String: Any])
+        let transcriptionConfig = try #require(generationConfig["transcription_config"] as? [String: Any])
+        #expect(transcriptionConfig["language_codes"] as? [String] == ["hi"])
+        #expect((transcriptionConfig["mode"] as? [String: String])?["type"] == "smart")
+    }
+
+    @Test func geminiSpeechResponseParserSupportsCurrentInteractionShapes() throws {
+        let outputsData = try JSONSerialization.data(withJSONObject: [
+            "outputs": [["type": "text", "text": "  two eggs and toast  "]]
+        ])
+        #expect(SpeechService.geminiTranscript(from: outputsData) == "two eggs and toast")
+
+        let stepsData = try JSONSerialization.data(withJSONObject: [
+            "steps": [["content": [["type": "text", "text": "Greek yogurt"]]]]
+        ])
+        #expect(SpeechService.geminiTranscript(from: stepsData) == "Greek yogurt")
     }
 
     @Test func assemblyAIAutomaticLanguagePayloadUsesTheApprovedFallbackModels() throws {

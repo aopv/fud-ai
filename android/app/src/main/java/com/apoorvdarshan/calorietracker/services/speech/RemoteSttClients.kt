@@ -3,6 +3,17 @@ package com.apoorvdarshan.calorietracker.services.speech
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.buildJsonArray
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.put
+import kotlinx.serialization.json.putJsonArray
+import kotlinx.serialization.json.putJsonObject
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
@@ -13,7 +24,6 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
 import java.io.IOException
-import java.util.Base64
 
 sealed class SttApiError(message: String) : Exception(message) {
     object NoApiKey : SttApiError("No STT API key configured.")
@@ -24,7 +34,7 @@ sealed class SttApiError(message: String) : Exception(message) {
 }
 
 /**
- * OpenAI Whisper + Groq share /v1/audio/transcriptions (multipart).
+ * OpenAI, Groq, and Mistral share /v1/audio/transcriptions (multipart).
  */
 object WhisperClient {
     suspend fun transcribe(
@@ -53,8 +63,7 @@ object WhisperClient {
 }
 
 /**
- * Gemini API audio understanding via generateContent. This is batch audio
- * transcription, not Google Cloud Speech-to-Text's dedicated real-time STT API.
+ * Gemini 3.5 Transcribe uses the Files API followed by the Interactions API.
  */
 object GeminiAudioClient {
     suspend fun transcribe(
@@ -64,50 +73,127 @@ object GeminiAudioClient {
         audio: File,
         languageCode: String? = null
     ): String = withContext(Dispatchers.IO) {
-        val languageInstruction = if (!languageCode.isNullOrBlank()) {
-            " Prefer language code $languageCode when interpreting speech, but preserve the spoken language if it is clearly different."
-        } else {
-            ""
+        val uploadedFile = uploadAudio(client, apiKey, audio)
+        try {
+            val body = interactionPayload(
+                model = model,
+                fileUri = uploadedFile.uri,
+                mimeType = "audio/m4a",
+                languageCode = languageCode
+            ).toRequestBody("application/json; charset=utf-8".toMediaType())
+
+            val req = Request.Builder()
+                .url("https://generativelanguage.googleapis.com/v1beta/interactions")
+                .addHeader("Content-Type", "application/json")
+                .addHeader("X-goog-api-key", apiKey)
+                .post(body)
+                .build()
+
+            transcriptFromResponse(runRequestRaw(client, req)) ?: throw SttApiError.InvalidResponse
+        } finally {
+            deleteFile(client, apiKey, uploadedFile.name)
         }
-        val prompt = """
-            Transcribe this audio to text for a food logging app.$languageInstruction
-            Return only the transcript text. Do not add summaries, labels, markdown, timestamps, or quotes.
-        """.trimIndent()
+    }
 
-        val parts = JSONArray()
-            .put(
-                JSONObject().put(
-                    "inlineData",
-                    JSONObject()
-                        .put("mimeType", "audio/m4a")
-                        .put("data", Base64.getEncoder().encodeToString(audio.readBytes()))
-                )
-            )
-            .put(JSONObject().put("text", prompt))
+    internal fun interactionPayload(
+        model: String,
+        fileUri: String,
+        mimeType: String,
+        languageCode: String?
+    ): String {
+        val languageCodes = buildJsonArray {
+            if (!languageCode.isNullOrBlank()) add(JsonPrimitive(languageCode))
+        }
+        return buildJsonObject {
+            put("model", model)
+            putJsonArray("input") {
+                add(buildJsonObject {
+                    put("type", "audio")
+                    put("uri", fileUri)
+                    put("mime_type", mimeType)
+                })
+            }
+            putJsonObject("generation_config") {
+                putJsonObject("transcription_config") {
+                    put("language_codes", languageCodes)
+                    putJsonObject("mode") { put("type", "smart") }
+                }
+            }
+        }.toString()
+    }
 
-        val body = JSONObject()
-            .put("contents", JSONArray().put(JSONObject().put("parts", parts)))
+    internal fun transcriptFromResponse(responseBody: String): String? = runCatching {
+        val json = Json.parseToJsonElement(responseBody).jsonObject
+        json["output_text"]?.jsonPrimitive?.contentOrNull?.trim()
+            ?.takeIf { it.isNotBlank() }
+            ?.let { return@runCatching it }
+
+        json["outputs"]?.jsonArray?.firstNotNullOfOrNull { output ->
+            output.jsonObject["text"]?.jsonPrimitive?.contentOrNull?.trim()?.takeIf { it.isNotBlank() }
+        }?.let { return@runCatching it }
+
+        json["steps"]?.jsonArray?.firstNotNullOfOrNull { step ->
+            step.jsonObject["content"]?.jsonArray?.firstNotNullOfOrNull { content ->
+                content.jsonObject["text"]?.jsonPrimitive?.contentOrNull?.trim()?.takeIf { it.isNotBlank() }
+            }
+        }
+    }.getOrNull()
+
+    private data class UploadedFile(val uri: String, val name: String)
+
+    private suspend fun uploadAudio(client: OkHttpClient, apiKey: String, audio: File): UploadedFile {
+        val metadata = JSONObject()
+            .put("file", JSONObject().put("display_name", "fud-ai-speech.m4a"))
             .toString()
             .toRequestBody("application/json; charset=utf-8".toMediaType())
-
-        val req = Request.Builder()
-            .url("https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent")
-            .addHeader("Content-Type", "application/json")
+        val startRequest = Request.Builder()
+            .url("https://generativelanguage.googleapis.com/upload/v1beta/files")
             .addHeader("X-goog-api-key", apiKey)
-            .post(body)
+            .addHeader("X-Goog-Upload-Protocol", "resumable")
+            .addHeader("X-Goog-Upload-Command", "start")
+            .addHeader("X-Goog-Upload-Header-Content-Length", audio.length().toString())
+            .addHeader("X-Goog-Upload-Header-Content-Type", "audio/m4a")
+            .post(metadata)
             .build()
 
-        val responseBody = runRequestRaw(client, req)
-        runCatching {
-            val partsJson = JSONObject(responseBody)
-                .getJSONArray("candidates")
-                .getJSONObject(0)
-                .getJSONObject("content")
-                .getJSONArray("parts")
-            (0 until partsJson.length()).firstNotNullOfOrNull { index ->
-                partsJson.getJSONObject(index).optString("text").takeIf { it.isNotBlank() }
-            }?.trim()
-        }.getOrNull()?.takeIf { it.isNotBlank() } ?: throw SttApiError.InvalidResponse
+        val uploadUrl = try {
+            client.newCall(startRequest).execute().use { response ->
+                val responseBody = response.body?.string().orEmpty()
+                if (!response.isSuccessful) {
+                    throw SttApiError.Api("STT HTTP ${response.code}: ${responseBody.take(200)}")
+                }
+                response.header("X-Goog-Upload-URL")
+                    ?: throw SttApiError.Api("Gemini upload URL was missing from the response.")
+            }
+        } catch (io: IOException) {
+            throw SttApiError.Network(io)
+        }
+
+        val uploadRequest = Request.Builder()
+            .url(uploadUrl)
+            .addHeader("Content-Length", audio.length().toString())
+            .addHeader("X-Goog-Upload-Offset", "0")
+            .addHeader("X-Goog-Upload-Command", "upload, finalize")
+            .post(audio.asRequestBody("audio/m4a".toMediaType()))
+            .build()
+        val file = JSONObject(runRequestRaw(client, uploadRequest)).optJSONObject("file")
+            ?: throw SttApiError.InvalidResponse
+        val uri = file.optString("uri").takeIf { it.isNotBlank() } ?: throw SttApiError.InvalidResponse
+        val name = file.optString("name").takeIf { it.isNotBlank() } ?: throw SttApiError.InvalidResponse
+        return UploadedFile(uri, name)
+    }
+
+    private fun deleteFile(client: OkHttpClient, apiKey: String, name: String) {
+        val request = Request.Builder()
+            .url("https://generativelanguage.googleapis.com/v1beta/$name")
+            .addHeader("X-goog-api-key", apiKey)
+            .delete()
+            .build()
+        try {
+            client.newCall(request).execute().close()
+        } catch (_: IOException) {
+            // Files auto-expire, so cleanup failure must not hide the transcript result.
+        }
     }
 }
 

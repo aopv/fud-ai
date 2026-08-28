@@ -2,7 +2,12 @@ package com.apoorvdarshan.calorietracker.services.ai
 
 import com.apoorvdarshan.calorietracker.models.AIProvider
 import com.apoorvdarshan.calorietracker.models.SpeechProvider
+import com.apoorvdarshan.calorietracker.services.speech.GeminiAudioClient
 import java.util.concurrent.TimeUnit
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import okhttp3.OkHttpClient
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -177,9 +182,10 @@ class AIRequestConfigurationTest {
     fun speechProviderDefaultsMatchIosRegistry() {
         val defaults = linkedMapOf(
             SpeechProvider.NATIVE to "",
-            SpeechProvider.GEMINI to "gemini-3.5-flash",
-            SpeechProvider.OPENAI to "gpt-4o-mini-transcribe",
+            SpeechProvider.GEMINI to "gemini-3.5-transcribe",
+            SpeechProvider.OPENAI to "gpt-transcribe",
             SpeechProvider.GROQ to "whisper-large-v3",
+            SpeechProvider.MISTRAL to "voxtral-mini-2602",
             SpeechProvider.DEEPGRAM to "nova-3",
             SpeechProvider.ASSEMBLY_AI to "universal-3-pro"
         )
@@ -188,6 +194,41 @@ class AIRequestConfigurationTest {
         defaults.forEach { (provider, model) ->
             assertEquals(model, provider.defaultModel)
         }
+    }
+
+    @Test
+    fun geminiSpeechInteractionUsesTheDedicatedTranscriptionSchema() {
+        val payload = Json.parseToJsonElement(GeminiAudioClient.interactionPayload(
+            model = SpeechProvider.GEMINI.defaultModel,
+            fileUri = "https://generativelanguage.googleapis.com/v1beta/files/audio",
+            mimeType = "audio/m4a",
+            languageCode = "hi"
+        )).jsonObject
+
+        assertEquals("gemini-3.5-transcribe", payload.getValue("model").jsonPrimitive.content)
+        val audioInput = payload.getValue("input").jsonArray.first().jsonObject
+        assertEquals("audio", audioInput.getValue("type").jsonPrimitive.content)
+        assertEquals("audio/m4a", audioInput.getValue("mime_type").jsonPrimitive.content)
+        val transcriptionConfig = payload.getValue("generation_config").jsonObject
+            .getValue("transcription_config").jsonObject
+        assertEquals("hi", transcriptionConfig.getValue("language_codes").jsonArray.first().jsonPrimitive.content)
+        assertEquals("smart", transcriptionConfig.getValue("mode").jsonObject.getValue("type").jsonPrimitive.content)
+    }
+
+    @Test
+    fun geminiSpeechResponseParserSupportsCurrentInteractionShapes() {
+        assertEquals(
+            "two eggs and toast",
+            GeminiAudioClient.transcriptFromResponse(
+                """{"outputs":[{"type":"text","text":"  two eggs and toast  "}]}"""
+            )
+        )
+        assertEquals(
+            "Greek yogurt",
+            GeminiAudioClient.transcriptFromResponse(
+                """{"steps":[{"content":[{"type":"text","text":"Greek yogurt"}]}]}"""
+            )
+        )
     }
 
     @Test

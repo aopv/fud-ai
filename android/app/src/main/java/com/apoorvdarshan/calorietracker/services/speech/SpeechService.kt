@@ -51,6 +51,14 @@ class SpeechService(
                 audio = audio,
                 languageCode = languageCode
             )
+            SpeechProvider.MISTRAL -> WhisperClient.transcribe(
+                client = okHttp,
+                baseUrl = "https://api.mistral.ai/v1",
+                apiKey = apiKey!!,
+                model = provider.defaultModel,
+                audio = audio,
+                languageCode = languageCode
+            )
             SpeechProvider.DEEPGRAM -> DeepgramClient.transcribe(
                 client = okHttp,
                 apiKey = apiKey!!,

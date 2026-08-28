@@ -5,10 +5,20 @@ enum SpeechProvider: String, CaseIterable, Codable, Identifiable {
     case gemini = "Gemini Audio"
     case openai = "OpenAI Whisper"
     case groq = "Groq (Whisper)"
+    case mistral = "Mistral Voxtral"
     case deepgram = "Deepgram"
     case assemblyai = "AssemblyAI"
 
     var id: String { rawValue }
+
+    /// User-facing provider name. Raw values stay stable because they are also
+    /// used for persisted settings and Keychain lookup keys.
+    var displayName: String {
+        switch self {
+        case .openai: "OpenAI GPT-Transcribe"
+        default: rawValue
+        }
+    }
 
     var icon: String {
         switch self {
@@ -16,6 +26,7 @@ enum SpeechProvider: String, CaseIterable, Codable, Identifiable {
         case .gemini: "sparkle"
         case .openai: "waveform"
         case .groq: "hare.fill"
+        case .mistral: "wind"
         case .deepgram: "waveform.path.ecg"
         case .assemblyai: "text.bubble.fill"
         }
@@ -29,6 +40,7 @@ enum SpeechProvider: String, CaseIterable, Codable, Identifiable {
         case .gemini: "AIza..."
         case .openai: "sk-..."
         case .groq: "gsk_..."
+        case .mistral: "Your Mistral API key"
         case .deepgram: "Token your-deepgram-key"
         case .assemblyai: "Your AssemblyAI key"
         }
@@ -38,9 +50,10 @@ enum SpeechProvider: String, CaseIterable, Codable, Identifiable {
     var defaultModel: String {
         switch self {
         case .nativeIOS: ""
-        case .gemini: "gemini-3.5-flash"          // 2.5-flash deprecated, shutdown Oct 2026
-        case .openai: "gpt-4o-mini-transcribe"    // same $/min as whisper-1, better accuracy
+        case .gemini: "gemini-3.5-transcribe"
+        case .openai: "gpt-transcribe"
         case .groq: "whisper-large-v3"
+        case .mistral: "voxtral-mini-2602"
         case .deepgram: "nova-3"
         case .assemblyai: "universal-3-pro"
         }
@@ -55,18 +68,23 @@ enum SpeechProvider: String, CaseIterable, Codable, Identifiable {
             )
         case .gemini:
             LocalizedDisplayText.text(
-                "Gemini API audio transcription. Uses batch audio understanding, not Google Cloud's real-time Speech-to-Text API.",
-                polish: "Transkrypcja audio przez Gemini API. Używa wsadowego rozumienia audio, a nie czasu rzeczywistego Google Cloud Speech-to-Text."
+                "Gemini 3.5 Transcribe for accurate batch transcription with automatic language detection.",
+                polish: "Gemini 3.5 Transcribe do dokładnej transkrypcji wsadowej z automatycznym wykrywaniem języka."
             )
         case .openai:
             LocalizedDisplayText.text(
-                "OpenAI Whisper API. High accuracy, 99+ languages, paid per minute.",
-                polish: "OpenAI Whisper API. Wysoka dokładność, ponad 99 języków, rozliczanie za minutę."
+                "OpenAI GPT-Transcribe, the current high-accuracy model for recorded audio.",
+                polish: "OpenAI GPT-Transcribe, aktualny model o wysokiej dokładności do nagranego dźwięku."
             )
         case .groq:
             LocalizedDisplayText.text(
                 "Groq-hosted Whisper Large v3. Very fast inference, has a free tier.",
                 polish: "Whisper Large v3 hostowany przez Groq. Bardzo szybkie wnioskowanie, dostępny darmowy limit."
+            )
+        case .mistral:
+            LocalizedDisplayText.text(
+                "Voxtral Mini Transcribe 2 for accurate multilingual batch transcription.",
+                polish: "Voxtral Mini Transcribe 2 do dokładnej wielojęzycznej transkrypcji wsadowej."
             )
         case .deepgram:
             LocalizedDisplayText.text(
@@ -223,7 +241,7 @@ struct SpeechSettings {
         switch provider {
         case .nativeIOS:
             .device
-        case .gemini, .openai, .groq:
+        case .gemini, .openai, .groq, .mistral:
             .automatic
         case .deepgram:
             .device

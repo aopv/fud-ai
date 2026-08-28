@@ -146,8 +146,9 @@
     <!-- Speech Provider -->
     <string name="speech_provider_native">Native (On-Device)</string>
     <string name="speech_provider_gemini">Gemini Audio</string>
-    <string name="speech_provider_openai">OpenAI Whisper</string>
+    <string name="speech_provider_openai">OpenAI GPT-Transcribe</string>
     <string name="speech_provider_groq">Groq (Whisper)</string>
+    <string name="speech_provider_mistral">Mistral Voxtral</string>
     <string name="speech_provider_deepgram">Deepgram</string>
     <string name="speech_provider_assemblyai">AssemblyAI</string>
 
@@ -155,13 +156,15 @@
     <string name="speech_key_placeholder_gemini">AIza…</string>
     <string name="speech_key_placeholder_openai">sk-…</string>
     <string name="speech_key_placeholder_groq">gsk_…</string>
+    <string name="speech_key_placeholder_mistral">Your Mistral API key</string>
     <string name="speech_key_placeholder_deepgram">Token your-deepgram-key</string>
     <string name="speech_key_placeholder_assemblyai">Your AssemblyAI key</string>
 
     <string name="speech_description_native">Android\'s on-device speech recognition. Free, works offline on most phones, real-time partial results. Recommended default.</string>
-    <string name="speech_description_gemini">Gemini API audio transcription. Uses batch audio understanding, not Google Cloud\'s real-time Speech-to-Text API.</string>
-    <string name="speech_description_openai">OpenAI Whisper API. High accuracy, 99+ languages, paid per minute.</string>
+    <string name="speech_description_gemini">Gemini 3.5 Transcribe for accurate batch transcription with automatic language detection.</string>
+    <string name="speech_description_openai">OpenAI GPT-Transcribe, the current high-accuracy model for recorded audio.</string>
     <string name="speech_description_groq">Groq-hosted Whisper Large v3. Very fast inference, has a free tier.</string>
+    <string name="speech_description_mistral">Voxtral Mini Transcribe 2 for accurate multilingual batch transcription.</string>
     <string name="speech_description_deepgram">Deepgram Nova. Real-time and batch modes, fast and accurate.</string>
     <string name="speech_description_assemblyai">AssemblyAI Universal model. Strong accuracy, free tier available.</string>
 

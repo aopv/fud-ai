@@ -72,6 +72,15 @@ struct SpeechService {
                 apiKey: resolvedAPIKey,
                 languageCode: languageCode
             )
+        case .mistral:
+            return try await callOpenAIWhisper(
+                baseURL: "https://api.mistral.ai/v1",
+                model: provider.defaultModel,
+                audioData: audioData,
+                apiKey: resolvedAPIKey,
+                languageCode: languageCode,
+                responseFormat: nil
+            )
         case .deepgram:
             return try await callDeepgram(model: provider.defaultModel, audioData: audioData, apiKey: resolvedAPIKey, languageCode: languageCode)
         case .assemblyai:
@@ -86,69 +95,164 @@ struct SpeechService {
 
     // MARK: - Gemini Audio
 
-    /// Gemini API audio understanding via generateContent. This is batch audio transcription,
-    /// not Google Cloud Speech-to-Text's dedicated real-time STT product.
-    private static func callGeminiAudio(model: String, audioData: Data, apiKey: String?, languageCode: String?) async throws -> String {
-        let languageInstruction: String
-        if let languageCode {
-            languageInstruction = " Prefer language code \(languageCode) when interpreting speech, but preserve the spoken language if it is clearly different."
-        } else {
-            languageInstruction = ""
-        }
-
-        let prompt = """
-        Transcribe this audio to text for a food logging app.\(languageInstruction)
-        Return only the transcript text. Do not add summaries, labels, markdown, timestamps, or quotes.
-        """
-
-        let body: [String: Any] = [
-            "contents": [
-                [
-                    "parts": [
-                        [
-                            "inlineData": [
-                                "mimeType": "audio/m4a",
-                                "data": audioData.base64EncodedString()
-                            ]
-                        ],
-                        ["text": prompt]
-                    ]
-                ]
-            ]
-        ]
-
-        guard let apiKey else { throw SpeechError.noAPIKey }
-        guard let url = URL(string: "https://generativelanguage.googleapis.com/v1beta/models/\(model):generateContent") else {
-            throw SpeechError.apiError("Invalid Gemini URL.")
-        }
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue(apiKey, forHTTPHeaderField: "X-goog-api-key")
-        request.httpBody = try JSONSerialization.data(withJSONObject: body)
-
-        let (responseData, response) = try await send(request)
-        guard let http = response as? HTTPURLResponse else { throw SpeechError.invalidResponse }
-        if http.statusCode != 200 {
-            throw SpeechError.apiError(decodeErrorMessage(responseData) ?? "HTTP \(http.statusCode)")
-        }
-        guard let json = try? JSONSerialization.jsonObject(with: responseData) as? [String: Any],
-              let candidates = json["candidates"] as? [[String: Any]],
-              let content = candidates.first?["content"] as? [String: Any],
-              let parts = content["parts"] as? [[String: Any]],
-              let text = parts.compactMap({ $0["text"] as? String }).first
-        else {
-            throw SpeechError.invalidResponse
-        }
-        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty else { throw SpeechError.invalidResponse }
-        return trimmed
+    private struct GeminiUploadedFile {
+        let uri: String
+        let name: String
     }
 
-    // MARK: - OpenAI-compatible (OpenAI + Groq)
+    /// Gemini 3.5 Transcribe uses the Files API followed by the Interactions API.
+    /// The older general-purpose Gemini audio route used generateContent and cannot
+    /// be updated safely by changing only the model identifier.
+    private static func callGeminiAudio(model: String, audioData: Data, apiKey: String?, languageCode: String?) async throws -> String {
+        guard let apiKey else { throw SpeechError.noAPIKey }
+        let uploadedFile = try await uploadGeminiAudio(audioData: audioData, apiKey: apiKey)
+
+        do {
+            guard let url = URL(string: "https://generativelanguage.googleapis.com/v1beta/interactions") else {
+                throw SpeechError.apiError("Invalid Gemini interactions URL.")
+            }
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.setValue(apiKey, forHTTPHeaderField: "X-goog-api-key")
+            request.httpBody = try JSONSerialization.data(withJSONObject: geminiInteractionBody(
+                model: model,
+                fileURI: uploadedFile.uri,
+                mimeType: "audio/m4a",
+                languageCode: languageCode
+            ))
+
+            let (responseData, response) = try await send(request)
+            guard let http = response as? HTTPURLResponse else { throw SpeechError.invalidResponse }
+            guard (200..<300).contains(http.statusCode) else {
+                throw SpeechError.apiError(decodeErrorMessage(responseData) ?? "HTTP \(http.statusCode)")
+            }
+            guard let transcript = geminiTranscript(from: responseData) else {
+                throw SpeechError.invalidResponse
+            }
+
+            await deleteGeminiFile(name: uploadedFile.name, apiKey: apiKey)
+            return transcript
+        } catch {
+            await deleteGeminiFile(name: uploadedFile.name, apiKey: apiKey)
+            throw error
+        }
+    }
+
+    static func geminiInteractionBody(
+        model: String,
+        fileURI: String,
+        mimeType: String,
+        languageCode: String?
+    ) -> [String: Any] {
+        let languageCodes = languageCode.map { [$0] } ?? []
+        return [
+            "model": model,
+            "input": [
+                [
+                    "type": "audio",
+                    "uri": fileURI,
+                    "mime_type": mimeType,
+                ]
+            ],
+            "generation_config": [
+                "transcription_config": [
+                    "language_codes": languageCodes,
+                    "mode": ["type": "smart"],
+                ]
+            ],
+        ]
+    }
+
+    static func geminiTranscript(from data: Data) -> String? {
+        guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            return nil
+        }
+
+        let outputText = (json["output_text"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines)
+        if let outputText, !outputText.isEmpty { return outputText }
+
+        if let outputs = json["outputs"] as? [[String: Any]],
+           let text = outputs.compactMap({ $0["text"] as? String }).first(where: { !$0.isEmpty }) {
+            return text.trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+
+        if let steps = json["steps"] as? [[String: Any]] {
+            for step in steps {
+                guard let content = step["content"] as? [[String: Any]] else { continue }
+                if let text = content.compactMap({ $0["text"] as? String }).first(where: { !$0.isEmpty }) {
+                    return text.trimmingCharacters(in: .whitespacesAndNewlines)
+                }
+            }
+        }
+        return nil
+    }
+
+    private static func uploadGeminiAudio(audioData: Data, apiKey: String) async throws -> GeminiUploadedFile {
+        guard let startURL = URL(string: "https://generativelanguage.googleapis.com/upload/v1beta/files") else {
+            throw SpeechError.apiError("Invalid Gemini upload URL.")
+        }
+        var startRequest = URLRequest(url: startURL)
+        startRequest.httpMethod = "POST"
+        startRequest.setValue(apiKey, forHTTPHeaderField: "X-goog-api-key")
+        startRequest.setValue("resumable", forHTTPHeaderField: "X-Goog-Upload-Protocol")
+        startRequest.setValue("start", forHTTPHeaderField: "X-Goog-Upload-Command")
+        startRequest.setValue(String(audioData.count), forHTTPHeaderField: "X-Goog-Upload-Header-Content-Length")
+        startRequest.setValue("audio/m4a", forHTTPHeaderField: "X-Goog-Upload-Header-Content-Type")
+        startRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        startRequest.httpBody = try JSONSerialization.data(withJSONObject: [
+            "file": ["display_name": "fud-ai-speech.m4a"]
+        ])
+
+        let (startData, startResponse) = try await send(startRequest)
+        guard let startHTTP = startResponse as? HTTPURLResponse,
+              (200..<300).contains(startHTTP.statusCode),
+              let uploadURLString = startHTTP.value(forHTTPHeaderField: "X-Goog-Upload-URL"),
+              let uploadURL = URL(string: uploadURLString)
+        else {
+            throw SpeechError.apiError(decodeErrorMessage(startData) ?? "Gemini upload could not be started.")
+        }
+
+        var uploadRequest = URLRequest(url: uploadURL)
+        uploadRequest.httpMethod = "POST"
+        uploadRequest.setValue(String(audioData.count), forHTTPHeaderField: "Content-Length")
+        uploadRequest.setValue("0", forHTTPHeaderField: "X-Goog-Upload-Offset")
+        uploadRequest.setValue("upload, finalize", forHTTPHeaderField: "X-Goog-Upload-Command")
+        uploadRequest.setValue("audio/m4a", forHTTPHeaderField: "Content-Type")
+        uploadRequest.httpBody = audioData
+
+        let (uploadData, uploadResponse) = try await send(uploadRequest)
+        guard let uploadHTTP = uploadResponse as? HTTPURLResponse,
+              (200..<300).contains(uploadHTTP.statusCode),
+              let json = try? JSONSerialization.jsonObject(with: uploadData) as? [String: Any],
+              let file = json["file"] as? [String: Any],
+              let uri = file["uri"] as? String,
+              let name = file["name"] as? String
+        else {
+            throw SpeechError.apiError(decodeErrorMessage(uploadData) ?? "Gemini audio upload failed.")
+        }
+        return GeminiUploadedFile(uri: uri, name: name)
+    }
+
+    private static func deleteGeminiFile(name: String, apiKey: String) async {
+        guard let url = URL(string: "https://generativelanguage.googleapis.com/v1beta/\(name)") else { return }
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        request.setValue(apiKey, forHTTPHeaderField: "X-goog-api-key")
+        _ = try? await send(request)
+    }
+
+    // MARK: - OpenAI-compatible (OpenAI + Groq + Mistral)
 
     /// OpenAI's /v1/audio/transcriptions spec. Groq implements the same endpoint on their host.
-    private static func callOpenAIWhisper(baseURL: String, model: String, audioData: Data, apiKey: String, languageCode: String?) async throws -> String {
+    private static func callOpenAIWhisper(
+        baseURL: String,
+        model: String,
+        audioData: Data,
+        apiKey: String,
+        languageCode: String?,
+        responseFormat: String? = "text"
+    ) async throws -> String {
         guard let url = URL(string: "\(baseURL)/audio/transcriptions") else {
             throw SpeechError.apiError("Invalid URL.")
         }
@@ -157,10 +261,10 @@ struct SpeechService {
         request.httpMethod = "POST"
         request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
         request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-        var fields = [
-            "model": model,
-            "response_format": "text",
-        ]
+        var fields = ["model": model]
+        if let responseFormat {
+            fields["response_format"] = responseFormat
+        }
         if let languageCode {
             fields["language"] = languageCode
         }
@@ -170,6 +274,12 @@ struct SpeechService {
         guard let http = response as? HTTPURLResponse else { throw SpeechError.invalidResponse }
         if http.statusCode != 200 {
             throw SpeechError.apiError(decodeErrorMessage(data) ?? "HTTP \(http.statusCode)")
+        }
+        if responseFormat == nil,
+           let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+           let text = json["text"] as? String,
+           !text.isEmpty {
+            return text.trimmingCharacters(in: .whitespacesAndNewlines)
         }
         // response_format=text returns plain text, not JSON.
         if let text = String(data: data, encoding: .utf8), !text.isEmpty {
