@@ -202,7 +202,9 @@ import kotlin.math.roundToInt
 private enum class SettingsSheet {
     AI_PROVIDER, AI_MODEL, MAX_TOKENS, REQUEST_TIMEOUT, API_KEY, CUSTOM_BASE_URL, SPEECH_PROVIDER, SPEECH_LANGUAGE, SPEECH_KEY,
     TEXT_PROVIDER, TEXT_MODEL, TEXT_KEY, TEXT_BASE_URL,
+    TEXT_FALLBACK_PROVIDER, TEXT_FALLBACK_MODEL, TEXT_FALLBACK_KEY, TEXT_FALLBACK_BASE_URL,
     FALLBACK_PROVIDER, FALLBACK_MODEL, FALLBACK_KEY, FALLBACK_BASE_URL,
+    SPEECH_FALLBACK_PROVIDER, SPEECH_FALLBACK_LANGUAGE, SPEECH_FALLBACK_KEY,
     GENDER, BIRTHDAY, HEIGHT, WEIGHT, BODY_FAT, GOAL_BODY_FAT, ACTIVITY, GOAL, GOAL_WEIGHT, GOAL_SPEED,
     CALORIES, PROTEIN, CARBS, FAT, OPTIONAL_NUTRIENTS,
     APPEARANCE, WEEK_START, MEAL_TIMES, WATER_GOAL, WATER_UNIT, FASTING_GOAL, WORKOUT_SPLIT, WORKOUT_RPE
@@ -816,6 +818,53 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                 }
                 HorizontalDivider()
                 SettingsSubsectionHeader(
+                    title = stringResource(R.string.settings_section_text_fallback),
+                    icon = Icons.Outlined.Refresh
+                )
+                ToggleRow(
+                    stringResource(R.string.settings_enable_fallback),
+                    ui.textFallbackEnabled,
+                    icon = Icons.Outlined.Refresh,
+                    onChange = vm::setTextFallbackEnabled
+                )
+                if (ui.textFallbackEnabled) {
+                    HorizontalDivider()
+                    SettingRow(
+                        stringResource(R.string.settings_ai_provider),
+                        stringResource(ui.textFallbackProvider.displayNameRes),
+                        icon = Icons.Outlined.SmartToy
+                    ) { sheet = SettingsSheet.TEXT_FALLBACK_PROVIDER }
+                    HorizontalDivider()
+                    SettingRow(
+                        stringResource(R.string.settings_ai_model),
+                        ui.textFallbackModel.ifEmpty { stringResource(R.string.settings_ai_model_unset) },
+                        icon = Icons.Outlined.Tune
+                    ) { sheet = SettingsSheet.TEXT_FALLBACK_MODEL }
+                    if (ui.textFallbackProvider.requiresApiKey) {
+                        HorizontalDivider()
+                        SettingRow(
+                            stringResource(R.string.settings_api_key),
+                            ui.textFallbackApiKeyMasked.ifEmpty { stringResource(R.string.settings_not_set) },
+                            icon = Icons.Outlined.Key
+                        ) { sheet = SettingsSheet.TEXT_FALLBACK_KEY }
+                    }
+                    if (ui.textFallbackProvider.requiresCustomEndpoint || ui.textFallbackProvider == AIProvider.OLLAMA) {
+                        HorizontalDivider()
+                        SettingRow(
+                            if (ui.textFallbackProvider.requiresCustomEndpoint) stringResource(R.string.settings_base_url) else stringResource(R.string.settings_server_url),
+                            stringResource(R.string.settings_tap_to_edit),
+                            icon = Icons.Outlined.Link
+                        ) { sheet = SettingsSheet.TEXT_FALLBACK_BASE_URL }
+                    }
+                    Text(
+                        stringResource(R.string.settings_text_fallback_footer),
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
+                    )
+                }
+                HorizontalDivider()
+                SettingsSubsectionHeader(
                     title = stringResource(R.string.settings_section_fallback),
                     icon = Icons.Outlined.Refresh
                 )
@@ -895,6 +944,52 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                         ui.speechApiKeyMasked.ifEmpty { stringResource(R.string.settings_not_set) },
                         icon = Icons.Outlined.Key
                     ) { sheet = SettingsSheet.SPEECH_KEY }
+                }
+                HorizontalDivider()
+                SettingsSubsectionHeader(
+                    title = stringResource(R.string.settings_section_speech_fallback),
+                    icon = Icons.Outlined.Refresh
+                )
+                if (ui.selectedSpeech == SpeechProvider.NATIVE) {
+                    Text(
+                        stringResource(R.string.settings_native_speech_fallback_footer),
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
+                    )
+                } else {
+                    ToggleRow(
+                        stringResource(R.string.settings_enable_fallback),
+                        ui.speechFallbackEnabled,
+                        icon = Icons.Outlined.Refresh,
+                        onChange = vm::setSpeechFallbackEnabled
+                    )
+                    if (ui.speechFallbackEnabled) {
+                        HorizontalDivider()
+                        SettingRow(
+                            stringResource(R.string.settings_ai_provider),
+                            stringResource(ui.speechFallbackProvider.displayNameRes),
+                            icon = Icons.Outlined.Mic
+                        ) { sheet = SettingsSheet.SPEECH_FALLBACK_PROVIDER }
+                        HorizontalDivider()
+                        SettingRow(
+                            stringResource(R.string.settings_speech_language),
+                            stringResource(ui.speechFallbackLanguage.displayNameRes),
+                            icon = Icons.Outlined.Language
+                        ) { sheet = SettingsSheet.SPEECH_FALLBACK_LANGUAGE }
+                        HorizontalDivider()
+                        SettingRow(
+                            stringResource(R.string.settings_api_key),
+                            ui.speechFallbackApiKeyMasked.ifEmpty { stringResource(R.string.settings_not_set) },
+                            icon = Icons.Outlined.Key
+                        ) { sheet = SettingsSheet.SPEECH_FALLBACK_KEY }
+                        Text(
+                            stringResource(R.string.settings_speech_fallback_footer),
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
+                        )
+                    }
                 }
             }
 
@@ -1918,6 +2013,47 @@ private fun SettingsSheets(
                         onSave = { vm.setCustomBaseUrl(ui.selectedTextAI, it); onDismiss() }
                     )
                 }
+                SettingsSheet.TEXT_FALLBACK_PROVIDER -> ListSheet(
+                    title = stringResource(R.string.settings_section_text_fallback),
+                    items = AIProvider.textProviders,
+                    label = { stringResource(it.displayNameRes) },
+                    selected = { it == ui.textFallbackProvider },
+                    onSelect = { vm.selectTextFallbackProvider(it); onDismiss() }
+                )
+                SettingsSheet.TEXT_FALLBACK_MODEL -> {
+                    val primaryTextProvider = if (ui.separateTextProviderEnabled) ui.selectedTextAI else ui.selectedAI
+                    val primaryTextModel = if (ui.separateTextProviderEnabled) ui.selectedTextModel else ui.selectedModel
+                    val options = if (ui.textFallbackProvider == primaryTextProvider) {
+                        ui.textFallbackProvider.textModels.filter { it != primaryTextModel }
+                    } else {
+                        ui.textFallbackProvider.textModels
+                    }
+                    ListSheet(
+                        title = stringResource(R.string.sheet_model),
+                        items = options,
+                        label = { it },
+                        selected = { it == ui.textFallbackModel },
+                        onSelect = { vm.selectTextFallbackModel(it); onDismiss() },
+                        footer = if (ui.textFallbackProvider.supportsCustomModelName) stringResource(R.string.sheet_model_footer) else null,
+                        customField = if (ui.textFallbackProvider.supportsCustomModelName) {
+                            { model -> vm.selectTextFallbackModel(model); onDismiss() }
+                        } else null
+                    )
+                }
+                SettingsSheet.TEXT_FALLBACK_KEY -> ApiKeySheet(
+                    title = stringResource(R.string.sheet_api_key_format, stringResource(ui.textFallbackProvider.displayNameRes)),
+                    placeholder = stringResource(ui.textFallbackProvider.apiKeyPlaceholderRes),
+                    onSave = { vm.setTextFallbackApiKey(it); onDismiss() }
+                )
+                SettingsSheet.TEXT_FALLBACK_BASE_URL -> {
+                    val existing = remember { runBlocking { vm.container.prefs.customBaseUrl(ui.textFallbackProvider).first().orEmpty() } }
+                    TextFieldSheet(
+                        title = stringResource(R.string.settings_custom_url_title),
+                        initial = existing,
+                        placeholder = stringResource(R.string.settings_custom_url_placeholder),
+                        onSave = { vm.setCustomBaseUrl(ui.textFallbackProvider, it); onDismiss() }
+                    )
+                }
                 SettingsSheet.MAX_TOKENS -> {
                     TextFieldSheet(
                         title = stringResource(R.string.settings_max_tokens),
@@ -1971,6 +2107,32 @@ private fun SettingsSheets(
                         vm.setSpeechApiKey(it)
                         onDismiss()
                     }
+                )
+                SettingsSheet.SPEECH_FALLBACK_PROVIDER -> ListSheet(
+                    title = stringResource(R.string.settings_section_speech_fallback),
+                    items = SpeechProvider.remoteProviders.filter { it != ui.selectedSpeech },
+                    label = { stringResource(it.displayNameRes) },
+                    selected = { it == ui.speechFallbackProvider },
+                    onSelect = { vm.selectSpeechFallbackProvider(it); onDismiss() }
+                )
+                SettingsSheet.SPEECH_FALLBACK_LANGUAGE -> ListSheet(
+                    title = stringResource(R.string.sheet_speech_language),
+                    items = SpeechLanguage.optionsFor(ui.speechFallbackProvider),
+                    label = { stringResource(it.displayNameRes) },
+                    selected = { it == ui.speechFallbackLanguage },
+                    onSelect = { vm.selectSpeechFallbackLanguage(it); onDismiss() },
+                    subtitle = {
+                        when (it) {
+                            SpeechLanguage.PROVIDER_AUTO -> stringResource(R.string.speech_language_provider_auto_subtitle)
+                            SpeechLanguage.DEVICE -> stringResource(R.string.speech_language_device_subtitle)
+                            else -> null
+                        }
+                    }
+                )
+                SettingsSheet.SPEECH_FALLBACK_KEY -> ApiKeySheet(
+                    title = stringResource(R.string.sheet_speech_api_key_format, stringResource(ui.speechFallbackProvider.displayNameRes)),
+                    placeholder = stringResource(ui.speechFallbackProvider.apiKeyPlaceholderRes),
+                    onSave = { vm.setSpeechFallbackApiKey(it); onDismiss() }
                 )
                 SettingsSheet.WORKOUT_SPLIT -> ListSheet(
                     title = stringResource(R.string.settings_training_split),

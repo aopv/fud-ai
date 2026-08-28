@@ -103,6 +103,34 @@ final class calorietrackerUITests: XCTestCase {
     }
 
     @MainActor
+    func testAppleIntelligenceAppearsAsTextProvider() throws {
+        let app = XCUIApplication()
+        app.launchArguments += [
+            "-AppleLanguages", "(en)",
+            "-separateTextProviderEnabled", "YES",
+            "-selectedTextAIProvider", "Apple Intelligence (On-Device)",
+            "-selectedTextAIModel", "System Language Model",
+        ]
+        app.launch()
+
+        let settings = app.tabBars.buttons["Settings"]
+        XCTAssertTrue(settings.waitForExistence(timeout: 8))
+        settings.tap()
+
+        let textProviderSection = app.staticTexts["Text AI"]
+        for _ in 0..<10 where !textProviderSection.exists {
+            app.swipeUp()
+        }
+        XCTAssertTrue(textProviderSection.waitForExistence(timeout: 3))
+        XCTAssertTrue(app.staticTexts["Apple Intelligence (On-Device)"].waitForExistence(timeout: 3))
+        let systemModel = app.staticTexts["System Language Model"]
+        for _ in 0..<4 where !systemModel.exists {
+            app.swipeUp()
+        }
+        XCTAssertTrue(systemModel.waitForExistence(timeout: 3))
+    }
+
+    @MainActor
     func testLaunchPerformance() throws {
         // This measures how long it takes to launch your application.
         measure(metrics: [XCTApplicationLaunchMetric()]) {

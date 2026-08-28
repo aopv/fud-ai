@@ -11,6 +11,10 @@ enum SpeechProvider: String, CaseIterable, Codable, Identifiable {
 
     var id: String { rawValue }
 
+    static var remoteProviders: [SpeechProvider] {
+        allCases.filter(\.requiresAPIKey)
+    }
+
     /// User-facing provider name. Raw values stay stable because they are also
     /// used for persisted settings and Keychain lookup keys.
     var displayName: String {
@@ -200,6 +204,8 @@ enum SpeechLanguage: String, CaseIterable, Codable, Identifiable {
 
 struct SpeechSettings {
     private static let providerKey = "selectedSpeechProvider"
+    private static let fallbackEnabledKey = "speechFallbackEnabled"
+    private static let fallbackProviderKey = "selectedSpeechFallbackProvider"
     private static let languageKey = "selectedSpeechLanguage"
     private static let languageKeyPrefix = "selectedSpeechLanguage_"
     private static let apiKeyKeychainPrefix = "speechApiKey_"
@@ -212,6 +218,26 @@ struct SpeechSettings {
         }
         set {
             UserDefaults.standard.set(newValue.rawValue, forKey: providerKey)
+        }
+    }
+
+    static var fallbackEnabled: Bool {
+        get { UserDefaults.standard.bool(forKey: fallbackEnabledKey) }
+        set { UserDefaults.standard.set(newValue, forKey: fallbackEnabledKey) }
+    }
+
+    static var selectedFallbackProvider: SpeechProvider {
+        get {
+            guard let raw = UserDefaults.standard.string(forKey: fallbackProviderKey),
+                  let provider = SpeechProvider(rawValue: raw),
+                  provider.requiresAPIKey else {
+                return .groq
+            }
+            return provider
+        }
+        set {
+            let resolved = newValue.requiresAPIKey ? newValue : .groq
+            UserDefaults.standard.set(resolved.rawValue, forKey: fallbackProviderKey)
         }
     }
 
@@ -272,6 +298,8 @@ struct SpeechSettings {
             setAPIKey(nil, for: provider)
         }
         UserDefaults.standard.removeObject(forKey: providerKey)
+        UserDefaults.standard.removeObject(forKey: fallbackEnabledKey)
+        UserDefaults.standard.removeObject(forKey: fallbackProviderKey)
         UserDefaults.standard.removeObject(forKey: languageKey)
         for provider in SpeechProvider.allCases {
             UserDefaults.standard.removeObject(forKey: languageKeyPrefix + provider.rawValue)

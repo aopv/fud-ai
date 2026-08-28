@@ -22,6 +22,20 @@ class SpeechService(
     /** Returns the transcript text. Throws [SttApiError] on any failure. */
     suspend fun transcribeRemote(audio: File): String {
         val provider = prefs.selectedSpeechProvider.first()
+        return try {
+            transcribe(audio, provider)
+        } catch (primaryError: Throwable) {
+            if (primaryError is kotlinx.coroutines.CancellationException) throw primaryError
+            if (!prefs.speechFallbackEnabled.first()) throw primaryError
+            val fallback = prefs.selectedSpeechFallbackProvider.first()
+            if (fallback == provider || !fallback.requiresApiKey || keyStore.speechApiKey(fallback).isNullOrEmpty()) {
+                throw primaryError
+            }
+            transcribe(audio, fallback)
+        }
+    }
+
+    private suspend fun transcribe(audio: File, provider: SpeechProvider): String {
         val languageCode = prefs.selectedSpeechLanguage(provider).first().remoteLanguageCode()
         val apiKey = keyStore.speechApiKey(provider)
 

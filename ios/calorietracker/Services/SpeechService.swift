@@ -27,20 +27,34 @@ struct SpeechService {
         }
     }
 
-    /// Transcribe an audio file using the currently-selected speech provider.
-    /// Caller should only invoke this for non-native providers.
+    /// Transcribe an audio file using the selected remote provider, with an optional
+    /// independently configured remote STT fallback.
     static func transcribe(audioURL: URL) async throws -> String {
         let provider: SpeechProvider = SpeechSettings.selectedProvider
-        let selectedLanguage = SpeechSettings.selectedLanguage(for: provider)
-        let languageCode = selectedLanguage.apiLanguageCode
-        guard provider.requiresAPIKey else {
-            // Native iOS handled directly by VoiceInputView.
-            throw SpeechError.apiError("Native iOS transcription is handled in-view, not via SpeechService.")
-        }
         guard let audioData = try? Data(contentsOf: audioURL) else {
             throw SpeechError.fileReadFailed
         }
 
+        do {
+            return try await transcribe(audioData: audioData, provider: provider)
+        } catch {
+            if error is CancellationError { throw error }
+            guard SpeechSettings.fallbackEnabled else { throw error }
+            let fallback = SpeechSettings.selectedFallbackProvider
+            guard fallback != provider,
+                  !fallback.requiresAPIKey || SpeechSettings.apiKey(for: fallback)?.isEmpty == false else {
+                throw error
+            }
+            return try await transcribe(audioData: audioData, provider: fallback)
+        }
+    }
+
+    private static func transcribe(audioData: Data, provider: SpeechProvider) async throws -> String {
+        let selectedLanguage = SpeechSettings.selectedLanguage(for: provider)
+        let languageCode = selectedLanguage.apiLanguageCode
+        guard provider.requiresAPIKey else {
+            throw SpeechError.apiError("Native iOS transcription is handled in-view, not via SpeechService.")
+        }
         let apiKey = SpeechSettings.apiKey(for: provider)
         if apiKey == nil || apiKey?.isEmpty == true {
             throw SpeechError.noAPIKey

@@ -1,6 +1,7 @@
 import Foundation
 
 enum AIProvider: String, CaseIterable, Codable, Identifiable {
+    case appleIntelligence = "Apple Intelligence (On-Device)"
     case gemini = "Google Gemini"
     case openai = "OpenAI"
     case anthropic = "Anthropic Claude"
@@ -21,6 +22,7 @@ enum AIProvider: String, CaseIterable, Codable, Identifiable {
 
     var icon: String {
         switch self {
+        case .appleIntelligence: "apple.logo"
         case .gemini: "sparkle"
         case .openai: "brain.head.profile"
         case .anthropic: "text.bubble"
@@ -41,6 +43,7 @@ enum AIProvider: String, CaseIterable, Codable, Identifiable {
 
     var baseURL: String {
         switch self {
+        case .appleIntelligence: ""
         case .gemini: "https://generativelanguage.googleapis.com/v1beta"
         case .openai: "https://api.openai.com/v1"
         case .anthropic: "https://api.anthropic.com/v1"
@@ -78,7 +81,12 @@ enum AIProvider: String, CaseIterable, Codable, Identifiable {
     }
 
     var supportsVision: Bool {
-        self != .deepseek && self != .cerebras
+        switch self {
+        case .appleIntelligence, .deepseek, .cerebras:
+            false
+        default:
+            true
+        }
     }
 
     static func normalizedModelID(_ model: String) -> String {
@@ -148,6 +156,7 @@ enum AIProvider: String, CaseIterable, Codable, Identifiable {
     /// Lineups verified against provider docs on 2026-08-26.
     var models: [String] {
         switch self {
+        case .appleIntelligence: [] // text-only system model; never offered for image requests
         case .gemini: [
             "gemini-3.5-flash-lite",         // vision, cheapest current stable model (default)
             "gemini-3.7-flash",              // vision, latest Flash model
@@ -244,6 +253,8 @@ enum AIProvider: String, CaseIterable, Codable, Identifiable {
     /// Current hosted IDs verified against provider docs on 2026-08-29.
     var textModels: [String] {
         switch self {
+        case .appleIntelligence:
+            return ["System Language Model"]
         case .groq:
             return [
                 "openai/gpt-oss-20b",
@@ -281,7 +292,7 @@ enum AIProvider: String, CaseIterable, Codable, Identifiable {
     }
 
     var requiresAPIKey: Bool {
-        self != .ollama
+        self != .ollama && self != .appleIntelligence
     }
 
     /// True for providers where the user supplies the base URL and model name themselves.
@@ -308,6 +319,7 @@ enum AIProvider: String, CaseIterable, Codable, Identifiable {
 
     /// API format grouping
     enum APIFormat {
+        case onDevice
         case gemini
         case openaiCompatible
         case anthropic
@@ -315,6 +327,7 @@ enum AIProvider: String, CaseIterable, Codable, Identifiable {
 
     var apiFormat: APIFormat {
         switch self {
+        case .appleIntelligence: .onDevice
         case .gemini: .gemini
         case .anthropic: .anthropic
         case .openai, .xai, .openrouter, .togetherai, .groq, .huggingface, .fireworks, .deepinfra, .mistral, .deepseek, .cerebras, .ollama, .customOpenAI: .openaiCompatible
@@ -323,6 +336,7 @@ enum AIProvider: String, CaseIterable, Codable, Identifiable {
 
     var apiKeyPlaceholder: String {
         switch self {
+        case .appleIntelligence: "No key needed"
         case .gemini: "AIza..."
         case .openai: "sk-..."
         case .anthropic: "sk-ant-..."
@@ -379,6 +393,9 @@ struct AIProviderSettings {
     private static let fallbackEnabledKey = "aiFallbackEnabled"
     private static let fallbackProviderKey = "selectedFallbackAIProvider"
     private static let fallbackModelKey = "selectedFallbackAIModel"
+    private static let textFallbackEnabledKey = "textAIFallbackEnabled"
+    private static let textFallbackProviderKey = "selectedTextFallbackAIProvider"
+    private static let textFallbackModelKey = "selectedTextFallbackAIModel"
     private static let geminiModelMigrationVersionKey = "geminiModelMigrationVersion"
     private static let modelRegistryMigrationVersionKey = "aiModelRegistryMigrationVersion"
     private static let currentModelRegistryMigrationVersion = 1
@@ -607,7 +624,7 @@ struct AIProviderSettings {
         return ctx.isEmpty ? nil : ctx
     }
 
-    // MARK: - Fallback Provider
+    // MARK: - Image AI Fallback
 
     /// Master toggle for fallback. When true and primary call fails, the app retries
     /// once on the configured fallback provider before surfacing the error.
@@ -644,6 +661,41 @@ struct AIProviderSettings {
         set { UserDefaults.standard.set(AIProvider.normalizedModelID(newValue), forKey: fallbackModelKey) }
     }
 
+    // MARK: - Text AI Fallback
+
+    static var textFallbackEnabled: Bool {
+        get { UserDefaults.standard.bool(forKey: textFallbackEnabledKey) }
+        set { UserDefaults.standard.set(newValue, forKey: textFallbackEnabledKey) }
+    }
+
+    static var selectedTextFallbackProvider: AIProvider {
+        get {
+            guard let raw = UserDefaults.standard.string(forKey: textFallbackProviderKey),
+                  let provider = AIProvider(rawValue: raw),
+                  AIProvider.textProviders.contains(provider) else {
+                return .gemini
+            }
+            return provider
+        }
+        set {
+            let resolved = AIProvider.textProviders.contains(newValue) ? newValue : .gemini
+            UserDefaults.standard.set(resolved.rawValue, forKey: textFallbackProviderKey)
+        }
+    }
+
+    static var selectedTextFallbackModel: String {
+        get {
+            let provider = selectedTextFallbackProvider
+            let saved = UserDefaults.standard.string(forKey: textFallbackModelKey)
+            let resolved = provider.supportedTextModelOrDefault(saved)
+            if let saved, AIProvider.normalizedModelID(saved) != resolved {
+                UserDefaults.standard.set(resolved, forKey: textFallbackModelKey)
+            }
+            return resolved
+        }
+        set { UserDefaults.standard.set(AIProvider.normalizedModelID(newValue), forKey: textFallbackModelKey) }
+    }
+
     /// Providers that have a saved API key (or don't require one, e.g. Ollama),
     /// optionally excluding the primary so the fallback picker doesn't list it.
     static func providersWithSavedKeys(excluding: AIProvider? = nil) -> [AIProvider] {
@@ -666,10 +718,24 @@ struct AIProviderSettings {
     /// isn't byte-for-byte identical to the primary (same provider + model = pointless retry).
     /// Same provider with a *different* model IS allowed — common pattern is e.g. Gemini Pro
     /// primary with Gemini Flash fallback for capacity-pool diversity within one provider.
-    static func currentFallbackConfig(excludingPrimary primary: AIProvider, model primaryModel: String) -> FallbackConfig? {
+    static func currentImageFallbackConfig(excludingPrimary primary: AIProvider, model primaryModel: String) -> FallbackConfig? {
         guard fallbackEnabled else { return nil }
         let provider = selectedFallbackProvider
         let model = selectedFallbackModel
+        if provider == primary, model == primaryModel { return nil }
+        if provider.requiresAPIKey, apiKey(for: provider) == nil { return nil }
+        return FallbackConfig(
+            provider: provider,
+            model: model,
+            baseURL: customBaseURL(for: provider) ?? provider.baseURL,
+            apiKey: apiKey(for: provider)
+        )
+    }
+
+    static func currentTextFallbackConfig(excludingPrimary primary: AIProvider, model primaryModel: String) -> FallbackConfig? {
+        guard textFallbackEnabled else { return nil }
+        let provider = selectedTextFallbackProvider
+        let model = selectedTextFallbackModel
         if provider == primary, model == primaryModel { return nil }
         if provider.requiresAPIKey, apiKey(for: provider) == nil { return nil }
         return FallbackConfig(
@@ -694,6 +760,9 @@ struct AIProviderSettings {
         UserDefaults.standard.removeObject(forKey: fallbackEnabledKey)
         UserDefaults.standard.removeObject(forKey: fallbackProviderKey)
         UserDefaults.standard.removeObject(forKey: fallbackModelKey)
+        UserDefaults.standard.removeObject(forKey: textFallbackEnabledKey)
+        UserDefaults.standard.removeObject(forKey: textFallbackProviderKey)
+        UserDefaults.standard.removeObject(forKey: textFallbackModelKey)
         UserDefaults.standard.removeObject(forKey: requestTimeoutSecondsKey)
     }
 }

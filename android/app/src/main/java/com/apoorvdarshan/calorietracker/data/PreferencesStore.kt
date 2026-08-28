@@ -541,7 +541,8 @@ class PreferencesStore(private val context: Context) : WorkoutStateStore {
         ds.edit { it[Keys.LAST_RECALC_GOAL_SIGNATURE] = value }
     }
 
-    // -- Fallback AI Provider --------------------------------------------
+    // -- Image AI fallback ------------------------------------------------
+    // Keep the original storage keys so existing users retain their configured fallback.
     val fallbackEnabled: Flow<Boolean> = ds.data.map { it[Keys.FALLBACK_ENABLED] ?: false }
     suspend fun setFallbackEnabled(v: Boolean) { ds.edit { it[Keys.FALLBACK_ENABLED] = v } }
 
@@ -559,6 +560,24 @@ class PreferencesStore(private val context: Context) : WorkoutStateStore {
         ds.edit { it[Keys.FALLBACK_MODEL] = AIProvider.normalizeModelId(model) }
     }
 
+    // -- Text AI fallback -------------------------------------------------
+    val textFallbackEnabled: Flow<Boolean> = ds.data.map { it[Keys.TEXT_FALLBACK_ENABLED] ?: false }
+    suspend fun setTextFallbackEnabled(v: Boolean) { ds.edit { it[Keys.TEXT_FALLBACK_ENABLED] = v } }
+
+    val selectedTextFallbackProvider: Flow<AIProvider> = ds.data.map {
+        val raw = it[Keys.TEXT_FALLBACK_PROVIDER]
+        AIProvider.textProviders.firstOrNull { provider -> provider.name == raw } ?: AIProvider.GEMINI
+    }
+    suspend fun setSelectedTextFallbackProvider(provider: AIProvider) {
+        val resolved = provider.takeIf { it in AIProvider.textProviders } ?: AIProvider.GEMINI
+        ds.edit { it[Keys.TEXT_FALLBACK_PROVIDER] = resolved.name }
+    }
+
+    val selectedTextFallbackModel: Flow<String?> = ds.data.map { it[Keys.TEXT_FALLBACK_MODEL] }
+    suspend fun setSelectedTextFallbackModel(model: String) {
+        ds.edit { it[Keys.TEXT_FALLBACK_MODEL] = AIProvider.normalizeModelId(model) }
+    }
+
     // -- Speech Provider selection ---------------------------------------
     val selectedSpeechProvider: Flow<SpeechProvider> = ds.data.map {
         val raw = it[Keys.SELECTED_SPEECH_PROVIDER]
@@ -566,6 +585,19 @@ class PreferencesStore(private val context: Context) : WorkoutStateStore {
     }
     suspend fun setSelectedSpeechProvider(p: SpeechProvider) {
         ds.edit { it[Keys.SELECTED_SPEECH_PROVIDER] = p.name }
+    }
+
+    // -- Speech-to-text fallback -----------------------------------------
+    val speechFallbackEnabled: Flow<Boolean> = ds.data.map { it[Keys.SPEECH_FALLBACK_ENABLED] ?: false }
+    suspend fun setSpeechFallbackEnabled(v: Boolean) { ds.edit { it[Keys.SPEECH_FALLBACK_ENABLED] = v } }
+
+    val selectedSpeechFallbackProvider: Flow<SpeechProvider> = ds.data.map {
+        val raw = it[Keys.SPEECH_FALLBACK_PROVIDER]
+        SpeechProvider.remoteProviders.firstOrNull { provider -> provider.name == raw } ?: SpeechProvider.GROQ
+    }
+    suspend fun setSelectedSpeechFallbackProvider(provider: SpeechProvider) {
+        val resolved = provider.takeIf { it in SpeechProvider.remoteProviders } ?: SpeechProvider.GROQ
+        ds.edit { it[Keys.SPEECH_FALLBACK_PROVIDER] = resolved.name }
     }
 
     fun selectedSpeechLanguage(provider: SpeechProvider): Flow<SpeechLanguage> = ds.data.map {
@@ -797,7 +829,12 @@ class PreferencesStore(private val context: Context) : WorkoutStateStore {
         val FALLBACK_ENABLED = booleanPreferencesKey("aiFallbackEnabled")
         val FALLBACK_PROVIDER = stringPreferencesKey("selectedFallbackAIProvider")
         val FALLBACK_MODEL = stringPreferencesKey("selectedFallbackAIModel")
+        val TEXT_FALLBACK_ENABLED = booleanPreferencesKey("textAIFallbackEnabled")
+        val TEXT_FALLBACK_PROVIDER = stringPreferencesKey("selectedTextFallbackAIProvider")
+        val TEXT_FALLBACK_MODEL = stringPreferencesKey("selectedTextFallbackAIModel")
         val SELECTED_SPEECH_PROVIDER = stringPreferencesKey("selectedSpeechProvider")
+        val SPEECH_FALLBACK_ENABLED = booleanPreferencesKey("speechFallbackEnabled")
+        val SPEECH_FALLBACK_PROVIDER = stringPreferencesKey("selectedSpeechFallbackProvider")
         fun selectedSpeechLanguage(provider: SpeechProvider) =
             stringPreferencesKey("selectedSpeechLanguage_${provider.name}")
         val FOOD_ENTRIES = stringPreferencesKey("foodEntries")

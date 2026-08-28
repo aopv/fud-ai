@@ -43,6 +43,10 @@ data class SettingsUiState(
     val aiRequestTimeoutSeconds: Int = AIProvider.DEFAULT_REQUEST_TIMEOUT_SECONDS,
     val selectedSpeech: SpeechProvider = SpeechProvider.NATIVE,
     val selectedSpeechLanguage: SpeechLanguage = SpeechLanguage.defaultFor(SpeechProvider.NATIVE),
+    val speechFallbackEnabled: Boolean = false,
+    val speechFallbackProvider: SpeechProvider = SpeechProvider.GROQ,
+    val speechFallbackLanguage: SpeechLanguage = SpeechLanguage.defaultFor(SpeechProvider.GROQ),
+    val speechFallbackApiKeyMasked: String = "",
     /** "cm" | "ftin" — governs all length display/input. */
     val heightUnit: String = "cm",
     /** "kg" | "lbs" — governs all mass display/input. */
@@ -87,6 +91,10 @@ data class SettingsUiState(
     val fallbackProvider: AIProvider = AIProvider.GEMINI,
     val fallbackModel: String = AIProvider.GEMINI.defaultModel,
     val fallbackApiKeyMasked: String = "",
+    val textFallbackEnabled: Boolean = false,
+    val textFallbackProvider: AIProvider = AIProvider.GEMINI,
+    val textFallbackModel: String = AIProvider.GEMINI.defaultTextModel,
+    val textFallbackApiKeyMasked: String = "",
     val optionalNutrientGoals: OptionalNutrientGoals = OptionalNutrientGoals.Default,
     val quickActions: List<QuickAction> = QuickAction.Defaults,
     /** A goal-relevant input changed since the last Recalculate. Drives a soft nudge on the
@@ -143,6 +151,9 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
             val textModel = textProvider.supportedTextModelOrDefault(container.prefs.selectedTextAIModel.first())
             val speech = container.prefs.selectedSpeechProvider.first()
             val speechLanguage = container.prefs.selectedSpeechLanguage(speech).first()
+            val speechFallbackEnabled = container.prefs.speechFallbackEnabled.first()
+            val speechFallbackProvider = container.prefs.selectedSpeechFallbackProvider.first()
+            val speechFallbackLanguage = container.prefs.selectedSpeechLanguage(speechFallbackProvider).first()
             val heightUnit = container.prefs.heightUnit.first()
             val weightUnit = container.prefs.weightUnit.first()
             val preferGramsByDefault = container.prefs.preferGramsByDefault.first()
@@ -171,6 +182,7 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
             val masked = maskKey(container.keyStore.apiKey(provider))
             val textMasked = maskKey(container.keyStore.apiKey(textProvider))
             val speechMasked = maskKey(container.keyStore.speechApiKey(speech))
+            val speechFallbackMasked = maskKey(container.keyStore.speechApiKey(speechFallbackProvider))
             val appearance = container.prefs.appearanceMode.first()
             val appThemeColor = AppThemeColor.fromKey(container.prefs.appThemeColor.first())
             val weekMon = container.prefs.weekStartsOnMonday.first()
@@ -182,6 +194,10 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
             val fbProvider = container.prefs.selectedFallbackProvider.first()
             val fbModel = fbProvider.supportedModelOrDefault(container.prefs.selectedFallbackModel.first())
             val fbMasked = maskKey(container.keyStore.apiKey(fbProvider))
+            val textFbEnabled = container.prefs.textFallbackEnabled.first()
+            val textFbProvider = container.prefs.selectedTextFallbackProvider.first()
+            val textFbModel = textFbProvider.supportedTextModelOrDefault(container.prefs.selectedTextFallbackModel.first())
+            val textFbMasked = maskKey(container.keyStore.apiKey(textFbProvider))
             val optionalGoals = container.prefs.optionalNutrientGoals.first()
             val quickActions = listOf(
                 container.prefs.quickAction1.first(),
@@ -206,6 +222,10 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
                 aiRequestTimeoutSeconds = requestTimeoutSeconds,
                 selectedSpeech = speech,
                 selectedSpeechLanguage = speechLanguage,
+                speechFallbackEnabled = speechFallbackEnabled,
+                speechFallbackProvider = speechFallbackProvider,
+                speechFallbackLanguage = speechFallbackLanguage,
+                speechFallbackApiKeyMasked = speechFallbackMasked,
                 heightUnit = heightUnit,
                 weightUnit = weightUnit,
                 preferGramsByDefault = preferGramsByDefault,
@@ -239,6 +259,10 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
                 fallbackProvider = fbProvider,
                 fallbackModel = fbModel,
                 fallbackApiKeyMasked = fbMasked,
+                textFallbackEnabled = textFbEnabled,
+                textFallbackProvider = textFbProvider,
+                textFallbackModel = textFbModel,
+                textFallbackApiKeyMasked = textFbMasked,
                 optionalNutrientGoals = optionalGoals,
                 quickActions = quickActions,
                 workoutSplit = workoutPreferences.split,
@@ -368,7 +392,50 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
             _ui.value = _ui.value.copy(
                 fallbackApiKeyMasked = masked,
                 apiKeyMasked = if (p == _ui.value.selectedAI) masked else _ui.value.apiKeyMasked,
-                textApiKeyMasked = if (p == _ui.value.selectedTextAI) masked else _ui.value.textApiKeyMasked
+                textApiKeyMasked = if (p == _ui.value.selectedTextAI) masked else _ui.value.textApiKeyMasked,
+                textFallbackApiKeyMasked = if (p == _ui.value.textFallbackProvider) masked else _ui.value.textFallbackApiKeyMasked
+            )
+        }
+    }
+
+    fun setTextFallbackEnabled(enabled: Boolean) {
+        viewModelScope.launch {
+            container.prefs.setTextFallbackEnabled(enabled)
+            _ui.value = _ui.value.copy(textFallbackEnabled = enabled)
+        }
+    }
+
+    fun selectTextFallbackProvider(provider: AIProvider) {
+        viewModelScope.launch {
+            container.prefs.setSelectedTextFallbackProvider(provider)
+            val model = provider.supportedTextModelOrDefault(_ui.value.textFallbackModel)
+            container.prefs.setSelectedTextFallbackModel(model)
+            _ui.value = _ui.value.copy(
+                textFallbackProvider = provider,
+                textFallbackModel = model,
+                textFallbackApiKeyMasked = maskKey(container.keyStore.apiKey(provider))
+            )
+        }
+    }
+
+    fun selectTextFallbackModel(model: String) {
+        viewModelScope.launch {
+            val resolved = _ui.value.textFallbackProvider.supportedTextModelOrDefault(model)
+            container.prefs.setSelectedTextFallbackModel(resolved)
+            _ui.value = _ui.value.copy(textFallbackModel = resolved)
+        }
+    }
+
+    fun setTextFallbackApiKey(raw: String) {
+        viewModelScope.launch {
+            val provider = _ui.value.textFallbackProvider
+            container.keyStore.setApiKey(provider, raw.takeIf { it.isNotBlank() })
+            val masked = maskKey(raw.takeIf { it.isNotBlank() })
+            _ui.value = _ui.value.copy(
+                textFallbackApiKeyMasked = masked,
+                apiKeyMasked = if (provider == _ui.value.selectedAI) masked else _ui.value.apiKeyMasked,
+                textApiKeyMasked = if (provider == _ui.value.selectedTextAI) masked else _ui.value.textApiKeyMasked,
+                fallbackApiKeyMasked = if (provider == _ui.value.fallbackProvider) masked else _ui.value.fallbackApiKeyMasked
             )
         }
     }
@@ -441,7 +508,8 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
             _ui.value = _ui.value.copy(
                 apiKeyMasked = masked,
                 textApiKeyMasked = if (p == _ui.value.selectedTextAI) masked else _ui.value.textApiKeyMasked,
-                fallbackApiKeyMasked = if (p == _ui.value.fallbackProvider) masked else _ui.value.fallbackApiKeyMasked
+                fallbackApiKeyMasked = if (p == _ui.value.fallbackProvider) masked else _ui.value.fallbackApiKeyMasked,
+                textFallbackApiKeyMasked = if (p == _ui.value.textFallbackProvider) masked else _ui.value.textFallbackApiKeyMasked
             )
         }
     }
@@ -482,7 +550,8 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
             _ui.value = _ui.value.copy(
                 textApiKeyMasked = masked,
                 apiKeyMasked = if (provider == _ui.value.selectedAI) masked else _ui.value.apiKeyMasked,
-                fallbackApiKeyMasked = if (provider == _ui.value.fallbackProvider) masked else _ui.value.fallbackApiKeyMasked
+                fallbackApiKeyMasked = if (provider == _ui.value.fallbackProvider) masked else _ui.value.fallbackApiKeyMasked,
+                textFallbackApiKeyMasked = if (provider == _ui.value.textFallbackProvider) masked else _ui.value.textFallbackApiKeyMasked
             )
         }
     }
@@ -490,14 +559,23 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
     fun selectSpeech(p: SpeechProvider) {
         viewModelScope.launch {
             container.prefs.setSelectedSpeechProvider(p)
+            var fallbackProvider = _ui.value.speechFallbackProvider
+            if (p == fallbackProvider) {
+                fallbackProvider = SpeechProvider.remoteProviders.first { it != p }
+                container.prefs.setSelectedSpeechFallbackProvider(fallbackProvider)
+            }
             // Re-pull the masked key for the new provider so the API Key row
             // reflects whether the freshly selected provider has a key saved.
             val masked = maskKey(container.keyStore.speechApiKey(p))
             val language = container.prefs.selectedSpeechLanguage(p).first()
+            val fallbackLanguage = container.prefs.selectedSpeechLanguage(fallbackProvider).first()
             _ui.value = _ui.value.copy(
                 selectedSpeech = p,
                 selectedSpeechLanguage = language,
-                speechApiKeyMasked = masked
+                speechApiKeyMasked = masked,
+                speechFallbackProvider = fallbackProvider,
+                speechFallbackLanguage = fallbackLanguage,
+                speechFallbackApiKeyMasked = maskKey(container.keyStore.speechApiKey(fallbackProvider))
             )
         }
     }
@@ -514,7 +592,50 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
         viewModelScope.launch {
             val p = _ui.value.selectedSpeech
             container.keyStore.setSpeechApiKey(p, raw.takeIf { it.isNotBlank() })
-            _ui.value = _ui.value.copy(speechApiKeyMasked = maskKey(raw.takeIf { it.isNotBlank() }))
+            val masked = maskKey(raw.takeIf { it.isNotBlank() })
+            _ui.value = _ui.value.copy(
+                speechApiKeyMasked = masked,
+                speechFallbackApiKeyMasked = if (p == _ui.value.speechFallbackProvider) masked else _ui.value.speechFallbackApiKeyMasked
+            )
+        }
+    }
+
+    fun setSpeechFallbackEnabled(enabled: Boolean) {
+        viewModelScope.launch {
+            container.prefs.setSpeechFallbackEnabled(enabled)
+            _ui.value = _ui.value.copy(speechFallbackEnabled = enabled)
+        }
+    }
+
+    fun selectSpeechFallbackProvider(provider: SpeechProvider) {
+        viewModelScope.launch {
+            container.prefs.setSelectedSpeechFallbackProvider(provider)
+            val language = container.prefs.selectedSpeechLanguage(provider).first()
+            _ui.value = _ui.value.copy(
+                speechFallbackProvider = provider,
+                speechFallbackLanguage = language,
+                speechFallbackApiKeyMasked = maskKey(container.keyStore.speechApiKey(provider))
+            )
+        }
+    }
+
+    fun selectSpeechFallbackLanguage(language: SpeechLanguage) {
+        viewModelScope.launch {
+            val provider = _ui.value.speechFallbackProvider
+            container.prefs.setSelectedSpeechLanguage(provider, language)
+            _ui.value = _ui.value.copy(speechFallbackLanguage = language)
+        }
+    }
+
+    fun setSpeechFallbackApiKey(raw: String) {
+        viewModelScope.launch {
+            val provider = _ui.value.speechFallbackProvider
+            container.keyStore.setSpeechApiKey(provider, raw.takeIf { it.isNotBlank() })
+            val masked = maskKey(raw.takeIf { it.isNotBlank() })
+            _ui.value = _ui.value.copy(
+                speechFallbackApiKeyMasked = masked,
+                speechApiKeyMasked = if (provider == _ui.value.selectedSpeech) masked else _ui.value.speechApiKeyMasked
+            )
         }
     }
 

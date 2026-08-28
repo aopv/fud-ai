@@ -3430,10 +3430,21 @@ struct ProfileView: View {
     @State private var fallbackApiKeyText: String = AIProviderSettings.apiKey(for: AIProviderSettings.selectedFallbackProvider) ?? ""
     @State private var fallbackBaseURL: String = AIProviderSettings.customBaseURL(for: AIProviderSettings.selectedFallbackProvider) ?? ""
     @State private var showFallbackAPIKey = false
+    @State private var textFallbackEnabled: Bool = AIProviderSettings.textFallbackEnabled
+    @State private var selectedTextFallbackProvider: AIProvider = AIProviderSettings.selectedTextFallbackProvider
+    @State private var selectedTextFallbackModel: String = AIProviderSettings.selectedTextFallbackModel
+    @State private var textFallbackApiKeyText: String = AIProviderSettings.apiKey(for: AIProviderSettings.selectedTextFallbackProvider) ?? ""
+    @State private var textFallbackBaseURL: String = AIProviderSettings.customBaseURL(for: AIProviderSettings.selectedTextFallbackProvider) ?? ""
+    @State private var showTextFallbackAPIKey = false
     @State private var selectedSpeechProvider: SpeechProvider = SpeechSettings.selectedProvider
     @State private var selectedSpeechLanguage: SpeechLanguage = SpeechSettings.selectedLanguage(for: SpeechSettings.selectedProvider)
     @State private var speechApiKeyText: String = SpeechSettings.apiKey(for: SpeechSettings.selectedProvider) ?? ""
     @State private var showSpeechAPIKey = false
+    @State private var speechFallbackEnabled: Bool = SpeechSettings.fallbackEnabled
+    @State private var selectedSpeechFallbackProvider: SpeechProvider = SpeechSettings.selectedFallbackProvider
+    @State private var selectedSpeechFallbackLanguage: SpeechLanguage = SpeechSettings.selectedLanguage(for: SpeechSettings.selectedFallbackProvider)
+    @State private var speechFallbackApiKeyText: String = SpeechSettings.apiKey(for: SpeechSettings.selectedFallbackProvider) ?? ""
+    @State private var showSpeechFallbackAPIKey = false
 
     private var heightMetric: Bool { heightUnitRaw == "cm" }
     private var weightMetric: Bool { weightUnitRaw == "kg" }
@@ -4226,7 +4237,16 @@ struct ProfileView: View {
                             textBaseURL = AIProviderSettings.customBaseURL(for: newProvider) ?? ""
                         }
 
-                        if selectedTextProvider.supportsCustomModelName {
+                        if selectedTextProvider == .appleIntelligence {
+                            HStack {
+                                Label("Model", systemImage: "brain")
+                                Spacer()
+                                Text(selectedTextProvider.defaultTextModel)
+                                    .foregroundStyle(.secondary)
+                            }
+
+                            appleIntelligenceAvailabilityRow
+                        } else if selectedTextProvider.supportsCustomModelName {
                             HStack {
                                 Label("Model", systemImage: "brain")
                                 Spacer()
@@ -4337,11 +4357,14 @@ struct ProfileView: View {
                         }
                     }
 
-                        AISettingsSubsectionHeader(title: "Fallback", systemImage: "arrow.triangle.2.circlepath")
+                        AISettingsSubsectionHeader(title: "Text AI Fallback", systemImage: "text.bubble.fill")
+                        textFallbackSettingsRows
+
+                        AISettingsSubsectionHeader(title: "Image AI Fallback", systemImage: "photo.badge.arrow.down")
 
                         Toggle(isOn: $fallbackEnabled) {
                             Label {
-                                Text("Enable Fallback")
+                                Text("Enable Image Fallback")
                             } icon: {
                                 Image(systemName: "arrow.triangle.2.circlepath")
                                     .foregroundStyle(AppColors.calorie)
@@ -4356,7 +4379,7 @@ struct ProfileView: View {
                             // Fallback provider list shows all 13 — same provider as primary IS allowed
                             // (so e.g. Gemini Pro primary + Gemini Flash fallback works for capacity diversity).
                             // The collision is handled at the model layer below + at the runtime check in
-                            // AIProviderSettings.currentFallbackConfig.
+                            // AIProviderSettings.currentImageFallbackConfig.
                             Picker(selection: $selectedFallbackProvider) {
                                 ForEach(AIProvider.visionProviders) { provider in
                                     Label(provider.rawValue, systemImage: provider.icon).tag(provider)
@@ -4544,6 +4567,10 @@ struct ProfileView: View {
                             SpeechSettings.selectedProvider = newProvider
                             speechApiKeyText = SpeechSettings.apiKey(for: newProvider) ?? ""
                             selectedSpeechLanguage = SpeechSettings.selectedLanguage(for: newProvider)
+                            if newProvider == selectedSpeechFallbackProvider,
+                               let alternate = SpeechProvider.remoteProviders.first(where: { $0 != newProvider }) {
+                                selectSpeechFallbackProvider(alternate)
+                            }
                         }
 
                         Text(selectedSpeechProvider.description)
@@ -4602,10 +4629,12 @@ struct ProfileView: View {
                                 .buttonStyle(.plain)
                             }
                         }
+
+                        speechFallbackSettingsRows
                 } header: {
                     Text("AI & Voice")
                 } footer: {
-                    Text("Primary AI handles images and general requests. Text AI can optionally handle requests without images. Fallback retries failed AI requests, while Speech-to-Text controls voice transcription.")
+                    Text("Image, text, and remote speech requests each have their own optional fallback. Apple Intelligence is available only as an explicit iOS Text AI choice on supported iPhones.")
                 }
                 .listRowBackground(AppColors.appCard)
 
@@ -5010,6 +5039,245 @@ struct ProfileView: View {
             }
     }
 
+    @ViewBuilder
+    private var textFallbackSettingsRows: some View {
+        Toggle(isOn: $textFallbackEnabled) {
+            Label("Enable Text Fallback", systemImage: "arrow.triangle.2.circlepath")
+        }
+        .tint(AppColors.calorie)
+        .onChange(of: textFallbackEnabled) { _, newValue in
+            AIProviderSettings.textFallbackEnabled = newValue
+        }
+
+        if textFallbackEnabled {
+            Picker(selection: $selectedTextFallbackProvider) {
+                ForEach(AIProvider.textProviders) { provider in
+                    Label(provider.rawValue, systemImage: provider.icon).tag(provider)
+                }
+            } label: {
+                Label("Provider", systemImage: "cpu")
+            }
+            .pickerStyle(.menu)
+            .tint(.secondary)
+            .onChange(of: selectedTextFallbackProvider) { _, newProvider in
+                selectTextFallbackProvider(newProvider)
+            }
+
+            if selectedTextFallbackProvider == .appleIntelligence {
+                HStack {
+                    Label("Model", systemImage: "brain")
+                    Spacer()
+                    Text(selectedTextFallbackProvider.defaultTextModel)
+                        .foregroundStyle(.secondary)
+                }
+                appleIntelligenceAvailabilityRow
+            } else if selectedTextFallbackProvider.supportsCustomModelName {
+                HStack {
+                    Label("Model", systemImage: "brain")
+                    Spacer()
+                    TextField(textFallbackModelPlaceholder, text: $selectedTextFallbackModel)
+                        .textFieldStyle(.plain)
+                        .multilineTextAlignment(.trailing)
+                        .autocorrectionDisabled()
+                        .textInputAutocapitalization(.never)
+                        .onChange(of: selectedTextFallbackModel) { _, newModel in
+                            AIProviderSettings.selectedTextFallbackModel = newModel
+                        }
+                    if !textFallbackModelPresetOptions.isEmpty {
+                        Menu {
+                            ForEach(textFallbackModelPresetOptions, id: \.self) { model in
+                                Button(model) {
+                                    selectedTextFallbackModel = model
+                                    AIProviderSettings.selectedTextFallbackModel = model
+                                }
+                            }
+                        } label: {
+                            Image(systemName: "list.bullet.circle")
+                                .foregroundStyle(AppColors.calorie)
+                        }
+                    }
+                }
+            } else if !textFallbackModelPresetOptions.isEmpty {
+                Picker(selection: $selectedTextFallbackModel) {
+                    ForEach(textFallbackModelPresetOptions, id: \.self) { model in
+                        Text(model).tag(model)
+                    }
+                } label: {
+                    Label("Model", systemImage: "brain")
+                }
+                .pickerStyle(.menu)
+                .tint(.secondary)
+                .onChange(of: selectedTextFallbackModel) { _, newModel in
+                    AIProviderSettings.selectedTextFallbackModel = newModel
+                }
+                .onAppear {
+                    if !textFallbackModelPresetOptions.contains(selectedTextFallbackModel),
+                       let first = textFallbackModelPresetOptions.first {
+                        selectedTextFallbackModel = first
+                        AIProviderSettings.selectedTextFallbackModel = first
+                    }
+                }
+            }
+
+            if selectedTextFallbackProvider.requiresAPIKey {
+                HStack {
+                    Label("API Key", systemImage: "key.fill")
+                    Spacer()
+                    Group {
+                        if showTextFallbackAPIKey {
+                            TextField(selectedTextFallbackProvider.apiKeyPlaceholder, text: $textFallbackApiKeyText)
+                        } else {
+                            SecureField(selectedTextFallbackProvider.apiKeyPlaceholder, text: $textFallbackApiKeyText)
+                        }
+                    }
+                    .textFieldStyle(.plain)
+                    .multilineTextAlignment(.trailing)
+                    .autocorrectionDisabled()
+                    .textInputAutocapitalization(.never)
+                    .onChange(of: textFallbackApiKeyText) { _, newValue in
+                        AIProviderSettings.setAPIKey(newValue.isEmpty ? nil : newValue, for: selectedTextFallbackProvider)
+                    }
+                    Button {
+                        showTextFallbackAPIKey.toggle()
+                    } label: {
+                        Image(systemName: showTextFallbackAPIKey ? "eye.fill" : "eye.slash.fill")
+                            .foregroundStyle(.secondary)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+
+            if selectedTextFallbackProvider == .ollama || selectedTextFallbackProvider.requiresCustomEndpoint {
+                HStack {
+                    Label(selectedTextFallbackProvider.requiresCustomEndpoint ? "Base URL" : "Server URL", systemImage: "link")
+                    Spacer()
+                    TextField(
+                        selectedTextFallbackProvider.requiresCustomEndpoint
+                            ? "https://your-endpoint.com/v1"
+                            : selectedTextFallbackProvider.baseURL,
+                        text: $textFallbackBaseURL
+                    )
+                    .textFieldStyle(.plain)
+                    .multilineTextAlignment(.trailing)
+                    .autocorrectionDisabled()
+                    .textInputAutocapitalization(.never)
+                    .keyboardType(.URL)
+                    .onChange(of: textFallbackBaseURL) { _, newValue in
+                        AIProviderSettings.setCustomBaseURL(newValue.isEmpty ? nil : newValue, for: selectedTextFallbackProvider)
+                    }
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var speechFallbackSettingsRows: some View {
+        AISettingsSubsectionHeader(title: "STT Fallback", systemImage: "waveform.badge.plus")
+
+        if selectedSpeechProvider == .nativeIOS {
+            Text("Native iOS already retries through Apple's offline and online recognizers. Select a remote STT provider to configure a separate provider fallback.")
+                .font(.system(.caption, design: .rounded))
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+        } else {
+            Toggle(isOn: $speechFallbackEnabled) {
+                Label("Enable STT Fallback", systemImage: "arrow.triangle.2.circlepath")
+            }
+            .tint(AppColors.calorie)
+            .onChange(of: speechFallbackEnabled) { _, newValue in
+                SpeechSettings.fallbackEnabled = newValue
+                if newValue, selectedSpeechFallbackProvider == selectedSpeechProvider,
+                   let alternate = speechFallbackProviderOptions.first {
+                    selectSpeechFallbackProvider(alternate)
+                }
+            }
+
+            if speechFallbackEnabled {
+                Picker(selection: $selectedSpeechFallbackProvider) {
+                    ForEach(speechFallbackProviderOptions) { provider in
+                        Text(provider.displayName).tag(provider)
+                    }
+                } label: {
+                    Label("Provider", systemImage: selectedSpeechFallbackProvider.icon)
+                }
+                .pickerStyle(.menu)
+                .tint(.secondary)
+                .onAppear {
+                    if !speechFallbackProviderOptions.contains(selectedSpeechFallbackProvider),
+                       let alternate = speechFallbackProviderOptions.first {
+                        selectSpeechFallbackProvider(alternate)
+                    }
+                }
+                .onChange(of: selectedSpeechFallbackProvider) { _, newProvider in
+                    selectSpeechFallbackProvider(newProvider)
+                }
+
+                Picker(selection: $selectedSpeechFallbackLanguage) {
+                    ForEach(SpeechLanguage.allCases) { language in
+                        Text(language.displayName).tag(language)
+                    }
+                } label: {
+                    Label("Language", systemImage: "globe")
+                }
+                .pickerStyle(.menu)
+                .tint(.secondary)
+                .onChange(of: selectedSpeechFallbackLanguage) { _, newLanguage in
+                    SpeechSettings.setLanguage(newLanguage, for: selectedSpeechFallbackProvider)
+                }
+
+                if selectedSpeechFallbackProvider.requiresAPIKey {
+                    HStack {
+                        Label("API Key", systemImage: "key.fill")
+                        Spacer()
+                        Group {
+                            if showSpeechFallbackAPIKey {
+                                TextField(selectedSpeechFallbackProvider.apiKeyPlaceholder, text: $speechFallbackApiKeyText)
+                            } else {
+                                SecureField(selectedSpeechFallbackProvider.apiKeyPlaceholder, text: $speechFallbackApiKeyText)
+                            }
+                        }
+                        .textFieldStyle(.plain)
+                        .multilineTextAlignment(.trailing)
+                        .autocorrectionDisabled()
+                        .textInputAutocapitalization(.never)
+                        .onChange(of: speechFallbackApiKeyText) { _, newValue in
+                            SpeechSettings.setAPIKey(newValue.isEmpty ? nil : newValue, for: selectedSpeechFallbackProvider)
+                        }
+                        Button {
+                            showSpeechFallbackAPIKey.toggle()
+                        } label: {
+                            Image(systemName: showSpeechFallbackAPIKey ? "eye.fill" : "eye.slash.fill")
+                                .foregroundStyle(.secondary)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var appleIntelligenceAvailabilityRow: some View {
+        if #available(iOS 26.0, *) {
+            #if canImport(FoundationModels)
+            let available = OnDeviceAIService.isAvailable
+            Label {
+                Text(OnDeviceAIService.availabilityDescription)
+                    .foregroundStyle(.secondary)
+            } icon: {
+                Image(systemName: available ? "checkmark.circle.fill" : "exclamationmark.triangle.fill")
+                    .foregroundStyle(available ? Color.green : Color.orange)
+            }
+            #else
+            Label("Apple Intelligence is unavailable in this build", systemImage: "exclamationmark.triangle.fill")
+                .foregroundStyle(.secondary)
+            #endif
+        } else {
+            Label("Requires iOS 26 or later", systemImage: "exclamationmark.triangle.fill")
+                .foregroundStyle(.secondary)
+        }
+    }
+
     private var maxResponseTokensInput: some View {
         EndEditingDecimalTextField(
             text: $maxResponseTokensText,
@@ -5036,6 +5304,19 @@ struct ProfileView: View {
         return selectedFallbackProvider.models.filter { $0 != selectedModel }
     }
 
+    private var textFallbackModelPresetOptions: [String] {
+        let primaryProvider = separateTextProviderEnabled ? selectedTextProvider : selectedProvider
+        let primaryModel = separateTextProviderEnabled ? selectedTextModel : selectedModel
+        guard selectedTextFallbackProvider == primaryProvider else {
+            return selectedTextFallbackProvider.textModels
+        }
+        return selectedTextFallbackProvider.textModels.filter { $0 != primaryModel }
+    }
+
+    private var speechFallbackProviderOptions: [SpeechProvider] {
+        SpeechProvider.remoteProviders.filter { $0 != selectedSpeechProvider }
+    }
+
     private var primaryModelPlaceholder: String {
         selectedProvider == .openrouter
             ? "e.g. anthropic/claude-sonnet-4"
@@ -5052,6 +5333,12 @@ struct ProfileView: View {
         selectedFallbackProvider == .openrouter
             ? "e.g. anthropic/claude-sonnet-4"
             : "e.g. gpt-4o-mini"
+    }
+
+    private var textFallbackModelPlaceholder: String {
+        selectedTextFallbackProvider == .openrouter
+            ? "e.g. openai/gpt-oss-120b"
+            : "e.g. llama3.2"
     }
 
     private func saveProfile() {
@@ -5075,6 +5362,32 @@ struct ProfileView: View {
         }
         fallbackApiKeyText = AIProviderSettings.apiKey(for: newProvider) ?? ""
         fallbackBaseURL = AIProviderSettings.customBaseURL(for: newProvider) ?? ""
+    }
+
+    private func selectTextFallbackProvider(_ newProvider: AIProvider) {
+        AIProviderSettings.selectedTextFallbackProvider = newProvider
+        let options = newProvider.textModels
+        if !newProvider.supportsCustomModelName,
+           !options.contains(selectedTextFallbackModel) {
+            selectedTextFallbackModel = newProvider.defaultTextModel
+            AIProviderSettings.selectedTextFallbackModel = selectedTextFallbackModel
+        }
+        let primaryProvider = separateTextProviderEnabled ? selectedTextProvider : selectedProvider
+        let primaryModel = separateTextProviderEnabled ? selectedTextModel : selectedModel
+        if newProvider == primaryProvider,
+           selectedTextFallbackModel == primaryModel,
+           let alternate = options.first(where: { $0 != primaryModel }) {
+            selectedTextFallbackModel = alternate
+            AIProviderSettings.selectedTextFallbackModel = alternate
+        }
+        textFallbackApiKeyText = AIProviderSettings.apiKey(for: newProvider) ?? ""
+        textFallbackBaseURL = AIProviderSettings.customBaseURL(for: newProvider) ?? ""
+    }
+
+    private func selectSpeechFallbackProvider(_ newProvider: SpeechProvider) {
+        SpeechSettings.selectedFallbackProvider = newProvider
+        selectedSpeechFallbackLanguage = SpeechSettings.selectedLanguage(for: newProvider)
+        speechFallbackApiKeyText = SpeechSettings.apiKey(for: newProvider) ?? ""
     }
 
     private static let lastRecalcGoalSignatureKey = "lastRecalcGoalSignature"

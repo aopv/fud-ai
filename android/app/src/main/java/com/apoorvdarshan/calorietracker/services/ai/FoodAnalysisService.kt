@@ -489,7 +489,12 @@ class FoodAnalysisService(
         return try {
             dispatch(primary, primaryModel, primaryBaseUrl, primaryKey, finalPrompt, uploadImages, maxTokens, requestTimeoutSeconds)
         } catch (primaryError: Throwable) {
-            val fallback = currentFallbackConfig(primary, primaryModel) ?: throw primaryError
+            if (primaryError is kotlinx.coroutines.CancellationException) throw primaryError
+            val fallback = if (imageBytesList.isEmpty()) {
+                currentTextFallbackConfig(primary, primaryModel)
+            } else {
+                currentImageFallbackConfig(primary, primaryModel)
+            } ?: throw primaryError
             dispatch(fallback.provider, fallback.model, fallback.baseUrl, fallback.apiKey, finalPrompt, uploadImages, maxTokens, requestTimeoutSeconds)
         }
     }
@@ -589,7 +594,7 @@ class FoodAnalysisService(
         }
     }
 
-    private suspend fun currentFallbackConfig(
+    private suspend fun currentImageFallbackConfig(
         primary: AIProvider,
         primaryModel: String
     ): FallbackConfig? {
@@ -597,6 +602,21 @@ class FoodAnalysisService(
         val provider = prefs.selectedFallbackProvider.first()
         val model = provider.supportedModelOrDefault(prefs.selectedFallbackModel.first())
         // Fallback identical to primary would be a pointless retry of the same call.
+        if (provider == primary && model == primaryModel) return null
+        val key = keyStore.apiKey(provider)
+        if (provider.requiresApiKey && key.isNullOrEmpty()) return null
+        val baseUrl = prefs.customBaseUrl(provider).first()?.takeIf { it.isNotEmpty() } ?: provider.baseUrl
+        if (baseUrl.isEmpty()) return null
+        return FallbackConfig(provider, model, baseUrl, key)
+    }
+
+    private suspend fun currentTextFallbackConfig(
+        primary: AIProvider,
+        primaryModel: String
+    ): FallbackConfig? {
+        if (!prefs.textFallbackEnabled.first()) return null
+        val provider = prefs.selectedTextFallbackProvider.first()
+        val model = provider.supportedTextModelOrDefault(prefs.selectedTextFallbackModel.first())
         if (provider == primary && model == primaryModel) return null
         val key = keyStore.apiKey(provider)
         if (provider.requiresApiKey && key.isNullOrEmpty()) return null

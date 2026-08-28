@@ -105,22 +105,83 @@ class ChatService(
         }
         val baseUrl = prefs.customBaseUrl(provider).first()?.takeIf { it.isNotEmpty() } ?: provider.baseUrl
         val apiKey = keyStore.apiKey(provider)
+        val maxTokens = prefs.maxResponseTokens.first()
+        val requestTimeoutSeconds = prefs.aiRequestTimeoutSeconds.first()
 
+        return try {
+            runProvider(
+                provider, model, baseUrl, apiKey, systemPrompt, history, newUserMessage,
+                tools, imageBytes, maxTokens, requestTimeoutSeconds
+            )
+        } catch (primaryError: Throwable) {
+            if (primaryError is kotlinx.coroutines.CancellationException) throw primaryError
+            val fallback = currentFallbackConfig(
+                hasImage = imageBytes != null,
+                primary = provider,
+                primaryModel = model
+            ) ?: throw primaryError
+            runProvider(
+                fallback.provider, fallback.model, fallback.baseUrl, fallback.apiKey,
+                systemPrompt, history, newUserMessage, tools, imageBytes, maxTokens,
+                requestTimeoutSeconds
+            )
+        }
+    }
+
+    private suspend fun runProvider(
+        provider: AIProvider,
+        model: String,
+        baseUrl: String,
+        apiKey: String?,
+        systemPrompt: String,
+        history: List<ChatMessage>,
+        newUserMessage: String,
+        tools: CoachTools,
+        imageBytes: ByteArray?,
+        maxTokens: Int,
+        requestTimeoutSeconds: Int
+    ): String {
         if (provider.requiresApiKey && apiKey.isNullOrEmpty()) throw AiError.NoApiKey
         if (baseUrl.isEmpty()) throw AiError.InvalidUrl(baseUrl)
-        val maxTokens = prefs.maxResponseTokens.first()
-        val requestClient = FoodAnalysisService.clientForProvider(
-            okHttp,
-            provider,
-            prefs.aiRequestTimeoutSeconds.first()
-        )
-
+        val requestClient = FoodAnalysisService.clientForProvider(okHttp, provider, requestTimeoutSeconds)
         return when (provider.apiFormat) {
             AIProvider.ApiFormat.GEMINI -> runGeminiToolLoop(requestClient, baseUrl, model, apiKey!!, systemPrompt, history, newUserMessage, tools, imageBytes)
             AIProvider.ApiFormat.ANTHROPIC -> runAnthropicToolLoop(requestClient, baseUrl, model, apiKey!!, systemPrompt, history, newUserMessage, tools, imageBytes, maxTokens)
             AIProvider.ApiFormat.OPENAI_COMPATIBLE -> runOpenAIToolLoop(requestClient, baseUrl, model, apiKey, systemPrompt, history, newUserMessage, provider, tools, imageBytes, maxTokens)
         }
     }
+
+    private suspend fun currentFallbackConfig(
+        hasImage: Boolean,
+        primary: AIProvider,
+        primaryModel: String
+    ): ChatFallbackConfig? {
+        val enabled = if (hasImage) prefs.fallbackEnabled.first() else prefs.textFallbackEnabled.first()
+        if (!enabled) return null
+        val provider = if (hasImage) {
+            prefs.selectedFallbackProvider.first()
+        } else {
+            prefs.selectedTextFallbackProvider.first()
+        }
+        val model = if (hasImage) {
+            provider.supportedModelOrDefault(prefs.selectedFallbackModel.first())
+        } else {
+            provider.supportedTextModelOrDefault(prefs.selectedTextFallbackModel.first())
+        }
+        if (provider == primary && model == primaryModel) return null
+        val apiKey = keyStore.apiKey(provider)
+        if (provider.requiresApiKey && apiKey.isNullOrEmpty()) return null
+        val baseUrl = prefs.customBaseUrl(provider).first()?.takeIf { it.isNotEmpty() } ?: provider.baseUrl
+        if (baseUrl.isEmpty()) return null
+        return ChatFallbackConfig(provider, model, baseUrl, apiKey)
+    }
+
+    private data class ChatFallbackConfig(
+        val provider: AIProvider,
+        val model: String,
+        val baseUrl: String,
+        val apiKey: String?
+    )
 
     // MARK: - Slim system prompt
 

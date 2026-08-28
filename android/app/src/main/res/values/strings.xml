@@ -523,7 +523,12 @@
     <string name="settings_section_text_ai">Text AI</string>
     <string name="settings_use_separate_text_provider">Use Separate Text Provider</string>
     <string name="settings_text_provider_footer">When enabled, requests without images—including typed food, voice transcripts, Coach chat, goals, and advice—use this provider. Photo requests keep using the AI Provider above. API keys are shared per provider.</string>
+    <string name="settings_section_text_fallback">Text AI Fallback</string>
+    <string name="settings_text_fallback_footer">Used only when a text-only AI request fails. It never handles photos.</string>
     <string name="settings_section_speech">Speech-to-Text</string>
+    <string name="settings_section_speech_fallback">STT Fallback</string>
+    <string name="settings_speech_fallback_footer">Used only when the selected remote speech provider fails. Native speech already retries its on-device and online recognition modes.</string>
+    <string name="settings_native_speech_fallback_footer">Native speech already recovers automatically across Android’s on-device, online, and automatic recognition modes. Choose a remote speech provider above to configure a separate provider fallback.</string>
     <string name="settings_section_workout" translatable="false">Workout</string>
     <string name="settings_training_split" translatable="false">Training Split</string>
     <string name="settings_rpe_scale" translatable="false">RPE Scale</string>
@@ -650,9 +655,9 @@
     <string name="settings_save">Save</string>
     <string name="settings_saved">Saved</string>
 
-    <string name="settings_section_fallback">Fallback</string>
+    <string name="settings_section_fallback">Image AI Fallback</string>
     <string name="settings_enable_fallback">Enable Fallback</string>
-    <string name="settings_fallback_footer">If your primary provider fails (overload, rate limit, network error), the app retries automatically with this fallback. Same provider as primary is allowed — just pick a different model.</string>
+    <string name="settings_fallback_footer">Used only when an AI request includes a photo. Same provider as primary is allowed — just pick a different model.</string>
 
     <string name="settings_health_connect">Health Connect</string>
     <string name="settings_manage_health_access">Manage Health Connect Access</string>

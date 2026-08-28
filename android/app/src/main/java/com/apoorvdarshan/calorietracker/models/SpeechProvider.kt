@@ -59,4 +59,9 @@ enum class SpeechProvider {
         DEEPGRAM -> R.string.speech_description_deepgram
         ASSEMBLY_AI -> R.string.speech_description_assemblyai
     }
+
+    companion object {
+        val remoteProviders: List<SpeechProvider>
+            get() = values().filter { it.requiresApiKey }
+    }
 }

@@ -103,8 +103,11 @@ struct AIModelRegistryTests {
 
     @Test func textProvidersExposeCurrentTextOnlyChoicesWithoutEnteringVisionRegistry() {
         #expect(AIProvider.textProviders == AIProvider.allCases)
+        #expect(!AIProvider.visionProviders.contains(.appleIntelligence))
         #expect(!AIProvider.visionProviders.contains(.deepseek))
         #expect(!AIProvider.visionProviders.contains(.cerebras))
+        #expect(AIProvider.appleIntelligence.textModels == ["System Language Model"])
+        #expect(!AIProvider.appleIntelligence.requiresAPIKey)
         #expect(AIProvider.deepseek.textModels == ["deepseek-v4-flash", "deepseek-v4-pro"])
         #expect(AIProvider.cerebras.textModels == ["gpt-oss-120b", "gemma-4-31b"])
         #expect(AIProvider.groq.defaultTextModel == "openai/gpt-oss-20b")

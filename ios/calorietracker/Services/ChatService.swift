@@ -77,22 +77,94 @@ struct ChatService {
         )
 
         let config = AIProviderSettings.currentConfig(requiresVision: imageData != nil)
-        let provider = config.provider
-        let model = config.model
-        let baseURL = config.baseURL
+        func request(
+            provider: AIProvider,
+            model: String,
+            baseURL: String,
+            apiKey: String?
+        ) async throws -> String {
+            guard !provider.requiresAPIKey || apiKey != nil else {
+                throw ChatError.noAPIKey
+            }
 
-        guard config.apiKey != nil || provider == .ollama else {
-            throw ChatError.noAPIKey
+            switch provider.apiFormat {
+            case .onDevice:
+                return try await callOnDevice(
+                    systemPrompt: systemPrompt,
+                    history: history,
+                    newUserMessage: newUserMessage,
+                    imageData: imageData
+                )
+            case .gemini:
+                return try await callGemini(baseURL: baseURL, model: model, apiKey: apiKey, systemPrompt: systemPrompt, history: history, newUserMessage: newUserMessage, imageData: imageData, tools: tools)
+            case .anthropic:
+                return try await callAnthropic(baseURL: baseURL, model: model, apiKey: apiKey, systemPrompt: systemPrompt, history: history, newUserMessage: newUserMessage, imageData: imageData, tools: tools)
+            case .openaiCompatible:
+                return try await callOpenAICompatible(baseURL: baseURL, model: model, apiKey: apiKey, systemPrompt: systemPrompt, history: history, newUserMessage: newUserMessage, imageData: imageData, provider: provider, tools: tools)
+            }
         }
 
-        switch provider.apiFormat {
-        case .gemini:
-            return try await callGemini(baseURL: baseURL, model: model, apiKey: config.apiKey, systemPrompt: systemPrompt, history: history, newUserMessage: newUserMessage, imageData: imageData, tools: tools)
-        case .anthropic:
-            return try await callAnthropic(baseURL: baseURL, model: model, apiKey: config.apiKey, systemPrompt: systemPrompt, history: history, newUserMessage: newUserMessage, imageData: imageData, tools: tools)
-        case .openaiCompatible:
-            return try await callOpenAICompatible(baseURL: baseURL, model: model, apiKey: config.apiKey, systemPrompt: systemPrompt, history: history, newUserMessage: newUserMessage, imageData: imageData, provider: provider, tools: tools)
+        do {
+            return try await request(
+                provider: config.provider,
+                model: config.model,
+                baseURL: config.baseURL,
+                apiKey: config.apiKey
+            )
+        } catch {
+            if error is CancellationError { throw error }
+            let fallback = imageData == nil
+                ? AIProviderSettings.currentTextFallbackConfig(
+                    excludingPrimary: config.provider,
+                    model: config.model
+                )
+                : AIProviderSettings.currentImageFallbackConfig(
+                    excludingPrimary: config.provider,
+                    model: config.model
+                )
+            guard let fallback else { throw error }
+            return try await request(
+                provider: fallback.provider,
+                model: fallback.model,
+                baseURL: fallback.baseURL,
+                apiKey: fallback.apiKey
+            )
         }
+    }
+
+    private static func callOnDevice(
+        systemPrompt: String,
+        history: [ChatMessage],
+        newUserMessage: String,
+        imageData: Data?
+    ) async throws -> String {
+        guard imageData == nil else {
+            throw ChatError.apiError("Apple Intelligence is available for text-only conversations.")
+        }
+
+        #if canImport(FoundationModels)
+        if #available(iOS 26.0, *) {
+            let conversation = history.suffix(8).map { message in
+                "\(message.role.rawValue.capitalized): \(message.content)"
+            }.joined(separator: "\n")
+            let prompt = """
+            \(conversation.isEmpty ? "" : "Recent conversation:\n\(conversation)\n\n")
+            User: \(newUserMessage)
+            """
+            let onDeviceInstructions = """
+            \(systemPrompt)
+
+            ON-DEVICE MODE
+            You cannot call data tools in this mode. Answer only from the profile, forecast, and data summary above. If the question requires unavailable detailed history, say that briefly instead of inventing facts.
+            """
+            return try await OnDeviceAIService.respond(
+                to: prompt,
+                instructions: onDeviceInstructions
+            )
+        }
+        #endif
+
+        throw ChatError.apiError("Apple Intelligence requires iOS 26 or later on a supported iPhone.")
     }
 
     // MARK: - System prompt builder

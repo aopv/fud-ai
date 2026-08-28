@@ -2,6 +2,7 @@ import Testing
 import UIKit
 @testable import calorietracker
 
+@Suite(.serialized)
 struct AIRequestConfigurationTests {
     @Test func geminiUsesCurrentModelsAndFallsBackFromRetiredChoices() {
         #expect(AIProvider.gemini.defaultModel == "gemini-3.5-flash-lite")
@@ -58,6 +59,77 @@ struct AIRequestConfigurationTests {
         #expect(text.model == "deepseek-v4-pro")
         #expect(vision.provider == .openai)
         #expect(vision.model == "gpt-5.4-mini")
+    }
+
+    @Test func appleIntelligenceIsTextOnlyAndDoesNotRequireCredentials() {
+        let originalProvider = AIProviderSettings.selectedProvider
+        let originalEnabled = AIProviderSettings.separateTextProviderEnabled
+        let originalTextProvider = AIProviderSettings.selectedTextProvider
+        let originalTextModel = AIProviderSettings.selectedTextModel
+        defer {
+            AIProviderSettings.selectedProvider = originalProvider
+            AIProviderSettings.separateTextProviderEnabled = originalEnabled
+            AIProviderSettings.selectedTextProvider = originalTextProvider
+            AIProviderSettings.selectedTextModel = originalTextModel
+        }
+
+        AIProviderSettings.selectedProvider = .openai
+        AIProviderSettings.separateTextProviderEnabled = true
+        AIProviderSettings.selectedTextProvider = .appleIntelligence
+        AIProviderSettings.selectedTextModel = "System Language Model"
+
+        let text = AIProviderSettings.currentConfig(requiresVision: false)
+        let vision = AIProviderSettings.currentConfig(requiresVision: true)
+        #expect(text.provider == .appleIntelligence)
+        #expect(text.model == "System Language Model")
+        #expect(!text.provider.requiresAPIKey)
+        #expect(vision.provider == .openai)
+    }
+
+    @Test func imageAndTextFallbacksResolveIndependently() {
+        let originalImageEnabled = AIProviderSettings.fallbackEnabled
+        let originalImageProvider = AIProviderSettings.selectedFallbackProvider
+        let originalImageModel = AIProviderSettings.selectedFallbackModel
+        let originalTextEnabled = AIProviderSettings.textFallbackEnabled
+        let originalTextProvider = AIProviderSettings.selectedTextFallbackProvider
+        let originalTextModel = AIProviderSettings.selectedTextFallbackModel
+        defer {
+            AIProviderSettings.fallbackEnabled = originalImageEnabled
+            AIProviderSettings.selectedFallbackProvider = originalImageProvider
+            AIProviderSettings.selectedFallbackModel = originalImageModel
+            AIProviderSettings.textFallbackEnabled = originalTextEnabled
+            AIProviderSettings.selectedTextFallbackProvider = originalTextProvider
+            AIProviderSettings.selectedTextFallbackModel = originalTextModel
+        }
+
+        AIProviderSettings.fallbackEnabled = true
+        AIProviderSettings.selectedFallbackProvider = .ollama
+        AIProviderSettings.selectedFallbackModel = "qwen3-vl"
+        AIProviderSettings.textFallbackEnabled = true
+        AIProviderSettings.selectedTextFallbackProvider = .appleIntelligence
+        AIProviderSettings.selectedTextFallbackModel = "System Language Model"
+
+        let image = AIProviderSettings.currentImageFallbackConfig(
+            excludingPrimary: .openai,
+            model: "gpt-5.4-mini"
+        )
+        let text = AIProviderSettings.currentTextFallbackConfig(
+            excludingPrimary: .openai,
+            model: "gpt-5.4-mini"
+        )
+        #expect(image?.provider == .ollama)
+        #expect(image?.model == "qwen3-vl")
+        #expect(text?.provider == .appleIntelligence)
+        #expect(text?.model == "System Language Model")
+    }
+
+    @Test func speechFallbackRejectsNativeAsAProvider() {
+        let original = SpeechSettings.selectedFallbackProvider
+        defer { SpeechSettings.selectedFallbackProvider = original }
+
+        SpeechSettings.selectedFallbackProvider = .nativeIOS
+        #expect(SpeechSettings.selectedFallbackProvider == .groq)
+        #expect(!SpeechProvider.remoteProviders.contains(.nativeIOS))
     }
 
     @Test func foodPhotosAreDownscaledWithoutUpscaling() throws {

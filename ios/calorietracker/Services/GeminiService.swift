@@ -276,15 +276,8 @@ struct GeminiService {
         When supported by the text, use slice/piece for discrete foods, ml/cup/fl oz for liquids, tbsp/tsp for spooned foods, and can/packet for packaged foods.
         Include a single food emoji that best represents the food. Use null for any nutrient you cannot estimate.
         """
-        do {
-            let analysis = try await callTextFoodAnalysis(prompt: prompt)
-            return await addingFallbackServingUnits(to: analysis, image: nil, description: description)
-        } catch {
-            if let fallbackAnalysis = await onDeviceTextFallback(description: description, after: error) {
-                return await addingFallbackServingUnits(to: fallbackAnalysis, image: nil, description: description)
-            }
-            throw error
-        }
+        let analysis = try await callTextFoodAnalysis(prompt: prompt, description: description)
+        return await addingFallbackServingUnits(to: analysis, image: nil, description: description)
     }
 
     static func autoAnalyze(image: UIImage) async throws -> FoodAnalysis {
@@ -663,7 +656,7 @@ struct GeminiService {
         try await callAI(prompt: prompt, images: image.map { [$0] } ?? [])
     }
 
-    private static func callTextFoodAnalysis(prompt: String) async throws -> FoodAnalysis {
+    private static func callTextFoodAnalysis(prompt: String, description: String) async throws -> FoodAnalysis {
         let primary = AIProviderSettings.currentConfig(requiresVision: false)
         if primary.provider.requiresAPIKey, primary.apiKey == nil {
             throw AnalysisError.noAPIKey
@@ -675,10 +668,12 @@ struct GeminiService {
                 model: primary.model,
                 baseURL: primary.baseURL,
                 apiKey: primary.apiKey,
-                prompt: prompt
+                prompt: prompt,
+                description: description
             )
         } catch {
-            guard let fallback = AIProviderSettings.currentFallbackConfig(
+            if error is CancellationError { throw error }
+            guard let fallback = AIProviderSettings.currentTextFallbackConfig(
                 excludingPrimary: primary.provider,
                 model: primary.model
             ) else {
@@ -689,7 +684,8 @@ struct GeminiService {
                 model: fallback.model,
                 baseURL: fallback.baseURL,
                 apiKey: fallback.apiKey,
-                prompt: prompt
+                prompt: prompt,
+                description: description
             )
         }
     }
@@ -699,8 +695,18 @@ struct GeminiService {
         model: String,
         baseURL: String,
         apiKey: String?,
-        prompt: String
+        prompt: String,
+        description: String
     ) async throws -> FoodAnalysis {
+        if provider == .appleIntelligence {
+            #if canImport(FoundationModels)
+            if #available(iOS 26.0, *) {
+                return try await OnDeviceFoodService.analyzeTextInput(description: description)
+            }
+            #endif
+            throw AnalysisError.apiError("Apple Intelligence requires iOS 26 or later on a supported iPhone.")
+        }
+
         let text = try await dispatch(
             provider: provider,
             model: model,
@@ -710,27 +716,6 @@ struct GeminiService {
             imageDataList: []
         )
         return try parseFoodAnalysis(from: text)
-    }
-
-    private static func onDeviceTextFallback(description: String, after error: Error) async -> FoodAnalysis? {
-        if let analysisError = error as? AnalysisError {
-            switch analysisError {
-            case .noAPIKey, .imageConversionFailed:
-                return nil
-            case .networkError, .invalidResponse, .apiError:
-                break
-            }
-        }
-
-        #if canImport(FoundationModels)
-        if #available(iOS 26.0, *),
-           OnDeviceFoodService.isAvailable,
-           OnDeviceFoodService.canHandle(description) {
-            return try? await OnDeviceFoodService.analyzeTextInput(description: description)
-        }
-        #endif
-
-        return nil
     }
 
     private static func callAI(prompt: String, images: [UIImage]) async throws -> String {
@@ -753,13 +738,20 @@ struct GeminiService {
                 imageDataList: imageDataList
             )
         } catch {
+            if error is CancellationError { throw error }
             // imageConversionFailed is local — fallback won't help, rethrow.
             // For everything else (network / 5xx / 4xx / parser failure) try fallback.
             if case AnalysisError.imageConversionFailed = error { throw error }
-            guard let fallback = AIProviderSettings.currentFallbackConfig(
-                excludingPrimary: primary.provider,
-                model: primary.model
-            ) else {
+            let fallback = images.isEmpty
+                ? AIProviderSettings.currentTextFallbackConfig(
+                    excludingPrimary: primary.provider,
+                    model: primary.model
+                )
+                : AIProviderSettings.currentImageFallbackConfig(
+                    excludingPrimary: primary.provider,
+                    model: primary.model
+                )
+            guard let fallback else {
                 throw error
             }
             return try await dispatch(
@@ -801,6 +793,19 @@ struct GeminiService {
 
     private static func dispatch(provider: AIProvider, model: String, baseURL: String, apiKey: String?, prompt: String, imageDataList: [Data]) async throws -> String {
         switch provider.apiFormat {
+        case .onDevice:
+            guard imageDataList.isEmpty else {
+                throw AnalysisError.apiError("Apple Intelligence is available for text-only requests.")
+            }
+            #if canImport(FoundationModels)
+            if #available(iOS 26.0, *) {
+                return try await OnDeviceAIService.respond(
+                    to: prompt,
+                    instructions: AIProviderSettings.currentUserContext
+                )
+            }
+            #endif
+            throw AnalysisError.apiError("Apple Intelligence requires iOS 26 or later on a supported iPhone.")
         case .gemini:
             guard let key = apiKey else { throw AnalysisError.noAPIKey }
             return try await callGemini(baseURL: baseURL, model: model, apiKey: key, prompt: prompt, imageDataList: imageDataList)

@@ -207,6 +207,10 @@ class AIRequestConfigurationTest {
         defaults.forEach { (provider, model) ->
             assertEquals(model, provider.defaultModel)
         }
+        assertEquals(
+            SpeechProvider.values().filter { it != SpeechProvider.NATIVE },
+            SpeechProvider.remoteProviders
+        )
     }
 
     @Test

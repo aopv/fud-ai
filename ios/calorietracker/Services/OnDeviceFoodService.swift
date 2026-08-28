@@ -2,9 +2,57 @@
 import Foundation
 import FoundationModels
 
+enum OnDeviceAIError: LocalizedError {
+    case unavailable(String)
+
+    var errorDescription: String? {
+        switch self {
+        case .unavailable(let reason):
+            "Apple Intelligence is unavailable: \(reason)"
+        }
+    }
+}
+
+/// General text generation through Apple's on-device Foundation Models framework.
+/// This is used only when the user explicitly selects Apple Intelligence as Text AI.
+@available(iOS 26.0, *)
+struct OnDeviceAIService {
+    static var isAvailable: Bool {
+        if case .available = SystemLanguageModel.default.availability {
+            return true
+        }
+        return false
+    }
+
+    static var availabilityDescription: String {
+        switch SystemLanguageModel.default.availability {
+        case .available:
+            "Available on this iPhone"
+        case .unavailable(.deviceNotEligible):
+            "This iPhone does not support Apple Intelligence"
+        case .unavailable(.appleIntelligenceNotEnabled):
+            "Enable Apple Intelligence in iPhone Settings"
+        case .unavailable(.modelNotReady):
+            "The on-device model is still downloading"
+        }
+    }
+
+    static func requireAvailable() throws {
+        guard isAvailable else {
+            throw OnDeviceAIError.unavailable(availabilityDescription)
+        }
+    }
+
+    static func respond(to prompt: String, instructions: String? = nil) async throws -> String {
+        try requireAvailable()
+        let session = LanguageModelSession(instructions: instructions)
+        let response = try await session.respond(to: prompt)
+        return response.content.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+}
+
 /// On-device food analysis using Apple Intelligence (iOS 26+, iPhone 15 Pro / iPhone 16+).
-/// Last-resort text analysis fallback after the selected cloud provider and configured
-/// fallback provider have failed.
+/// Runs only when Apple Intelligence is explicitly selected as the Text AI provider.
 @available(iOS 26.0, *)
 struct OnDeviceFoodService {
 
@@ -58,30 +106,16 @@ struct OnDeviceFoodService {
     // MARK: - Availability
 
     static var isAvailable: Bool {
-        if case .available = SystemLanguageModel.default.availability {
-            return true
-        }
-        return false
-    }
-
-    /// Returns false when the input contains scripts not supported by Apple Intelligence
-    /// (e.g. Cyrillic, Arabic, Hebrew). Russian is not in the iOS 26.1 supported language list.
-    static func canHandle(_ text: String) -> Bool {
-        for scalar in text.unicodeScalars {
-            let value = scalar.value
-            // Cyrillic: U+0400–U+04FF
-            if value >= 0x0400 && value <= 0x04FF { return false }
-            // Arabic: U+0600–U+06FF
-            if value >= 0x0600 && value <= 0x06FF { return false }
-            // Hebrew: U+0590–U+05FF
-            if value >= 0x0590 && value <= 0x05FF { return false }
-        }
-        return true
+        OnDeviceAIService.isAvailable
     }
 
     // MARK: - Analysis
 
     static func analyzeTextInput(description: String) async throws -> GeminiService.FoodAnalysis {
+        try OnDeviceAIService.requireAvailable()
+        let userContext = AIProviderSettings.currentUserContext.map {
+            "\n\nUSER-SUPPLIED CONTEXT\n\($0)"
+        } ?? ""
         let session = LanguageModelSession(
             instructions: """
             You are a precise nutrition database. Given a food description in any language, \
@@ -114,6 +148,7 @@ struct OnDeviceFoodService {
             - Examples: slice for pizza/bread/cake, piece for fruit/cookie/egg, cup for oatmeal/soup, \
               tbsp for peanut butter/sauces.
             - Leave servingUnit empty ("") when grams is the clearest unit.
+            \(userContext)
             """
         )
 
