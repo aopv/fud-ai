@@ -56,7 +56,6 @@ import androidx.compose.ui.text.font.FontWeight
 import com.apoorvdarshan.calorietracker.R
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.apoorvdarshan.calorietracker.AppContainer
 import com.apoorvdarshan.calorietracker.services.update.AndroidUpdateChecker
 import com.apoorvdarshan.calorietracker.services.update.AndroidUpdateState
 import com.apoorvdarshan.calorietracker.ui.theme.AppColors
@@ -67,18 +66,18 @@ import kotlinx.coroutines.launch
  * ios/calorietracker/ContentView.swift.
  *
  * The former About tab was folded into Settings as its last section, so this
- * renders just the About *rows* (no Scaffold / LazyColumn); the caller wraps
- * it in a Settings SectionCard titled "About":
+ * renders the About *rows* (no Scaffold / LazyColumn); the caller wraps the
+ * social rows and legal rows in separate Settings cards, matching iOS:
  *   Update / Rate / Share / Open Source / Star / Vote on PH /
  *   Support / Report Issue / Request Feature / Contact / Follow on X /
- *   Follow on Instagram / Follow on LinkedIn / Privacy Policy / Terms, then
- *   the 'Made by Apoorv Darshan' / 'with care, for everyone' footer.
+ *   Follow on Instagram / Follow on LinkedIn, then Privacy Policy / Terms in
+ *   their own card, followed by the author footer.
  *
  * Icons are pink (Calorie); labels use the onSurface color; hairline dividers
  * separate the rows, mirroring the iOS grouped-list look.
  */
 @Composable
-fun AboutSettingsRows(container: AppContainer) {
+fun AboutSettingsRows() {
     val ctx = LocalContext.current
     val shareText = stringResource(R.string.about_share_message)
     val shareChooser = stringResource(R.string.about_share_chooser)
@@ -150,28 +149,45 @@ fun AboutSettingsRows(container: AppContainer) {
         AboutRow(Icons.Filled.PhotoCamera, stringResource(R.string.about_follow_instagram)) { open("https://www.instagram.com/fudai.app/") }
         Hairline()
         AboutRow(Icons.Filled.Work, stringResource(R.string.about_follow_linkedin)) { open("https://www.linkedin.com/company/fud-ai-app") }
-        Hairline()
-        AboutRow(Icons.Filled.Lock, stringResource(R.string.about_privacy)) { open("https://fud-ai.app/privacy.html") }
-        Hairline()
-        AboutRow(Icons.Filled.Description, stringResource(R.string.about_terms)) { open("https://fud-ai.app/terms.html") }
+    }
+}
 
-        Column(
-            Modifier.fillMaxWidth().padding(top = 14.dp, bottom = 8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            Text(
-                stringResource(R.string.about_made_by),
-                fontSize = 13.sp,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
-            )
-            Text(
-                stringResource(R.string.about_with_care),
-                fontSize = 11.sp,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f)
-            )
+@Composable
+fun AboutLegalRows() {
+    val ctx = LocalContext.current
+
+    fun open(url: String) =
+        ctx.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+
+    Column(Modifier.fillMaxWidth()) {
+        AboutRow(Icons.Filled.Lock, stringResource(R.string.about_privacy)) {
+            open("https://fud-ai.app/privacy.html")
         }
+        Hairline()
+        AboutRow(Icons.Filled.Description, stringResource(R.string.about_terms)) {
+            open("https://fud-ai.app/terms.html")
+        }
+    }
+}
+
+@Composable
+fun AboutFooter() {
+    Column(
+        Modifier.fillMaxWidth().padding(top = 4.dp, bottom = 8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        Text(
+            stringResource(R.string.about_made_by),
+            fontSize = 13.sp,
+            fontWeight = FontWeight.Medium,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+        )
+        Text(
+            stringResource(R.string.about_with_care),
+            fontSize = 11.sp,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f)
+        )
     }
 }
 

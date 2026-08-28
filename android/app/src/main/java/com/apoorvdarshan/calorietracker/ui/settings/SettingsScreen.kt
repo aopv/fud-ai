@@ -180,6 +180,8 @@ import com.apoorvdarshan.calorietracker.ui.components.FudIconBubble
 import com.apoorvdarshan.calorietracker.ui.components.FeetInchesWheelPicker
 import com.apoorvdarshan.calorietracker.ui.components.NumericWheelPicker
 import com.apoorvdarshan.calorietracker.ui.components.WheelPicker
+import com.apoorvdarshan.calorietracker.ui.about.AboutFooter
+import com.apoorvdarshan.calorietracker.ui.about.AboutLegalRows
 import com.apoorvdarshan.calorietracker.ui.about.AboutSettingsRows
 import com.apoorvdarshan.calorietracker.ui.components.SplitDecimalWheelPicker
 import com.apoorvdarshan.calorietracker.ui.components.UnitToggle
@@ -968,8 +970,12 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
             // Section 7 — About (folded in from the former About tab so it's the
             // last section of Settings; tabs are now Home / Progress / Coach / Settings).
             SectionCard(title = stringResource(R.string.nav_about)) {
-                AboutSettingsRows(container)
+                AboutSettingsRows()
             }
+            SectionCard {
+                AboutLegalRows()
+            }
+            AboutFooter()
 
             Spacer(Modifier.height(BottomNavScrollPadding))
         }
@@ -2994,15 +3000,17 @@ private fun MacroField(
 }
 
 @Composable
-private fun SectionCard(title: String, content: @Composable () -> Unit) {
+private fun SectionCard(title: String? = null, content: @Composable () -> Unit) {
     Column {
-        Text(
-            title,
-            style = MaterialTheme.typography.labelLarge,
-            fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.72f),
-            modifier = Modifier.padding(start = 6.dp, bottom = 8.dp)
-        )
+        if (title != null) {
+            Text(
+                title,
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.72f),
+                modifier = Modifier.padding(start = 6.dp, bottom = 8.dp)
+            )
+        }
         FudGlassSurface(
             modifier = Modifier.fillMaxWidth(),
             cornerRadius = 20.dp,
