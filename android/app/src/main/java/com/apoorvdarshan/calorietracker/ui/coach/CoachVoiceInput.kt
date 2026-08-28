@@ -252,7 +252,7 @@ fun CoachMicButton(controller: CoachVoiceController) {
     val holding = controller.phase == VoicePhase.Holding
     Box(
         modifier = Modifier
-            .size(34.dp)
+            .size(40.dp)
             .scale(if (holding) 1.18f else 1f)
             .clip(CircleShape)
             .background(
@@ -368,7 +368,7 @@ fun CoachRecordingIndicator(controller: CoachVoiceController, modifier: Modifier
 fun CoachVoiceCancelButton(onClick: () -> Unit) {
     Box(
         Modifier
-            .size(34.dp)
+            .size(40.dp)
             .clip(CircleShape)
             .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f))
             .clickable(onClick = onClick),

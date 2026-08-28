@@ -30,6 +30,9 @@ struct ChatView: View {
     @State private var voicePressStart: Date?
     @State private var voicePulse = false
     @FocusState private var isInputFocused: Bool
+    @ScaledMetric(relativeTo: .title2) private var coachHeroSize = 92.0
+    @ScaledMetric(relativeTo: .title2) private var coachHeroIconSize = 38.0
+    @ScaledMetric(relativeTo: .body) private var composerControlSize = 40.0
 
     private var userProfile: UserProfile { profileStore.profile }
     private var messages: [ChatMessage] { chatStore.messages }
@@ -49,7 +52,9 @@ struct ChatView: View {
                     TapGesture().onEnded { isInputFocused = false }
                 )
 
-                promptChips
+                if !messages.isEmpty {
+                    promptChips
+                }
 
                 inputArea
             }
@@ -65,6 +70,7 @@ struct ChatView: View {
                             .foregroundStyle(messages.isEmpty ? Color.secondary : AppColors.calorie)
                     }
                     .disabled(messages.isEmpty)
+                    .accessibilityLabel("Reset Chat")
                 }
             }
             .alert("Reset Chat", isPresented: $showResetConfirmation) {
@@ -114,12 +120,13 @@ struct ChatView: View {
     // MARK: - Sections
 
     private var emptyState: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: 0) {
             Spacer()
+                .frame(height: 54)
             ZStack {
                 Circle()
                     .fill(.ultraThinMaterial)
-                    .frame(width: 108, height: 108)
+                    .frame(width: coachHeroSize, height: coachHeroSize)
                     .overlay(
                         Circle().stroke(
                             LinearGradient(
@@ -130,63 +137,86 @@ struct ChatView: View {
                             lineWidth: 0.8
                         )
                     )
-                    .shadow(color: AppColors.calorie.opacity(0.18), radius: 24, x: 0, y: 10)
+                    .shadow(color: AppColors.calorie.opacity(0.16), radius: 20, x: 0, y: 9)
                 Image(systemName: "bubble.left.and.bubble.right.fill")
-                    .font(.system(size: 44))
+                    .font(.system(size: coachHeroIconSize, weight: .medium))
                     .foregroundStyle(
                         LinearGradient(colors: AppColors.calorieGradient, startPoint: .topLeading, endPoint: .bottomTrailing)
                     )
             }
-            Text("Ask your Coach")
-                .font(.system(.title2, design: .rounded, weight: .semibold))
-            Text("Your coach can see your nutrition, goals, and workout diary. Ask about food, progress, recovery, or your training plan.")
-                .font(.system(.subheadline, design: .rounded))
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, 32)
-            Spacer()
+            .accessibilityHidden(true)
+            .padding(.bottom, 18)
+            VStack(spacing: 8) {
+                Text("Ask your Coach")
+                    .font(.system(.title2, design: .rounded, weight: .semibold))
+                Text("Your coach can see your nutrition, goals, and workout diary. Ask about food, progress, recovery, or your training plan.")
+                    .font(.system(.subheadline, design: .rounded))
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .lineSpacing(2)
+                    .padding(.horizontal, 24)
+            }
+            .accessibilityElement(children: .combine)
+
+            emptyPromptGrid
+                .padding(.top, 26)
+            Spacer(minLength: 24)
         }
+        .padding(.horizontal, 8)
     }
 
     private var messageList: some View {
         ScrollViewReader { proxy in
             ScrollView {
-                VStack(spacing: 10) {
+                VStack(spacing: 14) {
                     ForEach(messages) { msg in
                         MessageBubble(message: msg)
                             .id(msg.id)
                     }
                     if isSending {
-                        HStack {
+                        HStack(alignment: .top, spacing: 8) {
+                            CoachAssistantBadge()
+
                             TypingIndicator()
                                 .padding(.horizontal, 14)
-                                .padding(.vertical, 10)
-                                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                                .padding(.vertical, 12)
+                                .background(.ultraThinMaterial, in: UnevenRoundedRectangle(
+                                    cornerRadii: .init(topLeading: 8, bottomLeading: 18, bottomTrailing: 18, topTrailing: 18),
+                                    style: .continuous
+                                ))
                                 .overlay(
-                                    RoundedRectangle(cornerRadius: 18, style: .continuous)
+                                    UnevenRoundedRectangle(
+                                        cornerRadii: .init(topLeading: 8, bottomLeading: 18, bottomTrailing: 18, topTrailing: 18),
+                                        style: .continuous
+                                    )
                                         .stroke(Color.white.opacity(0.15), lineWidth: 0.5)
                                 )
-                                .padding(.leading, 4)
-                            Spacer()
+                            Spacer(minLength: 48)
                         }
                         .padding(.horizontal)
                         .id("typing")
                     }
                     if let err = errorMessage {
-                        Text(err)
-                            .font(.system(.caption, design: .rounded))
-                            .foregroundStyle(.red)
-                            .padding(.horizontal, 14)
-                            .padding(.vertical, 8)
-                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                    .stroke(Color.red.opacity(0.25), lineWidth: 0.5)
-                            )
-                            .padding(.horizontal)
+                        HStack(alignment: .firstTextBaseline, spacing: 8) {
+                            Image(systemName: "exclamationmark.triangle.fill")
+                                .accessibilityHidden(true)
+                            Text(err)
+                        }
+                        .font(.system(.caption, design: .rounded, weight: .medium))
+                        .foregroundStyle(.red)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 10)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                                .stroke(Color.red.opacity(0.25), lineWidth: 0.6)
+                        )
+                        .padding(.horizontal)
                     }
                 }
-                .padding(.vertical, 12)
+                .padding(.top, 14)
+                .padding(.bottom, 16)
             }
             .scrollDismissesKeyboard(.immediately)
             .onAppear {
@@ -221,42 +251,89 @@ struct ChatView: View {
         }
     }
 
+    private var suggestedPrompts: [String] {
+        var values: [String]
+        switch userProfile.goal {
+        case .lose:
+            values = [
+                "What's my expected weight in 30 days?",
+                "How do I lose weight faster safely?",
+                "Am I eating too much?",
+                "What should I eat for dinner?",
+            ]
+        case .gain:
+            values = [
+                "What's my expected weight in 30 days?",
+                "How do I gain weight healthily?",
+                "Am I eating enough?",
+                "High-protein foods I can add?",
+            ]
+        case .maintain:
+            values = [
+                "Am I holding my weight?",
+                "What's my average intake?",
+                "Macro suggestions?",
+                "How's my trend?",
+            ]
+        }
+        if !strengthWorkoutStore.completedSessions.isEmpty {
+            values.insert("Analyze my last 4 weeks of training", at: 0)
+        }
+        return values
+    }
+
+    private var emptyPromptGrid: some View {
+        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
+            ForEach(Array(suggestedPrompts.prefix(4)), id: \.self) { prompt in
+                Button {
+                    draft = prompt
+                    send()
+                } label: {
+                    HStack(alignment: .top, spacing: 9) {
+                        Image(systemName: "arrow.up.right")
+                            .font(.system(size: 11, weight: .bold))
+                            .foregroundStyle(AppColors.calorie)
+                            .padding(.top, 2)
+                            .accessibilityHidden(true)
+                        Text(prompt)
+                            .font(.system(.footnote, design: .rounded, weight: .medium))
+                            .foregroundStyle(.primary)
+                            .multilineTextAlignment(.leading)
+                            .lineLimit(3)
+                        Spacer(minLength: 0)
+                    }
+                    .padding(12)
+                    .frame(maxWidth: .infinity, minHeight: 70, alignment: .topLeading)
+                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 16, style: .continuous)
+                            .fill(AppColors.calorie.opacity(0.045))
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 16, style: .continuous)
+                            .stroke(AppColors.calorie.opacity(0.18), lineWidth: 0.6)
+                    )
+                }
+                .buttonStyle(.plain)
+                .disabled(isSending)
+            }
+        }
+        .padding(.horizontal, 16)
+    }
+
     /// Context-aware suggested prompts — pick a different set based on goal to keep them relevant.
     private var promptChips: some View {
-        let chips: [String] = {
-            var values: [String]
-            switch userProfile.goal {
-            case .lose:
-                values = [
-                    "What's my expected weight in 30 days?",
-                    "How do I lose weight faster safely?",
-                    "Am I eating too much?",
-                    "What should I eat for dinner?",
-                ]
-            case .gain:
-                values = [
-                    "What's my expected weight in 30 days?",
-                    "How do I gain weight healthily?",
-                    "Am I eating enough?",
-                    "High-protein foods I can add?",
-                ]
-            case .maintain:
-                values = [
-                    "Am I holding my weight?",
-                    "What's my average intake?",
-                    "Macro suggestions?",
-                    "How's my trend?",
-                ]
-            }
-            if !strengthWorkoutStore.completedSessions.isEmpty {
-                values.insert("Analyze my last 4 weeks of training", at: 0)
-            }
-            return values
-        }()
 
         return ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
-                ForEach(chips, id: \.self) { chip in
+                Image(systemName: "sparkles")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(AppColors.calorie)
+                    .frame(width: 32, height: 44)
+                    .background(AppColors.calorie.opacity(0.08), in: Circle())
+                    .accessibilityHidden(true)
+
+                ForEach(suggestedPrompts, id: \.self) { chip in
                     Button {
                         draft = chip
                         send()
@@ -264,7 +341,7 @@ struct ChatView: View {
                         Text(chip)
                             .font(.system(.footnote, design: .rounded, weight: .medium))
                             .padding(.horizontal, 14)
-                            .padding(.vertical, 9)
+                            .frame(minHeight: 44)
                             .foregroundStyle(AppColors.calorie)
                             .background(
                                 Capsule().fill(.ultraThinMaterial)
@@ -290,7 +367,7 @@ struct ChatView: View {
                 }
             }
             .padding(.horizontal)
-            .padding(.vertical, 8)
+            .padding(.vertical, 6)
         }
     }
 
@@ -340,7 +417,7 @@ struct ChatView: View {
                 Image(systemName: "xmark")
                     .font(.system(size: 12, weight: .bold))
                     .foregroundStyle(.secondary)
-                    .frame(width: 30, height: 30)
+                    .frame(width: 36, height: 36)
                     .background(.ultraThinMaterial, in: Circle())
             }
             .buttonStyle(.plain)
@@ -378,11 +455,9 @@ struct ChatView: View {
             // Trailing control (kept as the stable last child).
             trailingControl
         }
-        .background(
-            Capsule(style: .continuous).fill(.ultraThinMaterial)
-        )
+        .background(RoundedRectangle(cornerRadius: 24, style: .continuous).fill(.ultraThinMaterial))
         .overlay(
-            Capsule(style: .continuous)
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
                 .stroke(
                     LinearGradient(
                         colors: [Color.white.opacity(0.25), Color.white.opacity(0.05)],
@@ -406,10 +481,10 @@ struct ChatView: View {
             Image(systemName: attachedImage == nil ? "plus.circle.fill" : "photo.fill")
                 .font(.system(size: 24, weight: .semibold))
                 .foregroundStyle(AppColors.calorie)
-                .frame(width: 34, height: 34)
+                .frame(width: composerControlSize, height: composerControlSize)
         }
         .disabled(isSending)
-        .padding(.leading, 8)
+        .padding(.leading, 6)
     }
 
     @ViewBuilder private var trailingControl: some View {
@@ -422,8 +497,8 @@ struct ChatView: View {
             .padding(.trailing, 5)
         case .transcribing:
             ProgressView()
-                .frame(width: 34, height: 34)
-                .padding(.trailing, 8)
+                .frame(width: composerControlSize, height: composerControlSize)
+                .padding(.trailing, 5)
         case .idle where canSend:
             sendButton
                 .padding(.trailing, 5)
@@ -441,7 +516,7 @@ struct ChatView: View {
             Image(systemName: "arrow.up")
                 .font(.system(size: 16, weight: .bold))
                 .foregroundStyle(.white)
-                .frame(width: 34, height: 34)
+                .frame(width: composerControlSize, height: composerControlSize)
                 .background(
                     canSend
                         ? AnyShapeStyle(LinearGradient(colors: AppColors.calorieGradient, startPoint: .topLeading, endPoint: .bottomTrailing))
@@ -459,7 +534,7 @@ struct ChatView: View {
         return Image(systemName: "mic.fill")
             .font(.system(size: 16, weight: .bold))
             .foregroundStyle(holding ? .white : AppColors.calorie)
-            .frame(width: 34, height: 34)
+            .frame(width: composerControlSize, height: composerControlSize)
             .background(
                 holding ? AnyShapeStyle(Color.red) : AnyShapeStyle(AppColors.calorie.opacity(0.14)),
                 in: Circle()
@@ -501,7 +576,7 @@ struct ChatView: View {
             Image(systemName: "arrow.up")
                 .font(.system(size: 16, weight: .bold))
                 .foregroundStyle(.white)
-                .frame(width: 34, height: 34)
+                .frame(width: composerControlSize, height: composerControlSize)
                 .background(
                     LinearGradient(colors: AppColors.calorieGradient, startPoint: .topLeading, endPoint: .bottomTrailing),
                     in: Circle()
@@ -517,7 +592,7 @@ struct ChatView: View {
             Image(systemName: "trash")
                 .font(.system(size: 15, weight: .semibold))
                 .foregroundStyle(.red)
-                .frame(width: 34, height: 34)
+                .frame(width: composerControlSize, height: composerControlSize)
                 .background(Color.secondary.opacity(0.14), in: Circle())
         }
         .buttonStyle(.plain)
@@ -762,11 +837,22 @@ private struct MessageBubble: View {
     let message: ChatMessage
 
     private var isUser: Bool { message.role == .user }
+    private var bubbleShape: UnevenRoundedRectangle {
+        UnevenRoundedRectangle(
+            cornerRadii: .init(
+                topLeading: isUser ? 20 : 8,
+                bottomLeading: 20,
+                bottomTrailing: 20,
+                topTrailing: isUser ? 8 : 20
+            ),
+            style: .continuous
+        )
+    }
 
     var body: some View {
         HStack(alignment: .top, spacing: 8) {
             if !isUser {
-                assistantBadge
+                CoachAssistantBadge()
             } else {
                 Spacer(minLength: 48)
             }
@@ -780,21 +866,6 @@ private struct MessageBubble: View {
             }
         }
         .padding(.horizontal)
-    }
-
-    private var assistantBadge: some View {
-        ZStack {
-            Circle()
-                .fill(.ultraThinMaterial)
-                .frame(width: 26, height: 26)
-                .overlay(Circle().stroke(Color.white.opacity(0.18), lineWidth: 0.5))
-            Image(systemName: "sparkles")
-                .font(.system(size: 11, weight: .semibold))
-                .foregroundStyle(
-                    LinearGradient(colors: AppColors.calorieGradient, startPoint: .topLeading, endPoint: .bottomTrailing)
-                )
-        }
-        .padding(.top, 8)
     }
 
     private var bubble: some View {
@@ -832,9 +903,9 @@ private struct MessageBubble: View {
             .overlay(alignment: .top) {
                 if isUser { bubbleHighlight }
             }
-            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-            .shadow(color: isUser ? AppColors.calorie.opacity(0.28) : Color.black.opacity(0.12),
-                    radius: isUser ? 10 : 6, x: 0, y: isUser ? 6 : 3)
+            .clipShape(bubbleShape)
+            .shadow(color: isUser ? AppColors.calorie.opacity(0.18) : Color.black.opacity(0.08),
+                    radius: isUser ? 9 : 5, x: 0, y: isUser ? 5 : 3)
             .fixedSize(horizontal: false, vertical: true)
     }
 
@@ -844,16 +915,16 @@ private struct MessageBubble: View {
             LinearGradient(colors: AppColors.calorieGradient, startPoint: .topLeading, endPoint: .bottomTrailing)
         } else {
             ZStack {
-                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                bubbleShape
                     .fill(.ultraThinMaterial)
-                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                bubbleShape
                     .fill(AppColors.calorie.opacity(0.035))
             }
         }
     }
 
     private var bubbleStroke: some View {
-        RoundedRectangle(cornerRadius: 20, style: .continuous)
+        bubbleShape
             .stroke(
                 LinearGradient(
                     colors: isUser
@@ -875,6 +946,24 @@ private struct MessageBubble: View {
         )
         .blendMode(.plusLighter)
         .allowsHitTesting(false)
+    }
+}
+
+private struct CoachAssistantBadge: View {
+    var body: some View {
+        ZStack {
+            Circle()
+                .fill(.ultraThinMaterial)
+                .frame(width: 28, height: 28)
+                .overlay(Circle().stroke(Color.white.opacity(0.18), lineWidth: 0.5))
+            Image(systemName: "sparkles")
+                .font(.system(size: 11, weight: .semibold))
+                .foregroundStyle(
+                    LinearGradient(colors: AppColors.calorieGradient, startPoint: .topLeading, endPoint: .bottomTrailing)
+                )
+        }
+        .padding(.top, 8)
+        .accessibilityHidden(true)
     }
 }
 

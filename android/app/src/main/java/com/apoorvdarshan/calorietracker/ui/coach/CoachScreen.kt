@@ -14,6 +14,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -35,6 +36,7 @@ import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -57,6 +59,8 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Forum
 import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.Replay
+import androidx.compose.material.icons.filled.NorthEast
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -64,6 +68,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -227,7 +232,7 @@ fun CoachScreen(container: AppContainer) {
                     Box(
                         modifier = Modifier
                             .padding(end = 12.dp)
-                            .size(34.dp)
+                            .size(44.dp)
                             .clip(CircleShape)
                             .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.10f))
                             .clickable(enabled = canReset) { showResetConfirm = true },
@@ -237,7 +242,7 @@ fun CoachScreen(container: AppContainer) {
                             Icons.Filled.Replay,
                             contentDescription = stringResource(R.string.coach_reset_chat_a11y),
                             tint = if (canReset)
-                                MaterialTheme.colorScheme.onBackground
+                                AppColors.Calorie
                             else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f),
                             modifier = Modifier.size(18.dp)
                         )
@@ -266,6 +271,14 @@ fun CoachScreen(container: AppContainer) {
                         .only(WindowInsetsSides.Bottom)
                 )
         ) {
+            val resolvedChips = ui.suggestions.map { stringResource(it) }
+            val onPromptTap: (String) -> Unit = { chip ->
+                hideKeyboard()
+                input = ""
+                attachedImageBytes = null
+                vm.send(chip)
+            }
+
             // Top region — empty state OR message list
             Box(
                 Modifier
@@ -276,7 +289,12 @@ fun CoachScreen(container: AppContainer) {
                     }
             ) {
                 if (ui.messages.isEmpty()) {
-                    EmptyState(modifier = Modifier.fillMaxSize())
+                    EmptyState(
+                        prompts = resolvedChips,
+                        enabled = !ui.sending,
+                        onPromptTap = onPromptTap,
+                        modifier = Modifier.fillMaxSize()
+                    )
                 } else {
                     val resolvedError = ui.error ?: ui.errorRes?.let { stringResource(it) }
                     MessageList(
@@ -289,18 +307,13 @@ fun CoachScreen(container: AppContainer) {
                 }
             }
 
-            // promptChips — horizontal scrolling, ALWAYS visible (matches iOS)
-            val resolvedChips = ui.suggestions.map { stringResource(it) }
-            PromptChipRow(
-                chips = resolvedChips,
-                enabled = !ui.sending,
-                onTap = { chip ->
-                    hideKeyboard()
-                    input = ""
-                    attachedImageBytes = null
-                    vm.send(chip)
-                }
-            )
+            if (ui.messages.isNotEmpty()) {
+                PromptChipRow(
+                    chips = resolvedChips,
+                    enabled = !ui.sending,
+                    onTap = onPromptTap
+                )
+            }
 
             // input bar — capsule with gradient send button
             InputBar(
@@ -354,17 +367,25 @@ fun CoachScreen(container: AppContainer) {
  * "Ask your Coach" title (rounded title2 semibold), subtitle.
  */
 @Composable
-private fun EmptyState(modifier: Modifier = Modifier) {
+private fun EmptyState(
+    prompts: List<String>,
+    enabled: Boolean,
+    onPromptTap: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Column(
-        modifier = modifier.fillMaxWidth().padding(horizontal = 32.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 32.dp)
+            .padding(top = 54.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Top
     ) {
         Box(
             Modifier
-                .size(108.dp)
+                .size(92.dp)
                 .shadow(
-                    elevation = 16.dp,
+                    elevation = 14.dp,
                     shape = CircleShape,
                     ambientColor = AppColors.Calorie.copy(alpha = 0.18f),
                     spotColor = AppColors.Calorie.copy(alpha = 0.18f)
@@ -383,11 +404,11 @@ private fun EmptyState(modifier: Modifier = Modifier) {
             Icon(
                 Icons.Filled.Forum,
                 contentDescription = null,
-                modifier = Modifier.size(44.dp),
+                modifier = Modifier.size(38.dp),
                 tint = AppColors.Calorie
             )
         }
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(18.dp))
         Text(
             stringResource(R.string.coach_empty_title),
             fontSize = 22.sp,
@@ -399,8 +420,70 @@ private fun EmptyState(modifier: Modifier = Modifier) {
             fontSize = 15.sp,
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
             textAlign = TextAlign.Center,
-            lineHeight = 21.sp
+            lineHeight = 21.sp,
+            modifier = Modifier.padding(horizontal = 8.dp)
         )
+        Spacer(Modifier.height(26.dp))
+        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            prompts.take(4).chunked(2).forEach { rowPrompts ->
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalAlignment = Alignment.Top
+                ) {
+                    rowPrompts.forEach { prompt ->
+                        EmptyPromptCard(
+                            text = prompt,
+                            enabled = enabled,
+                            onTap = { onPromptTap(prompt) },
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                    if (rowPrompts.size == 1) Spacer(Modifier.weight(1f))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun EmptyPromptCard(
+    text: String,
+    enabled: Boolean,
+    onTap: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        onClick = onTap,
+        enabled = enabled,
+        modifier = modifier.heightIn(min = 70.dp),
+        shape = RoundedCornerShape(16.dp),
+        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.88f),
+        border = BorderStroke(0.6.dp, AppColors.Calorie.copy(alpha = 0.18f))
+    ) {
+        Row(
+            modifier = Modifier
+                .background(AppColors.Calorie.copy(alpha = 0.045f))
+                .padding(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(9.dp),
+            verticalAlignment = Alignment.Top
+        ) {
+            Icon(
+                Icons.Filled.NorthEast,
+                contentDescription = null,
+                tint = AppColors.Calorie,
+                modifier = Modifier.size(13.dp)
+            )
+            Text(
+                text,
+                modifier = Modifier.weight(1f),
+                color = MaterialTheme.colorScheme.onSurface,
+                fontSize = 13.sp,
+                fontWeight = FontWeight.Medium,
+                lineHeight = 18.sp,
+                maxLines = 3
+            )
+        }
     }
 }
 
@@ -415,8 +498,8 @@ private fun MessageList(
     LazyColumn(
         state = listState,
         modifier = modifier.fillMaxWidth(),
-        contentPadding = PaddingValues(vertical = 12.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp)
+        contentPadding = PaddingValues(top = 14.dp, bottom = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
         items(messages, key = { it.id }) { MessageBubble(it) }
 
@@ -424,18 +507,20 @@ private fun MessageList(
             item("typing") {
                 Row(
                     Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.Top
                 ) {
+                    AssistantBadge()
+                    Spacer(Modifier.width(8.dp))
                     Box(
                         Modifier
-                            .clip(RoundedCornerShape(18.dp))
+                            .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 18.dp, bottomEnd = 18.dp, bottomStart = 18.dp))
                             .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.85f))
                             .border(
                                 0.5.dp,
                                 Color.White.copy(alpha = 0.15f),
-                                RoundedCornerShape(18.dp)
+                                RoundedCornerShape(topStart = 8.dp, topEnd = 18.dp, bottomEnd = 18.dp, bottomStart = 18.dp)
                             )
-                            .padding(horizontal = 14.dp, vertical = 10.dp)
+                            .padding(horizontal = 14.dp, vertical = 12.dp)
                     ) { TypingIndicator() }
                     Spacer(Modifier.weight(1f))
                 }
@@ -444,16 +529,25 @@ private fun MessageList(
 
         if (error != null) {
             item("error") {
-                Box(
+                Row(
                     Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(Color(0xFFFFEBEE).copy(alpha = 0.6f))
-                        .border(0.5.dp, Color(0xFFD32F2F).copy(alpha = 0.25f), RoundedCornerShape(12.dp))
-                        .padding(horizontal = 14.dp, vertical = 8.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.88f))
+                        .background(Color(0xFFD32F2F).copy(alpha = 0.06f))
+                        .border(0.6.dp, Color(0xFFD32F2F).copy(alpha = 0.25f), RoundedCornerShape(14.dp))
+                        .padding(horizontal = 14.dp, vertical = 10.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(error, fontSize = 12.sp, color = Color(0xFFD32F2F))
+                    Icon(
+                        Icons.Filled.Warning,
+                        contentDescription = null,
+                        tint = Color(0xFFD32F2F),
+                        modifier = Modifier.size(15.dp)
+                    )
+                    Text(error, fontSize = 12.sp, fontWeight = FontWeight.Medium, color = Color(0xFFD32F2F))
                 }
             }
         }
@@ -528,7 +622,7 @@ private fun AssistantBadge() {
     Box(
         Modifier
             .padding(top = 8.dp)
-            .size(26.dp)
+            .size(28.dp)
             .clip(CircleShape)
             .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.85f))
             .border(0.5.dp, Color.White.copy(alpha = 0.18f), CircleShape),
@@ -556,15 +650,20 @@ private fun AssistantBadge() {
  */
 @Composable
 private fun Bubble(content: String, isUser: Boolean, attachmentImageBase64: String? = null) {
-    val shape = RoundedCornerShape(20.dp)
+    val shape = RoundedCornerShape(
+        topStart = if (isUser) 20.dp else 8.dp,
+        topEnd = if (isUser) 8.dp else 20.dp,
+        bottomEnd = 20.dp,
+        bottomStart = 20.dp
+    )
     val borderBrush = Brush.linearGradient(
         listOf(
             Color.White.copy(alpha = if (isUser) 0.45f else 0.22f),
             Color.White.copy(alpha = if (isUser) 0.05f else 0.04f)
         )
     )
-    val shadowElevation = if (isUser) 10.dp else 6.dp
-    val shadowColor = if (isUser) AppColors.Calorie.copy(alpha = 0.28f) else Color.Black.copy(alpha = 0.12f)
+    val shadowElevation = if (isUser) 9.dp else 5.dp
+    val shadowColor = if (isUser) AppColors.Calorie.copy(alpha = 0.18f) else Color.Black.copy(alpha = 0.08f)
 
     Box(
         modifier = Modifier
@@ -651,9 +750,30 @@ private fun Bubble(content: String, isUser: Boolean, attachmentImageBase64: Stri
 private fun PromptChipRow(chips: List<String>, enabled: Boolean, onTap: (String) -> Unit) {
     if (chips.isEmpty()) return
     LazyRow(
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 6.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
+        item(key = "prompt-sparkle") {
+            Box(
+                modifier = Modifier.width(32.dp).height(44.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clip(CircleShape)
+                        .background(AppColors.Calorie.copy(alpha = 0.08f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        Icons.Filled.AutoAwesome,
+                        contentDescription = null,
+                        tint = AppColors.Calorie,
+                        modifier = Modifier.size(13.dp)
+                    )
+                }
+            }
+        }
         items(chips) { chip -> PromptChip(chip, enabled, onTap) }
     }
 }
@@ -674,7 +794,9 @@ private fun PromptChip(text: String, enabled: Boolean, onTap: (String) -> Unit) 
             .background(AppColors.Calorie.copy(alpha = 0.10f))
             .border(0.6.dp, strokeBrush, shape)
             .clickable(enabled = enabled) { onTap(text) }
-            .padding(horizontal = 14.dp, vertical = 9.dp)
+            .heightIn(min = 44.dp)
+            .padding(horizontal = 14.dp),
+        contentAlignment = Alignment.Center
     ) {
         Text(
             text,
@@ -704,7 +826,7 @@ private fun InputBar(
     onSend: () -> Unit
 ) {
     val canSend = !sending && (value.trim().isNotEmpty() || attachedImageBytes != null)
-    val capsule = RoundedCornerShape(28.dp)
+    val capsule = RoundedCornerShape(24.dp)
 
     Column(
         modifier = Modifier
@@ -847,7 +969,7 @@ private fun CoachMediaActionButton(
 ) {
     Box(
         modifier = Modifier
-            .size(34.dp)
+            .size(40.dp)
             .clip(CircleShape)
             .background(
                 if (enabled) AppColors.Calorie.copy(alpha = 0.11f)
@@ -870,14 +992,14 @@ private fun CoachMediaActionButton(
             icon,
             contentDescription = contentDescription,
             tint = if (enabled) AppColors.Calorie else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.32f),
-            modifier = Modifier.size(17.dp)
+            modifier = Modifier.size(18.dp)
         )
     }
 }
 
 @Composable
 private fun SendButton(canSend: Boolean, onClick: () -> Unit) {
-    val size: Dp = 34.dp
+    val size: Dp = 40.dp
     val shape = CircleShape
     Box(
         Modifier
