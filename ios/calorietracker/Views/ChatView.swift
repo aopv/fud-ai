@@ -120,49 +120,53 @@ struct ChatView: View {
     // MARK: - Sections
 
     private var emptyState: some View {
-        VStack(spacing: 0) {
-            Spacer()
-                .frame(height: 54)
-            ZStack {
-                Circle()
-                    .fill(.ultraThinMaterial)
-                    .frame(width: coachHeroSize, height: coachHeroSize)
-                    .overlay(
-                        Circle().stroke(
-                            LinearGradient(
-                                colors: [Color.white.opacity(0.35), Color.white.opacity(0.05)],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            ),
-                            lineWidth: 0.8
+        ScrollView {
+            VStack(spacing: 0) {
+                Spacer()
+                    .frame(height: 54)
+                ZStack {
+                    Circle()
+                        .fill(.ultraThinMaterial)
+                        .frame(width: coachHeroSize, height: coachHeroSize)
+                        .overlay(
+                            Circle().stroke(
+                                LinearGradient(
+                                    colors: [Color.white.opacity(0.35), Color.white.opacity(0.05)],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                ),
+                                lineWidth: 0.8
+                            )
                         )
-                    )
-                    .shadow(color: AppColors.calorie.opacity(0.16), radius: 20, x: 0, y: 9)
-                Image(systemName: "bubble.left.and.bubble.right.fill")
-                    .font(.system(size: coachHeroIconSize, weight: .medium))
-                    .foregroundStyle(
-                        LinearGradient(colors: AppColors.calorieGradient, startPoint: .topLeading, endPoint: .bottomTrailing)
-                    )
-            }
-            .accessibilityHidden(true)
-            .padding(.bottom, 18)
-            VStack(spacing: 8) {
-                Text("Ask your Coach")
-                    .font(.system(.title2, design: .rounded, weight: .semibold))
-                Text("Your coach can see your nutrition, goals, and workout diary. Ask about food, progress, recovery, or your training plan.")
-                    .font(.system(.subheadline, design: .rounded))
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-                    .lineSpacing(2)
-                    .padding(.horizontal, 24)
-            }
-            .accessibilityElement(children: .combine)
+                        .shadow(color: AppColors.calorie.opacity(0.16), radius: 20, x: 0, y: 9)
+                    Image(systemName: "bubble.left.and.bubble.right.fill")
+                        .font(.system(size: coachHeroIconSize, weight: .medium))
+                        .foregroundStyle(
+                            LinearGradient(colors: AppColors.calorieGradient, startPoint: .topLeading, endPoint: .bottomTrailing)
+                        )
+                }
+                .accessibilityHidden(true)
+                .padding(.bottom, 18)
+                VStack(spacing: 8) {
+                    Text("Ask your Coach")
+                        .font(.system(.title2, design: .rounded, weight: .semibold))
+                    Text("Your coach can see your nutrition, goals, and workout diary. Ask about food, progress, recovery, or your training plan.")
+                        .font(.system(.subheadline, design: .rounded))
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                        .lineSpacing(2)
+                        .padding(.horizontal, 24)
+                }
+                .accessibilityElement(children: .combine)
 
-            emptyPromptGrid
-                .padding(.top, 26)
-            Spacer(minLength: 24)
+                emptyPromptGrid
+                    .padding(.top, 26)
+                Spacer(minLength: 24)
+            }
+            .padding(.horizontal, 8)
         }
-        .padding(.horizontal, 8)
+        .scrollDismissesKeyboard(.interactively)
+        .scrollIndicators(.hidden)
     }
 
     private var messageList: some View {
