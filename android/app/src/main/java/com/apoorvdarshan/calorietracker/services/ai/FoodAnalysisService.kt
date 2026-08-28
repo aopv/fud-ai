@@ -468,8 +468,17 @@ class FoodAnalysisService(
         val context = prefs.userContext.first()
         val finalPrompt = if (context.isNotBlank()) "User context (apply to every analysis): $context\n\n$prompt" else prompt
 
-        val primary = prefs.selectedAIProvider.first()
-        val primaryModel = primary.supportedModelOrDefault(prefs.selectedAIModel.first())
+        val useSeparateTextProvider = imageBytesList.isEmpty() && prefs.separateTextProviderEnabled.first()
+        val primary = if (useSeparateTextProvider) {
+            prefs.selectedTextAIProvider.first()
+        } else {
+            prefs.selectedAIProvider.first()
+        }
+        val primaryModel = if (useSeparateTextProvider) {
+            primary.supportedTextModelOrDefault(prefs.selectedTextAIModel.first())
+        } else {
+            primary.supportedModelOrDefault(prefs.selectedAIModel.first())
+        }
         val primaryBaseUrl = prefs.customBaseUrl(primary).first()?.takeIf { it.isNotEmpty() } ?: primary.baseUrl
         val primaryKey = keyStore.apiKey(primary)
         if (primary.requiresApiKey && primaryKey.isNullOrEmpty()) throw AiError.NoApiKey

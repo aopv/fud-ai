@@ -913,7 +913,7 @@ struct OnboardingView: View {
                 }
                 Spacer()
                 Picker("", selection: $byokProvider) {
-                    ForEach(AIProvider.allCases) { provider in
+                    ForEach(AIProvider.visionProviders) { provider in
                         Text(provider.rawValue).tag(provider)
                     }
                 }

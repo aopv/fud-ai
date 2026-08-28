@@ -3397,6 +3397,12 @@ struct ProfileView: View {
     @State private var maxResponseTokensText: String = String(AIProviderSettings.maxResponseTokens)
     @State private var requestTimeoutSecondsText: String = String(AIProviderSettings.requestTimeoutSeconds)
     @State private var showAPIKey = false
+    @State private var separateTextProviderEnabled: Bool = AIProviderSettings.separateTextProviderEnabled
+    @State private var selectedTextProvider: AIProvider = AIProviderSettings.selectedTextProvider
+    @State private var selectedTextModel: String = AIProviderSettings.selectedTextModel
+    @State private var textApiKeyText: String = AIProviderSettings.apiKey(for: AIProviderSettings.selectedTextProvider) ?? ""
+    @State private var textBaseURL: String = AIProviderSettings.customBaseURL(for: AIProviderSettings.selectedTextProvider) ?? ""
+    @State private var showTextAPIKey = false
     @State private var customAIInstructions: String = AIProviderSettings.userContext
     @State private var savedAIInstructions: String = AIProviderSettings.userContext
     @FocusState private var customInstructionsFocused: Bool
@@ -3995,7 +4001,7 @@ struct ProfileView: View {
                     // Section 4: AI Provider
                     Section("AI Provider") {
                         Picker(selection: $selectedProvider) {
-                            ForEach(AIProvider.allCases) { provider in
+                            ForEach(AIProvider.visionProviders) { provider in
                                 Label(provider.rawValue, systemImage: provider.icon).tag(provider)
                             }
                         } label: {
@@ -4171,6 +4177,156 @@ struct ProfileView: View {
                         .listRowBackground(AppColors.appCard)
                 }
 
+                Section {
+                    Toggle(isOn: $separateTextProviderEnabled) {
+                        Label {
+                            Text("Use Separate Text Provider")
+                        } icon: {
+                            Image(systemName: "text.bubble.fill")
+                                .foregroundStyle(AppColors.calorie)
+                        }
+                    }
+                    .tint(AppColors.calorie)
+                    .onChange(of: separateTextProviderEnabled) { _, isEnabled in
+                        AIProviderSettings.separateTextProviderEnabled = isEnabled
+                    }
+
+                    if separateTextProviderEnabled {
+                        Picker(selection: $selectedTextProvider) {
+                            ForEach(AIProvider.textProviders) { provider in
+                                Label(provider.rawValue, systemImage: provider.icon).tag(provider)
+                            }
+                        } label: {
+                            Label("Provider", systemImage: "cpu")
+                                .foregroundStyle(.primary)
+                        }
+                        .pickerStyle(.menu)
+                        .tint(.secondary)
+                        .onChange(of: selectedTextProvider) { _, newProvider in
+                            AIProviderSettings.selectedTextProvider = newProvider
+                            selectedTextModel = newProvider.defaultTextModel
+                            AIProviderSettings.selectedTextModel = selectedTextModel
+                            textApiKeyText = AIProviderSettings.apiKey(for: newProvider) ?? ""
+                            textBaseURL = AIProviderSettings.customBaseURL(for: newProvider) ?? ""
+                        }
+
+                        if selectedTextProvider.supportsCustomModelName {
+                            HStack {
+                                Label("Model", systemImage: "brain")
+                                Spacer()
+                                TextField(textModelPlaceholder, text: $selectedTextModel)
+                                    .textFieldStyle(.plain)
+                                    .multilineTextAlignment(.trailing)
+                                    .autocorrectionDisabled()
+                                    .textInputAutocapitalization(.never)
+                                    .onChange(of: selectedTextModel) { _, newModel in
+                                        AIProviderSettings.selectedTextModel = newModel
+                                    }
+                                if !selectedTextProvider.textModels.isEmpty {
+                                    Menu {
+                                        ForEach(selectedTextProvider.textModels, id: \.self) { model in
+                                            Button(model) {
+                                                selectedTextModel = model
+                                                AIProviderSettings.selectedTextModel = model
+                                            }
+                                        }
+                                    } label: {
+                                        Image(systemName: "list.bullet.circle")
+                                            .foregroundStyle(AppColors.calorie)
+                                    }
+                                }
+                            }
+                        } else {
+                            Picker(selection: $selectedTextModel) {
+                                ForEach(selectedTextProvider.textModels, id: \.self) { model in
+                                    Text(model).tag(model)
+                                }
+                            } label: {
+                                Label("Model", systemImage: "brain")
+                            }
+                            .pickerStyle(.menu)
+                            .tint(.secondary)
+                            .onAppear {
+                                if !selectedTextProvider.textModels.contains(selectedTextModel) {
+                                    selectedTextModel = selectedTextProvider.defaultTextModel
+                                    AIProviderSettings.selectedTextModel = selectedTextModel
+                                }
+                            }
+                            .onChange(of: selectedTextModel) { _, newModel in
+                                AIProviderSettings.selectedTextModel = newModel
+                            }
+                        }
+
+                        if selectedTextProvider.requiresAPIKey {
+                            HStack {
+                                Label("API Key", systemImage: "key.fill")
+                                Spacer()
+                                Group {
+                                    if showTextAPIKey {
+                                        TextField(selectedTextProvider.apiKeyPlaceholder, text: $textApiKeyText)
+                                    } else {
+                                        SecureField(selectedTextProvider.apiKeyPlaceholder, text: $textApiKeyText)
+                                    }
+                                }
+                                .textFieldStyle(.plain)
+                                .multilineTextAlignment(.trailing)
+                                .autocorrectionDisabled()
+                                .textInputAutocapitalization(.never)
+                                .onChange(of: textApiKeyText) { _, newValue in
+                                    let trimmed = newValue.trimmingCharacters(in: .whitespacesAndNewlines)
+                                    AIProviderSettings.setAPIKey(trimmed.isEmpty ? nil : trimmed, for: selectedTextProvider)
+                                }
+                                Button {
+                                    showTextAPIKey.toggle()
+                                } label: {
+                                    Image(systemName: showTextAPIKey ? "eye.fill" : "eye.slash.fill")
+                                        .foregroundStyle(.secondary)
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+
+                        if selectedTextProvider == .ollama || selectedTextProvider.requiresCustomEndpoint {
+                            HStack {
+                                Label(
+                                    selectedTextProvider.requiresCustomEndpoint ? "Base URL" : "Server URL",
+                                    systemImage: "link"
+                                )
+                                Spacer()
+                                TextField(
+                                    selectedTextProvider.requiresCustomEndpoint
+                                        ? "https://your-endpoint.com/v1"
+                                        : selectedTextProvider.baseURL,
+                                    text: $textBaseURL
+                                )
+                                .textFieldStyle(.plain)
+                                .multilineTextAlignment(.trailing)
+                                .autocorrectionDisabled()
+                                .textInputAutocapitalization(.never)
+                                .keyboardType(.URL)
+                                .onChange(of: textBaseURL) { _, newValue in
+                                    let trimmed = newValue.trimmingCharacters(in: .whitespacesAndNewlines)
+                                    AIProviderSettings.setCustomBaseURL(trimmed.isEmpty ? nil : trimmed, for: selectedTextProvider)
+                                }
+                            }
+
+                            if !selectedProvider.usesConfigurableRequestTimeout {
+                                HStack {
+                                    Label("Request Timeout", systemImage: "timer")
+                                    Spacer()
+                                    requestTimeoutInput
+                                    Text("sec").foregroundStyle(.secondary)
+                                }
+                            }
+                        }
+                    }
+                } header: {
+                    Text("Text AI Provider")
+                } footer: {
+                    Text("When enabled, requests without images—including typed food, voice transcripts, Coach chat, goals, and advice—use this provider. Photo requests keep using the AI Provider above. API keys are shared per provider.")
+                }
+                .listRowBackground(AppColors.appCard)
+
                 // Custom AI Instructions (User Context) — prepended to every AI request when non-empty
                 Section {
                     TextField(
@@ -4227,7 +4383,7 @@ struct ProfileView: View {
                             // The collision is handled at the model layer below + at the runtime check in
                             // AIProviderSettings.currentFallbackConfig.
                             Picker(selection: $selectedFallbackProvider) {
-                                ForEach(AIProvider.allCases) { provider in
+                                ForEach(AIProvider.visionProviders) { provider in
                                     Label(provider.rawValue, systemImage: provider.icon).tag(provider)
                                 }
                             } label: {
@@ -4882,6 +5038,12 @@ struct ProfileView: View {
         selectedProvider == .openrouter
             ? "e.g. anthropic/claude-sonnet-4"
             : "e.g. gpt-4o-mini"
+    }
+
+    private var textModelPlaceholder: String {
+        selectedTextProvider == .openrouter
+            ? "e.g. openai/gpt-oss-120b"
+            : "e.g. llama3.2"
     }
 
     private var fallbackModelPlaceholder: String {

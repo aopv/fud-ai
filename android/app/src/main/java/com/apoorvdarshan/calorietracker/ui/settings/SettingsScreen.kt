@@ -201,6 +201,7 @@ import kotlin.math.roundToInt
 
 private enum class SettingsSheet {
     AI_PROVIDER, AI_MODEL, MAX_TOKENS, REQUEST_TIMEOUT, API_KEY, CUSTOM_BASE_URL, SPEECH_PROVIDER, SPEECH_LANGUAGE, SPEECH_KEY,
+    TEXT_PROVIDER, TEXT_MODEL, TEXT_KEY, TEXT_BASE_URL,
     FALLBACK_PROVIDER, FALLBACK_MODEL, FALLBACK_KEY, FALLBACK_BASE_URL,
     GENDER, BIRTHDAY, HEIGHT, WEIGHT, BODY_FAT, GOAL_BODY_FAT, ACTIVITY, GOAL, GOAL_WEIGHT, GOAL_SPEED,
     CALORIES, PROTEIN, CARBS, FAT, OPTIONAL_NUTRIENTS,
@@ -752,6 +753,59 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                         ui.maxResponseTokens.toString(),
                         icon = Icons.Outlined.Numbers
                     ) { sheet = SettingsSheet.MAX_TOKENS }
+                }
+            }
+
+            SectionCard(title = stringResource(R.string.settings_section_text_ai)) {
+                ToggleRow(
+                    stringResource(R.string.settings_use_separate_text_provider),
+                    ui.separateTextProviderEnabled,
+                    icon = Icons.Outlined.SmartToy,
+                    onChange = vm::setSeparateTextProviderEnabled
+                )
+                if (ui.separateTextProviderEnabled) {
+                    HorizontalDivider()
+                    SettingRow(
+                        stringResource(R.string.settings_ai_provider),
+                        stringResource(ui.selectedTextAI.displayNameRes),
+                        icon = Icons.Outlined.SmartToy
+                    ) { sheet = SettingsSheet.TEXT_PROVIDER }
+                    HorizontalDivider()
+                    SettingRow(
+                        stringResource(R.string.settings_ai_model),
+                        ui.selectedTextModel.ifEmpty { stringResource(R.string.settings_ai_model_unset) },
+                        icon = Icons.Outlined.Tune
+                    ) { sheet = SettingsSheet.TEXT_MODEL }
+                    if (ui.selectedTextAI.requiresApiKey) {
+                        HorizontalDivider()
+                        SettingRow(
+                            stringResource(R.string.settings_api_key),
+                            ui.textApiKeyMasked.ifEmpty { stringResource(R.string.settings_not_set) },
+                            icon = Icons.Outlined.Key
+                        ) { sheet = SettingsSheet.TEXT_KEY }
+                    }
+                    if (ui.selectedTextAI.requiresCustomEndpoint || ui.selectedTextAI == AIProvider.OLLAMA) {
+                        HorizontalDivider()
+                        SettingRow(
+                            if (ui.selectedTextAI.requiresCustomEndpoint) stringResource(R.string.settings_base_url) else stringResource(R.string.settings_server_url),
+                            stringResource(R.string.settings_tap_to_edit),
+                            icon = Icons.Outlined.Link
+                        ) { sheet = SettingsSheet.TEXT_BASE_URL }
+                        if (!ui.selectedAI.usesConfigurableRequestTimeout) {
+                            HorizontalDivider()
+                            SettingRow(
+                                stringResource(R.string.settings_request_timeout),
+                                stringResource(R.string.settings_seconds_format, ui.aiRequestTimeoutSeconds),
+                                icon = Icons.Outlined.Schedule
+                            ) { sheet = SettingsSheet.REQUEST_TIMEOUT }
+                        }
+                    }
+                    Text(
+                        stringResource(R.string.settings_text_provider_footer),
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
+                    )
                 }
             }
 
@@ -1792,7 +1846,7 @@ private fun SettingsSheets(
             when (sheet) {
                 SettingsSheet.AI_PROVIDER -> ListSheet(
                     title = stringResource(R.string.sheet_ai_provider),
-                    items = AIProvider.values().toList(),
+                    items = AIProvider.visionProviders,
                     label = { stringResource(it.displayNameRes) },
                     selected = { it == ui.selectedAI },
                     onSelect = { vm.selectProvider(it); onDismiss() }
@@ -1820,6 +1874,38 @@ private fun SettingsSheets(
                         initial = existing,
                         placeholder = stringResource(R.string.settings_custom_url_placeholder),
                         onSave = { vm.setCustomBaseUrl(ui.selectedAI, it); onDismiss() }
+                    )
+                }
+                SettingsSheet.TEXT_PROVIDER -> ListSheet(
+                    title = stringResource(R.string.settings_section_text_ai),
+                    items = AIProvider.textProviders,
+                    label = { stringResource(it.displayNameRes) },
+                    selected = { it == ui.selectedTextAI },
+                    onSelect = { vm.selectTextProvider(it); onDismiss() }
+                )
+                SettingsSheet.TEXT_MODEL -> ListSheet(
+                    title = stringResource(R.string.sheet_model),
+                    items = ui.selectedTextAI.textModels,
+                    label = { it },
+                    selected = { it == ui.selectedTextModel },
+                    onSelect = { vm.selectTextModel(it); onDismiss() },
+                    footer = if (ui.selectedTextAI.supportsCustomModelName) stringResource(R.string.sheet_model_footer) else null,
+                    customField = if (ui.selectedTextAI.supportsCustomModelName) {
+                        { model -> vm.selectTextModel(model); onDismiss() }
+                    } else null
+                )
+                SettingsSheet.TEXT_KEY -> ApiKeySheet(
+                    title = stringResource(R.string.sheet_api_key_format, stringResource(ui.selectedTextAI.displayNameRes)),
+                    placeholder = stringResource(ui.selectedTextAI.apiKeyPlaceholderRes),
+                    onSave = { vm.setTextApiKey(it); onDismiss() }
+                )
+                SettingsSheet.TEXT_BASE_URL -> {
+                    val existing = remember { runBlocking { vm.container.prefs.customBaseUrl(ui.selectedTextAI).first().orEmpty() } }
+                    TextFieldSheet(
+                        title = stringResource(R.string.settings_custom_url_title),
+                        initial = existing,
+                        placeholder = stringResource(R.string.settings_custom_url_placeholder),
+                        onSave = { vm.setCustomBaseUrl(ui.selectedTextAI, it); onDismiss() }
                     )
                 }
                 SettingsSheet.MAX_TOKENS -> {
@@ -1893,7 +1979,7 @@ private fun SettingsSheets(
                 )
                 SettingsSheet.FALLBACK_PROVIDER -> ListSheet(
                     title = stringResource(R.string.sheet_ai_provider),
-                    items = AIProvider.values().toList(),
+                    items = AIProvider.visionProviders,
                     label = { stringResource(it.displayNameRes) },
                     selected = { it == ui.fallbackProvider },
                     onSelect = { vm.selectFallbackProvider(it); onDismiss() }

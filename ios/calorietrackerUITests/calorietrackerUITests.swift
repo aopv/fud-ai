@@ -74,6 +74,31 @@ final class calorietrackerUITests: XCTestCase {
     }
 
     @MainActor
+    func testSeparateTextProviderSettingsAreVisibleAndIndependent() throws {
+        let app = XCUIApplication()
+        app.launchArguments += [
+            "-AppleLanguages", "(en)",
+            "-separateTextProviderEnabled", "YES",
+            "-selectedTextAIProvider", "DeepSeek",
+            "-selectedTextAIModel", "deepseek-v4-flash",
+        ]
+        app.launch()
+
+        let settings = app.tabBars.buttons["Settings"]
+        XCTAssertTrue(settings.waitForExistence(timeout: 8))
+        settings.tap()
+
+        let textProviderSection = app.staticTexts["Text AI Provider"]
+        for _ in 0..<10 where !textProviderSection.exists {
+            app.swipeUp()
+        }
+        XCTAssertTrue(textProviderSection.waitForExistence(timeout: 3))
+        XCTAssertEqual(app.switches["Use Separate Text Provider"].value as? String, "1")
+        XCTAssertTrue(app.staticTexts["DeepSeek"].waitForExistence(timeout: 3))
+        XCTAssertTrue(app.staticTexts["deepseek-v4-flash"].waitForExistence(timeout: 3))
+    }
+
+    @MainActor
     func testLaunchPerformance() throws {
         // This measures how long it takes to launch your application.
         measure(metrics: [XCTApplicationLaunchMetric()]) {

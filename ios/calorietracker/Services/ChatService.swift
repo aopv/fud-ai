@@ -76,21 +76,22 @@ struct ChatService {
             workoutAccessEnabled: workoutAccessEnabled
         )
 
-        let provider: AIProvider = AIProviderSettings.selectedProvider
-        let model = AIProviderSettings.selectedModel
-        let baseURL = AIProviderSettings.currentBaseURL
+        let config = AIProviderSettings.currentConfig(requiresVision: imageData != nil)
+        let provider = config.provider
+        let model = config.model
+        let baseURL = config.baseURL
 
-        guard AIProviderSettings.currentAPIKey != nil || provider == .ollama else {
+        guard config.apiKey != nil || provider == .ollama else {
             throw ChatError.noAPIKey
         }
 
         switch provider.apiFormat {
         case .gemini:
-            return try await callGemini(baseURL: baseURL, model: model, systemPrompt: systemPrompt, history: history, newUserMessage: newUserMessage, imageData: imageData, tools: tools)
+            return try await callGemini(baseURL: baseURL, model: model, apiKey: config.apiKey, systemPrompt: systemPrompt, history: history, newUserMessage: newUserMessage, imageData: imageData, tools: tools)
         case .anthropic:
-            return try await callAnthropic(baseURL: baseURL, model: model, systemPrompt: systemPrompt, history: history, newUserMessage: newUserMessage, imageData: imageData, tools: tools)
+            return try await callAnthropic(baseURL: baseURL, model: model, apiKey: config.apiKey, systemPrompt: systemPrompt, history: history, newUserMessage: newUserMessage, imageData: imageData, tools: tools)
         case .openaiCompatible:
-            return try await callOpenAICompatible(baseURL: baseURL, model: model, systemPrompt: systemPrompt, history: history, newUserMessage: newUserMessage, imageData: imageData, provider: provider, tools: tools)
+            return try await callOpenAICompatible(baseURL: baseURL, model: model, apiKey: config.apiKey, systemPrompt: systemPrompt, history: history, newUserMessage: newUserMessage, imageData: imageData, provider: provider, tools: tools)
         }
     }
 
@@ -248,7 +249,7 @@ struct ChatService {
         }
     }
 
-    private static func callOpenAICompatible(baseURL: String, model: String, systemPrompt: String, history: [ChatMessage], newUserMessage: String, imageData: Data?, provider: AIProvider, tools: CoachTools) async throws -> String {
+    private static func callOpenAICompatible(baseURL: String, model: String, apiKey: String?, systemPrompt: String, history: [ChatMessage], newUserMessage: String, imageData: Data?, provider: AIProvider, tools: CoachTools) async throws -> String {
         guard let url = URL(string: "\(baseURL)/chat/completions") else {
             throw ChatError.apiError("Invalid API URL.")
         }
@@ -264,7 +265,7 @@ struct ChatService {
         }
 
         var headers = ["Content-Type": "application/json"]
-        if let apiKey = AIProviderSettings.currentAPIKey {
+        if let apiKey {
             headers["Authorization"] = "Bearer \(apiKey)"
         }
         if provider == .openrouter {
@@ -369,8 +370,8 @@ struct ChatService {
         }
     }
 
-    private static func callAnthropic(baseURL: String, model: String, systemPrompt: String, history: [ChatMessage], newUserMessage: String, imageData: Data?, tools: CoachTools) async throws -> String {
-        guard let apiKey = AIProviderSettings.currentAPIKey else { throw ChatError.noAPIKey }
+    private static func callAnthropic(baseURL: String, model: String, apiKey: String?, systemPrompt: String, history: [ChatMessage], newUserMessage: String, imageData: Data?, tools: CoachTools) async throws -> String {
+        guard let apiKey else { throw ChatError.noAPIKey }
         guard let url = URL(string: "\(baseURL)/messages") else {
             throw ChatError.apiError("Invalid API URL.")
         }
@@ -486,11 +487,8 @@ struct ChatService {
         return ["functionResponse": functionResponse]
     }
 
-    private static func callGemini(baseURL: String, model: String, systemPrompt: String, history: [ChatMessage], newUserMessage: String, imageData: Data?, tools: CoachTools) async throws -> String {
-        let apiKey = AIProviderSettings.currentAPIKey
-        if apiKey == nil {
-            throw ChatError.noAPIKey
-        }
+    private static func callGemini(baseURL: String, model: String, apiKey: String?, systemPrompt: String, history: [ChatMessage], newUserMessage: String, imageData: Data?, tools: CoachTools) async throws -> String {
+        guard let apiKey else { throw ChatError.noAPIKey }
         guard let url = URL(string: "\(baseURL)/models/\(model):generateContent") else {
             throw ChatError.apiError("Invalid API URL.")
         }
@@ -512,7 +510,7 @@ struct ChatService {
             ]
             let data = try await send(
                 url: url,
-                headers: ["Content-Type": "application/json", "X-goog-api-key": apiKey ?? ""],
+                headers: ["Content-Type": "application/json", "X-goog-api-key": apiKey],
                 body: body,
                 provider: .gemini
             )

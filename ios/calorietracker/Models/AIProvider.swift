@@ -12,6 +12,8 @@ enum AIProvider: String, CaseIterable, Codable, Identifiable {
     case fireworks = "Fireworks AI"
     case deepinfra = "DeepInfra"
     case mistral = "Mistral"
+    case deepseek = "DeepSeek"
+    case cerebras = "Cerebras"
     case ollama = "Ollama (Local)"
     case customOpenAI = "Custom (OpenAI-compatible)"
 
@@ -30,6 +32,8 @@ enum AIProvider: String, CaseIterable, Codable, Identifiable {
         case .fireworks: "flame.fill"
         case .deepinfra: "server.rack"
         case .mistral: "wind"
+        case .deepseek: "text.magnifyingglass"
+        case .cerebras: "speedometer"
         case .ollama: "desktopcomputer"
         case .customOpenAI: "wrench.and.screwdriver.fill"
         }
@@ -48,6 +52,8 @@ enum AIProvider: String, CaseIterable, Codable, Identifiable {
         case .fireworks: "https://api.fireworks.ai/inference/v1"
         case .deepinfra: "https://api.deepinfra.com/v1/openai"
         case .mistral: "https://api.mistral.ai/v1"
+        case .deepseek: "https://api.deepseek.com"
+        case .cerebras: "https://api.cerebras.ai/v1"
         case .ollama: "http://localhost:11434/v1"
         case .customOpenAI: ""  // user must supply
         }
@@ -55,6 +61,24 @@ enum AIProvider: String, CaseIterable, Codable, Identifiable {
 
     var defaultModel: String {
         models.first ?? ""
+    }
+
+    var defaultTextModel: String {
+        textModels.first ?? defaultModel
+    }
+
+    /// Providers exposed for photo/label analysis. DeepSeek and Cerebras are
+    /// intentionally text-only here even though the same request transport is used.
+    static var visionProviders: [AIProvider] {
+        allCases.filter(\.supportsVision)
+    }
+
+    static var textProviders: [AIProvider] {
+        allCases.filter { !$0.textModels.isEmpty || $0.requiresCustomModelName }
+    }
+
+    var supportsVision: Bool {
+        self != .deepseek && self != .cerebras
     }
 
     static func normalizedModelID(_ model: String) -> String {
@@ -108,6 +132,15 @@ enum AIProvider: String, CaseIterable, Codable, Identifiable {
             return normalized
         }
         return models.contains(normalized) ? normalized : defaultModel
+    }
+
+    func supportedTextModelOrDefault(_ model: String?) -> String {
+        guard let model else { return defaultTextModel }
+        let normalized = Self.normalizedModelID(model)
+        if supportsCustomModelName {
+            return normalized
+        }
+        return textModels.contains(normalized) ? normalized : defaultTextModel
     }
 
     /// Only models that are currently in service AND accept image input + return structured text.
@@ -201,7 +234,49 @@ enum AIProvider: String, CaseIterable, Codable, Identifiable {
             "llava",
             "moondream",
         ]
+        case .deepseek, .cerebras: [] // text-only; never offered for image requests
         case .customOpenAI: []  // user types model name in Settings
+        }
+    }
+
+    /// Text-capable presets. Existing image models remain valid for text, while
+    /// providers with broader text catalogs expose those additional choices here.
+    /// Current hosted IDs verified against provider docs on 2026-08-29.
+    var textModels: [String] {
+        switch self {
+        case .groq:
+            return [
+                "openai/gpt-oss-20b",
+                "openai/gpt-oss-120b",
+                "llama-3.3-70b-versatile",
+                "llama-3.1-8b-instant",
+                "qwen/qwen3.6-27b",
+                "qwen/qwen3.8-27b",
+            ]
+        case .togetherai:
+            return [
+                "MiniMaxAI/MiniMax-M2.7",
+                "Qwen/Qwen3.7-Max",
+                "Qwen/Qwen3.5-397B-A17B",
+                "Qwen/Qwen3.6-Plus",
+                "Qwen/Qwen3.5-9B",
+                "moonshotai/Kimi-K2.6",
+                "zai-org/GLM-5.1",
+                "zai-org/GLM-5",
+                "openai/gpt-oss-120b",
+                "openai/gpt-oss-20b",
+                "deepseek-ai/DeepSeek-V4-Pro",
+            ]
+        case .deepseek:
+            return ["deepseek-v4-flash", "deepseek-v4-pro"]
+        case .cerebras:
+            return ["gpt-oss-120b", "gemma-4-31b"]
+        case .ollama:
+            return ["qwen3.8", "gemma4", "llama3.2", "qwen3", "mistral-small3.2"] + models
+        case .customOpenAI:
+            return []
+        default:
+            return models
         }
     }
 
@@ -242,7 +317,7 @@ enum AIProvider: String, CaseIterable, Codable, Identifiable {
         switch self {
         case .gemini: .gemini
         case .anthropic: .anthropic
-        case .openai, .xai, .openrouter, .togetherai, .groq, .huggingface, .fireworks, .deepinfra, .mistral, .ollama, .customOpenAI: .openaiCompatible
+        case .openai, .xai, .openrouter, .togetherai, .groq, .huggingface, .fireworks, .deepinfra, .mistral, .deepseek, .cerebras, .ollama, .customOpenAI: .openaiCompatible
         }
     }
 
@@ -259,6 +334,8 @@ enum AIProvider: String, CaseIterable, Codable, Identifiable {
         case .fireworks: "fw_..."
         case .deepinfra: "..."
         case .mistral: "..."
+        case .deepseek: "sk-..."
+        case .cerebras: "csk-..."
         case .ollama: "No key needed"
         case .customOpenAI: "API key (or anything if endpoint doesn't need one)"
         }
@@ -293,6 +370,9 @@ extension AIProvider {
 struct AIProviderSettings {
     private static let providerKey = "selectedAIProvider"
     private static let modelKey = "selectedAIModel"
+    private static let separateTextProviderEnabledKey = "separateTextProviderEnabled"
+    private static let textProviderKey = "selectedTextAIProvider"
+    private static let textModelKey = "selectedTextAIModel"
     private static let apiKeyKeychainPrefix = "apikey_"
     private static let baseURLKey = "customBaseURL_"
     private static let userContextKey = "aiUserContext"
@@ -335,12 +415,47 @@ struct AIProviderSettings {
     static var selectedProvider: AIProvider {
         get {
             guard let raw = UserDefaults.standard.string(forKey: providerKey),
-                  let provider = AIProvider(rawValue: raw) else { return .gemini }
+                  let provider = AIProvider(rawValue: raw),
+                  provider.supportsVision else { return .gemini }
             return provider
         }
         set {
-            UserDefaults.standard.set(newValue.rawValue, forKey: providerKey)
+            let resolved = newValue.supportsVision ? newValue : .gemini
+            UserDefaults.standard.set(resolved.rawValue, forKey: providerKey)
         }
+    }
+
+    static var separateTextProviderEnabled: Bool {
+        get { UserDefaults.standard.bool(forKey: separateTextProviderEnabledKey) }
+        set { UserDefaults.standard.set(newValue, forKey: separateTextProviderEnabledKey) }
+    }
+
+    static var selectedTextProvider: AIProvider {
+        get {
+            guard let raw = UserDefaults.standard.string(forKey: textProviderKey),
+                  let provider = AIProvider(rawValue: raw),
+                  AIProvider.textProviders.contains(provider) else {
+                return .gemini
+            }
+            return provider
+        }
+        set {
+            let resolved = AIProvider.textProviders.contains(newValue) ? newValue : .gemini
+            UserDefaults.standard.set(resolved.rawValue, forKey: textProviderKey)
+        }
+    }
+
+    static var selectedTextModel: String {
+        get {
+            let provider = selectedTextProvider
+            let saved = UserDefaults.standard.string(forKey: textModelKey)
+            let resolved = provider.supportedTextModelOrDefault(saved)
+            if let saved, AIProvider.normalizedModelID(saved) != resolved {
+                UserDefaults.standard.set(resolved, forKey: textModelKey)
+            }
+            return resolved
+        }
+        set { UserDefaults.standard.set(AIProvider.normalizedModelID(newValue), forKey: textModelKey) }
     }
 
     /// Upgrades legacy Gemini choices exactly once, including the fallback.
@@ -451,6 +566,27 @@ struct AIProviderSettings {
         customBaseURL(for: selectedProvider) ?? selectedProvider.baseURL
     }
 
+    struct RequestConfig {
+        let provider: AIProvider
+        let model: String
+        let baseURL: String
+        let apiKey: String?
+    }
+
+    /// Image requests always use the vision provider. Text-only requests use the
+    /// optional dedicated selection when enabled; otherwise behavior is unchanged.
+    static func currentConfig(requiresVision: Bool) -> RequestConfig {
+        let useSeparateText = !requiresVision && separateTextProviderEnabled
+        let provider = useSeparateText ? selectedTextProvider : selectedProvider
+        let model = useSeparateText ? selectedTextModel : selectedModel
+        return RequestConfig(
+            provider: provider,
+            model: model,
+            baseURL: customBaseURL(for: provider) ?? provider.baseURL,
+            apiKey: apiKey(for: provider)
+        )
+    }
+
     /// Optional user-supplied context (region, diet, athletic goals, etc.)
     /// prepended as a system instruction to every AI request when non-empty.
     /// Empty string ⇒ nothing injected, request shape unchanged.
@@ -483,12 +619,16 @@ struct AIProviderSettings {
     static var selectedFallbackProvider: AIProvider {
         get {
             guard let raw = UserDefaults.standard.string(forKey: fallbackProviderKey),
-                  let provider = AIProvider(rawValue: raw) else {
+                  let provider = AIProvider(rawValue: raw),
+                  provider.supportsVision else {
                 return providersWithSavedKeys(excluding: selectedProvider).first ?? .gemini
             }
             return provider
         }
-        set { UserDefaults.standard.set(newValue.rawValue, forKey: fallbackProviderKey) }
+        set {
+            let resolved = newValue.supportsVision ? newValue : .gemini
+            UserDefaults.standard.set(resolved.rawValue, forKey: fallbackProviderKey)
+        }
     }
 
     static var selectedFallbackModel: String {
@@ -507,7 +647,7 @@ struct AIProviderSettings {
     /// Providers that have a saved API key (or don't require one, e.g. Ollama),
     /// optionally excluding the primary so the fallback picker doesn't list it.
     static func providersWithSavedKeys(excluding: AIProvider? = nil) -> [AIProvider] {
-        AIProvider.allCases.filter { provider in
+        AIProvider.visionProviders.filter { provider in
             if let excluding, provider == excluding { return false }
             if !provider.requiresAPIKey { return true }
             return apiKey(for: provider) != nil
@@ -526,11 +666,11 @@ struct AIProviderSettings {
     /// isn't byte-for-byte identical to the primary (same provider + model = pointless retry).
     /// Same provider with a *different* model IS allowed — common pattern is e.g. Gemini Pro
     /// primary with Gemini Flash fallback for capacity-pool diversity within one provider.
-    static func currentFallbackConfig(excludingPrimary primary: AIProvider) -> FallbackConfig? {
+    static func currentFallbackConfig(excludingPrimary primary: AIProvider, model primaryModel: String) -> FallbackConfig? {
         guard fallbackEnabled else { return nil }
         let provider = selectedFallbackProvider
         let model = selectedFallbackModel
-        if provider == primary, model == selectedModel { return nil }
+        if provider == primary, model == primaryModel { return nil }
         if provider.requiresAPIKey, apiKey(for: provider) == nil { return nil }
         return FallbackConfig(
             provider: provider,
@@ -547,6 +687,9 @@ struct AIProviderSettings {
         }
         UserDefaults.standard.removeObject(forKey: providerKey)
         UserDefaults.standard.removeObject(forKey: modelKey)
+        UserDefaults.standard.removeObject(forKey: separateTextProviderEnabledKey)
+        UserDefaults.standard.removeObject(forKey: textProviderKey)
+        UserDefaults.standard.removeObject(forKey: textModelKey)
         UserDefaults.standard.removeObject(forKey: userContextKey)
         UserDefaults.standard.removeObject(forKey: fallbackEnabledKey)
         UserDefaults.standard.removeObject(forKey: fallbackProviderKey)

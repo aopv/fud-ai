@@ -35,6 +35,10 @@ import java.time.LocalDate
 data class SettingsUiState(
     val selectedAI: AIProvider = AIProvider.GEMINI,
     val selectedModel: String = AIProvider.GEMINI.defaultModel,
+    val separateTextProviderEnabled: Boolean = false,
+    val selectedTextAI: AIProvider = AIProvider.GEMINI,
+    val selectedTextModel: String = AIProvider.GEMINI.defaultTextModel,
+    val textApiKeyMasked: String = "",
     val maxResponseTokens: Int = 1024,
     val aiRequestTimeoutSeconds: Int = AIProvider.DEFAULT_REQUEST_TIMEOUT_SECONDS,
     val selectedSpeech: SpeechProvider = SpeechProvider.NATIVE,
@@ -134,6 +138,9 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
         viewModelScope.launch {
             val provider = container.prefs.selectedAIProvider.first()
             val model = provider.supportedModelOrDefault(container.prefs.selectedAIModel.first())
+            val separateTextEnabled = container.prefs.separateTextProviderEnabled.first()
+            val textProvider = container.prefs.selectedTextAIProvider.first()
+            val textModel = textProvider.supportedTextModelOrDefault(container.prefs.selectedTextAIModel.first())
             val speech = container.prefs.selectedSpeechProvider.first()
             val speechLanguage = container.prefs.selectedSpeechLanguage(speech).first()
             val heightUnit = container.prefs.heightUnit.first()
@@ -162,6 +169,7 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
             val energyGoals = container.prefs.healthEnergyGoalsEnabled.first() && storedHealthConnect
             val adaptiveGoals = container.prefs.adaptiveGoalsEnabled.first()
             val masked = maskKey(container.keyStore.apiKey(provider))
+            val textMasked = maskKey(container.keyStore.apiKey(textProvider))
             val speechMasked = maskKey(container.keyStore.speechApiKey(speech))
             val appearance = container.prefs.appearanceMode.first()
             val appThemeColor = AppThemeColor.fromKey(container.prefs.appThemeColor.first())
@@ -190,6 +198,10 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
             _ui.value = SettingsUiState(
                 selectedAI = provider,
                 selectedModel = model,
+                separateTextProviderEnabled = separateTextEnabled,
+                selectedTextAI = textProvider,
+                selectedTextModel = textModel,
+                textApiKeyMasked = textMasked,
                 maxResponseTokens = maxTokens,
                 aiRequestTimeoutSeconds = requestTimeoutSeconds,
                 selectedSpeech = speech,
@@ -264,10 +276,17 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
             val provider = container.prefs.selectedAIProvider.first()
             val model = provider.supportedModelOrDefault(container.prefs.selectedAIModel.first())
             val maskedKey = maskKey(container.keyStore.apiKey(provider))
+            val textEnabled = container.prefs.separateTextProviderEnabled.first()
+            val textProvider = container.prefs.selectedTextAIProvider.first()
+            val textModel = textProvider.supportedTextModelOrDefault(container.prefs.selectedTextAIModel.first())
             _ui.value = _ui.value.copy(
                 selectedAI = provider,
                 selectedModel = model,
-                apiKeyMasked = maskedKey
+                apiKeyMasked = maskedKey,
+                separateTextProviderEnabled = textEnabled,
+                selectedTextAI = textProvider,
+                selectedTextModel = textModel,
+                textApiKeyMasked = maskKey(container.keyStore.apiKey(textProvider))
             )
         }
     }
@@ -345,7 +364,12 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
         viewModelScope.launch {
             val p = _ui.value.fallbackProvider
             container.keyStore.setApiKey(p, raw.takeIf { it.isNotBlank() })
-            _ui.value = _ui.value.copy(fallbackApiKeyMasked = maskKey(raw.takeIf { it.isNotBlank() }))
+            val masked = maskKey(raw.takeIf { it.isNotBlank() })
+            _ui.value = _ui.value.copy(
+                fallbackApiKeyMasked = masked,
+                apiKeyMasked = if (p == _ui.value.selectedAI) masked else _ui.value.apiKeyMasked,
+                textApiKeyMasked = if (p == _ui.value.selectedTextAI) masked else _ui.value.textApiKeyMasked
+            )
         }
     }
 
@@ -413,7 +437,53 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
         viewModelScope.launch {
             val p = _ui.value.selectedAI
             container.keyStore.setApiKey(p, raw.takeIf { it.isNotBlank() })
-            _ui.value = _ui.value.copy(apiKeyMasked = maskKey(raw.takeIf { it.isNotBlank() }))
+            val masked = maskKey(raw.takeIf { it.isNotBlank() })
+            _ui.value = _ui.value.copy(
+                apiKeyMasked = masked,
+                textApiKeyMasked = if (p == _ui.value.selectedTextAI) masked else _ui.value.textApiKeyMasked,
+                fallbackApiKeyMasked = if (p == _ui.value.fallbackProvider) masked else _ui.value.fallbackApiKeyMasked
+            )
+        }
+    }
+
+    fun setSeparateTextProviderEnabled(enabled: Boolean) {
+        viewModelScope.launch {
+            container.prefs.setSeparateTextProviderEnabled(enabled)
+            _ui.value = _ui.value.copy(separateTextProviderEnabled = enabled)
+        }
+    }
+
+    fun selectTextProvider(provider: AIProvider) {
+        viewModelScope.launch {
+            container.prefs.setSelectedTextAIProvider(provider)
+            val model = provider.defaultTextModel
+            container.prefs.setSelectedTextAIModel(model)
+            _ui.value = _ui.value.copy(
+                selectedTextAI = provider,
+                selectedTextModel = model,
+                textApiKeyMasked = maskKey(container.keyStore.apiKey(provider))
+            )
+        }
+    }
+
+    fun selectTextModel(model: String) {
+        viewModelScope.launch {
+            val resolved = _ui.value.selectedTextAI.supportedTextModelOrDefault(model)
+            container.prefs.setSelectedTextAIModel(resolved)
+            _ui.value = _ui.value.copy(selectedTextModel = resolved)
+        }
+    }
+
+    fun setTextApiKey(raw: String) {
+        viewModelScope.launch {
+            val provider = _ui.value.selectedTextAI
+            container.keyStore.setApiKey(provider, raw.takeIf { it.isNotBlank() })
+            val masked = maskKey(raw.takeIf { it.isNotBlank() })
+            _ui.value = _ui.value.copy(
+                textApiKeyMasked = masked,
+                apiKeyMasked = if (provider == _ui.value.selectedAI) masked else _ui.value.apiKeyMasked,
+                fallbackApiKeyMasked = if (provider == _ui.value.fallbackProvider) masked else _ui.value.fallbackApiKeyMasked
+            )
         }
     }
 

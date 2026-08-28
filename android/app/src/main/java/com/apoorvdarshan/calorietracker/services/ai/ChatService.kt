@@ -92,8 +92,17 @@ class ChatService(
             workoutPlanWeightUnit = workoutPlanWeightUnit
         )
 
-        val provider = prefs.selectedAIProvider.first()
-        val model = provider.supportedModelOrDefault(prefs.selectedAIModel.first())
+        val useSeparateTextProvider = imageBytes == null && prefs.separateTextProviderEnabled.first()
+        val provider = if (useSeparateTextProvider) {
+            prefs.selectedTextAIProvider.first()
+        } else {
+            prefs.selectedAIProvider.first()
+        }
+        val model = if (useSeparateTextProvider) {
+            provider.supportedTextModelOrDefault(prefs.selectedTextAIModel.first())
+        } else {
+            provider.supportedModelOrDefault(prefs.selectedAIModel.first())
+        }
         val baseUrl = prefs.customBaseUrl(provider).first()?.takeIf { it.isNotEmpty() } ?: provider.baseUrl
         val apiKey = keyStore.apiKey(provider)
 

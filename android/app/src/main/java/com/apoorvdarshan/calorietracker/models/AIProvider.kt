@@ -18,6 +18,8 @@ enum class AIProvider {
     @SerialName("Fireworks AI") FIREWORKS,
     @SerialName("DeepInfra") DEEP_INFRA,
     @SerialName("Mistral") MISTRAL,
+    @SerialName("DeepSeek") DEEPSEEK,
+    @SerialName("Cerebras") CEREBRAS,
     @SerialName("Ollama (Local)") OLLAMA,
     @SerialName("Custom (OpenAI-compatible)") CUSTOM_OPENAI;
 
@@ -34,6 +36,8 @@ enum class AIProvider {
         FIREWORKS -> R.string.ai_provider_fireworks
         DEEP_INFRA -> R.string.ai_provider_deepinfra
         MISTRAL -> R.string.ai_provider_mistral
+        DEEPSEEK -> R.string.ai_provider_deepseek
+        CEREBRAS -> R.string.ai_provider_cerebras
         OLLAMA -> R.string.ai_provider_ollama
         CUSTOM_OPENAI -> R.string.ai_provider_custom
     }
@@ -50,6 +54,8 @@ enum class AIProvider {
         FIREWORKS -> "https://api.fireworks.ai/inference/v1"
         DEEP_INFRA -> "https://api.deepinfra.com/v1/openai"
         MISTRAL -> "https://api.mistral.ai/v1"
+        DEEPSEEK -> "https://api.deepseek.com"
+        CEREBRAS -> "https://api.cerebras.ai/v1"
         OLLAMA -> "http://localhost:11434/v1"
         CUSTOM_OPENAI -> ""
     }
@@ -145,10 +151,43 @@ enum class AIProvider {
             "llava",
             "moondream"
         )
+        DEEPSEEK, CEREBRAS -> emptyList()
         CUSTOM_OPENAI -> emptyList()
     }
 
     val defaultModel: String get() = models.firstOrNull() ?: ""
+
+    val textModels: List<String> get() = when (this) {
+        GROQ -> listOf(
+            "openai/gpt-oss-20b",
+            "openai/gpt-oss-120b",
+            "llama-3.3-70b-versatile",
+            "llama-3.1-8b-instant",
+            "qwen/qwen3.6-27b",
+            "qwen/qwen3.8-27b"
+        )
+        TOGETHER_AI -> listOf(
+            "MiniMaxAI/MiniMax-M2.7",
+            "Qwen/Qwen3.7-Max",
+            "Qwen/Qwen3.5-397B-A17B",
+            "Qwen/Qwen3.6-Plus",
+            "Qwen/Qwen3.5-9B",
+            "moonshotai/Kimi-K2.6",
+            "zai-org/GLM-5.1",
+            "zai-org/GLM-5",
+            "openai/gpt-oss-120b",
+            "openai/gpt-oss-20b",
+            "deepseek-ai/DeepSeek-V4-Pro"
+        )
+        DEEPSEEK -> listOf("deepseek-v4-flash", "deepseek-v4-pro")
+        CEREBRAS -> listOf("gpt-oss-120b", "gemma-4-31b")
+        OLLAMA -> listOf("qwen3.8", "gemma4", "llama3.2", "qwen3", "mistral-small3.2") + models
+        CUSTOM_OPENAI -> emptyList()
+        else -> models
+    }
+
+    val defaultTextModel: String get() = textModels.firstOrNull() ?: defaultModel
+    val supportsVision: Boolean get() = this != DEEPSEEK && this != CEREBRAS
 
     fun supportedModelOrDefault(model: String?): String {
         val normalized = model?.let(::normalizeModelId)
@@ -157,6 +196,16 @@ enum class AIProvider {
             supportsCustomModelName -> normalized
             models.contains(normalized) -> normalized
             else -> defaultModel
+        }
+    }
+
+    fun supportedTextModelOrDefault(model: String?): String {
+        val normalized = model?.let(::normalizeModelId)
+        return when {
+            normalized.isNullOrBlank() -> defaultTextModel
+            supportsCustomModelName -> normalized
+            textModels.contains(normalized) -> normalized
+            else -> defaultTextModel
         }
     }
 
@@ -171,7 +220,7 @@ enum class AIProvider {
         GEMINI -> ApiFormat.GEMINI
         ANTHROPIC -> ApiFormat.ANTHROPIC
         OPENAI, XAI, OPENROUTER, TOGETHER_AI, GROQ, HUGGING_FACE,
-        FIREWORKS, DEEP_INFRA, MISTRAL, OLLAMA, CUSTOM_OPENAI -> ApiFormat.OPENAI_COMPATIBLE
+        FIREWORKS, DEEP_INFRA, MISTRAL, DEEPSEEK, CEREBRAS, OLLAMA, CUSTOM_OPENAI -> ApiFormat.OPENAI_COMPATIBLE
     }
 
     @get:StringRes
@@ -187,6 +236,8 @@ enum class AIProvider {
         FIREWORKS -> R.string.ai_key_placeholder_fireworks
         DEEP_INFRA -> R.string.ai_key_placeholder_deepinfra
         MISTRAL -> R.string.ai_key_placeholder_mistral
+        DEEPSEEK -> R.string.ai_key_placeholder_deepseek
+        CEREBRAS -> R.string.ai_key_placeholder_cerebras
         OLLAMA -> R.string.ai_key_placeholder_ollama
         CUSTOM_OPENAI -> R.string.ai_key_placeholder_custom
     }
@@ -195,6 +246,10 @@ enum class AIProvider {
 
     companion object {
         const val DEFAULT_REQUEST_TIMEOUT_SECONDS = 180
+
+        val visionProviders: List<AIProvider> get() = values().filter { it.supportsVision }
+        val textProviders: List<AIProvider>
+            get() = values().filter { it.textModels.isNotEmpty() || it.requiresCustomModelName }
 
         fun normalizedRequestTimeoutSeconds(value: Int): Int = value.coerceIn(30, 600)
 

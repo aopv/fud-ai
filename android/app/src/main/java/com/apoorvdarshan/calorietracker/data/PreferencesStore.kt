@@ -413,15 +413,37 @@ class PreferencesStore(private val context: Context) : WorkoutStateStore {
     // -- AI Provider selection --------------------------------------------
     val selectedAIProvider: Flow<AIProvider> = ds.data.map {
         val raw = it[Keys.SELECTED_AI_PROVIDER]
-        AIProvider.values().firstOrNull { p -> p.name == raw } ?: AIProvider.GEMINI
+        AIProvider.visionProviders.firstOrNull { p -> p.name == raw } ?: AIProvider.GEMINI
     }
     suspend fun setSelectedAIProvider(p: AIProvider) {
-        ds.edit { it[Keys.SELECTED_AI_PROVIDER] = p.name }
+        val resolved = p.takeIf { it.supportsVision } ?: AIProvider.GEMINI
+        ds.edit { it[Keys.SELECTED_AI_PROVIDER] = resolved.name }
     }
 
     val selectedAIModel: Flow<String?> = ds.data.map { it[Keys.SELECTED_AI_MODEL] }
     suspend fun setSelectedAIModel(model: String) {
         ds.edit { it[Keys.SELECTED_AI_MODEL] = AIProvider.normalizeModelId(model) }
+    }
+
+    val separateTextProviderEnabled: Flow<Boolean> = ds.data.map {
+        it[Keys.SEPARATE_TEXT_PROVIDER_ENABLED] ?: false
+    }
+    suspend fun setSeparateTextProviderEnabled(enabled: Boolean) {
+        ds.edit { it[Keys.SEPARATE_TEXT_PROVIDER_ENABLED] = enabled }
+    }
+
+    val selectedTextAIProvider: Flow<AIProvider> = ds.data.map {
+        val raw = it[Keys.SELECTED_TEXT_AI_PROVIDER]
+        AIProvider.textProviders.firstOrNull { p -> p.name == raw } ?: AIProvider.GEMINI
+    }
+    suspend fun setSelectedTextAIProvider(provider: AIProvider) {
+        val resolved = provider.takeIf { it in AIProvider.textProviders } ?: AIProvider.GEMINI
+        ds.edit { it[Keys.SELECTED_TEXT_AI_PROVIDER] = resolved.name }
+    }
+
+    val selectedTextAIModel: Flow<String?> = ds.data.map { it[Keys.SELECTED_TEXT_AI_MODEL] }
+    suspend fun setSelectedTextAIModel(model: String) {
+        ds.edit { it[Keys.SELECTED_TEXT_AI_MODEL] = AIProvider.normalizeModelId(model) }
     }
 
     /** Upgrade removed AI model presets exactly once, including the fallback model. */
@@ -525,10 +547,11 @@ class PreferencesStore(private val context: Context) : WorkoutStateStore {
 
     val selectedFallbackProvider: Flow<AIProvider> = ds.data.map {
         val raw = it[Keys.FALLBACK_PROVIDER]
-        AIProvider.values().firstOrNull { p -> p.name == raw } ?: AIProvider.GEMINI
+        AIProvider.visionProviders.firstOrNull { p -> p.name == raw } ?: AIProvider.GEMINI
     }
     suspend fun setSelectedFallbackProvider(p: AIProvider) {
-        ds.edit { it[Keys.FALLBACK_PROVIDER] = p.name }
+        val resolved = p.takeIf { it.supportsVision } ?: AIProvider.GEMINI
+        ds.edit { it[Keys.FALLBACK_PROVIDER] = resolved.name }
     }
 
     val selectedFallbackModel: Flow<String?> = ds.data.map { it[Keys.FALLBACK_MODEL] }
@@ -763,6 +786,9 @@ class PreferencesStore(private val context: Context) : WorkoutStateStore {
         val OPTIONAL_NUTRIENT_GOALS = stringPreferencesKey("optionalNutrientGoals")
         val SELECTED_AI_PROVIDER = stringPreferencesKey("selectedAIProvider")
         val SELECTED_AI_MODEL = stringPreferencesKey("selectedAIModel")
+        val SEPARATE_TEXT_PROVIDER_ENABLED = booleanPreferencesKey("separateTextProviderEnabled")
+        val SELECTED_TEXT_AI_PROVIDER = stringPreferencesKey("selectedTextAIProvider")
+        val SELECTED_TEXT_AI_MODEL = stringPreferencesKey("selectedTextAIModel")
         val GEMINI_MODEL_MIGRATION_VERSION = intPreferencesKey("geminiModelMigrationVersion")
         val AI_MODEL_REGISTRY_MIGRATION_VERSION = intPreferencesKey("aiModelRegistryMigrationVersion")
         val MAX_RESPONSE_TOKENS = intPreferencesKey("maxResponseTokens")

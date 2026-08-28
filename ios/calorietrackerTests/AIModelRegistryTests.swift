@@ -94,11 +94,23 @@ struct AIModelRegistryTests {
             (.customOpenAI, []),
         ]
 
-        #expect(registries.map(\.provider) == AIProvider.allCases)
+        #expect(registries.map(\.provider) == AIProvider.visionProviders)
         for registry in registries {
             #expect(registry.provider.models == registry.models)
             #expect(registry.provider.defaultModel == (registry.models.first ?? ""))
         }
+    }
+
+    @Test func textProvidersExposeCurrentTextOnlyChoicesWithoutEnteringVisionRegistry() {
+        #expect(AIProvider.textProviders == AIProvider.allCases)
+        #expect(!AIProvider.visionProviders.contains(.deepseek))
+        #expect(!AIProvider.visionProviders.contains(.cerebras))
+        #expect(AIProvider.deepseek.textModels == ["deepseek-v4-flash", "deepseek-v4-pro"])
+        #expect(AIProvider.cerebras.textModels == ["gpt-oss-120b", "gemma-4-31b"])
+        #expect(AIProvider.groq.defaultTextModel == "openai/gpt-oss-20b")
+        #expect(AIProvider.groq.textModels.contains("openai/gpt-oss-120b"))
+        #expect(AIProvider.togetherai.textModels.contains("deepseek-ai/DeepSeek-V4-Pro"))
+        #expect(AIProvider.deepseek.supportedTextModelOrDefault("retired-model") == "deepseek-v4-flash")
     }
 
     @Test func removedPresetsHaveProviderScopedReplacements() {

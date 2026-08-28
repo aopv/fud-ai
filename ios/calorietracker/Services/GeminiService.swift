@@ -664,21 +664,24 @@ struct GeminiService {
     }
 
     private static func callTextFoodAnalysis(prompt: String) async throws -> FoodAnalysis {
-        let primaryProvider = AIProviderSettings.selectedProvider
-        if primaryProvider.requiresAPIKey, AIProviderSettings.currentAPIKey == nil {
+        let primary = AIProviderSettings.currentConfig(requiresVision: false)
+        if primary.provider.requiresAPIKey, primary.apiKey == nil {
             throw AnalysisError.noAPIKey
         }
 
         do {
             return try await dispatchFoodAnalysis(
-                provider: primaryProvider,
-                model: AIProviderSettings.selectedModel,
-                baseURL: AIProviderSettings.currentBaseURL,
-                apiKey: AIProviderSettings.currentAPIKey,
+                provider: primary.provider,
+                model: primary.model,
+                baseURL: primary.baseURL,
+                apiKey: primary.apiKey,
                 prompt: prompt
             )
         } catch {
-            guard let fallback = AIProviderSettings.currentFallbackConfig(excludingPrimary: primaryProvider) else {
+            guard let fallback = AIProviderSettings.currentFallbackConfig(
+                excludingPrimary: primary.provider,
+                model: primary.model
+            ) else {
                 throw error
             }
             return try await dispatchFoodAnalysis(
@@ -731,8 +734,8 @@ struct GeminiService {
     }
 
     private static func callAI(prompt: String, images: [UIImage]) async throws -> String {
-        let primaryProvider = AIProviderSettings.selectedProvider
-        if primaryProvider.requiresAPIKey, AIProviderSettings.currentAPIKey == nil {
+        let primary = AIProviderSettings.currentConfig(requiresVision: !images.isEmpty)
+        if primary.provider.requiresAPIKey, primary.apiKey == nil {
             throw AnalysisError.noAPIKey
         }
 
@@ -742,10 +745,10 @@ struct GeminiService {
 
         do {
             return try await dispatch(
-                provider: primaryProvider,
-                model: AIProviderSettings.selectedModel,
-                baseURL: AIProviderSettings.currentBaseURL,
-                apiKey: AIProviderSettings.currentAPIKey,
+                provider: primary.provider,
+                model: primary.model,
+                baseURL: primary.baseURL,
+                apiKey: primary.apiKey,
                 prompt: prompt,
                 imageDataList: imageDataList
             )
@@ -753,7 +756,10 @@ struct GeminiService {
             // imageConversionFailed is local — fallback won't help, rethrow.
             // For everything else (network / 5xx / 4xx / parser failure) try fallback.
             if case AnalysisError.imageConversionFailed = error { throw error }
-            guard let fallback = AIProviderSettings.currentFallbackConfig(excludingPrimary: primaryProvider) else {
+            guard let fallback = AIProviderSettings.currentFallbackConfig(
+                excludingPrimary: primary.provider,
+                model: primary.model
+            ) else {
                 throw error
             }
             return try await dispatch(

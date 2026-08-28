@@ -125,6 +125,8 @@
     <string name="ai_provider_fireworks">Fireworks AI</string>
     <string name="ai_provider_deepinfra">DeepInfra</string>
     <string name="ai_provider_mistral">Mistral</string>
+    <string name="ai_provider_deepseek">DeepSeek</string>
+    <string name="ai_provider_cerebras">Cerebras</string>
     <string name="ai_provider_ollama">Ollama (Local)</string>
     <string name="ai_provider_custom">Custom (OpenAI-compatible)</string>
 
@@ -140,6 +142,8 @@
     <string name="ai_key_placeholder_fireworks">fw_…</string>
     <string name="ai_key_placeholder_deepinfra">…</string>
     <string name="ai_key_placeholder_mistral">…</string>
+    <string name="ai_key_placeholder_deepseek">sk-…</string>
+    <string name="ai_key_placeholder_cerebras">csk-…</string>
     <string name="ai_key_placeholder_ollama">No key needed</string>
     <string name="ai_key_placeholder_custom">API key (or anything if endpoint doesn\'t need one)</string>
 
@@ -515,6 +519,9 @@
     <string name="settings_section_app">App Settings</string>
     <string name="settings_section_tracking_reminders">Tracking &amp; Reminders</string>
     <string name="settings_section_ai">AI Provider</string>
+    <string name="settings_section_text_ai">Text AI Provider</string>
+    <string name="settings_use_separate_text_provider">Use Separate Text Provider</string>
+    <string name="settings_text_provider_footer">When enabled, requests without images—including typed food, voice transcripts, Coach chat, goals, and advice—use this provider. Photo requests keep using the AI Provider above. API keys are shared per provider.</string>
     <string name="settings_section_speech">Speech-to-Text</string>
     <string name="settings_section_workout" translatable="false">Workout</string>
     <string name="settings_training_split" translatable="false">Training Split</string>

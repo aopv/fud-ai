@@ -29,6 +29,37 @@ struct AIRequestConfigurationTests {
         #expect(AIProviderSettings.requestTimeout(for: .gemini) == nil)
     }
 
+    @Test func separateTextProviderOnlyRoutesRequestsWithoutImages() {
+        let originalProvider = AIProviderSettings.selectedProvider
+        let originalModel = AIProviderSettings.selectedModel
+        let originalEnabled = AIProviderSettings.separateTextProviderEnabled
+        let originalTextProvider = AIProviderSettings.selectedTextProvider
+        let originalTextModel = AIProviderSettings.selectedTextModel
+        defer {
+            AIProviderSettings.selectedProvider = originalProvider
+            AIProviderSettings.selectedModel = originalModel
+            AIProviderSettings.separateTextProviderEnabled = originalEnabled
+            AIProviderSettings.selectedTextProvider = originalTextProvider
+            AIProviderSettings.selectedTextModel = originalTextModel
+        }
+
+        AIProviderSettings.selectedProvider = .openai
+        AIProviderSettings.selectedModel = "gpt-5.4-mini"
+        AIProviderSettings.selectedTextProvider = .deepseek
+        AIProviderSettings.selectedTextModel = "deepseek-v4-pro"
+
+        AIProviderSettings.separateTextProviderEnabled = false
+        #expect(AIProviderSettings.currentConfig(requiresVision: false).provider == .openai)
+
+        AIProviderSettings.separateTextProviderEnabled = true
+        let text = AIProviderSettings.currentConfig(requiresVision: false)
+        let vision = AIProviderSettings.currentConfig(requiresVision: true)
+        #expect(text.provider == .deepseek)
+        #expect(text.model == "deepseek-v4-pro")
+        #expect(vision.provider == .openai)
+        #expect(vision.model == "gpt-5.4-mini")
+    }
+
     @Test func foodPhotosAreDownscaledWithoutUpscaling() throws {
         let format = UIGraphicsImageRendererFormat.default()
         format.scale = 1

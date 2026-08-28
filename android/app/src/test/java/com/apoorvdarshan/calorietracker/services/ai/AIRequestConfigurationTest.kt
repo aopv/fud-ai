@@ -102,11 +102,24 @@ class AIRequestConfigurationTest {
             AIProvider.CUSTOM_OPENAI to emptyList()
         )
 
-        assertEquals(AIProvider.values().toList(), registries.keys.toList())
+        assertEquals(AIProvider.visionProviders, registries.keys.toList())
         registries.forEach { (provider, models) ->
             assertEquals(models, provider.models)
             assertEquals(models.firstOrNull().orEmpty(), provider.defaultModel)
         }
+    }
+
+    @Test
+    fun textProvidersExposeCurrentTextOnlyModelsOutsideVisionRegistry() {
+        assertEquals(AIProvider.values().toList(), AIProvider.textProviders)
+        assertEquals(false, AIProvider.visionProviders.contains(AIProvider.DEEPSEEK))
+        assertEquals(false, AIProvider.visionProviders.contains(AIProvider.CEREBRAS))
+        assertEquals(listOf("deepseek-v4-flash", "deepseek-v4-pro"), AIProvider.DEEPSEEK.textModels)
+        assertEquals(listOf("gpt-oss-120b", "gemma-4-31b"), AIProvider.CEREBRAS.textModels)
+        assertEquals("openai/gpt-oss-20b", AIProvider.GROQ.defaultTextModel)
+        assertEquals(true, AIProvider.GROQ.textModels.contains("openai/gpt-oss-120b"))
+        assertEquals(true, AIProvider.TOGETHER_AI.textModels.contains("deepseek-ai/DeepSeek-V4-Pro"))
+        assertEquals("deepseek-v4-flash", AIProvider.DEEPSEEK.supportedTextModelOrDefault("retired-model"))
     }
 
     @Test
