@@ -27,8 +27,6 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.UnfoldMore
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -37,7 +35,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -52,7 +49,6 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
-import com.apoorvdarshan.calorietracker.ui.util.clockTimePattern
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -69,18 +65,10 @@ import com.apoorvdarshan.calorietracker.models.ServingUnitOption
 import com.apoorvdarshan.calorietracker.models.ServingAmountExpression
 import com.apoorvdarshan.calorietracker.models.SupplementalNutrient
 import com.apoorvdarshan.calorietracker.models.totals
-import com.apoorvdarshan.calorietracker.ui.components.DateWheelPicker
-import com.apoorvdarshan.calorietracker.ui.components.FudGlassDialog
-import com.apoorvdarshan.calorietracker.ui.components.FudGlassDialogActions
-import com.apoorvdarshan.calorietracker.ui.components.FudGlassTextField
 import com.apoorvdarshan.calorietracker.ui.theme.AppColors
 import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalTime
 import java.time.ZoneId
 import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
-import java.util.Locale
 import kotlin.math.roundToInt
 
 /**
@@ -152,8 +140,6 @@ fun EditFoodEntrySheet(
     val sheetSurface = if (isDark) MaterialTheme.colorScheme.surface else Color(0xFFFAF3EE)
     val context = LocalContext.current
     val reprocessingFailed = stringResource(R.string.edit_reprocessing_failed)
-    val dateFormatter = remember { DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.US) }
-    val timeFormatter = remember(context) { DateTimeFormatter.ofPattern(clockTimePattern(context), Locale.US) }
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
     val dismissKeyboard = {
@@ -571,45 +557,18 @@ fun EditFoodEntrySheet(
 
             item { SheetSectionHeader(stringResource(R.string.section_date_time)) }
             item {
-                SheetPillCard {
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                dismissKeyboard()
-                                showDatePicker = true
-                            }
-                            .padding(horizontal = 18.dp, vertical = 12.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(stringResource(R.string.label_date), fontSize = 17.sp, modifier = Modifier.weight(1f))
-                        Text(
-                            loggedDate.format(dateFormatter),
-                            fontSize = 17.sp,
-                            color = AppColors.Calorie,
-                            fontWeight = FontWeight.Medium
-                        )
+                SheetDateTimeCard(
+                    loggedDate = loggedDate,
+                    loggedTime = loggedTime,
+                    onEditDate = {
+                        dismissKeyboard()
+                        showDatePicker = true
+                    },
+                    onEditTime = {
+                        dismissKeyboard()
+                        showTimePicker = true
                     }
-                    SheetHairline()
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                dismissKeyboard()
-                                showTimePicker = true
-                            }
-                            .padding(horizontal = 18.dp, vertical = 12.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(stringResource(R.string.label_time), fontSize = 17.sp, modifier = Modifier.weight(1f))
-                        Text(
-                            loggedTime.format(timeFormatter),
-                            fontSize = 17.sp,
-                            color = AppColors.Calorie,
-                            fontWeight = FontWeight.Medium
-                        )
-                    }
-                }
+                )
             }
 
             // Share this meal as a fudai://add-meal link (issue #107)
@@ -648,30 +607,18 @@ fun EditFoodEntrySheet(
     }
 
     if (showDatePicker) {
-        var pickedDate by remember(loggedDate) { mutableStateOf(loggedDate) }
-        FudGlassDialog(onDismissRequest = { showDatePicker = false }) {
-            Text(stringResource(R.string.label_date), fontSize = 21.sp, fontWeight = FontWeight.Bold)
-            DateWheelPicker(
-                selected = pickedDate,
-                onSelect = { pickedDate = it },
-                minYear = LocalDate.now().year - 10,
-                maxYear = LocalDate.now().year,
-                modifier = Modifier.fillMaxWidth()
-            )
-            FudGlassDialogActions(
-                primaryText = stringResource(R.string.action_done),
-                onPrimary = {
-                    loggedDate = pickedDate
-                    showDatePicker = false
-                },
-                dismissText = stringResource(R.string.action_cancel),
-                onDismiss = { showDatePicker = false }
-            )
-        }
+        SheetDatePickerDialog(
+            initialDate = loggedDate,
+            onConfirm = {
+                loggedDate = it
+                showDatePicker = false
+            },
+            onDismiss = { showDatePicker = false }
+        )
     }
 
     if (showTimePicker) {
-        EditFoodTimeDialog(
+        SheetTimePickerDialog(
             initialTime = loggedTime,
             onConfirm = {
                 loggedTime = it
@@ -697,46 +644,6 @@ fun EditFoodEntrySheet(
                 }
             },
             onDismiss = { ingredientEditor = null }
-        )
-    }
-}
-
-@Composable
-private fun EditFoodTimeDialog(
-    initialTime: LocalTime,
-    onConfirm: (LocalTime) -> Unit,
-    onDismiss: () -> Unit
-) {
-    var hourText by remember(initialTime) { mutableStateOf(initialTime.hour.toString().padStart(2, '0')) }
-    var minuteText by remember(initialTime) { mutableStateOf(initialTime.minute.toString().padStart(2, '0')) }
-
-    FudGlassDialog(onDismissRequest = onDismiss) {
-        Text(stringResource(R.string.label_time), fontSize = 21.sp, fontWeight = FontWeight.Bold)
-        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            FudGlassTextField(
-                value = hourText,
-                onValueChange = { hourText = it.filter(Char::isDigit).take(2) },
-                placeholder = stringResource(R.string.placeholder_hour),
-                singleLine = true,
-                modifier = Modifier.weight(1f)
-            )
-            FudGlassTextField(
-                value = minuteText,
-                onValueChange = { minuteText = it.filter(Char::isDigit).take(2) },
-                placeholder = stringResource(R.string.placeholder_minute),
-                singleLine = true,
-                modifier = Modifier.weight(1f)
-            )
-        }
-        FudGlassDialogActions(
-            primaryText = stringResource(R.string.action_done),
-            onPrimary = {
-                val hour = hourText.toIntOrNull()?.coerceIn(0, 23) ?: initialTime.hour
-                val minute = minuteText.toIntOrNull()?.coerceIn(0, 59) ?: initialTime.minute
-                onConfirm(LocalTime.of(hour, minute))
-            },
-            dismissText = stringResource(R.string.action_cancel),
-            onDismiss = onDismiss
         )
     }
 }

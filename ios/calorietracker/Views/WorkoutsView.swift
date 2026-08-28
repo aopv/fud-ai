@@ -743,8 +743,10 @@ private struct ExerciseLibraryRow: View {
 
     private var thumbnail: some View {
         AnimatedExerciseVisual(
+            exerciseID: item.id,
             exerciseName: item.name,
             imagePaths: item.imagePaths,
+            rawEquipment: item.rawEquipment,
             height: 104,
             fillsWidth: false,
             allowsDerivedImageLookup: false
@@ -824,8 +826,10 @@ struct ExerciseLibraryDetailView: View {
     private func detailHero(width: CGFloat) -> some View {
         ZStack(alignment: .topTrailing) {
             AnimatedExerciseVisual(
+                exerciseID: item.id,
                 exerciseName: item.name,
                 imagePaths: item.imagePaths,
+                rawEquipment: item.rawEquipment,
                 height: 294,
                 allowsDerivedImageLookup: false
             )

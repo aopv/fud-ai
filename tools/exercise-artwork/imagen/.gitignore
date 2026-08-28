@@ -1,0 +1,3 @@
+*.lock
+__pycache__/
+*.pyc

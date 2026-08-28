@@ -103,6 +103,12 @@ fun WorkoutsScreen(container: AppContainer, modifier: Modifier = Modifier) {
     val weekStartsOnMonday by container.prefs.weekStartsOnMonday.collectAsState(initial = true)
     val weightUnit = WorkoutWeightUnit.fromStorage(weightUnitRaw)
     val bodyWeightKg = latestWeight?.weightKg ?: profile?.weightKg ?: 70.0
+    // Other intentionally shares the male figure; only an explicit female profile selects female.
+    val artworkGender = if (profile?.gender == com.apoorvdarshan.calorietracker.models.Gender.FEMALE) {
+        com.apoorvdarshan.calorietracker.models.Gender.FEMALE
+    } else {
+        com.apoorvdarshan.calorietracker.models.Gender.MALE
+    }
 
     LaunchedEffect(container.workoutRepository, bodyWeightKg, weightUnit) {
         vm.bindWorkoutRepository(
@@ -116,7 +122,7 @@ fun WorkoutsScreen(container: AppContainer, modifier: Modifier = Modifier) {
         ?: vm.openExerciseId?.let { id -> repo.exercises.firstOrNull { it.id == id } }
     if (openItem != null) {
         BackHandler(onBack = vm::closeExerciseDetail)
-        ExerciseDetailScreen(item = openItem, onBack = vm::closeExerciseDetail, modifier = modifier)
+        ExerciseDetailScreen(item = openItem, gender = artworkGender, onBack = vm::closeExerciseDetail, modifier = modifier)
         return
     }
 
@@ -132,6 +138,7 @@ fun WorkoutsScreen(container: AppContainer, modifier: Modifier = Modifier) {
             exerciseRepository = repo,
             viewModel = vm,
             weekStartsOnMonday = weekStartsOnMonday,
+            artworkGender = artworkGender,
             onShowLibrary = toggleMode,
             modifier = modifier
         )
@@ -139,6 +146,7 @@ fun WorkoutsScreen(container: AppContainer, modifier: Modifier = Modifier) {
         WorkoutLibraryScreen(
             repo = repo,
             vm = vm,
+            artworkGender = artworkGender,
             onShowLog = toggleMode,
             modifier = modifier
         )
@@ -200,6 +208,7 @@ private fun filterByWorkoutSplit(items: List<ExerciseItem>, vm: WorkoutsViewMode
 private fun WorkoutLibraryScreen(
     repo: ExerciseRepository,
     vm: WorkoutsViewModel,
+    artworkGender: com.apoorvdarshan.calorietracker.models.Gender,
     onShowLog: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -276,7 +285,7 @@ private fun WorkoutLibraryScreen(
                 item(key = "empty") { EmptyState() }
             } else {
                 items(items, key = { it.id }) { item ->
-                    ExerciseRow(item = item, onClick = { vm.openExerciseId = item.id })
+                    ExerciseRow(item = item, gender = artworkGender, onClick = { vm.openExerciseId = item.id })
                     HorizontalDivider(
                         color = workoutsColors().hairline.copy(alpha = 0.28f),
                         thickness = 0.5.dp,
@@ -560,6 +569,7 @@ internal fun CapsuleButton(text: String, icon: ImageVector, tint: Color, enabled
 @Composable
 internal fun ExerciseRow(
     item: ExerciseItem,
+    gender: com.apoorvdarshan.calorietracker.models.Gender = com.apoorvdarshan.calorietracker.models.Gender.MALE,
     onClick: () -> Unit,
     trailingContent: @Composable () -> Unit = {
         Icon(
@@ -586,7 +596,12 @@ internal fun ExerciseRow(
                 .background(colors.panel.copy(alpha = 0.32f))
                 .border(0.5.dp, colors.hairline.copy(alpha = 0.38f), RoundedCornerShape(18.dp))
         ) {
-            AnimatedExerciseImage(item.imagePaths, Modifier.fillMaxSize())
+            AnimatedExerciseImage(
+                exerciseId = item.id,
+                imagePaths = item.imagePaths,
+                gender = gender,
+                modifier = Modifier.fillMaxSize()
+            )
         }
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(9.dp)) {
             Text(item.name, color = colors.charcoal, fontSize = 17.sp, fontWeight = FontWeight.SemiBold, maxLines = 2, overflow = TextOverflow.Ellipsis)
