@@ -85,10 +85,8 @@ private val PillCorner = 26.dp
 private val PillInsetH = 8.dp
 private val PillInsetV = 6.dp
 
-// The navigation root owns the full tab-bar inset. Screens only need ordinary trailing
-// breathing room (or a small gap for controls docked to the bottom of their safe viewport).
-val BottomNavScrollPadding = 24.dp
-val BottomNavDockedControlPadding = 12.dp
+val BottomNavScrollPadding = 132.dp
+val BottomNavDockedControlPadding = 82.dp
 
 /**
  * Floating Liquid Glass tab bar — capsule with translucent backdrop, glassy
@@ -126,8 +124,8 @@ fun FudAIBottomNavBar(
 
     val barShape = RoundedCornerShape(BarCorner)
 
-    val backdropColor = if (isDark) Color(0xFF15151A).copy(alpha = 0.94f)
-                        else Color(0xFFFCF6F1).copy(alpha = 0.92f)
+    val backdropColor = if (isDark) Color(0xFF15151A).copy(alpha = 0.86f)
+                        else Color(0xFFFCF6F1).copy(alpha = 0.74f)
 
     val barSheen = Brush.verticalGradient(
         colors = if (isDark)

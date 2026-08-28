@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Scaffold
@@ -187,20 +185,8 @@ fun FudAINavHost(
                 )
             }
         }
-    ) { scaffoldPadding ->
-        // Reserve the complete floating-bar slot once at the navigation root. Every tab now
-        // receives the same usable viewport, so individual screens no longer need to guess the
-        // bar height and content can never render beneath the tab labels. Mark the system
-        // navigation-bar inset as consumed as well; nested Scaffolds would otherwise add it a
-        // second time inside this already-safe viewport.
-        val tabContentModifier = if (showTabs) {
-            Modifier
-                .padding(bottom = scaffoldPadding.calculateBottomPadding())
-                .consumeWindowInsets(WindowInsets.navigationBars)
-        } else {
-            Modifier
-        }
-        Box(Modifier.fillMaxSize().then(tabContentModifier)) {
+    ) { _ ->
+        Box(Modifier.fillMaxSize()) {
             NavHost(
                 navController = nav,
                 startDestination = if (startOnboarding) FudAIRoutes.ONBOARDING else FudAIRoutes.HOME
@@ -251,10 +237,11 @@ fun FudAINavHost(
 
 /**
  * Reserves the status-bar space above a tab's content. The top-level Scaffold
- * renders the NavHost edge-to-edge at the top, so each tab would otherwise draw
- * under the status bar. The navigation root separately reserves the shared
- * bottom-bar slot. The content Box consumes the status-bar inset so a tab's own
- * Scaffold/TopAppBar doesn't pad for it a second time.
+ * renders the NavHost full-screen (it discards its inset padding), so each tab
+ * would otherwise draw under the status bar. This used to be handled by the ad
+ * banner strip that sat above the content; with ads removed, this keeps the
+ * exact same clearance. The content Box consumes the status-bar inset so a tab's
+ * own Scaffold/TopAppBar doesn't pad for it a second time.
  */
 @Composable
 private fun TabInset(content: @Composable () -> Unit) {

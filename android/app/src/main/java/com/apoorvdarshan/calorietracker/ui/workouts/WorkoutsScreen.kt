@@ -237,10 +237,11 @@ private fun WorkoutLibraryScreen(
         if (listState.isScrollInProgress) dismissKeyboard()
     }
 
-    // The navigation host supplies a shared safe viewport above the floating tab bar.
-    // This screen paints its own background and keeps a small trailing list inset.
-    // Search, filter chips, and the results header stay pinned; only the exercise list
-    // scrolls (matches iOS).
+    // Fud AI's tab bar floats over content (no Scaffold inset like Delts), so the
+    // screen paints its own background and the list keeps its tail clear of the
+    // floating bar. The status-bar inset is absorbed by the ad strip above this
+    // screen (TabWithBanner). Search, filter chips, and the results header stay
+    // pinned; only the exercise list scrolls (matches iOS).
     Column(
         modifier = modifier
             .fillMaxSize()

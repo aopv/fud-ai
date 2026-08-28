@@ -24,6 +24,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -501,13 +502,15 @@ fun HomeScreen(
             }
         }
 
-        // Floating "+" add button — overlaid bottom-right inside the navigation-safe
-        // viewport supplied by FudAINavHost. The list keeps an additional 72.dp tail so
-        // its final row can scroll clear of this button.
+        // Floating "+" add button — overlaid bottom-right and lifted above the docked
+        // bottom nav bar. The parent Scaffold renders content full-screen behind the
+        // bar, so the Scaffold FAB slot would sit hidden underneath it. Mirrors the iOS
+        // ContentView FAB: .overlay(alignment: .bottomTrailing) + .padding(.bottom).
         Box(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(end = 24.dp, bottom = 16.dp)
+                .navigationBarsPadding()
+                .padding(end = 24.dp, bottom = 100.dp)
         ) {
             Box(
                 modifier = Modifier
