@@ -61,6 +61,7 @@ class SpeechService(
             SpeechProvider.ASSEMBLY_AI -> AssemblyAIClient.transcribe(
                 client = okHttp,
                 apiKey = apiKey!!,
+                speechModels = listOf(provider.defaultModel, "universal-2"),
                 audio = audio,
                 languageCode = languageCode
             )

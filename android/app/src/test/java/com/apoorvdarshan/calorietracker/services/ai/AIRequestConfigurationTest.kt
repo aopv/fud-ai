@@ -1,6 +1,7 @@
 package com.apoorvdarshan.calorietracker.services.ai
 
 import com.apoorvdarshan.calorietracker.models.AIProvider
+import com.apoorvdarshan.calorietracker.models.SpeechProvider
 import java.util.concurrent.TimeUnit
 import okhttp3.OkHttpClient
 import org.junit.Assert.assertEquals
@@ -170,6 +171,23 @@ class AIRequestConfigurationTest {
                 "openai/gpt-5.6-luna"
             )
         )
+    }
+
+    @Test
+    fun speechProviderDefaultsMatchIosRegistry() {
+        val defaults = linkedMapOf(
+            SpeechProvider.NATIVE to "",
+            SpeechProvider.GEMINI to "gemini-3.5-flash",
+            SpeechProvider.OPENAI to "gpt-4o-mini-transcribe",
+            SpeechProvider.GROQ to "whisper-large-v3",
+            SpeechProvider.DEEPGRAM to "nova-3",
+            SpeechProvider.ASSEMBLY_AI to "universal-3-pro"
+        )
+
+        assertEquals(SpeechProvider.values().toList(), defaults.keys.toList())
+        defaults.forEach { (provider, model) ->
+            assertEquals(model, provider.defaultModel)
+        }
     }
 
     @Test

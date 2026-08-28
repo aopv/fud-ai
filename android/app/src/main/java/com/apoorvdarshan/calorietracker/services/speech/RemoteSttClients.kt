@@ -149,6 +149,7 @@ object AssemblyAIClient {
     suspend fun transcribe(
         client: OkHttpClient,
         apiKey: String,
+        speechModels: List<String>,
         audio: File,
         languageCode: String? = null
     ): String = withContext(Dispatchers.IO) {
@@ -163,9 +164,13 @@ object AssemblyAIClient {
             ?: throw SttApiError.InvalidResponse
 
         // 2. Submit
-        val submitPayload = JSONObject().put("audio_url", audioUrl)
+        val submitPayload = JSONObject()
+            .put("audio_url", audioUrl)
+            .put("speech_models", JSONArray(speechModels))
         if (!languageCode.isNullOrBlank()) {
             submitPayload.put("language_code", languageCode)
+        } else {
+            submitPayload.put("language_detection", true)
         }
         val submitBody = submitPayload.toString().toRequestBody("application/json".toMediaType())
         val submitReq = Request.Builder()

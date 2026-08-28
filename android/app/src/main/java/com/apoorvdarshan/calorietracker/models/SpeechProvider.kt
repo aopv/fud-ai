@@ -42,7 +42,7 @@ enum class SpeechProvider {
         OPENAI -> "gpt-4o-mini-transcribe"     // same $/min as whisper-1, better accuracy
         GROQ -> "whisper-large-v3"
         DEEPGRAM -> "nova-3"
-        ASSEMBLY_AI -> "universal"
+        ASSEMBLY_AI -> "universal-3-pro"
     }
 
     @get:StringRes
