@@ -186,6 +186,11 @@ internal class DebugDemoDataSeeder(private val application: FudAIApp) {
                 )
             }
         }
+        val seededPreferences = when {
+            currentWorkout.completedSessions.isEmpty() -> demoWorkoutPreferences
+            currentWorkout.preferences == legacyDemoWorkoutPreferences -> demoWorkoutPreferences
+            else -> currentWorkout.preferences
+        }
         container.prefs.setWorkoutState(
             currentWorkout.copy(
                 dayPlans = mergedPlans,
@@ -193,7 +198,7 @@ internal class DebugDemoDataSeeder(private val application: FudAIApp) {
                     currentWorkout.completedSessions,
                     workoutSessions
                 ) { it.id }.sortedByDescending { it.completedAt },
-                preferences = if (currentWorkout.completedSessions.isEmpty()) demoWorkoutPreferences else currentWorkout.preferences,
+                preferences = seededPreferences,
                 mode = WorkoutTabMode.LOG
             )
         )
@@ -396,17 +401,31 @@ internal class DebugDemoDataSeeder(private val application: FudAIApp) {
         const val SEED_NAMESPACE = "fud-ai-android-debug-year-v1"
 
         val demoWorkoutPreferences = WorkoutPreferences(
-            targetMuscles = setOf("chest", "back", "quadriceps", "hamstrings", "shoulders"),
+            targetMuscles = setOf(
+                "Chest",
+                "Lats",
+                "Middle Back",
+                "Lower Back",
+                "Quadriceps",
+                "Hamstrings",
+                "Shoulders"
+            ),
             frequencyDays = 3,
             durationMinutes = 60,
             split = WorkoutSplit.PUSH_PULL_LEGS,
-            equipment = setOf("barbell", "dumbbell", "cable", "body only"),
+            equipment = setOf("Barbell", "Dumbbell", "Cable", "Body Only"),
             strength = WorkoutStrengthNumbers(
                 benchPressKg = 72.5,
                 squatKg = 100.0,
                 deadliftKg = 125.0,
                 overheadPressKg = 45.0
             )
+        )
+
+        // Migrates devices seeded before canonical exercise-library labels were used.
+        val legacyDemoWorkoutPreferences = demoWorkoutPreferences.copy(
+            targetMuscles = setOf("chest", "back", "quadriceps", "hamstrings", "shoulders"),
+            equipment = setOf("barbell", "dumbbell", "cable", "body only")
         )
 
         val menus = listOf(
