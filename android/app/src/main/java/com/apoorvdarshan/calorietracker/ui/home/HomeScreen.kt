@@ -161,6 +161,7 @@ import com.apoorvdarshan.calorietracker.ui.components.FudGlassTextField
 import com.apoorvdarshan.calorietracker.ui.components.WeekEnergyStrip
 import com.apoorvdarshan.calorietracker.ui.navigation.BottomNavScrollPadding
 import com.apoorvdarshan.calorietracker.ui.theme.AppColors
+import java.text.NumberFormat
 import java.time.DayOfWeek
 import java.time.Instant
 import java.time.LocalDate
@@ -1198,6 +1199,9 @@ private fun shortDay(dow: DayOfWeek): String = when (dow) {
 @Composable
 private fun CalorieHero(current: Int, goal: Int) {
     val ratio = if (goal > 0) (current.toFloat() / goal).coerceIn(0f, 1f) else 0f
+    val formattedCurrent = remember(current) {
+        NumberFormat.getIntegerInstance(Locale.getDefault()).format(current)
+    }
     // Fill-from-zero on app open. lastEpoch is saveable so it survives tab switches
     // (where Home leaves/re-enters composition) — only a real app-open (new epoch)
     // replays the sweep; tab returns snap to the current value.
@@ -1276,7 +1280,7 @@ private fun CalorieHero(current: Int, goal: Int) {
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
             )
             Text(
-                "$current",
+                formattedCurrent,
                 style = TextStyle(
                     brush = Brush.linearGradient(gradientColors),
                     fontSize = 50.sp,
