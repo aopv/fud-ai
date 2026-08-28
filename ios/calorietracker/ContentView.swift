@@ -781,7 +781,7 @@ struct HomeView: View {
                 Section {
                     CalorieGauge(eaten: selectedCalories, goal: calorieGoal, launchFillEpoch: launchFillEpoch)
                         .frame(maxWidth: .infinity)
-                        .padding(.top, 4)
+                        .padding(.top, -8)
                         .contentShape(Rectangle())
                         .simultaneousGesture(daySwipeGesture)
                         .listRowBackground(Color.clear)
