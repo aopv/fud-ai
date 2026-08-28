@@ -819,23 +819,8 @@ private fun CoachMediaActions(
     onPickImage: () -> Unit,
     onCaptureImage: () -> Unit
 ) {
-    val shape = RoundedCornerShape(19.dp)
     Row(
-        modifier = Modifier
-            .clip(shape)
-            .background(AppColors.Calorie.copy(alpha = 0.075f))
-            .border(
-                0.6.dp,
-                Brush.linearGradient(
-                    listOf(
-                        Color.White.copy(alpha = 0.16f),
-                        AppColors.Calorie.copy(alpha = 0.12f)
-                    )
-                ),
-                shape
-            )
-            .padding(2.dp),
-        horizontalArrangement = Arrangement.spacedBy(2.dp),
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         CoachMediaActionButton(
@@ -862,11 +847,21 @@ private fun CoachMediaActionButton(
 ) {
     Box(
         modifier = Modifier
-            .size(30.dp)
+            .size(34.dp)
             .clip(CircleShape)
             .background(
                 if (enabled) AppColors.Calorie.copy(alpha = 0.11f)
                 else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f)
+            )
+            .border(
+                0.7.dp,
+                Brush.linearGradient(
+                    listOf(
+                        Color.White.copy(alpha = if (enabled) 0.18f else 0.08f),
+                        AppColors.Calorie.copy(alpha = if (enabled) 0.2f else 0.06f)
+                    )
+                ),
+                CircleShape
             )
             .clickable(enabled = enabled, onClick = onClick),
         contentAlignment = Alignment.Center
