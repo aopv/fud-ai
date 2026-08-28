@@ -4,36 +4,172 @@ import com.apoorvdarshan.calorietracker.models.AIProvider
 import java.util.concurrent.TimeUnit
 import okhttp3.OkHttpClient
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertSame
-import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class AIRequestConfigurationTest {
     @Test
-    fun geminiUsesCurrentModelsAndFallsBackFromRetiredChoices() {
-        assertEquals("gemini-3.5-flash-lite", AIProvider.GEMINI.defaultModel)
-        assertTrue(AIProvider.GEMINI.models.contains("gemini-3.6-flash"))
-        assertTrue(AIProvider.GEMINI.models.contains("gemini-3.5-flash"))
-        assertFalse(AIProvider.GEMINI.models.contains("gemini-2.5-flash"))
-        assertFalse(AIProvider.GEMINI.models.contains("gemini-2.5-pro"))
+    fun modelPresetsAndDefaultsMatchIosRegistryOrder() {
+        val registries = linkedMapOf(
+            AIProvider.GEMINI to listOf(
+                "gemini-3.5-flash-lite",
+                "gemini-3.7-flash",
+                "gemini-3.6-flash",
+                "gemini-3.5-flash",
+                "gemini-3.1-pro-preview"
+            ),
+            AIProvider.OPENAI to listOf(
+                "gpt-5.4-mini",
+                "gpt-5.6-sol",
+                "gpt-5.6-terra",
+                "gpt-5.6-luna",
+                "gpt-5.5",
+                "gpt-5.4-nano",
+                "gpt-4.1",
+                "gpt-4.1-mini",
+                "gpt-4o-mini"
+            ),
+            AIProvider.ANTHROPIC to listOf(
+                "claude-sonnet-5",
+                "claude-opus-5",
+                "claude-fable-5",
+                "claude-opus-4-8",
+                "claude-haiku-4-5",
+                "claude-sonnet-4-6",
+                "claude-opus-4-7"
+            ),
+            AIProvider.XAI to listOf("grok-4.3", "grok-4.6"),
+            AIProvider.OPENROUTER to listOf(
+                "openrouter/free",
+                "google/gemini-3.5-flash-lite",
+                "google/gemini-3.7-flash",
+                "openai/gpt-5.6-luna",
+                "qwen/qwen3.8-27b",
+                "openai/gpt-5-mini",
+                "anthropic/claude-sonnet-5",
+                "qwen/qwen3-vl-8b-instruct"
+            ),
+            AIProvider.TOGETHER_AI to listOf(
+                "Qwen/Qwen3.5-9B",
+                "moonshotai/Kimi-K3",
+                "Qwen/Qwen3.8-2.4T-A95B",
+                "google/gemma-4-31B-it",
+                "MiniMaxAI/MiniMax-M3"
+            ),
+            AIProvider.GROQ to listOf("qwen/qwen3.6-27b"),
+            AIProvider.HUGGING_FACE to listOf(
+                "google/gemma-4-31B-it",
+                "Qwen/Qwen3.8-27B",
+                "moonshotai/Kimi-K3",
+                "google/gemma-3-27b-it",
+                "Qwen/Qwen3.5-9B"
+            ),
+            AIProvider.FIREWORKS to listOf(
+                "accounts/fireworks/models/qwen3p7-plus",
+                "accounts/fireworks/models/kimi-k3",
+                "accounts/fireworks/models/muse-glimmer-30b",
+                "accounts/fireworks/models/minimax-m3",
+                "accounts/fireworks/models/kimi-k2p6"
+            ),
+            AIProvider.DEEP_INFRA to listOf(
+                "google/gemma-3-27b-it",
+                "Qwen/Qwen3.8-27B",
+                "MiniMaxAI/MiniMax-M3",
+                "google/gemma-4-31B-it",
+                "google/gemma-4-26B-A4B-it"
+            ),
+            AIProvider.MISTRAL to listOf(
+                "mistral-small-2603",
+                "mistral-medium-3-5",
+                "mistral-large-2512",
+                "ministral-14b-2512"
+            ),
+            AIProvider.OLLAMA to listOf(
+                "qwen3-vl",
+                "qwen3.8",
+                "gemma4",
+                "llama3.2-vision",
+                "llava",
+                "moondream"
+            ),
+            AIProvider.CUSTOM_OPENAI to emptyList()
+        )
+
+        assertEquals(AIProvider.values().toList(), registries.keys.toList())
+        registries.forEach { (provider, models) ->
+            assertEquals(models, provider.models)
+            assertEquals(models.firstOrNull().orEmpty(), provider.defaultModel)
+        }
+    }
+
+    @Test
+    fun removedPresetsHaveProviderScopedReplacements() {
         assertEquals(
             "gemini-3.5-flash-lite",
-            AIProvider.GEMINI.supportedModelOrDefault("gemini-2.5-pro")
+            AIProvider.upgradedLegacyModel(AIProvider.GEMINI, "gemini-3.1-flash-lite")
         )
         assertEquals(
-            "gemini-3.5-flash-lite",
-            AIProvider.upgradedLegacyGeminiModel("gemini-3.1-flash-lite")
+            "google/gemini-3.5-flash-lite",
+            AIProvider.upgradedLegacyModel(
+                AIProvider.OPENROUTER,
+                "google/gemini-3.1-flash-lite"
+            )
         )
         assertEquals(
-            "gemini-3.6-flash",
-            AIProvider.upgradedLegacyGeminiModel("gemini-3.1-pro-preview")
+            "Qwen/Qwen3.8-27B",
+            AIProvider.upgradedLegacyModel(
+                AIProvider.HUGGING_FACE,
+                "Qwen/Qwen2.5-VL-72B-Instruct"
+            )
         )
         assertEquals(
-            "gemini-3.6-flash",
-            AIProvider.upgradedLegacyGeminiModel("gemini-3.5-flash")
+            "mistral-medium-3-5",
+            AIProvider.upgradedLegacyModel(AIProvider.MISTRAL, "mistral-medium-2604")
         )
-        assertEquals(null, AIProvider.upgradedLegacyGeminiModel("gemini-3.6-flash"))
+
+        assertNull(AIProvider.upgradedLegacyModel(AIProvider.OPENAI, "gpt-5.4-mini"))
+        assertNull(AIProvider.upgradedLegacyModel(AIProvider.GEMINI, null))
+        assertNull(
+            AIProvider.upgradedLegacyModel(AIProvider.OPENROUTER, "gemini-3.1-flash-lite")
+        )
+    }
+
+    @Test
+    fun freeFormProvidersPreserveUserSuppliedModels() {
+        val customModel = "company/private-vision-model-v7"
+
+        assertEquals(customModel, AIProvider.CUSTOM_OPENAI.supportedModelOrDefault(customModel))
+        assertEquals(customModel, AIProvider.OPENROUTER.supportedModelOrDefault(customModel))
+        assertEquals(customModel, AIProvider.HUGGING_FACE.supportedModelOrDefault(customModel))
+        assertEquals(
+            AIProvider.OPENAI.defaultModel,
+            AIProvider.OPENAI.supportedModelOrDefault(customModel)
+        )
+    }
+
+    @Test
+    fun openAi56ModelsUseCompletionTokenLimitParameter() {
+        listOf("gpt-5.6-sol", "gpt-5.6-terra", "gpt-5.6-luna").forEach { model ->
+            assertEquals(
+                "max_completion_tokens",
+                OpenAICompatibleClient.tokenLimitParameter(AIProvider.OPENAI, model)
+            )
+            assertEquals(
+                "max_completion_tokens",
+                OpenAICompatibleClient.tokenLimitParameter(
+                    AIProvider.CUSTOM_OPENAI,
+                    "openai/$model"
+                )
+            )
+        }
+        assertEquals(
+            "max_tokens",
+            OpenAICompatibleClient.tokenLimitParameter(
+                AIProvider.OPENROUTER,
+                "openai/gpt-5.6-luna"
+            )
+        )
     }
 
     @Test

@@ -56,18 +56,21 @@ enum class AIProvider {
 
     /**
      * Only models that are currently in service AND accept image input + return structured text.
-     * Lineups verified against provider docs on 2026-07-21. Mirrors iOS AIProvider.swift.
+     * Lineups verified against provider docs on 2026-08-26. Mirrors iOS AIProvider.swift.
      */
     val models: List<String> get() = when (this) {
         GEMINI -> listOf(
             "gemini-3.5-flash-lite",
+            "gemini-3.7-flash",
             "gemini-3.6-flash",
             "gemini-3.5-flash",
-            "gemini-3.1-flash-lite",
             "gemini-3.1-pro-preview"
         )
         OPENAI -> listOf(
             "gpt-5.4-mini",
+            "gpt-5.6-sol",
+            "gpt-5.6-terra",
+            "gpt-5.6-luna",
             "gpt-5.5",
             "gpt-5.4-nano",
             "gpt-4.1",
@@ -76,23 +79,31 @@ enum class AIProvider {
         )
         ANTHROPIC -> listOf(
             "claude-sonnet-5",
+            "claude-opus-5",
+            "claude-fable-5",
             "claude-opus-4-8",
             "claude-haiku-4-5",
             "claude-sonnet-4-6",
             "claude-opus-4-7"
         )
         XAI -> listOf(
-            "grok-4.3"
+            "grok-4.3",
+            "grok-4.6"
         )
         OPENROUTER -> listOf(
             "openrouter/free",
-            "google/gemini-3.1-flash-lite",
+            "google/gemini-3.5-flash-lite",
+            "google/gemini-3.7-flash",
+            "openai/gpt-5.6-luna",
+            "qwen/qwen3.8-27b",
             "openai/gpt-5-mini",
             "anthropic/claude-sonnet-5",
             "qwen/qwen3-vl-8b-instruct"
         )
         TOGETHER_AI -> listOf(
             "Qwen/Qwen3.5-9B",
+            "moonshotai/Kimi-K3",
+            "Qwen/Qwen3.8-2.4T-A95B",
             "google/gemma-4-31B-it",
             "MiniMaxAI/MiniMax-M3"
         )
@@ -101,27 +112,34 @@ enum class AIProvider {
         )
         HUGGING_FACE -> listOf(
             "google/gemma-4-31B-it",
+            "Qwen/Qwen3.8-27B",
+            "moonshotai/Kimi-K3",
             "google/gemma-3-27b-it",
-            "Qwen/Qwen3.5-9B",
-            "Qwen/Qwen2.5-VL-72B-Instruct"
+            "Qwen/Qwen3.5-9B"
         )
         FIREWORKS -> listOf(
             "accounts/fireworks/models/qwen3p7-plus",
+            "accounts/fireworks/models/kimi-k3",
+            "accounts/fireworks/models/muse-glimmer-30b",
             "accounts/fireworks/models/minimax-m3",
             "accounts/fireworks/models/kimi-k2p6"
         )
         DEEP_INFRA -> listOf(
             "google/gemma-3-27b-it",
+            "Qwen/Qwen3.8-27B",
+            "MiniMaxAI/MiniMax-M3",
             "google/gemma-4-31B-it",
             "google/gemma-4-26B-A4B-it"
         )
         MISTRAL -> listOf(
             "mistral-small-2603",
-            "mistral-medium-2604",
+            "mistral-medium-3-5",
+            "mistral-large-2512",
             "ministral-14b-2512"
         )
         OLLAMA -> listOf(
             "qwen3-vl",
+            "qwen3.8",
             "gemma4",
             "llama3.2-vision",
             "llava",
@@ -194,8 +212,23 @@ enum class AIProvider {
             when (model?.let(::normalizeModelId)) {
                 "gemini-2.5-flash", "gemini-2.5-pro", "gemini-3.1-flash-lite" ->
                     "gemini-3.5-flash-lite"
-                "gemini-3.1-pro-preview", "gemini-3.5-flash" -> "gemini-3.6-flash"
                 else -> null
             }
+
+        /** Provider-scoped replacements for presets removed from the current registry. */
+        fun upgradedLegacyModel(provider: AIProvider, model: String?): String? {
+            val normalized = model?.let(::normalizeModelId) ?: return null
+            return when {
+                provider == GEMINI && normalized == "gemini-3.1-flash-lite" ->
+                    "gemini-3.5-flash-lite"
+                provider == OPENROUTER && normalized == "google/gemini-3.1-flash-lite" ->
+                    "google/gemini-3.5-flash-lite"
+                provider == HUGGING_FACE && normalized == "Qwen/Qwen2.5-VL-72B-Instruct" ->
+                    "Qwen/Qwen3.8-27B"
+                provider == MISTRAL && normalized == "mistral-medium-2604" ->
+                    "mistral-medium-3-5"
+                else -> null
+            }
+        }
     }
 }

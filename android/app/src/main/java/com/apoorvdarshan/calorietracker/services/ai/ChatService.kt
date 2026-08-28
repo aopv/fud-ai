@@ -504,6 +504,7 @@ class ChatService(
                         put("functionResponse", JSONObject().apply {
                             put("name", name)
                             put("response", JSONObject().put("content", resultObj))
+                            call.optString("id").takeIf { it.isNotEmpty() }?.let { put("id", it) }
                         })
                     })
                 }

@@ -424,34 +424,54 @@ class PreferencesStore(private val context: Context) : WorkoutStateStore {
         ds.edit { it[Keys.SELECTED_AI_MODEL] = AIProvider.normalizeModelId(model) }
     }
 
-    /** Upgrade legacy Gemini choices exactly once, including the fallback model. */
-    suspend fun migrateLegacyGeminiModels() {
+    /** Upgrade removed AI model presets exactly once, including the fallback model. */
+    suspend fun migrateAIModelSelections() {
         ds.edit { prefs ->
-            if ((prefs[Keys.GEMINI_MODEL_MIGRATION_VERSION] ?: 0) >= 1) return@edit
-
-            val primaryProvider = AIProvider.values().firstOrNull {
-                it.name == prefs[Keys.SELECTED_AI_PROVIDER]
-            } ?: AIProvider.GEMINI
-            if (primaryProvider == AIProvider.GEMINI) {
-                AIProvider.upgradedLegacyGeminiModel(prefs[Keys.SELECTED_AI_MODEL])?.let {
-                    prefs[Keys.SELECTED_AI_MODEL] = it
+            if ((prefs[Keys.GEMINI_MODEL_MIGRATION_VERSION] ?: 0) < 1) {
+                val primaryProvider = storedAIProvider(
+                    prefs[Keys.SELECTED_AI_PROVIDER]
+                ) ?: AIProvider.GEMINI
+                if (primaryProvider == AIProvider.GEMINI) {
+                    AIProvider.upgradedLegacyGeminiModel(prefs[Keys.SELECTED_AI_MODEL])?.let {
+                        prefs[Keys.SELECTED_AI_MODEL] = it
+                    }
                 }
+
+                val fallbackProvider = storedAIProvider(prefs[Keys.FALLBACK_PROVIDER])
+                if (fallbackProvider == AIProvider.GEMINI) {
+                    AIProvider.upgradedLegacyGeminiModel(prefs[Keys.FALLBACK_MODEL])?.let {
+                        prefs[Keys.FALLBACK_MODEL] = it
+                    }
+                }
+
+                // Prevent a later manual choice of a supported older model from
+                // being overwritten on every app launch.
+                prefs[Keys.GEMINI_MODEL_MIGRATION_VERSION] = 1
             }
 
-            val fallbackProvider = AIProvider.values().firstOrNull {
-                it.name == prefs[Keys.FALLBACK_PROVIDER]
-            } ?: AIProvider.GEMINI
-            if (fallbackProvider == AIProvider.GEMINI) {
-                AIProvider.upgradedLegacyGeminiModel(prefs[Keys.FALLBACK_MODEL])?.let {
-                    prefs[Keys.FALLBACK_MODEL] = it
-                }
-            }
+            if ((prefs[Keys.AI_MODEL_REGISTRY_MIGRATION_VERSION] ?: 0) < 1) {
+                val primaryProvider = storedAIProvider(
+                    prefs[Keys.SELECTED_AI_PROVIDER]
+                ) ?: AIProvider.GEMINI
+                AIProvider.upgradedLegacyModel(
+                    primaryProvider,
+                    prefs[Keys.SELECTED_AI_MODEL]
+                )?.let { prefs[Keys.SELECTED_AI_MODEL] = it }
 
-            // Prevent a later manual choice of a still-supported older model from
-            // being overwritten on every app launch.
-            prefs[Keys.GEMINI_MODEL_MIGRATION_VERSION] = 1
+                storedAIProvider(prefs[Keys.FALLBACK_PROVIDER])?.let { fallbackProvider ->
+                    AIProvider.upgradedLegacyModel(
+                        fallbackProvider,
+                        prefs[Keys.FALLBACK_MODEL]
+                    )?.let { prefs[Keys.FALLBACK_MODEL] = it }
+                }
+
+                prefs[Keys.AI_MODEL_REGISTRY_MIGRATION_VERSION] = 1
+            }
         }
     }
+
+    private fun storedAIProvider(rawValue: String?): AIProvider? =
+        AIProvider.values().firstOrNull { it.name == rawValue }
 
     fun customBaseUrl(provider: AIProvider): Flow<String?> = ds.data.map {
         it[stringPreferencesKey(CUSTOM_BASE_URL_PREFIX + provider.name)]
@@ -744,6 +764,7 @@ class PreferencesStore(private val context: Context) : WorkoutStateStore {
         val SELECTED_AI_PROVIDER = stringPreferencesKey("selectedAIProvider")
         val SELECTED_AI_MODEL = stringPreferencesKey("selectedAIModel")
         val GEMINI_MODEL_MIGRATION_VERSION = intPreferencesKey("geminiModelMigrationVersion")
+        val AI_MODEL_REGISTRY_MIGRATION_VERSION = intPreferencesKey("aiModelRegistryMigrationVersion")
         val MAX_RESPONSE_TOKENS = intPreferencesKey("maxResponseTokens")
         val AI_REQUEST_TIMEOUT_SECONDS = intPreferencesKey("aiRequestTimeoutSeconds")
         val USER_CONTEXT = stringPreferencesKey("userContext")
