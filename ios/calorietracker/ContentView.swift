@@ -775,20 +775,18 @@ struct HomeView: View {
                     .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
                 }
 
-                // Calorie hero (semicircle gauge)
+                // Nutrition summary. Keeping the dome, macros, water and detail affordance in
+                // one section removes an unhelpful List section gap and matches Android's
+                // compact top-region hierarchy.
                 Section {
                     CalorieGauge(eaten: selectedCalories, goal: calorieGoal, launchFillEpoch: launchFillEpoch)
                         .frame(maxWidth: .infinity)
-                        .padding(.top, 8)
-                        .padding(.bottom, 4)
+                        .padding(.top, 4)
                         .contentShape(Rectangle())
                         .simultaneousGesture(daySwipeGesture)
                         .listRowBackground(Color.clear)
                         .listRowSeparator(.hidden)
-                }
 
-                // Top nutrient row (vertical bars)
-                Section {
                     HStack(alignment: .top, spacing: 4) {
                         ForEach(homeTopNutrients) { nutrient in
                             MacroVerticalBar(
@@ -801,7 +799,7 @@ struct HomeView: View {
                             )
                         }
                     }
-                    .padding(.vertical, 8)
+                    .padding(.vertical, 4)
                     .contentShape(Rectangle())
                     .simultaneousGesture(daySwipeGesture)
                     .listRowBackground(Color.clear)

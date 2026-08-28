@@ -78,7 +78,7 @@ fun MacroCard(
     Column(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(10.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         // Value (gradient), above the bar
         Text(
@@ -93,7 +93,7 @@ fun MacroCard(
 
         // Vertical fill bar (rounded tube, fills bottom-up)
         Box(
-            modifier = Modifier.size(width = 16.dp, height = 74.dp),
+            modifier = Modifier.size(width = 16.dp, height = 64.dp),
             contentAlignment = Alignment.BottomCenter
         ) {
             Box(
@@ -102,7 +102,7 @@ fun MacroCard(
                     .clip(CircleShape)
                     .background(firstColor.copy(alpha = 0.12f))
             )
-            val fillHeight = (74.dp * animated).coerceAtLeast(16.dp)
+            val fillHeight = (64.dp * animated).coerceAtLeast(16.dp)
             Box(
                 Modifier
                     .width(16.dp)
@@ -122,7 +122,7 @@ fun MacroCard(
         }
 
         // Name + status — a tight pair (iOS groups them in an inner VStack(spacing: 1)
-        // inside the outer VStack(spacing: 10)).
+        // inside the outer VStack(spacing: 8)).
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(1.dp)

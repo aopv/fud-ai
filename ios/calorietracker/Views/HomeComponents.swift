@@ -519,8 +519,10 @@ struct CalorieGauge: View {
     /// Increments when the app is opened; drives the fill-from-zero reveal.
     var launchFillEpoch: Int = 0
 
-    private let diameter: CGFloat = 260
-    private let lineWidth: CGFloat = 16
+    // Keep the calorie dome as Home's signature, but at a tighter proportion so the first
+    // meal enters the initial viewport sooner. Android uses the same 240 / 14 geometry.
+    private let diameter: CGFloat = 240
+    private let lineWidth: CGFloat = 14
 
     @State private var shownProgress: Double = 0
     @State private var lastEpoch = 0
@@ -576,7 +578,7 @@ struct CalorieGauge: View {
                     .foregroundStyle(.secondary)
 
                 Text("\(eaten)")
-                    .font(.system(size: 54, weight: .bold, design: .rounded))
+                    .font(.system(size: 50, weight: .bold, design: .rounded))
                     .foregroundStyle(
                         LinearGradient(colors: AppColors.calorieGradient,
                                        startPoint: .topLeading, endPoint: .bottomTrailing)
@@ -629,7 +631,7 @@ struct MacroVerticalBar: View {
     var launchFillEpoch: Int = 0
 
     private let barWidth: CGFloat = 16
-    private let barHeight: CGFloat = 74
+    private let barHeight: CGFloat = 64
 
     @State private var shownProgress: CGFloat = 0
     @State private var lastEpoch = 0
@@ -647,7 +649,7 @@ struct MacroVerticalBar: View {
     }
 
     var body: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: 8) {
             Text(MacroValueFormatter.string(current))
                 .font(.system(.title3, design: .rounded, weight: .bold))
                 .foregroundStyle(

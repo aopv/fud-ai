@@ -371,9 +371,8 @@ fun HomeScreen(
                         )
                     }
                 ) {
-                    Spacer(Modifier.height(4.dp))
                     CalorieHero(current = ui.caloriesToday, goal = ui.profile?.effectiveCalories ?: 2000)
-                    Spacer(Modifier.height(20.dp))
+                    Spacer(Modifier.height(12.dp))
                     Row(
                         Modifier
                             .fillMaxWidth()
@@ -391,7 +390,7 @@ fun HomeScreen(
                         }
                     }
                     if (ui.waterTrackingEnabled) {
-                        Spacer(Modifier.height(10.dp))
+                        Spacer(Modifier.height(8.dp))
                         WaterProgressRow(
                             current = ui.waterTodayMl,
                             goal = ui.waterDailyGoalMl,
@@ -1226,17 +1225,18 @@ private fun CalorieHero(current: Int, goal: Int) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 8.dp, bottom = 4.dp),
+            .padding(top = 4.dp),
         contentAlignment = Alignment.TopCenter
     ) {
-        // Segmented (dashed) semicircle speedometer arc. Fixed 260dp dome to mirror
-        // iOS CalorieGauge's hard .frame(width: 260) (244dp arc + 16dp stroke = 260dp).
+        // Segmented (dashed) semicircle speedometer arc. The compact 240dp dome keeps
+        // the calorie readout dominant while returning more of the first meal to the
+        // initial viewport. iOS uses the same 240pt / 14pt geometry.
         Canvas(
             modifier = Modifier
-                .width(260.dp)
+                .width(240.dp)
                 .aspectRatio(2f)
         ) {
-            val stroke = 16.dp.toPx()
+            val stroke = 14.dp.toPx()
             val inset = stroke / 2f
             val arcSize = Size(size.width - stroke, size.width - stroke)
             val topLeft = Offset(inset, inset)
@@ -1263,7 +1263,7 @@ private fun CalorieHero(current: Int, goal: Int) {
 
         // Centered readout, sitting inside the dome
         Column(
-            modifier = Modifier.padding(top = 44.dp),
+            modifier = Modifier.padding(top = 39.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
@@ -1278,7 +1278,7 @@ private fun CalorieHero(current: Int, goal: Int) {
                 "$current",
                 style = TextStyle(
                     brush = Brush.linearGradient(gradientColors),
-                    fontSize = 54.sp,
+                    fontSize = 50.sp,
                     fontWeight = FontWeight.Bold
                 ),
                 maxLines = 1
