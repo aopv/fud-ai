@@ -98,9 +98,13 @@ fun VoiceInputSheet(
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
 
-    val provider by container.prefs.selectedSpeechProvider.collectAsState(initial = SpeechProvider.NATIVE)
-    val speechLanguage by container.prefs.selectedSpeechLanguage(provider)
-        .collectAsState(initial = SpeechLanguage.defaultFor(provider))
+    // Wait for the persisted configuration before auto-starting so a remote
+    // provider is never briefly mistaken for the native default.
+    val persistedProvider by container.prefs.selectedSpeechProvider.collectAsState(initial = null)
+    val provider = persistedProvider ?: return
+    val persistedSpeechLanguage by container.prefs.selectedSpeechLanguage(provider)
+        .collectAsState(initial = null)
+    val speechLanguage = persistedSpeechLanguage ?: return
     val micDeniedMsg = stringResource(R.string.voice_mic_permission_denied)
     val micStartFailedMsg = stringResource(R.string.voice_mic_start_failed)
     val transcriptionFailedMsg = stringResource(R.string.voice_transcription_failed)
@@ -205,13 +209,19 @@ fun VoiceInputSheet(
     val micPermission = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
-        // Permission is requested on sheet open but we no longer auto-start.
-        // The user opens the sheet → sees an idle mic → taps it to begin.
-        if (!granted) error = micDeniedMsg
+        if (granted) {
+            startRecordingNow()
+        } else {
+            error = micDeniedMsg
+        }
     }
 
     LaunchedEffect(Unit) {
-        if (!native.hasMicPermission()) micPermission.launch(Manifest.permission.RECORD_AUDIO)
+        if (native.hasMicPermission()) {
+            startRecordingNow()
+        } else {
+            micPermission.launch(Manifest.permission.RECORD_AUDIO)
+        }
     }
 
     DisposableEffect(Unit) {
