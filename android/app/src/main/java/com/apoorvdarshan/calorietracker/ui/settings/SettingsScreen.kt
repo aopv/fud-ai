@@ -731,7 +731,11 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                     icon = Icons.Outlined.SmartToy,
                     infoText = stringResource(R.string.settings_info_primary_ai)
                 )
-                SettingRow(stringResource(R.string.settings_ai_provider), stringResource(ui.selectedAI.displayNameRes), icon = Icons.Outlined.SmartToy) { sheet = SettingsSheet.AI_PROVIDER }
+                SettingRow(
+                    stringResource(R.string.settings_ai_provider),
+                    stringResource(ui.selectedAI.displayNameRes),
+                    leadingContent = { AIProviderBrandIcon(ui.selectedAI, Modifier.size(19.dp)) }
+                ) { sheet = SettingsSheet.AI_PROVIDER }
                 HorizontalDivider()
                 SettingRow(stringResource(R.string.settings_ai_model), ui.selectedModel.ifEmpty { stringResource(R.string.settings_ai_model_unset) }, icon = Icons.Outlined.Tune) { sheet = SettingsSheet.AI_MODEL }
                 if (ui.selectedAI.requiresApiKey) {
@@ -779,7 +783,7 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                     SettingRow(
                         stringResource(R.string.settings_ai_provider),
                         stringResource(ui.selectedTextAI.displayNameRes),
-                        icon = Icons.Outlined.SmartToy
+                        leadingContent = { AIProviderBrandIcon(ui.selectedTextAI, Modifier.size(19.dp)) }
                     ) { sheet = SettingsSheet.TEXT_PROVIDER }
                     HorizontalDivider()
                     SettingRow(
@@ -829,7 +833,7 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                     SettingRow(
                         stringResource(R.string.settings_ai_provider),
                         stringResource(ui.textFallbackProvider.displayNameRes),
-                        icon = Icons.Outlined.SmartToy
+                        leadingContent = { AIProviderBrandIcon(ui.textFallbackProvider, Modifier.size(19.dp)) }
                     ) { sheet = SettingsSheet.TEXT_FALLBACK_PROVIDER }
                     HorizontalDivider()
                     SettingRow(
@@ -871,7 +875,7 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                     SettingRow(
                         stringResource(R.string.settings_ai_provider),
                         stringResource(ui.fallbackProvider.displayNameRes),
-                        icon = Icons.Outlined.SmartToy
+                        leadingContent = { AIProviderBrandIcon(ui.fallbackProvider, Modifier.size(19.dp)) }
                     ) { sheet = SettingsSheet.FALLBACK_PROVIDER }
                     HorizontalDivider()
                     SettingRow(
@@ -910,7 +914,11 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                     icon = Icons.Outlined.Mic,
                     infoText = stringResource(R.string.settings_info_speech_to_text)
                 )
-                SettingRow(stringResource(R.string.settings_ai_provider), stringResource(ui.selectedSpeech.displayNameRes), icon = Icons.Outlined.Mic) { sheet = SettingsSheet.SPEECH_PROVIDER }
+                SettingRow(
+                    stringResource(R.string.settings_ai_provider),
+                    stringResource(ui.selectedSpeech.displayNameRes),
+                    leadingContent = { SpeechProviderBrandIcon(ui.selectedSpeech, Modifier.size(19.dp)) }
+                ) { sheet = SettingsSheet.SPEECH_PROVIDER }
                 HorizontalDivider()
                 SettingRow(
                     stringResource(R.string.settings_speech_language),
@@ -943,7 +951,7 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                         SettingRow(
                             stringResource(R.string.settings_ai_provider),
                             stringResource(ui.speechFallbackProvider.displayNameRes),
-                            icon = Icons.Outlined.Mic
+                            leadingContent = { SpeechProviderBrandIcon(ui.speechFallbackProvider, Modifier.size(19.dp)) }
                         ) { sheet = SettingsSheet.SPEECH_FALLBACK_PROVIDER }
                         HorizontalDivider()
                         SettingRow(
@@ -1922,7 +1930,8 @@ private fun SettingsSheets(
                     items = AIProvider.visionProviders,
                     label = { stringResource(it.displayNameRes) },
                     selected = { it == ui.selectedAI },
-                    onSelect = { vm.selectProvider(it); onDismiss() }
+                    onSelect = { vm.selectProvider(it); onDismiss() },
+                    leadingContent = { AIProviderBrandIcon(it, Modifier.size(20.dp)) }
                 )
                 SettingsSheet.AI_MODEL -> ListSheet(
                     title = stringResource(R.string.sheet_model),
@@ -1954,7 +1963,8 @@ private fun SettingsSheets(
                     items = AIProvider.textProviders,
                     label = { stringResource(it.displayNameRes) },
                     selected = { it == ui.selectedTextAI },
-                    onSelect = { vm.selectTextProvider(it); onDismiss() }
+                    onSelect = { vm.selectTextProvider(it); onDismiss() },
+                    leadingContent = { AIProviderBrandIcon(it, Modifier.size(20.dp)) }
                 )
                 SettingsSheet.TEXT_MODEL -> ListSheet(
                     title = stringResource(R.string.sheet_model),
@@ -1986,7 +1996,8 @@ private fun SettingsSheets(
                     items = AIProvider.textProviders,
                     label = { stringResource(it.displayNameRes) },
                     selected = { it == ui.textFallbackProvider },
-                    onSelect = { vm.selectTextFallbackProvider(it); onDismiss() }
+                    onSelect = { vm.selectTextFallbackProvider(it); onDismiss() },
+                    leadingContent = { AIProviderBrandIcon(it, Modifier.size(20.dp)) }
                 )
                 SettingsSheet.TEXT_FALLBACK_MODEL -> {
                     val primaryTextProvider = if (ui.separateTextProviderEnabled) ui.selectedTextAI else ui.selectedAI
@@ -2048,7 +2059,8 @@ private fun SettingsSheets(
                     items = SpeechProvider.values().toList(),
                     label = { stringResource(it.displayNameRes) },
                     selected = { it == ui.selectedSpeech },
-                    onSelect = { vm.selectSpeech(it); onDismiss() }
+                    onSelect = { vm.selectSpeech(it); onDismiss() },
+                    leadingContent = { SpeechProviderBrandIcon(it, Modifier.size(20.dp)) }
                 )
                 SettingsSheet.SPEECH_LANGUAGE -> ListSheet(
                     title = stringResource(R.string.sheet_speech_language),
@@ -2081,7 +2093,8 @@ private fun SettingsSheets(
                     items = SpeechProvider.remoteProviders.filter { it != ui.selectedSpeech },
                     label = { stringResource(it.displayNameRes) },
                     selected = { it == ui.speechFallbackProvider },
-                    onSelect = { vm.selectSpeechFallbackProvider(it); onDismiss() }
+                    onSelect = { vm.selectSpeechFallbackProvider(it); onDismiss() },
+                    leadingContent = { SpeechProviderBrandIcon(it, Modifier.size(20.dp)) }
                 )
                 SettingsSheet.SPEECH_FALLBACK_LANGUAGE -> ListSheet(
                     title = stringResource(R.string.sheet_speech_language),
@@ -2122,7 +2135,8 @@ private fun SettingsSheets(
                     items = AIProvider.visionProviders,
                     label = { stringResource(it.displayNameRes) },
                     selected = { it == ui.fallbackProvider },
-                    onSelect = { vm.selectFallbackProvider(it); onDismiss() }
+                    onSelect = { vm.selectFallbackProvider(it); onDismiss() },
+                    leadingContent = { AIProviderBrandIcon(it, Modifier.size(20.dp)) }
                 )
                 SettingsSheet.FALLBACK_MODEL -> {
                     // Same provider as primary → exclude primary's selected model so
@@ -2535,6 +2549,7 @@ private fun <T> ListSheet(
     selected: (T) -> Boolean,
     onSelect: (T) -> Unit,
     icon: ((T) -> ImageVector?)? = null,
+    leadingContent: (@Composable (T) -> Unit)? = null,
     subtitle: (@Composable (T) -> String?)? = null,
     footer: String? = null,
     customField: ((String) -> Unit)? = null
@@ -2580,7 +2595,12 @@ private fun <T> ListSheet(
                     .padding(horizontal = 14.dp, vertical = 14.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                if (rowIcon != null) {
+                if (leadingContent != null) {
+                    Box(Modifier.size(22.dp), contentAlignment = Alignment.Center) {
+                        leadingContent(item)
+                    }
+                    Spacer(Modifier.width(14.dp))
+                } else if (rowIcon != null) {
                     FudIconBubble(rowIcon, size = 22.dp, iconSize = 14.dp)
                     Spacer(Modifier.width(14.dp))
                 }
@@ -3313,6 +3333,7 @@ private fun SettingRow(
     label: String,
     value: String,
     icon: ImageVector? = null,
+    leadingContent: (@Composable () -> Unit)? = null,
     // iOS `.menu` Picker rows render a `chevron.up.chevron.down` instead of a
     // right-chevron to signal the inline dropdown affordance. Pass inlineMenu=true
     // for Gender, Weight Goal, and Activity Level.
@@ -3326,7 +3347,12 @@ private fun SettingRow(
             .padding(horizontal = 16.dp, vertical = 13.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (icon != null) {
+        if (leadingContent != null) {
+            Box(Modifier.size(22.dp), contentAlignment = Alignment.Center) {
+                leadingContent()
+            }
+            Spacer(Modifier.width(14.dp))
+        } else if (icon != null) {
             FudIconBubble(icon = icon, size = 22.dp, iconSize = 14.dp)
             Spacer(Modifier.width(14.dp))
         }

@@ -4095,14 +4095,18 @@ struct ProfileView: View {
 
                         Picker(selection: $selectedProvider) {
                             ForEach(AIProvider.visionProviders) { provider in
-                                Label(provider.rawValue, systemImage: provider.icon).tag(provider)
+                                Label {
+                                    Text(provider.rawValue)
+                                } icon: {
+                                    AIProviderBrandIcon(provider: provider)
+                                }
+                                .tag(provider)
                             }
                         } label: {
                             Label {
                                 Text("Provider")
                             } icon: {
-                                Image(systemName: "cpu")
-                                    .foregroundStyle(AppColors.calorie)
+                                AIProviderBrandIcon(provider: selectedProvider)
                             }
                         }
                         .pickerStyle(.menu)
@@ -4289,11 +4293,19 @@ struct ProfileView: View {
                     if separateTextProviderEnabled {
                         Picker(selection: $selectedTextProvider) {
                             ForEach(AIProvider.textProviders) { provider in
-                                Label(provider.rawValue, systemImage: provider.icon).tag(provider)
+                                Label {
+                                    Text(provider.rawValue)
+                                } icon: {
+                                    AIProviderBrandIcon(provider: provider)
+                                }
+                                .tag(provider)
                             }
                         } label: {
-                            Label("Provider", systemImage: "cpu")
-                                .foregroundStyle(.primary)
+                            Label {
+                                Text("Provider")
+                            } icon: {
+                                AIProviderBrandIcon(provider: selectedTextProvider)
+                            }
                         }
                         .pickerStyle(.menu)
                         .tint(.secondary)
@@ -4458,14 +4470,18 @@ struct ProfileView: View {
                             // AIProviderSettings.currentImageFallbackConfig.
                             Picker(selection: $selectedFallbackProvider) {
                                 ForEach(AIProvider.visionProviders) { provider in
-                                    Label(provider.rawValue, systemImage: provider.icon).tag(provider)
+                                    Label {
+                                        Text(provider.rawValue)
+                                    } icon: {
+                                        AIProviderBrandIcon(provider: provider)
+                                    }
+                                    .tag(provider)
                                 }
                             } label: {
                                 Label {
                                     Text("Provider")
                                 } icon: {
-                                    Image(systemName: "cpu")
-                                        .foregroundStyle(AppColors.calorie)
+                                    AIProviderBrandIcon(provider: selectedFallbackProvider)
                                 }
                             }
                             .pickerStyle(.menu)
@@ -4631,14 +4647,18 @@ struct ProfileView: View {
 
                         Picker(selection: $selectedSpeechProvider) {
                             ForEach(SpeechProvider.allCases) { provider in
-                                Text(provider.displayName).tag(provider)
+                                Label {
+                                    Text(provider.displayName)
+                                } icon: {
+                                    SpeechProviderBrandIcon(provider: provider)
+                                }
+                                .tag(provider)
                             }
                         } label: {
                             Label {
                                 Text("Provider")
                             } icon: {
-                                Image(systemName: selectedSpeechProvider.icon)
-                                    .foregroundStyle(AppColors.calorie)
+                                SpeechProviderBrandIcon(provider: selectedSpeechProvider)
                             }
                         }
                         .pickerStyle(.menu)
@@ -5125,10 +5145,19 @@ struct ProfileView: View {
         if textFallbackEnabled {
             Picker(selection: $selectedTextFallbackProvider) {
                 ForEach(AIProvider.textProviders) { provider in
-                    Label(provider.rawValue, systemImage: provider.icon).tag(provider)
+                    Label {
+                        Text(provider.rawValue)
+                    } icon: {
+                        AIProviderBrandIcon(provider: provider)
+                    }
+                    .tag(provider)
                 }
             } label: {
-                Label("Provider", systemImage: "cpu")
+                Label {
+                    Text("Provider")
+                } icon: {
+                    AIProviderBrandIcon(provider: selectedTextFallbackProvider)
+                }
             }
             .pickerStyle(.menu)
             .tint(.secondary)
@@ -5267,10 +5296,19 @@ struct ProfileView: View {
             if speechFallbackEnabled {
                 Picker(selection: $selectedSpeechFallbackProvider) {
                     ForEach(speechFallbackProviderOptions) { provider in
-                        Text(provider.displayName).tag(provider)
+                        Label {
+                            Text(provider.displayName)
+                        } icon: {
+                            SpeechProviderBrandIcon(provider: provider)
+                        }
+                        .tag(provider)
                     }
                 } label: {
-                    Label("Provider", systemImage: selectedSpeechFallbackProvider.icon)
+                    Label {
+                        Text("Provider")
+                    } icon: {
+                        SpeechProviderBrandIcon(provider: selectedSpeechFallbackProvider)
+                    }
                 }
                 .pickerStyle(.menu)
                 .tint(.secondary)

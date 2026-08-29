@@ -47,17 +47,19 @@ enum SpeechProvider: String, CaseIterable, Codable, Identifiable {
         }
     }
 
-    var icon: String {
+    var logoAssetName: String? {
         switch self {
-        case .nativeIOS: "apple.logo"
-        case .gemini: "sparkle"
-        case .openai: "waveform"
-        case .groq: "hare.fill"
-        case .mistral: "wind"
-        case .deepgram: "waveform.path.ecg"
-        case .assemblyai: "text.bubble.fill"
+        case .nativeIOS: nil
+        case .gemini: "provider_gemini"
+        case .openai: "provider_openai"
+        case .groq: "provider_groq"
+        case .mistral: "provider_mistral"
+        case .deepgram: "provider_deepgram"
+        case .assemblyai: "provider_assemblyai"
         }
     }
+
+    var fallbackSystemImage: String { "apple.logo" }
 
     var requiresAPIKey: Bool { self != .nativeIOS }
 

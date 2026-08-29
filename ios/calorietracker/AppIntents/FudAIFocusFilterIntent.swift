@@ -36,7 +36,7 @@ struct MealReminderFocusFilterIntent: SetFocusFilterIntent {
         }
 
         let predicate = NSPredicate(
-            format: "filterCriteria == nil OR filterCriteria != %@",
+            format: "SELF == nil OR SELF != %@",
             FudAIFocusFilterCriteria.mealReminder
         )
         return FocusFilterAppContext(notificationFilterPredicate: predicate)

@@ -47,8 +47,7 @@ struct VoiceInputView: View {
         VStack(spacing: 20) {
             // Provider badge
             HStack(spacing: 6) {
-                Image(systemName: provider.icon)
-                    .font(.system(size: 11, weight: .semibold))
+                SpeechProviderBrandIcon(provider: provider, size: 12)
                 Text(provider.displayName)
                     .font(.system(.caption2, design: .rounded, weight: .medium))
             }

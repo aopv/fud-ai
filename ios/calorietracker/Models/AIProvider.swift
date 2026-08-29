@@ -20,24 +20,31 @@ enum AIProvider: String, CaseIterable, Codable, Identifiable {
 
     var id: String { rawValue }
 
-    var icon: String {
+    var logoAssetName: String? {
+        switch self {
+        case .appleIntelligence, .customOpenAI: nil
+        case .gemini: "provider_gemini"
+        case .openai: "provider_openai"
+        case .anthropic: "provider_anthropic"
+        case .xai: "provider_xai"
+        case .openrouter: "provider_openrouter"
+        case .togetherai: "provider_together"
+        case .groq: "provider_groq"
+        case .huggingface: "provider_huggingface"
+        case .fireworks: "provider_fireworks"
+        case .deepinfra: "provider_deepinfra"
+        case .mistral: "provider_mistral"
+        case .deepseek: "provider_deepseek"
+        case .cerebras: "provider_cerebras"
+        case .ollama: "provider_ollama"
+        }
+    }
+
+    var fallbackSystemImage: String {
         switch self {
         case .appleIntelligence: "apple.logo"
-        case .gemini: "sparkle"
-        case .openai: "brain.head.profile"
-        case .anthropic: "text.bubble"
-        case .xai: "bolt.fill"
-        case .openrouter: "arrow.triangle.branch"
-        case .togetherai: "square.stack.3d.up"
-        case .groq: "hare.fill"
-        case .huggingface: "face.smiling.inverse"
-        case .fireworks: "flame.fill"
-        case .deepinfra: "server.rack"
-        case .mistral: "wind"
-        case .deepseek: "text.magnifyingglass"
-        case .cerebras: "speedometer"
-        case .ollama: "desktopcomputer"
         case .customOpenAI: "wrench.and.screwdriver.fill"
+        default: "sparkles"
         }
     }
 
