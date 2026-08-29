@@ -184,7 +184,7 @@ internal fun WorkoutDiaryScreen(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(
                 start = 16.dp,
-                top = 8.dp,
+                top = 64.dp,
                 end = 16.dp,
                 bottom = BottomNavScrollPadding + 76.dp
             ),
@@ -206,7 +206,6 @@ internal fun WorkoutDiaryScreen(
             item(key = "workout-burn") {
                 WorkoutBurnHero(
                     state = state,
-                    onShowLibrary = onShowLibrary,
                     onCalculate = {
                         dismissKeyboard()
                         viewModel.calculateBurn()
@@ -287,6 +286,17 @@ internal fun WorkoutDiaryScreen(
 
             item(key = "workout-extra-space") { Spacer(Modifier.height(24.dp)) }
         }
+
+        WorkoutModeToggleButton(
+            mode = com.apoorvdarshan.calorietracker.models.WorkoutTabMode.LOG,
+            onToggle = {
+                dismissKeyboard()
+                onShowLibrary()
+            },
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(top = 8.dp, end = 16.dp)
+        )
 
         Box(
             modifier = Modifier
@@ -452,7 +462,6 @@ private fun workoutMenuGlyphAsset(title: String, muscles: Set<String>): String {
 private fun WorkoutBurnHero(
     state: WorkoutDiaryUiState,
     onCalculate: () -> Unit,
-    onShowLibrary: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -465,11 +474,6 @@ private fun WorkoutBurnHero(
                 isCalculating = state.isCalculatingBurn,
                 onCalculate = onCalculate,
                 modifier = Modifier.align(Alignment.Center)
-            )
-            WorkoutModeToggleButton(
-                mode = com.apoorvdarshan.calorietracker.models.WorkoutTabMode.LOG,
-                onToggle = onShowLibrary,
-                modifier = Modifier.align(Alignment.TopEnd)
             )
         }
 
