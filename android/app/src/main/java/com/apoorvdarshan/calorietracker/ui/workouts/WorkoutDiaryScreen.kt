@@ -12,6 +12,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -753,8 +754,11 @@ private fun SwipeableWorkoutExerciseCard(
 }
 
 @Composable
-private fun WorkoutExerciseSwipeBackground(offsetPx: Float, isSaved: Boolean) {
-    if (offsetPx == 0f) return
+private fun BoxScope.WorkoutExerciseSwipeBackground(offsetPx: Float, isSaved: Boolean) {
+    if (offsetPx == 0f) {
+        Box(Modifier.matchParentSize())
+        return
+    }
 
     val density = LocalDensity.current
     val trailing = offsetPx < 0f
@@ -771,20 +775,24 @@ private fun WorkoutExerciseSwipeBackground(offsetPx: Float, isSaved: Boolean) {
         else -> "Save"
     }
 
-    Box(Modifier.fillMaxSize().clip(RoundedCornerShape(24.dp))) {
-        Column(
+    Box(Modifier.matchParentSize().clip(RoundedCornerShape(24.dp))) {
+        Box(
             modifier = Modifier
                 .align(if (trailing) Alignment.CenterEnd else Alignment.CenterStart)
                 .fillMaxHeight()
                 .width(revealWidth)
                 .background(background),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            contentAlignment = Alignment.Center
         ) {
-            Icon(icon, contentDescription = null, tint = Color.White, modifier = Modifier.size(22.dp))
-            if (revealWidth >= 76.dp) {
-                Spacer(Modifier.height(4.dp))
-                Text(label, color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Icon(icon, contentDescription = null, tint = Color.White, modifier = Modifier.size(22.dp))
+                if (revealWidth >= 76.dp) {
+                    Spacer(Modifier.height(4.dp))
+                    Text(label, color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                }
             }
         }
     }
