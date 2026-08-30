@@ -2,6 +2,17 @@ import Foundation
 
 @MainActor
 enum SiriLoggingService {
+    enum FoodInputError: LocalizedError {
+        case activeFast
+
+        var errorDescription: String? {
+            switch self {
+            case .activeFast:
+                String(localized: "End or cancel your active fast before logging food.")
+            }
+        }
+    }
+
     enum WeightInputError: LocalizedError {
         case missingNumber
         case invalidRange
@@ -33,7 +44,7 @@ enum SiriLoggingService {
         let entry = foodEntry(from: analysis)
 
         let foodStore = FoodStore(observesExternalChanges: false)
-        foodStore.addEntry(entry)
+        guard foodStore.addEntry(entry) else { throw FoodInputError.activeFast }
 
         HealthKitManager().writeNutrition(for: entry)
         publishAfterFoodChange(foodStore: foodStore)

@@ -3,11 +3,13 @@ import SwiftUI
 enum HomeDiaryItem: Identifiable {
     case food(FoodEntry)
     case water(WaterEntry)
+    case fasting(FastingSession)
 
     var id: String {
         switch self {
         case .food(let entry): "food-\(entry.id.uuidString)"
         case .water(let entry): "water-\(entry.id.uuidString)"
+        case .fasting(let session): "fasting-\(session.id.uuidString)"
         }
     }
 
@@ -15,6 +17,7 @@ enum HomeDiaryItem: Identifiable {
         switch self {
         case .food(let entry): entry.timestamp
         case .water(let entry): entry.date
+        case .fasting(let session): session.endedAt ?? session.startedAt
         }
     }
 
@@ -22,6 +25,7 @@ enum HomeDiaryItem: Identifiable {
         switch self {
         case .food(let entry): entry.mealType
         case .water(let entry): MealScheduleSettings.mealType(for: entry.date)
+        case .fasting(let session): MealScheduleSettings.mealType(for: session.endedAt ?? session.startedAt)
         }
     }
 }
@@ -47,11 +51,13 @@ struct HomeDiaryMealGroup: Identifiable {
 func homeDiaryMealGroups(
     foodEntries: [FoodEntry],
     waterEntries: [WaterEntry],
+    fastingSessions: [FastingSession] = [],
     order: FoodLogSortOrder
 ) -> [HomeDiaryMealGroup] {
     let items = (
         foodEntries.map(HomeDiaryItem.food)
             + waterEntries.map(HomeDiaryItem.water)
+            + fastingSessions.map(HomeDiaryItem.fasting)
     ).sorted { $0.date > $1.date }
 
     switch order {

@@ -3,6 +3,7 @@ package com.apoorvdarshan.calorietracker.ui.home
 import com.apoorvdarshan.calorietracker.models.CurrentMealSchedule
 import com.apoorvdarshan.calorietracker.models.FoodEntry
 import com.apoorvdarshan.calorietracker.models.FoodSource
+import com.apoorvdarshan.calorietracker.models.FastingSession
 import com.apoorvdarshan.calorietracker.models.WaterEntry
 import java.time.Instant
 import java.time.ZoneId
@@ -45,5 +46,37 @@ class HomeDiaryMealGroupTest {
         assertEquals(30.0, group.totalProtein, 0.0)
         assertEquals(45.0, group.totalCarbs, 0.0)
         assertEquals(12.0, group.totalFat, 0.0)
+    }
+
+    @Test
+    fun fastingAppearsInsideTimedMealWithoutChangingFoodTotals() {
+        val end = Instant.parse("2026-08-30T13:01:00Z")
+        val start = end.minusSeconds(16 * 60 * 60L)
+        val meal = CurrentMealSchedule.value.mealTypeAt(
+            end.atZone(ZoneId.systemDefault()).toLocalTime()
+        )
+        val food = FoodEntry(
+            id = UUID.randomUUID(),
+            name = "Diary test meal",
+            calories = 420,
+            protein = 30.0,
+            carbs = 45.0,
+            fat = 12.0,
+            timestamp = end.minusSeconds(60),
+            source = FoodSource.MANUAL,
+            mealType = meal
+        )
+        val fast = FastingSession(startedAt = start, endedAt = end, goalMinutes = 16 * 60)
+
+        val group = homeDiaryMealGroups(
+            foodEntries = listOf(food),
+            waterEntries = emptyList(),
+            fastingSessions = listOf(fast),
+            sortOrder = FoodLogSortOrder.STANDARD
+        ).first { it.meal == meal }
+
+        assertTrue(group.items.first() is HomeDiaryItem.Fasting)
+        assertEquals(listOf(food.id), group.foodEntries.map { it.id })
+        assertEquals(420, group.totalCalories)
     }
 }

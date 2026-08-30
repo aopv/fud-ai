@@ -9,10 +9,13 @@ struct ActiveFastingRow: View {
             let progress = min(1, elapsed / TimeInterval(session.goalMinutes * 60))
             VStack(alignment: .leading, spacing: 8) {
                 HStack(spacing: 12) {
-                    Image(systemName: "timer")
-                        .font(.system(.title3, design: .rounded, weight: .semibold))
-                        .foregroundStyle(AppColors.calorie)
-                        .frame(width: 30)
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 14)
+                            .fill(.ultraThinMaterial)
+                        Text("⏳")
+                            .font(.system(size: 28))
+                    }
+                    .frame(width: 56, height: 56)
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Fast in progress")
                             .font(.system(.body, design: .rounded, weight: .semibold))
@@ -55,10 +58,13 @@ struct CompletedFastingRow: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            Image(systemName: "timer.circle.fill")
-                .font(.system(.title2, design: .rounded))
-                .foregroundStyle(AppColors.calorie)
-                .frame(width: 34)
+            ZStack {
+                RoundedRectangle(cornerRadius: 14)
+                    .fill(.ultraThinMaterial)
+                Text("⏳")
+                    .font(.system(size: 28))
+            }
+            .frame(width: 56, height: 56)
             VStack(alignment: .leading, spacing: 3) {
                 Text("\(FastingDurationFormatter.compact(seconds: session.duration())) fast")
                     .font(.system(.body, design: .rounded, weight: .semibold))
@@ -207,18 +213,19 @@ struct FastingGoalPickerSheet: View {
 struct FastingSessionEditorView: View {
     @Environment(\.dismiss) private var dismiss
     let session: FastingSession
-    let onSave: (FastingSession) -> Void
-    let onEndNow: (FastingSession) -> Void
+    let onSave: (FastingSession) -> Bool
+    let onEndNow: (FastingSession) -> Bool
     let onDelete: (FastingSession) -> Void
 
     @State private var startedAt: Date
     @State private var endedAt: Date
     @State private var goalHours: Int
+    @State private var showOverlapError = false
 
     init(
         session: FastingSession,
-        onSave: @escaping (FastingSession) -> Void,
-        onEndNow: @escaping (FastingSession) -> Void,
+        onSave: @escaping (FastingSession) -> Bool,
+        onEndNow: @escaping (FastingSession) -> Bool,
         onDelete: @escaping (FastingSession) -> Void
     ) {
         self.session = session
@@ -238,7 +245,15 @@ struct FastingSessionEditorView: View {
                     if !session.isActive {
                         DatePicker("Ended", selection: $endedAt, in: startedAt...)
                     }
-                    Stepper("Goal: \(goalHours) hours", value: $goalHours, in: 1...168)
+                    Stepper(value: $goalHours, in: 1...168) {
+                        HStack {
+                            Text("Goal")
+                            Spacer()
+                            Text("\(goalHours)")
+                            Text("hours")
+                                .foregroundStyle(.secondary)
+                        }
+                    }
                 }
                 .listRowBackground(AppColors.appCard)
 
@@ -248,8 +263,11 @@ struct FastingSessionEditorView: View {
                             var updated = session
                             updated.startedAt = startedAt
                             updated.goalMinutes = goalHours * 60
-                            onEndNow(updated)
-                            dismiss()
+                            if onEndNow(updated) {
+                                dismiss()
+                            } else {
+                                showOverlapError = true
+                            }
                         } label: {
                             Label("End Fast Now", systemImage: "stop.fill")
                                 .frame(maxWidth: .infinity)
@@ -259,7 +277,10 @@ struct FastingSessionEditorView: View {
                         onDelete(session)
                         dismiss()
                     } label: {
-                        Label(session.isActive ? "Cancel Fast" : "Delete Fast", systemImage: "trash")
+                        Label(
+                            session.isActive ? String(localized: "Cancel Fast") : String(localized: "Delete Fast"),
+                            systemImage: "trash"
+                        )
                             .frame(maxWidth: .infinity)
                     }
                 }
@@ -267,7 +288,9 @@ struct FastingSessionEditorView: View {
             }
             .scrollContentBackground(.hidden)
             .background(AppColors.appBackground)
-            .navigationTitle(session.isActive ? "Active Fast" : "Edit Fast")
+            .navigationTitle(
+                session.isActive ? String(localized: "Active Fast") : String(localized: "Edit Fast")
+            )
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -279,10 +302,18 @@ struct FastingSessionEditorView: View {
                         updated.startedAt = startedAt
                         updated.endedAt = session.isActive ? nil : max(endedAt, startedAt)
                         updated.goalMinutes = goalHours * 60
-                        onSave(updated)
-                        dismiss()
+                        if onSave(updated) {
+                            dismiss()
+                        } else {
+                            showOverlapError = true
+                        }
                     }
                 }
+            }
+            .alert("Fast overlaps another session", isPresented: $showOverlapError) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text("Adjust the start or end time so fasting sessions do not overlap.")
             }
         }
     }

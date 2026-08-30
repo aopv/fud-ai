@@ -49,11 +49,13 @@ class FoodStore {
     private let favoritesKey = "favoriteFoodEntries"
     private(set) var favorites: [FoodEntry] = []
     private let observesExternalChanges: Bool
+    private let defaults: UserDefaults
 
     static let externalChangeNotification = "ai.fud.foodEntriesDidChange"
 
-    init(observesExternalChanges: Bool = true) {
+    init(observesExternalChanges: Bool = true, defaults: UserDefaults = .standard) {
         self.observesExternalChanges = observesExternalChanges
+        self.defaults = defaults
         loadEntries()
         loadFavorites()
         if observesExternalChanges {
@@ -338,13 +340,13 @@ class FoodStore {
 
     private func saveFavorites() {
         if let data = try? JSONEncoder().encode(favorites) {
-            UserDefaults.standard.set(data, forKey: favoritesKey)
-            UserDefaults.standard.synchronize()
+            defaults.set(data, forKey: favoritesKey)
+            defaults.synchronize()
         }
     }
 
     private func loadFavorites() {
-        guard let data = UserDefaults.standard.data(forKey: favoritesKey),
+        guard let data = defaults.data(forKey: favoritesKey),
               let decoded = try? JSONDecoder().decode([FoodEntry].self, from: data)
         else { return }
         favorites = decoded
@@ -352,7 +354,9 @@ class FoodStore {
 
     // MARK: - CRUD
 
-    func addEntry(_ entry: FoodEntry) {
+    @discardableResult
+    func addEntry(_ entry: FoodEntry) -> Bool {
+        guard FastingStore.persistedActiveSession(defaults: defaults) == nil else { return false }
         var entry = entry
         offloadImageToDiskIfNeeded(&entry)
         entries.append(entry)
@@ -360,6 +364,7 @@ class FoodStore {
         onEntriesChanged?()
         onEntryAdded?(entry)
         ReviewPrompter.foodWasLogged()
+        return true
     }
 
     func updateEntry(_ entry: FoodEntry) {
@@ -542,13 +547,13 @@ class FoodStore {
 
     private func saveEntries() {
         if let data = try? JSONEncoder().encode(entries) {
-            UserDefaults.standard.set(data, forKey: storageKey)
-            UserDefaults.standard.synchronize()
+            defaults.set(data, forKey: storageKey)
+            defaults.synchronize()
         }
     }
 
     private func loadEntries() {
-        guard let data = UserDefaults.standard.data(forKey: storageKey),
+        guard let data = defaults.data(forKey: storageKey),
               let decoded = try? JSONDecoder().decode([FoodEntry].self, from: data)
         else {
             entries = []

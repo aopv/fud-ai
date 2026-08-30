@@ -591,6 +591,7 @@ struct HomeView: View {
     @State private var showCustomWaterLog = false
     @State private var showFastingStart = false
     @State private var editingFastingSession: FastingSession?
+    @State private var showFoodLoggingBlocked = false
     @State private var hasPresentedFoodDestination = false
     @State private var didPrewarmFoodDestinations = false
     // Bumped each time the app is opened (cold launch = 1, then +1 on every
@@ -696,10 +697,21 @@ struct HomeView: View {
         UIImpactFeedbackGenerator(style: .medium).impactOccurred()
     }
 
-    private func endFast() {
-        guard fastingStore.endActive() != nil else { return }
+    @discardableResult
+    private func endFast() -> Bool {
+        guard fastingStore.endActive() != nil else { return false }
         notificationManager.cancelFastingGoal()
         UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        return true
+    }
+
+    @discardableResult
+    private func canBeginFoodLogging() -> Bool {
+        guard fastingStore.activeSession == nil else {
+            showFoodLoggingBlocked = true
+            return false
+        }
+        return true
     }
 
     /// Lets the native menu finish its selection before presenting the chosen destination.
@@ -838,44 +850,20 @@ struct HomeView: View {
                     .listRowSeparator(.hidden)
                 }
 
-                // Fasting timeline. Stored separately from nutrition so these rows never
-                // affect calories, macros, meal grouping, Health nutrition, or exports.
-                let completedFasts = fastingStore.completed(on: selectedDate)
-                let activeFast = isToday ? fastingStore.activeSession : nil
-                if fastingTrackingEnabled && (activeFast != nil || !completedFasts.isEmpty) {
-                    Section("Fasting") {
-                        if let activeFast {
-                            ActiveFastingRow(session: activeFast)
-                                .listRowBackground(AppColors.appCard)
-                                .contentShape(Rectangle())
-                                .onTapGesture { editingFastingSession = activeFast }
-                        }
-                        ForEach(completedFasts) { session in
-                            CompletedFastingRow(session: session)
-                                .listRowBackground(AppColors.appCard)
-                                .contentShape(Rectangle())
-                                .onTapGesture { editingFastingSession = session }
-                                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                    Button(role: .destructive) {
-                                        fastingStore.delete(id: session.id)
-                                    } label: {
-                                        Label("Delete", systemImage: "trash.fill")
-                                    }
-                                }
-                        }
-                    }
-                }
-
-                // Unified diary: water is grouped into the matching meal by log time,
-                // but stays excluded from food calories, macros, sharing and favorites.
+                // Unified diary: water and fasting are grouped by their log/end time,
+                // but stay excluded from food calories, macros, sharing and favorites.
+                let diaryFasts = fastingTrackingEnabled
+                    ? fastingStore.completed(on: selectedDate) + (isToday ? [fastingStore.activeSession].compactMap { $0 } : [])
+                    : []
                 let mealGroups = homeDiaryMealGroups(
                     foodEntries: foodStore.entries(for: selectedDate),
                     waterEntries: waterTrackingEnabled ? waterStore.entries(on: selectedDate) : [],
+                    fastingSessions: diaryFasts,
                     order: foodLogSortOrder
                 )
                 if mealGroups.isEmpty {
-                    Section(isToday ? "Today's Food" : "Food Log") {
-                        Text("No food or water logged")
+                    Section(isToday ? "Today's Diary" : "Diary") {
+                        Text("No diary entries")
                             .foregroundStyle(.secondary)
                             .listRowBackground(AppColors.appCard)
                     }
@@ -914,6 +902,40 @@ struct HomeView: View {
                                                     Label("Delete", systemImage: "trash.fill")
                                                 }
                                             }
+                                    case .fasting(let session):
+                                        Button {
+                                            editingFastingSession = session
+                                        } label: {
+                                            if session.isActive {
+                                                ActiveFastingRow(session: session)
+                                            } else {
+                                                CompletedFastingRow(session: session)
+                                            }
+                                        }
+                                        .buttonStyle(.plain)
+                                        .swipeActions(edge: .trailing, allowsFullSwipe: !session.isActive) {
+                                            if session.isActive {
+                                                Button {
+                                                    endFast()
+                                                } label: {
+                                                    Label("End Fast", systemImage: "stop.fill")
+                                                }
+                                                .tint(AppColors.calorie)
+                                                Button(role: .destructive) {
+                                                    fastingStore.cancelActive()
+                                                    notificationManager.cancelFastingGoal()
+                                                } label: {
+                                                    Label("Cancel Fast", systemImage: "trash.fill")
+                                                }
+                                            } else {
+                                                Button(role: .destructive) {
+                                                    fastingStore.delete(id: session.id)
+                                                    refreshFastingGoalNotification()
+                                                } label: {
+                                                    Label("Delete", systemImage: "trash.fill")
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                                 .listRowBackground(AppColors.appCard)
@@ -942,7 +964,7 @@ struct HomeView: View {
                                 }
                                 Spacer()
                                 if !group.foodEntries.isEmpty {
-                                    // Share and totals include food only; water has no calories/macros.
+                                    // Share and totals include food only; water and fasting have no calories/macros.
                                     Button {
                                         MealShare.presentShareSheet(for: group.foodEntries)
                                     } label: {
@@ -1010,6 +1032,7 @@ struct HomeView: View {
                             Label("Water", systemImage: "drop.fill")
                         }
                     }
+                    if fastingStore.activeSession == nil {
                     Menu {
                         Button {
                             presentFoodDestination {
@@ -1110,6 +1133,7 @@ struct HomeView: View {
                     } label: {
                         Label("Photo & Scan", systemImage: "camera.viewfinder")
                     }
+                    }
                 } label: {
                             Image(systemName: "plus")
                                 .font(.system(size: 26, weight: .semibold))
@@ -1156,7 +1180,7 @@ struct HomeView: View {
                                 onCancel: { showManualPopover = false },
                                 onSave: { entry in
                                     showManualPopover = false
-                                    foodStore.addEntry(entry)
+                                    if !foodStore.addEntry(entry) { showFoodLoggingBlocked = true }
                                 }
                             )
                             .presentationCompactAdaptation(.popover)
@@ -1326,7 +1350,7 @@ struct HomeView: View {
                             dayEntries: foodStore.entries(for: logDateForSelectedDay),
                             weightMetric: weightUnitRaw == "kg",
                             onLog: { entry in
-                                foodStore.addEntry(entry)
+                                if !foodStore.addEntry(entry) { showFoodLoggingBlocked = true }
                             }
                         )
                     }
@@ -1338,7 +1362,10 @@ struct HomeView: View {
                     ImportSharedMealView(meals: pendingSharedMeals) { meals in
                         let logDate = logDateForSelectedDay
                         for meal in meals {
-                            foodStore.addEntry(meal.duplicatedForLogging(at: logDate, mealType: meal.mealType))
+                            if !foodStore.addEntry(meal.duplicatedForLogging(at: logDate, mealType: meal.mealType)) {
+                                showFoodLoggingBlocked = true
+                                break
+                            }
                         }
                         activeSheet = nil
                     } onCancel: {
@@ -1405,16 +1432,17 @@ struct HomeView: View {
                 FastingSessionEditorView(
                     session: session,
                     onSave: { updated in
-                        fastingStore.update(updated)
-                        refreshFastingGoalNotification()
+                        let saved = fastingStore.update(updated)
+                        if saved { refreshFastingGoalNotification() }
+                        return saved
                     },
                     onEndNow: { updated in
-                        fastingStore.update(updated)
-                        endFast()
+                        guard fastingStore.update(updated) else { return false }
+                        return endFast()
                     },
                     onDelete: { removed in
                         fastingStore.delete(id: removed.id)
-                        notificationManager.cancelFastingGoal()
+                        refreshFastingGoalNotification()
                     }
                 )
             }
@@ -1467,6 +1495,11 @@ struct HomeView: View {
             } message: {
                 Text(errorMessage)
             }
+            .alert("Food logging paused", isPresented: $showFoodLoggingBlocked) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text("End or cancel your active fast before logging food.")
+            }
             .sheet(isPresented: $showNutritionDetail) {
                 NutritionDetailView(date: selectedDate, homeTopNutrientsRaw: $homeTopNutrientsRaw)
             }
@@ -1479,6 +1512,7 @@ struct HomeView: View {
                 } else if MealShare.handles(url) {
                     // Shared meal — custom scheme or https Universal Link (issue #107).
                     // Universal Links open the app directly (no browser). Confirm before adding.
+                    guard canBeginFoodLogging() else { return }
                     guard let meals = MealShare.meals(from: url) else { return }
                     activeSheet = nil
                     pendingSharedMeals = meals
@@ -1523,6 +1557,12 @@ struct HomeView: View {
     @MainActor
     private func presentQuickActionIfPossible() {
         guard let request = quickActionRequest, activeSheet == nil else { return }
+
+        guard fastingStore.activeSession == nil else {
+            onQuickActionHandled(request.id)
+            showFoodLoggingBlocked = true
+            return
+        }
 
         let hadOpenDestination = showCamera || showBarcodeScanner || showPhotoPicker
             || showVoicePopover || showTextPopover || showManualPopover
@@ -1586,6 +1626,8 @@ struct HomeView: View {
     }
     
     private func checkAndConsumeSharedImage() {
+        guard ShareImportManager.hasSharedImage() else { return }
+        guard canBeginFoodLogging() else { return }
         guard let image = ShareImportManager.consumeSharedImage() else { return }
         
         // Force dismiss any currently open sheets to prevent SwiftUI from swallowing the new presentation
@@ -1794,6 +1836,7 @@ private struct CopyFromDaySheet: View {
     @Environment(FoodStore.self) private var foodStore
     @Environment(\.dismiss) private var dismiss
     @State private var sourceDate: Date
+    @State private var showFoodLoggingBlocked = false
 
     init(targetDate: Date) {
         self.targetDate = targetDate
@@ -1889,6 +1932,11 @@ private struct CopyFromDaySheet: View {
                     Button("Cancel") { dismiss() }
                 }
             }
+            .alert("Food logging paused", isPresented: $showFoodLoggingBlocked) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text("End or cancel your active fast before logging food.")
+            }
         }
     }
 
@@ -1897,7 +1945,10 @@ private struct CopyFromDaySheet: View {
         let copiedTimestamp = timestamp(on: targetDate, usingTimeFrom: .now)
         for entry in entries {
             let copiedEntry = entry.duplicatedForLogging(at: copiedTimestamp)
-            foodStore.addEntry(copiedEntry)
+            if !foodStore.addEntry(copiedEntry) {
+                showFoodLoggingBlocked = true
+                return
+            }
         }
         dismiss()
     }

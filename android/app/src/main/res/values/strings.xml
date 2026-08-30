@@ -315,6 +315,7 @@
     <!-- Home -->
     <string name="home_add_food">Add food</string>
     <string name="home_menu_camera">Camera</string>
+    <string name="home_menu_barcode">Barcode</string>
     <string name="home_menu_camera_note">Camera + Note</string>
     <string name="home_menu_nutrition_label">Nutrition Label</string>
     <string name="home_menu_from_photos">From Photos</string>
@@ -639,6 +640,16 @@
     <string name="fasting_started">Started</string>
     <string name="fasting_ended">Ended</string>
     <string name="fasting_delete">Delete Fast</string>
+    <string name="fasting_overlap_title">Fast overlaps another session</string>
+    <string name="fasting_overlap_message">Adjust the start or end time so fasting sessions do not overlap.</string>
+    <string name="food_logging_paused">Food logging paused</string>
+    <string name="food_blocked_by_active_fast">End or cancel your active fast before logging food.</string>
+    <string name="home_todays_diary">Today\'s Diary</string>
+    <string name="home_diary">Diary</string>
+    <string name="home_no_diary_entries">No diary entries</string>
+    <string name="home_menu_photo_scan">Photo &amp; Scan</string>
+    <string name="home_menu_describe_meal">Describe Meal</string>
+    <string name="home_menu_reuse_meal">Reuse Meal</string>
     <string name="settings_notif_water_reminder">Water Reminder</string>
     <string name="settings_battery_opt">Battery Optimization</string>
     <string name="settings_battery_opt_value">Whitelist Fud AI</string>

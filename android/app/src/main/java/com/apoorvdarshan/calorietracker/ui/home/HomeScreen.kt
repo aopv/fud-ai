@@ -294,6 +294,12 @@ fun HomeScreen(
         showMultiPhotoCapture = false
         vm.setSelectedDate(LocalDate.now())
 
+        if (ui.activeFast != null) {
+            vm.reportFoodBlockedByFast()
+            onQuickActionHandled(request.id)
+            return@LaunchedEffect
+        }
+
         when (request.action) {
             QuickAction.CAMERA -> openCamera()
             QuickAction.PHOTOS -> {
@@ -319,22 +325,28 @@ fun HomeScreen(
     val today = LocalDate.now()
     val selectedDate = ui.date
     val isToday = selectedDate == today
+    val completedFasts = remember(ui.fastingSessions, selectedDate) {
+        ui.fastingSessions.filter { session ->
+            session.endedAt?.atZone(ZoneId.systemDefault())?.toLocalDate() == selectedDate
+        }.sortedByDescending { it.endedAt }
+    }
+    val diaryFasts = remember(ui.fastingTrackingEnabled, ui.activeFast, completedFasts, isToday) {
+        if (!ui.fastingTrackingEnabled) emptyList()
+        else completedFasts + if (isToday) listOfNotNull(ui.activeFast) else emptyList()
+    }
     val diaryMealGroups = remember(
         ui.todayEntries,
         ui.waterEntriesToday,
         ui.waterTrackingEnabled,
+        diaryFasts,
         ui.foodLogSortOrder
     ) {
         homeDiaryMealGroups(
             foodEntries = ui.todayEntries,
             waterEntries = if (ui.waterTrackingEnabled) ui.waterEntriesToday else emptyList(),
+            fastingSessions = diaryFasts,
             sortOrder = ui.foodLogSortOrder
         )
-    }
-    val completedFasts = remember(ui.fastingSessions, selectedDate) {
-        ui.fastingSessions.filter { session ->
-            session.endedAt?.atZone(ZoneId.systemDefault())?.toLocalDate() == selectedDate
-        }.sortedByDescending { it.endedAt }
     }
 
     // No topBar: the empty TopAppBar used to act as the status-bar spacer, but the
@@ -425,43 +437,15 @@ fun HomeScreen(
                 }
             }
 
-            // Fasting timeline. It is a separate model and never participates in
-            // FoodEntry totals, macros, meal grouping, Health nutrition, or exports.
-            if (ui.fastingTrackingEnabled && ((isToday && ui.activeFast != null) || completedFasts.isNotEmpty())) {
-                item { SectionHeader(stringResource(R.string.fasting)) }
-                if (isToday) {
-                    ui.activeFast?.let { session ->
-                        item(key = "active-fast-${session.id}") {
-                            SectionCardWrapper(isFirst = true, isLast = completedFasts.isEmpty()) {
-                                ActiveFastingRow(
-                                    session = session,
-                                    onClick = { editingFast = session }
-                                )
-                            }
-                        }
-                    }
-                }
-                items(completedFasts, key = { "fast-${it.id}" }) { session ->
-                    val index = completedFasts.indexOf(session)
-                    val hasActive = isToday && ui.activeFast != null
-                    SectionCardWrapper(
-                        isFirst = !hasActive && index == 0,
-                        isLast = index == completedFasts.lastIndex
-                    ) {
-                        CompletedFastingRow(session = session, onClick = { editingFast = session })
-                    }
-                }
-            }
-
-            // Food log
+            // Unified diary. Water and fasting remain excluded from nutrition totals and sharing.
             item { Spacer(Modifier.height(8.dp)) }
             if (diaryMealGroups.isEmpty()) {
-                item { SectionHeader(if (isToday) stringResource(R.string.home_todays_food) else stringResource(R.string.home_food_log)) }
+                item { SectionHeader(if (isToday) stringResource(R.string.home_todays_diary) else stringResource(R.string.home_diary)) }
                 item {
                     SectionCardWrapper(isFirst = true, isLast = true) {
                         Box(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 16.dp)) {
                             Text(
-                                stringResource(R.string.home_no_foods_logged),
+                                stringResource(R.string.home_no_diary_entries),
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
                             )
@@ -521,6 +505,14 @@ fun HomeScreen(
                                         onDelete = { vm.deleteWater(item.entry.id) }
                                     )
                                 }
+                                is HomeDiaryItem.Fasting -> {
+                                    SwipeableFastingRow(
+                                        session = item.session,
+                                        rowShape = rowShape,
+                                        onTap = { editingFast = item.session },
+                                        onDelete = { vm.deleteFast(item.session.id) }
+                                    )
+                                }
                             }
                             if (!isLast) Divider()
                         }
@@ -569,9 +561,11 @@ fun HomeScreen(
             ) {
                 when (addMenuGroup) {
                     null -> {
-                        SheetGlassDropdownMenuItem(label = "Photo & Scan", leadingIcon = Icons.Filled.CameraAlt, trailingIcon = Icons.Filled.ChevronRight) { addMenuGroup = AddMenuGroup.PhotoAndScan }
-                        SheetGlassDropdownMenuItem(label = "Describe Meal", leadingIcon = Icons.Filled.Edit, trailingIcon = Icons.Filled.ChevronRight) { addMenuGroup = AddMenuGroup.DescribeMeal }
-                        SheetGlassDropdownMenuItem(label = "Reuse Meal", leadingIcon = Icons.Filled.Bookmark, trailingIcon = Icons.Filled.ChevronRight) { addMenuGroup = AddMenuGroup.ReuseMeal }
+                        if (ui.activeFast == null) {
+                            SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_photo_scan), leadingIcon = Icons.Filled.CameraAlt, trailingIcon = Icons.Filled.ChevronRight) { addMenuGroup = AddMenuGroup.PhotoAndScan }
+                            SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_describe_meal), leadingIcon = Icons.Filled.Edit, trailingIcon = Icons.Filled.ChevronRight) { addMenuGroup = AddMenuGroup.DescribeMeal }
+                            SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_reuse_meal), leadingIcon = Icons.Filled.Bookmark, trailingIcon = Icons.Filled.ChevronRight) { addMenuGroup = AddMenuGroup.ReuseMeal }
+                        }
                         if (ui.waterTrackingEnabled) {
                             SheetGlassDropdownMenuItem(label = stringResource(R.string.water), leadingIcon = Icons.Filled.WaterDrop, trailingIcon = Icons.Filled.ChevronRight) { addMenuGroup = AddMenuGroup.Water }
                         }
@@ -588,23 +582,23 @@ fun HomeScreen(
                     }
 
                     AddMenuGroup.PhotoAndScan -> {
-                        SheetGlassDropdownMenuItem(label = "Camera", leadingIcon = Icons.Filled.CameraAlt) { showAddMenu = false; addMenuGroup = null; openCamera() }
-                        SheetGlassDropdownMenuItem(label = "Photos", leadingIcon = Icons.Filled.PhotoLibrary) {
+                        SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_camera), leadingIcon = Icons.Filled.CameraAlt) { showAddMenu = false; addMenuGroup = null; openCamera() }
+                        SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_from_photos), leadingIcon = Icons.Filled.PhotoLibrary) {
                             showAddMenu = false
                             addMenuGroup = null
                             isImportingPhotos = true
                             pendingCaptureImageBytes = emptyList()
                             photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
                         }
-                        SheetGlassDropdownMenuItem(label = "Barcode", leadingIcon = Icons.Filled.QrCodeScanner) { showAddMenu = false; addMenuGroup = null; openBarcodeScanner() }
-                        SheetGlassDropdownMenuItem(label = "Back", leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
+                        SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_barcode), leadingIcon = Icons.Filled.QrCodeScanner) { showAddMenu = false; addMenuGroup = null; openBarcodeScanner() }
+                        SheetGlassDropdownMenuItem(label = stringResource(R.string.back), leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
                     }
 
                     AddMenuGroup.DescribeMeal -> {
                         SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_text_input), leadingIcon = Icons.Filled.Edit) { showAddMenu = false; addMenuGroup = null; showText = true }
                         SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_voice), leadingIcon = Icons.Filled.Mic) { showAddMenu = false; addMenuGroup = null; showVoice = true }
                         SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_manual_entry), leadingIcon = Icons.Filled.DriveFileRenameOutline) { showAddMenu = false; addMenuGroup = null; showManual = true }
-                        SheetGlassDropdownMenuItem(label = "Back", leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
+                        SheetGlassDropdownMenuItem(label = stringResource(R.string.back), leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
                     }
 
                     AddMenuGroup.ReuseMeal -> {
@@ -612,7 +606,7 @@ fun HomeScreen(
                         SheetGlassDropdownMenuItem(label = stringResource(R.string.saved_meals_tab_frequent), leadingIcon = Icons.Filled.Repeat) { showAddMenu = false; addMenuGroup = null; savedMealsTab = SavedTab.FREQUENT }
                         SheetGlassDropdownMenuItem(label = stringResource(R.string.saved_meals_tab_favorites), leadingIcon = Icons.Filled.Favorite) { showAddMenu = false; addMenuGroup = null; savedMealsTab = SavedTab.FAVORITES }
                         SheetGlassDropdownMenuItem(label = stringResource(R.string.home_menu_copy_from_day), leadingIcon = Icons.Filled.CalendarMonth) { showAddMenu = false; addMenuGroup = null; showCopyFromDay = true }
-                        SheetGlassDropdownMenuItem(label = "Back", leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
+                        SheetGlassDropdownMenuItem(label = stringResource(R.string.back), leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
                     }
 
                     AddMenuGroup.Water -> {
@@ -620,7 +614,7 @@ fun HomeScreen(
                         SheetGlassDropdownMenuItem(label = stringResource(R.string.water_two_glasses_dynamic, ui.waterUnit.format(500)), leadingIcon = Icons.Filled.WaterDrop) { showAddMenu = false; addMenuGroup = null; vm.addWater(500) }
                         SheetGlassDropdownMenuItem(label = stringResource(R.string.water_three_glasses_dynamic, ui.waterUnit.format(750)), leadingIcon = Icons.Filled.WaterDrop) { showAddMenu = false; addMenuGroup = null; vm.addWater(750) }
                         SheetGlassDropdownMenuItem(label = stringResource(R.string.water_custom_amount), leadingIcon = Icons.Filled.DriveFileRenameOutline) { showAddMenu = false; addMenuGroup = null; showCustomWaterLog = true }
-                        SheetGlassDropdownMenuItem(label = "Back", leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
+                        SheetGlassDropdownMenuItem(label = stringResource(R.string.back), leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
                     }
 
                     AddMenuGroup.Fasting -> {
@@ -634,7 +628,7 @@ fun HomeScreen(
                             addMenuGroup = null
                             vm.cancelFast()
                         }
-                        SheetGlassDropdownMenuItem(label = "Back", leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
+                        SheetGlassDropdownMenuItem(label = stringResource(R.string.back), leadingIcon = Icons.Filled.ChevronLeft) { addMenuGroup = null }
                     }
                 }
             }
@@ -678,8 +672,7 @@ fun HomeScreen(
                 editingFast = null
             },
             onEndNow = {
-                vm.updateFast(it)
-                vm.endFast()
+                vm.endFast(it)
                 editingFast = null
             },
             onDelete = {
@@ -863,10 +856,42 @@ fun HomeScreen(
             )
         }
     }
+    if (ui.foodLoggingBlocked) {
+        FudGlassDialog(onDismissRequest = vm::dismissFoodBlocked) {
+            Text(stringResource(R.string.food_logging_paused), fontSize = 21.sp, fontWeight = FontWeight.Bold)
+            Text(
+                stringResource(R.string.food_blocked_by_active_fast),
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.68f)
+            )
+            FudGlassDialogActions(
+                primaryText = stringResource(R.string.action_ok),
+                onPrimary = vm::dismissFoodBlocked,
+                onDismiss = vm::dismissFoodBlocked
+            )
+        }
+    }
+    if (ui.fastingOverlap) {
+        FudGlassDialog(onDismissRequest = vm::dismissFastingOverlap) {
+            Text(stringResource(R.string.fasting_overlap_title), fontSize = 21.sp, fontWeight = FontWeight.Bold)
+            Text(
+                stringResource(R.string.fasting_overlap_message),
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.68f)
+            )
+            FudGlassDialogActions(
+                primaryText = stringResource(R.string.action_ok),
+                onPrimary = vm::dismissFastingOverlap,
+                onDismiss = vm::dismissFastingOverlap
+            )
+        }
+    }
 }
 
 @Composable
-private fun ActiveFastingRow(session: FastingSession, onClick: () -> Unit) {
+private fun ActiveFastingRow(
+    session: FastingSession,
+    rowShape: RoundedCornerShape,
+    onClick: () -> Unit
+) {
     var now by remember(session.id) { mutableStateOf(Instant.now()) }
     LaunchedEffect(session.id) {
         while (true) {
@@ -884,11 +909,20 @@ private fun ActiveFastingRow(session: FastingSession, onClick: () -> Unit) {
     Column(
         Modifier
             .fillMaxWidth()
+            .clip(rowShape)
+            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.86f))
+            .border(
+                0.7.dp,
+                Brush.linearGradient(
+                    listOf(Color.White.copy(alpha = 0.14f), Color.White.copy(alpha = 0.035f))
+                ),
+                rowShape
+            )
             .clickable(onClick = onClick)
-            .padding(horizontal = 18.dp, vertical = 13.dp)
+            .padding(horizontal = 14.dp, vertical = 12.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Filled.Timer, contentDescription = null, tint = AppColors.Calorie, modifier = Modifier.size(27.dp))
+            FastingEmojiTile()
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
                 Text(stringResource(R.string.fasting_in_progress), fontWeight = FontWeight.SemiBold)
@@ -924,7 +958,11 @@ private fun ActiveFastingRow(session: FastingSession, onClick: () -> Unit) {
 }
 
 @Composable
-private fun CompletedFastingRow(session: FastingSession, onClick: () -> Unit) {
+private fun CompletedFastingRow(
+    session: FastingSession,
+    rowShape: RoundedCornerShape,
+    onClick: () -> Unit
+) {
     val context = LocalContext.current
     val timeFormatter = remember(context) {
         DateTimeFormatter.ofPattern(clockTimePattern(context), Locale.getDefault())
@@ -933,11 +971,20 @@ private fun CompletedFastingRow(session: FastingSession, onClick: () -> Unit) {
     Row(
         Modifier
             .fillMaxWidth()
+            .clip(rowShape)
+            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.86f))
+            .border(
+                0.7.dp,
+                Brush.linearGradient(
+                    listOf(Color.White.copy(alpha = 0.14f), Color.White.copy(alpha = 0.035f))
+                ),
+                rowShape
+            )
             .clickable(onClick = onClick)
-            .padding(horizontal = 18.dp, vertical = 13.dp),
+            .padding(horizontal = 14.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(Icons.Filled.Timer, contentDescription = null, tint = AppColors.Calorie, modifier = Modifier.size(27.dp))
+        FastingEmojiTile()
         Spacer(Modifier.width(12.dp))
         Column(Modifier.weight(1f)) {
             Text(
@@ -959,6 +1006,19 @@ private fun CompletedFastingRow(session: FastingSession, onClick: () -> Unit) {
         )
         Spacer(Modifier.width(8.dp))
         Icon(Icons.Filled.ChevronRight, contentDescription = null, tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.35f))
+    }
+}
+
+@Composable
+private fun FastingEmojiTile() {
+    Box(
+        Modifier
+            .size(56.dp)
+            .clip(RoundedCornerShape(14.dp))
+            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f)),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(text = "⏳", fontSize = 28.sp)
     }
 }
 
@@ -1042,7 +1102,7 @@ private fun FastingSessionDialog(
             Text(stringResource(R.string.settings_fasting_goal), fontWeight = FontWeight.Medium)
             Row(verticalAlignment = Alignment.CenterVertically) {
                 TextButton(onClick = { goalHours = (goalHours - 1).coerceAtLeast(1) }) { Text("−", color = AppColors.Calorie) }
-                Text("$goalHours h", fontWeight = FontWeight.SemiBold)
+                Text(stringResource(R.string.settings_fasting_goal_value, goalHours), fontWeight = FontWeight.SemiBold)
                 TextButton(onClick = { goalHours = (goalHours + 1).coerceAtMost(168) }) { Text("+", color = AppColors.Calorie) }
             }
         }
@@ -1514,6 +1574,14 @@ internal sealed interface HomeDiaryItem {
             entry.date.atZone(ZoneId.systemDefault()).toLocalTime()
         )
     }
+
+    data class Fasting(val session: FastingSession) : HomeDiaryItem {
+        override val stableId: String = "fasting-${session.id}"
+        override val timestamp: Instant = session.endedAt ?: session.startedAt
+        override val meal: MealType = CurrentMealSchedule.value.mealTypeAt(
+            timestamp.atZone(ZoneId.systemDefault()).toLocalTime()
+        )
+    }
 }
 
 internal data class HomeDiaryMealGroup(
@@ -1532,11 +1600,13 @@ internal data class HomeDiaryMealGroup(
 internal fun homeDiaryMealGroups(
     foodEntries: List<FoodEntry>,
     waterEntries: List<WaterEntry>,
+    fastingSessions: List<FastingSession> = emptyList(),
     sortOrder: FoodLogSortOrder
 ): List<HomeDiaryMealGroup> {
     val items = buildList {
         foodEntries.forEach { add(HomeDiaryItem.Food(it)) }
         waterEntries.forEach { add(HomeDiaryItem.Water(it)) }
+        fastingSessions.forEach { add(HomeDiaryItem.Fasting(it)) }
     }.sortedByDescending { it.timestamp }
 
     return when (sortOrder) {
@@ -1790,6 +1860,50 @@ private fun SwipeableWaterRow(
                     }
             ) {
                 WaterLogRow(entry = entry, unit = unit, rowShape = rowShape)
+            }
+        }
+    }
+}
+
+@Composable
+private fun SwipeableFastingRow(
+    session: FastingSession,
+    rowShape: RoundedCornerShape,
+    onTap: () -> Unit,
+    onDelete: () -> Unit
+) {
+    if (session.isActive) {
+        ActiveFastingRow(session = session, rowShape = rowShape, onClick = onTap)
+        return
+    }
+
+    val density = LocalDensity.current
+    val deleteTriggerPx = with(density) { 220.dp.toPx() }
+    var offsetPx by remember(session.id) { mutableFloatStateOf(0f) }
+
+    BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+        val maxSwipePx = with(density) { maxWidth.toPx() * 0.72f }
+        Box(Modifier.fillMaxWidth()) {
+            SwipeBackground(offsetPx = offsetPx, isFavorite = false)
+            Box(
+                modifier = Modifier
+                    .offset { IntOffset(offsetPx.roundToInt(), 0) }
+                    .pointerInput(session.id, maxSwipePx) {
+                        detectHorizontalDragGestures(
+                            onHorizontalDrag = { change, dragAmount ->
+                                change.consume()
+                                offsetPx = (offsetPx + dragAmount).coerceIn(-maxSwipePx, 0f)
+                            },
+                            onDragEnd = {
+                                val shouldDelete = offsetPx <= -deleteTriggerPx
+                                offsetPx = 0f
+                                if (shouldDelete) onDelete()
+                            },
+                            onDragCancel = { offsetPx = 0f }
+                        )
+                    }
+            ) {
+                CompletedFastingRow(session = session, rowShape = rowShape, onClick = onTap)
             }
         }
     }

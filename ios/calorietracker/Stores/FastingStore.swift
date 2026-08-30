@@ -13,6 +13,14 @@ final class FastingStore {
         sessions = decoded.sorted { $0.startedAt < $1.startedAt }
     }
 
+    static func persistedActiveSession(defaults: UserDefaults = .standard) -> FastingSession? {
+        guard let data = defaults.data(forKey: FastingSettings.sessionsKey),
+              let decoded = try? JSONDecoder().decode([FastingSession].self, from: data) else {
+            return nil
+        }
+        return decoded.last(where: \.isActive)
+    }
+
     var activeSession: FastingSession? {
         sessions.last(where: \.isActive)
     }
@@ -21,6 +29,7 @@ final class FastingStore {
     func start(goalMinutes: Int, at date: Date = .now) -> FastingSession? {
         guard activeSession == nil else { return nil }
         let session = FastingSession(startedAt: date, goalMinutes: goalMinutes)
+        guard !overlapsExistingSession(session) else { return nil }
         sessions.append(session)
         save()
         return session
@@ -42,8 +51,9 @@ final class FastingStore {
         save()
     }
 
-    func update(_ session: FastingSession) {
-        guard let index = sessions.firstIndex(where: { $0.id == session.id }) else { return }
+    @discardableResult
+    func update(_ session: FastingSession) -> Bool {
+        guard let index = sessions.firstIndex(where: { $0.id == session.id }) else { return false }
         var validated = session
         validated.goalMinutes = min(
             max(validated.goalMinutes, FastingSettings.minimumGoalMinutes),
@@ -54,11 +64,13 @@ final class FastingStore {
         }
         if validated.isActive,
            sessions.contains(where: { $0.id != validated.id && $0.isActive }) {
-            return
+            return false
         }
+        guard !overlapsExistingSession(validated, excluding: validated.id) else { return false }
         sessions[index] = validated
         sessions.sort { $0.startedAt < $1.startedAt }
         save()
+        return true
     }
 
     func delete(id: UUID) {
@@ -80,5 +92,14 @@ final class FastingStore {
         guard let data = try? JSONEncoder().encode(sessions) else { return }
         defaults.set(data, forKey: FastingSettings.sessionsKey)
         onSessionsChanged?()
+    }
+
+    private func overlapsExistingSession(_ candidate: FastingSession, excluding id: UUID? = nil) -> Bool {
+        let candidateEnd = candidate.endedAt ?? .distantFuture
+        return sessions.contains { existing in
+            guard existing.id != id else { return false }
+            let existingEnd = existing.endedAt ?? .distantFuture
+            return candidate.startedAt < existingEnd && existing.startedAt < candidateEnd
+        }
     }
 }

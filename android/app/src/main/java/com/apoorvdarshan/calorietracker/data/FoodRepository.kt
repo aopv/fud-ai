@@ -68,7 +68,8 @@ class FoodRepository(
             }
         }
 
-    suspend fun addEntry(entry: FoodEntry) {
+    suspend fun addEntry(entry: FoodEntry): Boolean {
+        if (prefs.fastingSessions.first().any { it.isActive }) return false
         val current = prefs.foodEntries.first()
         prefs.setFoodEntries(current + entry)
         if (shouldSyncHealth()) {
@@ -79,6 +80,7 @@ class FoodRepository(
             prefs.setReviewPromptedAfterFirstLog(true)
             ReviewPrompter.requestReview.value = true
         }
+        return true
     }
 
     suspend fun updateEntry(entry: FoodEntry) {

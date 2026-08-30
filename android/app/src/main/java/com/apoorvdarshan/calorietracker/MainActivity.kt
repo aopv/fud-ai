@@ -2,6 +2,7 @@ package com.apoorvdarshan.calorietracker
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -163,7 +164,16 @@ open class MainActivity : ComponentActivity() {
                             meals = pendingSharedMeals,
                             onAdd = { meals ->
                                 lifecycleScope.launch {
-                                    meals.forEach { container.foodRepository.addEntry(it) }
+                                    for (meal in meals) {
+                                        if (!container.foodRepository.addEntry(meal)) {
+                                            Toast.makeText(
+                                                this@MainActivity,
+                                                getString(R.string.food_blocked_by_active_fast),
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                            break
+                                        }
+                                    }
                                 }
                                 pendingSharedMeals = emptyList()
                             },

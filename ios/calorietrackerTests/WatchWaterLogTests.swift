@@ -102,6 +102,35 @@ struct WatchWaterLogTests {
         #expect(group.totalFat == 12)
     }
 
+    @Test func fastingAppearsInsideDiaryWithoutChangingFoodTotals() throws {
+        let start = Date(timeIntervalSince1970: 1_786_015_200)
+        let end = start.addingTimeInterval(16 * 3600)
+        let fast = FastingSession(startedAt: start, endedAt: end, goalMinutes: 16 * 60)
+        let meal = MealScheduleSettings.mealType(for: end)
+        let food = FoodEntry(
+            name: "Diary test meal",
+            calories: 420,
+            protein: 30,
+            carbs: 45,
+            fat: 12,
+            timestamp: end.addingTimeInterval(-60),
+            source: .manual,
+            mealType: meal
+        )
+
+        let groups = homeDiaryMealGroups(
+            foodEntries: [food],
+            waterEntries: [],
+            fastingSessions: [fast],
+            order: .standard
+        )
+        let group = try #require(groups.first { $0.meal == meal })
+
+        #expect(group.items.first?.id == "fasting-\(fast.id.uuidString)")
+        #expect(group.foodEntries.map(\.id) == [food.id])
+        #expect(group.totalCalories == 420)
+    }
+
     @Test func waterReplacesOnlyTheFourthWidgetNutrientWhileEnabled() {
         let nutrients = ["protein", "carbs", "fat", "fiber"].map { id in
             WidgetNutrientValue(

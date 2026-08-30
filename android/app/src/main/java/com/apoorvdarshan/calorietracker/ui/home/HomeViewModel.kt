@@ -74,6 +74,8 @@ data class HomeUiState(
      */
     val pendingReviewSource: FoodEntry? = null,
     val analyzing: Boolean = false,
+    val foodLoggingBlocked: Boolean = false,
+    val fastingOverlap: Boolean = false,
     val error: String? = null
 ) {
     val caloriesToday: Int get() = todayEntries.sumOf { it.calories }
@@ -211,10 +213,14 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
         }
     }
 
-    fun endFast() {
+    fun endFast(updatedSession: FastingSession? = null) {
         viewModelScope.launch {
-            container.fastingRepository.endActive()
-            container.notifications.cancelFastingGoal()
+            val ended = container.fastingRepository.endActive(updatedSession = updatedSession)
+            if (ended != null) {
+                container.notifications.cancelFastingGoal()
+            } else {
+                _ui.value = _ui.value.copy(fastingOverlap = true)
+            }
         }
     }
 
@@ -227,8 +233,11 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
 
     fun updateFast(session: FastingSession) {
         viewModelScope.launch {
-            container.fastingRepository.update(session)
-            syncFastingNotification()
+            if (container.fastingRepository.update(session)) {
+                syncFastingNotification()
+            } else {
+                _ui.value = _ui.value.copy(fastingOverlap = true)
+            }
         }
     }
 
@@ -249,6 +258,18 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
         } else {
             container.notifications.cancelFastingGoal()
         }
+    }
+
+    fun reportFoodBlockedByFast() {
+        _ui.value = _ui.value.copy(foodLoggingBlocked = true)
+    }
+
+    fun dismissFoodBlocked() {
+        _ui.value = _ui.value.copy(foodLoggingBlocked = false)
+    }
+
+    fun dismissFastingOverlap() {
+        _ui.value = _ui.value.copy(fastingOverlap = false)
     }
 
     fun setFoodLogSortOrder(order: FoodLogSortOrder) {
@@ -469,7 +490,10 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
                 progressiveMeal = analysis.progressiveMeal,
                 ingredients = analysis.ingredients.map { it.scaled(scale) }
             )
-            container.foodRepository.addEntry(entry)
+            if (!container.foodRepository.addEntry(entry)) {
+                reportFoodBlockedByFast()
+                return@launch
+            }
             container.prefs.setPendingFoodAnalysisDraft(null)
             _ui.value = _ui.value.copy(
                 pendingAnalysis = null,
@@ -563,7 +587,9 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
     /** Re-log a saved meal (from Saved Meals sheet) as a new entry timestamped to the selected day. */
     fun relogMeal(template: FoodEntry) {
         viewModelScope.launch {
-            container.foodRepository.addEntry(template.duplicatedForLogging(timestampForSelectedDay()))
+            if (!container.foodRepository.addEntry(template.duplicatedForLogging(timestampForSelectedDay()))) {
+                reportFoodBlockedByFast()
+            }
         }
     }
 
@@ -572,9 +598,12 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
         val copiedTimestamp = timestampForSelectedDay()
         viewModelScope.launch {
             entries.forEach { entry ->
-                container.foodRepository.addEntry(
+                if (!container.foodRepository.addEntry(
                     entry.duplicatedForLogging(logDate = copiedTimestamp)
-                )
+                )) {
+                    reportFoodBlockedByFast()
+                    return@launch
+                }
             }
         }
     }
@@ -590,7 +619,7 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
         mealType: MealType = MealType.currentMeal
     ) {
         viewModelScope.launch {
-            container.foodRepository.addEntry(
+            if (!container.foodRepository.addEntry(
                 FoodEntry(
                     name = name,
                     calories = calories,
@@ -602,7 +631,9 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
                     source = FoodSource.MANUAL,
                     mealType = mealType
                 )
-            )
+            )) {
+                reportFoodBlockedByFast()
+            }
         }
     }
 

@@ -1,5 +1,6 @@
 package com.apoorvdarshan.calorietracker.ui.navigation
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -60,6 +61,7 @@ private const val WORKOUT_UI_PREFS = "fudai_workouts"
 private const val WORKOUT_MODE_V2_DEFAULT_KEY = "mode.diary_default.v2"
 
 @Composable
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 fun FudAINavHost(
     container: AppContainer,
     startOnboarding: Boolean,

@@ -336,6 +336,30 @@ class FastingGoalReceiver : BroadcastReceiver() {
     }
 }
 
+/** Restores an active fast's one-shot goal alarm after reboot or app replacement. */
+class FastingBootReceiver : BroadcastReceiver() {
+    override fun onReceive(context: Context, intent: Intent) {
+        if (intent.action != Intent.ACTION_BOOT_COMPLETED && intent.action != Intent.ACTION_MY_PACKAGE_REPLACED) return
+        val pendingResult = goAsync()
+        val app = context.applicationContext as FudAIApp
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val enabled = app.container.prefs.notificationsEnabled.first() &&
+                    app.container.prefs.fastingTrackingEnabled.first() &&
+                    app.container.prefs.fastingGoalNotificationEnabled.first() &&
+                    app.container.notifications.canPostNotifications()
+                if (enabled) {
+                    app.container.notifications.scheduleFastingGoal(app.container.fastingRepository.active())
+                } else {
+                    app.container.notifications.cancelFastingGoal()
+                }
+            } finally {
+                pendingResult.finish()
+            }
+        }
+    }
+}
+
 /** Fired by the alarm. Posts the notification when eligible and re-schedules it +24h. */
 class ReminderReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {

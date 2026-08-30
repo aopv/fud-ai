@@ -48,12 +48,11 @@ struct FastingSession: Codable, Identifiable, Equatable {
 
 enum FastingDurationFormatter {
     static func compact(seconds: TimeInterval) -> String {
-        let totalMinutes = max(0, Int(seconds) / 60)
-        let hours = totalMinutes / 60
-        let minutes = totalMinutes % 60
-        if hours == 0 { return "\(minutes)m" }
-        if minutes == 0 { return "\(hours)h" }
-        return "\(hours)h \(minutes)m"
+        let formatter = DateComponentsFormatter()
+        formatter.allowedUnits = [.hour, .minute]
+        formatter.unitsStyle = .abbreviated
+        formatter.zeroFormattingBehavior = .dropAll
+        return formatter.string(from: max(0, seconds)) ?? "0m"
     }
 
     static func goal(minutes: Int) -> String {

@@ -111,8 +111,9 @@ class NotificationManager {
         guard interval > 1 else { return }
 
         let content = UNMutableNotificationContent()
-        content.title = "Fasting Goal Reached"
-        content.body = "You reached your \(FastingDurationFormatter.goal(minutes: session.goalMinutes)) fasting goal. End the fast when you're ready."
+        content.title = String(localized: "Fasting Goal Reached")
+        let goal = FastingDurationFormatter.goal(minutes: session.goalMinutes)
+        content.body = String(localized: "You reached your \(goal) fasting goal. End the fast when you're ready.")
         content.sound = .default
 
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: interval, repeats: false)
