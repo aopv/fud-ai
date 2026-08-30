@@ -3890,6 +3890,8 @@ struct ProfileView: View {
                 }
             }
 
+            AboutFooterSection()
+
             Color.clear
                 .frame(height: 72)
                 .listRowBackground(Color.clear)
@@ -5210,10 +5212,6 @@ struct ProfileView: View {
                         updateState: $updateState,
                         refreshUpdateState: refreshUpdateState
                     )
-
-                    if aboutCategory == .legal {
-                        AboutFooterSection()
-                    }
                 }
             }
             .scrollContentBackground(.hidden)

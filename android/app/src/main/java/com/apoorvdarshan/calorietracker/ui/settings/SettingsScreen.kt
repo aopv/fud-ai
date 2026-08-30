@@ -1211,10 +1211,6 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                 SectionCard {
                     AboutSettingsRows(aboutCategory)
                 }
-
-                if (aboutCategory == AboutSettingsCategory.LEGAL) {
-                    AboutFooter()
-                }
             }
 
             Spacer(Modifier.height(BottomNavScrollPadding))
@@ -1482,6 +1478,7 @@ private fun SettingsCategoryHub(onSelect: (SettingsCategory) -> Unit) {
         SectionCard {
             SettingsCategoryRows(SettingsCategory.appInfoEntries, onSelect)
         }
+        AboutFooter()
     }
 }
 

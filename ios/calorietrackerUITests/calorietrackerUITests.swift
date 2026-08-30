@@ -88,6 +88,13 @@ final class calorietrackerUITests: XCTestCase {
         XCTAssertTrue(settings.waitForExistence(timeout: 8))
         settings.tap()
 
+        let creatorFooter = app.staticTexts["Made by Apoorv Darshan"]
+        for _ in 0..<12 where !creatorFooter.isHittable {
+            app.swipeUp()
+        }
+        XCTAssertTrue(creatorFooter.waitForExistence(timeout: 3), "Missing creator footer on Settings")
+        XCTAssertTrue(creatorFooter.isHittable, "Creator footer is not visible on Settings")
+
         for (identifier, title, expectedAction) in categories {
             let category = app.buttons["settings.category.\(identifier)"]
             for _ in 0..<12 where !category.isHittable {
@@ -109,6 +116,13 @@ final class calorietrackerUITests: XCTestCase {
             if identifier == "community" {
                 XCTAssertFalse(app.staticTexts["Follow on Instagram"].exists)
                 XCTAssertTrue(app.staticTexts["Follow on LinkedIn"].exists)
+            }
+
+            if identifier == "legal" {
+                XCTAssertFalse(
+                    app.staticTexts["Made by Apoorv Darshan"].isHittable,
+                    "Creator footer should live on the main Settings page"
+                )
             }
 
             let backButton = navigationBar.buttons.firstMatch
