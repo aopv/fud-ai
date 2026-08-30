@@ -3501,6 +3501,54 @@ private struct AISettingsSubsectionHeader: View {
     }
 }
 
+enum ProfileSettingsCategory: String, CaseIterable, Identifiable, Hashable {
+    case personalInfo
+    case goalsNutrition
+    case trackingReminders
+    case notifications
+    case aiProviders
+    case speechToText
+    case appPreferences
+    case workout
+    case healthData
+    case dataManagement
+    case about
+
+    var id: Self { self }
+
+    var title: String {
+        switch self {
+        case .personalInfo: "Personal Info"
+        case .goalsNutrition: "Goals & Nutrition"
+        case .trackingReminders: "Tracking & Reminders"
+        case .notifications: "Notifications"
+        case .aiProviders: "AI Providers & Fallbacks"
+        case .speechToText: "Speech-to-Text"
+        case .appPreferences: "App Settings"
+        case .workout: "Workout"
+        case .healthData: "Health & Data"
+        case .dataManagement: "Data Management"
+        case .about: "About"
+        }
+    }
+
+    var systemImage: String {
+        switch self {
+        case .personalInfo: "person.crop.circle"
+        case .goalsNutrition: "target"
+        case .trackingReminders: "timer"
+        case .notifications: "bell"
+        case .aiProviders: "sparkles"
+        case .speechToText: "waveform"
+        case .appPreferences: "slider.horizontal.3"
+        case .workout: "dumbbell"
+        case .healthData: "heart"
+        case .dataManagement: "externaldrive"
+        case .about: "info.circle"
+        }
+    }
+}
+
 struct ProfileView: View {
     @Environment(ProfileStore.self) private var profileStore
     @Environment(ChatStore.self) private var chatStore
@@ -3542,10 +3590,16 @@ struct ProfileView: View {
     // of Settings — can show the update row and the manual re-check.
     @Binding private var updateState: AppUpdateState
     private let refreshUpdateState: () async -> Void
+    private let settingsCategory: ProfileSettingsCategory?
 
-    fileprivate init(updateState: Binding<AppUpdateState>, refreshUpdateState: @escaping () async -> Void) {
+    fileprivate init(
+        updateState: Binding<AppUpdateState>,
+        refreshUpdateState: @escaping () async -> Void,
+        settingsCategory: ProfileSettingsCategory? = nil
+    ) {
         self._updateState = updateState
         self.refreshUpdateState = refreshUpdateState
+        self.settingsCategory = settingsCategory
     }
 
     enum ActiveSheet: String, Identifiable {
@@ -3666,10 +3720,65 @@ struct ProfileView: View {
     }
 
     var body: some View {
-        NavigationStack {
+        Group {
+            if let settingsCategory {
+                settingsList
+                    .navigationTitle(Text(LocalizedStringKey(settingsCategory.title)))
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar(.visible, for: .navigationBar)
+            } else {
+                NavigationStack {
+                    settingsHub
+                        .navigationDestination(for: ProfileSettingsCategory.self) { category in
+                            if category == .notifications {
+                                NotificationSettingsView()
+                            } else {
+                                ProfileView(
+                                    updateState: $updateState,
+                                    refreshUpdateState: refreshUpdateState,
+                                    settingsCategory: category
+                                )
+                            }
+                        }
+                }
+            }
+        }
+    }
+
+    private var settingsHub: some View {
+        List {
+            Section {
+                ForEach(ProfileSettingsCategory.allCases) { category in
+                    NavigationLink(value: category) {
+                        Label {
+                            Text(LocalizedStringKey(category.title))
+                                .font(.system(.body, design: .rounded, weight: .medium))
+                        } icon: {
+                            Image(systemName: category.systemImage)
+                                .foregroundStyle(AppColors.calorie)
+                                .frame(width: 24)
+                        }
+                    }
+                    .accessibilityIdentifier("settings.category.\(category.rawValue)")
+                }
+            }
+            .listRowBackground(AppColors.appCard)
+
+            Color.clear
+                .frame(height: 72)
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
+        }
+        .scrollContentBackground(.hidden)
+        .background(AppColors.appBackground)
+        .navigationBarHidden(true)
+    }
+
+    private var settingsList: some View {
             List {
                 // Section 1: Personal Info
-                Section("Personal Info") {
+                if settingsCategory == .personalInfo {
+                Section {
                     Picker(selection: profileBinding.gender) {
                         Text("Male").tag(Gender.male)
                         Text("Female").tag(Gender.female)
@@ -3739,10 +3848,12 @@ struct ProfileView: View {
                     }
                 }
                 .listRowBackground(AppColors.appCard)
+                }
 
                 // Section 2: Goal plan and automation. Daily nutrition targets live in a
                 // separate card below so this section stays easy to scan.
-                Section("Goals & Nutrition") {
+                if settingsCategory == .goalsNutrition {
+                Section {
                     Picker(selection: profileBinding.goal) {
                         ForEach(WeightGoal.allCases, id: \.self) { goal in
                             Text(goal.displayName).tag(goal)
@@ -3961,10 +4072,12 @@ struct ProfileView: View {
                     .tint(.primary)
                 }
                 .listRowBackground(AppColors.appCard)
+                }
 
                 // Section 3: Display and input preferences. Tracking features are grouped
                 // separately below so the card does not read as one long control wall.
-                Section("App Settings") {
+                if settingsCategory == .appPreferences {
+                Section {
                     Picker(selection: $appearanceMode) {
                         Text("System").tag("system")
                         Text("Light").tag("light")
@@ -4037,37 +4150,6 @@ struct ProfileView: View {
                     .pickerStyle(.menu)
                     .tint(.secondary)
 
-                }
-                .listRowBackground(AppColors.appCard)
-
-                Section("Tracking & Reminders") {
-                    NavigationLink {
-                        MealTimeSettingsView()
-                    } label: {
-                        Label {
-                            HStack {
-                                Text("Meal Times")
-                                Spacer()
-                                Text("Customize")
-                                    .foregroundStyle(.secondary)
-                            }
-                        } icon: {
-                            Image(systemName: "clock")
-                                .foregroundStyle(AppColors.calorie)
-                        }
-                    }
-
-                    NavigationLink {
-                        NotificationSettingsView()
-                    } label: {
-                        Label {
-                            Text("Notifications")
-                        } icon: {
-                            Image(systemName: "bell")
-                                .foregroundStyle(AppColors.calorie)
-                        }
-                    }
-
                     NavigationLink {
                         QuickActionsSettingsView()
                     } label: {
@@ -4081,6 +4163,28 @@ struct ProfileView: View {
                             }
                         } icon: {
                             Image(systemName: "bolt.fill")
+                                .foregroundStyle(AppColors.calorie)
+                        }
+                    }
+
+                }
+                .listRowBackground(AppColors.appCard)
+                }
+
+                if settingsCategory == .trackingReminders {
+                Section {
+                    NavigationLink {
+                        MealTimeSettingsView()
+                    } label: {
+                        Label {
+                            HStack {
+                                Text("Meal Times")
+                                Spacer()
+                                Text("Customize")
+                                    .foregroundStyle(.secondary)
+                            }
+                        } icon: {
+                            Image(systemName: "clock")
                                 .foregroundStyle(AppColors.calorie)
                         }
                     }
@@ -4193,7 +4297,9 @@ struct ProfileView: View {
 
                 }
                 .listRowBackground(AppColors.appCard)
+                }
 
+                if settingsCategory == .aiProviders {
                 Section {
                         AISettingsSubsectionHeader(
                             title: "Primary AI",
@@ -4746,7 +4852,12 @@ struct ProfileView: View {
                                 }
                             }
                         }
+                }
+                .listRowBackground(AppColors.appCard)
+                }
 
+                if settingsCategory == .speechToText {
+                Section {
                         AISettingsSubsectionHeader(
                             title: "Speech-to-Text",
                             systemImage: "waveform",
@@ -4770,6 +4881,7 @@ struct ProfileView: View {
                             }
                         }
                         .pickerStyle(.menu)
+                        .accessibilityIdentifier("settings.speech.provider")
                         .tint(.secondary)
                         .onChange(of: selectedSpeechProvider) { _, newProvider in
                             SpeechSettings.selectedProvider = newProvider
@@ -4834,12 +4946,12 @@ struct ProfileView: View {
                         }
 
                         speechFallbackSettingsRows
-                } header: {
-                    Text("AI & Voice")
                 }
                 .listRowBackground(AppColors.appCard)
+                }
 
                 // Custom AI Instructions (User Context) — prepended to every AI request when non-empty
+                if settingsCategory == .aiProviders {
                 Section {
                     TextField(
                         "I live in Germany, assume European portion sizes. I'm on a bodybuilding cut.",
@@ -4872,12 +4984,16 @@ struct ProfileView: View {
                     Text("Optional context sent with every AI request — region, diet, athletic goals, anything you'd otherwise repeat each time. Leave empty to disable.")
                 }
                 .listRowBackground(AppColors.appCard)
+                }
 
+                if settingsCategory == .workout {
                 WorkoutLoggingSettingsSection()
+                }
 
                 // Section 5: Health integration. Destructive and transfer actions are kept
                 // in their own card below so they cannot be mistaken for sync preferences.
-                Section("Health & Data") {
+                if settingsCategory == .healthData {
+                Section {
                     // Apple Health
                     HStack {
                         Label {
@@ -4896,8 +5012,10 @@ struct ProfileView: View {
 
                 }
                 .listRowBackground(AppColors.appCard)
+                }
 
-                Section("Data Management") {
+                if settingsCategory == .dataManagement {
+                Section {
                     // Export Food Diary
                     Button {
                         showExportDiary = true
@@ -4950,10 +5068,12 @@ struct ProfileView: View {
                     .buttonStyle(.plain)
                 }
                 .listRowBackground(AppColors.appCard)
+                }
 
                 // Support stays separate and immediately visible before About. App Review
                 // treats external developer-donation links as digital payments (guideline
                 // 3.1.1), so iOS uses the native consumable purchases here.
+                if settingsCategory == .about {
                 TipJarSettingsSection()
 
                 // About — folded in from the former About tab so it's the last
@@ -4962,11 +5082,11 @@ struct ProfileView: View {
                     updateState: $updateState,
                     refreshUpdateState: refreshUpdateState
                 )
+                }
             }
             .scrollContentBackground(.hidden)
             .modifier(SettingsKeyboardDismissalModifier())
             .background(AppColors.appBackground)
-            .navigationBarHidden(true)
             .sheet(isPresented: $showExportDiary) {
                 ExportDiaryView()
             }
@@ -5219,7 +5339,6 @@ struct ProfileView: View {
             } message: {
                 Text("This will permanently delete all your data including food logs, weight entries, workout history, and profile. This action cannot be undone.")
             }
-        }
     }
     private var requestTimeoutInput: some View {
         EndEditingDecimalTextField(

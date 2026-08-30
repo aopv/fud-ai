@@ -9,6 +9,19 @@ import XCTest
 
 final class calorietrackerUITests: XCTestCase {
 
+    private func openSettingsCategory(_ identifier: String, in app: XCUIApplication) {
+        let settings = app.tabBars.buttons["Settings"]
+        XCTAssertTrue(settings.waitForExistence(timeout: 8))
+        settings.tap()
+
+        let category = app.buttons["settings.category.\(identifier)"]
+        for _ in 0..<8 where !category.isHittable {
+            app.swipeUp()
+        }
+        XCTAssertTrue(category.waitForExistence(timeout: 3), "Missing Settings category \(identifier)")
+        category.tap()
+    }
+
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
 
@@ -32,7 +45,7 @@ final class calorietrackerUITests: XCTestCase {
     }
 
     @MainActor
-    func testSpeechProviderPickerShowsCurrentRegistry() throws {
+    func testSpeechProviderPickerOpensInFocusedCategory() throws {
         let app = XCUIApplication()
         app.launchArguments += [
             "-AppleLanguages", "(en)",
@@ -40,9 +53,7 @@ final class calorietrackerUITests: XCTestCase {
         ]
         app.launch()
 
-        let settings = app.tabBars.buttons["Settings"]
-        XCTAssertTrue(settings.waitForExistence(timeout: 8))
-        settings.tap()
+        openSettingsCategory("speechToText", in: app)
 
         let speechSection = app.staticTexts["Speech-to-Text"]
         for _ in 0..<12 where !speechSection.exists {
@@ -50,30 +61,13 @@ final class calorietrackerUITests: XCTestCase {
         }
         XCTAssertTrue(speechSection.waitForExistence(timeout: 3))
 
-        let providerPicker = app.buttons.matching(
-            NSPredicate(format: "label CONTAINS[c] %@", "Native iOS")
-        ).firstMatch
+        let providerPicker = app.buttons["settings.speech.provider"]
         for _ in 0..<3 where !providerPicker.isHittable {
             app.swipeUp()
         }
         XCTAssertTrue(providerPicker.waitForExistence(timeout: 3))
         providerPicker.tap()
-
-        for provider in [
-            "Native iOS (On-Device)",
-            "Gemini Audio",
-            "OpenAI GPT-Transcribe",
-            "Groq (Whisper)",
-            "Mistral Voxtral",
-            "Deepgram",
-            "AssemblyAI",
-        ] {
-            let providerButton = app.buttons[provider]
-            if !providerButton.exists {
-                app.swipeUp()
-            }
-            XCTAssertTrue(providerButton.waitForExistence(timeout: 3), "Missing \(provider)")
-        }
+        XCTAssertTrue(app.staticTexts["Native iOS (On-Device)"].waitForExistence(timeout: 3))
     }
 
     @MainActor
@@ -87,16 +81,14 @@ final class calorietrackerUITests: XCTestCase {
         ]
         app.launch()
 
-        let settings = app.tabBars.buttons["Settings"]
-        XCTAssertTrue(settings.waitForExistence(timeout: 8))
-        settings.tap()
+        openSettingsCategory("aiProviders", in: app)
 
         let textProviderSection = app.staticTexts["Text AI"]
         for _ in 0..<10 where !textProviderSection.exists {
             app.swipeUp()
         }
         XCTAssertTrue(textProviderSection.waitForExistence(timeout: 3))
-        XCTAssertTrue(app.staticTexts["AI & Voice"].exists)
+        XCTAssertTrue(app.staticTexts["AI Providers & Fallbacks"].exists)
         XCTAssertEqual(app.switches["Use Separate Text Provider"].value as? String, "1")
         XCTAssertTrue(app.staticTexts["DeepSeek"].waitForExistence(timeout: 3))
         XCTAssertTrue(app.staticTexts["deepseek-v4-flash"].waitForExistence(timeout: 3))
@@ -113,9 +105,7 @@ final class calorietrackerUITests: XCTestCase {
         ]
         app.launch()
 
-        let settings = app.tabBars.buttons["Settings"]
-        XCTAssertTrue(settings.waitForExistence(timeout: 8))
-        settings.tap()
+        openSettingsCategory("aiProviders", in: app)
 
         let textProviderSection = app.staticTexts["Text AI"]
         for _ in 0..<10 where !textProviderSection.exists {

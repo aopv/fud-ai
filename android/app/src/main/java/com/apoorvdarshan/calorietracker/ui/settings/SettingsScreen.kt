@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -124,6 +125,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -215,6 +217,20 @@ private enum class HealthConnectPermissionAction {
     SYNC, ENERGY_GOALS, DAILY_SUMMARY
 }
 
+internal enum class SettingsCategory(val titleRes: Int, val icon: ImageVector) {
+    PERSONAL_INFO(R.string.settings_section_personal, Icons.Outlined.Person),
+    GOALS_NUTRITION(R.string.settings_section_goals, Icons.Outlined.TrackChanges),
+    TRACKING_REMINDERS(R.string.settings_section_tracking_reminders, Icons.Outlined.Timer),
+    NOTIFICATIONS(R.string.settings_notifications, Icons.Outlined.Notifications),
+    AI_PROVIDERS(R.string.settings_category_ai_providers, Icons.Outlined.SmartToy),
+    SPEECH_TO_TEXT(R.string.settings_section_speech, Icons.Outlined.Mic),
+    APP_PREFERENCES(R.string.settings_section_app, Icons.Outlined.Palette),
+    WORKOUT(R.string.settings_section_workout, Icons.Outlined.FitnessCenter),
+    HEALTH_DATA(R.string.settings_section_health, Icons.Outlined.Favorite),
+    DATA_MANAGEMENT(R.string.settings_section_data_management, Icons.Outlined.Download),
+    ABOUT(R.string.nav_about, Icons.Outlined.Info)
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: SettingsViewModel) {
@@ -239,6 +255,7 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
     var showDefaultGramsInfo by remember { mutableStateOf(false) }
     var showHealthEnergyGoalsInfo by remember { mutableStateOf(false) }
     var showAdaptiveGoalsInfo by remember { mutableStateOf(false) }
+    var selectedCategory by rememberSaveable { mutableStateOf<SettingsCategory?>(null) }
     var pendingHealthPermissionAction by remember { mutableStateOf<HealthConnectPermissionAction?>(null) }
     val activityContext = LocalContext.current
     val resources = LocalResources.current
@@ -389,6 +406,10 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
         }
     }
 
+    BackHandler(enabled = selectedCategory != null) {
+        selectedCategory = null
+    }
+
     // iOS Settings: bare List, no NavigationBar visible. Match that — no TopAppBar.
     Scaffold(containerColor = MaterialTheme.colorScheme.background) { padding ->
         Column(
@@ -399,8 +420,20 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(18.dp)
         ) {
+            if (selectedCategory == null) {
+                SettingsCategoryHub(onSelect = { selectedCategory = it })
+                Spacer(Modifier.height(BottomNavScrollPadding))
+                return@Column
+            }
+
+            SettingsCategoryHeader(
+                category = selectedCategory!!,
+                onBack = { selectedCategory = null }
+            )
+
             // Section 1 — Personal Info (matches iOS Section "Personal Info")
-            SectionCard(title = stringResource(R.string.settings_section_personal)) {
+            if (selectedCategory == SettingsCategory.PERSONAL_INFO) {
+            SectionCard {
                 profile?.let { p ->
                     SettingRow(stringResource(R.string.settings_gender), stringResource(p.gender.displayNameRes), icon = Icons.Outlined.Person, inlineMenu = true) { sheet = SettingsSheet.GENDER }
                     HorizontalDivider()
@@ -451,9 +484,11 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                     ) { nav.navigate(FudAIRoutes.BODY_MEASUREMENTS) }
                 }
             }
+            }
 
             // Section 2 — Goals & Nutrition (matches iOS Section "Goals & Nutrition")
-            SectionCard(title = stringResource(R.string.settings_section_goals)) {
+            if (selectedCategory == SettingsCategory.GOALS_NUTRITION) {
+            SectionCard {
                 profile?.let { p ->
                     SettingRow(stringResource(R.string.settings_weight_goal), stringResource(p.goal.displayNameRes), icon = Icons.Outlined.Equalizer, inlineMenu = true) { sheet = SettingsSheet.GOAL }
                     HorizontalDivider()
@@ -587,9 +622,11 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                     ) { nav.navigate(FudAIRoutes.CALCULATION_METHODS) }
                 }
             }
+            }
 
             // Section 3 — App Settings (matches iOS Section "App Settings")
-            SectionCard(title = stringResource(R.string.settings_section_app)) {
+            if (selectedCategory == SettingsCategory.APP_PREFERENCES) {
+            SectionCard {
                 SettingRow(
                     stringResource(R.string.settings_appearance),
                     when (ui.appearanceMode) {
@@ -653,9 +690,17 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                     if (ui.weekStartsOnMonday) stringResource(R.string.settings_week_monday) else stringResource(R.string.settings_week_sunday),
                     icon = Icons.Outlined.CalendarToday
                 ) { sheet = SettingsSheet.WEEK_START }
+                HorizontalDivider()
+                SettingRow(
+                    stringResource(R.string.settings_quick_actions),
+                    stringResource(R.string.settings_meal_times_customize),
+                    icon = Icons.Outlined.Bolt
+                ) { nav.navigate(FudAIRoutes.QUICK_ACTIONS) }
+            }
             }
 
-            SectionCard(title = stringResource(R.string.settings_section_tracking_reminders)) {
+            if (selectedCategory == SettingsCategory.TRACKING_REMINDERS) {
+            SectionCard {
                 SettingRow(
                     stringResource(R.string.settings_meal_times),
                     stringResource(R.string.settings_meal_times_customize),
@@ -701,33 +746,33 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                         icon = Icons.Outlined.TrackChanges
                     ) { sheet = SettingsSheet.FASTING_GOAL }
                 }
-                HorizontalDivider()
-                SettingRow(
-                    stringResource(R.string.settings_quick_actions),
-                    stringResource(R.string.settings_meal_times_customize),
-                    icon = Icons.Outlined.Bolt
-                ) { nav.navigate(FudAIRoutes.QUICK_ACTIONS) }
-                HorizontalDivider()
-                ToggleRow(stringResource(R.string.settings_notifications), ui.notificationsEnabled, icon = Icons.Outlined.Notifications, onChange = ::onNotificationsToggle)
-                if (ui.notificationsEnabled) {
-                    HorizontalDivider()
-                    NotificationTypeRows(
-                        ui = ui,
-                        vm = vm,
-                        onDailySummaryChange = ::onDailySummaryToggle
-                    )
-                    HorizontalDivider()
-                    SettingRow(
-                        stringResource(R.string.settings_battery_opt),
-                        stringResource(R.string.settings_battery_opt_value),
-                        icon = Icons.Outlined.BatteryAlert
-                    ) { openBatteryOptimizationSettings() }
+            }
+            }
+
+            if (selectedCategory == SettingsCategory.NOTIFICATIONS) {
+                SectionCard {
+                    ToggleRow(stringResource(R.string.settings_notifications), ui.notificationsEnabled, icon = Icons.Outlined.Notifications, onChange = ::onNotificationsToggle)
+                    if (ui.notificationsEnabled) {
+                        HorizontalDivider()
+                        NotificationTypeRows(
+                            ui = ui,
+                            vm = vm,
+                            onDailySummaryChange = ::onDailySummaryToggle
+                        )
+                        HorizontalDivider()
+                        SettingRow(
+                            stringResource(R.string.settings_battery_opt),
+                            stringResource(R.string.settings_battery_opt_value),
+                            icon = Icons.Outlined.BatteryAlert
+                        ) { openBatteryOptimizationSettings() }
+                    }
                 }
             }
 
             // Keep the related AI and voice controls in one category while retaining
             // independent provider, model, key, and routing preferences.
-            SectionCard(title = stringResource(R.string.settings_section_ai_voice)) {
+            if (selectedCategory == SettingsCategory.AI_PROVIDERS) {
+            SectionCard {
                 SettingsSubsectionHeader(
                     title = stringResource(R.string.settings_section_ai),
                     icon = Icons.Outlined.SmartToy,
@@ -910,7 +955,11 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                         }
                     }
                 }
-                HorizontalDivider()
+            }
+            }
+
+            if (selectedCategory == SettingsCategory.SPEECH_TO_TEXT) {
+            SectionCard {
                 SettingsSubsectionHeader(
                     title = stringResource(R.string.settings_section_speech),
                     icon = Icons.Outlined.Mic,
@@ -970,9 +1019,11 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                     }
                 }
             }
+            }
 
             // Custom instructions remain a separate writing surface below the
             // provider category so the configuration card stays easy to scan.
+            if (selectedCategory == SettingsCategory.AI_PROVIDERS) {
             SectionCard(title = stringResource(R.string.settings_section_custom_instructions)) {
                 CustomInstructionsBlock(
                     initial = ui.userContext,
@@ -986,10 +1037,12 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
                 )
             }
+            }
 
             // Workout is permanently available. Keep its only two live
             // preferences in the same compact Fud AI settings card.
-            SectionCard(title = stringResource(R.string.settings_section_workout)) {
+            if (selectedCategory == SettingsCategory.WORKOUT) {
+            SectionCard {
                 SettingRow(
                     stringResource(R.string.settings_training_split),
                     ui.workoutSplit.title,
@@ -1012,9 +1065,11 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
                 )
             }
+            }
 
             // Section 6 — Health & Data (matches iOS Section "Health & Data")
-            SectionCard(title = stringResource(R.string.settings_section_health)) {
+            if (selectedCategory == SettingsCategory.HEALTH_DATA) {
+            SectionCard {
                 ToggleRow(stringResource(R.string.settings_health_connect), ui.healthConnectEnabled, icon = Icons.Outlined.Favorite, onChange = ::onHealthConnectToggle)
                 if (ui.healthConnectEnabled && !ui.workoutHealthWriteGranted) {
                     HorizontalDivider()
@@ -1035,8 +1090,10 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                     onClick = ::openHealthConnectAccess
                 )
             }
+            }
 
-            SectionCard(title = stringResource(R.string.settings_section_data_management)) {
+            if (selectedCategory == SettingsCategory.DATA_MANAGEMENT) {
+            SectionCard {
                 Row(
                     Modifier
                         .fillMaxWidth()
@@ -1103,16 +1160,19 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                     )
                 }
             }
+            }
 
             // Section 7 — About (folded in from the former About tab so it's the
             // last section of Settings; tabs are now Home / Progress / Coach / Settings).
-            SectionCard(title = stringResource(R.string.nav_about)) {
+            if (selectedCategory == SettingsCategory.ABOUT) {
+            SectionCard {
                 AboutSettingsRows()
             }
             SectionCard {
                 AboutLegalRows()
             }
             AboutFooter()
+            }
 
             Spacer(Modifier.height(BottomNavScrollPadding))
         }
@@ -1367,6 +1427,74 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                 onDismiss = { showHealthPermissionHelp = false }
             )
         }
+    }
+}
+
+@Composable
+private fun SettingsCategoryHub(onSelect: (SettingsCategory) -> Unit) {
+    SectionCard {
+        SettingsCategory.entries.forEachIndexed { index, category ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onSelect(category) }
+                    .padding(horizontal = 16.dp, vertical = 14.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                FudIconBubble(
+                    icon = category.icon,
+                    size = 28.dp,
+                    iconSize = 17.dp,
+                    tint = AppColors.Calorie
+                )
+                Spacer(Modifier.width(14.dp))
+                Text(
+                    text = stringResource(category.titleRes),
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier.weight(1f)
+                )
+                Icon(
+                    Icons.Filled.ChevronRight,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.42f),
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+            if (index != SettingsCategory.entries.lastIndex) HorizontalDivider()
+        }
+    }
+}
+
+@Composable
+private fun SettingsCategoryHeader(category: SettingsCategory, onBack: () -> Unit) {
+    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Row(
+            modifier = Modifier
+                .clip(RoundedCornerShape(16.dp))
+                .clickable(onClick = onBack)
+                .padding(horizontal = 2.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = null,
+                tint = AppColors.Calorie,
+                modifier = Modifier.size(22.dp)
+            )
+            Spacer(Modifier.width(6.dp))
+            Text(
+                stringResource(R.string.nav_settings),
+                color = AppColors.Calorie,
+                fontWeight = FontWeight.SemiBold
+            )
+        }
+        Text(
+            text = stringResource(category.titleRes),
+            fontSize = 28.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onBackground
+        )
     }
 }
 

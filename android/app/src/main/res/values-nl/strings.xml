@@ -467,6 +467,8 @@
     <string name="settings_section_daily_targets">Dagelijkse doelen</string>
     <string name="settings_section_app">App-instellingen</string>
     <string name="settings_section_tracking_reminders">Tracking &amp; herinneringen</string>
+    <string name="settings_category_ai_providers">AI-providers en terugvalopties</string>
+    <string name="settings_section_workout">Training</string>
     <string name="settings_section_ai">AI-provider</string>
     <string name="settings_section_speech">Spraak-naar-tekst</string>
     <string name="settings_section_health">Gezondheid &amp; gegevens</string>

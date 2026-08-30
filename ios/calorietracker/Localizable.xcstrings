@@ -42414,6 +42414,86 @@
           }
         }
       }
+    },
+    "Tracking & Reminders": {
+      "localizations": {
+        "ar": { "stringUnit": { "state": "translated", "value": "التتبع والتذكيرات" } },
+        "az": { "stringUnit": { "state": "translated", "value": "İzləmə və Xatırlatmalar" } },
+        "de": { "stringUnit": { "state": "translated", "value": "Tracking & Erinnerungen" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Tracking & Reminders" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Seguimiento y recordatorios" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Suivi et rappels" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "ट्रैकिंग और रिमाइंडर" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Monitoraggio e promemoria" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "トラッキングとリマインダー" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "추적 및 알림" } },
+        "nl": { "stringUnit": { "state": "translated", "value": "Tracking & herinneringen" } },
+        "pl": { "stringUnit": { "state": "translated", "value": "Śledzenie i przypomnienia" } },
+        "pt-BR": { "stringUnit": { "state": "translated", "value": "Acompanhamento e lembretes" } },
+        "ro": { "stringUnit": { "state": "translated", "value": "Monitorizare și mementouri" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Отслеживание и напоминания" } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "追踪与提醒" } }
+      }
+    },
+    "AI Providers & Fallbacks": {
+      "localizations": {
+        "ar": { "stringUnit": { "state": "translated", "value": "موفرو الذكاء الاصطناعي والخيارات الاحتياطية" } },
+        "az": { "stringUnit": { "state": "translated", "value": "Süni İntellekt Təminatçıları və Ehtiyat Seçimlər" } },
+        "de": { "stringUnit": { "state": "translated", "value": "KI-Anbieter & Ausweichoptionen" } },
+        "en": { "stringUnit": { "state": "translated", "value": "AI Providers & Fallbacks" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Proveedores de IA y alternativas" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Fournisseurs d’IA et solutions de secours" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "AI प्रदाता और फ़ॉलबैक" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Provider IA e alternative" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "AIプロバイダーとフォールバック" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "AI 제공업체 및 대체 옵션" } },
+        "nl": { "stringUnit": { "state": "translated", "value": "AI-providers en terugvalopties" } },
+        "pl": { "stringUnit": { "state": "translated", "value": "Dostawcy AI i opcje awaryjne" } },
+        "pt-BR": { "stringUnit": { "state": "translated", "value": "Provedores de IA e alternativas" } },
+        "ro": { "stringUnit": { "state": "translated", "value": "Furnizori AI și opțiuni de rezervă" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Провайдеры ИИ и резервные варианты" } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "AI 提供商与回退选项" } }
+      }
+    },
+    "Workout": {
+      "localizations": {
+        "ar": { "stringUnit": { "state": "translated", "value": "التمرين" } },
+        "az": { "stringUnit": { "state": "translated", "value": "Məşq" } },
+        "de": { "stringUnit": { "state": "translated", "value": "Training" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Workout" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Entrenamiento" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Entraînement" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "वर्कआउट" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Allenamento" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "ワークアウト" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "운동" } },
+        "nl": { "stringUnit": { "state": "translated", "value": "Training" } },
+        "pl": { "stringUnit": { "state": "translated", "value": "Trening" } },
+        "pt-BR": { "stringUnit": { "state": "translated", "value": "Treino" } },
+        "ro": { "stringUnit": { "state": "translated", "value": "Antrenament" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Тренировка" } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "训练" } }
+      }
+    },
+    "Data Management": {
+      "localizations": {
+        "ar": { "stringUnit": { "state": "translated", "value": "إدارة البيانات" } },
+        "az": { "stringUnit": { "state": "translated", "value": "Məlumatların İdarə Edilməsi" } },
+        "de": { "stringUnit": { "state": "translated", "value": "Datenverwaltung" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Data Management" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Gestión de datos" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Gestion des données" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "डेटा प्रबंधन" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Gestione dati" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "データ管理" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "데이터 관리" } },
+        "nl": { "stringUnit": { "state": "translated", "value": "Gegevensbeheer" } },
+        "pl": { "stringUnit": { "state": "translated", "value": "Zarządzanie danymi" } },
+        "pt-BR": { "stringUnit": { "state": "translated", "value": "Gerenciamento de dados" } },
+        "ro": { "stringUnit": { "state": "translated", "value": "Gestionarea datelor" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Управление данными" } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "数据管理" } }
+      }
     }
   },
   "version" : "1.1"

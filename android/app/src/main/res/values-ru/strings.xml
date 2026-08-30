@@ -467,6 +467,8 @@
     <string name="settings_section_daily_targets">Ежедневные цели</string>
     <string name="settings_section_app">Настройки приложения</string>
     <string name="settings_section_tracking_reminders">Отслеживание и напоминания</string>
+    <string name="settings_category_ai_providers">Провайдеры ИИ и резервные варианты</string>
+    <string name="settings_section_workout">Тренировка</string>
     <string name="settings_section_ai">ИИ-провайдер</string>
     <string name="settings_section_speech">Речь в текст</string>
     <string name="settings_section_health">Здоровье и данные</string>

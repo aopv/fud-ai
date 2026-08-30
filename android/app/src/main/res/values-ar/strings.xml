@@ -467,6 +467,8 @@
     <string name="settings_section_daily_targets">الأهداف اليومية</string>
     <string name="settings_section_app">إعدادات التطبيق</string>
     <string name="settings_section_tracking_reminders">التتبع والتذكيرات</string>
+    <string name="settings_category_ai_providers">موفرو الذكاء الاصطناعي والخيارات الاحتياطية</string>
+    <string name="settings_section_workout">التمرين</string>
     <string name="settings_section_ai">مزود الذكاء الاصطناعي</string>
     <string name="settings_section_speech">تحويل الكلام إلى نص</string>
     <string name="settings_section_health">الصحة والبيانات</string>

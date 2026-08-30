@@ -467,6 +467,8 @@
     <string name="settings_section_daily_targets">每日目标</string>
     <string name="settings_section_app">App 设置</string>
     <string name="settings_section_tracking_reminders">追踪与提醒</string>
+    <string name="settings_category_ai_providers">AI 提供商与回退选项</string>
+    <string name="settings_section_workout">训练</string>
     <string name="settings_section_ai">AI 提供商</string>
     <string name="settings_section_speech">语音转文字</string>
     <string name="settings_section_health">健康与数据</string>

@@ -467,6 +467,8 @@
     <string name="settings_section_daily_targets">1日の目標</string>
     <string name="settings_section_app">App設定</string>
     <string name="settings_section_tracking_reminders">トラッキングとリマインダー</string>
+    <string name="settings_category_ai_providers">AIプロバイダーとフォールバック</string>
+    <string name="settings_section_workout">ワークアウト</string>
     <string name="settings_section_ai">AIプロバイダ</string>
     <string name="settings_section_speech">音声入力</string>
     <string name="settings_section_health">ヘルスとデータ</string>

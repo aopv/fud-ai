@@ -467,6 +467,8 @@
     <string name="settings_section_daily_targets">Obiettivi giornalieri</string>
     <string name="settings_section_app">Impostazioni app</string>
     <string name="settings_section_tracking_reminders">Monitoraggio e promemoria</string>
+    <string name="settings_category_ai_providers">Provider IA e alternative</string>
+    <string name="settings_section_workout">Allenamento</string>
     <string name="settings_section_ai">Fornitore IA</string>
     <string name="settings_section_speech">Da voce a testo</string>
     <string name="settings_section_health">Salute e dati</string>

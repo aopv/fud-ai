@@ -519,6 +519,7 @@
     <string name="settings_section_daily_targets">Daily Targets</string>
     <string name="settings_section_app">App Settings</string>
     <string name="settings_section_tracking_reminders">Tracking &amp; Reminders</string>
+    <string name="settings_category_ai_providers">AI Providers &amp; Fallbacks</string>
     <string name="settings_section_ai_voice">AI &amp; Voice</string>
     <string name="settings_section_ai">Primary AI</string>
     <string name="settings_section_text_ai">Text AI</string>
@@ -537,7 +538,7 @@
     <string name="settings_section_speech_fallback">STT Fallback</string>
     <string name="settings_speech_fallback_footer">Used only when the selected remote speech provider fails. Native speech already retries its on-device and online recognition modes.</string>
     <string name="settings_native_speech_fallback_footer">Native speech already recovers automatically across Android’s on-device, online, and automatic recognition modes. Choose a remote speech provider above to configure a separate provider fallback.</string>
-    <string name="settings_section_workout" translatable="false">Workout</string>
+    <string name="settings_section_workout">Workout</string>
     <string name="settings_training_split" translatable="false">Training Split</string>
     <string name="settings_rpe_scale" translatable="false">RPE Scale</string>
     <string name="settings_rpe_guide" translatable="false">Strength 1–10: 1 is very easy and 10 is maximum effort.\nCR10 0–10: perceived exertion with decimals allowed.\nBorg 6–20: classic whole-number exertion scale.</string>

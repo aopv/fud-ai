@@ -4,6 +4,11 @@ import UIKit
 
 @Suite(.serialized)
 struct AIRequestConfigurationTests {
+    @Test func settingsHubKeepsEveryFocusedCategory() {
+        #expect(ProfileSettingsCategory.allCases.count == 11)
+        #expect(Set(ProfileSettingsCategory.allCases.map(\.title)).count == 11)
+    }
+
     @Test func geminiUsesCurrentModelsAndFallsBackFromRetiredChoices() {
         #expect(AIProvider.gemini.defaultModel == "gemini-3.5-flash-lite")
         #expect(AIProvider.gemini.models.contains("gemini-3.6-flash"))

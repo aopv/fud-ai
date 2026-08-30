@@ -467,6 +467,8 @@
     <string name="settings_section_daily_targets">Metas diárias</string>
     <string name="settings_section_app">Ajustes do app</string>
     <string name="settings_section_tracking_reminders">Acompanhamento e lembretes</string>
+    <string name="settings_category_ai_providers">Provedores de IA e alternativas</string>
+    <string name="settings_section_workout">Treino</string>
     <string name="settings_section_ai">Provedor de IA</string>
     <string name="settings_section_speech">Voz para texto</string>
     <string name="settings_section_health">Saúde e dados</string>

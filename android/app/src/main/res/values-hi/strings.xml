@@ -467,6 +467,8 @@
     <string name="settings_section_daily_targets">दैनिक लक्ष्य</string>
     <string name="settings_section_app">ऐप सेटिंग्स</string>
     <string name="settings_section_tracking_reminders">ट्रैकिंग और रिमाइंडर</string>
+    <string name="settings_category_ai_providers">AI प्रदाता और फ़ॉलबैक</string>
+    <string name="settings_section_workout">वर्कआउट</string>
     <string name="settings_section_ai">AI प्रदाता</string>
     <string name="settings_section_speech">स्पीच-टू-टेक्स्ट</string>
     <string name="settings_section_health">स्वास्थ्य और डेटा</string>

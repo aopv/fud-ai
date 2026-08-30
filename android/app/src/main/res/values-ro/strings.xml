@@ -467,6 +467,8 @@
     <string name="settings_section_daily_targets">Obiective zilnice</string>
     <string name="settings_section_app">Setări aplicație</string>
     <string name="settings_section_tracking_reminders">Monitorizare și mementouri</string>
+    <string name="settings_category_ai_providers">Furnizori AI și opțiuni de rezervă</string>
+    <string name="settings_section_workout">Antrenament</string>
     <string name="settings_section_ai">Furnizor AI</string>
     <string name="settings_section_speech">Voce în text</string>
     <string name="settings_section_health">Sănătate și date</string>
