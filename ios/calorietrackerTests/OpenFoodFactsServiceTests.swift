@@ -133,7 +133,8 @@ struct OpenFoodFactsServiceTests {
 
     @Test func cancellationRemainsCancellation() async {
         let session = makeSession { _ in
-            throw CancellationError()
+            // URLSession reports a cancelled request as NSURLErrorCancelled.
+            throw URLError(.cancelled)
         }
         defer { finish(session) }
 
