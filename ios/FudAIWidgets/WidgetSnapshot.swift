@@ -162,8 +162,9 @@ struct WidgetSnapshot: Codable, Equatable {
         for nutrient in selected + defaultHomeNutrients {
             guard !merged.contains(where: { $0.id == nutrient.id }) else { continue }
             merged.append(nutrient)
-            if merged.count == 4 { break }
+            if merged.count == (waterIsEnabled ? 3 : 4) { break }
         }
+        if waterIsEnabled { merged.append(waterHomeNutrient) }
         return merged
     }
 
@@ -239,6 +240,19 @@ struct WidgetSnapshot: Codable, Equatable {
             WidgetNutrientValue(id: "carbs", label: "Carbs", shortLabel: "C", unit: "g", iconName: "leaf", value: carbs, goal: Double(carbsGoal)),
             WidgetNutrientValue(id: "fat", label: "Fat", shortLabel: "F", unit: "g", iconName: "drop.fill", value: fat, goal: Double(fatGoal)),
         ]
+    }
+
+    private var waterHomeNutrient: WidgetNutrientValue {
+        let divisor = waterUsesFluidOunces ? 29.5735295625 : 1
+        return WidgetNutrientValue(
+            id: "water",
+            label: "Water",
+            shortLabel: "W",
+            unit: waterUsesFluidOunces ? " fl oz" : "ml",
+            iconName: "drop.fill",
+            value: Double(waterCurrent) / divisor,
+            goal: Double(waterGoal) / divisor
+        )
     }
 }
 

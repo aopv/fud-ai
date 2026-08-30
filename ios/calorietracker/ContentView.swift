@@ -947,6 +947,34 @@ struct HomeView: View {
                         }
                     }
                 }
+
+                // Water remains separate from food nutrition and calories, but its
+                // individual daily logs live in the same diary for easy review/removal.
+                let waterEntries = waterStore.entries(on: selectedDate)
+                if waterTrackingEnabled && !waterEntries.isEmpty {
+                    Section {
+                        ForEach(waterEntries) { entry in
+                            WaterLogRow(entry: entry, unit: waterUnit)
+                                .listRowBackground(AppColors.appCard)
+                                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                    Button(role: .destructive) {
+                                        waterStore.delete(id: entry.id)
+                                    } label: {
+                                        Label("Delete", systemImage: "trash.fill")
+                                    }
+                                }
+                        }
+                    } header: {
+                        HStack {
+                            Label("Water", systemImage: "drop.fill")
+                            Spacer()
+                            Text(waterUnit.formatted(milliliters: waterStore.total(on: selectedDate)))
+                                .font(.system(.subheadline, design: .rounded, weight: .semibold))
+                                .foregroundStyle(AppColors.calorie)
+                                .textCase(nil)
+                        }
+                    }
+                }
             }
             .scrollContentBackground(.hidden)
             .background(AppColors.appBackground)
@@ -1097,6 +1125,7 @@ struct HomeView: View {
                                 .frame(width: 60, height: 60)
                                 .background(AppColors.calorie, in: Circle())
                         }
+                        .accessibilityIdentifier("home.add")
                         .popover(isPresented: $showTextPopover) {
                             TextFoodInputView(
                                 onCancel: {

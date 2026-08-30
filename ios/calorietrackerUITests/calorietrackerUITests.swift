@@ -157,6 +157,37 @@ final class calorietrackerUITests: XCTestCase {
     }
 
     @MainActor
+    func testWaterLogAppearsInDiaryAndCanBeDeleted() throws {
+        let app = XCUIApplication()
+        app.launchArguments += [
+            "-AppleLanguages", "(en)",
+            "-waterTrackingEnabled", "YES",
+        ]
+        app.launch()
+
+        let addButton = app.buttons["home.add"]
+        XCTAssertTrue(addButton.waitForExistence(timeout: 8))
+        addButton.tap()
+        XCTAssertTrue(app.buttons["Water"].waitForExistence(timeout: 3))
+        app.buttons["Water"].tap()
+        XCTAssertTrue(app.buttons["1 Glass (~250 ml)"].waitForExistence(timeout: 3))
+        app.buttons["1 Glass (~250 ml)"].tap()
+
+        let waterRows = app.otherElements.matching(identifier: "water.log.row")
+        for _ in 0..<8 where waterRows.count == 0 {
+            app.swipeUp()
+        }
+        XCTAssertGreaterThan(waterRows.count, 0)
+        let countBeforeDelete = waterRows.count
+        waterRows.firstMatch.swipeLeft()
+        let deleteButton = app.buttons["Delete"]
+        if deleteButton.waitForExistence(timeout: 2) {
+            deleteButton.tap()
+        }
+        XCTAssertEqual(waterRows.count, countBeforeDelete - 1)
+    }
+
+    @MainActor
     func testLaunchPerformance() throws {
         // This measures how long it takes to launch your application.
         measure(metrics: [XCTApplicationLaunchMetric()]) {

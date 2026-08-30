@@ -56,6 +56,7 @@ data class HomeUiState(
     val waterDailyGoalMl: Int = 2_000,
     val waterUnit: WaterUnit = WaterUnit.Default,
     val waterTodayMl: Int = 0,
+    val waterEntriesToday: List<WaterEntry> = emptyList(),
     val fastingTrackingEnabled: Boolean = false,
     val fastingDefaultGoalMinutes: Int = 16 * 60,
     val fastingSessions: List<FastingSession> = emptyList(),
@@ -166,11 +167,17 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
 
         combine(container.waterRepository.entries, _selectedDate) { entries, day ->
             val zone = ZoneId.systemDefault()
-            entries
+            val dailyEntries = entries
                 .filter { it.date.atZone(zone).toLocalDate() == day }
-                .sumOf { it.milliliters }
+                .sortedByDescending { it.date }
+            dailyEntries to dailyEntries.sumOf { it.milliliters }
         }
-            .onEach { total -> _ui.value = _ui.value.copy(waterTodayMl = total) }
+            .onEach { (entries, total) ->
+                _ui.value = _ui.value.copy(
+                    waterTodayMl = total,
+                    waterEntriesToday = entries
+                )
+            }
             .launchIn(viewModelScope)
 
         viewModelScope.launch {
@@ -188,6 +195,12 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
             container.waterRepository.add(
                 WaterEntry(date = timestampForSelectedDay(), milliliters = milliliters)
             )
+        }
+    }
+
+    fun deleteWater(id: UUID) {
+        viewModelScope.launch {
+            container.waterRepository.delete(id)
         }
     }
 

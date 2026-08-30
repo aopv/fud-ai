@@ -103,9 +103,14 @@ final class WaterStore {
         onEntriesChanged?()
     }
 
-    func total(on date: Date) -> Int {
+    func entries(on date: Date) -> [WaterEntry] {
         entries
             .filter { Calendar.current.isDate($0.date, inSameDayAs: date) }
+            .sorted { $0.date > $1.date }
+    }
+
+    func total(on date: Date) -> Int {
+        entries(on: date)
             .reduce(0) { $0 + $1.milliliters }
     }
 

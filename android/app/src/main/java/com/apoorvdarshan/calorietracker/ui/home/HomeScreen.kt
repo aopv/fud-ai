@@ -150,6 +150,7 @@ import com.apoorvdarshan.calorietracker.models.MealType
 import com.apoorvdarshan.calorietracker.models.QuickAction
 import com.apoorvdarshan.calorietracker.models.QuickActionRequest
 import com.apoorvdarshan.calorietracker.models.ServingUnitOption
+import com.apoorvdarshan.calorietracker.models.WaterEntry
 import com.apoorvdarshan.calorietracker.models.WaterUnit
 import com.apoorvdarshan.calorietracker.services.ai.FoodAnalysis
 import com.apoorvdarshan.calorietracker.ui.components.InAppCameraCaptureDialog
@@ -499,6 +500,32 @@ fun HomeScreen(
                             )
                             if (index != group.entries.lastIndex) Divider()
                         }
+                    }
+                }
+            }
+
+            // Water has its own persistence and never changes food calories/macros,
+            // but daily entries sit in the same diary so users can review/delete them.
+            if (ui.waterTrackingEnabled && ui.waterEntriesToday.isNotEmpty()) {
+                item(key = "water-header") {
+                    WaterSectionHeader(
+                        total = ui.waterTodayMl,
+                        unit = ui.waterUnit
+                    )
+                }
+                items(ui.waterEntriesToday, key = { "water-${it.id}" }) { entry ->
+                    val index = ui.waterEntriesToday.indexOf(entry)
+                    val isFirst = index == 0
+                    val isLast = index == ui.waterEntriesToday.lastIndex
+                    val rowShape = sectionCardShape(isFirst, isLast)
+                    SectionCardWrapper(isFirst = isFirst, isLast = isLast, transparent = true) {
+                        SwipeableWaterRow(
+                            entry = entry,
+                            unit = ui.waterUnit,
+                            rowShape = rowShape,
+                            onDelete = { vm.deleteWater(entry.id) }
+                        )
+                        if (!isLast) Divider()
                     }
                 }
             }
@@ -1366,6 +1393,37 @@ private fun SectionHeader(title: String) {
 }
 
 @Composable
+private fun WaterSectionHeader(total: Int, unit: WaterUnit) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(start = 22.dp, end = 30.dp, top = 18.dp, bottom = 10.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            Icons.Filled.WaterDrop,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.55f),
+            modifier = Modifier.size(16.dp)
+        )
+        Spacer(Modifier.width(8.dp))
+        Text(
+            stringResource(R.string.water),
+            fontSize = 17.sp,
+            fontWeight = FontWeight.Medium,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.85f)
+        )
+        Spacer(Modifier.weight(1f))
+        Text(
+            unit.format(total),
+            fontSize = 15.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = AppColors.Calorie
+        )
+    }
+}
+
+@Composable
 private fun MealSectionHeader(
     meal: MealType,
     totalCalories: Int? = null,
@@ -1642,6 +1700,45 @@ private fun SwipeableFoodRow(
 }
 
 @Composable
+private fun SwipeableWaterRow(
+    entry: WaterEntry,
+    unit: WaterUnit,
+    rowShape: RoundedCornerShape,
+    onDelete: () -> Unit
+) {
+    val density = LocalDensity.current
+    val deleteTriggerPx = with(density) { 220.dp.toPx() }
+    var offsetPx by remember(entry.id) { mutableFloatStateOf(0f) }
+
+    BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+        val maxSwipePx = with(density) { maxWidth.toPx() * 0.72f }
+        Box(Modifier.fillMaxWidth()) {
+            SwipeBackground(offsetPx = offsetPx, isFavorite = false)
+            Box(
+                modifier = Modifier
+                    .offset { IntOffset(offsetPx.roundToInt(), 0) }
+                    .pointerInput(entry.id, maxSwipePx) {
+                        detectHorizontalDragGestures(
+                            onHorizontalDrag = { change, dragAmount ->
+                                change.consume()
+                                offsetPx = (offsetPx + dragAmount).coerceIn(-maxSwipePx, 0f)
+                            },
+                            onDragEnd = {
+                                val shouldDelete = offsetPx <= -deleteTriggerPx
+                                offsetPx = 0f
+                                if (shouldDelete) onDelete()
+                            },
+                            onDragCancel = { offsetPx = 0f }
+                        )
+                    }
+            ) {
+                WaterLogRow(entry = entry, unit = unit, rowShape = rowShape)
+            }
+        }
+    }
+}
+
+@Composable
 private fun BoxScope.SwipeBackground(offsetPx: Float, isFavorite: Boolean) {
     if (offsetPx == 0f) {
         Box(Modifier.matchParentSize())
@@ -1679,6 +1776,77 @@ private fun BoxScope.SwipeBackground(offsetPx: Float, isFavorite: Boolean) {
                 Icon(icon, contentDescription = label, tint = Color.White)
             }
         }
+    }
+}
+
+@Composable
+private fun WaterLogRow(
+    entry: WaterEntry,
+    unit: WaterUnit,
+    rowShape: RoundedCornerShape
+) {
+    val ctx = LocalContext.current
+    val time = remember(entry.date, ctx) {
+        DateTimeFormatter
+            .ofPattern(clockTimePattern(ctx), Locale.US)
+            .withZone(ZoneId.systemDefault())
+            .format(entry.date)
+    }
+
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .clip(rowShape)
+            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.86f))
+            .background(AppColors.Calorie.copy(alpha = 0.025f))
+            .border(
+                0.7.dp,
+                Brush.linearGradient(
+                    listOf(
+                        Color.White.copy(alpha = 0.14f),
+                        Color.White.copy(alpha = 0.035f),
+                        AppColors.Calorie.copy(alpha = 0.07f)
+                    )
+                ),
+                rowShape
+            )
+            .padding(horizontal = 14.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Box(
+            Modifier
+                .size(56.dp)
+                .clip(RoundedCornerShape(14.dp))
+                .background(AppColors.Calorie.copy(alpha = 0.12f)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                Icons.Filled.WaterDrop,
+                contentDescription = null,
+                tint = AppColors.Calorie,
+                modifier = Modifier.size(28.dp)
+            )
+        }
+        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Text(
+                stringResource(R.string.water),
+                fontSize = 17.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                time,
+                fontSize = 13.sp,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.58f)
+            )
+        }
+        Text(
+            unit.format(entry.milliliters),
+            fontSize = 17.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = AppColors.Calorie
+        )
     }
 }
 

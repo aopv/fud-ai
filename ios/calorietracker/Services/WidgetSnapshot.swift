@@ -195,8 +195,9 @@ struct WidgetSnapshot: Codable, Equatable {
         for nutrient in selected + defaultHomeNutrients {
             guard !merged.contains(where: { $0.id == nutrient.id }) else { continue }
             merged.append(nutrient)
-            if merged.count == 3 { break }
+            if merged.count == (waterIsEnabled ? 3 : 4) { break }
         }
+        if waterIsEnabled { merged.append(waterHomeNutrient) }
         return merged
     }
 
@@ -241,6 +242,14 @@ struct WidgetSnapshot: Codable, Equatable {
     var waterGoal: Int { max(1, waterGoalMl ?? WaterSettings.defaultDailyGoalMl) }
     var waterRemaining: Int { max(0, waterGoal - waterCurrent) }
     var waterProgress: Double { min(1, Double(waterCurrent) / Double(waterGoal)) }
+    var waterUsesFluidOunces: Bool { waterUnitRaw == WaterUnit.fluidOunces.rawValue }
+    var waterUnitSymbol: String { waterUsesFluidOunces ? "fl oz" : "ml" }
+    func waterDisplayValue(_ milliliters: Int) -> String {
+        guard waterUsesFluidOunces else { return milliliters.formatted() }
+        let ounces = Double(milliliters) / WaterUnit.millilitersPerFluidOunce
+        if abs(ounces.rounded() - ounces) < 0.05 { return Int(ounces.rounded()).formatted() }
+        return ounces.formatted(.number.precision(.fractionLength(1)))
+    }
     var calorieProgress: Double {
         guard calorieGoal > 0 else { return 0 }
         return min(1.0, Double(calories) / Double(calorieGoal))
@@ -264,6 +273,19 @@ struct WidgetSnapshot: Codable, Equatable {
             WidgetNutrientValue(id: "carbs", label: "Carbs", shortLabel: "C", unit: "g", iconName: "leaf", value: carbs, goal: Double(carbsGoal)),
             WidgetNutrientValue(id: "fat", label: "Fat", shortLabel: "F", unit: "g", iconName: "drop.fill", value: fat, goal: Double(fatGoal)),
         ]
+    }
+
+    private var waterHomeNutrient: WidgetNutrientValue {
+        let divisor = waterUsesFluidOunces ? 29.5735295625 : 1
+        return WidgetNutrientValue(
+            id: "water",
+            label: "Water",
+            shortLabel: "W",
+            unit: waterUsesFluidOunces ? " fl oz" : "ml",
+            iconName: "drop.fill",
+            value: Double(waterCurrent) / divisor,
+            goal: Double(waterGoal) / divisor
+        )
     }
 }
 

@@ -268,7 +268,7 @@ internal fun gaugeSecondaryFontSizeSp(gaugeWidthDp: Int, text: String): Int {
     return minOf(baseSize, widthSafeSize).coerceAtLeast(9)
 }
 
-/** The user's 4 selected Home nutrients as vertical fill tubes, like the app's Home bars. */
+/** Home's 4 visible nutrients as vertical fill tubes, including fixed-slot Water when enabled. */
 @Composable
 internal fun NutrientBarsRow(
     snapshot: WidgetSnapshot,

@@ -353,7 +353,7 @@ private struct RectangularCalorieView: View {
                     .widgetAccentable()
             }
 
-            // All 4 selected nutrients as a 2x2 grid — five stacked labeled rows
+            // All 4 visible Home nutrients as a 2x2 grid — Water occupies slot four when enabled.
             // don't fit the rectangular family's height. Name + eaten amount
             // only; goals are dropped since value-vs-goal pairs read as number
             // soup at this size.

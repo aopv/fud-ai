@@ -1,5 +1,42 @@
 import SwiftUI
 
+struct WaterLogRow: View {
+    let entry: WaterEntry
+    let unit: WaterUnit
+
+    var body: some View {
+        HStack(spacing: 12) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 14)
+                    .fill(AppColors.calorie.opacity(0.12))
+                Image(systemName: "drop.fill")
+                    .font(.system(size: 25, weight: .semibold))
+                    .foregroundStyle(AppColors.calorie)
+            }
+            .frame(width: 56, height: 56)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Water")
+                    .font(.system(.body, design: .rounded, weight: .semibold))
+                Text(entry.date, format: .dateTime.hour().minute())
+                    .font(.system(.caption, design: .rounded))
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer(minLength: 12)
+
+            Text(unit.formatted(milliliters: entry.milliliters))
+                .font(.system(.body, design: .rounded, weight: .semibold))
+                .foregroundStyle(AppColors.calorie)
+        }
+        .padding(.vertical, 4)
+        .accessibilityElement(children: .ignore)
+        .accessibilityIdentifier("water.log.row")
+        .accessibilityLabel("Water, \(unit.formatted(milliliters: entry.milliliters)), logged \(entry.date.formatted(date: .omitted, time: .shortened))")
+        .accessibilityHint("Swipe left to delete")
+    }
+}
+
 struct WaterCustomAmountSheet: View {
     let unit: WaterUnit
     let onAdd: (Int) -> Void

@@ -37,7 +37,7 @@ data class WidgetSnapshot(
     val carbsGoal: Int,
     val fat: Double,
     val fatGoal: Int,
-    /** The user's 4 selected Home nutrients. Null in snapshots persisted by older builds. */
+    /** All 4 saved Home nutrients. Water visibility is derived without overwriting this list. */
     val homeNutrients: List<WidgetNutrient>? = null,
     /** User's theme gradient as raw RGB hex (e.g. 0xFF375F). Fud Pink when absent. */
     val themeStartHex: Int? = null,
@@ -66,15 +66,26 @@ data class WidgetSnapshot(
     }
 
     /**
-     * The 4 nutrient bars to render, matching the user's Home selection.
-     * Legacy snapshots (no homeNutrients) yield the classic protein/carbs/fat.
+     * The 4 nutrient bars to render, matching Home: the first 3 saved choices plus
+     * Water while tracking is enabled, otherwise all 4 saved choices.
      */
-    val displayedHomeNutrients: List<WidgetNutrient> get() =
-        homeNutrients?.takeIf { it.isNotEmpty() }?.take(4) ?: listOf(
+    val displayedHomeNutrients: List<WidgetNutrient> get() {
+        val selected = homeNutrients?.takeIf { it.isNotEmpty() } ?: listOf(
             WidgetNutrient("protein", "Protein", "g", protein, proteinGoal.toDouble()),
             WidgetNutrient("carbs", "Carbs", "g", carbs, carbsGoal.toDouble()),
             WidgetNutrient("fat", "Fat", "g", fat, fatGoal.toDouble())
         )
+        val visible = selected.take(if (waterTrackingEnabled) 3 else 4)
+        if (!waterTrackingEnabled) return visible
+        val water = WidgetNutrient(
+            id = "water",
+            label = "Water",
+            unit = if (waterUnit == WaterUnit.FLUID_OUNCES) " fl oz" else "ml",
+            value = waterUnit.displayAmount(waterCurrentMl),
+            goal = waterUnit.displayAmount(waterGoalMl)
+        )
+        return visible + water
+    }
 
     /** First selected nutrient — what the "Protein" widget actually tracks. */
     val primaryHomeNutrient: WidgetNutrient get() = displayedHomeNutrients.first()
