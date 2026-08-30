@@ -585,7 +585,7 @@
     <string name="about_open_source">オープンソース (MIT)</string>
     <string name="about_star_github">GitHubでスターを付ける</string>
     <string name="about_vote_ph">Product Huntで投票</string>
-    <string name="about_support">プロジェクトを支援</string>
+    <string name="about_leave_tip_kofi">Ko-fiでチップを送る</string>
     <string name="about_report_issue">問題を報告</string>
     <string name="about_request_feature">機能をリクエスト</string>
     <string name="about_contact">お問い合わせ</string>

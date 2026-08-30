@@ -162,13 +162,13 @@ fun AboutSettingsRows(category: AboutSettingsCategory) {
             }
 
             AboutSettingsCategory.SUPPORT -> {
+                AboutRow(Icons.Filled.Favorite, stringResource(R.string.about_leave_tip_kofi)) {
+                    open("https://ko-fi.com/apoorvdarshan")
+                }
+                Hairline()
                 AboutRow(Icons.Filled.Star, stringResource(R.string.about_rate), onClick = ::rate)
                 Hairline()
                 AboutRow(Icons.Filled.Share, stringResource(R.string.about_share), onClick = ::share)
-                Hairline()
-                AboutRow(Icons.Filled.Favorite, stringResource(R.string.about_support)) {
-                    open("https://ko-fi.com/apoorvdarshan")
-                }
                 Hairline()
                 AboutRow(Icons.Filled.StarRate, stringResource(R.string.about_star_github)) {
                     open("https://github.com/apoorvdarshan/fud-ai")
