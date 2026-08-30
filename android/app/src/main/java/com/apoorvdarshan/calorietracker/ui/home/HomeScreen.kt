@@ -1875,7 +1875,7 @@ private fun WaterLogRow(
             Modifier
                 .size(56.dp)
                 .clip(RoundedCornerShape(14.dp))
-                .background(AppColors.Calorie.copy(alpha = 0.12f)),
+                .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f)),
             contentAlignment = Alignment.Center
         ) {
             Text(

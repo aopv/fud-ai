@@ -97,7 +97,7 @@ struct WaterLogRow: View {
         HStack(spacing: 12) {
             ZStack {
                 RoundedRectangle(cornerRadius: 14)
-                    .fill(AppColors.calorie.opacity(0.12))
+                    .fill(.ultraThinMaterial)
                 Text("💧")
                     .font(.system(size: 28))
             }
