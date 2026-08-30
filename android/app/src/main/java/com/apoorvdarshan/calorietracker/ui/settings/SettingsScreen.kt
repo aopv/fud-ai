@@ -10,6 +10,7 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -290,6 +291,8 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
     var showHealthEnergyGoalsInfo by remember { mutableStateOf(false) }
     var showAdaptiveGoalsInfo by remember { mutableStateOf(false) }
     var selectedCategory by rememberSaveable { mutableStateOf<SettingsCategory?>(null) }
+    val settingsHomeScrollState = rememberScrollState()
+    val settingsDetailScrollState = remember(selectedCategory) { ScrollState(initial = 0) }
     var pendingHealthPermissionAction by remember { mutableStateOf<HealthConnectPermissionAction?>(null) }
     val activityContext = LocalContext.current
     val resources = LocalResources.current
@@ -450,7 +453,10 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
             Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(
+                    if (selectedCategory == null) settingsHomeScrollState
+                    else settingsDetailScrollState
+                )
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(18.dp)
         ) {
