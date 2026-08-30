@@ -59,6 +59,29 @@ data class FoodEntry(
     /** Unique key for favorite deduplication (name + calorie combo). */
     val favoriteKey: String get() = "${name.lowercase()}|$calories"
 
+    /** True only when the original food mass is actually known. */
+    val hasKnownServingSize: Boolean
+        get() = servingSizeGrams?.let { it.isFinite() && it > 0.0 } == true
+
+    /**
+     * Working scale for edit/re-log UI. When mass is unknown this is a serving
+     * count, allowing 1 serving to remain 1x without fabricating 100 grams.
+     */
+    val reviewServingReference: Double
+        get() = servingSizeGrams?.takeIf { it.isFinite() && it > 0.0 }
+            ?: selectedServingQuantity?.takeIf { it.isFinite() && it > 0.0 }
+            ?: 1.0
+
+    val reviewServingUnitOptions: List<ServingUnitOption>
+        get() = if (hasKnownServingSize) servingUnitOptions
+        else listOf(ServingUnitOption.loggedServing(reviewServingReference))
+
+    val reviewSelectedServingUnit: String?
+        get() = if (hasKnownServingSize) selectedServingUnit else "serving"
+
+    val reviewSelectedServingQuantity: Double?
+        get() = if (hasKnownServingSize) selectedServingQuantity else reviewServingReference
+
     /** New entry for the given log date (new id), copying nutrition and media from this entry. */
     fun duplicatedForLogging(
         logDate: Instant,

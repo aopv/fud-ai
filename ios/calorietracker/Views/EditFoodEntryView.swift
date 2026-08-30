@@ -41,6 +41,7 @@ struct EditFoodEntryView: View {
     @State private var baseOmega3: Double?
     @State private var baseIngredients: [MealIngredient]
     @State private var servingUnitOptions: [ServingUnitOption]
+    @State private var servingSizeIsKnown: Bool
     @State private var ingredientEditor: IngredientEditorTarget?
 
     @State private var emoji: String?
@@ -104,12 +105,14 @@ struct EditFoodEntryView: View {
 
     init(entry: FoodEntry) {
         self.entry = entry
-        let serving = entry.servingSizeGrams ?? 100
-        let normalizedServingUnitOptions = ServingUnitOption.normalizedOptions(entry.servingUnitOptions, totalGrams: serving)
+        let serving = entry.reviewServingReference
+        let normalizedServingUnitOptions = entry.hasKnownServingSize
+            ? ServingUnitOption.normalizedOptions(entry.servingUnitOptions, totalGrams: serving)
+            : entry.reviewServingUnitOptions
         let initialServingUnitID = ServingUnitOption.initialUnitID(
-            preferredUnit: entry.selectedServingUnit,
+            preferredUnit: entry.reviewSelectedServingUnit,
             options: normalizedServingUnitOptions,
-            defaultToGrams: FoodMeasurementSettings.preferGramsByDefault
+            defaultToGrams: entry.hasKnownServingSize && FoodMeasurementSettings.preferGramsByDefault
         )
         self._baseCalories = State(initialValue: entry.calories)
         self._baseProtein = State(initialValue: entry.protein)
@@ -142,6 +145,7 @@ struct EditFoodEntryView: View {
         self._baseOmega3 = State(initialValue: entry.omega3)
         self._baseIngredients = State(initialValue: entry.ingredients)
         self._servingUnitOptions = State(initialValue: normalizedServingUnitOptions)
+        self._servingSizeIsKnown = State(initialValue: entry.hasKnownServingSize)
         self._emoji = State(initialValue: entry.emoji)
         self._customNote = State(initialValue: entry.customNote ?? "")
         self._savedNote = State(initialValue: entry.customNote ?? "")
@@ -150,7 +154,7 @@ struct EditFoodEntryView: View {
         self._servingSizeText = State(initialValue: ServingUnitOption.initialQuantityText(
             totalGrams: serving,
             selectedUnitID: initialServingUnitID,
-            selectedQuantity: entry.selectedServingQuantity,
+            selectedQuantity: entry.reviewSelectedServingQuantity,
             options: normalizedServingUnitOptions
         ))
         self._selectedServingUnitID = State(initialValue: initialServingUnitID)
@@ -177,6 +181,8 @@ struct EditFoodEntryView: View {
         servingSizeGrams = totals.grams
         servingSizeText = Self.formatGrams(totals.grams)
         selectedServingUnitID = ServingUnitOption.grams.unit
+        servingUnitOptions = []
+        servingSizeIsKnown = true
     }
 
     var body: some View {
@@ -241,6 +247,7 @@ struct EditFoodEntryView: View {
                                 servingSizeGrams: $servingSizeGrams,
                                 selectedUnitID: $selectedServingUnitID,
                                 unitOptions: servingUnitOptions,
+                                allowsGramUnit: servingSizeIsKnown,
                                 focusRequest: quantityFocusRequest,
                                 onEditingChanged: { editing in
                                     isQuantityEditing = editing
@@ -252,7 +259,7 @@ struct EditFoodEntryView: View {
                             )
                         }
                         .id(ScrollTarget.quantity)
-                        if !selectedServingOption.isGramUnit {
+                        if servingSizeIsKnown && !selectedServingOption.isGramUnit {
                             HStack {
                                 Text("Total")
                                 Spacer()
@@ -485,6 +492,7 @@ struct EditFoodEntryView: View {
                 baseCarbs = newAnalysis.carbs
                 baseFat = newAnalysis.fat
                 baseServingSizeGrams = newAnalysis.servingSizeGrams
+                servingSizeIsKnown = newAnalysis.servingSizeIsKnown
                 baseSugar = newAnalysis.sugar
                 baseAddedSugar = newAnalysis.addedSugar
                 baseFiber = newAnalysis.fiber
@@ -512,11 +520,18 @@ struct EditFoodEntryView: View {
                 baseIngredients = newAnalysis.ingredients
                 emoji = newAnalysis.emoji
 
-                servingUnitOptions = ServingUnitOption.normalizedOptions(newAnalysis.servingUnitOptions, totalGrams: newAnalysis.servingSizeGrams)
+                servingUnitOptions = newAnalysis.servingSizeIsKnown
+                    ? ServingUnitOption.normalizedOptions(
+                        newAnalysis.servingUnitOptions,
+                        totalGrams: newAnalysis.servingSizeGrams
+                    )
+                    : [.loggedServing(quantity: newAnalysis.selectedServingQuantity ?? 1)]
                 let initialServingUnitID = ServingUnitOption.initialUnitID(
-                    preferredUnit: newAnalysis.selectedServingUnit,
+                    preferredUnit: newAnalysis.servingSizeIsKnown
+                        ? newAnalysis.selectedServingUnit
+                        : "serving",
                     options: servingUnitOptions,
-                    defaultToGrams: FoodMeasurementSettings.preferGramsByDefault
+                    defaultToGrams: newAnalysis.servingSizeIsKnown && FoodMeasurementSettings.preferGramsByDefault
                 )
                 selectedServingUnitID = initialServingUnitID
                 servingSizeGrams = newAnalysis.servingSizeGrams
@@ -575,10 +590,14 @@ struct EditFoodEntryView: View {
             vitaminK: scaledVitaminK,
             folate: scaledFolate,
             omega3: scaledOmega3,
-            servingSizeGrams: servingSizeGrams,
-            servingUnitOptions: servingUnitOptions,
-            selectedServingUnit: servingUnitOptions.isEmpty ? nil : selectedServingOption.unit,
-            selectedServingQuantity: servingUnitOptions.isEmpty ? nil : selectedServingQuantity,
+            servingSizeGrams: servingSizeIsKnown ? servingSizeGrams : nil,
+            servingUnitOptions: servingSizeIsKnown ? servingUnitOptions : [],
+            selectedServingUnit: servingSizeIsKnown
+                ? (servingUnitOptions.isEmpty ? nil : selectedServingOption.unit)
+                : "serving",
+            selectedServingQuantity: servingSizeIsKnown
+                ? (servingUnitOptions.isEmpty ? nil : selectedServingQuantity)
+                : selectedServingQuantity,
             customNote: customNote.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? nil : customNote,
             progressiveMeal: entry.progressiveMeal,
             ingredients: scaledIngredients

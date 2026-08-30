@@ -21,10 +21,11 @@ struct FoodResultView: View {
     let progressiveMeal: Bool
 
     @State private var baseServingSizeGrams: Double
-    let servingUnitOptions: [ServingUnitOption]
+    @State private var servingUnitOptions: [ServingUnitOption]
+    @State private var servingSizeIsKnown: Bool
 
-    @State var name: String
-    @State var servingSizeGrams: Double
+    @State private var name: String
+    @State private var servingSizeGrams: Double
     @State private var servingSizeText: String
     @State private var selectedServingUnitID: String
     @State private var quantityFocusRequest = 0
@@ -154,25 +155,31 @@ struct FoodResultView: View {
         servingUnitOptions: [ServingUnitOption] = [],
         selectedServingUnit: String? = nil,
         selectedServingQuantity: Double? = nil,
+        servingSizeIsKnown: Bool = true,
         logDate: Date = .now,
         profile: UserProfile,
         dayEntries: [FoodEntry],
         weightMetric: Bool,
         onLog: @escaping (FoodEntry) -> Void
     ) {
-        let normalizedServingUnitOptions = ServingUnitOption.normalizedOptions(servingUnitOptions, totalGrams: servingSizeGrams)
-        let preferredServingUnit = FoodMeasurementSettings.preferGramsByDefault ? nil : selectedServingUnit
+        let normalizedServingUnitOptions = servingSizeIsKnown
+            ? ServingUnitOption.normalizedOptions(servingUnitOptions, totalGrams: servingSizeGrams)
+            : [.loggedServing(quantity: servingSizeGrams)]
+        let preferredServingUnit = servingSizeIsKnown
+            ? (FoodMeasurementSettings.preferGramsByDefault ? nil : selectedServingUnit)
+            : "serving"
         let initialServingUnitID = ServingUnitOption.initialUnitID(
             preferredUnit: preferredServingUnit,
             options: normalizedServingUnitOptions,
-            defaultToGrams: FoodMeasurementSettings.preferGramsByDefault
+            defaultToGrams: servingSizeIsKnown && FoodMeasurementSettings.preferGramsByDefault
         )
         self.images = images
         self.emoji = emoji
         self.source = source
         self.progressiveMeal = progressiveMeal
         self._baseServingSizeGrams = State(initialValue: servingSizeGrams)
-        self.servingUnitOptions = normalizedServingUnitOptions
+        self._servingUnitOptions = State(initialValue: normalizedServingUnitOptions)
+        self._servingSizeIsKnown = State(initialValue: servingSizeIsKnown)
         self._name = State(initialValue: name)
         self._servingSizeGrams = State(initialValue: servingSizeGrams)
         self._servingSizeText = State(initialValue: ServingUnitOption.initialQuantityText(
@@ -282,6 +289,8 @@ struct FoodResultView: View {
         servingSizeGrams = totals.grams
         servingSizeText = Self.formatGrams(totals.grams)
         selectedServingUnitID = ServingUnitOption.grams.unit
+        servingUnitOptions = []
+        servingSizeIsKnown = true
     }
 
     var body: some View {
@@ -345,6 +354,7 @@ struct FoodResultView: View {
                                 servingSizeGrams: $servingSizeGrams,
                                 selectedUnitID: $selectedServingUnitID,
                                 unitOptions: servingUnitOptions,
+                                allowsGramUnit: servingSizeIsKnown,
                                 focusRequest: quantityFocusRequest,
                                 onEditingChanged: { editing in
                                     isQuantityEditing = editing
@@ -356,7 +366,7 @@ struct FoodResultView: View {
                             )
                         }
                         .id(ScrollTarget.quantity)
-                        if !selectedServingOption.isGramUnit {
+                        if servingSizeIsKnown && !selectedServingOption.isGramUnit {
                             HStack {
                                 Text("Total")
                                 Spacer()
@@ -602,10 +612,14 @@ struct FoodResultView: View {
             vitaminK: scaledVitaminK,
             folate: scaledFolate,
             omega3: scaledOmega3,
-            servingSizeGrams: servingSizeGrams,
-            servingUnitOptions: servingUnitOptions,
-            selectedServingUnit: servingUnitOptions.isEmpty ? nil : selectedServingOption.unit,
-            selectedServingQuantity: servingUnitOptions.isEmpty ? nil : selectedServingQuantity,
+            servingSizeGrams: servingSizeIsKnown ? servingSizeGrams : nil,
+            servingUnitOptions: servingSizeIsKnown ? servingUnitOptions : [],
+            selectedServingUnit: servingSizeIsKnown
+                ? (servingUnitOptions.isEmpty ? nil : selectedServingOption.unit)
+                : "serving",
+            selectedServingQuantity: servingSizeIsKnown
+                ? (servingUnitOptions.isEmpty ? nil : selectedServingQuantity)
+                : selectedServingQuantity,
             progressiveMeal: progressiveMeal,
             ingredients: scaledIngredients
         )

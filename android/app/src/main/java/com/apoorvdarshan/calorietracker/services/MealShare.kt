@@ -7,6 +7,7 @@ import com.apoorvdarshan.calorietracker.models.FoodEntry
 import com.apoorvdarshan.calorietracker.models.FoodSource
 import com.apoorvdarshan.calorietracker.models.MealType
 import com.apoorvdarshan.calorietracker.models.MealIngredient
+import com.apoorvdarshan.calorietracker.models.ServingUnitOption
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.Base64
@@ -87,6 +88,16 @@ object MealShare {
         put("vitaminB12", e.vitaminB12); put("vitaminE", e.vitaminE); put("vitaminK", e.vitaminK)
         put("folate", e.folate); put("omega3", e.omega3)
         put("servingSizeGrams", e.servingSizeGrams)
+        if (e.servingUnitOptions.isNotEmpty()) {
+            d.put("servingUnitOptions", JSONArray().apply {
+                e.servingUnitOptions.forEach { option ->
+                    put(JSONObject()
+                        .put("unit", option.unit)
+                        .put("gramsPerUnit", option.gramsPerUnit)
+                        .apply { option.quantity?.let { put("quantity", it) } })
+                }
+            })
+        }
         e.selectedServingUnit?.let { d.put("selectedServingUnit", it) }
         put("selectedServingQuantity", e.selectedServingQuantity)
         e.customNote?.let { d.put("customNote", it) }
@@ -157,6 +168,23 @@ object MealShare {
                 )
             }
         }.orEmpty()
+        val servingUnitOptions = d.optJSONArray("servingUnitOptions")?.let { array ->
+            buildList {
+                for (index in 0 until array.length()) {
+                    val item = array.optJSONObject(index) ?: continue
+                    val unit = item.optString("unit").trim()
+                    val gramsPerUnit = dblFrom(item, "gramsPerUnit") ?: continue
+                    if (unit.isEmpty() || gramsPerUnit <= 0.0) continue
+                    add(
+                        ServingUnitOption(
+                            unit = unit,
+                            gramsPerUnit = gramsPerUnit,
+                            quantity = dblFrom(item, "quantity")
+                        )
+                    )
+                }
+            }
+        }.orEmpty()
         return FoodEntry(
             name = name,
             calories = d.optInt("calories"),
@@ -180,6 +208,7 @@ object MealShare {
             vitaminB12 = dbl("vitaminB12"), vitaminE = dbl("vitaminE"), vitaminK = dbl("vitaminK"),
             folate = dbl("folate"), omega3 = dbl("omega3"),
             servingSizeGrams = dbl("servingSizeGrams"),
+            servingUnitOptions = servingUnitOptions,
             selectedServingUnit = if (d.has("selectedServingUnit")) d.optString("selectedServingUnit") else null,
             selectedServingQuantity = dbl("selectedServingQuantity"),
             customNote = if (d.has("customNote")) d.optString("customNote") else null,

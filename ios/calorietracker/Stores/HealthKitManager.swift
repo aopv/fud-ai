@@ -9,6 +9,81 @@ struct HealthEnergySummary {
     var requestedDays: Int
 }
 
+/// Custom metadata attached to every app-owned HealthKit nutrition sample.
+/// HealthKit has no first-class food-mass field, so this is the only lossless
+/// path for restoring the original serving after an app reinstall.
+struct HealthFoodServingMetadata: Equatable {
+    static let schemaVersion = 1
+    static let versionKey = "fudai_food_metadata_version"
+    static let servingSizeKey = "fudai_serving_size_grams"
+    static let selectedUnitKey = "fudai_selected_serving_unit"
+    static let selectedQuantityKey = "fudai_selected_serving_quantity"
+    static let unitOptionsKey = "fudai_serving_unit_options"
+
+    var servingSizeGrams: Double?
+    var servingUnitOptions: [ServingUnitOption]
+    var selectedServingUnit: String?
+    var selectedServingQuantity: Double?
+
+    init(entry: FoodEntry) {
+        servingSizeGrams = entry.servingSizeGrams
+        servingUnitOptions = entry.servingUnitOptions
+        selectedServingUnit = entry.selectedServingUnit
+        selectedServingQuantity = entry.selectedServingQuantity
+    }
+
+    var dictionary: [String: Any] {
+        var metadata: [String: Any] = [Self.versionKey: Self.schemaVersion]
+        if let servingSizeGrams, servingSizeGrams.isFinite, servingSizeGrams > 0 {
+            metadata[Self.servingSizeKey] = servingSizeGrams
+        }
+        if let selectedServingUnit, !selectedServingUnit.isEmpty {
+            metadata[Self.selectedUnitKey] = selectedServingUnit
+        }
+        if let selectedServingQuantity, selectedServingQuantity.isFinite, selectedServingQuantity > 0 {
+            metadata[Self.selectedQuantityKey] = selectedServingQuantity
+        }
+        if !servingUnitOptions.isEmpty,
+           let data = try? JSONEncoder().encode(servingUnitOptions),
+           let json = String(data: data, encoding: .utf8) {
+            metadata[Self.unitOptionsKey] = json
+        }
+        return metadata
+    }
+
+    static func decode(from metadata: [String: Any]?) -> HealthFoodServingMetadata? {
+        guard let metadata,
+              (metadata[versionKey] as? NSNumber)?.intValue ?? 0 >= schemaVersion
+        else { return nil }
+        let options: [ServingUnitOption]
+        if let json = metadata[unitOptionsKey] as? String,
+           let data = json.data(using: .utf8),
+           let decoded = try? JSONDecoder().decode([ServingUnitOption].self, from: data) {
+            options = decoded
+        } else {
+            options = []
+        }
+        return HealthFoodServingMetadata(
+            servingSizeGrams: (metadata[servingSizeKey] as? NSNumber)?.doubleValue,
+            servingUnitOptions: options,
+            selectedServingUnit: metadata[selectedUnitKey] as? String,
+            selectedServingQuantity: (metadata[selectedQuantityKey] as? NSNumber)?.doubleValue
+        )
+    }
+
+    private init(
+        servingSizeGrams: Double?,
+        servingUnitOptions: [ServingUnitOption],
+        selectedServingUnit: String?,
+        selectedServingQuantity: Double?
+    ) {
+        self.servingSizeGrams = servingSizeGrams
+        self.servingUnitOptions = servingUnitOptions
+        self.selectedServingUnit = selectedServingUnit
+        self.selectedServingQuantity = selectedServingQuantity
+    }
+}
+
 @Observable
 class HealthKitManager {
     var authorizationStatus: HKAuthorizationStatus = .notDetermined
@@ -110,6 +185,9 @@ class HealthKitManager {
     }
 
     private let nutritionBackfillVersionKey = "healthKitNutritionBackfillVersion"
+    /// Separate from permission `typesVersion`: metadata-only migrations do not
+    /// require prompting the user for Health authorization again.
+    private let nutritionBackfillVersion = 8
     private var isBackfillingNutrition = false
 
     /// One-shot import of historical weight + body-fat samples. Once a backfill
@@ -615,10 +693,11 @@ class HealthKitManager {
     func writeNutrition(for entry: FoodEntry) {
         guard UserDefaults.standard.bool(forKey: "healthKitEnabled") else { return }
 
-        let metadata: [String: Any] = [
+        var metadata = HealthFoodServingMetadata(entry: entry).dictionary
+        metadata.merge([
             "fudai_entry_id": entry.id.uuidString,
             HKMetadataKeyFoodType: entry.name,
-        ]
+        ]) { _, new in new }
 
         let samples = nutritionQuantities(for: entry).compactMap { quantity -> HKQuantitySample? in
             guard isSharingAuthorized(quantity.identifier) else { return nil }
@@ -658,7 +737,7 @@ class HealthKitManager {
         guard UserDefaults.standard.bool(forKey: "healthKitEnabled") else { return }
         guard hasNutritionWriteAccess else { return }
         let backfilled = UserDefaults.standard.integer(forKey: nutritionBackfillVersionKey)
-        guard backfilled < typesVersion else { return }
+        guard backfilled < nutritionBackfillVersion else { return }
         // Guard against overlapping backfill runs — scene-phase changes can re-enter `wireUpHealthKit`
         // before the first scan finishes, and concurrent existence checks would both miss in-flight saves.
         guard !isBackfillingNutrition else { return }
@@ -669,11 +748,14 @@ class HealthKitManager {
                 guard currentEntryIDs().contains(entry.id) else { continue }
                 if await !nutritionSampleExists(forEntryID: entry.id, identifier: .dietaryEnergyConsumed) {
                     writeNutrition(for: entry)
+                } else if await !nutritionSampleHasCurrentFoodMetadata(entryID: entry.id) {
+                    await deleteNutritionSamples(entryID: entry.id)
+                    writeNutrition(for: entry)
                 } else {
                     await writeMissingNutritionSamples(for: entry, limitedTo: expandedNutritionTypeIdentifiers)
                 }
             }
-            UserDefaults.standard.set(typesVersion, forKey: nutritionBackfillVersionKey)
+            UserDefaults.standard.set(nutritionBackfillVersion, forKey: nutritionBackfillVersionKey)
         }
     }
 
@@ -795,6 +877,27 @@ class HealthKitManager {
         }
     }
 
+    private func nutritionSampleHasCurrentFoodMetadata(entryID: UUID) async -> Bool {
+        let predicate = HKQuery.predicateForObjects(
+            withMetadataKey: "fudai_entry_id",
+            operatorType: .equalTo,
+            value: entryID.uuidString
+        )
+        return await withCheckedContinuation { continuation in
+            let query = HKSampleQuery(
+                sampleType: HKQuantityType(.dietaryEnergyConsumed),
+                predicate: predicate,
+                limit: 1,
+                sortDescriptors: nil
+            ) { _, results, _ in
+                let sample = results?.first as? HKQuantitySample
+                let version = (sample?.metadata?[HealthFoodServingMetadata.versionKey] as? NSNumber)?.intValue ?? 0
+                continuation.resume(returning: version >= HealthFoodServingMetadata.schemaVersion)
+            }
+            healthStore.execute(query)
+        }
+    }
+
     private func deleteNutritionSamples(entryID: UUID) async {
         let predicate = HKQuery.predicateForObjects(withMetadataKey: "fudai_entry_id", operatorType: .equalTo, value: entryID.uuidString)
         await withTaskGroup(of: Void.self) { group in
@@ -811,10 +914,11 @@ class HealthKitManager {
     }
 
     private func writeMissingNutritionSamples(for entry: FoodEntry, limitedTo identifiers: Set<HKQuantityTypeIdentifier>) async {
-        let metadata: [String: Any] = [
+        var metadata = HealthFoodServingMetadata(entry: entry).dictionary
+        metadata.merge([
             "fudai_entry_id": entry.id.uuidString,
             HKMetadataKeyFoodType: entry.name,
-        ]
+        ]) { _, new in new }
         var samples: [HKQuantitySample] = []
         for quantity in nutritionQuantities(for: entry) where identifiers.contains(quantity.identifier) {
             guard isSharingAuthorized(quantity.identifier) else { continue }
@@ -1065,6 +1169,9 @@ class HealthKitManager {
                     if s.date < entry.date { entry.date = s.date }
                     if entry.name.isEmpty { entry.name = s.name }
                     entry.values[identifier] = s.value
+                    if entry.servingMetadata == nil {
+                        entry.servingMetadata = s.servingMetadata
+                    }
                     accumulated[s.entryID] = entry
                 }
             }
@@ -1087,8 +1194,10 @@ class HealthKitManager {
         var date: Date
         var name: String
         var values: [HKQuantityTypeIdentifier: Double] = [:]
+        var servingMetadata: HealthFoodServingMetadata?
 
         func foodEntry(id: UUID) -> FoodEntry {
+            let servingSize = servingMetadata?.servingSizeGrams
             return FoodEntry(
                 id: id,
                 name: name,
@@ -1118,7 +1227,15 @@ class HealthKitManager {
                 vitaminB12: values[.dietaryVitaminB12],
                 vitaminE: values[.dietaryVitaminE],
                 vitaminK: values[.dietaryVitaminK],
-                folate: values[.dietaryFolate]
+                folate: values[.dietaryFolate],
+                servingSizeGrams: servingSize,
+                servingUnitOptions: servingMetadata?.servingUnitOptions ?? [],
+                selectedServingUnit: servingSize == nil
+                    ? "serving"
+                    : servingMetadata?.selectedServingUnit,
+                selectedServingQuantity: servingSize == nil
+                    ? (servingMetadata?.selectedServingQuantity ?? 1)
+                    : servingMetadata?.selectedServingQuantity
             )
         }
     }
@@ -1127,7 +1244,15 @@ class HealthKitManager {
     /// the tagged UUID, food name, and value in the same unit
     /// nutritionQuantities(for:) uses for writes. Nil on query failure (vs []
     /// for genuinely no data) so the caller can retry instead of stamping done.
-    private func fetchTaggedNutritionSamples(_ identifier: HKQuantityTypeIdentifier) async -> [(entryID: UUID, name: String, value: Double, date: Date)]? {
+    private struct TaggedNutritionSample {
+        var entryID: UUID
+        var name: String
+        var value: Double
+        var date: Date
+        var servingMetadata: HealthFoodServingMetadata?
+    }
+
+    private func fetchTaggedNutritionSamples(_ identifier: HKQuantityTypeIdentifier) async -> [TaggedNutritionSample]? {
         let type = HKQuantityType(identifier)
         let unit = recoveryUnit(for: identifier)
         let predicate = HKQuery.predicateForObjects(withMetadataKey: "fudai_entry_id")
@@ -1138,11 +1263,17 @@ class HealthKitManager {
                     continuation.resume(returning: nil)
                     return
                 }
-                let mapped = samples.compactMap { sample -> (entryID: UUID, name: String, value: Double, date: Date)? in
+                let mapped = samples.compactMap { sample -> TaggedNutritionSample? in
                     guard let idString = sample.metadata?["fudai_entry_id"] as? String,
                           let entryID = UUID(uuidString: idString) else { return nil }
                     let name = sample.metadata?[HKMetadataKeyFoodType] as? String ?? ""
-                    return (entryID, name, sample.quantity.doubleValue(for: unit), sample.startDate)
+                    return TaggedNutritionSample(
+                        entryID: entryID,
+                        name: name,
+                        value: sample.quantity.doubleValue(for: unit),
+                        date: sample.startDate,
+                        servingMetadata: HealthFoodServingMetadata.decode(from: sample.metadata)
+                    )
                 }
                 continuation.resume(returning: mapped)
             }

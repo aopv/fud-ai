@@ -262,14 +262,22 @@ internal fun ServingQuantityCard(
     onSelectedUnitChange: (String) -> Unit,
     servingSizeGrams: Double,
     unitOptions: List<ServingUnitOption>,
+    allowGramUnit: Boolean = true,
+    showGramTotal: Boolean = true,
     menuExpanded: Boolean,
     onMenuExpandedChange: (Boolean) -> Unit,
     gramUnit: String
 ) {
-    val pickerOptions = ServingUnitOption.pickerOptions(unitOptions)
-    val selectedOption = ServingUnitOption.optionMatching(selectedUnitId, unitOptions)
+    val allPickerOptions = ServingUnitOption.pickerOptions(unitOptions)
+    val pickerOptions = if (allowGramUnit) allPickerOptions else allPickerOptions.filterNot { it.isGramUnit }
+    val selectedOption = pickerOptions.firstOrNull { it.id == selectedUnitId }
+        ?: pickerOptions.firstOrNull()
+        ?: ServingUnitOption.grams
     val parsedQuantity = ServingAmountExpression.evaluate(quantityText)
-    val selectedUnitLabel = selectedOption.displayUnit(parsedQuantity)
+    val servingLabel = stringResource(R.string.sheet_serving)
+    fun displayUnit(option: ServingUnitOption, quantity: Double?): String =
+        if (option.normalizedUnit == "serving") servingLabel else option.displayUnit(quantity)
+    val selectedUnitLabel = displayUnit(selectedOption, parsedQuantity)
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
     val dismissKeyboard = {
@@ -402,7 +410,8 @@ internal fun ServingQuantityCard(
                         menuWidth = 150.dp
                     ) {
                         for (option in pickerOptions) {
-                            val optionLabel = option.displayUnit(
+                            val optionLabel = displayUnit(
+                                option,
                                 if (option.id == selectedUnitId) parsedQuantity else null
                             )
                             SheetGlassDropdownMenuItem(
@@ -419,11 +428,11 @@ internal fun ServingQuantityCard(
                 }
             } else {
                 Text(
-                    gramUnit,
+                    selectedUnitLabel,
                     fontSize = 17.sp,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                     modifier = Modifier
-                        .width(24.dp)
+                        .widthIn(min = 24.dp, max = 88.dp)
                         .clickable { dismissKeyboard() }
                 )
             }
@@ -461,7 +470,7 @@ internal fun ServingQuantityCard(
             }
         }
 
-        if (!selectedOption.isGramUnit) {
+        if (showGramTotal && !selectedOption.isGramUnit) {
             SheetHairline()
             Row(
                 Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 12.dp),

@@ -1401,6 +1401,7 @@ struct HomeView: View {
                             servingUnitOptions: result.servingUnitOptions,
                             selectedServingUnit: result.selectedServingUnit,
                             selectedServingQuantity: result.selectedServingQuantity,
+                            servingSizeIsKnown: result.servingSizeIsKnown,
                             logDate: logDateForSelectedDay,
                             profile: userProfile,
                             dayEntries: foodStore.entries(for: logDateForSelectedDay),
@@ -1441,7 +1442,7 @@ struct HomeView: View {
                         protein: entry.protein,
                         carbs: entry.carbs,
                         fat: entry.fat,
-                        servingSizeGrams: entry.servingSizeGrams ?? 100,
+                        servingSizeGrams: entry.reviewServingReference,
                         emoji: entry.emoji,
                         sugar: entry.sugar,
                         addedSugar: entry.addedSugar,
@@ -1467,9 +1468,10 @@ struct HomeView: View {
                         vitaminK: entry.vitaminK,
                         folate: entry.folate,
                         omega3: entry.omega3,
-                        servingUnitOptions: entry.servingUnitOptions,
-                        selectedServingUnit: entry.selectedServingUnit,
-                        selectedServingQuantity: entry.selectedServingQuantity,
+                        servingUnitOptions: entry.reviewServingUnitOptions,
+                        selectedServingUnit: entry.reviewSelectedServingUnit,
+                        selectedServingQuantity: entry.reviewSelectedServingQuantity,
+                        servingSizeIsKnown: entry.hasKnownServingSize,
                         progressiveMeal: entry.progressiveMeal,
                         ingredients: entry.ingredients
                     )
@@ -3141,7 +3143,11 @@ struct FoodRow: View {
     @Environment(FoodStore.self) private var foodStore
 
     private var servingText: String? {
-        guard let grams = entry.servingSizeGrams else { return nil }
+        guard let grams = entry.servingSizeGrams else {
+            let quantity = entry.reviewSelectedServingQuantity ?? 1
+            let quantityText = ServingUnitEditor.formatQuantity(quantity)
+            return "\(quantityText) \(String(localized: "Serving"))"
+        }
         let formatted = grams == grams.rounded() ? "\(Int(grams))" : String(format: "%.1f", grams)
         if let selectedUnit = entry.selectedServingUnit,
            let quantity = entry.selectedServingQuantity,

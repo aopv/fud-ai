@@ -194,6 +194,13 @@ struct ServingUnitOption: Codable, Hashable, Identifiable {
     }
 
     static let grams = ServingUnitOption(unit: "g", gramsPerUnit: 1)
+    /// Internal unit used when a system-health restore contains the logged
+    /// nutrition totals but no recoverable food weight. The numeric basis is a
+    /// serving count, not grams; callers must keep `servingSizeGrams` nil when
+    /// persisting this option.
+    static func loggedServing(quantity: Double = 1) -> ServingUnitOption {
+        ServingUnitOption(unit: "serving", gramsPerUnit: 1, quantity: quantity)
+    }
 
     func quantity(for totalGrams: Double) -> Double {
         if let quantity, quantity > 0 {
@@ -355,6 +362,37 @@ struct FoodEntry: Identifiable, Codable {
     var customNote: String?
     var progressiveMeal: Bool
     var ingredients: [MealIngredient]
+
+    /// HealthKit/Health Connect can restore nutrition totals without restoring
+    /// the food's original mass. Keep that state explicit instead of silently
+    /// turning an unknown amount into 100 g in edit and re-log screens.
+    var hasKnownServingSize: Bool {
+        servingSizeGrams.map { $0.isFinite && $0 > 0 } ?? false
+    }
+
+    /// Working scale used by serving editors. For an unknown mass this is the
+    /// number of logged servings, so an unchanged edit keeps nutrition at 1x.
+    var reviewServingReference: Double {
+        if let servingSizeGrams, servingSizeGrams.isFinite, servingSizeGrams > 0 {
+            return servingSizeGrams
+        }
+        if let selectedServingQuantity, selectedServingQuantity.isFinite, selectedServingQuantity > 0 {
+            return selectedServingQuantity
+        }
+        return 1
+    }
+
+    var reviewServingUnitOptions: [ServingUnitOption] {
+        hasKnownServingSize ? servingUnitOptions : [.loggedServing(quantity: reviewServingReference)]
+    }
+
+    var reviewSelectedServingUnit: String? {
+        hasKnownServingSize ? selectedServingUnit : "serving"
+    }
+
+    var reviewSelectedServingQuantity: Double? {
+        hasKnownServingSize ? selectedServingQuantity : reviewServingReference
+    }
 
     nonisolated init(
         id: UUID = UUID(),

@@ -53,6 +53,8 @@ data class FoodAnalysis(
     val servingUnitOptions: List<ServingUnitOption> = emptyList(),
     val selectedServingUnit: String? = null,
     val selectedServingQuantity: Double? = null,
+    /** False for restored/legacy totals whose original food mass is unavailable. */
+    val servingSizeIsKnown: Boolean = true,
     val customNote: String? = null,
     val progressiveMeal: Boolean = false,
     val ingredients: List<MealIngredient> = emptyList()
@@ -210,7 +212,7 @@ internal object FoodJsonParser {
             ?: throw AiError.InvalidResponse
         val name = json.optString("name").takeIf { it.isNotEmpty() } ?: throw AiError.InvalidResponse
         val responseServingSizeGrams = optDouble(json, "serving_size_grams")
-        val servingSizeGrams = responseServingSizeGrams ?: 100.0
+        val servingSizeGrams = responseServingSizeGrams ?: 1.0
         val unitOptionsResult = parseServingUnitOptionsResult(extractedJson, responseServingSizeGrams)
         val unitOptions = unitOptionsResult.options
         val selectedOption = unitOptions.firstOrNull()
@@ -252,8 +254,9 @@ internal object FoodJsonParser {
             omega3 = optDouble("omega_3"),
             ingredients = parseIngredients(json),
             servingUnitOptions = unitOptions,
-            selectedServingUnit = selectedOption?.unit,
-            selectedServingQuantity = selectedOption?.quantityFor(servingSizeGrams)
+            selectedServingUnit = if (responseServingSizeGrams == null) "serving" else selectedOption?.unit,
+            selectedServingQuantity = if (responseServingSizeGrams == null) 1.0 else selectedOption?.quantityFor(servingSizeGrams),
+            servingSizeIsKnown = responseServingSizeGrams != null
         )
         return ParsedFoodResponse(
             analysis = analysis,

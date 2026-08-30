@@ -3,6 +3,17 @@ import Foundation
 @testable import calorietracker
 
 struct ServingUnitFallbackTests {
+    @Test func missingServingWeightRemainsUnknownInsteadOfBecomingOneHundredGrams() throws {
+        let analysis = try GeminiService.parseFoodAnalysis(
+            from: #"{"name":"Recovered meal","calories":420,"protein":30,"carbs":45,"fat":12}"#
+        )
+
+        #expect(!analysis.servingSizeIsKnown)
+        #expect(analysis.servingSizeGrams == 1)
+        #expect(analysis.selectedServingUnit == "serving")
+        #expect(analysis.selectedServingQuantity == 1)
+    }
+
     @Test func validNonemptyObjectArrayDoesNotRequireFallback() throws {
         let analysis = try GeminiService.parseFoodAnalysis(
             from: foodJSON(unitOptions: #"[{"unit":"slice","quantity":2,"grams_per_unit":60}]"#)

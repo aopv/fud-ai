@@ -38,6 +38,9 @@ struct GeminiService {
         var servingUnitOptions: [ServingUnitOption] = []
         var selectedServingUnit: String?
         var selectedServingQuantity: Double?
+        /// False only for a restored/legacy log whose nutrition totals are
+        /// known but whose original food mass was never recoverable.
+        var servingSizeIsKnown = true
         var requiresServingUnitFallback = false
         var progressiveMeal = false
         var ingredients: [MealIngredient] = []
@@ -1193,7 +1196,7 @@ struct GeminiService {
               let fat = (json["fat"] as? NSNumber)?.doubleValue
         else { throw AnalysisError.invalidResponse }
         let responseServingSizeGrams = (json["serving_size_grams"] as? NSNumber)?.doubleValue
-        let servingSizeGrams = responseServingSizeGrams ?? 100
+        let servingSizeGrams = responseServingSizeGrams ?? 1
         let parsedUnitOptions = parseInitialServingUnitOptions(
             from: json,
             servingSizeGrams: responseServingSizeGrams
@@ -1256,8 +1259,9 @@ struct GeminiService {
             folate: double("folate"),
             omega3: double("omega_3"),
             servingUnitOptions: parsedUnitOptions.options,
-            selectedServingUnit: selectedOption?.unit,
-            selectedServingQuantity: selectedOption?.quantity(for: servingSizeGrams),
+            selectedServingUnit: responseServingSizeGrams == nil ? "serving" : selectedOption?.unit,
+            selectedServingQuantity: responseServingSizeGrams == nil ? 1 : selectedOption?.quantity(for: servingSizeGrams),
+            servingSizeIsKnown: responseServingSizeGrams != nil,
             requiresServingUnitFallback: parsedUnitOptions.requiresFallback,
             ingredients: ingredients
         )

@@ -830,10 +830,11 @@ fun HomeScreen(
                 ?: ui.pendingFoodSource
                 ?: if (ui.pendingImageBytes != null) FoodSource.SNAP_FOOD else FoodSource.TEXT_INPUT,
             onWhatIfSuggestion = vm::suggestMealWhatIf,
-            onSave = { name, grams, scale, mealType, selectedServingUnit, selectedServingQuantity, editedAnalysis ->
+            onSave = { name, grams, servingSizeIsKnown, scale, mealType, selectedServingUnit, selectedServingQuantity, editedAnalysis ->
                 vm.saveAnalysis(
                     name = name,
                     servingGrams = grams,
+                    servingSizeIsKnown = servingSizeIsKnown,
                     scale = scale,
                     mealType = mealType,
                     selectedServingUnit = selectedServingUnit,
@@ -2148,6 +2149,14 @@ private fun FoodRow(
                                     else String.format("%.1fg", grams)
                     Text(
                         gramsText,
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                    )
+                } ?: run {
+                    Text("·", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f))
+                    val quantity = ServingUnitOption.formatQuantity(entry.reviewServingReference)
+                    Text(
+                        "$quantity ${stringResource(R.string.sheet_serving)}",
                         fontSize = 12.sp,
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                     )

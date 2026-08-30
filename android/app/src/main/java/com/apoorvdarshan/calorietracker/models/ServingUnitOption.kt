@@ -38,6 +38,14 @@ data class ServingUnitOption(
     companion object {
         val grams = ServingUnitOption(unit = "g", gramsPerUnit = 1.0)
 
+        /**
+         * Internal unit for a system-health restore whose nutrition totals are
+         * known but whose original food mass is not. Its numeric basis is a
+         * serving count, never a gram measurement.
+         */
+        fun loggedServing(quantity: Double = 1.0) =
+            ServingUnitOption(unit = "serving", gramsPerUnit = 1.0, quantity = quantity)
+
         fun normalizedOptions(options: List<ServingUnitOption>, totalGrams: Double): List<ServingUnitOption> {
             val seen = mutableSetOf<String>()
             val normalized = mutableListOf<ServingUnitOption>()

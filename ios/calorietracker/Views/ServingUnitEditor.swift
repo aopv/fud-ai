@@ -6,16 +6,20 @@ struct ServingUnitEditor: View {
     @Binding var selectedUnitID: String
 
     let unitOptions: [ServingUnitOption]
+    var allowsGramUnit = true
     let focusRequest: Int
     var onEditingChanged: (Bool) -> Void
     var onClear: () -> Void
 
     private var pickerOptions: [ServingUnitOption] {
-        ServingUnitOption.pickerOptions(for: unitOptions)
+        let options = ServingUnitOption.pickerOptions(for: unitOptions)
+        return allowsGramUnit ? options : options.filter { !$0.isGramUnit }
     }
 
     private var selectedOption: ServingUnitOption {
-        pickerOptions.first { $0.id == selectedUnitID } ?? .grams
+        pickerOptions.first { $0.id == selectedUnitID }
+            ?? pickerOptions.first
+            ?? .grams
     }
 
     private var selectedQuantity: Double? {
@@ -23,7 +27,7 @@ struct ServingUnitEditor: View {
     }
 
     private var selectedUnitLabel: String {
-        selectedOption.displayUnit(for: selectedQuantity)
+        displayUnit(for: selectedOption, quantity: selectedQuantity)
     }
 
     var body: some View {
@@ -63,7 +67,7 @@ struct ServingUnitEditor: View {
                         Button {
                             selectedUnitID = option.id
                         } label: {
-                            Text(option.displayUnit(for: option.id == selectedUnitID ? selectedQuantity : nil))
+                            Text(displayUnit(for: option, quantity: option.id == selectedUnitID ? selectedQuantity : nil))
                         }
                     }
                 } label: {
@@ -81,11 +85,21 @@ struct ServingUnitEditor: View {
                 .buttonStyle(.plain)
                 .fixedSize(horizontal: true, vertical: false)
             } else {
-                Text("g")
+                Text(selectedUnitLabel)
                     .foregroundStyle(.secondary)
-                    .frame(width: 36, alignment: .leading)
+                    .frame(
+                        width: selectedOption.normalizedUnit == "serving" ? 90 : 36,
+                        alignment: .leading
+                    )
             }
         }
+    }
+
+    private func displayUnit(for option: ServingUnitOption, quantity: Double?) -> String {
+        if option.normalizedUnit == "serving" {
+            return String(localized: "Serving")
+        }
+        return option.displayUnit(for: quantity)
     }
 
     private func syncQuantityTextToSelectedUnit() {

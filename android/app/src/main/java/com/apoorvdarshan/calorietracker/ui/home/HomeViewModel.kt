@@ -430,6 +430,7 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
     fun saveAnalysis(
         name: String? = null,
         servingGrams: Double? = null,
+        servingSizeIsKnown: Boolean = true,
         scale: Double = 1.0,
         mealType: MealType = MealType.currentMeal,
         selectedServingUnit: String? = null,
@@ -500,10 +501,22 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
                     vitaminK = s(analysis.vitaminK),
                     folate = s(analysis.folate),
                     omega3 = s(analysis.omega3),
-                    servingSizeGrams = servingGrams ?: analysis.servingSizeGrams,
-                    servingUnitOptions = analysis.servingUnitOptions,
-                    selectedServingUnit = if (analysis.servingUnitOptions.isEmpty()) null else selectedServingUnit,
-                    selectedServingQuantity = if (analysis.servingUnitOptions.isEmpty()) null else selectedServingQuantity,
+                    servingSizeGrams = if (servingSizeIsKnown) {
+                        servingGrams ?: analysis.servingSizeGrams
+                    } else {
+                        null
+                    },
+                    servingUnitOptions = if (servingSizeIsKnown) analysis.servingUnitOptions else emptyList(),
+                    selectedServingUnit = if (servingSizeIsKnown) {
+                        if (analysis.servingUnitOptions.isEmpty()) null else selectedServingUnit
+                    } else {
+                        "serving"
+                    },
+                    selectedServingQuantity = if (servingSizeIsKnown) {
+                        if (analysis.servingUnitOptions.isEmpty()) null else selectedServingQuantity
+                    } else {
+                        selectedServingQuantity
+                    },
                     customNote = analysis.customNote,
                     progressiveMeal = analysis.progressiveMeal,
                     ingredients = analysis.ingredients.map { it.scaled(scale) }
@@ -786,8 +799,8 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
 /**
  * Map a logged FoodEntry back into a FoodAnalysis so the FoodResultSheet
  * (which only knows how to render a FoodAnalysis) can review a saved meal
- * before re-logging. The serving size defaults to 100g if the original entry
- * didn't record one — same fallback as EditFoodEntrySheet.
+ * before re-logging. A missing original mass is represented as one logged
+ * serving, never as a fabricated 100g amount.
  */
 private fun FoodEntry.toAnalysis(): FoodAnalysis = FoodAnalysis(
     name = name,
@@ -795,7 +808,7 @@ private fun FoodEntry.toAnalysis(): FoodAnalysis = FoodAnalysis(
     protein = protein,
     carbs = carbs,
     fat = fat,
-    servingSizeGrams = servingSizeGrams ?: 100.0,
+    servingSizeGrams = reviewServingReference,
     emoji = emoji,
     sugar = sugar,
     addedSugar = addedSugar,
@@ -821,9 +834,10 @@ private fun FoodEntry.toAnalysis(): FoodAnalysis = FoodAnalysis(
     vitaminK = vitaminK,
     folate = folate,
     omega3 = omega3,
-    servingUnitOptions = servingUnitOptions,
-    selectedServingUnit = selectedServingUnit,
-    selectedServingQuantity = selectedServingQuantity,
+    servingUnitOptions = reviewServingUnitOptions,
+    selectedServingUnit = reviewSelectedServingUnit,
+    selectedServingQuantity = reviewSelectedServingQuantity,
+    servingSizeIsKnown = hasKnownServingSize,
     customNote = customNote,
     progressiveMeal = progressiveMeal,
     ingredients = ingredients

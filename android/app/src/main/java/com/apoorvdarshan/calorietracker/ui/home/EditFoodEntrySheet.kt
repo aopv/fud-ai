@@ -117,15 +117,20 @@ fun EditFoodEntrySheet(
     var ingredientEditor by remember { mutableStateOf<IngredientEditorTarget?>(null) }
     val scope = rememberCoroutineScope()
 
-    val baseServing = currentBaseEntry.servingSizeGrams ?: 100.0
-    val servingUnitOptions = remember(currentBaseEntry.servingUnitOptions, baseServing) {
-        ServingUnitOption.normalizedOptions(currentBaseEntry.servingUnitOptions, baseServing)
+    val servingSizeIsKnown = currentBaseEntry.hasKnownServingSize
+    val baseServing = currentBaseEntry.reviewServingReference
+    val servingUnitOptions = remember(currentBaseEntry.servingUnitOptions, baseServing, servingSizeIsKnown) {
+        if (servingSizeIsKnown) {
+            ServingUnitOption.normalizedOptions(currentBaseEntry.servingUnitOptions, baseServing)
+        } else {
+            currentBaseEntry.reviewServingUnitOptions
+        }
     }
     var name by remember(currentBaseEntry) { mutableStateOf(currentBaseEntry.name) }
-    val initialServingUnit = if (preferGramsByDefault) {
+    val initialServingUnit = if (servingSizeIsKnown && preferGramsByDefault) {
         ServingUnitOption.grams.unit
     } else {
-        currentBaseEntry.selectedServingUnit
+        currentBaseEntry.reviewSelectedServingUnit
     }
     var selectedServingUnitId by remember(currentBaseEntry, servingUnitOptions, preferGramsByDefault) {
         mutableStateOf(ServingUnitOption.initialUnitId(initialServingUnit, servingUnitOptions))
@@ -136,7 +141,7 @@ fun EditFoodEntrySheet(
             ServingUnitOption.initialQuantityText(
                 totalGrams = baseServing,
                 selectedUnitId = selectedServingUnitId,
-                selectedQuantity = currentBaseEntry.selectedServingQuantity,
+                selectedQuantity = currentBaseEntry.reviewSelectedServingQuantity,
                 options = servingUnitOptions
             )
         )
@@ -220,10 +225,18 @@ fun EditFoodEntrySheet(
         vitaminK = scaledD(currentBaseEntry.vitaminK),
         folate = scaledD(currentBaseEntry.folate),
         omega3 = scaledD(currentBaseEntry.omega3),
-        servingSizeGrams = servingGrams,
-        servingUnitOptions = servingUnitOptions,
-        selectedServingUnit = if (servingUnitOptions.isEmpty()) null else selectedServingOption.unit,
-        selectedServingQuantity = if (servingUnitOptions.isEmpty()) null else selectedServingQuantity,
+        servingSizeGrams = servingGrams.takeIf { servingSizeIsKnown },
+        servingUnitOptions = if (servingSizeIsKnown) servingUnitOptions else emptyList(),
+        selectedServingUnit = if (servingSizeIsKnown) {
+            if (servingUnitOptions.isEmpty()) null else selectedServingOption.unit
+        } else {
+            "serving"
+        },
+        selectedServingQuantity = if (servingSizeIsKnown) {
+            if (servingUnitOptions.isEmpty()) null else selectedServingQuantity
+        } else {
+            selectedServingQuantity
+        },
         ingredients = scaledIngredients()
     )
 
@@ -265,10 +278,22 @@ fun EditFoodEntrySheet(
                     vitaminK = newAnalysis.vitaminK,
                     folate = newAnalysis.folate,
                     omega3 = newAnalysis.omega3,
-                    servingSizeGrams = newAnalysis.servingSizeGrams,
-                    servingUnitOptions = newAnalysis.servingUnitOptions,
-                    selectedServingUnit = newAnalysis.selectedServingUnit,
-                    selectedServingQuantity = newAnalysis.selectedServingQuantity,
+                    servingSizeGrams = newAnalysis.servingSizeGrams.takeIf { newAnalysis.servingSizeIsKnown },
+                    servingUnitOptions = if (newAnalysis.servingSizeIsKnown) {
+                        newAnalysis.servingUnitOptions
+                    } else {
+                        emptyList()
+                    },
+                    selectedServingUnit = if (newAnalysis.servingSizeIsKnown) {
+                        newAnalysis.selectedServingUnit
+                    } else {
+                        "serving"
+                    },
+                    selectedServingQuantity = if (newAnalysis.servingSizeIsKnown) {
+                        newAnalysis.selectedServingQuantity
+                    } else {
+                        newAnalysis.selectedServingQuantity ?: 1.0
+                    },
                     customNote = noteText.trim().takeIf { it.isNotEmpty() },
                     emoji = newAnalysis.emoji,
                     ingredients = newAnalysis.ingredients
@@ -438,6 +463,8 @@ fun EditFoodEntrySheet(
                     },
                     servingSizeGrams = servingGrams,
                     unitOptions = servingUnitOptions,
+                    allowGramUnit = servingSizeIsKnown,
+                    showGramTotal = servingSizeIsKnown,
                     menuExpanded = servingMenuExpanded,
                     onMenuExpandedChange = { servingMenuExpanded = it },
                     gramUnit = stringResource(R.string.unit_g)

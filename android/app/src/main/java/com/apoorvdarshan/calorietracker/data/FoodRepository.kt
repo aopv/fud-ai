@@ -274,7 +274,12 @@ class FoodRepository(
                 vitaminB12 = record.vitaminB12,
                 vitaminE = record.vitaminE,
                 vitaminK = record.vitaminK,
-                folate = record.folate
+                folate = record.folate,
+                // Health Connect NutritionRecord exposes nutrient totals but
+                // no food-mass/custom-metadata field. Preserve that truth as
+                // one logged serving instead of fabricating 100 grams.
+                selectedServingUnit = "serving",
+                selectedServingQuantity = 1.0
             )
         }
         if (restored.isEmpty()) return

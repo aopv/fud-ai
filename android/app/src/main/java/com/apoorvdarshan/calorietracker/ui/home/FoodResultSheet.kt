@@ -92,6 +92,7 @@ fun FoodResultSheet(
     onSave: (
         name: String,
         servingGrams: Double,
+        servingSizeIsKnown: Boolean,
         scale: Double,
         mealType: MealType,
         selectedServingUnit: String?,
@@ -108,10 +109,17 @@ fun FoodResultSheet(
         confirmValueChange = { it != SheetValue.Hidden }
     )
     var name by remember { mutableStateOf(analysis.name) }
-    val servingUnitOptions = remember(analysis.servingUnitOptions, analysis.servingSizeGrams) {
-        ServingUnitOption.normalizedOptions(analysis.servingUnitOptions, analysis.servingSizeGrams)
+    var servingSizeIsKnown by remember(analysis) { mutableStateOf(analysis.servingSizeIsKnown) }
+    var servingUnitOptions by remember(analysis.servingUnitOptions, analysis.servingSizeGrams, analysis.servingSizeIsKnown) {
+        mutableStateOf(
+            if (analysis.servingSizeIsKnown) {
+                ServingUnitOption.normalizedOptions(analysis.servingUnitOptions, analysis.servingSizeGrams)
+            } else {
+                listOf(ServingUnitOption.loggedServing(analysis.servingSizeGrams))
+            }
+        )
     }
-    val initialServingUnit = if (preferGramsByDefault) {
+    val initialServingUnit = if (servingSizeIsKnown && preferGramsByDefault) {
         ServingUnitOption.grams.unit
     } else {
         analysis.selectedServingUnit
@@ -201,6 +209,8 @@ fun FoodResultSheet(
             servingGrams = totals.grams
             servingQuantityText = ServingUnitOption.formatQuantity(totals.grams)
             selectedServingUnitId = ServingUnitOption.grams.unit
+            servingUnitOptions = emptyList()
+            servingSizeIsKnown = true
         }
     }
     fun editedAnalysis() = analysis.copy(
@@ -234,6 +244,18 @@ fun FoodResultSheet(
         folate = editableFolate,
         omega3 = editableOmega3,
         servingSizeGrams = baseServingGrams,
+        servingUnitOptions = if (servingSizeIsKnown) servingUnitOptions else emptyList(),
+        selectedServingUnit = if (servingSizeIsKnown) {
+            if (servingUnitOptions.isEmpty()) null else selectedServingOption.unit
+        } else {
+            "serving"
+        },
+        selectedServingQuantity = if (servingSizeIsKnown) {
+            if (servingUnitOptions.isEmpty()) null else selectedServingQuantity
+        } else {
+            selectedServingQuantity
+        },
+        servingSizeIsKnown = servingSizeIsKnown,
         ingredients = editableIngredients
     )
     fun previewEntry() = FoodEntry(
@@ -271,10 +293,18 @@ fun FoodResultSheet(
         vitaminK = scaledD(editableVitaminK),
         folate = scaledD(editableFolate),
         omega3 = scaledD(editableOmega3),
-        servingSizeGrams = servingGrams,
-        servingUnitOptions = analysis.servingUnitOptions,
-        selectedServingUnit = if (servingUnitOptions.isEmpty()) null else selectedServingOption.unit,
-        selectedServingQuantity = if (servingUnitOptions.isEmpty()) null else selectedServingQuantity,
+        servingSizeGrams = servingGrams.takeIf { servingSizeIsKnown },
+        servingUnitOptions = if (servingSizeIsKnown) servingUnitOptions else emptyList(),
+        selectedServingUnit = if (servingSizeIsKnown) {
+            if (servingUnitOptions.isEmpty()) null else selectedServingOption.unit
+        } else {
+            "serving"
+        },
+        selectedServingQuantity = if (servingSizeIsKnown) {
+            if (servingUnitOptions.isEmpty()) null else selectedServingQuantity
+        } else {
+            selectedServingQuantity
+        },
         ingredients = scaledIngredients()
     )
     var whatIfEntry by remember { mutableStateOf<FoodEntry?>(null) }
@@ -295,6 +325,7 @@ fun FoodResultSheet(
                 onSave(
                     name.trim().ifEmpty { analysis.name },
                     servingGrams,
+                    servingSizeIsKnown,
                     scale,
                     mealType,
                     if (servingUnitOptions.isEmpty()) null else selectedServingOption.unit,
@@ -397,6 +428,8 @@ fun FoodResultSheet(
                     },
                     servingSizeGrams = servingGrams,
                     unitOptions = servingUnitOptions,
+                    allowGramUnit = servingSizeIsKnown,
+                    showGramTotal = servingSizeIsKnown,
                     menuExpanded = servingMenuExpanded,
                     onMenuExpandedChange = { servingMenuExpanded = it },
                     gramUnit = stringResource(R.string.unit_g)

@@ -68,6 +68,16 @@ enum MealShare {
         put("vitaminB12", e.vitaminB12); put("vitaminE", e.vitaminE); put("vitaminK", e.vitaminK)
         put("folate", e.folate); put("omega3", e.omega3)
         put("servingSizeGrams", e.servingSizeGrams)
+        if !e.servingUnitOptions.isEmpty {
+            d["servingUnitOptions"] = e.servingUnitOptions.map { option in
+                var value: [String: Any] = [
+                    "unit": option.unit,
+                    "gramsPerUnit": option.gramsPerUnit,
+                ]
+                if let quantity = option.quantity { value["quantity"] = quantity }
+                return value
+            }
+        }
         if let unit = e.selectedServingUnit { d["selectedServingUnit"] = unit }
         put("selectedServingQuantity", e.selectedServingQuantity)
         if let note = e.customNote { d["customNote"] = note }
@@ -132,6 +142,18 @@ enum MealShare {
                 fat: (item["fat"] as? NSNumber)?.doubleValue ?? 0
             )
         }
+        let servingUnitOptions = (d["servingUnitOptions"] as? [[String: Any]] ?? []).compactMap { item -> ServingUnitOption? in
+            guard let unit = (item["unit"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines),
+                  !unit.isEmpty,
+                  let gramsPerUnit = (item["gramsPerUnit"] as? NSNumber)?.doubleValue,
+                  gramsPerUnit > 0
+            else { return nil }
+            return ServingUnitOption(
+                unit: unit,
+                gramsPerUnit: gramsPerUnit,
+                quantity: (item["quantity"] as? NSNumber)?.doubleValue
+            )
+        }
         return FoodEntry(
             name: name,
             calories: calories,
@@ -154,7 +176,7 @@ enum MealShare {
             vitaminB12: dbl("vitaminB12"), vitaminE: dbl("vitaminE"), vitaminK: dbl("vitaminK"),
             folate: dbl("folate"), omega3: dbl("omega3"),
             servingSizeGrams: dbl("servingSizeGrams"),
-            servingUnitOptions: [],
+            servingUnitOptions: servingUnitOptions,
             selectedServingUnit: d["selectedServingUnit"] as? String,
             selectedServingQuantity: dbl("selectedServingQuantity"),
             customNote: d["customNote"] as? String,
