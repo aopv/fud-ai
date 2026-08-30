@@ -53,10 +53,8 @@ enum class ActivityLevel {
         EXTRA_ACTIVE -> 2.2
     }
 
-    fun proteinRequirementPerKg(bodyFatPercentage: Double? = null, extra: Double = 0.0): Double {
-        val bodyweightEquivalent = proteinPerKg + extra
-        val leanMassFraction = bodyFatPercentage?.let { (1.0 - it).coerceIn(0.05, 1.0) }
-            ?: return bodyweightEquivalent
-        return bodyweightEquivalent / leanMassFraction
-    }
+    /** Full-bodyweight protein target in grams per kilogram. The published activity rates above
+     *  are already bodyweight equivalents; body-fat data must not silently reinterpret them as
+     *  lean-mass rates. */
+    fun proteinRequirementPerKg(extra: Double = 0.0): Double = proteinPerKg + extra
 }

@@ -4,6 +4,7 @@ import com.apoorvdarshan.calorietracker.models.ServingUnitOption
 import com.apoorvdarshan.calorietracker.models.OptionalNutrientGoals
 import com.apoorvdarshan.calorietracker.models.MealIngredient
 import com.apoorvdarshan.calorietracker.models.SupplementalNutrient
+import com.apoorvdarshan.calorietracker.models.UserProfile
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
@@ -439,22 +440,70 @@ internal object FoodJsonParser {
         )
     }
 
-    fun parseGoalCalculation(text: String): GoalCalculation {
-        val json = runCatching { JSONObject(extractJson(text)) }.getOrNull()
-            ?: throw AiError.InvalidResponse
-        fun intOf(key: String): Int? = when (val value = json.opt(key)) {
-            is Number -> value.toDouble().roundToInt()
-            is String -> value.toDoubleOrNull()?.roundToInt()
-            else -> null
+    fun parseGoalCalculation(text: String, profile: UserProfile? = null): GoalCalculation {
+        val json = runCatching { Json.parseToJsonElement(extractJson(text)) as? JsonObject }
+            .getOrNull() ?: throw AiError.InvalidResponse
+        fun numberOf(key: String): Double? = (json[key] as? JsonPrimitive)
+            ?.content
+            ?.toDoubleOrNull()
+            ?.takeIf { it.isFinite() }
+        val rawCalories = numberOf("calories") ?: throw AiError.InvalidResponse
+        val rawProtein = numberOf("protein") ?: throw AiError.InvalidResponse
+        val rawCarbs = numberOf("carbs") ?: throw AiError.InvalidResponse
+        val rawFat = numberOf("fat") ?: throw AiError.InvalidResponse
+        // Bad provider output must leave the user's existing targets untouched. Do not silently
+        // turn negative, zero-macro, extreme, or internally incoherent JSON into a plausible plan.
+        if (rawCalories !in 800.0..6_000.0 || rawProtein !in 10.0..500.0 ||
+            rawCarbs !in 0.0..1_500.0 || rawFat !in 10.0..400.0
+        ) throw AiError.InvalidResponse
+        val reportedMacroCalories = rawProtein * 4 + rawCarbs * 4 + rawFat * 9
+        val allowedMismatch = maxOf(100.0, rawCalories * 0.15)
+        if (kotlin.math.abs(reportedMacroCalories - rawCalories) > allowedMismatch) {
+            throw AiError.InvalidResponse
         }
-        val calories = intOf("calories") ?: throw AiError.InvalidResponse
-        fun macro(key: String, cap: Int): Int = (intOf(key) ?: 0).coerceIn(0, cap)
+
+        val calories = rawCalories.roundToInt()
+        var protein = minOf(rawProtein.roundToInt(), calories / 4)
+        // Derive the stored carb value from the validated calories, protein and fat so the saved
+        // plan satisfies 4P + 4C + 9F exactly after integer rounding.
+        val requestedFat = rawFat.roundToInt()
+
+        val requiredFatResidue = Math.floorMod(calories, 4)
+        var fatCapacity = (calories - protein * 4) / 9
+        while (fatCapacity < requiredFatResidue && protein > 0) {
+            protein -= 1
+            fatCapacity = (calories - protein * 4) / 9
+        }
+        fatCapacity = minOf(fatCapacity, 400)
+        val targetFat = requestedFat.coerceAtMost(fatCapacity)
+        val lowerFat = targetFat - Math.floorMod(targetFat - requiredFatResidue, 4)
+        val upperFat = lowerFat + 4
+        val fat = listOf(lowerFat, upperFat)
+            .filter { it in 0..fatCapacity }
+            .minByOrNull { kotlin.math.abs(it - targetFat) }
+            ?: requiredFatResidue.coerceAtMost(fatCapacity)
+        val carbs = (calories - protein * 4 - fat * 9) / 4
+        if (protein < 10 || fat < 10 || carbs < 0) throw AiError.InvalidResponse
+        if (profile != null) {
+            val proteinReference = maxOf(10, profile.proteinGoal)
+            val fatReference = maxOf(10, profile.fatGoal)
+            val proteinRange = (proteinReference * 0.70).roundToInt()..(proteinReference * 1.30).roundToInt()
+            val fatRange = (fatReference * 0.50).roundToInt()..(fatReference * 1.50).roundToInt()
+            if (protein !in proteinRange || fat !in fatRange) throw AiError.InvalidResponse
+            val calorieReference = profile.dailyCalories.coerceIn(800, 6_000)
+            val calorieRange = maxOf(800, (calorieReference * 0.50).roundToInt())..
+                minOf(6_000, (calorieReference * 2.00).roundToInt())
+            if (calories !in calorieRange) throw AiError.InvalidResponse
+        }
         return GoalCalculation(
-            calories = calories.coerceIn(800, 6000),
-            protein = macro("protein", 500),
-            carbs = macro("carbs", 1200),
-            fat = macro("fat", 400),
-            reason = json.optString("reason").takeIf { it.isNotBlank() }
+            calories = calories,
+            protein = protein,
+            carbs = carbs.coerceIn(0, 1500),
+            fat = fat,
+            reason = (json["reason"] as? JsonPrimitive)
+                ?.takeIf { it.isString }
+                ?.content
+                ?.takeIf { it.isNotBlank() }
         )
     }
 

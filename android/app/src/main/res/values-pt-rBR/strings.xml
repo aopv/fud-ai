@@ -643,7 +643,7 @@
     <string name="widget_all_metrics_label">Fud AI Hoje</string>
     <string name="widget_all_metrics_description">Veja calorias, proteínas, carboidratos e gordura de hoje em um widget.</string>
     <string name="settings_needs_health_connect">Requer Health Connect</string>
-    <string name="settings_energy_goals_info">Quando ativado, o Fud AI usa suas calorias queimadas medidas pelo Health Connect — uma média de 14 dias de energia ativa + basal — como âncora de manutenção (TDEE) ao calcular metas, em vez da estimativa por fórmula. Nenhuma IA é usada para ler seu gasto. Requer Health Connect. Funciona com o botão Recalcular e com o Adaptive Goals.</string>
+    <string name="settings_energy_goals_info">Quando ativado, o Fud AI usa a janela recente de energia medida do Health Connect como referência de manutenção ao calcular metas, em vez da estimativa por fórmula: energia total medida quando houver dias suficientes; caso contrário, média da energia ativa medida + BMR da fórmula. Nenhuma IA é usada para ler seu gasto. Requer Health Connect. Funciona com o botão Recalcular e com o Adaptive Goals.</string>
     <string name="settings_adaptive_goals_info">Cerca de uma vez por semana, ao abrir o app, o Fud AI reexecuta automaticamente o cálculo completo de metas — o mesmo do botão Recalcular — com base no seu perfil, nas refeições registradas recentemente e na tendência de peso. Se o Energy Burn estiver ativado, usa seu gasto medido como âncora de manutenção. Se a IA estiver indisponível, a execução é ignorada silenciosamente. Ao desativar, são restauradas as metas de antes da primeira alteração feita por este recurso. Isto não é aconselhamento médico.</string>
     <string name="ad_label">Anúncio</string>
     <string name="onboarding_plan_adaptive_note">Seu plano se ajusta automaticamente toda semana conforme você registra — desative o Adaptive Goals em Ajustes para mantê-lo fixo.</string>
@@ -698,4 +698,35 @@
     <string name="notif_fasting_goal_title">Meta de jejum atingida</string>
     <string name="notif_fasting_goal_text">Você atingiu sua meta de jejum de %1$s. Encerre o jejum quando estiver pronto.</string>
     <string name="home_menu_barcode">Código de barras</string>
+    <string name="settings_calc_methods">Métodos de cálculo</string>
+    <string name="settings_calc_calorie_target">Meta de calorias para o objetivo</string>
+    <string name="settings_calc_maintenance">Manutenção e ajuste da meta</string>
+    <string name="settings_calc_macro_split">Divisão de macronutrientes</string>
+    <string name="settings_calc_micro_values">Valores de micronutrientes</string>
+    <string name="settings_calc_intro">Suas metas diárias de calorias e macros são definidas por IA. Quando você toca em «Recalcular metas» — ou automaticamente cerca de uma vez por semana se Metas adaptativas estiver ativado — o Fud AI envia ao seu provedor de IA seu perfil, as equações de referência abaixo, totais nutricionais diários agregados com proteção de privacidade, medições exatas e datadas de peso, gordura corporal e circunferências feitas com fita métrica, dados agregados dos treinos — quantidade, duração, séries e repetições — e dados opcionais de energia do Health Connect. Nomes de alimentos, notas, fotos, ingredientes e nomes de exercícios não são enviados para este cálculo. A IA parte dessas fórmulas revisadas por pares e as ajusta aos seus dados reais para estimar sua verdadeira manutenção e suas metas.</string>
+    <string name="settings_calc_sec_bmr">Metabolismo basal (BMR)</string>
+    <string name="settings_calc_sec_tdee">Gasto energético diário (TDEE)</string>
+    <string name="settings_calc_mifflin_name">Equação de Mifflin-St Jeor</string>
+    <string name="settings_calc_mifflin_used">Fórmula padrão para o metabolismo de repouso. Usada quando a gordura corporal não está disponível.</string>
+    <string name="settings_calc_mifflin_formula">Homens: 10×peso(kg) + 6,25×altura(cm) − 5×idade + 5\nMulheres: 10×peso(kg) + 6,25×altura(cm) − 5×idade − 161</string>
+    <string name="settings_calc_katch_name">Equação de Katch-McArdle</string>
+    <string name="settings_calc_katch_used">Usada sempre que você informa um percentual de gordura corporal. Ela calcula o BMR a partir da massa corporal magra, e não do peso total.</string>
+    <string name="settings_calc_katch_formula">BMR = 370 + 21,6 × MCM(kg)\nMCM = peso × (1 − percentual de gordura corporal)</string>
+    <string name="settings_calc_tdee_name">Método do multiplicador de atividade</string>
+    <string name="settings_calc_tdee_used">TDEE = BMR × multiplicador de atividade. O multiplicador corresponde ao nível de atividade selecionado. Esta é a base de manutenção calculada pela fórmula. Quando o Energy Burn está ativado, o cálculo usa em vez disso a janela recente de energia medida do Health Connect: energia total medida quando houver dias suficientes; caso contrário, média da energia ativa medida + BMR da fórmula.</string>
+    <string name="settings_calc_tdee_formula">Sedentário: 1,2 · Leve: 1,375 · Moderado: 1,465 · Ativo: 1,55 · Muito ativo: 1,725 · Extremamente ativo: 1,9</string>
+    <string name="settings_calc_target_name">Manutenção e ajuste da meta</string>
+    <string name="settings_calc_target_used">A manutenção parte do seu TDEE ou, quando o Energy Burn está ativado, da janela recente de energia medida do Health Connect em vez da estimativa da fórmula: energia total medida quando houver dias suficientes; caso contrário, média da energia ativa medida + BMR da fórmula. A IA refina a manutenção usando a ingestão registrada e a tendência do peso e depois aplica sua meta: uma taxa semanal de mudança de peso vira um déficit calórico diário para perder peso ou um superávit para ganhar.</string>
+    <string name="settings_calc_target_formula">1 lb de gordura corporal ≈ 3.500 kcal · 1 kg ≈ 7.700 kcal\nSua taxa semanal ÷ 7 é subtraída da manutenção para perder peso ou adicionada para ganhar, definindo a meta diária de calorias.</string>
+    <string name="settings_calc_split_name">Metas de proteínas, carboidratos e gorduras</string>
+    <string name="settings_calc_split_used">A IA ajusta proteínas, carboidratos e gorduras à sua meta de calorias usando estas referências como guia. A proteína usa taxas por nível de atividade aplicadas ao peso corporal total; a gordura é definida a partir do peso corporal; os carboidratos completam o restante. Você pode bloquear qualquer valor ou editá-lo nos Ajustes.</string>
+    <string name="settings_calc_split_formula">Proteína: cerca de 0,8–2,2 g por kg conforme o nível de atividade, um pouco mais ao perder peso\nGordura: cerca de 0,6 g por kg de peso corporal\nCarboidratos: calorias restantes ÷ 4 kcal/g</string>
+    <string name="settings_calc_micro_name">Estimativas por refeição</string>
+    <string name="settings_calc_micro_used">Calorias, macros, fibras, açúcar, gordura saturada, colesterol, cafeína, sódio, potássio e outros valores nutricionais detalhados de cada refeição são estimativas geradas por IA a partir da foto do alimento, da transcrição de voz ou da descrição em texto, usando o provedor de IA selecionado.</string>
+    <string name="settings_calc_mifflin_citation">Mifflin MD, St Jeor ST, et al. (1990). “Uma nova equação preditiva para o gasto energético de repouso em indivíduos saudáveis.” Am J Clin Nutr 51(2):241–247.</string>
+    <string name="settings_calc_katch_citation">McArdle WD, Katch FI, Katch VL. Fisiologia do exercício: nutrição, energia e desempenho humano, 7ª ed. Lippincott Williams &amp; Wilkins, 2010.</string>
+    <string name="settings_calc_tdee_citation">Coeficientes PAL (nível de atividade física) padrão da consulta conjunta de especialistas FAO/WHO/UNU sobre as necessidades energéticas humanas (2001). Também são amplamente usados pelo ACSM e nas Diretrizes Alimentares do USDA.</string>
+    <string name="settings_calc_target_citation">Hall KD, et al. (2011). “Quantificação do efeito do desequilíbrio energético sobre o peso corporal.” Lancet 378(9793):826–837. A regra clássica de 3.500 kcal por libra tem origem em Wishnofsky M (1958), Am J Clin Nutr 6:542–546.</string>
+    <string name="settings_calc_split_citation">Morton RW, et al. (2018). “Revisão sistemática, meta-análise e meta-regressão do efeito da suplementação proteica sobre os ganhos de massa muscular e força induzidos pelo treinamento resistido.” Br J Sports Med 52(6):376–384.</string>
+    <string name="settings_calc_micro_citation">As estimativas se baseiam nos dados de treinamento do modelo de IA subjacente (USDA FoodData Central, rótulos de fabricantes e literatura científica). A precisão varia conforme o alimento, a visibilidade do tamanho da porção e o modelo do provedor. Sempre confira os rótulos dos alimentos que você registra com frequência.</string>
 </resources>

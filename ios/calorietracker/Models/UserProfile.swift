@@ -1,5 +1,11 @@
 import Foundation
 
+enum GoalEnergyMath {
+    /// Approximate energy content used consistently for both requested weekly
+    /// weight change and observed weight-trend maintenance estimates.
+    static let kilocaloriesPerKilogram = 7_700.0
+}
+
 // MARK: - Enums
 
 enum Gender: String, Codable, CaseIterable {
@@ -41,12 +47,11 @@ enum ActivityLevel: String, Codable, CaseIterable {
         }
     }
 
-    func proteinRequirementPerKg(bodyFatPercentage: Double? = nil, extra: Double = 0.0) -> Double {
-        let bodyweightEquivalent = proteinPerKg + extra
-        guard let bodyFatPercentage else { return bodyweightEquivalent }
-
-        let leanMassFraction = max(0.05, min(1.0, 1.0 - bodyFatPercentage))
-        return bodyweightEquivalent / leanMassFraction
+    func proteinRequirementPerKg(bodyFatPercentage _: Double? = nil, extra: Double = 0.0) -> Double {
+        // These activity rates are expressed as grams per kilogram of full
+        // bodyweight. `bodyFatPercentage` remains in the signature for source
+        // compatibility, but must not silently reinterpret them as lean-mass rates.
+        proteinPerKg + extra
     }
 
 
@@ -205,15 +210,16 @@ struct UserProfile: Codable, Equatable {
         Calendar.current.dateComponents([.year], from: birthday, to: Date()).year ?? 25
     }
 
-    /// Whether BMR currently uses Katch-McArdle. Centralized accessor — read
-    /// this everywhere instead of the raw `useBodyFatInBMR` Bool? so the
-    /// nil-default-true semantics stay in one place.
+    /// Whether BMR currently uses Katch-McArdle. The current product automatically uses it
+    /// whenever body fat is known.
+    /// `useBodyFatInBMR` remains decode-compatible with older saved profiles but is not an
+    /// editable setting and therefore must not strand users on an invisible legacy value.
     var usesBodyFatForBMR: Bool {
         bodyFatPercentage != nil
     }
 
     var bmr: Double {
-        if let bf = bodyFatPercentage {
+        if usesBodyFatForBMR, let bf = bodyFatPercentage {
             // Katch-McArdle — used automatically whenever body fat is known.
             return 370 + 21.6 * (1 - bf) * weightKg
         }
@@ -235,10 +241,10 @@ struct UserProfile: Codable, Equatable {
             return 0
         case .lose:
             let rate = weeklyChangeKg ?? 0.5
-            return -Int(rate * 7000 / 7)
+            return -Int(rate * GoalEnergyMath.kilocaloriesPerKilogram / 7)
         case .gain:
             let rate = weeklyChangeKg ?? 0.5
-            return Int(rate * 7000 / 7)
+            return Int(rate * GoalEnergyMath.kilocaloriesPerKilogram / 7)
         }
     }
 
@@ -250,13 +256,7 @@ struct UserProfile: Codable, Equatable {
         // +0.2 g/kg during cutting phase to preserve lean mass (Helms et al 2014).
         let cuttingBoost = goal == .lose ? 0.2 : 0.0
         let multiplier = activityLevel.proteinRequirementPerKg(bodyFatPercentage: bodyFatPercentage, extra: cuttingBoost)
-        return Int(multiplier * proteinBasisWeightKg)
-    }
-
-    private var proteinBasisWeightKg: Double {
-        guard let bodyFatPercentage else { return weightKg }
-        let leanMassFraction = max(0.05, min(1.0, 1.0 - bodyFatPercentage))
-        return weightKg * leanMassFraction
+        return Int(multiplier * weightKg)
     }
 
     var fatGoal: Int {

@@ -501,8 +501,8 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
 
                     // Goal Body Fat only renders when the user actually has a body
                     // fat % set — avoids surfacing irrelevant controls to users who
-                    // never opted in. When body fat is set it is always used for BMR
-                    // (Katch-McArdle); otherwise Mifflin-St Jeor — no manual toggle.
+                    // never opted in. Katch-McArdle also respects the persisted
+                    // useBodyFatInBMR preference; false falls back to Mifflin-St Jeor.
                     if (p.bodyFatPercentage != null) {
                         HorizontalDivider()
                         SettingRow(
@@ -1924,14 +1924,14 @@ fun CalculationMethodsScreen(
                         name = stringResource(R.string.settings_calc_mifflin_name),
                         usedWhen = stringResource(R.string.settings_calc_mifflin_used),
                         formula = stringResource(R.string.settings_calc_mifflin_formula),
-                        citation = "Mifflin MD, St Jeor ST, et al. (1990). \"A new predictive equation for resting energy expenditure in healthy individuals.\" Am J Clin Nutr 51(2):241–247.",
+                        citation = stringResource(R.string.settings_calc_mifflin_citation),
                         url = "https://pubmed.ncbi.nlm.nih.gov/2305711/"
                     )
                     CalcFormulaCard(
                         name = stringResource(R.string.settings_calc_katch_name),
                         usedWhen = stringResource(R.string.settings_calc_katch_used),
                         formula = stringResource(R.string.settings_calc_katch_formula),
-                        citation = "McArdle WD, Katch FI, Katch VL. Exercise Physiology: Nutrition, Energy, and Human Performance, 7th ed. Lippincott Williams & Wilkins, 2010.",
+                        citation = stringResource(R.string.settings_calc_katch_citation),
                         url = null
                     )
                 }
@@ -1943,7 +1943,7 @@ fun CalculationMethodsScreen(
                         name = stringResource(R.string.settings_calc_tdee_name),
                         usedWhen = stringResource(R.string.settings_calc_tdee_used),
                         formula = stringResource(R.string.settings_calc_tdee_formula),
-                        citation = "Standard PAL (Physical Activity Level) coefficients from FAO/WHO/UNU joint expert consultation on human energy requirements (2001). Also widely used by ACSM and USDA Dietary Guidelines.",
+                        citation = stringResource(R.string.settings_calc_tdee_citation),
                         url = "https://www.fao.org/3/y5686e/y5686e00.htm"
                     )
                 }
@@ -1955,7 +1955,7 @@ fun CalculationMethodsScreen(
                         name = stringResource(R.string.settings_calc_target_name),
                         usedWhen = stringResource(R.string.settings_calc_target_used),
                         formula = stringResource(R.string.settings_calc_target_formula),
-                        citation = "Hall KD, et al. (2011). \"Quantification of the effect of energy imbalance on bodyweight.\" Lancet 378(9793):826–837. The classic 3,500-kcal-per-pound rule originates from Wishnofsky M (1958), Am J Clin Nutr 6:542–546.",
+                        citation = stringResource(R.string.settings_calc_target_citation),
                         url = "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(11)60812-X/fulltext"
                     )
                 }
@@ -1967,7 +1967,7 @@ fun CalculationMethodsScreen(
                         name = stringResource(R.string.settings_calc_split_name),
                         usedWhen = stringResource(R.string.settings_calc_split_used),
                         formula = stringResource(R.string.settings_calc_split_formula),
-                        citation = "Morton RW, et al. (2018). \"A systematic review, meta-analysis and meta-regression of the effect of protein supplementation on resistance training-induced gains in muscle mass and strength.\" Br J Sports Med 52(6):376–384.",
+                        citation = stringResource(R.string.settings_calc_split_citation),
                         url = "https://bjsm.bmj.com/content/52/6/376"
                     )
                 }
@@ -1979,7 +1979,7 @@ fun CalculationMethodsScreen(
                         name = stringResource(R.string.settings_calc_micro_name),
                         usedWhen = stringResource(R.string.settings_calc_micro_used),
                         formula = null,
-                        citation = "Estimates rely on the underlying AI model's training data (USDA FoodData Central, manufacturer panels, scientific literature). Accuracy varies by food, portion-size visibility, and provider model. Always cross-check labels for foods you log frequently.",
+                        citation = stringResource(R.string.settings_calc_micro_citation),
                         url = "https://fdc.nal.usda.gov/"
                     )
                 }

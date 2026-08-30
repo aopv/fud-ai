@@ -643,7 +643,7 @@
     <string name="widget_all_metrics_label">Fud AI 今日</string>
     <string name="widget_all_metrics_description">今日のカロリー・タンパク質・炭水化物・脂質を1つのウィジェットで確認。</string>
     <string name="settings_needs_health_connect">Health Connectが必要</string>
-    <string name="settings_energy_goals_info">オンにすると、Fud AIはHealth Connectから取得した実測の消費カロリー（アクティブ＋基礎代謝の14日間平均）を、数式による推定の代わりに維持カロリー（TDEE）の基準として目標計算に使います。消費カロリーの読み取りにAIは使いません。Health Connectが必要です。「再計算」ボタンおよびAdaptive Goalsと連動します。</string>
+    <string name="settings_energy_goals_info">オンにすると、Fud AIは目標計算で、式による推定値の代わりにHealth Connectの最近の実測エネルギーデータ期間を維持カロリーの基準として使います。十分な日数がある場合は実測の総エネルギー、そうでない場合は実測アクティブエネルギーの平均＋式で求めたBMRを使います。消費データの読み取りにAIは使いません。Health Connectが必要です。「再計算」ボタンおよびAdaptive Goalsと連動します。</string>
     <string name="settings_adaptive_goals_info">週に1回ほど、アプリを開いたときに、Fud AIがプロフィール・最近の食事記録・体重トレンドをもとに、「再計算」ボタンと同じ目標計算全体を自動で再実行します。Energy Burnがオンの場合は、実測の消費カロリーを維持カロリーの基準として使います。AIが利用できないときは何もせずスキップします。オフにすると、この機能が最初に変更する前の目標に戻ります。これは医療アドバイスではありません。</string>
     <string name="ad_label">広告</string>
     <string name="onboarding_plan_adaptive_note">プランは記録に合わせて週1回自動調整されます。固定したい場合は設定でAdaptive Goalsをオフにしてください。</string>
@@ -698,4 +698,35 @@
     <string name="notif_fasting_goal_title">断食目標を達成</string>
     <string name="notif_fasting_goal_text">%1$sの断食目標を達成しました。準備ができたら断食を終了してください。</string>
     <string name="home_menu_barcode">バーコード</string>
+    <string name="settings_calc_methods">計算方法</string>
+    <string name="settings_calc_calorie_target">目標達成のためのカロリー目標</string>
+    <string name="settings_calc_maintenance">維持カロリーと目標の調整</string>
+    <string name="settings_calc_macro_split">マクロ栄養素の配分</string>
+    <string name="settings_calc_micro_values">微量栄養素の値</string>
+    <string name="settings_calc_intro">1日のカロリーとマクロの目標はAIが設定します。「目標を再計算」をタップすると（アダプティブ目標がオンの場合は週1回程度自動で）、Fud AIはプロフィール、下記の参照式、プライバシーに配慮した日ごとの栄養合計、日付付きの正確な体重・体脂肪率・メジャー採寸値、ワークアウトの集計値（回数、時間、セット数、レップ数）、および任意のHealth ConnectエネルギーデータをAIプロバイダーに送信します。この計算では、食品名、メモ、写真、材料、運動名は送信されません。査読済みの計算式をもとに、実際のデータに合わせて調整し、真の維持カロリーと目標を推定します。</string>
+    <string name="settings_calc_sec_bmr">基礎代謝量 (BMR)</string>
+    <string name="settings_calc_sec_tdee">1日の総消費エネルギー (TDEE)</string>
+    <string name="settings_calc_mifflin_name">Mifflin-St Jeor式</string>
+    <string name="settings_calc_mifflin_used">安静時代謝の標準式です。体脂肪率を利用できない場合に使われます。</string>
+    <string name="settings_calc_mifflin_formula">男性: 10×体重(kg) + 6.25×身長(cm) − 5×年齢 + 5\n女性: 10×体重(kg) + 6.25×身長(cm) − 5×年齢 − 161</string>
+    <string name="settings_calc_katch_name">Katch-McArdle式</string>
+    <string name="settings_calc_katch_used">体脂肪率を入力している場合は常に使われます。総体重ではなく除脂肪体重からBMRを算出します。</string>
+    <string name="settings_calc_katch_formula">BMR = 370 + 21.6 × LBM(kg)\nLBM = 体重 × (1 − 体脂肪率)</string>
+    <string name="settings_calc_tdee_name">活動係数法</string>
+    <string name="settings_calc_tdee_used">TDEE = BMR × 活動係数。係数は選択した活動レベルに対応します。これは式で求める維持カロリーの基準です。Energy Burnがオンの場合、計算では代わりにHealth Connectの最近の実測エネルギーデータ期間を使います。十分な日数がある場合は実測の総エネルギー、そうでない場合は実測アクティブエネルギーの平均＋式で求めたBMRを使います。</string>
+    <string name="settings_calc_tdee_formula">座りがち: 1.2 · 軽度: 1.375 · 中程度: 1.465 · 活発: 1.55 · 非常に活発: 1.725 · 極めて活発: 1.9</string>
+    <string name="settings_calc_target_name">維持カロリーと目標の調整</string>
+    <string name="settings_calc_target_used">維持カロリーはTDEEを出発点にします。ただしEnergy Burnがオンの場合は、式による推定値の代わりにHealth Connectの最近の実測エネルギーデータ期間を使います。十分な日数がある場合は実測の総エネルギー、そうでない場合は実測アクティブエネルギーの平均＋式で求めたBMRを使います。AIは記録した摂取量と体重の推移に照らして維持カロリーを調整し、目標を適用します。週ごとの体重変化率を、減量では1日のカロリー不足分、増量では余剰分に換算します。</string>
+    <string name="settings_calc_target_formula">体脂肪1 lb ≈ 3,500 kcal · 1 kg ≈ 7,700 kcal\n1日のカロリー目標を設定するため、週ごとの変化率 ÷ 7を、減量では維持カロリーから引き、増量では加えます。</string>
+    <string name="settings_calc_split_name">たんぱく質・炭水化物・脂質の目標</string>
+    <string name="settings_calc_split_used">AIはこれらの基準を参考に、たんぱく質・炭水化物・脂質をカロリー目標に合わせます。たんぱく質は活動量に応じた総体重ベースの比率、脂質は体重を基準に設定し、残りを炭水化物で補います。各値は設定でロックまたは編集できます。</string>
+    <string name="settings_calc_split_formula">たんぱく質: 活動レベルに応じて1 kgあたり約0.8～2.2 g（減量時は少し増加）\n脂質: 体重1 kgあたり約0.6 g\n炭水化物: 残りのカロリー ÷ 4 kcal/g</string>
+    <string name="settings_calc_micro_name">食事ごとの推定値</string>
+    <string name="settings_calc_micro_used">食事ごとに返されるカロリー、マクロ、食物繊維、糖類、飽和脂肪、コレステロール、カフェイン、ナトリウム、カリウムなどの詳細な栄養値は、選択したAIプロバイダーが食品写真、音声の文字起こし、またはテキスト説明から生成した推定値です。</string>
+    <string name="settings_calc_mifflin_citation">Mifflin MD, St Jeor ST, et al. (1990).「健康な人の安静時エネルギー消費量を予測する新しい式。」Am J Clin Nutr 51(2):241–247.</string>
+    <string name="settings_calc_katch_citation">McArdle WD, Katch FI, Katch VL.『運動生理学：栄養、エネルギー、ヒューマンパフォーマンス』第7版。Lippincott Williams &amp; Wilkins, 2010.</string>
+    <string name="settings_calc_tdee_citation">人のエネルギー必要量に関するFAO/WHO/UNU合同専門家会議 (2001) の標準PAL（身体活動レベル）係数。ACSMおよびUSDA食事ガイドラインでも広く使用されています。</string>
+    <string name="settings_calc_target_citation">Hall KD, et al. (2011).「エネルギー不均衡が体重に及ぼす影響の定量化。」Lancet 378(9793):826–837. 1ポンド当たり3,500 kcalという古典的な法則は、Wishnofsky M (1958), Am J Clin Nutr 6:542–546に由来します。</string>
+    <string name="settings_calc_split_citation">Morton RW, et al. (2018).「レジスタンストレーニングによる筋量と筋力の増加に対するたんぱく質補給の効果についての系統的レビュー、メタ解析、メタ回帰。」Br J Sports Med 52(6):376–384.</string>
+    <string name="settings_calc_micro_citation">推定値は、基盤となるAIモデルの学習データ（USDA FoodData Central、メーカーの栄養表示、科学文献）に基づきます。精度は食品、分量の見えやすさ、プロバイダーのモデルによって異なります。頻繁に記録する食品は必ずラベルと照合してください。</string>
 </resources>

@@ -643,7 +643,7 @@
     <string name="widget_all_metrics_label">Fud AI आज</string>
     <string name="widget_all_metrics_description">आज की कैलोरी, प्रोटीन, कार्ब्स और फैट एक ही विजेट में देखें।</string>
     <string name="settings_needs_health_connect">Health Connect ज़रूरी है</string>
-    <string name="settings_energy_goals_info">चालू होने पर, Fud AI Health Connect से मापी गई आपकी बर्न हुई कैलोरी — सक्रिय + बेसल ऊर्जा का 14-दिन का औसत — को फ़ॉर्मूला अनुमान की जगह लक्ष्य कैलकुलेशन में मेंटेनेंस (TDEE) आधार के रूप में इस्तेमाल करता है। बर्न पढ़ने के लिए कोई AI इस्तेमाल नहीं होता। Health Connect ज़रूरी है। पुनः गणना करें बटन और Adaptive Goals के साथ काम करता है।</string>
+    <string name="settings_energy_goals_info">चालू होने पर, Fud AI लक्ष्य कैलकुलेट करते समय फ़ॉर्मूला अनुमान की जगह Health Connect के हाल में मापे गए ऊर्जा डेटा की अवधि को मेंटेनेंस आधार के रूप में इस्तेमाल करता है: पर्याप्त दिनों का डेटा होने पर मापी गई कुल ऊर्जा; अन्यथा, मापी गई सक्रिय ऊर्जा का औसत + फ़ॉर्मूला BMR। बर्न पढ़ने के लिए कोई AI इस्तेमाल नहीं होता। Health Connect ज़रूरी है। पुनः गणना करें बटन और Adaptive Goals के साथ काम करता है।</string>
     <string name="settings_adaptive_goals_info">हफ़्ते में लगभग एक बार, ऐप खोलने पर Fud AI आपकी प्रोफ़ाइल, हाल में लॉग किए गए खाने और वज़न के ट्रेंड के आधार पर पूरा लक्ष्य कैलकुलेशन अपने आप दोबारा चलाता है — वही जो पुनः गणना करें बटन चलाता है। अगर Energy Burn चालू है, तो आपकी मापी गई बर्न को मेंटेनेंस का आधार बनाया जाता है। AI उपलब्ध न होने पर यह चुपचाप छूट जाता है। इसे बंद करने पर वे लक्ष्य वापस आ जाते हैं जो इस फ़ीचर के पहले बदलाव से पहले थे। यह चिकित्सा सलाह नहीं है।</string>
     <string name="ad_label">विज्ञापन</string>
     <string name="onboarding_plan_adaptive_note">आपका प्लान आपकी लॉगिंग के अनुसार हर हफ़्ते अपने आप एडजस्ट होता है — इसे स्थिर रखने के लिए सेटिंग्स में Adaptive Goals बंद करें।</string>
@@ -698,4 +698,35 @@
     <string name="notif_fasting_goal_title">उपवास लक्ष्य पूरा हुआ</string>
     <string name="notif_fasting_goal_text">आपने %1$s का उपवास लक्ष्य पूरा कर लिया है। तैयार होने पर उपवास समाप्त करें।</string>
     <string name="home_menu_barcode">बारकोड</string>
+    <string name="settings_calc_methods">गणना विधियाँ</string>
+    <string name="settings_calc_calorie_target">लक्ष्य के लिए कैलोरी लक्ष्य</string>
+    <string name="settings_calc_maintenance">मेंटेनेंस और लक्ष्य समायोजन</string>
+    <string name="settings_calc_macro_split">मैक्रोन्यूट्रिएंट विभाजन</string>
+    <string name="settings_calc_micro_values">सूक्ष्म पोषक तत्व मान</string>
+    <string name="settings_calc_intro">आपके दैनिक कैलोरी और मैक्रो लक्ष्य AI तय करता है। जब आप ‘लक्ष्य दोबारा कैलकुलेट करें’ पर टैप करते हैं — या अडैप्टिव लक्ष्य चालू होने पर हफ़्ते में लगभग एक बार अपने आप — Fud AI आपके AI प्रोवाइडर को आपकी प्रोफ़ाइल, नीचे दिए संदर्भ समीकरण, गोपनीयता-सुरक्षित समेकित दैनिक पोषण कुल, तारीख सहित सटीक वज़न, बॉडी-फैट और टेप से लिए गए माप, वर्कआउट की समेकित संख्या, अवधि, सेट और रेप्स, और वैकल्पिक Health Connect ऊर्जा डेटा भेजता है। इस गणना के लिए भोजन के नाम, नोट्स, फ़ोटो, सामग्री और व्यायाम के नाम नहीं भेजे जाते। AI इन समीक्षित फ़ॉर्मूलों से शुरू करता है, फिर आपके वास्तविक डेटा के अनुसार उन्हें समायोजित करके आपकी असली मेंटेनेंस और लक्ष्यों का अनुमान लगाता है।</string>
+    <string name="settings_calc_sec_bmr">विश्राम चयापचय (BMR)</string>
+    <string name="settings_calc_sec_tdee">दैनिक ऊर्जा व्यय (TDEE)</string>
+    <string name="settings_calc_mifflin_name">मिफ्लिन-सेंट जियोर समीकरण</string>
+    <string name="settings_calc_mifflin_used">आराम के समय चयापचय की डिफ़ॉल्ट गणना। इसका उपयोग तब होता है जब शरीर की वसा उपलब्ध न हो।</string>
+    <string name="settings_calc_mifflin_formula">पुरुष: 10×वज़न(kg) + 6.25×ऊँचाई(cm) − 5×आयु + 5\nमहिलाएँ: 10×वज़न(kg) + 6.25×ऊँचाई(cm) − 5×आयु − 161</string>
+    <string name="settings_calc_katch_name">कैच-मैकआर्डल समीकरण</string>
+    <string name="settings_calc_katch_used">जब भी आपने शरीर की वसा का प्रतिशत दर्ज किया हो, इसका उपयोग किया जाता है। यह कुल वज़न के बजाय दुबले शरीर के द्रव्यमान से BMR निकालता है।</string>
+    <string name="settings_calc_katch_formula">BMR = 370 + 21.6 × LBM(kg)\nLBM = वज़न × (1 − शरीर की वसा का प्रतिशत)</string>
+    <string name="settings_calc_tdee_name">गतिविधि-गुणक विधि</string>
+    <string name="settings_calc_tdee_used">TDEE = BMR × गतिविधि गुणक। गुणक आपके चुने हुए गतिविधि स्तर के अनुसार होता है। यह फ़ॉर्मूला से निकला मेंटेनेंस आधार है। Energy Burn चालू होने पर गणना इसकी जगह Health Connect के हाल में मापे गए ऊर्जा डेटा की अवधि का उपयोग करती है: पर्याप्त दिनों का डेटा होने पर मापी गई कुल ऊर्जा; अन्यथा, मापी गई सक्रिय ऊर्जा का औसत + फ़ॉर्मूला BMR।</string>
+    <string name="settings_calc_tdee_formula">गतिहीन: 1.2 · हल्का: 1.375 · मध्यम: 1.465 · सक्रिय: 1.55 · बहुत सक्रिय: 1.725 · अत्यधिक सक्रिय: 1.9</string>
+    <string name="settings_calc_target_name">मेंटेनेंस और लक्ष्य समायोजन</string>
+    <string name="settings_calc_target_used">मेंटेनेंस आपके TDEE से शुरू होती है — या Energy Burn चालू होने पर फ़ॉर्मूला अनुमान की जगह Health Connect के हाल में मापे गए ऊर्जा डेटा की अवधि से: पर्याप्त दिनों का डेटा होने पर मापी गई कुल ऊर्जा; अन्यथा, मापी गई सक्रिय ऊर्जा का औसत + फ़ॉर्मूला BMR। AI दर्ज किए गए सेवन और वज़न के रुझान से मेंटेनेंस को बेहतर बनाता है, फिर आपका लक्ष्य लागू करता है: साप्ताहिक वज़न-बदलाव दर घटाने के लिए दैनिक कैलोरी घाटा या बढ़ाने के लिए दैनिक अधिशेष बनती है।</string>
+    <string name="settings_calc_target_formula">शरीर की 1 lb वसा ≈ 3,500 kcal · 1 kg ≈ 7,700 kcal\nदैनिक कैलोरी लक्ष्य तय करने के लिए आपकी साप्ताहिक दर ÷ 7 को मेंटेनेंस से घटाया जाता है (वज़न घटाना) या उसमें जोड़ा जाता है (वज़न बढ़ाना)।</string>
+    <string name="settings_calc_split_name">प्रोटीन, कार्ब्स और फैट के लक्ष्य</string>
+    <string name="settings_calc_split_used">AI इन संदर्भों को मार्गदर्शक बनाकर प्रोटीन, कार्ब्स और फैट को आपके कैलोरी लक्ष्य में फिट करता है। प्रोटीन के लिए गतिविधि-आधारित दरें पूरे शरीर के वज़न पर लागू होती हैं; फैट शरीर के वज़न से तय होता है; बाकी कैलोरी कार्ब्स से पूरी होती हैं। आप किसी भी मान को लॉक कर सकते हैं या सेटिंग्स में स्वयं बदल सकते हैं।</string>
+    <string name="settings_calc_split_formula">प्रोटीन: गतिविधि स्तर के अनुसार लगभग 0.8–2.2 g प्रति kg, वज़न घटाते समय थोड़ा अधिक\nफैट: शरीर के वज़न के प्रति kg पर लगभग 0.6 g\nकार्ब्स: बची हुई कैलोरी ÷ 4 kcal/g</string>
+    <string name="settings_calc_micro_name">हर भोजन का अनुमान</string>
+    <string name="settings_calc_micro_used">हर भोजन के लिए मिलने वाली कैलोरी, मैक्रो, फ़ाइबर, शुगर, सैचुरेटेड फैट, कोलेस्ट्रॉल, कैफ़ीन, सोडियम, पोटैशियम और अन्य विस्तृत पोषण मान भोजन की फ़ोटो, वॉइस ट्रांसक्रिप्ट या टेक्स्ट विवरण से, आपके चुने हुए AI प्रोवाइडर द्वारा तैयार किए गए अनुमान हैं।</string>
+    <string name="settings_calc_mifflin_citation">Mifflin MD, St Jeor ST, et al. (1990)। “स्वस्थ व्यक्तियों में विश्राम ऊर्जा व्यय के लिए एक नया पूर्वानुमान समीकरण।” Am J Clin Nutr 51(2):241–247.</string>
+    <string name="settings_calc_katch_citation">McArdle WD, Katch FI, Katch VL. व्यायाम शरीरक्रिया विज्ञान: पोषण, ऊर्जा और मानव प्रदर्शन, 7वाँ संस्करण। Lippincott Williams &amp; Wilkins, 2010.</string>
+    <string name="settings_calc_tdee_citation">मानव ऊर्जा आवश्यकताओं पर FAO/WHO/UNU के संयुक्त विशेषज्ञ परामर्श (2001) के मानक PAL (शारीरिक गतिविधि स्तर) गुणांक। ACSM और USDA आहार दिशानिर्देशों में भी इनका व्यापक उपयोग होता है।</string>
+    <string name="settings_calc_target_citation">Hall KD, et al. (2011)। “शरीर के वज़न पर ऊर्जा असंतुलन के प्रभाव का मात्रात्मक आकलन।” Lancet 378(9793):826–837। प्रति पाउंड 3,500 kcal का पारंपरिक नियम Wishnofsky M (1958), Am J Clin Nutr 6:542–546 से आया है।</string>
+    <string name="settings_calc_split_citation">Morton RW, et al. (2018)। “प्रतिरोध प्रशिक्षण से मांसपेशियों के द्रव्यमान और ताकत में होने वाली वृद्धि पर प्रोटीन सप्लीमेंट के प्रभाव की व्यवस्थित समीक्षा, मेटा-विश्लेषण और मेटा-रिग्रेशन।” Br J Sports Med 52(6):376–384.</string>
+    <string name="settings_calc_micro_citation">अनुमान अंतर्निहित AI मॉडल के प्रशिक्षण डेटा (USDA FoodData Central, निर्माताओं के पोषण लेबल और वैज्ञानिक साहित्य) पर आधारित हैं। सटीकता भोजन, परोसने की मात्रा की स्पष्टता और प्रोवाइडर मॉडल के अनुसार बदलती है। जिन खाद्य पदार्थों को आप अक्सर दर्ज करते हैं, उनके लेबल से हमेशा मिलान करें।</string>
 </resources>

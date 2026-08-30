@@ -643,7 +643,7 @@
     <string name="widget_all_metrics_label">Fud AI Bu gün</string>
     <string name="widget_all_metrics_description">Bu günün kalorilərini, zülalını, karbohidratını və yağını bir vidcetdə görün.</string>
     <string name="settings_needs_health_connect">Health Connect tələb olunur</string>
-    <string name="settings_energy_goals_info">Aktiv olduqda Fud AI Health Connect-dən ölçülmüş yandırılan kalorilərinizi — aktiv + bazal enerjinin 14 günlük ortalamasını — hədəfləri hesablayarkən düstur təxmini əvəzinə saxlanma (TDEE) istinadı kimi istifadə edir. Sərfiyyatınızı oxumaq üçün Sİ istifadə olunmur. Health Connect tələb olunur. Yenidən Hesabla düyməsi və Adaptive Goals ilə işləyir.</string>
+    <string name="settings_energy_goals_info">Aktiv olduqda Fud AI hədəfləri hesablayarkən düstur təxmini əvəzinə Health Connect-də son ölçülmüş enerji məlumatları dövrünü saxlama istinadı kimi istifadə edir: kifayət qədər gün olduqda ölçülmüş ümumi enerji, əks halda ölçülmüş aktiv enerjinin ortalaması + düsturla hesablanan BMR. Sərfiyyatınızı oxumaq üçün Sİ istifadə olunmur. Health Connect tələb olunur. Yenidən Hesabla düyməsi və Adaptive Goals ilə işləyir.</string>
     <string name="settings_adaptive_goals_info">Təxminən həftədə bir dəfə, tətbiqi açanda Fud AI profilinizə, son qeyd olunmuş yeməklərə və çəki trendinizə əsasən tam hədəf hesablamasını — Yenidən Hesabla düyməsinin istifadə etdiyi eyni hesablamanı — avtomatik yenidən işə salır. Energy Burn aktivdirsə, ölçülmüş sərfiyyatınız saxlanma kalorisi üçün istinad kimi istifadə olunur. Sİ əlçatan olmadıqda addım səssizcə ötürülür. Bunu söndürdükdə bu funksiyanın ilk dəyişikliyindən əvvəlki hədəflər bərpa olunur. Bu, tibbi məsləhət deyil.</string>
     <string name="ad_label">Reklam</string>
     <string name="onboarding_plan_adaptive_note">Planınız qeydlərinizə əsasən hər həftə avtomatik tənzimlənir — sabit saxlamaq üçün Parametrlərdə Adaptive Goals-u söndürün.</string>
@@ -698,4 +698,35 @@
     <string name="notif_fasting_goal_title">Oruc hədəfinə çatıldı</string>
     <string name="notif_fasting_goal_text">%1$s oruc hədəfinə çatdınız. Hazır olduqda orucu bitirin.</string>
     <string name="home_menu_barcode">Barkod</string>
+    <string name="settings_calc_methods">Hesablama üsulları</string>
+    <string name="settings_calc_calorie_target">Məqsəd üçün kalori hədəfi</string>
+    <string name="settings_calc_maintenance">Çəkini qoruma və hədəf düzəlişi</string>
+    <string name="settings_calc_macro_split">Makronutrient bölgüsü</string>
+    <string name="settings_calc_micro_values">Mikronutrient dəyərləri</string>
+    <string name="settings_calc_intro">Gündəlik kalori və makro hədəflərinizi AI təyin edir. «Hədəfləri yenidən hesabla» düyməsinə toxunduqda — və ya Adaptiv Hədəflər aktivdirsə, təxminən həftədə bir dəfə avtomatik — Fud AI profilinizi, aşağıdakı istinad tənliklərini, məxfiliyi qoruyan ümumiləşdirilmiş gündəlik qidalanma yekunlarını, tarixlə göstərilən dəqiq çəki, bədən yağı və lentlə bədən ölçülərini, məşqlərin ümumiləşdirilmiş sayını, müddətini, set və təkrarlarını, həmçinin Health Connect-dən ixtiyari enerji məlumatlarını AI provayderinizə göndərir. Qida adları, qeydlər, fotolar, inqrediyentlər və məşq adları bu hesablama üçün göndərilmir. AI bu elmi cəhətdən təsdiqlənmiş düsturlardan başlayır, sonra həqiqi saxlama səviyyənizi və hədəflərinizi qiymətləndirmək üçün onları real məlumatlarınıza uyğunlaşdırır.</string>
+    <string name="settings_calc_sec_bmr">İstirahət metabolizması (BMR)</string>
+    <string name="settings_calc_sec_tdee">Gündəlik enerji sərfi (TDEE)</string>
+    <string name="settings_calc_mifflin_name">Mifflin–St Jeor tənliyi</string>
+    <string name="settings_calc_mifflin_used">İstirahət metabolizmi üçün standart düstur. Bədən yağı məlumatı olmadıqda istifadə olunur.</string>
+    <string name="settings_calc_mifflin_formula">Kişilər: 10×çəki(kq) + 6,25×boy(sm) − 5×yaş + 5\nQadınlar: 10×çəki(kq) + 6,25×boy(sm) − 5×yaş − 161</string>
+    <string name="settings_calc_katch_name">Katch–McArdle tənliyi</string>
+    <string name="settings_calc_katch_used">Bədən yağı faizini daxil etdiyiniz hər zaman istifadə olunur. BMR-ni ümumi çəki əvəzinə yağsız bədən kütləsindən hesablayır.</string>
+    <string name="settings_calc_katch_formula">BMR = 370 + 21,6 × YBK(kq)\nYBK = çəki × (1 − bədən yağı faizi)</string>
+    <string name="settings_calc_tdee_name">Aktivlik əmsalı üsulu</string>
+    <string name="settings_calc_tdee_used">TDEE = BMR × aktivlik əmsalı. Əmsal seçdiyiniz aktivlik səviyyəsinə uyğundur. Bu, düsturla hesablanan saxlama səviyyəsidir. Energy Burn aktiv olduqda hesablama onun əvəzinə Health Connect-də son ölçülmüş enerji məlumatları dövründən istifadə edir: kifayət qədər gün olduqda ölçülmüş ümumi enerji, əks halda ölçülmüş aktiv enerjinin ortalaması + düsturla hesablanan BMR.</string>
+    <string name="settings_calc_tdee_formula">Oturaq: 1,2 · Yüngül: 1,375 · Orta: 1,465 · Aktiv: 1,55 · Çox aktiv: 1,725 · Son dərəcə aktiv: 1,9</string>
+    <string name="settings_calc_target_name">Çəkini qoruma və hədəf düzəlişi</string>
+    <string name="settings_calc_target_used">Saxlama səviyyəsi TDEE-dən başlayır; Energy Burn aktiv olduqda isə düstur təxmini əvəzinə Health Connect-də son ölçülmüş enerji məlumatları dövründən istifadə olunur: kifayət qədər gün olduqda ölçülmüş ümumi enerji, əks halda ölçülmüş aktiv enerjinin ortalaması + düsturla hesablanan BMR. AI saxlama səviyyəsini qeyd etdiyiniz qəbul və çəki tendensiyası ilə dəqiqləşdirir, sonra hədəfinizi tətbiq edir: həftəlik çəki dəyişmə tempi arıqlama üçün gündəlik kalori kəsirinə, kökəlmə üçün isə artığına çevrilir.</string>
+    <string name="settings_calc_target_formula">1 funt bədən yağı ≈ 3 500 kkal · 1 kq ≈ 7 700 kkal\nGündəlik kalori hədəfini təyin etmək üçün həftəlik tempiniz ÷ 7 saxlama səviyyəsindən çıxılır (arıqlama) və ya ona əlavə olunur (kökəlmə).</string>
+    <string name="settings_calc_split_name">Zülal, karbohidrat və yağ hədəfləri</string>
+    <string name="settings_calc_split_used">AI bu istinadları rəhbər tutaraq zülal, karbohidrat və yağı kalori hədəfinizə uyğunlaşdırır. Zülal üçün aktivliyə əsaslanan tam bədən çəkisi normaları, yağ üçün bədən çəkisi istifadə olunur; qalan kalorini karbohidratlar tamamlayır. İstənilən dəyəri kilidləyə və ya Parametrlərdə özünüz dəyişə bilərsiniz.</string>
+    <string name="settings_calc_split_formula">Zülal: aktivlik səviyyəsinə görə hər kq üçün təxminən 0,8–2,2 q, arıqlayarkən bir qədər artırılır\nYağ: hər kq bədən çəkisi üçün təxminən 0,6 q\nKarbohidratlar: qalan kalorilər ÷ 4 kkal/q</string>
+    <string name="settings_calc_micro_name">Hər yemək üzrə təxminlər</string>
+    <string name="settings_calc_micro_used">Hər yemək üçün qaytarılan kalori, makro, lif, şəkər, doymuş yağ, xolesterin, kofein, natrium, kalium və digər ətraflı qidalanma dəyərləri seçdiyiniz AI provayderindən istifadə edilərək qida şəkli, səs transkripti və ya mətn təsviri əsasında AI tərəfindən yaradılan təxminlərdir.</string>
+    <string name="settings_calc_mifflin_citation">Mifflin MD, St Jeor ST, et al. (1990). «Sağlam şəxslərdə istirahət zamanı enerji sərfi üçün yeni proqnozlaşdırıcı tənlik». Am J Clin Nutr 51(2):241–247.</string>
+    <string name="settings_calc_katch_citation">McArdle WD, Katch FI, Katch VL. Məşq fiziologiyası: Qidalanma, enerji və insan performansı, 7-ci nəşr. Lippincott Williams &amp; Wilkins, 2010.</string>
+    <string name="settings_calc_tdee_citation">İnsanların enerji tələbatına dair FAO/WHO/UNU birgə ekspert məsləhətləşməsindən standart PAL (Fiziki Aktivlik Səviyyəsi) əmsalları (2001). ACSM və USDA-nın Qidalanma Təlimatlarında da geniş istifadə olunur.</string>
+    <string name="settings_calc_target_citation">Hall KD, et al. (2011). «Enerji balanssızlığının bədən çəkisinə təsirinin kəmiyyətcə qiymətləndirilməsi». Lancet 378(9793):826–837. Hər funt üçün klassik 3 500 kkal qaydası Wishnofsky M (1958), Am J Clin Nutr 6:542–546 məqaləsindən qaynaqlanır.</string>
+    <string name="settings_calc_split_citation">Morton RW, et al. (2018). «Müqavimət məşqlərinin yaratdığı əzələ kütləsi və güc artımına zülal əlavələrinin təsirinin sistematik icmalı, meta-analizi və meta-reqressiyası». Br J Sports Med 52(6):376–384.</string>
+    <string name="settings_calc_micro_citation">Təxminlər əsas AI modelinin təlim məlumatlarına (USDA FoodData Central, istehsalçıların qida etiketləri və elmi ədəbiyyat) əsaslanır. Dəqiqlik qidaya, porsiya ölçüsünün görünməsinə və provayder modelinə görə dəyişir. Tez-tez qeyd etdiyiniz qidaların etiketlərini həmişə yoxlayın.</string>
 </resources>

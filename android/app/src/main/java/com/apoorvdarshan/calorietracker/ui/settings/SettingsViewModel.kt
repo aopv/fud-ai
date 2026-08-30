@@ -20,7 +20,6 @@ import com.apoorvdarshan.calorietracker.models.WaterUnit
 import com.apoorvdarshan.calorietracker.models.WorkoutRpeScale
 import com.apoorvdarshan.calorietracker.models.WorkoutSplit
 import com.apoorvdarshan.calorietracker.services.AndroidAppIconManager
-import com.apoorvdarshan.calorietracker.services.WeightAnalysisService
 import com.apoorvdarshan.calorietracker.services.health.HealthConnectManager
 import com.apoorvdarshan.calorietracker.ui.theme.AppThemeColor
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -104,6 +103,11 @@ data class SettingsUiState(
     val heightMetric: Boolean get() = heightUnit == "cm"
     val weightMetric: Boolean get() = weightUnit == "kg"
 }
+
+internal fun adaptiveCheckDayAfterManualRecalculation(
+    adaptiveEnabled: Boolean,
+    today: LocalDate
+): String? = today.toString().takeIf { adaptiveEnabled }
 
 class SettingsViewModel(val container: AppContainer) : ViewModel() {
     private val _ui = MutableStateFlow(SettingsUiState())
@@ -1119,20 +1123,35 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
             _ui.value = _ui.value.copy(recalculatingGoals = true)
             val heightMetric = container.prefs.heightUnit.first() == "cm"
             val weightMetric = container.prefs.weightUnit.first() == "kg"
-            // Empirical signal: recent logged intake + observed weight trend, so the AI can
-            // estimate true maintenance (hit-and-trial) instead of trusting the formula alone.
-            val forecast = WeightAnalysisService.compute(
-                weights = container.weightRepository.entries.first(),
-                foods = container.foodRepository.entries.first(),
-                profile = current
-            )
-            // Energy Burn toggle: anchor maintenance to the user's measured Health Connect burn.
-            val measuredTdee = container.measuredEnergyTdeeIfEnabled(current)
+            val healthEnabledAtStart = container.prefs.healthConnectEnabled.first()
+            val energyEnabledAtStart = container.prefs.healthEnergyGoalsEnabled.first()
             // AI-only — no formula fallback. If the AI provider is unavailable, leave the
             // existing goals untouched and tell the user so they can fix their key and retry.
             val result = try {
-                container.foodAnalysis.calculateGoals(current, forecast, heightMetric, weightMetric, measuredTdee, container.bodyMeasurementRepository.latestSnapshot())
+                // One privacy-safe snapshot supplies the weight trend, daily nutrition aggregates,
+                // measurements, workout activity, and (when enabled) measured Health energy.
+                val context = container.goalCalculationEvidence(current)
+                if (container.prefs.healthConnectEnabled.first() != healthEnabledAtStart ||
+                    container.prefs.healthEnergyGoalsEnabled.first() != energyEnabledAtStart
+                ) {
+                    _ui.value = _ui.value.copy(recalculatingGoals = false)
+                    return@launch
+                }
+                container.foodAnalysis.calculateGoals(
+                    profile = current,
+                    heightMetric = heightMetric,
+                    weightMetric = weightMetric,
+                    measuredTdee = context.measuredTdee,
+                    measurement = container.bodyMeasurementRepository.latestSnapshot(),
+                    evidence = context.evidence
+                )
             } catch (e: Throwable) {
+                if (container.prefs.healthConnectEnabled.first() != healthEnabledAtStart ||
+                    container.prefs.healthEnergyGoalsEnabled.first() != energyEnabledAtStart
+                ) {
+                    _ui.value = _ui.value.copy(recalculatingGoals = false)
+                    return@launch
+                }
                 _ui.value = _ui.value.copy(
                     recalculatingGoals = false,
                     adaptiveGoalAlertTitle = "Couldn't Recalculate",
@@ -1140,11 +1159,25 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
                 )
                 return@launch
             }
+            // The provider call can take seconds. Never overwrite profile/target edits the user
+            // made while it was in flight; leave the latest profile intact and let them rerun.
+            val latest = container.profileRepository.current()
+            if (latest == null || latest != current ||
+                container.prefs.healthConnectEnabled.first() != healthEnabledAtStart ||
+                container.prefs.healthEnergyGoalsEnabled.first() != energyEnabledAtStart
+            ) {
+                _ui.value = _ui.value.copy(
+                    recalculatingGoals = false,
+                    profile = latest ?: _ui.value.profile,
+                    goalsNeedRecalc = true
+                )
+                return@launch
+            }
             // Store the AI's full plan as a fixed snapshot: calories + all three macros. Protein is
             // the AI's choice within a range near the activity multiplier. Freezing carbs and fat too
             // means editing a profile input (weight, pace, …) no longer reshuffles macros — they only
             // change on the next Recalculate.
-            val next = current.recalculatedFromFormulas().copy(
+            val next = latest.recalculatedFromFormulas().copy(
                 customCalories = result.calories,
                 customProtein = result.protein,
                 customCarbs = result.carbs,
@@ -1155,19 +1188,23 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
             // Goals are now fresh — capture this input baseline so the recalc nudge clears.
             lastRecalcSignature = next.goalInputSignature
             container.prefs.setLastRecalcGoalSignature(next.goalInputSignature)
+            // A successful manual run satisfies Adaptive's weekly check too. Without this marker,
+            // the same tap could immediately trigger a second AI request through Adaptive Goals.
+            adaptiveCheckDayAfterManualRecalculation(
+                adaptiveEnabled = container.prefs.adaptiveGoalsEnabled.first(),
+                today = LocalDate.now()
+            )?.let { container.prefs.setAdaptiveGoalsLastCheckDay(it) }
             // Also AI-refresh the optional Other Nutrients; keep existing values on failure.
             try {
                 val goals = container.foodAnalysis.estimateOptionalNutrientGoals(next)
                 container.prefs.setOptionalNutrientGoals(goals)
                 _ui.value = _ui.value.copy(optionalNutrientGoals = goals)
             } catch (_: Throwable) { /* keep existing nutrient goals */ }
-            val adaptiveResult = container.refreshAdaptiveGoalsIfNeeded(force = false)
-            val adaptiveNote = adaptiveResult?.takeIf { it.changed }?.let { "\n\n${it.message}" } ?: ""
             _ui.value = _ui.value.copy(
                 recalculatingGoals = false,
-                profile = adaptiveResult?.profile ?: next,
+                profile = next,
                 adaptiveGoalAlertTitle = container.appContext.getString(R.string.vm_goals_recalculated),
-                adaptiveGoalAlertMessage = message + adaptiveNote,
+                adaptiveGoalAlertMessage = message,
                 goalsNeedRecalc = false
             )
         }

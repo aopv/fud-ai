@@ -1,6 +1,7 @@
 package com.apoorvdarshan.calorietracker.services
 
 import com.apoorvdarshan.calorietracker.models.FoodEntry
+import com.apoorvdarshan.calorietracker.models.GoalEnergyMath
 import com.apoorvdarshan.calorietracker.models.UserProfile
 import com.apoorvdarshan.calorietracker.models.WeightEntry
 import com.apoorvdarshan.calorietracker.models.WeightGoal
@@ -51,7 +52,6 @@ object AdaptiveGoalService {
     private const val MINIMUM_WEIGHT_ENTRIES = 3
     private const val MINIMUM_DAILY_ADJUSTMENT = 25
     private const val MAXIMUM_DAILY_ADJUSTMENT = 150
-    private const val CALORIES_PER_KG = 7_700.0
 
     /**
      * [measuredTdee] (Health Connect active + basal energy, kcal/day) is preferred over the
@@ -78,14 +78,15 @@ object AdaptiveGoalService {
             forecast.weightEntriesUsed >= MINIMUM_WEIGHT_ENTRIES &&
             observedWeeklyChangeKg != null
 
-        val limitedAdjustment: Int = if (hasWeightTrend && observedWeeklyChangeKg != null) {
+        val limitedAdjustment: Int = if (hasWeightTrend) {
             // Primary: correct from the real weight trend vs the target pace.
-            val raw = (targetWeeklyChangeKg - observedWeeklyChangeKg) * CALORIES_PER_KG / 7.0
+            val observed = requireNotNull(observedWeeklyChangeKg)
+            val raw = (targetWeeklyChangeKg - observed) * GoalEnergyMath.KILOCALORIES_PER_KILOGRAM / 7.0
             raw.roundToInt().coerceIn(-MAXIMUM_DAILY_ADJUSTMENT, MAXIMUM_DAILY_ADJUSTMENT)
         } else if (measuredTdee != null) {
             // Not enough weigh-ins/food yet, but Health Connect gives measured burn: steer the
             // target toward measured maintenance + the goal pace.
-            val targetCalories = measuredTdee + (targetWeeklyChangeKg * CALORIES_PER_KG / 7.0).roundToInt()
+            val targetCalories = measuredTdee + (targetWeeklyChangeKg * GoalEnergyMath.KILOCALORIES_PER_KILOGRAM / 7.0).roundToInt()
             (targetCalories - currentCalories).coerceIn(-MAXIMUM_DAILY_ADJUSTMENT, MAXIMUM_DAILY_ADJUSTMENT)
         } else {
             return AdaptiveGoalResult(
@@ -166,9 +167,15 @@ object WeightAnalysisService {
     ): WeightForecast {
         val now = Instant.now()
         val zone = ZoneId.systemDefault()
-        val cutoff = now.minusSeconds(WeightForecast.MAX_LOOKBACK_DAYS * 86_400L)
+        // Calendar-day boundaries avoid DST drift, and excluding today prevents an in-progress
+        // diary from looking like a genuinely low-calorie completed day.
+        val today = LocalDate.now(zone)
+        val endDate = today.minusDays(1)
+        val startDate = endDate.minusDays((WeightForecast.MAX_LOOKBACK_DAYS - 1).toLong())
 
-        val recentFoods = foods.filter { it.timestamp in cutoff..now }
+        val recentFoods = foods.filter {
+            it.timestamp.atZone(zone).toLocalDate() in startDate..endDate
+        }
         val daysLogged = recentFoods.map { it.timestamp.atZone(zone).toLocalDate() }.toSet().size
         val totalRecentCal = recentFoods.sumOf { it.calories }
         val avgDailyCal = if (daysLogged > 0) totalRecentCal / daysLogged else 0
@@ -176,12 +183,14 @@ object WeightAnalysisService {
         val tdee = profile.tdee.toInt()
         val balance = avgDailyCal - tdee
         // 7,700 kcal ≈ 1 kg body fat (ISSN standard for deficit/surplus math).
-        val predictedWeeklyKg = balance.toDouble() * 7.0 / 7_700.0
+        val predictedWeeklyKg = balance.toDouble() * 7.0 / GoalEnergyMath.KILOCALORIES_PER_KILOGRAM
 
         val sortedWeights = weights.sortedByDescending { it.date }
         val currentWeight = sortedWeights.firstOrNull()?.weightKg ?: profile.weightKg
 
-        val regressionWindow = sortedWeights.filter { it.date >= cutoff }
+        val regressionWindow = sortedWeights.filter {
+            it.date.atZone(zone).toLocalDate() in startDate..today
+        }
         val observedWeeklyKg = linearRegressionSlopePerDay(regressionWindow)?.let { it * 7.0 }
 
         val pred30 = currentWeight + predictedWeeklyKg * 30.0 / 7.0
@@ -204,7 +213,7 @@ object WeightAnalysisService {
             }
         }
 
-        val hasEnoughData = daysLogged >= 2 && weights.size >= 2
+        val hasEnoughData = daysLogged >= 2 && regressionWindow.size >= 2
 
         val trendsDisagree = observedWeeklyKg?.let { observed ->
             hasEnoughData && abs(predictedWeeklyKg - observed) > 0.3

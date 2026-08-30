@@ -402,20 +402,60 @@ struct calorietrackerApp: App {
         let weightMetric = WeightUnit.current == .kg
         let weights = weightStore.entries
         let foods = foodStore.entries
+        let bodyFatEntries = bodyFatStore.entries
+        let workoutSessions = strengthWorkoutStore.completedSessions
+        let bodyMeasurements = bodyMeasurementStore.entries
         Task {
             defer { Task { @MainActor in isAutoRefreshingAdaptiveGoals = false } }
 
             // Adaptive Goals = the same AI calculation the Recalculate button runs, on a weekly
             // timer. Energy Burn (when on) anchors maintenance to measured Apple Health burn.
-            var measuredTdee: Int? = nil
-            if energyBurnOn, healthOn, let summary = await healthKitManager.fetchRecentEnergySummary(days: 14) {
-                measuredTdee = summary.totalAverageCalories ?? (Int(profile.bmr.rounded()) + summary.activeAverageCalories)
+            var healthEnergy = energyBurnOn && healthOn
+                ? await healthKitManager.fetchRecentEnergyHistory(days: 14)
+                : []
+            let adaptiveStillOn = UserDefaults.standard.bool(forKey: AdaptiveGoalSettings.enabledKey)
+            let healthStillOn = UserDefaults.standard.bool(forKey: "healthKitEnabled")
+            let energyBurnStillOn = UserDefaults.standard.bool(forKey: EnergyBurnSettings.enabledKey)
+            guard adaptiveStillOn,
+                  healthStillOn == healthOn,
+                  energyBurnStillOn == energyBurnOn
+            else { return }
+            // Defense in depth for the privacy boundary: if either source switch is off, no
+            // fetched Health history can enter the evidence pack.
+            if !healthStillOn || !energyBurnStillOn { healthEnergy = [] }
+            let measuredTdee = HealthKitManager.energySummary(
+                from: healthEnergy,
+                requestedDays: 14
+            ).map {
+                $0.totalAverageCalories ?? (Int(profile.bmr.rounded()) + $0.activeAverageCalories)
             }
-            let forecast = WeightAnalysisService.compute(weights: weights, foods: foods, profile: profile)
+            let evidence = GoalEvidence.build(
+                foods: foods,
+                weights: weights,
+                bodyFatEntries: bodyFatEntries,
+                workoutSessions: workoutSessions,
+                bodyMeasurements: bodyMeasurements,
+                healthEnergy: healthEnergy,
+                profile: profile
+            )
             do {
-                let result = try await GeminiService.calculateGoals(profile: profile, forecast: forecast, measuredTdee: measuredTdee, measurement: bodyMeasurementStore.latestEntry, heightMetric: heightMetric, weightMetric: weightMetric)
-                AdaptiveGoalSettings.savePreviousTargetsIfNeeded(from: profile)
-                var next = profile
+                let result = try await GeminiService.calculateGoals(
+                    profile: profile,
+                    measuredTdee: measuredTdee,
+                    measurement: bodyMeasurements.sorted { $0.date > $1.date }.first,
+                    evidence: evidence,
+                    heightMetric: heightMetric,
+                    weightMetric: weightMetric
+                )
+                // The provider call can take seconds. Never overwrite profile/target edits the
+                // user made while it was in flight; the next foreground can recalculate afresh.
+                guard UserDefaults.standard.bool(forKey: AdaptiveGoalSettings.enabledKey),
+                      UserDefaults.standard.bool(forKey: "healthKitEnabled") == healthOn,
+                      UserDefaults.standard.bool(forKey: EnergyBurnSettings.enabledKey) == energyBurnOn,
+                      let latest = UserProfile.load(), latest == profile
+                else { return }
+                AdaptiveGoalSettings.savePreviousTargetsIfNeeded(from: latest)
+                var next = latest
                 next.customCalories = result.calories
                 next.customProtein = result.protein
                 next.customCarbs = result.carbs
@@ -426,7 +466,11 @@ struct calorietrackerApp: App {
                 AdaptiveGoalSettings.markCheckedToday()
             } catch {
                 // AI unavailable — keep existing goals; mark checked so we don't retry every open.
-                AdaptiveGoalSettings.markCheckedToday()
+                if UserDefaults.standard.bool(forKey: AdaptiveGoalSettings.enabledKey),
+                   UserDefaults.standard.bool(forKey: "healthKitEnabled") == healthOn,
+                   UserDefaults.standard.bool(forKey: EnergyBurnSettings.enabledKey) == energyBurnOn {
+                    AdaptiveGoalSettings.markCheckedToday()
+                }
             }
         }
     }

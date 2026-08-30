@@ -6,6 +6,11 @@ import java.time.LocalDate
 import java.time.Period
 import java.time.ZoneId
 
+object GoalEnergyMath {
+    /** Shared approximation for requested weight-change and observed-trend energy math. */
+    const val KILOCALORIES_PER_KILOGRAM = 7_700.0
+}
+
 @Serializable
 data class UserProfile(
     val name: String? = null,
@@ -54,9 +59,10 @@ data class UserProfile(
         return Period.between(birthDate, LocalDate.now()).years.coerceAtLeast(0)
     }
 
-    /** True when BMR uses Katch-McArdle: whenever a body fat % is set it is used directly.
-     *  No manual override — if body fat is unset, BMR falls back to Mifflin-St Jeor. */
-    val usesBodyFatForBMR: Boolean get() = bodyFatPercentage != null
+    /** Katch-McArdle is automatic whenever body fat is known. The legacy nullable preference is
+     *  retained for saved-profile compatibility but has no editable UI and cannot gate BMR. */
+    val usesBodyFatForBMR: Boolean
+        get() = bodyFatPercentage != null
 
     val bmr: Double get() = if (usesBodyFatForBMR) {
         // Katch-McArdle
@@ -73,11 +79,11 @@ data class UserProfile(
         WeightGoal.MAINTAIN -> 0
         WeightGoal.LOSE -> {
             val rate = weeklyChangeKg ?: 0.5
-            -(rate * 7000 / 7).toInt()
+            -(rate * GoalEnergyMath.KILOCALORIES_PER_KILOGRAM / 7).toInt()
         }
         WeightGoal.GAIN -> {
             val rate = weeklyChangeKg ?: 0.5
-            (rate * 7000 / 7).toInt()
+            (rate * GoalEnergyMath.KILOCALORIES_PER_KILOGRAM / 7).toInt()
         }
     }
 
@@ -86,12 +92,9 @@ data class UserProfile(
     val proteinGoal: Int get() {
         // +0.2 g/kg during cutting phase to preserve lean mass (Helms et al 2014).
         val cuttingBoost = if (goal == WeightGoal.LOSE) 0.2 else 0.0
-        val multiplier = activityLevel.proteinRequirementPerKg(bodyFatPercentage, cuttingBoost)
-        return (multiplier * proteinBasisWeightKg).toInt()
+        val multiplier = activityLevel.proteinRequirementPerKg(cuttingBoost)
+        return (multiplier * weightKg).toInt()
     }
-
-    private val proteinBasisWeightKg: Double get() =
-        bodyFatPercentage?.let { weightKg * (1.0 - it).coerceIn(0.05, 1.0) } ?: weightKg
 
     val fatGoal: Int get() = (0.6 * weightKg).toInt()
 

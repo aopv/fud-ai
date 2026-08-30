@@ -643,7 +643,7 @@
     <string name="widget_all_metrics_label">Fud AI 今天</string>
     <string name="widget_all_metrics_description">在一个小部件中查看今天的卡路里、蛋白质、碳水和脂肪。</string>
     <string name="settings_needs_health_connect">需要 Health Connect</string>
-    <string name="settings_energy_goals_info">开启后，Fud AI 会使用来自 Health Connect 的实测消耗热量（活动 + 基础能量的 14 天平均值）作为计算目标时的维持热量（TDEE）基准，而不是公式估算。读取消耗数据不使用 AI。需要 Health Connect。与“重新计算”按钮及 Adaptive Goals 配合使用。</string>
+    <string name="settings_energy_goals_info">开启后，Fud AI 会在计算目标时使用 Health Connect 的近期实测能量窗口作为维持热量基准，而不是公式估算：有足够天数时使用实测总能量，否则使用实测活动能量平均值 + 公式 BMR。读取消耗数据不使用 AI。需要 Health Connect。与“重新计算”按钮及 Adaptive Goals 配合使用。</string>
     <string name="settings_adaptive_goals_info">大约每周一次，当你打开应用时，Fud AI 会根据你的资料、最近记录的饮食和体重趋势，自动重新运行完整的目标计算（与“重新计算”按钮相同）。如果已开启 Energy Burn，则会以实测消耗作为维持热量的基准。若 AI 不可用则静默跳过。关闭后会恢复到该功能首次更改前的目标。这不是医疗建议。</string>
     <string name="ad_label">广告</string>
     <string name="onboarding_plan_adaptive_note">你的计划会根据记录每周自动调整 — 想保持不变，可在设置中关闭 Adaptive Goals。</string>
@@ -698,4 +698,35 @@
     <string name="notif_fasting_goal_title">已达到禁食目标</string>
     <string name="notif_fasting_goal_text">你已达到%1$s的禁食目标。准备好后即可结束禁食。</string>
     <string name="home_menu_barcode">条形码</string>
+    <string name="settings_calc_methods">计算方法</string>
+    <string name="settings_calc_calorie_target">目标卡路里值</string>
+    <string name="settings_calc_maintenance">维持热量和目标调整</string>
+    <string name="settings_calc_macro_split">宏量营养素比例</string>
+    <string name="settings_calc_micro_values">微量营养素值</string>
+    <string name="settings_calc_intro">你的每日热量和宏量营养素目标由 AI 设定。当你点按“重新计算目标”时（若开启了自适应目标，则大约每周自动一次），Fud AI 会将你的资料、下方的参考公式、保护隐私的每日营养汇总、带日期的准确体重、体脂和围度测量值、汇总的训练次数、时长、组数和重复次数，以及可选的 Health Connect 能量数据发送给你的 AI 服务商。此计算不会发送食物名称、备注、照片、配料或运动名称。它以这些经同行评审的公式为基础，再根据你的真实数据进行调整，以估算你真正的维持热量和目标。</string>
+    <string name="settings_calc_sec_bmr">基础代谢率 (BMR)</string>
+    <string name="settings_calc_sec_tdee">每日能量消耗 (TDEE)</string>
+    <string name="settings_calc_mifflin_name">Mifflin-St Jeor 方程</string>
+    <string name="settings_calc_mifflin_used">静息代谢的默认公式。当体脂数据不可用时使用。</string>
+    <string name="settings_calc_mifflin_formula">男性：10×体重(kg) + 6.25×身高(cm) − 5×年龄 + 5\n女性：10×体重(kg) + 6.25×身高(cm) − 5×年龄 − 161</string>
+    <string name="settings_calc_katch_name">Katch-McArdle 方程</string>
+    <string name="settings_calc_katch_used">只要输入了体脂率就会使用。它根据去脂体重而不是总体重计算 BMR。</string>
+    <string name="settings_calc_katch_formula">BMR = 370 + 21.6 × LBM(kg)\nLBM = 体重 × (1 − 体脂率)</string>
+    <string name="settings_calc_tdee_name">活动系数法</string>
+    <string name="settings_calc_tdee_used">TDEE = BMR × 活动系数。该系数对应你选择的活动水平。这是公式计算的维持热量基准。开启 Energy Burn 后，计算会改用 Health Connect 的近期实测能量窗口：有足够天数时使用实测总能量，否则使用实测活动能量平均值 + 公式 BMR。</string>
+    <string name="settings_calc_tdee_formula">久坐：1.2 · 轻度：1.375 · 中度：1.465 · 活跃：1.55 · 非常活跃：1.725 · 极度活跃：1.9</string>
+    <string name="settings_calc_target_name">维持热量和目标调整</string>
+    <string name="settings_calc_target_used">维持热量从你的 TDEE 开始；若开启 Energy Burn，则使用 Health Connect 的近期实测能量窗口，而不是公式估算：有足够天数时使用实测总能量，否则使用实测活动能量平均值 + 公式 BMR。AI 会结合你记录的摄入量和体重趋势校准维持热量，然后应用目标：每周体重变化率会转换为减重时的每日热量缺口或增重时的每日热量盈余。</string>
+    <string name="settings_calc_target_formula">1 lb 体脂 ≈ 3,500 kcal · 1 kg ≈ 7,700 kcal\n为设定每日卡路里目标，每周变化率 ÷ 7 后，减重时从维持热量中减去，增重时则加上。</string>
+    <string name="settings_calc_split_name">蛋白质、碳水化合物和脂肪目标</string>
+    <string name="settings_calc_split_used">AI 以这些参考值为指导，使蛋白质、碳水化合物和脂肪符合你的热量目标。蛋白质采用按活动水平制定的总体重比率；脂肪根据体重设定；其余热量由碳水化合物补足。你可以在“设置”中锁定或自行编辑任何数值。</string>
+    <string name="settings_calc_split_formula">蛋白质：根据活动水平，每 kg 约 0.8–2.2 g，减重时略微提高\n脂肪：每 kg 体重约 0.6 g\n碳水化合物：剩余热量 ÷ 4 kcal/g</string>
+    <string name="settings_calc_micro_name">每餐估算值</string>
+    <string name="settings_calc_micro_used">每餐返回的卡路里、宏量营养素、纤维、糖、饱和脂肪、胆固醇、咖啡因、钠、钾及其他详细营养值，都是你所选的 AI 服务商根据食物图片、语音转写或文字描述生成的估算值。</string>
+    <string name="settings_calc_mifflin_citation">Mifflin MD, St Jeor ST, et al. (1990). “健康人静息能量消耗的新预测方程。” Am J Clin Nutr 51(2):241–247.</string>
+    <string name="settings_calc_katch_citation">McArdle WD, Katch FI, Katch VL.《运动生理学：营养、能量与人体表现》，第 7 版。Lippincott Williams &amp; Wilkins, 2010.</string>
+    <string name="settings_calc_tdee_citation">来自 FAO/WHO/UNU 人体能量需求联合专家咨询 (2001) 的标准 PAL（身体活动水平）系数。ACSM 和 USDA 膳食指南也广泛采用这些系数。</string>
+    <string name="settings_calc_target_citation">Hall KD, et al. (2011). “能量失衡对体重影响的量化。” Lancet 378(9793):826–837. 经典的每磅 3,500 kcal 规则源自 Wishnofsky M (1958), Am J Clin Nutr 6:542–546.</string>
+    <string name="settings_calc_split_citation">Morton RW, et al. (2018). “蛋白质补充对抗阻训练引起的肌肉量和力量增长之影响的系统综述、荟萃分析和荟萃回归。” Br J Sports Med 52(6):376–384.</string>
+    <string name="settings_calc_micro_citation">估算值依赖底层 AI 模型的训练数据（USDA FoodData Central、制造商营养标签和科学文献）。准确度会因食物、份量是否清晰可见以及服务商模型而异。对于经常记录的食物，请务必与标签核对。</string>
 </resources>

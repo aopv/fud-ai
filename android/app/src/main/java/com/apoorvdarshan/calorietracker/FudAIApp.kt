@@ -17,7 +17,9 @@ import com.apoorvdarshan.calorietracker.services.FoodImageStore
 import com.apoorvdarshan.calorietracker.services.NotificationService
 import com.apoorvdarshan.calorietracker.services.WidgetSnapshotWriter
 import com.apoorvdarshan.calorietracker.services.AdaptiveGoalResult
-import com.apoorvdarshan.calorietracker.services.WeightAnalysisService
+import com.apoorvdarshan.calorietracker.services.DailyHealthEnergyEvidence
+import com.apoorvdarshan.calorietracker.services.GoalEvidence
+import com.apoorvdarshan.calorietracker.services.GoalEvidenceBuilder
 import com.apoorvdarshan.calorietracker.models.UserProfile
 import com.apoorvdarshan.calorietracker.models.CurrentMealSchedule
 import com.apoorvdarshan.calorietracker.models.WorkoutSession
@@ -132,6 +134,11 @@ class FudAIApp : Application() {
  *  persisted alongside the token so we can detect a newly-granted read capability. */
 private const val HEALTH_READ_TYPE_WEIGHT = "weight"
 private const val HEALTH_READ_TYPE_BODY_FAT = "bodyfat"
+
+data class GoalCalculationEvidenceContext(
+    val evidence: GoalEvidence,
+    val measuredTdee: Int?
+)
 
 class AppContainer(app: FudAIApp) {
     val appContext = app.applicationContext
@@ -304,17 +311,60 @@ class AppContainer(app: FudAIApp) {
         }
     }
 
-    /**
-     * Energy Burn toggle resolved to a number: the user's measured maintenance from Health Connect
-     * (14-day active + basal average), or null when Energy Burn is off, Health is unavailable, or
-     * there isn't enough data. Single source consulted by both manual Recalculate and Adaptive.
-     */
-    suspend fun measuredEnergyTdeeIfEnabled(profile: UserProfile): Int? {
-        if (!prefs.healthEnergyGoalsEnabled.first()) return null
-        if (!prefs.healthConnectEnabled.first()) return null
-        if (!health.isAvailable() || !health.hasEnergyRead()) return null
-        val summary = runCatching { health.readRecentEnergySummary(days = 14) }.getOrNull() ?: return null
-        return summary.totalAverageCalories ?: (profile.bmr.roundToInt() + summary.activeAverageCalories)
+    /** One privacy-safe evidence snapshot shared by manual Recalculate and Adaptive Goals. Health
+     *  Connect is queried once: its daily values both form the measured maintenance anchor and go
+     *  into the evidence pack. App-estimated workout calories are excluded by HealthConnectManager. */
+    suspend fun goalCalculationEvidence(profile: UserProfile): GoalCalculationEvidenceContext {
+        val foods = foodRepository.entries.first()
+        val weights = weightRepository.entries.first()
+        val energy = measuredGoalEnergyIfEnabled(profile)
+        return GoalCalculationEvidenceContext(
+            evidence = GoalEvidenceBuilder.build(
+                profile = profile,
+                foods = foods,
+                weights = weights,
+                bodyFatEntries = bodyFatRepository.entries.first(),
+                workouts = workoutRepository.completedSessions.first(),
+                measurements = bodyMeasurementRepository.entries.first(),
+                healthEnergyDays = energy.second
+            ),
+            measuredTdee = energy.first
+        )
+    }
+
+    /** Compatibility helper for callers that only need the Health Connect maintenance anchor. */
+    suspend fun measuredEnergyTdeeIfEnabled(profile: UserProfile): Int? =
+        measuredGoalEnergyIfEnabled(profile).first
+
+    private suspend fun measuredGoalEnergyIfEnabled(
+        profile: UserProfile
+    ): Pair<Int?, List<DailyHealthEnergyEvidence>> {
+        if (!prefs.healthEnergyGoalsEnabled.first() || !prefs.healthConnectEnabled.first()) {
+            return null to emptyList()
+        }
+        if (!health.isAvailable() || !health.hasEnergyRead()) return null to emptyList()
+        val daily = runCatching { health.readRecentDailyEnergy(days = 14) }.getOrNull().orEmpty()
+        // Reading Health Connect suspends. Respect an opt-out that happened while it was in flight
+        // before constructing either the provider evidence or measured-maintenance anchor.
+        if (!prefs.healthEnergyGoalsEnabled.first() || !prefs.healthConnectEnabled.first()) {
+            return null to emptyList()
+        }
+        val evidence = daily.map {
+            DailyHealthEnergyEvidence(
+                date = it.date,
+                externalActiveCalories = it.activeCalories,
+                totalCalories = it.totalCalories
+            )
+        }
+        if (daily.size < 3) return null to evidence
+        val activeAverage = daily.map { it.activeCalories }.average().roundToInt()
+        val totalAverage = daily.mapNotNull { it.totalCalories }
+            // Match iOS: a measured-total anchor needs at least three complete total-energy
+            // days. A lone anomalous total must not override the formula maintenance estimate.
+            .takeIf { it.size >= 3 }
+            ?.average()
+            ?.roundToInt()
+        return (totalAverage ?: (profile.bmr.roundToInt() + activeAverage)) to evidence
     }
 
     /**
@@ -322,7 +372,8 @@ class AppContainer(app: FudAIApp) {
      * Recalculate button uses) about once a week, from the latest logged food + weight trend
      * (hit-and-trial) and — when Energy Burn is on — the measured Health maintenance anchor.
      * Silent and non-destructive on AI failure (keeps existing goals; marks checked so it does not
-     * retry on every app open). Protein is pinned to the activity multiplier, like manual recalc.
+     * retry on every app open). Returned targets are validated against the same formula references
+     * and plausibility bounds used by manual recalculation.
      */
     suspend fun refreshAdaptiveGoalsIfNeeded(force: Boolean = false): AdaptiveGoalResult? {
         if (adaptiveGoalsRefreshInFlight) return null
@@ -338,22 +389,43 @@ class AppContainer(app: FudAIApp) {
             val profile = profileRepository.current() ?: return null
             val heightMetric = prefs.heightUnit.first() == "cm"
             val weightMetric = prefs.weightUnit.first() == "kg"
-            val measuredTdee = measuredEnergyTdeeIfEnabled(profile)
-            val forecast = WeightAnalysisService.compute(
-                weights = weightRepository.entries.first(),
-                foods = foodRepository.entries.first(),
-                profile = profile
-            )
+            val healthEnabledAtStart = prefs.healthConnectEnabled.first()
+            val energyEnabledAtStart = prefs.healthEnergyGoalsEnabled.first()
             val result = runCatching {
-                foodAnalysis.calculateGoals(profile, forecast, heightMetric, weightMetric, measuredTdee, bodyMeasurementRepository.latestSnapshot())
+                val context = goalCalculationEvidence(profile)
+                if (prefs.healthConnectEnabled.first() != healthEnabledAtStart ||
+                    prefs.healthEnergyGoalsEnabled.first() != energyEnabledAtStart ||
+                    !prefs.adaptiveGoalsEnabled.first()
+                ) return null
+                foodAnalysis.calculateGoals(
+                    profile = profile,
+                    heightMetric = heightMetric,
+                    weightMetric = weightMetric,
+                    measuredTdee = context.measuredTdee,
+                    measurement = bodyMeasurementRepository.latestSnapshot(),
+                    evidence = context.evidence
+                )
             }.getOrNull()
-            // Mark checked on success OR AI failure so a misconfigured provider isn't hit on every
-            // foreground; the weekly cadence simply resumes next week.
-            prefs.setAdaptiveGoalsLastCheckDay(today.toString())
-            if (result == null) return null
+            if (result == null) {
+                // Mark provider failure checked so a bad key is not hit on every foreground.
+                if (prefs.adaptiveGoalsEnabled.first() &&
+                    prefs.healthConnectEnabled.first() == healthEnabledAtStart &&
+                    prefs.healthEnergyGoalsEnabled.first() == energyEnabledAtStart
+                ) {
+                    prefs.setAdaptiveGoalsLastCheckDay(today.toString())
+                }
+                return null
+            }
 
-            prefs.saveAdaptiveGoalPreviousTargetsIfNeeded(profile)
-            val next = profile.recalculatedFromFormulas().copy(
+            // Never overwrite profile/target edits made while the provider request was in flight.
+            val latest = profileRepository.current() ?: return null
+            if (latest != profile || !prefs.adaptiveGoalsEnabled.first() ||
+                prefs.healthConnectEnabled.first() != healthEnabledAtStart ||
+                prefs.healthEnergyGoalsEnabled.first() != energyEnabledAtStart
+            ) return null
+            prefs.setAdaptiveGoalsLastCheckDay(today.toString())
+            prefs.saveAdaptiveGoalPreviousTargetsIfNeeded(latest)
+            val next = latest.recalculatedFromFormulas().copy(
                 customCalories = result.calories,
                 customProtein = result.protein,
                 customCarbs = result.carbs,

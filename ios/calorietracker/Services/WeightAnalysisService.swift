@@ -47,28 +47,39 @@ struct WeightForecast {
 }
 
 enum WeightAnalysisService {
-    static func compute(weights: [WeightEntry], foods: [FoodEntry], profile: UserProfile) -> WeightForecast {
-        let now = Date()
-        let calendar = Calendar.current
-        let cutoff = calendar.date(byAdding: .day, value: -WeightForecast.maxLookbackDays, to: now) ?? now
+    static func compute(
+        weights: [WeightEntry],
+        foods: [FoodEntry],
+        profile: UserProfile,
+        now: Date = .now,
+        calendar: Calendar = .current
+    ) -> WeightForecast {
+        let today = calendar.startOfDay(for: now)
+        let cutoff = calendar.date(byAdding: .day, value: -WeightForecast.maxLookbackDays, to: today) ?? today
+        let currentEndExclusive = calendar.date(byAdding: .day, value: 1, to: today) ?? now
 
-        // --- Avg daily calories from food log (up to 90 days of available data) ---
-        let recentFoods = foods.filter { $0.timestamp >= cutoff && $0.timestamp <= now }
+        // --- Avg daily calories from the previous 90 completed calendar days ---
+        // Today's diary is intentionally excluded: it is still in progress and would
+        // systematically bias empirical maintenance downward.
+        let recentFoods = foods.filter { $0.timestamp >= cutoff && $0.timestamp < today }
         let daysLogged = Set(recentFoods.map { calendar.startOfDay(for: $0.timestamp) }).count
         let totalRecentCal = recentFoods.reduce(0) { $0 + $1.calories }
         let avgDailyCal = daysLogged > 0 ? totalRecentCal / daysLogged : 0
 
         let tdee = Int(profile.tdee)
         let balance = avgDailyCal - tdee
-        // 7,700 kcal ≈ 1 kg body fat (ISSN standard for deficit/surplus math).
-        let predictedWeeklyKg = Double(balance) * 7.0 / 7_700.0
+        let predictedWeeklyKg = Double(balance) * 7.0 / GoalEnergyMath.kilocaloriesPerKilogram
 
         // --- Current weight ---
         let sortedWeights = weights.sorted { $0.date > $1.date }
         let currentWeight = sortedWeights.first?.weightKg ?? profile.weightKg
 
         // --- Observed trend via linear regression on weight history ---
-        let regressionWindow = sortedWeights.filter { $0.date >= cutoff }
+        // A weigh-in is a complete point-in-time measurement, so today's reading is useful even
+        // though today's still-in-progress food diary is excluded above.
+        let regressionWindow = sortedWeights.filter {
+            $0.date >= cutoff && $0.date < currentEndExclusive
+        }
         let observedWeeklyKg = linearRegressionSlopePerDay(entries: regressionWindow).map { $0 * 7.0 }
 
         // --- Future projections ---
@@ -93,7 +104,7 @@ enum WeightAnalysisService {
 
         // Work with whatever the user has. Even 2 days of food and 2 weights is enough for a rough forecast;
         // the LLM will caveat accordingly.
-        let hasEnoughData = daysLogged >= 2 && weights.count >= 2
+        let hasEnoughData = daysLogged >= 2 && regressionWindow.count >= 2
 
         // Compare predicted vs observed trends. If both exist and they differ by more than
         // 0.3 kg/week, user is likely under-logging food (or over-eating un-logged snacks).

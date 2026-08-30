@@ -413,9 +413,16 @@ struct GeminiService {
         let height = heightMetric
             ? String(format: "%.0f cm", profile.heightCm)
             : String(format: "%.1f in", profile.heightCm / 2.54)
-        let bodyFat = profile.bodyFatPercentage.map { "\(Int(($0 * 100).rounded()))%" } ?? "not set"
+        let canonicalWeight = String(format: "%.1f kg", profile.weightKg)
+        let canonicalHeight = String(format: "%.1f cm", profile.heightCm)
+        let bodyFat = profile.bodyFatPercentage.map {
+            "\(Int(($0 * 100).rounded()))% (fraction \(String(format: "%.3f", $0)))"
+        } ?? "not set"
         let goalWeight = profile.goalWeightKg.map { kg in
-            weightMetric ? String(format: "%.1f kg", kg) : String(format: "%.1f lb", kg * 2.20462)
+            let preferred = weightMetric
+                ? String(format: "%.1f kg", kg)
+                : String(format: "%.1f lb", kg * 2.20462)
+            return "\(String(format: "%.1f kg", kg)) (preferred display: \(preferred))"
         } ?? "not set"
         let currentGoalLines = OptionalNutrient.allCases
             .map { "- \($0.displayName): \(currentGoals.goal(for: $0)) \($0.unit) (\($0.goalStyle))" }
@@ -437,8 +444,8 @@ struct GeminiService {
         User profile:
         - Gender: \(profile.gender.displayName)
         - Age: \(profile.age)
-        - Height: \(height)
-        - Weight: \(weight)
+        - Height: \(canonicalHeight) (preferred display: \(height))
+        - Weight: \(canonicalWeight) (preferred display: \(weight))
         - Activity: \(profile.activityLevel.displayName)
         - Weight goal: \(profile.goal.displayName)
         - Goal weight: \(goalWeight)
@@ -457,52 +464,44 @@ struct GeminiService {
     // MARK: - AI Goal Calculation
 
     /// AI-driven daily target calculation. Sends the app's full formula set, the user's
-    /// profile / goals / settings, AND — when available — their recent logged-calorie average
-    /// and observed weight trend, so the model can estimate true maintenance empirically
-    /// (hit-and-trial / adaptive) rather than trusting the formula alone. Routes through the
-    /// user's selected provider. The deterministic math stays as the caller's
-    /// fallback when AI is unavailable. ONLY for goal targets — does not touch food estimation.
-    static func calculateGoals(profile: UserProfile, forecast: WeightForecast?, measuredTdee: Int? = nil, measurement: BodyMeasurement? = nil, heightMetric: Bool, weightMetric: Bool) async throws -> GoalCalculation {
+    /// profile / goals / settings plus a completeness-aware, privacy-safe evidence pack, so the
+    /// model can use longer-term real signals without treating partial diary days as true intake.
+    /// Routes through the
+    /// user's selected provider. If AI is unavailable, callers preserve the
+    /// existing saved targets. ONLY for goal targets — does not touch food estimation.
+    static func calculateGoals(
+        profile: UserProfile,
+        measuredTdee: Int? = nil,
+        measurement: BodyMeasurement? = nil,
+        evidence: GoalEvidence? = nil,
+        heightMetric: Bool,
+        weightMetric: Bool
+    ) async throws -> GoalCalculation {
         let weight = weightMetric
             ? String(format: "%.1f kg", profile.weightKg)
             : String(format: "%.1f lb", profile.weightKg * 2.20462)
         let height = heightMetric
             ? String(format: "%.0f cm", profile.heightCm)
             : String(format: "%.1f in", profile.heightCm / 2.54)
-        let bodyFat = profile.bodyFatPercentage.map { "\(Int(($0 * 100).rounded()))%" } ?? "not set"
+        let canonicalWeight = String(format: "%.1f kg", profile.weightKg)
+        let canonicalHeight = String(format: "%.1f cm", profile.heightCm)
+        let bodyFat = profile.bodyFatPercentage.map {
+            "\(Int(($0 * 100).rounded()))% (fraction \(String(format: "%.3f", $0)))"
+        } ?? "not set"
         let goalWeight = profile.goalWeightKg.map { kg in
-            weightMetric ? String(format: "%.1f kg", kg) : String(format: "%.1f lb", kg * 2.20462)
+            let preferred = weightMetric
+                ? String(format: "%.1f kg", kg)
+                : String(format: "%.1f lb", kg * 2.20462)
+            return "\(String(format: "%.1f kg", kg)) (preferred display: \(preferred))"
         } ?? "not set"
         let weekly = profile.weeklyChangeKg.map { String(format: "%.2f kg/week", $0) } ?? "not set (maintain)"
-        let bmrMethod = profile.usesBodyFatForBMR ? "Katch-McArdle (body fat known and enabled)" : "Mifflin-St Jeor"
-
-        // Observed-data block: derive an empirical maintenance estimate from real logs when there
-        // is enough history. Only included when the forecast says the data is meaningful.
-        var observedSection = ""
-        if let f = forecast, f.hasEnoughData {
-            var lines: [String] = ["", "OBSERVED DATA — from the user's OWN logs (prefer this over the formula when reliable):"]
-            lines.append("- Logged intake: avg \(f.avgDailyCalories) kcal/day across \(f.daysOfFoodData) logged days")
-            if let obs = f.observedWeeklyChangeKg {
-                let obsStr = weightMetric ? String(format: "%+.2f kg/week", obs) : String(format: "%+.2f lb/week", obs * 2.20462)
-                let empiricalTDEE = f.avgDailyCalories - Int((obs * 7_700.0 / 7.0).rounded())
-                lines.append("- Observed weight trend: \(obsStr) from \(f.weightEntriesUsed) weigh-ins")
-                lines.append("- Implied actual maintenance (logged intake minus the weekly change): ~\(empiricalTDEE) kcal/day")
-            } else {
-                lines.append("- Observed weight trend: not enough weigh-ins yet to measure")
-            }
-            lines.append("- Formula TDEE for comparison: \(f.tdee) kcal/day")
-            if f.trendsDisagree {
-                lines.append("- WARNING: logged intake and the real weight trend DISAGREE — the user is likely under-logging. Trust the weight trend over raw logged calories.")
-            }
-            lines.append("HIT-AND-TRIAL: when this observed data is reliable (enough logged days + weigh-ins), estimate the user's true maintenance from their intake and real weight trend, then apply their goal and weekly-change target to THAT maintenance — not the formula TDEE. If the data is thin or trends disagree, lean on the formula / weight trend accordingly. Always keep calories within 800-6000.")
-            observedSection = lines.joined(separator: "\n")
-        }
+        let bmrMethod = profile.usesBodyFatForBMR ? "Katch-McArdle (automatic because body fat is known)" : "Mifflin-St Jeor"
 
         // Energy Burn toggle: when the user has it on (and Apple Health has enough data), this is
         // their REAL measured maintenance and replaces the formula TDEE as the calorie anchor.
         let measuredSection: String
         if let measuredTdee {
-            measuredSection = "\nMEASURED ENERGY BURN — the user's REAL maintenance from Apple Health (14-day average of active + basal calories). Use THIS as the maintenance/TDEE anchor INSTEAD of the formula TDEE: \(measuredTdee) kcal/day. Apply the weight goal and weekly-change adjustment to this measured maintenance. Still sanity-check it against the observed weight trend."
+            measuredSection = "\nENERGY BURN MAINTENANCE ANCHOR — \(measuredTdee) kcal/day, derived from the recent Apple Health energy window. It uses measured total energy when at least 3 total-energy days exist; otherwise it combines average measured active energy with formula BMR. Prefer this over formula TDEE, apply the goal/weekly adjustment, and sanity-check against complete-diary and weight trends."
         } else {
             measuredSection = ""
         }
@@ -510,24 +509,33 @@ struct GeminiService {
         // Optional tape-measure circumferences + derived metrics. Extra signal only — never overrides
         // the formulas. A shrinking waist alongside flat/declining weight implies recomposition.
         let measurementsSection: String
-        if let summary = measurement?.promptSummary(gender: profile.gender, heightCm: profile.heightCm) {
+        if evidence != nil {
+            // An evidence pack owns recency. When it has no recent measurements, do not silently
+            // fall back to an undated value that may be years old.
+            measurementsSection = ""
+        } else if let summary = measurement?.promptSummary(gender: profile.gender, heightCm: profile.heightCm) {
             measurementsSection = "\nBODY MEASUREMENTS — the user's latest tape-measure circumferences and the metrics derived from them. Use as extra signal: a shrinking waist with steady or falling weight suggests recomposition, so keep protein high and don't over-cut. Treat the US-Navy body-fat figure as a rough estimate, not exact.\n\(summary)"
         } else {
             measurementsSection = ""
         }
 
+        let evidenceSection = evidence.map {
+            "\n\($0.promptSection(profile: profile))\nUse the confidence and completeness labels explicitly. Prefer likely-complete days and measured trends; never interpret missing or likely-partial days as true low intake."
+        } ?? ""
+
         let prompt = """
-        You are the goal calculator for a calorie & macro tracking app. Using the FORMULAS, the USER PROFILE, and any OBSERVED DATA below, compute the user's daily targets.
+        You are the goal calculator for a calorie & macro tracking app. Using the FORMULAS, USER PROFILE, and GOAL EVIDENCE below, compute the user's daily targets.
         Return ONLY valid JSON with these exact keys (integers, plus a short reason):
         {"calories":2000,"protein":150,"carbs":200,"fat":60,"reason":"Short reason under 100 characters"}
 
-        Use the app's formulas as the basis. When OBSERVED DATA is present and reliable, prefer the empirical maintenance estimate it implies over the formula TDEE.
+        Use the app's formulas as the basis. Use empirical signals only according to the evidence confidence/completeness labels; never infer low intake from partial or missing diary days.
         FORMULAS
         - BMR (Mifflin-St Jeor): base = 10*weightKg + 6.25*heightCm - 5*age - 161; if male add 166; female/other use base.
-        - BMR (Katch-McArdle, used when body fat is known and enabled): 370 + 21.6 * (1 - bodyFatFraction) * weightKg.
+        - BMR (Katch-McArdle, used automatically when body fat is known): 370 + 21.6 * (1 - bodyFatFraction) * weightKg.
         - TDEE = BMR * activity multiplier. Multipliers: sedentary 1.2, light 1.375, moderate 1.465, active 1.55, very active 1.725, extra active 1.9.
-        - Calorie target = TDEE + adjustment. adjustment = 0 for maintain; lose: -(weeklyChangeKg*7000/7); gain: +(weeklyChangeKg*7000/7).
-        - Protein: aim NEAR the formula protein value shown below — that value is the activity multiplier (sedentary 0.8, light 1.2, moderate 1.6, active 1.8, very active 2.0, extra active 2.2 g/kg; +0.2 if losing) applied to the user's \(profile.bodyFatPercentage != nil ? "lean body mass" : "full bodyweight"). You may choose a value within about ±15% of it based on the weight goal and the observed history (lean toward the higher end during a calorie deficit to preserve muscle). Do NOT scale protein down just to fit a lower calorie target.
+        - Calorie target = TDEE + adjustment. adjustment = 0 for maintain; lose: -(weeklyChangeKg*7700/7); gain: +(weeklyChangeKg*7700/7).
+        - Guarded empirical maintenance: for a matching 14/28/90-day window, maintenance ≈ average likely-complete intake − (weightChangeKg × 7700 ÷ weightSpanDays). Use only when evidence confidence is medium/high, at least half the window is likely-complete, there are at least 2 weigh-ins spanning 14+ days, and the implied trend is physiologically plausible. Never use partial/missing intake, never divide by the nominal window when the reported weight span differs, and ignore this estimate when those guards fail. Priority: measured Energy Burn anchor when available; otherwise a well-supported empirical estimate; otherwise formula TDEE.
+        - Protein: aim NEAR the formula protein value shown below — these activity rates are full-bodyweight equivalents (sedentary 0.8, light 1.2, moderate 1.6, active 1.8, very active 2.0, extra active 2.2 g/kg of full bodyweight; +0.2 if losing). You may choose a value within about ±15% of it based on the weight goal and the observed history (lean toward the higher end during a calorie deficit to preserve muscle). Do NOT reinterpret these rates as lean-mass rates or scale protein down merely to fit a lower calorie target.
         - Fat: 0.6 g/kg of full bodyweight.
         - Carbs: the calories remaining after protein (4 kcal/g) and fat (9 kcal/g), divided by 4. Keep 4*protein + 4*carbs + 9*fat approximately equal to calories.
         BMR method in effect for this user: \(bmrMethod).
@@ -536,8 +544,8 @@ struct GeminiService {
         USER PROFILE
         - Gender: \(profile.gender.displayName)
         - Age: \(profile.age)
-        - Height: \(height)
-        - Weight: \(weight)
+        - Height: \(canonicalHeight) (preferred display: \(height))
+        - Weight: \(canonicalWeight) (preferred display: \(weight))
         - Body fat: \(bodyFat)
         - Activity level: \(profile.activityLevel.displayName)
         - Weight goal: \(profile.goal.displayName)
@@ -549,13 +557,19 @@ struct GeminiService {
         - TDEE: \(Int(profile.tdee.rounded())) kcal/day
         - Formula calorie target: \(profile.dailyCalories) kcal/day
         - Formula macros: \(profile.proteinGoal) g protein, \(profile.carbsGoal) g carbs, \(profile.fatGoal) g fat
+
+        CURRENT SAVED TARGETS (before this recalculation)
+        - Calories: \(profile.effectiveCalories) kcal/day
+        - Protein: \(profile.effectiveProtein) g/day
+        - Carbs: \(profile.effectiveCarbs) g/day
+        - Fat: \(profile.effectiveFat) g/day
         \(measuredSection)
         \(measurementsSection)
-        \(observedSection)
+        \(evidenceSection)
         """
 
         let text = try await callAI(prompt: prompt, image: nil)
-        return try parseGoalCalculation(from: text)
+        return try parseGoalCalculation(from: text, profile: profile)
     }
 
     // MARK: - Weight Forecast Insight
@@ -1344,27 +1358,88 @@ struct GeminiService {
         return goals.mergedWithDefaults()
     }
 
-    private static func parseGoalCalculation(from text: String) throws -> GoalCalculation {
+    static func parseGoalCalculation(from text: String, profile: UserProfile? = nil) throws -> GoalCalculation {
         let jsonString = extractJSON(from: text)
-        // Only the calorie target is applied by the caller (macros auto-balance), so calories
-        // is the single required field — throw if it's absent so the caller falls back to the
-        // deterministic formula. Macros are parsed leniently for the reason/future use.
         guard let data = jsonString.data(using: .utf8),
               let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-              let calories = (json["calories"] as? NSNumber)?.intValue
+              let rawCalories = strictJSONNumber(json["calories"]),
+              let rawProtein = strictJSONNumber(json["protein"]),
+              let rawCarbs = strictJSONNumber(json["carbs"]),
+              let rawFat = strictJSONNumber(json["fat"])
         else { throw AnalysisError.invalidResponse }
 
-        func macroValue(_ key: String, cap: Int) -> Int {
-            let raw = (json[key] as? NSNumber)?.intValue ?? 0
-            return min(Swift.max(raw, 0), cap)
+        // Bad provider output must leave the user's existing targets untouched. Do not silently
+        // turn negative, zero-macro, extreme, or internally incoherent JSON into a plausible plan.
+        guard (800...6_000).contains(rawCalories),
+              (10...500).contains(rawProtein),
+              (0...1_500).contains(rawCarbs),
+              (10...400).contains(rawFat)
+        else { throw AnalysisError.invalidResponse }
+        let reportedMacroCalories = rawProtein * 4 + rawCarbs * 4 + rawFat * 9
+        let allowedMismatch = max(100, rawCalories * 0.15)
+        guard abs(reportedMacroCalories - rawCalories) <= allowedMismatch else {
+            throw AnalysisError.invalidResponse
         }
+
+        let calories = Int(rawCalories.rounded())
+        var protein = min(Int(rawProtein.rounded()), calories / 4)
+
+        // Exact 4/4/9 consistency requires fat grams to have the same modulo-4
+        // remainder as calories (9 kcal/g is congruent to 1 modulo 4). If an AI
+        // returns impossible P/F values, preserve protein first, reduce it only
+        // enough to leave room for a valid fat value, then choose the closest
+        // safe fat amount and derive carbs from the remaining calories.
+        let requiredFatRemainder = calories % 4
+        while protein > 0, (calories - protein * 4) / 9 < requiredFatRemainder {
+            protein -= 1
+        }
+        let maximumFat = min(400, max(0, (calories - protein * 4) / 9))
+        let requestedFat = min(Int(rawFat.rounded()), maximumFat)
+        let fat = closestFat(
+            to: requestedFat,
+            maximum: maximumFat,
+            requiredRemainder: requiredFatRemainder
+        )
+        let carbs = max(0, (calories - protein * 4 - fat * 9) / 4)
+        guard protein >= 10, fat >= 10 else { throw AnalysisError.invalidResponse }
+        if let profile {
+            let proteinReference = max(10, profile.proteinGoal)
+            let fatReference = max(10, profile.fatGoal)
+            guard protein >= Int((Double(proteinReference) * 0.70).rounded()),
+                  protein <= Int((Double(proteinReference) * 1.30).rounded()),
+                  fat >= Int((Double(fatReference) * 0.50).rounded()),
+                  fat <= Int((Double(fatReference) * 1.50).rounded())
+            else { throw AnalysisError.invalidResponse }
+            let calorieReference = min(max(profile.dailyCalories, 800), 6_000)
+            guard calories >= max(800, Int((Double(calorieReference) * 0.50).rounded())),
+                  calories <= min(6_000, Int((Double(calorieReference) * 2.00).rounded()))
+            else { throw AnalysisError.invalidResponse }
+        }
+
         return GoalCalculation(
-            calories: min(Swift.max(calories, 800), 6_000),
-            protein: macroValue("protein", cap: 500),
-            carbs: macroValue("carbs", cap: 1_200),
-            fat: macroValue("fat", cap: 400),
+            calories: calories,
+            protein: protein,
+            // With calories clamped to 6,000 this is inherently 0...1,500.
+            // Do not apply a lower independent cap: that would break 4/4/9 equality.
+            carbs: carbs,
+            fat: fat,
             reason: json["reason"] as? String
         )
+    }
+
+    private static func closestFat(to requested: Int, maximum: Int, requiredRemainder: Int) -> Int {
+        guard maximum >= requiredRemainder else { return 0 }
+        let lower: Int
+        if requested >= requiredRemainder {
+            lower = requiredRemainder + ((requested - requiredRemainder) / 4) * 4
+        } else {
+            lower = requiredRemainder
+        }
+        let upper = lower + 4
+        if upper <= maximum, abs(upper - requested) < abs(lower - requested) {
+            return upper
+        }
+        return min(lower, maximum)
     }
 
     private static func addingFallbackServingUnits(

@@ -7,10 +7,9 @@ import com.apoorvdarshan.calorietracker.models.BodyMeasurement
 import com.apoorvdarshan.calorietracker.models.FoodEntry
 import com.apoorvdarshan.calorietracker.models.OptionalNutrientGoals
 import com.apoorvdarshan.calorietracker.models.UserProfile
-import com.apoorvdarshan.calorietracker.services.WeightForecast
+import com.apoorvdarshan.calorietracker.services.GoalEvidence
 import com.apoorvdarshan.calorietracker.services.health.HealthEnergySummary
 import kotlinx.coroutines.flow.first
-import kotlin.math.roundToInt
 import okhttp3.OkHttpClient
 import java.util.Locale
 
@@ -176,77 +175,67 @@ class FoodAnalysisService(
 
     /**
      * AI-driven daily target calculation (port of iOS GeminiService.calculateGoals). Sends the
-     * app's formulas, the profile, and — when available — recent logged intake + observed weight
-     * trend so the model can estimate true maintenance empirically (hit-and-trial) rather than
-     * trusting the formula alone. Caller falls back to the formula when this throws.
+     * app's formulas, the profile, and a completeness-aware privacy-safe evidence pack so the
+     * model can use longer-term real signals without treating partial diary days as true intake.
+     * A thrown error leaves the caller's existing goals unchanged.
      */
     suspend fun calculateGoals(
         profile: UserProfile,
-        forecast: WeightForecast?,
         heightMetric: Boolean,
         weightMetric: Boolean,
         measuredTdee: Int? = null,
-        measurement: BodyMeasurement? = null
+        measurement: BodyMeasurement? = null,
+        evidence: GoalEvidence? = null
     ): GoalCalculation {
         val weight = if (weightMetric) String.format(Locale.US, "%.1f kg", profile.weightKg)
             else String.format(Locale.US, "%.1f lb", profile.weightKg * 2.20462)
         val height = if (heightMetric) String.format(Locale.US, "%.0f cm", profile.heightCm)
             else String.format(Locale.US, "%.1f in", profile.heightCm / 2.54)
-        val bodyFat = profile.bodyFatPercentage?.let { "${(it * 100).toInt()}%" } ?: "not set"
+        val canonicalWeight = String.format(Locale.US, "%.1f kg", profile.weightKg)
+        val canonicalHeight = String.format(Locale.US, "%.1f cm", profile.heightCm)
+        val bodyFat = profile.bodyFatPercentage?.let {
+            String.format(Locale.US, "%.0f%% (fraction %.3f)", it * 100, it)
+        } ?: "not set"
         val goalWeight = profile.goalWeightKg?.let { kg ->
-            if (weightMetric) String.format(Locale.US, "%.1f kg", kg) else String.format(Locale.US, "%.1f lb", kg * 2.20462)
+            val preferred = if (weightMetric) String.format(Locale.US, "%.1f kg", kg)
+                else String.format(Locale.US, "%.1f lb", kg * 2.20462)
+            "${String.format(Locale.US, "%.1f kg", kg)} (preferred display: $preferred)"
         } ?: "not set"
         val weekly = profile.weeklyChangeKg?.let { String.format(Locale.US, "%.2f kg/week", it) } ?: "not set (maintain)"
-        val bmrMethod = if (profile.usesBodyFatForBMR) "Katch-McArdle (body fat known and enabled)" else "Mifflin-St Jeor"
-
-        val observedSection = buildString {
-            if (forecast != null && forecast.hasEnoughData) {
-                appendLine()
-                appendLine("OBSERVED DATA — from the user's OWN logs (prefer this over the formula when reliable):")
-                appendLine("- Logged intake: avg ${forecast.avgDailyCalories} kcal/day across ${forecast.daysOfFoodData} logged days")
-                val obs = forecast.observedWeeklyChangeKg
-                if (obs != null) {
-                    val obsStr = if (weightMetric) String.format(Locale.US, "%+.2f kg/week", obs)
-                        else String.format(Locale.US, "%+.2f lb/week", obs * 2.20462)
-                    val empiricalTdee = forecast.avgDailyCalories - (obs * 7700.0 / 7.0).roundToInt()
-                    appendLine("- Observed weight trend: $obsStr from ${forecast.weightEntriesUsed} weigh-ins")
-                    appendLine("- Implied actual maintenance (logged intake minus the weekly change): ~$empiricalTdee kcal/day")
-                } else {
-                    appendLine("- Observed weight trend: not enough weigh-ins yet to measure")
-                }
-                appendLine("- Formula TDEE for comparison: ${forecast.tdee} kcal/day")
-                if (forecast.trendsDisagree) {
-                    appendLine("- WARNING: logged intake and the real weight trend DISAGREE — the user is likely under-logging. Trust the weight trend over raw logged calories.")
-                }
-                append("HIT-AND-TRIAL: when this observed data is reliable, estimate true maintenance from intake and the real weight trend, then apply the goal + weekly-change target to THAT maintenance instead of the formula TDEE. If data is thin or trends disagree, lean on the formula/weight trend accordingly. Keep calories within 800-6000.")
-            }
-        }
+        val bmrMethod = if (profile.usesBodyFatForBMR) "Katch-McArdle (automatic because body fat is known)" else "Mifflin-St Jeor"
 
         // Energy Burn toggle: when on (and Health Connect has enough data) this measured
         // maintenance replaces the formula TDEE as the calorie anchor.
         val measuredSection = if (measuredTdee != null) {
-            "\nMEASURED ENERGY BURN — the user's REAL maintenance from Health Connect (14-day average of active + basal calories). Use THIS as the maintenance/TDEE anchor INSTEAD of the formula TDEE: $measuredTdee kcal/day. Apply the weight goal and weekly-change adjustment to this measured maintenance. Still sanity-check it against the observed weight trend."
+            "\nENERGY BURN MAINTENANCE ANCHOR — $measuredTdee kcal/day, derived from the recent Health Connect energy window. It uses measured total energy when at least 3 total-energy days exist; otherwise it combines average measured external active energy with formula BMR. Prefer this over formula TDEE, apply the goal/weekly adjustment, and sanity-check against complete-diary and weight trends."
         } else ""
 
         // Optional tape-measure circumferences + derived metrics. Extra signal only — never overrides
         // the formulas. A shrinking waist alongside flat/declining weight implies recomposition.
-        val measurementsSummary = measurement?.promptSummary(profile.gender, profile.heightCm)
+        val measurementsSummary = if (evidence == null) {
+            measurement?.promptSummary(profile.gender, profile.heightCm)
+        } else null
         val measurementsSection = if (measurementsSummary != null) {
             "\nBODY MEASUREMENTS — the user's latest tape-measure circumferences and the metrics derived from them. Use as extra signal: a shrinking waist with steady or falling weight suggests recomposition, so keep protein high and don't over-cut. Treat the US-Navy body-fat figure as a rough estimate, not exact.\n$measurementsSummary"
         } else ""
 
+        val evidenceSection = evidence?.let {
+            "\n\n${it.promptSection(profile)}\nUse the confidence and completeness labels explicitly. Prefer likely-complete days and measured trends; never interpret missing or likely-partial days as true low intake."
+        } ?: ""
+
         val prompt = """
-            You are the goal calculator for a calorie & macro tracking app. Using the FORMULAS, the USER PROFILE, and any OBSERVED DATA below, compute the user's daily targets.
+            You are the goal calculator for a calorie & macro tracking app. Using the FORMULAS, USER PROFILE, and GOAL EVIDENCE below, compute the user's daily targets.
             Return ONLY valid JSON with these exact keys (integers, plus a short reason):
             {"calories":2000,"protein":150,"carbs":200,"fat":60,"reason":"Short reason under 100 characters"}
 
-            Use the app's formulas as the basis. When OBSERVED DATA is present and reliable, prefer the empirical maintenance estimate it implies over the formula TDEE.
+            Use the app's formulas as the basis. Use empirical signals only according to the evidence confidence/completeness labels; never infer low intake from partial or missing diary days.
             FORMULAS
             - BMR (Mifflin-St Jeor): base = 10*weightKg + 6.25*heightCm - 5*age - 161; if male add 166; female/other use base.
-            - BMR (Katch-McArdle, used when body fat is known and enabled): 370 + 21.6 * (1 - bodyFatFraction) * weightKg.
+            - BMR (Katch-McArdle, used automatically when body fat is known): 370 + 21.6 * (1 - bodyFatFraction) * weightKg.
             - TDEE = BMR * activity multiplier. Multipliers: sedentary 1.2, light 1.375, moderate 1.465, active 1.55, very active 1.725, extra active 1.9.
-            - Calorie target = TDEE + adjustment. adjustment = 0 for maintain; lose: -(weeklyChangeKg*7000/7); gain: +(weeklyChangeKg*7000/7).
-            - Protein: aim NEAR the formula protein value shown below — that value is the activity multiplier (sedentary 0.8, light 1.2, moderate 1.6, active 1.8, very active 2.0, extra active 2.2 g/kg; +0.2 if losing) applied to the user's ${if (profile.bodyFatPercentage != null) "lean body mass" else "full bodyweight"}. You may choose a value within about ±15% of it based on the weight goal and the observed history (lean toward the higher end during a calorie deficit to preserve muscle). Do NOT scale protein down just to fit a lower calorie target.
+            - Calorie target = TDEE + adjustment. adjustment = 0 for maintain; lose: -(weeklyChangeKg*7700/7); gain: +(weeklyChangeKg*7700/7).
+            - Guarded empirical maintenance: for a matching 14/28/90-day window, maintenance ≈ average likely-complete intake − (weightChangeKg × 7700 ÷ weightSpanDays). Use only when evidence confidence is medium/high, at least half the window is likely-complete, there are at least 2 weigh-ins spanning 14+ days, and the implied trend is physiologically plausible. Never use partial/missing intake, never divide by the nominal window when the reported weight span differs, and ignore this estimate when those guards fail. Priority: measured Energy Burn anchor when available; otherwise a well-supported empirical estimate; otherwise formula TDEE.
+            - Protein: aim NEAR the formula protein value shown below — the activity rates (sedentary 0.8, light 1.2, moderate 1.6, active 1.8, very active 2.0, extra active 2.2 g/kg; +0.2 if losing) are full-bodyweight equivalents and are applied directly to bodyweight. You may choose a value within about ±15% based on the weight goal and observed history (lean toward the higher end during a calorie deficit to preserve muscle). Do NOT reinterpret these as lean-mass rates or scale protein down just to fit a lower calorie target.
             - Fat: 0.6 g/kg of full bodyweight.
             - Carbs: the calories remaining after protein (4 kcal/g) and fat (9 kcal/g), divided by 4. Keep 4*protein + 4*carbs + 9*fat approximately equal to calories.
             BMR method in effect for this user: $bmrMethod.
@@ -255,8 +244,8 @@ class FoodAnalysisService(
             USER PROFILE
             - Gender: ${profile.gender.name.lowercase()}
             - Age: ${profile.age}
-            - Height: $height
-            - Weight: $weight
+            - Height: $canonicalHeight (preferred display: $height)
+            - Weight: $canonicalWeight (preferred display: $weight)
             - Body fat: $bodyFat
             - Activity level: ${profile.activityLevel.name.lowercase()}
             - Weight goal: ${profile.goal.name.lowercase()}
@@ -268,11 +257,17 @@ class FoodAnalysisService(
             - TDEE: ${profile.tdee.toInt()} kcal/day
             - Formula calorie target: ${profile.dailyCalories} kcal/day
             - Formula macros: ${profile.proteinGoal} g protein, ${profile.carbsGoal} g carbs, ${profile.fatGoal} g fat
+
+            CURRENT SAVED TARGETS (before this recalculation)
+            - Calories: ${profile.effectiveCalories} kcal/day
+            - Protein: ${profile.effectiveProtein} g/day
+            - Carbs: ${profile.effectiveCarbs} g/day
+            - Fat: ${profile.effectiveFat} g/day
             $measuredSection
             $measurementsSection
-            $observedSection
+            $evidenceSection
         """.trimIndent()
-        return FoodJsonParser.parseGoalCalculation(callAi(prompt, imageBytes = null))
+        return FoodJsonParser.parseGoalCalculation(callAi(prompt, imageBytes = null), profile)
     }
 
     suspend fun suggestMealWhatIf(

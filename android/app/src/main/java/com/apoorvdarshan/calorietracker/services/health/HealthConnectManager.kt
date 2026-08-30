@@ -530,24 +530,38 @@ class HealthConnectManager(private val context: Context) {
 
     // -- Energy burn summary --------------------------------------------
 
-    suspend fun readRecentEnergySummary(days: Int = 14): HealthEnergySummary? {
-        val requestedDays = maxOf(3, days)
+    /** Completed-day energy history for goal evidence. The active-calorie value has this app's data
+     *  origin subtracted, so locally estimated workout burns cannot feed back into goal math. */
+    suspend fun readRecentDailyEnergy(days: Int = 14): List<HealthDatedEnergy> {
+        val requestedDays = days.coerceIn(1, 90)
         val zone = ZoneId.systemDefault()
         val today = LocalDate.now(zone)
-        val daily = mutableListOf<DailyEnergy>()
-
-        for (offset in requestedDays downTo 1) {
-            val date = today.minusDays(offset.toLong())
-            val start = date.atStartOfDay(zone).toInstant()
-            val end = date.plusDays(1).atStartOfDay(zone).toInstant()
-            readDailyEnergy(start, end)?.let(daily::add)
+        return buildList {
+            for (offset in requestedDays downTo 1) {
+                val date = today.minusDays(offset.toLong())
+                val start = date.atStartOfDay(zone).toInstant()
+                val end = date.plusDays(1).atStartOfDay(zone).toInstant()
+                val daily = readDailyEnergy(start, end) ?: continue
+                add(
+                    HealthDatedEnergy(
+                        date = date,
+                        activeCalories = daily.active.roundToInt(),
+                        totalCalories = daily.total?.roundToInt()
+                    )
+                )
+            }
         }
+    }
+
+    suspend fun readRecentEnergySummary(days: Int = 14): HealthEnergySummary? {
+        val requestedDays = maxOf(3, days)
+        val daily = readRecentDailyEnergy(requestedDays)
 
         if (daily.size < 3) return null
 
-        val activeAverage = daily.sumOf { it.active } / daily.size
-        val totalValues = daily.mapNotNull { it.total }
-        val totalAverage = totalValues.takeIf { it.isNotEmpty() }?.let { values -> values.sum() / values.size }
+        val activeAverage = daily.sumOf { it.activeCalories.toDouble() } / daily.size
+        val totalValues = daily.mapNotNull { it.totalCalories }
+        val totalAverage = totalValues.takeIf { it.size >= 3 }?.average()
         val basalAverage = totalAverage?.let { maxOf(0.0, it - activeAverage) }
         return HealthEnergySummary(
             activeAverageCalories = activeAverage.roundToInt(),
@@ -603,8 +617,14 @@ class HealthConnectManager(private val context: Context) {
         val allActive = result[ActiveCaloriesBurnedRecord.ACTIVE_CALORIES_TOTAL]?.inKilocalories ?: 0.0
         val ownActive = ownActiveResult[ActiveCaloriesBurnedRecord.ACTIVE_CALORIES_TOTAL]?.inKilocalories ?: 0.0
         val active = externalActiveCalories(allActive, ownActive)
-        val total = result[TotalCaloriesBurnedRecord.ENERGY_TOTAL]?.inKilocalories?.takeIf { it > 0.0 }
-        if (active + (total ?: 0.0) <= 0.0) return null
+        val total = externalTotalCalories(
+            rawTotal = result[TotalCaloriesBurnedRecord.ENERGY_TOTAL]?.inKilocalories,
+            allActive = allActive,
+            ownActive = ownActive
+        )
+        // Basal/total-only dates are not evidence of daily activity expenditure and can anchor
+        // goals near BMR. Require a positive external active-energy signal for this day.
+        if (active <= 0.0) return null
         return DailyEnergy(active = active, total = total)
     }
 
@@ -745,6 +765,15 @@ class HealthConnectManager(private val context: Context) {
 internal fun externalActiveCalories(allActive: Double, ownActive: Double): Double =
     maxOf(0.0, allActive - ownActive)
 
+/** Remove Fud AI's app-owned estimated active burn from a reported total as well. Basal is the
+ *  non-active remainder of Health Connect's raw total; corrected total is basal + external active.
+ *  This prevents a workout estimate written by this app from becoming evidence for its own goal. */
+internal fun externalTotalCalories(rawTotal: Double?, allActive: Double, ownActive: Double): Double? {
+    val reported = rawTotal?.takeIf { it.isFinite() && it > 0.0 } ?: return null
+    val basal = maxOf(0.0, reported - maxOf(0.0, allActive))
+    return basal + externalActiveCalories(allActive, ownActive)
+}
+
 private data class DailyEnergy(
     val active: Double,
     val total: Double?
@@ -844,5 +873,13 @@ data class HealthEnergySummary(
 
 data class HealthDailyEnergy(
     val activeCalories: Int,
+    val totalCalories: Int?
+)
+
+data class HealthDatedEnergy(
+    val date: LocalDate,
+    /** Active energy after subtracting Fud AI's own estimated-workout data origin. */
+    val activeCalories: Int,
+    /** Corrected total (basal + external active), when Health Connect reports a raw total. */
     val totalCalories: Int?
 )

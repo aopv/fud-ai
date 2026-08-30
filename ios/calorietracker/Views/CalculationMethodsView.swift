@@ -18,14 +18,14 @@ struct CalculationMethodsView: View {
                     section(title: "Resting metabolism (BMR)") {
                         formulaCard(
                             name: "Mifflin-St Jeor equation",
-                            usedWhen: "Default formula for resting metabolism. Used when you haven’t entered a body fat %.",
+                            usedWhen: "Default formula for resting metabolism. Used when body fat is unavailable.",
                             formula: "Men: 10×weight(kg) + 6.25×height(cm) − 5×age + 5\nWomen: 10×weight(kg) + 6.25×height(cm) − 5×age − 161",
                             citation: "Mifflin MD, St Jeor ST, et al. (1990). “A new predictive equation for resting energy expenditure in healthy individuals.” Am J Clin Nutr 51(2):241–247.",
                             url: URL(string: "https://pubmed.ncbi.nlm.nih.gov/2305711/")
                         )
                         formulaCard(
                             name: "Katch-McArdle equation",
-                            usedWhen: "Used automatically when you’ve entered a body fat %. More accurate for lean and athletic users since it derives BMR from lean body mass instead of total weight.",
+                            usedWhen: "Used whenever you’ve entered a body fat %. It derives BMR from lean body mass instead of total weight.",
                             formula: "BMR = 370 + 21.6 × LBM(kg)\nLBM = weight × (1 − bodyFat%)",
                             citation: "McArdle WD, Katch FI, Katch VL. Exercise Physiology: Nutrition, Energy, and Human Performance, 7th ed. Lippincott Williams & Wilkins, 2010.",
                             url: nil
@@ -45,7 +45,7 @@ struct CalculationMethodsView: View {
                     section(title: "Calorie target for goal") {
                         formulaCard(
                             name: "Maintenance & goal adjustment",
-                            usedWhen: "Maintenance starts from your TDEE — or, when Energy Burn is on, your measured Apple Health burn (a 14-day Active + Basal average) instead of the formula estimate. The AI refines maintenance against your logged intake and weight trend, then applies your goal: a weekly weight-change rate becomes a daily calorie deficit (Lose) or surplus (Gain).",
+                            usedWhen: "Maintenance starts from your TDEE — or, when Energy Burn is on, from Apple Health’s recent measured-energy window instead of the formula estimate: measured total energy when enough days are available; otherwise, average measured active energy + formula BMR. The AI refines maintenance against your logged intake and weight trend, then applies your goal: a weekly weight-change rate becomes a daily calorie deficit (Lose) or surplus (Gain).",
                             formula: "1 lb of body fat ≈ 3,500 kcal · 1 kg ≈ 7,700 kcal\nYour weekly rate ÷ 7 is subtracted from (Lose) or added to (Gain) maintenance to set the daily calorie target.",
                             citation: "Hall KD, et al. (2011). “Quantification of the effect of energy imbalance on bodyweight.” Lancet 378(9793):826–837. The classic 3,500-kcal-per-pound rule originates from Wishnofsky M (1958), Am J Clin Nutr 6:542–546.",
                             url: URL(string: "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(11)60812-X/fulltext")
@@ -55,7 +55,7 @@ struct CalculationMethodsView: View {
                     section(title: "Macronutrient split") {
                         formulaCard(
                             name: "Protein, carbs, fat targets",
-                            usedWhen: "The AI fits protein, carbs, and fat to your calorie target, using these references as a guide. Protein scales with your activity level (and is based on lean body mass when a body fat % is set); fat is set from bodyweight; carbs fill the rest. You can lock any value or edit it yourself in Settings.",
+                            usedWhen: "The AI fits protein, carbs, and fat to your calorie target, using these references as a guide. Protein uses activity-based full-bodyweight rates; fat is set from bodyweight; carbs fill the rest. You can lock any value or edit it yourself in Settings.",
                             formula: "Protein: ~0.8–2.2 g per kg by activity level (raised slightly when losing)\nFat: ~0.6 g per kg bodyweight\nCarbs: remaining calories ÷ 4 kcal/g",
                             citation: "Morton RW, et al. (2018). “A systematic review, meta-analysis and meta-regression of the effect of protein supplementation on resistance training-induced gains in muscle mass and strength.” Br J Sports Med 52(6):376–384.",
                             url: URL(string: "https://bjsm.bmj.com/content/52/6/376")
@@ -96,7 +96,7 @@ struct CalculationMethodsView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("How Fud AI sets your numbers")
                 .font(.system(.title3, design: .rounded, weight: .bold))
-            Text("Your daily calorie and macro targets are set by AI. When you tap Recalculate Goals — or automatically about once a week if Adaptive Goals is on — Fud AI sends your profile, the reference equations below, your recently logged food, and your weight trend to your AI provider. It starts from these peer-reviewed formulas, then adjusts them to your real data to estimate your true maintenance and targets.")
+            Text("Your daily calorie and macro targets are set by AI. When you tap Recalculate Goals — or automatically about once a week if Adaptive Goals is on — Fud AI sends your profile, the reference equations below, privacy-safe daily nutrition totals, exact dated weight, body-fat, and tape measurements, aggregate workout counts, duration, sets, and reps, and optional Apple Health energy to your AI provider. Food names, notes, photos, ingredients, and exercise names are not sent for this calculation. It starts from these peer-reviewed formulas, then adjusts them to your real data to estimate your true maintenance and targets.")
                 .font(.system(.subheadline, design: .rounded))
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -118,7 +118,7 @@ struct CalculationMethodsView: View {
         .background(Color.orange.opacity(0.08), in: RoundedRectangle(cornerRadius: 12))
     }
 
-    private func section<Content: View>(title: String, @ViewBuilder content: () -> Content) -> some View {
+    private func section<Content: View>(title: LocalizedStringKey, @ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(title)
                 .font(.system(.headline, design: .rounded, weight: .bold))
@@ -127,7 +127,13 @@ struct CalculationMethodsView: View {
         }
     }
 
-    private func formulaCard(name: String, usedWhen: String, formula: String?, citation: String, url: URL?) -> some View {
+    private func formulaCard(
+        name: LocalizedStringKey,
+        usedWhen: LocalizedStringKey,
+        formula: LocalizedStringKey?,
+        citation: LocalizedStringKey,
+        url: URL?
+    ) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             Text(name)
                 .font(.system(.subheadline, design: .rounded, weight: .semibold))

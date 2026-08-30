@@ -643,7 +643,7 @@
     <string name="widget_all_metrics_label">Fud AI 오늘</string>
     <string name="widget_all_metrics_description">오늘의 칼로리, 단백질, 탄수화물, 지방을 위젯 하나로 확인하세요.</string>
     <string name="settings_needs_health_connect">Health Connect 필요</string>
-    <string name="settings_energy_goals_info">켜면 Fud AI가 Health Connect에서 측정된 소모 칼로리(활동 + 기초 에너지의 14일 평균)를 공식 추정치 대신 유지 칼로리(TDEE) 기준으로 사용해 목표를 계산합니다. 소모 칼로리를 읽는 데 AI는 사용되지 않습니다. Health Connect가 필요합니다. 다시 계산 버튼 및 Adaptive Goals와 함께 작동합니다.</string>
+    <string name="settings_energy_goals_info">켜면 Fud AI가 목표를 계산할 때 공식 추정치 대신 Health Connect의 최근 측정 에너지 구간을 유지 칼로리 기준으로 사용합니다. 충분한 날짜가 있으면 측정된 총에너지를, 그렇지 않으면 측정된 활동 에너지 평균 + 공식 BMR을 사용합니다. 소모 데이터를 읽는 데 AI는 사용되지 않습니다. Health Connect가 필요합니다. 다시 계산 버튼 및 Adaptive Goals와 함께 작동합니다.</string>
     <string name="settings_adaptive_goals_info">일주일에 한 번 정도 앱을 열 때 Fud AI가 프로필, 최근 기록한 음식, 체중 추세를 바탕으로 전체 목표 계산을 자동으로 다시 실행합니다 — 다시 계산 버튼과 동일한 계산입니다. Energy Burn이 켜져 있으면 측정된 소모 칼로리를 유지 기준으로 사용합니다. AI를 사용할 수 없으면 조용히 건너뜁니다. 끄면 이 기능이 처음 변경하기 전의 목표로 복원됩니다. 이는 의학적 조언이 아닙니다.</string>
     <string name="ad_label">광고</string>
     <string name="onboarding_plan_adaptive_note">플랜은 기록에 따라 매주 자동 조정됩니다 — 고정하려면 설정에서 Adaptive Goals를 끄세요.</string>
@@ -698,4 +698,35 @@
     <string name="notif_fasting_goal_title">단식 목표 달성</string>
     <string name="notif_fasting_goal_text">%1$s 단식 목표를 달성했습니다. 준비되면 단식을 종료하세요.</string>
     <string name="home_menu_barcode">바코드</string>
+    <string name="settings_calc_methods">계산 방법</string>
+    <string name="settings_calc_calorie_target">목표를 위한 칼로리 목표</string>
+    <string name="settings_calc_maintenance">유지 칼로리 및 목표 조정</string>
+    <string name="settings_calc_macro_split">다량영양소 비율</string>
+    <string name="settings_calc_micro_values">미량영양소 값</string>
+    <string name="settings_calc_intro">일일 칼로리와 매크로 목표는 AI가 설정합니다. ‘목표 다시 계산’을 탭하면 — 또는 적응형 목표가 켜져 있으면 약 일주일에 한 번 자동으로 — Fud AI가 프로필, 아래의 참조 공식, 개인정보를 보호하도록 집계된 일일 영양 합계, 날짜가 포함된 정확한 체중·체지방·줄자 측정값, 운동 횟수·시간·세트·반복 횟수의 집계값, 선택 사항인 Health Connect 에너지 데이터를 AI 제공자에게 전송합니다. 이 계산에는 음식 이름, 메모, 사진, 재료, 운동 이름이 전송되지 않습니다. 동료 검증을 거친 공식에서 출발해 실제 데이터에 맞게 조정하여 진짜 유지 칼로리와 목표를 추정합니다.</string>
+    <string name="settings_calc_sec_bmr">기초대사량 (BMR)</string>
+    <string name="settings_calc_sec_tdee">일일 에너지 소비량 (TDEE)</string>
+    <string name="settings_calc_mifflin_name">Mifflin-St Jeor 방정식</string>
+    <string name="settings_calc_mifflin_used">안정 대사량의 기본 공식입니다. 체지방 정보를 사용할 수 없을 때 사용됩니다.</string>
+    <string name="settings_calc_mifflin_formula">남성: 10×체중(kg) + 6.25×키(cm) − 5×나이 + 5\n여성: 10×체중(kg) + 6.25×키(cm) − 5×나이 − 161</string>
+    <string name="settings_calc_katch_name">Katch-McArdle 방정식</string>
+    <string name="settings_calc_katch_used">체지방률을 입력한 경우 항상 사용됩니다. 총 체중 대신 제지방량에서 BMR을 계산합니다.</string>
+    <string name="settings_calc_katch_formula">BMR = 370 + 21.6 × LBM(kg)\nLBM = 체중 × (1 − 체지방률)</string>
+    <string name="settings_calc_tdee_name">활동량 배수 방식</string>
+    <string name="settings_calc_tdee_used">TDEE = BMR × 활동량 배수. 배수는 선택한 활동 수준에 해당합니다. 이는 공식으로 계산한 유지 칼로리 기준입니다. Energy Burn이 켜져 있으면 계산에서 대신 Health Connect의 최근 측정 에너지 구간을 사용합니다. 충분한 날짜가 있으면 측정된 총에너지를, 그렇지 않으면 측정된 활동 에너지 평균 + 공식 BMR을 사용합니다.</string>
+    <string name="settings_calc_tdee_formula">좌식: 1.2 · 가벼움: 1.375 · 보통: 1.465 · 활동적: 1.55 · 매우 활동적: 1.725 · 극도로 활동적: 1.9</string>
+    <string name="settings_calc_target_name">유지 칼로리 및 목표 조정</string>
+    <string name="settings_calc_target_used">유지 칼로리는 TDEE에서 시작합니다. 단, Energy Burn이 켜져 있으면 공식 추정값 대신 Health Connect의 최근 측정 에너지 구간을 사용합니다. 충분한 날짜가 있으면 측정된 총에너지를, 그렇지 않으면 측정된 활동 에너지 평균 + 공식 BMR을 사용합니다. AI는 기록된 섭취량과 체중 추세에 맞춰 유지 칼로리를 보정한 뒤 목표를 적용합니다. 주간 체중 변화율은 감량 시 일일 칼로리 부족분, 증량 시 잉여분으로 변환됩니다.</string>
+    <string name="settings_calc_target_formula">체지방 1 lb ≈ 3,500 kcal · 1 kg ≈ 7,700 kcal\n일일 칼로리 목표를 설정하기 위해 주간 변화율 ÷ 7을 감량 시 유지 칼로리에서 빼고, 증량 시 더합니다.</string>
+    <string name="settings_calc_split_name">단백질·탄수화물·지방 목표</string>
+    <string name="settings_calc_split_used">AI는 이 기준을 참고해 단백질, 탄수화물, 지방을 칼로리 목표에 맞춥니다. 단백질은 활동량에 따른 총 체중 기준 비율을 사용하고, 지방은 체중으로 설정하며, 나머지는 탄수화물로 채웁니다. 설정에서 각 값을 잠그거나 직접 편집할 수 있습니다.</string>
+    <string name="settings_calc_split_formula">단백질: 활동 수준에 따라 kg당 약 0.8~2.2 g, 감량 시 약간 증가\n지방: 체중 kg당 약 0.6 g\n탄수화물: 남은 칼로리 ÷ 4 kcal/g</string>
+    <string name="settings_calc_micro_name">식사별 추정치</string>
+    <string name="settings_calc_micro_used">식사별 칼로리, 매크로, 식이섬유, 당류, 포화지방, 콜레스테롤, 카페인, 나트륨, 칼륨 및 기타 상세 영양값은 선택한 AI 제공자가 음식 사진, 음성 기록 또는 텍스트 설명을 바탕으로 생성한 추정치입니다.</string>
+    <string name="settings_calc_mifflin_citation">Mifflin MD, St Jeor ST, et al. (1990). “건강한 사람의 안정 시 에너지 소비량을 예측하는 새로운 방정식.” Am J Clin Nutr 51(2):241–247.</string>
+    <string name="settings_calc_katch_citation">McArdle WD, Katch FI, Katch VL. 운동생리학: 영양, 에너지 및 인간 수행력, 제7판. Lippincott Williams &amp; Wilkins, 2010.</string>
+    <string name="settings_calc_tdee_citation">인간의 에너지 요구량에 관한 FAO/WHO/UNU 합동 전문가 협의(2001)의 표준 PAL(신체 활동 수준) 계수입니다. ACSM 및 USDA 식이 지침에서도 널리 사용됩니다.</string>
+    <string name="settings_calc_target_citation">Hall KD, et al. (2011). “에너지 불균형이 체중에 미치는 영향의 정량화.” Lancet 378(9793):826–837. 파운드당 3,500 kcal이라는 고전적 규칙은 Wishnofsky M (1958), Am J Clin Nutr 6:542–546에서 유래했습니다.</string>
+    <string name="settings_calc_split_citation">Morton RW, et al. (2018). “저항 운동으로 인한 근육량 및 근력 증가에 단백질 보충이 미치는 영향에 대한 체계적 문헌고찰, 메타분석 및 메타회귀.” Br J Sports Med 52(6):376–384.</string>
+    <string name="settings_calc_micro_citation">추정치는 기반 AI 모델의 학습 데이터(USDA FoodData Central, 제조업체 영양 표시, 과학 문헌)를 바탕으로 합니다. 정확도는 음식, 1회 제공량의 가시성, 제공자 모델에 따라 달라집니다. 자주 기록하는 음식은 항상 라벨과 대조하세요.</string>
 </resources>

@@ -9,6 +9,18 @@ struct HealthEnergySummary {
     var requestedDays: Int
 }
 
+/// One calendar day's measured Health energy. Active energy explicitly excludes
+/// samples tagged as Fud AI's own workout-burn estimates, preventing feedback.
+struct HealthEnergyDay: Equatable {
+    let date: Date
+    let activeCalories: Int
+    let basalCalories: Int?
+
+    var totalCalories: Int? {
+        basalCalories.map { activeCalories + $0 }
+    }
+}
+
 /// Custom metadata attached to every app-owned HealthKit nutrition sample.
 /// HealthKit has no first-class food-mass field, so this is the only lossless
 /// path for restoring the original serving after an app reinstall.
@@ -1006,33 +1018,57 @@ class HealthKitManager {
 
     func fetchRecentEnergySummary(days requestedDays: Int = 14) async -> HealthEnergySummary? {
         let days = max(3, requestedDays)
+        let history = await fetchRecentEnergyHistory(days: days)
+        return Self.energySummary(from: history, requestedDays: days)
+    }
+
+    /// Pure aggregation shared by goal callers that already fetched the dated history. Keeping
+    /// this separate avoids querying HealthKit twice for the same recalculation.
+    static func energySummary(
+        from history: [HealthEnergyDay],
+        requestedDays: Int = 14
+    ) -> HealthEnergySummary? {
+        // Basal-only dates are not evidence of total daily expenditure. Require measured active
+        // energy on at least three dates before allowing Health energy to anchor goal calories.
+        let activeDays = history.filter { $0.activeCalories > 0 }
+        guard activeDays.count >= 3 else { return nil }
+        let activeAverage = Double(activeDays.reduce(0) { $0 + $1.activeCalories }) / Double(activeDays.count)
+        let basalValues = activeDays.compactMap(\.basalCalories).filter { $0 > 0 }
+        let basalAverage = basalValues.isEmpty
+            ? nil
+            : Double(basalValues.reduce(0, +)) / Double(basalValues.count)
+        let totalValues = activeDays.compactMap(\.totalCalories)
+        let totalAverage = totalValues.count >= 3
+            ? Double(totalValues.reduce(0, +)) / Double(totalValues.count)
+            : nil
+        return HealthEnergySummary(
+            activeAverageCalories: Int(activeAverage.rounded()),
+            basalAverageCalories: basalAverage.map { Int($0.rounded()) },
+            totalAverageCalories: totalAverage.map { Int($0.rounded()) },
+            daysUsed: activeDays.count,
+            requestedDays: requestedDays
+        )
+    }
+
+    /// Dated measured energy for adaptive-goal evidence. This uses the same active-energy
+    /// query as `fetchRecentEnergySummary`, including the predicate that removes every
+    /// Fud-AI-tagged workout estimate. Returned days are oldest-first and contain no zero rows.
+    func fetchRecentEnergyHistory(days requestedDays: Int = 14) async -> [HealthEnergyDay] {
+        let days = min(max(1, requestedDays), WeightForecast.maxLookbackDays)
         async let activeByDay = fetchDailyEnergy(.activeEnergyBurned, days: days)
         async let basalByDay = fetchDailyEnergy(.basalEnergyBurned, days: days)
 
         let active = await activeByDay
         let basal = await basalByDay
-        let allDates = Set(active.keys).union(basal.keys).sorted()
-        let validDays = allDates.compactMap { date -> (active: Double, basal: Double)? in
-            let activeValue = active[date] ?? 0
-            let basalValue = basal[date] ?? 0
-            guard activeValue + basalValue > 0 else { return nil }
-            return (activeValue, basalValue)
+        return active.keys.sorted().compactMap { date in
+            guard let activeValue = active[date], activeValue > 0 else { return nil }
+            let basalValue = basal[date]
+            return HealthEnergyDay(
+                date: date,
+                activeCalories: Int(activeValue.rounded()),
+                basalCalories: basalValue.map { Int($0.rounded()) }
+            )
         }
-
-        guard validDays.count >= 3 else { return nil }
-
-        let activeAverage = validDays.reduce(0) { $0 + $1.active } / Double(validDays.count)
-        let basalValues = validDays.map(\.basal).filter { $0 > 0 }
-        let basalAverage = basalValues.isEmpty ? nil : basalValues.reduce(0, +) / Double(basalValues.count)
-        let totalAverage = basalAverage.map { activeAverage + $0 }
-
-        return HealthEnergySummary(
-            activeAverageCalories: Int(activeAverage.rounded()),
-            basalAverageCalories: basalAverage.map { Int($0.rounded()) },
-            totalAverageCalories: totalAverage.map { Int($0.rounded()) },
-            daysUsed: validDays.count,
-            requestedDays: days
-        )
     }
 
     /// Pulls every sample of `identifier` ever written to HealthKit (limit 10k

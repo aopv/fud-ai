@@ -36384,96 +36384,96 @@
         }
       }
     },
-    "When on, Fud AI uses your measured calories burned from Apple Health — a 14-day average of Active + Basal energy — as your maintenance (TDEE) anchor when calculating goals, instead of the formula estimate. No AI is used to read your burn. Requires Apple Health. Works with the Recalculate button and with Adaptive Goals." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wenn aktiviert, verwendet Fud AI deinen gemessenen Kalorienverbrauch aus Apple Health — einen 14-Tage-Durchschnitt aus aktiver + basaler Energie — als Erhaltungs-Anker (TDEE) bei der Zielberechnung, statt der Formel-Schätzung. Zum Auslesen deines Verbrauchs wird keine KI verwendet. Erfordert Apple Health. Funktioniert mit der Schaltfläche „Neu berechnen“ und mit Adaptive Goals."
+    "When on, Fud AI uses Apple Health’s recent measured-energy window as your maintenance anchor when calculating goals instead of the formula estimate: measured total energy when enough days are available; otherwise, average measured active energy + formula BMR. No AI is used to read your burn. Requires Apple Health. Works with the Recalculate button and with Adaptive Goals.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "عند التفعيل، يستخدم Fud AI نافذة بيانات الطاقة المقاسة الحديثة من Apple Health كمرجع لسعرات الحفاظ عند حساب الأهداف بدلًا من تقدير المعادلة: إجمالي الطاقة المقاس عند توفر أيام كافية، وإلا فمتوسط الطاقة النشطة المقاسة + BMR المحسوب بالمعادلة. لا يُستخدم الذكاء الاصطناعي لقراءة بيانات الحرق. يتطلب Apple Health. يعمل مع زر إعادة الحساب ومع Adaptive Goals."
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cuando está activado, Fud AI usa tus calorías quemadas medidas de Apple Health — un promedio de 14 días de energía activa + basal — como ancla de mantenimiento (TDEE) al calcular objetivos, en lugar de la estimación por fórmula. No se usa IA para leer tu gasto. Requiere Apple Health. Funciona con el botón Recalcular y con Adaptive Goals."
+        "az": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktiv olduqda Fud AI hədəfləri hesablayarkən düstur təxmini əvəzinə Apple Health-də son ölçülmüş enerji məlumatları dövrünü saxlama istinadı kimi istifadə edir: kifayət qədər gün olduqda ölçülmüş ümumi enerji, əks halda ölçülmüş aktiv enerjinin ortalaması + düsturla hesablanan BMR. Sərfiyyatınızı oxumaq üçün Sİ istifadə olunmur. Apple Health tələb olunur. Yenidən Hesabla düyməsi və Adaptive Goals ilə işləyir."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lorsqu'il est activé, Fud AI utilise vos calories brûlées mesurées depuis Apple Health — une moyenne sur 14 jours de l'énergie active + basale — comme ancre de maintenance (TDEE) lors du calcul des objectifs, au lieu de l'estimation par formule. Aucune IA n'est utilisée pour lire votre dépense. Nécessite Apple Health. Fonctionne avec le bouton Recalculer et avec Adaptive Goals."
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wenn aktiviert, verwendet Fud AI das jüngste Messfenster für Energiedaten aus Apple Health als Erhaltungsanker bei der Zielberechnung anstelle der Formelschätzung: den gemessenen Gesamtenergieverbrauch, wenn genügend Tage verfügbar sind, andernfalls den durchschnittlichen gemessenen aktiven Energieverbrauch + den Formel-BMR. Zum Auslesen deines Verbrauchs wird keine KI verwendet. Erfordert Apple Health. Funktioniert mit der Schaltfläche „Neu berechnen“ und mit Adaptive Goals."
           }
         },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Quando è attivo, Fud AI usa le tue calorie bruciate misurate da Apple Health — una media di 14 giorni di energia attiva + basale — come àncora di mantenimento (TDEE) nel calcolo degli obiettivi, invece della stima con formula. Nessuna IA viene usata per leggere il tuo consumo. Richiede Apple Health. Funziona con il pulsante Ricalcola e con Adaptive Goals."
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuando está activado, Fud AI usa la ventana reciente de energía medida de Apple Health como referencia de mantenimiento al calcular objetivos, en lugar de la estimación de la fórmula: energía total medida cuando hay suficientes días; de lo contrario, energía activa medida promedio + BMR de la fórmula. No se usa IA para leer tu gasto. Requiere Apple Health. Funciona con el botón Recalcular y con Adaptive Goals."
           }
         },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Quando ativado, o Fud AI usa suas calorias queimadas medidas pelo Apple Health — uma média de 14 dias de energia ativa + basal — como âncora de manutenção (TDEE) ao calcular metas, em vez da estimativa por fórmula. Nenhuma IA é usada para ler seu gasto. Requer Apple Health. Funciona com o botão Recalcular e com o Adaptive Goals."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lorsqu’il est activé, Fud AI utilise la fenêtre récente de données énergétiques mesurées de Apple Health comme référence de maintenance lors du calcul des objectifs, au lieu de l’estimation par formule : dépense énergétique totale mesurée lorsque suffisamment de jours sont disponibles ; sinon, moyenne de l’énergie active mesurée + BMR calculé par la formule. Aucune IA n’est utilisée pour lire votre dépense. Nécessite Apple Health. Fonctionne avec le bouton Recalculer et avec Adaptive Goals."
           }
         },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Indien ingeschakeld gebruikt Fud AI je gemeten verbrande calorieën uit Apple Health — een 14-daags gemiddelde van actieve + basale energie — als onderhoudsanker (TDEE) bij het berekenen van doelen, in plaats van de formuleschatting. Er wordt geen AI gebruikt om je verbruik te lezen. Vereist Apple Health. Werkt met de knop Opnieuw berekenen en met Adaptive Goals."
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "चालू होने पर, Fud AI लक्ष्य कैलकुलेट करते समय फ़ॉर्मूला अनुमान की जगह Apple Health के हाल में मापे गए ऊर्जा डेटा की अवधि को मेंटेनेंस आधार के रूप में इस्तेमाल करता है: पर्याप्त दिनों का डेटा होने पर मापी गई कुल ऊर्जा; अन्यथा, मापी गई सक्रिय ऊर्जा का औसत + फ़ॉर्मूला BMR। बर्न पढ़ने के लिए कोई AI इस्तेमाल नहीं होता। Apple Health ज़रूरी है। पुनः गणना करें बटन और Adaptive Goals के साथ काम करता है।"
           }
         },
-        "ro" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Când este activat, Fud AI folosește caloriile arse măsurate din Apple Health — o medie pe 14 zile a energiei active + bazale — ca ancoră de întreținere (TDEE) la calcularea obiectivelor, în locul estimării prin formulă. Nu se folosește IA pentru citirea consumului. Necesită Apple Health. Funcționează cu butonul Recalculează și cu Adaptive Goals."
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quando è attivo, Fud AI usa la finestra recente dei dati energetici misurati da Apple Health come riferimento di mantenimento nel calcolo degli obiettivi, invece della stima con formula: energia totale misurata quando sono disponibili abbastanza giorni; altrimenti, media dell’energia attiva misurata + BMR calcolato con la formula. Nessuna IA viene usata per leggere il tuo consumo. Richiede Apple Health. Funziona con il pulsante Ricalcola e con Adaptive Goals."
           }
         },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Когда включено, Fud AI использует измеренные сожжённые калории из Apple Health — среднее за 14 дней активной + базовой энергии — как ориентир поддержания (TDEE) при расчёте целей вместо оценки по формуле. ИИ не используется для чтения данных о расходе. Требуется Apple Health. Работает с кнопкой «Пересчитать» и с Adaptive Goals."
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "オンにすると、Fud AIは目標計算で、式による推定値の代わりにApple Healthの最近の実測エネルギーデータ期間を維持カロリーの基準として使います。十分な日数がある場合は実測の総エネルギー、そうでない場合は実測アクティブエネルギーの平均＋式で求めたBMRを使います。消費データの読み取りにAIは使いません。Apple Healthが必要です。「再計算」ボタンおよびAdaptive Goalsと連動します。"
           }
         },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gdy włączone, Fud AI używa zmierzonych spalonych kalorii z Apple Health — 14-dniowej średniej energii aktywnej + podstawowej — jako punktu odniesienia podtrzymania (TDEE) przy obliczaniu celów, zamiast szacunku ze wzoru. Do odczytu spalania nie jest używane AI. Wymaga Apple Health. Działa z przyciskiem Przelicz oraz z funkcją Cele adaptacyjne."
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "켜면 Fud AI가 목표를 계산할 때 공식 추정치 대신 Apple Health의 최근 측정 에너지 구간을 유지 칼로리 기준으로 사용합니다. 충분한 날짜가 있으면 측정된 총에너지를, 그렇지 않으면 측정된 활동 에너지 평균 + 공식 BMR을 사용합니다. 소모 데이터를 읽는 데 AI는 사용되지 않습니다. Apple Health가 필요합니다. 다시 계산 버튼 및 Adaptive Goals와 함께 작동합니다."
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "オンにすると、Fud AIはApple Healthから取得した実測の消費カロリー（アクティブ＋基礎代謝の14日間平均）を、数式による推定の代わりに維持カロリー（TDEE）の基準として目標計算に使います。消費カロリーの読み取りにAIは使いません。Apple Healthが必要です。「再計算」ボタンおよびAdaptive Goalsと連動します。"
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wanneer ingeschakeld gebruikt Fud AI het recente meetvenster voor energie uit Apple Health als onderhoudsbasis bij het berekenen van doelen, in plaats van de formuleschatting: gemeten totale energie wanneer er genoeg dagen beschikbaar zijn; anders de gemiddelde gemeten actieve energie + de formule-BMR. Er wordt geen AI gebruikt om je verbruik te lezen. Vereist Apple Health. Werkt met de knop Opnieuw berekenen en met Adaptive Goals."
           }
         },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "켜면 Fud AI가 Apple Health에서 측정된 소모 칼로리(활동 + 기초 에너지의 14일 평균)를 공식 추정치 대신 유지 칼로리(TDEE) 기준으로 사용해 목표를 계산합니다. 소모 칼로리를 읽는 데 AI는 사용되지 않습니다. Apple Health가 필요합니다. 다시 계산 버튼 및 Adaptive Goals와 함께 작동합니다."
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Po włączeniu Fud AI używa ostatniego okna zmierzonych danych energii z Apple Health jako podstawy zapotrzebowania na utrzymanie podczas obliczania celów zamiast oszacowania ze wzoru: gdy dostępna jest wystarczająca liczba dni, używa zmierzonej energii całkowitej; w przeciwnym razie średniej zmierzonej energii aktywnej + BMR ze wzoru. AI nie jest używane do odczytywania spalania. Wymaga Apple Health. Działa z przyciskiem Przelicz oraz z Celami adaptacyjnymi."
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "开启后，Fud AI 会使用来自 Apple Health 的实测消耗热量（活动 + 基础能量的 14 天平均值）作为计算目标时的维持热量（TDEE）基准，而不是公式估算。读取消耗数据不使用 AI。需要 Apple Health。与“重新计算”按钮及 Adaptive Goals 配合使用。"
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quando ativado, o Fud AI usa a janela recente de energia medida do Apple Health como referência de manutenção ao calcular metas, em vez da estimativa por fórmula: energia total medida quando houver dias suficientes; caso contrário, média da energia ativa medida + BMR da fórmula. Nenhuma IA é usada para ler seu gasto. Requer Apple Health. Funciona com o botão Recalcular e com o Adaptive Goals."
           }
         },
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "عند التفعيل، يستخدم Fud AI السعرات المحروقة المقاسة من Apple Health — متوسط 14 يومًا للطاقة النشطة + الأساسية — كمرجع لسعرات الثبات (TDEE) عند حساب الأهداف، بدلًا من التقدير بالمعادلة. لا يُستخدم الذكاء الاصطناعي لقراءة الحرق. يتطلب Apple Health. يعمل مع زر إعادة الحساب ومع Adaptive Goals."
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Când este activat, Fud AI folosește intervalul recent de energie măsurată din Apple Health ca bază de menținere la calcularea obiectivelor, în locul estimării prin formulă: energia totală măsurată când sunt disponibile suficiente zile; altfel, media energiei active măsurate + BMR calculat prin formulă. Nu se folosește IA pentru citirea consumului. Necesită Apple Health. Funcționează cu butonul Recalculează și cu Adaptive Goals."
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "चालू होने पर, Fud AI Apple Health से मापी गई आपकी बर्न हुई कैलोरी — सक्रिय + बेसल ऊर्जा का 14-दिन का औसत — को फ़ॉर्मूला अनुमान की जगह लक्ष्य कैलकुलेशन में मेंटेनेंस (TDEE) आधार के रूप में इस्तेमाल करता है। बर्न पढ़ने के लिए कोई AI इस्तेमाल नहीं होता। Apple Health ज़रूरी है। पुनः गणना करें बटन और Adaptive Goals के साथ काम करता है।"
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Когда функция включена, Fud AI использует данные об энергии из Apple Health за недавний период как ориентир поддержания при расчёте целей вместо оценки по формуле: измеренный общий расход энергии, если доступно достаточно дней; иначе среднее измеренной активной энергии + BMR по формуле. ИИ не используется для чтения данных о расходе. Требуется Apple Health. Работает с кнопкой «Пересчитать» и с Adaptive Goals."
           }
         },
-        "az" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aktiv olduqda Fud AI Apple Health-dən ölçülmüş yandırılan kalorilərinizi — aktiv + bazal enerjinin 14 günlük ortalamasını — hədəfləri hesablayarkən düstur təxmini əvəzinə saxlanma (TDEE) istinadı kimi istifadə edir. Sərfiyyatınızı oxumaq üçün Sİ istifadə olunmur. Apple Health tələb olunur. Yenidən Hesabla düyməsi və Adaptive Goals ilə işləyir."
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "开启后，Fud AI 会在计算目标时使用 Apple Health 的近期实测能量窗口作为维持热量基准，而不是公式估算：有足够天数时使用实测总能量，否则使用实测活动能量平均值 + 公式 BMR。读取消耗数据不使用 AI。需要 Apple Health。与“重新计算”按钮及 Adaptive Goals 配合使用。"
           }
         }
       }
@@ -37695,98 +37695,383 @@
         }
       }
     },
-    "Your daily calorie and macro targets are set by AI. When you tap Recalculate Goals — or automatically about once a week if Adaptive Goals is on — Fud AI sends your profile, the reference equations below, your recently logged food, and your weight trend to your AI provider. It starts from these peer-reviewed formulas, then adjusts them to your real data to estimate your true maintenance and targets." : {
+    "Default formula for resting metabolism. Used when body fat is unavailable.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "المعادلة الافتراضية للأيض أثناء الراحة. تُستخدم عندما لا تتوفر نسبة دهون الجسم."
+          }
+        },
+        "az": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İstirahət metabolizmi üçün standart düstur. Bədən yağı məlumatı olmadıqda istifadə olunur."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Standardformel für den Ruheumsatz. Wird verwendet, wenn kein Körperfettwert verfügbar ist."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fórmula predeterminada para el metabolismo en reposo. Se usa cuando la grasa corporal no está disponible."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Formule par défaut du métabolisme au repos. Utilisée lorsque le pourcentage de masse grasse n’est pas disponible."
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "आराम के समय चयापचय की डिफ़ॉल्ट गणना। इसका उपयोग तब होता है जब शरीर की वसा उपलब्ध न हो।"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Formula predefinita per il metabolismo a riposo. Viene usata quando il grasso corporeo non è disponibile."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "安静時代謝の標準式です。体脂肪率を利用できない場合に使われます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "안정 대사량의 기본 공식입니다. 체지방 정보를 사용할 수 없을 때 사용됩니다."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Standaardformule voor de ruststofwisseling. Wordt gebruikt wanneer lichaamsvet niet beschikbaar is."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Domyślny wzór metabolizmu spoczynkowego. Używany, gdy poziom tkanki tłuszczowej jest niedostępny."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fórmula padrão para o metabolismo de repouso. Usada quando a gordura corporal não está disponível."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Formula implicită pentru metabolismul în repaus. Se folosește când grăsimea corporală nu este disponibilă."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Формула по умолчанию для базового метаболизма. Используется, если процент жира неизвестен."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "静息代谢的默认公式。当体脂数据不可用时使用。"
+          }
+        }
+      }
+    },
+    "Used whenever you’ve entered a body fat %. It derives BMR from lean body mass instead of total weight.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تُستخدم كلما أدخلت نسبة دهون الجسم. وهي تستخرج BMR من كتلة الجسم الخالية من الدهون بدلًا من الوزن الكلي."
+          }
+        },
+        "az": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bədən yağı faizini daxil etdiyiniz hər zaman istifadə olunur. BMR-ni ümumi çəki əvəzinə yağsız bədən kütləsindən hesablayır."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wird immer verwendet, wenn du einen Körperfettanteil eingegeben hast. Der BMR wird aus der fettfreien Masse statt aus dem Gesamtgewicht abgeleitet."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se usa siempre que hayas introducido un porcentaje de grasa corporal. Calcula el BMR a partir de la masa corporal magra en vez del peso total."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Utilisée dès que vous avez saisi un pourcentage de masse grasse. Elle calcule le BMR à partir de la masse maigre plutôt que du poids total."
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "जब भी आपने शरीर की वसा का प्रतिशत दर्ज किया हो, इसका उपयोग किया जाता है। यह कुल वज़न के बजाय दुबले शरीर के द्रव्यमान से BMR निकालता है।"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Viene usata ogni volta che hai inserito una percentuale di grasso corporeo. Ricava il BMR dalla massa magra invece che dal peso totale."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "体脂肪率を入力している場合は常に使われます。総体重ではなく除脂肪体重からBMRを算出します。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "체지방률을 입력한 경우 항상 사용됩니다. 총 체중 대신 제지방량에서 BMR을 계산합니다."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wordt altijd gebruikt wanneer je een lichaamsvetpercentage hebt ingevoerd. BMR wordt afgeleid uit vetvrije massa in plaats van totaalgewicht."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Używany zawsze, gdy podasz procent tkanki tłuszczowej. Oblicza BMR z beztłuszczowej masy ciała zamiast z masy całkowitej."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Usada sempre que você informa um percentual de gordura corporal. Ela calcula o BMR a partir da massa corporal magra, e não do peso total."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se folosește ori de câte ori ai introdus procentul de grăsime corporală. Calculează BMR din masa corporală slabă, nu din greutatea totală."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Используется всегда, когда указан процент жира. Рассчитывает BMR от безжировой массы, а не от общего веса."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "只要输入了体脂率就会使用。它根据去脂体重而不是总体重计算 BMR。"
+          }
+        }
+      }
+    },
+    "The AI fits protein, carbs, and fat to your calorie target, using these references as a guide. Protein uses activity-based full-bodyweight rates; fat is set from bodyweight; carbs fill the rest. You can lock any value or edit it yourself in Settings." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يضبط الذكاء الاصطناعي البروتين والكربوهيدرات والدهون بما يتوافق مع هدف السعرات، مسترشدًا بهذه المراجع. يستخدم البروتين معدلات تعتمد على النشاط لكل كيلوغرام من وزن الجسم الكامل؛ وتُحدد الدهون من وزن الجسم؛ وتملأ الكربوهيدرات الباقي. يمكنك تثبيت أي قيمة أو تعديلها بنفسك في الإعدادات."
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI bu istinadları rəhbər tutaraq zülal, karbohidrat və yağı kalori hədəfinizə uyğunlaşdırır. Zülal üçün aktivliyə əsaslanan tam bədən çəkisi normaları, yağ üçün bədən çəkisi istifadə olunur; qalan kalorini karbohidratlar tamamlayır. İstənilən dəyəri kilidləyə və ya Parametrlərdə özünüz dəyişə bilərsiniz."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die KI passt Protein, Kohlenhydrate und Fett an dein Kalorienziel an und nutzt diese Referenzen als Orientierung. Protein basiert auf aktivitätsabhängigen Raten pro Gesamtkörpergewicht; Fett wird aus dem Körpergewicht bestimmt; Kohlenhydrate füllen den Rest. Du kannst jeden Wert sperren oder in den Einstellungen selbst bearbeiten."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La IA ajusta proteínas, carbohidratos y grasas a tu objetivo calórico usando estas referencias como guía. La proteína usa tasas según la actividad aplicadas al peso corporal total; la grasa se establece a partir del peso corporal; los carbohidratos completan el resto. Puedes bloquear cualquier valor o editarlo en Ajustes."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’IA adapte les protéines, glucides et lipides à votre objectif calorique en s’appuyant sur ces références. Les protéines utilisent des taux liés à l’activité appliqués au poids corporel total ; les lipides sont définis à partir du poids ; les glucides complètent le reste. Vous pouvez verrouiller ou modifier chaque valeur dans Réglages."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI इन संदर्भों को मार्गदर्शक बनाकर प्रोटीन, कार्ब्स और फैट को आपके कैलोरी लक्ष्य में फिट करता है। प्रोटीन के लिए गतिविधि-आधारित दरें पूरे शरीर के वज़न पर लागू होती हैं; फैट शरीर के वज़न से तय होता है; बाकी कैलोरी कार्ब्स से पूरी होती हैं। आप किसी भी मान को लॉक कर सकते हैं या सेटिंग्स में स्वयं बदल सकते हैं।"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’IA adatta proteine, carboidrati e grassi al tuo obiettivo calorico usando questi riferimenti come guida. Le proteine usano valori basati sull’attività applicati al peso corporeo totale; i grassi sono impostati dal peso corporeo; i carboidrati completano il resto. Puoi bloccare qualsiasi valore o modificarlo nelle Impostazioni."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIはこれらの基準を参考に、たんぱく質・炭水化物・脂質をカロリー目標に合わせます。たんぱく質は活動量に応じた総体重ベースの比率、脂質は体重を基準に設定し、残りを炭水化物で補います。各値は設定でロックまたは編集できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI는 이 기준을 참고해 단백질, 탄수화물, 지방을 칼로리 목표에 맞춥니다. 단백질은 활동량에 따른 총 체중 기준 비율을 사용하고, 지방은 체중으로 설정하며, 나머지는 탄수화물로 채웁니다. 설정에서 각 값을 잠그거나 직접 편집할 수 있습니다."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De AI stemt eiwitten, koolhydraten en vet af op je caloriedoel en gebruikt deze referenties als richtlijn. Eiwit gebruikt activiteitsafhankelijke waarden op basis van het totale lichaamsgewicht; vet wordt bepaald uit lichaamsgewicht; koolhydraten vullen de rest. Je kunt elke waarde vergrendelen of zelf wijzigen in Instellingen."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI dopasowuje białko, węglowodany i tłuszcz do celu kalorii, kierując się tymi wartościami referencyjnymi. Białko korzysta ze stawek zależnych od aktywności, liczonych od całkowitej masy ciała; tłuszcz jest ustalany z masy ciała; węglowodany uzupełniają resztę. Każdą wartość możesz zablokować lub edytować w Ustawieniach."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A IA ajusta proteínas, carboidratos e gorduras à sua meta de calorias usando estas referências como guia. A proteína usa taxas por nível de atividade aplicadas ao peso corporal total; a gordura é definida a partir do peso corporal; os carboidratos completam o restante. Você pode bloquear qualquer valor ou editá-lo nos Ajustes."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI potrivește proteinele, carbohidrații și grăsimile cu obiectivul caloric, folosind aceste referințe drept ghid. Proteinele folosesc rate în funcție de activitate, aplicate greutății corporale totale; grăsimile se stabilesc din greutate; carbohidrații completează restul. Poți bloca sau edita orice valoare în Configurări."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ИИ подбирает белки, углеводы и жиры под цель по калориям, ориентируясь на эти источники. Белок рассчитывается по нормам для уровня активности на килограмм полной массы тела; жиры — от массы тела; углеводы заполняют остаток. Любое значение можно закрепить или изменить в настройках."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 以这些参考值为指导，使蛋白质、碳水化合物和脂肪符合你的热量目标。蛋白质采用按活动水平制定的总体重比率；脂肪根据体重设定；其余热量由碳水化合物补足。你可以在“设置”中锁定或自行编辑任何数值。"
+          }
+        }
+      }
+    },
+    "Your daily calorie and macro targets are set by AI. When you tap Recalculate Goals — or automatically about once a week if Adaptive Goals is on — Fud AI sends your profile, the reference equations below, privacy-safe daily nutrition totals, exact dated weight, body-fat, and tape measurements, aggregate workout counts, duration, sets, and reps, and optional Apple Health energy to your AI provider. Food names, notes, photos, ingredients, and exercise names are not sent for this calculation. It starts from these peer-reviewed formulas, then adjusts them to your real data to estimate your true maintenance and targets." : {
       "comment" : "A description of how Fud AI calculates your daily calorie and macro targets.",
       "isCommentAutoGenerated" : true,
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "يحدد الذكاء الاصطناعي أهدافك اليومية للسعرات والماكرو. عند الضغط على «إعادة حساب الأهداف» — أو تلقائيًا مرة في الأسبوع تقريبًا إذا كانت الأهداف التكيفية مفعّلة — يرسل Fud AI ملفك الشخصي والمعادلات المرجعية أدناه وطعامك المسجّل مؤخرًا واتجاه وزنك إلى مزوّد الذكاء الاصطناعي. يبدأ من هذه المعادلات المُحكّمة علميًا ثم يعدّلها وفق بياناتك الفعلية لتقدير احتياجك الحقيقي وأهدافك."
+            "value" : "يحدد الذكاء الاصطناعي أهدافك اليومية للسعرات الحرارية والمغذيات الكبرى. عند الضغط على «إعادة حساب الأهداف» — أو تلقائيًا مرة كل أسبوع تقريبًا إذا كانت الأهداف التكيفية مفعّلة — يرسل Fud AI إلى مزوّد الذكاء الاصطناعي ملفك الشخصي، والمعادلات المرجعية أدناه، وإجماليات التغذية اليومية المجمّعة بطريقة تحمي الخصوصية، وقياسات الوزن ونسبة دهون الجسم ومحيطات الجسم الدقيقة والمؤرخة، وإجماليات التمارين من حيث العدد والمدة والمجموعات والتكرارات، وبيانات الطاقة الاختيارية من Apple Health. لا تُرسل أسماء الأطعمة أو الملاحظات أو الصور أو المكوّنات أو أسماء التمارين لهذا الحساب. يبدأ الذكاء الاصطناعي بهذه المعادلات التي راجعها الأقران، ثم يعدّلها وفق بياناتك الفعلية لتقدير سعرات الحفاظ الفعلية وأهدافك."
           }
         },
         "az" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Günlük kalori və makro hədəflərinizi AI təyin edir. «Hədəfləri yenidən hesabla» düyməsinə toxunduqda — və ya Adaptiv Hədəflər aktivdirsə, təxminən həftədə bir dəfə avtomatik — Fud AI profilinizi, aşağıdakı istinad tənliklərini, son qeyd etdiyiniz qidaları və çəki tendensiyanızı AI provayderinizə göndərir. Bu elmi cəhətdən təsdiqlənmiş düsturlardan başlayır, sonra onları real məlumatlarınıza uyğunlaşdıraraq həqiqi saxlama səviyyənizi və hədəflərinizi qiymətləndirir."
+            "value" : "Gündəlik kalori və makro hədəflərinizi AI təyin edir. «Hədəfləri yenidən hesabla» düyməsinə toxunduqda — və ya Adaptiv Hədəflər aktivdirsə, təxminən həftədə bir dəfə avtomatik — Fud AI profilinizi, aşağıdakı istinad tənliklərini, məxfiliyi qoruyan ümumiləşdirilmiş gündəlik qidalanma yekunlarını, tarixlə göstərilən dəqiq çəki, bədən yağı və lentlə bədən ölçülərini, məşqlərin ümumiləşdirilmiş sayını, müddətini, set və təkrarlarını, həmçinin Apple Health-dən ixtiyari enerji məlumatlarını AI provayderinizə göndərir. Qida adları, qeydlər, fotolar, inqrediyentlər və məşq adları bu hesablama üçün göndərilmir. AI bu elmi cəhətdən təsdiqlənmiş düsturlardan başlayır, sonra həqiqi saxlama səviyyənizi və hədəflərinizi qiymətləndirmək üçün onları real məlumatlarınıza uyğunlaşdırır."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deine täglichen Kalorien- und Makroziele werden von KI festgelegt. Wenn du auf „Ziele neu berechnen“ tippst — oder etwa einmal pro Woche automatisch, wenn Adaptive Ziele aktiviert ist — sendet Fud AI dein Profil, die unten stehenden Referenzformeln, deine zuletzt protokollierten Lebensmittel und deinen Gewichtstrend an deinen KI-Anbieter. Sie geht von diesen wissenschaftlich geprüften Formeln aus und passt sie an deine echten Daten an, um deinen tatsächlichen Erhaltungsbedarf und deine Ziele zu schätzen."
+            "value" : "Deine täglichen Kalorien- und Makroziele werden von KI festgelegt. Wenn du auf „Ziele neu berechnen“ tippst — oder etwa einmal pro Woche automatisch, wenn Adaptive Ziele aktiviert ist — sendet Fud AI dein Profil, die unten stehenden Referenzformeln, datenschutzschonende aggregierte tägliche Nährwertsummen, genaue datierte Gewichts-, Körperfett- und Umfangsmessungen, zusammengefasste Trainingszahlen, -dauer, Sätze und Wiederholungen sowie optionale Energiedaten aus Apple Health an deinen KI-Anbieter. Lebensmittelnamen, Notizen, Fotos, Zutaten und Übungsnamen werden für diese Berechnung nicht gesendet. Die KI geht von diesen wissenschaftlich geprüften Formeln aus und passt sie an deine echten Daten an, um deinen tatsächlichen Erhaltungsbedarf und deine Ziele zu schätzen."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tus objetivos diarios de calorías y macros los establece la IA. Cuando tocas Recalcular objetivos — o automáticamente una vez a la semana si los Objetivos adaptativos están activados — Fud AI envía tu perfil, las ecuaciones de referencia de abajo, tus comidas recientes y tu tendencia de peso a tu proveedor de IA. Parte de estas fórmulas revisadas por pares y luego las ajusta a tus datos reales para estimar tu mantenimiento y objetivos verdaderos."
+            "value" : "Tus objetivos diarios de calorías y macros los establece la IA. Cuando tocas «Recalcular objetivos» — o automáticamente una vez a la semana si los Objetivos adaptativos están activados — Fud AI envía a tu proveedor de IA tu perfil, las ecuaciones de referencia de abajo, totales nutricionales diarios agregados que protegen tu privacidad, mediciones exactas y fechadas de peso, grasa corporal y perímetros corporales, datos agregados de entrenamientos —cantidad, duración, series y repeticiones— y datos opcionales de energía de Apple Health. Para este cálculo no se envían nombres de alimentos, notas, fotos, ingredientes ni nombres de ejercicios. La IA parte de estas fórmulas revisadas por pares y luego las ajusta a tus datos reales para estimar tu mantenimiento y objetivos verdaderos."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vos objectifs quotidiens de calories et de macros sont définis par l'IA. Quand vous touchez Recalculer les objectifs — ou automatiquement environ une fois par semaine si les Objectifs adaptatifs sont activés — Fud AI envoie votre profil, les équations de référence ci-dessous, vos aliments récemment enregistrés et votre tendance de poids à votre fournisseur d'IA. Elle part de ces formules validées scientifiquement, puis les ajuste à vos données réelles pour estimer votre maintenance et vos objectifs réels."
+            "value" : "Vos objectifs quotidiens de calories et de macros sont définis par l’IA. Quand vous touchez « Recalculer les objectifs » — ou automatiquement environ une fois par semaine si les Objectifs adaptatifs sont activés — Fud AI envoie à votre fournisseur d’IA votre profil, les équations de référence ci-dessous, des totaux nutritionnels quotidiens agrégés respectueux de la vie privée, les mesures exactes et datées du poids, de la masse grasse et des mensurations au ruban, des données agrégées sur le nombre et la durée des entraînements, les séries et les répétitions, ainsi que les données énergétiques facultatives de Apple Health. Les noms d’aliments, notes, photos, ingrédients et noms d’exercices ne sont pas envoyés pour ce calcul. L’IA part de ces formules validées scientifiquement, puis les ajuste à vos données réelles pour estimer votre maintenance et vos objectifs réels."
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "आपके दैनिक कैलोरी और मैक्रो लक्ष्य AI तय करता है। जब आप 'लक्ष्य दोबारा कैलकुलेट करें' पर टैप करते हैं — या अडैप्टिव गोल्स चालू होने पर हफ़्ते में लगभग एक बार अपने आप — Fud AI आपकी प्रोफ़ाइल, नीचे दिए गए संदर्भ समीकरण, हाल में लॉग किया गया भोजन और आपके वज़न का रुझान आपके AI प्रोवाइडर को भेजता है। यह इन समीक्षित फ़ॉर्मूलों से शुरू करता है, फिर आपके वास्तविक डेटा के अनुसार उन्हें समायोजित कर आपकी असली मेंटेनेंस और लक्ष्यों का अनुमान लगाता है।"
+            "value" : "आपके दैनिक कैलोरी और मैक्रो लक्ष्य AI तय करता है। जब आप ‘लक्ष्य दोबारा कैलकुलेट करें’ पर टैप करते हैं — या अडैप्टिव लक्ष्य चालू होने पर हफ़्ते में लगभग एक बार अपने आप — Fud AI आपके AI प्रोवाइडर को आपकी प्रोफ़ाइल, नीचे दिए संदर्भ समीकरण, गोपनीयता-सुरक्षित समेकित दैनिक पोषण कुल, तारीख सहित सटीक वज़न, बॉडी-फैट और टेप से लिए गए माप, वर्कआउट की समेकित संख्या, अवधि, सेट और रेप्स, और वैकल्पिक Apple Health ऊर्जा डेटा भेजता है। इस गणना के लिए भोजन के नाम, नोट्स, फ़ोटो, सामग्री और व्यायाम के नाम नहीं भेजे जाते। AI इन समीक्षित फ़ॉर्मूलों से शुरू करता है, फिर आपके वास्तविक डेटा के अनुसार उन्हें समायोजित करके आपकी असली मेंटेनेंस और लक्ष्यों का अनुमान लगाता है।"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "I tuoi obiettivi giornalieri di calorie e macro sono impostati dall'IA. Quando tocchi Ricalcola obiettivi — o automaticamente circa una volta a settimana se Obiettivi adattivi è attivo — Fud AI invia il tuo profilo, le equazioni di riferimento qui sotto, i cibi registrati di recente e l'andamento del tuo peso al tuo provider IA. Parte da queste formule validate scientificamente e poi le adatta ai tuoi dati reali per stimare il tuo vero mantenimento e i tuoi obiettivi."
+            "value" : "I tuoi obiettivi giornalieri di calorie e macro sono impostati dall’IA. Quando tocchi «Ricalcola obiettivi» — o automaticamente circa una volta a settimana se Obiettivi adattivi è attivo — Fud AI invia al tuo provider IA il tuo profilo, le equazioni di riferimento qui sotto, i totali nutrizionali giornalieri aggregati nel rispetto della privacy, le misurazioni esatte e datate di peso, grasso corporeo e circonferenze rilevate con il metro, i dati aggregati sugli allenamenti — numero, durata, serie e ripetizioni — e i dati energetici facoltativi di Apple Health. Per questo calcolo non vengono inviati nomi degli alimenti, note, foto, ingredienti o nomi degli esercizi. L’IA parte da queste formule validate scientificamente e poi le adatta ai tuoi dati reali per stimare il tuo vero mantenimento e i tuoi obiettivi."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1日のカロリーとマクロの目標はAIが設定します。「目標を再計算」をタップすると（アダプティブ目標がオンの場合は週1回程度自動で）、Fud AIはプロフィール、下記の参照式、最近記録した食事、体重の推移をAIプロバイダーに送信します。査読済みの計算式をもとに、実際のデータに合わせて調整し、真の維持カロリーと目標を推定します。"
+            "value" : "1日のカロリーとマクロの目標はAIが設定します。「目標を再計算」をタップすると（アダプティブ目標がオンの場合は週1回程度自動で）、Fud AIはプロフィール、下記の参照式、プライバシーに配慮した日ごとの栄養合計、日付付きの正確な体重・体脂肪率・メジャー採寸値、ワークアウトの集計値（回数、時間、セット数、レップ数）、および任意のApple HealthエネルギーデータをAIプロバイダーに送信します。この計算では、食品名、メモ、写真、材料、運動名は送信されません。査読済みの計算式をもとに、実際のデータに合わせて調整し、真の維持カロリーと目標を推定します。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "일일 칼로리와 매크로 목표는 AI가 설정합니다. ‘목표 다시 계산’을 탭하면 — 또는 적응형 목표가 켜져 있으면 약 일주일에 한 번 자동으로 — Fud AI가 프로필, 아래의 참조 공식, 최근 기록한 음식, 체중 추세를 AI 제공자에게 전송합니다. 동료 검증을 거친 공식에서 출발해 실제 데이터에 맞게 조정하여 진짜 유지 칼로리와 목표를 추정합니다."
+            "value" : "일일 칼로리와 매크로 목표는 AI가 설정합니다. ‘목표 다시 계산’을 탭하면 — 또는 적응형 목표가 켜져 있으면 약 일주일에 한 번 자동으로 — Fud AI가 프로필, 아래의 참조 공식, 개인정보를 보호하도록 집계된 일일 영양 합계, 날짜가 포함된 정확한 체중·체지방·줄자 측정값, 운동 횟수·시간·세트·반복 횟수의 집계값, 선택 사항인 Apple Health 에너지 데이터를 AI 제공자에게 전송합니다. 이 계산에는 음식 이름, 메모, 사진, 재료, 운동 이름이 전송되지 않습니다. 동료 검증을 거친 공식에서 출발해 실제 데이터에 맞게 조정하여 진짜 유지 칼로리와 목표를 추정합니다."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Je dagelijkse calorie- en macrodoelen worden door AI bepaald. Wanneer je op Doelen herberekenen tikt — of automatisch ongeveer één keer per week als Adaptieve doelen aanstaat — stuurt Fud AI je profiel, de onderstaande referentieformules, je recent gelogde voeding en je gewichtstrend naar je AI-provider. Het begint bij deze wetenschappelijk onderbouwde formules en past ze aan je echte gegevens aan om je werkelijke onderhoudsbehoefte en doelen te schatten."
+            "value" : "Je dagelijkse calorie- en macrodoelen worden door AI bepaald. Wanneer je op ‘Doelen herberekenen’ tikt — of automatisch ongeveer één keer per week als Adaptieve doelen aanstaat — stuurt Fud AI je profiel, de onderstaande referentieformules, geaggregeerde privacyvriendelijke dagelijkse voedingstotalen, nauwkeurige gedateerde metingen van gewicht, lichaamsvet en lichaamsomtrek, geaggregeerde aantallen trainingen, duur, sets en herhalingen, en optionele energiegegevens uit Apple Health naar je AI-provider. Namen van voedingsmiddelen, notities, foto’s, ingrediënten en namen van oefeningen worden niet voor deze berekening verstuurd. De AI begint bij deze wetenschappelijk onderbouwde formules en past ze aan je echte gegevens aan om je werkelijke onderhoudsbehoefte en doelen te schatten."
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Twoje dzienne cele kalorii i makr ustala AI. Gdy stukniesz Przelicz cele ponownie — lub automatycznie mniej więcej raz w tygodniu, jeśli włączone są Cele adaptacyjne — Fud AI wysyła Twój profil, poniższe równania referencyjne, ostatnio zarejestrowane posiłki i trend wagi do Twojego dostawcy AI. Zaczyna od tych zweryfikowanych naukowo wzorów, a następnie dopasowuje je do Twoich rzeczywistych danych, aby oszacować faktyczne zapotrzebowanie i cele."
+            "value" : "Twoje dzienne cele kalorii i makroskładników ustala AI. Gdy stukniesz „Przelicz cele ponownie” — lub automatycznie mniej więcej raz w tygodniu, jeśli włączone są Cele adaptacyjne — Fud AI wysyła do Twojego dostawcy AI profil, poniższe równania referencyjne, zagregowane dzienne podsumowania żywieniowe chroniące prywatność, dokładne i opatrzone datą pomiary masy ciała, poziomu tkanki tłuszczowej i obwodów ciała, zagregowane dane o treningach — ich liczbę, czas trwania, serie i powtórzenia — oraz opcjonalne dane o energii z Apple Health. Nazwy produktów, notatki, zdjęcia, składniki ani nazwy ćwiczeń nie są wysyłane do tego obliczenia. AI zaczyna od tych zweryfikowanych naukowo wzorów, a następnie dopasowuje je do Twoich rzeczywistych danych, aby oszacować faktyczne zapotrzebowanie na utrzymanie masy i cele."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Suas metas diárias de calorias e macros são definidas por IA. Quando você toca em Recalcular metas — ou automaticamente cerca de uma vez por semana se Metas adaptativas estiver ativado — o Fud AI envia seu perfil, as equações de referência abaixo, suas refeições recentes e sua tendência de peso ao seu provedor de IA. Ele parte dessas fórmulas revisadas por pares e as ajusta aos seus dados reais para estimar sua verdadeira manutenção e suas metas."
+            "value" : "Suas metas diárias de calorias e macros são definidas por IA. Quando você toca em «Recalcular metas» — ou automaticamente cerca de uma vez por semana se Metas adaptativas estiver ativado — o Fud AI envia ao seu provedor de IA seu perfil, as equações de referência abaixo, totais nutricionais diários agregados com proteção de privacidade, medições exatas e datadas de peso, gordura corporal e circunferências feitas com fita métrica, dados agregados dos treinos — quantidade, duração, séries e repetições — e dados opcionais de energia do Apple Health. Nomes de alimentos, notas, fotos, ingredientes e nomes de exercícios não são enviados para este cálculo. A IA parte dessas fórmulas revisadas por pares e as ajusta aos seus dados reais para estimar sua verdadeira manutenção e suas metas."
           }
         },
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Obiectivele tale zilnice de calorii și macronutrienți sunt stabilite de AI. Când atingi Recalculează obiectivele — sau automat cam o dată pe săptămână dacă Obiectivele adaptive sunt activate — Fud AI trimite profilul tău, ecuațiile de referință de mai jos, alimentele înregistrate recent și tendința greutății către furnizorul tău de AI. Pornește de la aceste formule validate științific, apoi le ajustează la datele tale reale pentru a estima întreținerea și obiectivele tale adevărate."
+            "value" : "Obiectivele tale zilnice de calorii și macronutrienți sunt stabilite de AI. Când atingi „Recalculează obiectivele” — sau automat cam o dată pe săptămână dacă Obiectivele adaptive sunt activate — Fud AI trimite furnizorului tău de AI profilul, ecuațiile de referință de mai jos, totalurile nutriționale zilnice agregate care protejează confidențialitatea, măsurători exacte și datate ale greutății, grăsimii corporale și circumferințelor măsurate cu banda, date agregate despre antrenamente — număr, durată, seturi și repetări — și date energetice opționale din Apple Health. Numele alimentelor, notele, fotografiile, ingredientele și numele exercițiilor nu sunt trimise pentru acest calcul. AI pornește de la aceste formule validate științific, apoi le ajustează la datele tale reale pentru a estima menținerea și obiectivele tale reale."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ваши дневные цели по калориям и макронутриентам задаёт ИИ. Когда вы нажимаете «Пересчитать цели» — или автоматически примерно раз в неделю, если включены адаптивные цели, — Fud AI отправляет вашему ИИ-провайдеру профиль, приведённые ниже эталонные формулы, недавно записанную еду и динамику веса. Он берёт за основу эти научно проверенные формулы и подстраивает их под ваши реальные данные, чтобы оценить фактическую норму и цели."
+            "value" : "Ваши дневные цели по калориям и макронутриентам задаёт ИИ. Когда вы нажимаете «Пересчитать цели» — или автоматически примерно раз в неделю, если включены адаптивные цели, — Fud AI отправляет вашему ИИ-провайдеру профиль, приведённые ниже эталонные формулы, безопасные агрегированные суточные показатели питания, точные измерения веса, процента жира и обхватов тела с датами, агрегированные показатели тренировок — их количество, продолжительность, подходы и повторения — и, при наличии, данные об энергозатратах из Apple Health. Названия еды, заметки, фотографии, ингредиенты и названия упражнений для этого расчёта не отправляются. ИИ берёт за основу эти научно проверенные формулы и подстраивает их под ваши реальные данные, чтобы оценить фактическую норму и цели."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你的每日热量和宏量营养素目标由 AI 设定。当你点按“重新计算目标”时（若开启了自适应目标，则大约每周自动一次），Fud AI 会将你的资料、下方的参考公式、近期记录的饮食和体重趋势发送给你的 AI 服务商。它以这些经同行评审的公式为基础，再根据你的真实数据进行调整，以估算你真正的维持热量和目标。"
+            "value" : "你的每日热量和宏量营养素目标由 AI 设定。当你点按“重新计算目标”时（若开启了自适应目标，则大约每周自动一次），Fud AI 会将你的资料、下方的参考公式、保护隐私的每日营养汇总、带日期的准确体重、体脂和围度测量值、汇总的训练次数、时长、组数和重复次数，以及可选的 Apple Health 能量数据发送给你的 AI 服务商。此计算不会发送食物名称、备注、照片、配料或运动名称。它以这些经同行评审的公式为基础，再根据你的真实数据进行调整，以估算你真正的维持热量和目标。"
           }
         }
       }
@@ -42577,6 +42862,461 @@
         "ro": { "stringUnit": { "state": "translated", "value": "Informații juridice" } },
         "ru": { "stringUnit": { "state": "translated", "value": "Правовая информация" } },
         "zh-Hans": { "stringUnit": { "state": "translated", "value": "法律信息" } }
+      }
+    },
+    "Mifflin-St Jeor equation": {
+      "localizations": {
+        "ar": { "stringUnit": { "state": "translated", "value": "معادلة ميفلين–سانت جيور" } },
+        "az": { "stringUnit": { "state": "translated", "value": "Mifflin–St Jeor tənliyi" } },
+        "de": { "stringUnit": { "state": "translated", "value": "Mifflin-St-Jeor-Gleichung" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Ecuación de Mifflin-St Jeor" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Équation de Mifflin-St Jeor" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "मिफ्लिन-सेंट जियोर समीकरण" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Equazione di Mifflin-St Jeor" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "Mifflin-St Jeor式" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "Mifflin-St Jeor 방정식" } },
+        "nl": { "stringUnit": { "state": "translated", "value": "Mifflin-St Jeor-vergelijking" } },
+        "pl": { "stringUnit": { "state": "translated", "value": "Równanie Mifflina–St Jeora" } },
+        "pt-BR": { "stringUnit": { "state": "translated", "value": "Equação de Mifflin-St Jeor" } },
+        "ro": { "stringUnit": { "state": "translated", "value": "Ecuația Mifflin-St Jeor" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Уравнение Миффлина–Сан Жеора" } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "Mifflin-St Jeor 方程" } }
+      }
+    },
+    "Men: 10×weight(kg) + 6.25×height(cm) − 5×age + 5\nWomen: 10×weight(kg) + 6.25×height(cm) − 5×age − 161": {
+      "localizations": {
+        "ar": { "stringUnit": { "state": "translated", "value": "الرجال: 10×الوزن(كغ) + 6.25×الطول(سم) − 5×العمر + 5\nالنساء: 10×الوزن(كغ) + 6.25×الطول(سم) − 5×العمر − 161" } },
+        "az": { "stringUnit": { "state": "translated", "value": "Kişilər: 10×çəki(kq) + 6,25×boy(sm) − 5×yaş + 5\nQadınlar: 10×çəki(kq) + 6,25×boy(sm) − 5×yaş − 161" } },
+        "de": { "stringUnit": { "state": "translated", "value": "Männer: 10×Gewicht(kg) + 6,25×Größe(cm) − 5×Alter + 5\nFrauen: 10×Gewicht(kg) + 6,25×Größe(cm) − 5×Alter − 161" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Hombres: 10×peso(kg) + 6,25×altura(cm) − 5×edad + 5\nMujeres: 10×peso(kg) + 6,25×altura(cm) − 5×edad − 161" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Hommes : 10×poids(kg) + 6,25×taille(cm) − 5×âge + 5\nFemmes : 10×poids(kg) + 6,25×taille(cm) − 5×âge − 161" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "पुरुष: 10×वज़न(kg) + 6.25×ऊँचाई(cm) − 5×आयु + 5\nमहिलाएँ: 10×वज़न(kg) + 6.25×ऊँचाई(cm) − 5×आयु − 161" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Uomini: 10×peso(kg) + 6,25×altezza(cm) − 5×età + 5\nDonne: 10×peso(kg) + 6,25×altezza(cm) − 5×età − 161" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "男性: 10×体重(kg) + 6.25×身長(cm) − 5×年齢 + 5\n女性: 10×体重(kg) + 6.25×身長(cm) − 5×年齢 − 161" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "남성: 10×체중(kg) + 6.25×키(cm) − 5×나이 + 5\n여성: 10×체중(kg) + 6.25×키(cm) − 5×나이 − 161" } },
+        "nl": { "stringUnit": { "state": "translated", "value": "Mannen: 10×gewicht(kg) + 6,25×lengte(cm) − 5×leeftijd + 5\nVrouwen: 10×gewicht(kg) + 6,25×lengte(cm) − 5×leeftijd − 161" } },
+        "pl": { "stringUnit": { "state": "translated", "value": "Mężczyźni: 10×masa ciała(kg) + 6,25×wzrost(cm) − 5×wiek + 5\nKobiety: 10×masa ciała(kg) + 6,25×wzrost(cm) − 5×wiek − 161" } },
+        "pt-BR": { "stringUnit": { "state": "translated", "value": "Homens: 10×peso(kg) + 6,25×altura(cm) − 5×idade + 5\nMulheres: 10×peso(kg) + 6,25×altura(cm) − 5×idade − 161" } },
+        "ro": { "stringUnit": { "state": "translated", "value": "Bărbați: 10×greutate(kg) + 6,25×înălțime(cm) − 5×vârstă + 5\nFemei: 10×greutate(kg) + 6,25×înălțime(cm) − 5×vârstă − 161" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Мужчины: 10×вес(кг) + 6,25×рост(см) − 5×возраст + 5\nЖенщины: 10×вес(кг) + 6,25×рост(см) − 5×возраст − 161" } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "男性：10×体重(kg) + 6.25×身高(cm) − 5×年龄 + 5\n女性：10×体重(kg) + 6.25×身高(cm) − 5×年龄 − 161" } }
+      }
+    },
+    "Katch-McArdle equation": {
+      "localizations": {
+        "ar": { "stringUnit": { "state": "translated", "value": "معادلة كاتش–مكاردل" } },
+        "az": { "stringUnit": { "state": "translated", "value": "Katch–McArdle tənliyi" } },
+        "de": { "stringUnit": { "state": "translated", "value": "Katch-McArdle-Gleichung" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Ecuación de Katch-McArdle" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Équation de Katch-McArdle" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "कैच-मैकआर्डल समीकरण" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Equazione di Katch-McArdle" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "Katch-McArdle式" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "Katch-McArdle 방정식" } },
+        "nl": { "stringUnit": { "state": "translated", "value": "Katch-McArdle-vergelijking" } },
+        "pl": { "stringUnit": { "state": "translated", "value": "Równanie Katcha–McArdle’a" } },
+        "pt-BR": { "stringUnit": { "state": "translated", "value": "Equação de Katch-McArdle" } },
+        "ro": { "stringUnit": { "state": "translated", "value": "Ecuația Katch-McArdle" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Уравнение Кэтча–МакАрдла" } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "Katch-McArdle 方程" } }
+      }
+    },
+    "BMR = 370 + 21.6 × LBM(kg)\nLBM = weight × (1 − bodyFat%)": {
+      "localizations": {
+        "ar": { "stringUnit": { "state": "translated", "value": "BMR = 370 + 21.6 × LBM(كغ)\nLBM = الوزن × (1 − نسبة دهون الجسم)" } },
+        "az": { "stringUnit": { "state": "translated", "value": "BMR = 370 + 21,6 × YBK(kq)\nYBK = çəki × (1 − bədən yağı faizi)" } },
+        "de": { "stringUnit": { "state": "translated", "value": "BMR = 370 + 21,6 × FFM(kg)\nFFM = Gewicht × (1 − Körperfettanteil)" } },
+        "es": { "stringUnit": { "state": "translated", "value": "BMR = 370 + 21,6 × MCM(kg)\nMCM = peso × (1 − porcentaje de grasa corporal)" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "BMR = 370 + 21,6 × MM(kg)\nMM = poids × (1 − pourcentage de masse grasse)" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "BMR = 370 + 21.6 × LBM(kg)\nLBM = वज़न × (1 − शरीर की वसा का प्रतिशत)" } },
+        "it": { "stringUnit": { "state": "translated", "value": "BMR = 370 + 21,6 × MM(kg)\nMM = peso × (1 − percentuale di grasso corporeo)" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "BMR = 370 + 21.6 × LBM(kg)\nLBM = 体重 × (1 − 体脂肪率)" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "BMR = 370 + 21.6 × LBM(kg)\nLBM = 체중 × (1 − 체지방률)" } },
+        "nl": { "stringUnit": { "state": "translated", "value": "BMR = 370 + 21,6 × VVM(kg)\nVVM = gewicht × (1 − lichaamsvetpercentage)" } },
+        "pl": { "stringUnit": { "state": "translated", "value": "BMR = 370 + 21,6 × BMC(kg)\nBMC = masa ciała × (1 − procent tkanki tłuszczowej)" } },
+        "pt-BR": { "stringUnit": { "state": "translated", "value": "BMR = 370 + 21,6 × MCM(kg)\nMCM = peso × (1 − percentual de gordura corporal)" } },
+        "ro": { "stringUnit": { "state": "translated", "value": "BMR = 370 + 21,6 × MCS(kg)\nMCS = greutate × (1 − procentul de grăsime corporală)" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "BMR = 370 + 21,6 × БМТ(кг)\nБМТ = вес × (1 − %жира)" } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "BMR = 370 + 21.6 × LBM(kg)\nLBM = 体重 × (1 − 体脂率)" } }
+      }
+    },
+    "Activity-multiplier method": {
+      "localizations": {
+        "ar": { "stringUnit": { "state": "translated", "value": "طريقة معامل النشاط" } },
+        "az": { "stringUnit": { "state": "translated", "value": "Aktivlik əmsalı üsulu" } },
+        "de": { "stringUnit": { "state": "translated", "value": "Aktivitätsfaktor-Methode" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Método del multiplicador de actividad" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Méthode du multiplicateur d’activité" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "गतिविधि-गुणक विधि" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Metodo del moltiplicatore di attività" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "活動係数法" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "활동량 배수 방식" } },
+        "nl": { "stringUnit": { "state": "translated", "value": "Activiteitsfactor-methode" } },
+        "pl": { "stringUnit": { "state": "translated", "value": "Metoda mnożnika aktywności" } },
+        "pt-BR": { "stringUnit": { "state": "translated", "value": "Método do multiplicador de atividade" } },
+        "ro": { "stringUnit": { "state": "translated", "value": "Metoda multiplicatorului de activitate" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Метод множителя активности" } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "活动系数法" } }
+      }
+    },
+    "TDEE = BMR × activity multiplier. The multiplier corresponds to your selected activity level. This is the maintenance baseline the AI starts from (unless Energy Burn supplies a measured one).": {
+      "localizations": {
+        "ar": { "stringUnit": { "state": "translated", "value": "TDEE = BMR × معامل النشاط. يتوافق المعامل مع مستوى النشاط الذي اخترته. وهذا هو خط الأساس لسعرات الحفاظ الذي يبدأ منه الذكاء الاصطناعي، ما لم توفر ميزة Energy Burn قيمة مقاسة." } },
+        "az": { "stringUnit": { "state": "translated", "value": "TDEE = BMR × aktivlik əmsalı. Əmsal seçdiyiniz aktivlik səviyyəsinə uyğundur. AI-nin başladığı saxlama səviyyəsi budur, Energy Burn ölçülmüş göstərici təqdim etmirsə." } },
+        "de": { "stringUnit": { "state": "translated", "value": "TDEE = BMR × Aktivitätsfaktor. Der Faktor entspricht deiner gewählten Aktivitätsstufe. Dies ist die Ausgangsbasis für den Erhaltungsbedarf, von der die KI ausgeht, sofern Energy Burn keinen Messwert liefert." } },
+        "es": { "stringUnit": { "state": "translated", "value": "TDEE = BMR × multiplicador de actividad. El multiplicador corresponde al nivel de actividad seleccionado. Esta es la base de mantenimiento de la que parte la IA, salvo que Energy Burn proporcione una medición." } },
+        "fr": { "stringUnit": { "state": "translated", "value": "TDEE = BMR × multiplicateur d’activité. Le multiplicateur correspond au niveau d’activité sélectionné. Il s’agit de la base de maintenance utilisée initialement par l’IA, sauf si Energy Burn fournit une valeur mesurée." } },
+        "hi": { "stringUnit": { "state": "translated", "value": "TDEE = BMR × गतिविधि गुणक। गुणक आपके चुने हुए गतिविधि स्तर के अनुसार होता है। यही मेंटेनेंस का आधार है जिससे AI शुरू करता है, जब तक Energy Burn कोई मापा हुआ मान न दे।" } },
+        "it": { "stringUnit": { "state": "translated", "value": "TDEE = BMR × moltiplicatore di attività. Il moltiplicatore corrisponde al livello di attività selezionato. È la base di mantenimento da cui parte l’IA, a meno che Energy Burn non fornisca un valore misurato." } },
+        "ja": { "stringUnit": { "state": "translated", "value": "TDEE = BMR × 活動係数。係数は選択した活動レベルに対応します。Energy Burnから測定値が得られない場合、AIはこれを維持カロリーの基準として使います。" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "TDEE = BMR × 활동량 배수. 배수는 선택한 활동 수준에 해당합니다. Energy Burn에서 측정값을 제공하지 않는 한 AI는 이를 유지 칼로리의 기준으로 삼습니다." } },
+        "nl": { "stringUnit": { "state": "translated", "value": "TDEE = BMR × activiteitsfactor. De factor hoort bij het door jou gekozen activiteitsniveau. Dit is de onderhoudsbasis waarvan de AI uitgaat, tenzij Energy Burn een gemeten waarde levert." } },
+        "pl": { "stringUnit": { "state": "translated", "value": "TDEE = BMR × mnożnik aktywności. Mnożnik odpowiada wybranemu poziomowi aktywności. Jest to bazowy poziom zapotrzebowania, od którego zaczyna AI, chyba że Energy Burn dostarcza zmierzoną wartość." } },
+        "pt-BR": { "stringUnit": { "state": "translated", "value": "TDEE = BMR × multiplicador de atividade. O multiplicador corresponde ao nível de atividade selecionado. Esta é a base de manutenção da qual a IA parte, a menos que o Energy Burn forneça uma medição." } },
+        "ro": { "stringUnit": { "state": "translated", "value": "TDEE = BMR × multiplicatorul de activitate. Multiplicatorul corespunde nivelului de activitate selectat. Aceasta este baza de menținere de la care pornește AI, dacă Energy Burn nu furnizează o valoare măsurată." } },
+        "ru": { "stringUnit": { "state": "translated", "value": "TDEE = BMR × множитель активности. Множитель соответствует выбранному уровню активности. Это базовый уровень поддержания, от которого отталкивается ИИ (если Energy Burn не даёт измеренное значение)." } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "TDEE = BMR × 活动系数。该系数对应你选择的活动水平。除非 Energy Burn 提供实测值，否则 AI 会以此作为维持热量的起点。" } }
+      }
+    },
+    "Sedentary: 1.2  ·  Light: 1.375  ·  Moderate: 1.465  ·  Active: 1.55  ·  Very Active: 1.725  ·  Extra Active: 1.9": {
+      "localizations": {
+        "ar": { "stringUnit": { "state": "translated", "value": "خامل: 1.2 · خفيف: 1.375 · متوسط: 1.465 · نشط: 1.55 · نشط جدًا: 1.725 · نشط للغاية: 1.9" } },
+        "az": { "stringUnit": { "state": "translated", "value": "Oturaq: 1,2 · Yüngül: 1,375 · Orta: 1,465 · Aktiv: 1,55 · Çox aktiv: 1,725 · Son dərəcə aktiv: 1,9" } },
+        "de": { "stringUnit": { "state": "translated", "value": "Sitzend: 1,2 · Leicht: 1,375 · Mittel: 1,465 · Aktiv: 1,55 · Sehr aktiv: 1,725 · Extrem aktiv: 1,9" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Sedentario: 1,2 · Ligero: 1,375 · Moderado: 1,465 · Activo: 1,55 · Muy activo: 1,725 · Extremadamente activo: 1,9" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Sédentaire : 1,2 · Léger : 1,375 · Modéré : 1,465 · Actif : 1,55 · Très actif : 1,725 · Extrêmement actif : 1,9" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "गतिहीन: 1.2 · हल्का: 1.375 · मध्यम: 1.465 · सक्रिय: 1.55 · बहुत सक्रिय: 1.725 · अत्यधिक सक्रिय: 1.9" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Sedentario: 1,2 · Leggero: 1,375 · Moderato: 1,465 · Attivo: 1,55 · Molto attivo: 1,725 · Estremamente attivo: 1,9" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "座りがち: 1.2 · 軽度: 1.375 · 中程度: 1.465 · 活発: 1.55 · 非常に活発: 1.725 · 極めて活発: 1.9" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "좌식: 1.2 · 가벼움: 1.375 · 보통: 1.465 · 활동적: 1.55 · 매우 활동적: 1.725 · 극도로 활동적: 1.9" } },
+        "nl": { "stringUnit": { "state": "translated", "value": "Zittend: 1,2 · Licht: 1,375 · Gemiddeld: 1,465 · Actief: 1,55 · Zeer actief: 1,725 · Extreem actief: 1,9" } },
+        "pl": { "stringUnit": { "state": "translated", "value": "Siedzący: 1,2 · Lekki: 1,375 · Umiarkowany: 1,465 · Aktywny: 1,55 · Bardzo aktywny: 1,725 · Wyjątkowo aktywny: 1,9" } },
+        "pt-BR": { "stringUnit": { "state": "translated", "value": "Sedentário: 1,2 · Leve: 1,375 · Moderado: 1,465 · Ativo: 1,55 · Muito ativo: 1,725 · Extremamente ativo: 1,9" } },
+        "ro": { "stringUnit": { "state": "translated", "value": "Sedentar: 1,2 · Ușor: 1,375 · Moderat: 1,465 · Activ: 1,55 · Foarte activ: 1,725 · Extrem de activ: 1,9" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Сидячий: 1,2 · Лёгкий: 1,375 · Умеренный: 1,465 · Активный: 1,55 · Очень активный: 1,725 · Максимально активный: 1,9" } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "久坐：1.2 · 轻度：1.375 · 中度：1.465 · 活跃：1.55 · 非常活跃：1.725 · 极度活跃：1.9" } }
+      }
+    },
+    "Maintenance & goal adjustment": {
+      "localizations": {
+        "ar": { "stringUnit": { "state": "translated", "value": "الحفاظ على الوزن وتعديل الهدف" } },
+        "az": { "stringUnit": { "state": "translated", "value": "Çəkini qoruma və hədəf düzəlişi" } },
+        "de": { "stringUnit": { "state": "translated", "value": "Erhaltung & Zielanpassung" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Mantenimiento y ajuste del objetivo" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Maintien et ajustement de l’objectif" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "मेंटेनेंस और लक्ष्य समायोजन" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Mantenimento e adeguamento dell’obiettivo" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "維持カロリーと目標の調整" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "유지 칼로리 및 목표 조정" } },
+        "nl": { "stringUnit": { "state": "translated", "value": "Onderhoud en doelaanpassing" } },
+        "pl": { "stringUnit": { "state": "translated", "value": "Utrzymanie i korekta celu" } },
+        "pt-BR": { "stringUnit": { "state": "translated", "value": "Manutenção e ajuste da meta" } },
+        "ro": { "stringUnit": { "state": "translated", "value": "Menținere și ajustarea obiectivului" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Поддержание и корректировка цели" } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "维持热量和目标调整" } }
+      }
+    },
+    "Maintenance starts from your TDEE — or, when Energy Burn is on, from Apple Health’s recent measured-energy window instead of the formula estimate: measured total energy when enough days are available; otherwise, average measured active energy + formula BMR. The AI refines maintenance against your logged intake and weight trend, then applies your goal: a weekly weight-change rate becomes a daily calorie deficit (Lose) or surplus (Gain).": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تبدأ سعرات الحفاظ من TDEE، أو عند تشغيل Energy Burn من نافذة بيانات الطاقة المقاسة الحديثة في Apple Health بدلًا من تقدير المعادلة: إجمالي الطاقة المقاس عند توفر أيام كافية، وإلا فمتوسط الطاقة النشطة المقاسة + BMR المحسوب بالمعادلة. يحسّن الذكاء الاصطناعي سعرات الحفاظ بمقارنتها بمدخولك المسجل واتجاه وزنك، ثم يطبّق هدفك: تتحول وتيرة تغيّر الوزن الأسبوعية إلى عجز يومي في السعرات للخسارة أو فائض يومي للزيادة."
+          }
+        },
+        "az": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saxlama səviyyəsi TDEE-dən başlayır; Energy Burn aktiv olduqda isə düstur təxmini əvəzinə Apple Health-də son ölçülmüş enerji məlumatları dövründən istifadə olunur: kifayət qədər gün olduqda ölçülmüş ümumi enerji, əks halda ölçülmüş aktiv enerjinin ortalaması + düsturla hesablanan BMR. AI saxlama səviyyəsini qeyd etdiyiniz qəbul və çəki tendensiyası ilə dəqiqləşdirir, sonra hədəfinizi tətbiq edir: həftəlik çəki dəyişmə tempi arıqlama üçün gündəlik kalori kəsirinə, kökəlmə üçün isə artığına çevrilir."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Erhaltungsbedarf basiert zunächst auf deinem TDEE — oder, wenn Energy Burn aktiviert ist, auf dem jüngsten Messfenster für Energiedaten aus Apple Health anstelle der Formelschätzung: dem gemessenen Gesamtenergieverbrauch, wenn genügend Tage verfügbar sind, andernfalls dem durchschnittlichen gemessenen aktiven Energieverbrauch + dem Formel-BMR. Die KI gleicht den Erhaltungsbedarf mit deiner protokollierten Aufnahme und deinem Gewichtsverlauf ab und wendet dann dein Ziel an: Eine wöchentliche Gewichtsänderungsrate wird zu einem täglichen Kaloriendefizit beim Abnehmen oder Kalorienüberschuss beim Zunehmen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El mantenimiento parte de tu TDEE o, cuando Energy Burn está activado, de la ventana reciente de energía medida de Apple Health en vez de la estimación de la fórmula: energía total medida cuando hay suficientes días; de lo contrario, energía activa medida promedio + BMR de la fórmula. La IA ajusta el mantenimiento contrastándolo con tu ingesta registrada y la tendencia de tu peso, y después aplica tu objetivo: una tasa semanal de cambio de peso se convierte en un déficit calórico diario para perder peso o en un superávit para ganarlo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La maintenance part de votre TDEE ou, quand Energy Burn est activé, de la fenêtre récente de données énergétiques mesurées de Apple Health au lieu de l’estimation de la formule : dépense énergétique totale mesurée lorsque suffisamment de jours sont disponibles ; sinon, moyenne de l’énergie active mesurée + BMR calculé par la formule. L’IA affine la maintenance en fonction de vos apports enregistrés et de l’évolution de votre poids, puis applique votre objectif : un rythme hebdomadaire de variation du poids devient un déficit calorique quotidien pour perdre du poids ou un surplus pour en prendre."
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "मेंटेनेंस आपके TDEE से शुरू होती है — या Energy Burn चालू होने पर फ़ॉर्मूला अनुमान की जगह Apple Health के हाल में मापे गए ऊर्जा डेटा की अवधि से: पर्याप्त दिनों का डेटा होने पर मापी गई कुल ऊर्जा; अन्यथा, मापी गई सक्रिय ऊर्जा का औसत + फ़ॉर्मूला BMR। AI दर्ज किए गए सेवन और वज़न के रुझान से मेंटेनेंस को बेहतर बनाता है, फिर आपका लक्ष्य लागू करता है: साप्ताहिक वज़न-बदलाव दर घटाने के लिए दैनिक कैलोरी घाटा या बढ़ाने के लिए दैनिक अधिशेष बनती है।"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il mantenimento parte dal tuo TDEE oppure, quando Energy Burn è attivo, dalla finestra recente dei dati energetici misurati da Apple Health invece che dalla stima della formula: energia totale misurata quando sono disponibili abbastanza giorni; altrimenti, media dell’energia attiva misurata + BMR calcolato con la formula. L’IA perfeziona il mantenimento confrontandolo con l’apporto registrato e l’andamento del peso, quindi applica il tuo obiettivo: un tasso settimanale di variazione del peso diventa un deficit calorico giornaliero per dimagrire o un surplus per aumentare di peso."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "維持カロリーはTDEEを出発点にします。ただしEnergy Burnがオンの場合は、式による推定値の代わりにApple Healthの最近の実測エネルギーデータ期間を使います。十分な日数がある場合は実測の総エネルギー、そうでない場合は実測アクティブエネルギーの平均＋式で求めたBMRを使います。AIは記録した摂取量と体重の推移に照らして維持カロリーを調整し、目標を適用します。週ごとの体重変化率を、減量では1日のカロリー不足分、増量では余剰分に換算します。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "유지 칼로리는 TDEE에서 시작합니다. 단, Energy Burn이 켜져 있으면 공식 추정값 대신 Apple Health의 최근 측정 에너지 구간을 사용합니다. 충분한 날짜가 있으면 측정된 총에너지를, 그렇지 않으면 측정된 활동 에너지 평균 + 공식 BMR을 사용합니다. AI는 기록된 섭취량과 체중 추세에 맞춰 유지 칼로리를 보정한 뒤 목표를 적용합니다. 주간 체중 변화율은 감량 시 일일 칼로리 부족분, 증량 시 잉여분으로 변환됩니다."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Onderhoud begint bij je TDEE — of, wanneer Energy Burn aanstaat, bij het recente meetvenster voor energie uit Apple Health in plaats van de formuleschatting: gemeten totale energie wanneer er genoeg dagen beschikbaar zijn; anders de gemiddelde gemeten actieve energie + de formule-BMR. De AI verfijnt het onderhoud aan de hand van je gelogde inname en gewichtstrend en past daarna je doel toe: een wekelijkse snelheid van gewichtsverandering wordt een dagelijks calorietekort voor afvallen of een calorieoverschot voor aankomen."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Utrzymanie zaczyna się od TDEE — lub, gdy Energy Burn jest włączone, od ostatniego okna zmierzonych danych energii w Apple Health zamiast oszacowania ze wzoru: gdy dostępna jest wystarczająca liczba dni, używana jest zmierzona energia całkowita; w przeciwnym razie średnia zmierzona energia aktywna + BMR ze wzoru. AI koryguje utrzymanie na podstawie zapisanej podaży i trendu wagi, a następnie stosuje cel: tygodniowe tempo zmiany wagi staje się dziennym deficytem kalorii (Redukcja) lub nadwyżką (Przyrost)."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A manutenção parte do seu TDEE ou, quando o Energy Burn está ativado, da janela recente de energia medida do Apple Health em vez da estimativa da fórmula: energia total medida quando houver dias suficientes; caso contrário, média da energia ativa medida + BMR da fórmula. A IA refina a manutenção usando a ingestão registrada e a tendência do peso e depois aplica sua meta: uma taxa semanal de mudança de peso vira um déficit calórico diário para perder peso ou um superávit para ganhar."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Menținerea pornește de la TDEE sau, când Energy Burn este activat, de la intervalul recent de energie măsurată din Apple Health în locul estimării formulei: energia totală măsurată când sunt disponibile suficiente zile; altfel, media energiei active măsurate + BMR calculat prin formulă. AI ajustează menținerea pe baza aportului înregistrat și a tendinței greutății, apoi aplică obiectivul: o rată săptămânală de schimbare a greutății devine un deficit caloric zilnic pentru slăbire sau un surplus pentru creștere."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Поддержание рассчитывается от TDEE — или, если включён Energy Burn, по данным об энергии из Apple Health за недавний период вместо оценки по формуле: измеренный общий расход энергии, если доступно достаточно дней; иначе среднее измеренной активной энергии + BMR по формуле. ИИ уточняет поддержание по фактическому рациону и динамике веса, затем применяет цель: недельная скорость изменения веса превращается в дневной дефицит (снижение) или профицит (набор) калорий."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "维持热量从你的 TDEE 开始；若开启 Energy Burn，则使用 Apple Health 的近期实测能量窗口，而不是公式估算：有足够天数时使用实测总能量，否则使用实测活动能量平均值 + 公式 BMR。AI 会结合你记录的摄入量和体重趋势校准维持热量，然后应用目标：每周体重变化率会转换为减重时的每日热量缺口或增重时的每日热量盈余。"
+          }
+        }
+      }
+    },
+    "1 lb of body fat ≈ 3,500 kcal · 1 kg ≈ 7,700 kcal\nYour weekly rate ÷ 7 is subtracted from (Lose) or added to (Gain) maintenance to set the daily calorie target.": {
+      "localizations": {
+        "ar": { "stringUnit": { "state": "translated", "value": "1 رطل من دهون الجسم ≈ 3,500 سعرة حرارية · 1 كغ ≈ 7,700 سعرة حرارية\nتُقسَّم وتيرتك الأسبوعية على 7، ثم تُطرح من سعرات الحفاظ للخسارة أو تُضاف إليها للزيادة لتحديد هدف السعرات اليومي." } },
+        "az": { "stringUnit": { "state": "translated", "value": "1 funt bədən yağı ≈ 3 500 kkal · 1 kq ≈ 7 700 kkal\nGündəlik kalori hədəfini təyin etmək üçün həftəlik tempiniz ÷ 7 saxlama səviyyəsindən çıxılır (arıqlama) və ya ona əlavə olunur (kökəlmə)." } },
+        "de": { "stringUnit": { "state": "translated", "value": "1 lb Körperfett ≈ 3.500 kcal · 1 kg ≈ 7.700 kcal\nDeine wöchentliche Rate ÷ 7 wird zum Festlegen des täglichen Kalorienziels vom Erhaltungsbedarf abgezogen (Abnehmen) oder dazugezählt (Zunehmen)." } },
+        "es": { "stringUnit": { "state": "translated", "value": "1 lb de grasa corporal ≈ 3500 kcal · 1 kg ≈ 7700 kcal\nTu tasa semanal ÷ 7 se resta del mantenimiento para perder peso o se suma para ganarlo y así establecer el objetivo diario de calorías." } },
+        "fr": { "stringUnit": { "state": "translated", "value": "1 lb de graisse corporelle ≈ 3 500 kcal · 1 kg ≈ 7 700 kcal\nVotre rythme hebdomadaire ÷ 7 est soustrait de la maintenance pour perdre du poids ou y est ajouté pour en prendre afin de définir l’objectif calorique quotidien." } },
+        "hi": { "stringUnit": { "state": "translated", "value": "शरीर की 1 lb वसा ≈ 3,500 kcal · 1 kg ≈ 7,700 kcal\nदैनिक कैलोरी लक्ष्य तय करने के लिए आपकी साप्ताहिक दर ÷ 7 को मेंटेनेंस से घटाया जाता है (वज़न घटाना) या उसमें जोड़ा जाता है (वज़न बढ़ाना)।" } },
+        "it": { "stringUnit": { "state": "translated", "value": "1 lb di grasso corporeo ≈ 3.500 kcal · 1 kg ≈ 7.700 kcal\nIl tuo tasso settimanale ÷ 7 viene sottratto dal mantenimento per dimagrire o aggiunto per aumentare di peso, così da impostare l’obiettivo calorico giornaliero." } },
+        "ja": { "stringUnit": { "state": "translated", "value": "体脂肪1 lb ≈ 3,500 kcal · 1 kg ≈ 7,700 kcal\n1日のカロリー目標を設定するため、週ごとの変化率 ÷ 7を、減量では維持カロリーから引き、増量では加えます。" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "체지방 1 lb ≈ 3,500 kcal · 1 kg ≈ 7,700 kcal\n일일 칼로리 목표를 설정하기 위해 주간 변화율 ÷ 7을 감량 시 유지 칼로리에서 빼고, 증량 시 더합니다." } },
+        "nl": { "stringUnit": { "state": "translated", "value": "1 lb lichaamsvet ≈ 3.500 kcal · 1 kg ≈ 7.700 kcal\nJe wekelijkse snelheid ÷ 7 wordt van het onderhoud afgetrokken voor afvallen of erbij opgeteld voor aankomen om het dagelijkse caloriedoel vast te stellen." } },
+        "pl": { "stringUnit": { "state": "translated", "value": "1 lb tkanki tłuszczowej ≈ 3500 kcal · 1 kg ≈ 7700 kcal\nTygodniowe tempo ÷ 7 jest odejmowane od zapotrzebowania (utrata) lub do niego dodawane (przyrost), aby ustalić dzienny cel kalorii." } },
+        "pt-BR": { "stringUnit": { "state": "translated", "value": "1 lb de gordura corporal ≈ 3.500 kcal · 1 kg ≈ 7.700 kcal\nSua taxa semanal ÷ 7 é subtraída da manutenção para perder peso ou adicionada para ganhar, definindo a meta diária de calorias." } },
+        "ro": { "stringUnit": { "state": "translated", "value": "1 lb de grăsime corporală ≈ 3.500 kcal · 1 kg ≈ 7.700 kcal\nRata săptămânală ÷ 7 se scade din menținere pentru slăbire sau se adaugă pentru creștere, stabilind obiectivul caloric zilnic." } },
+        "ru": { "stringUnit": { "state": "translated", "value": "1 фунт жира ≈ 3 500 ккал · 1 кг ≈ 7 700 ккал\nНедельная скорость ÷ 7 вычитается из поддержания (снижение) или прибавляется к нему (набор), задавая дневную цель по калориям." } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "1 lb 体脂 ≈ 3,500 kcal · 1 kg ≈ 7,700 kcal\n为设定每日卡路里目标，每周变化率 ÷ 7 后，减重时从维持热量中减去，增重时则加上。" } }
+      }
+    },
+    "Protein, carbs, fat targets": {
+      "localizations": {
+        "ar": { "stringUnit": { "state": "translated", "value": "أهداف البروتين والكربوهيدرات والدهون" } },
+        "az": { "stringUnit": { "state": "translated", "value": "Zülal, karbohidrat və yağ hədəfləri" } },
+        "de": { "stringUnit": { "state": "translated", "value": "Protein-, Kohlenhydrat- und Fettziele" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Objetivos de proteínas, carbohidratos y grasas" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Objectifs de protéines, glucides et lipides" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "प्रोटीन, कार्ब्स और फैट के लक्ष्य" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Obiettivi di proteine, carboidrati e grassi" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "たんぱく質・炭水化物・脂質の目標" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "단백질·탄수화물·지방 목표" } },
+        "nl": { "stringUnit": { "state": "translated", "value": "Doelen voor eiwitten, koolhydraten en vet" } },
+        "pl": { "stringUnit": { "state": "translated", "value": "Cele dla białka, węglowodanów i tłuszczu" } },
+        "pt-BR": { "stringUnit": { "state": "translated", "value": "Metas de proteínas, carboidratos e gorduras" } },
+        "ro": { "stringUnit": { "state": "translated", "value": "Obiective pentru proteine, carbohidrați și grăsimi" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Цели по белкам, углеводам и жирам" } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "蛋白质、碳水化合物和脂肪目标" } }
+      }
+    },
+    "Protein: ~0.8–2.2 g per kg by activity level (raised slightly when losing)\nFat: ~0.6 g per kg bodyweight\nCarbs: remaining calories ÷ 4 kcal/g": {
+      "localizations": {
+        "ar": { "stringUnit": { "state": "translated", "value": "البروتين: نحو 0.8–2.2 غ لكل كغ حسب مستوى النشاط، مع زيادة طفيفة عند خسارة الوزن\nالدهون: نحو 0.6 غ لكل كغ من وزن الجسم\nالكربوهيدرات: السعرات المتبقية ÷ 4 سعرات حرارية/غ" } },
+        "az": { "stringUnit": { "state": "translated", "value": "Zülal: aktivlik səviyyəsinə görə hər kq üçün təxminən 0,8–2,2 q, arıqlayarkən bir qədər artırılır\nYağ: hər kq bədən çəkisi üçün təxminən 0,6 q\nKarbohidratlar: qalan kalorilər ÷ 4 kkal/q" } },
+        "de": { "stringUnit": { "state": "translated", "value": "Protein: ca. 0,8–2,2 g pro kg je nach Aktivitätsstufe, beim Abnehmen leicht erhöht\nFett: ca. 0,6 g pro kg Körpergewicht\nKohlenhydrate: verbleibende Kalorien ÷ 4 kcal/g" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Proteína: aprox. 0,8–2,2 g por kg según el nivel de actividad, un poco más al perder peso\nGrasa: aprox. 0,6 g por kg de peso corporal\nCarbohidratos: calorías restantes ÷ 4 kcal/g" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Protéines : env. 0,8–2,2 g par kg selon le niveau d’activité, légèrement plus en cas de perte de poids\nLipides : env. 0,6 g par kg de poids corporel\nGlucides : calories restantes ÷ 4 kcal/g" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "प्रोटीन: गतिविधि स्तर के अनुसार लगभग 0.8–2.2 g प्रति kg, वज़न घटाते समय थोड़ा अधिक\nफैट: शरीर के वज़न के प्रति kg पर लगभग 0.6 g\nकार्ब्स: बची हुई कैलोरी ÷ 4 kcal/g" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Proteine: circa 0,8–2,2 g per kg in base al livello di attività, leggermente di più durante il dimagrimento\nGrassi: circa 0,6 g per kg di peso corporeo\nCarboidrati: calorie rimanenti ÷ 4 kcal/g" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "たんぱく質: 活動レベルに応じて1 kgあたり約0.8～2.2 g（減量時は少し増加）\n脂質: 体重1 kgあたり約0.6 g\n炭水化物: 残りのカロリー ÷ 4 kcal/g" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "단백질: 활동 수준에 따라 kg당 약 0.8~2.2 g, 감량 시 약간 증가\n지방: 체중 kg당 약 0.6 g\n탄수화물: 남은 칼로리 ÷ 4 kcal/g" } },
+        "nl": { "stringUnit": { "state": "translated", "value": "Eiwit: ca. 0,8–2,2 g per kg afhankelijk van activiteitsniveau, iets hoger bij afvallen\nVet: ca. 0,6 g per kg lichaamsgewicht\nKoolhydraten: resterende calorieën ÷ 4 kcal/g" } },
+        "pl": { "stringUnit": { "state": "translated", "value": "Białko: ok. 0,8–2,2 g na kg zależnie od poziomu aktywności (nieco więcej przy redukcji)\nTłuszcz: ok. 0,6 g na kg masy ciała\nWęglowodany: pozostałe kalorie ÷ 4 kcal/g" } },
+        "pt-BR": { "stringUnit": { "state": "translated", "value": "Proteína: cerca de 0,8–2,2 g por kg conforme o nível de atividade, um pouco mais ao perder peso\nGordura: cerca de 0,6 g por kg de peso corporal\nCarboidratos: calorias restantes ÷ 4 kcal/g" } },
+        "ro": { "stringUnit": { "state": "translated", "value": "Proteine: aprox. 0,8–2,2 g per kg în funcție de nivelul de activitate, puțin mai mult la slăbire\nGrăsimi: aprox. 0,6 g per kg de greutate corporală\nCarbohidrați: caloriile rămase ÷ 4 kcal/g" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Белки: ~0,8–2,2 г на кг в зависимости от активности (чуть выше при снижении веса)\nЖиры: ~0,6 г на кг массы тела\nУглеводы: оставшиеся калории ÷ 4 ккал/г" } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "蛋白质：根据活动水平，每 kg 约 0.8–2.2 g，减重时略微提高\n脂肪：每 kg 体重约 0.6 g\n碳水化合物：剩余热量 ÷ 4 kcal/g" } }
+      }
+    },
+    "Per-meal estimates": {
+      "localizations": {
+        "ar": { "stringUnit": { "state": "translated", "value": "تقديرات كل وجبة" } },
+        "az": { "stringUnit": { "state": "translated", "value": "Hər yemək üzrə təxminlər" } },
+        "de": { "stringUnit": { "state": "translated", "value": "Schätzungen pro Mahlzeit" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Estimaciones por comida" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Estimations par repas" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "हर भोजन का अनुमान" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Stime per pasto" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "食事ごとの推定値" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "식사별 추정치" } },
+        "nl": { "stringUnit": { "state": "translated", "value": "Schattingen per maaltijd" } },
+        "pl": { "stringUnit": { "state": "translated", "value": "Szacunki dla każdego posiłku" } },
+        "pt-BR": { "stringUnit": { "state": "translated", "value": "Estimativas por refeição" } },
+        "ro": { "stringUnit": { "state": "translated", "value": "Estimări pentru fiecare masă" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Оценки по каждому приёму пищи" } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "每餐估算值" } }
+      }
+    },
+    "Calorie, macro, fiber, sugar, saturated fat, cholesterol, caffeine, sodium, potassium and other detailed nutrition values returned per meal are AI-generated estimates from the food image, voice transcript, or text description, using the AI provider you selected.": {
+      "localizations": {
+        "ar": { "stringUnit": { "state": "translated", "value": "السعرات الحرارية والمغذيات الكبرى والألياف والسكر والدهون المشبعة والكوليسترول والكافيين والصوديوم والبوتاسيوم وغيرها من القيم الغذائية التفصيلية التي تظهر لكل وجبة هي تقديرات ينشئها الذكاء الاصطناعي من صورة الطعام أو النسخ الصوتي أو الوصف النصي، باستخدام مزوّد الذكاء الاصطناعي الذي اخترته." } },
+        "az": { "stringUnit": { "state": "translated", "value": "Hər yemək üçün qaytarılan kalori, makro, lif, şəkər, doymuş yağ, xolesterin, kofein, natrium, kalium və digər ətraflı qidalanma dəyərləri seçdiyiniz AI provayderindən istifadə edilərək qida şəkli, səs transkripti və ya mətn təsviri əsasında AI tərəfindən yaradılan təxminlərdir." } },
+        "de": { "stringUnit": { "state": "translated", "value": "Kalorien, Makros, Ballaststoffe, Zucker, gesättigte Fettsäuren, Cholesterin, Koffein, Natrium, Kalium und andere detaillierte Nährwerte pro Mahlzeit sind KI-generierte Schätzungen aus dem Lebensmittelfoto, der Sprachtranskription oder der Textbeschreibung. Dafür wird der von dir ausgewählte KI-Anbieter verwendet." } },
+        "es": { "stringUnit": { "state": "translated", "value": "Las calorías, macros, fibra, azúcar, grasas saturadas, colesterol, cafeína, sodio, potasio y otros valores nutricionales detallados de cada comida son estimaciones generadas por IA a partir de la foto del alimento, la transcripción de voz o la descripción de texto, usando el proveedor de IA que seleccionaste." } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Les calories, macros, fibres, sucres, graisses saturées, cholestérol, caféine, sodium, potassium et autres valeurs nutritionnelles détaillées de chaque repas sont des estimations générées par l’IA à partir de la photo de l’aliment, de la transcription vocale ou de la description textuelle, au moyen du fournisseur d’IA sélectionné." } },
+        "hi": { "stringUnit": { "state": "translated", "value": "हर भोजन के लिए मिलने वाली कैलोरी, मैक्रो, फ़ाइबर, शुगर, सैचुरेटेड फैट, कोलेस्ट्रॉल, कैफ़ीन, सोडियम, पोटैशियम और अन्य विस्तृत पोषण मान भोजन की फ़ोटो, वॉइस ट्रांसक्रिप्ट या टेक्स्ट विवरण से, आपके चुने हुए AI प्रोवाइडर द्वारा तैयार किए गए अनुमान हैं।" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Calorie, macro, fibre, zuccheri, grassi saturi, colesterolo, caffeina, sodio, potassio e altri valori nutrizionali dettagliati restituiti per ogni pasto sono stime generate dall’IA a partire dalla foto del cibo, dalla trascrizione vocale o dalla descrizione testuale, usando il provider IA selezionato." } },
+        "ja": { "stringUnit": { "state": "translated", "value": "食事ごとに返されるカロリー、マクロ、食物繊維、糖類、飽和脂肪、コレステロール、カフェイン、ナトリウム、カリウムなどの詳細な栄養値は、選択したAIプロバイダーが食品写真、音声の文字起こし、またはテキスト説明から生成した推定値です。" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "식사별 칼로리, 매크로, 식이섬유, 당류, 포화지방, 콜레스테롤, 카페인, 나트륨, 칼륨 및 기타 상세 영양값은 선택한 AI 제공자가 음식 사진, 음성 기록 또는 텍스트 설명을 바탕으로 생성한 추정치입니다." } },
+        "nl": { "stringUnit": { "state": "translated", "value": "Calorieën, macro’s, vezels, suiker, verzadigd vet, cholesterol, cafeïne, natrium, kalium en andere gedetailleerde voedingswaarden per maaltijd zijn door AI gegenereerde schattingen op basis van de voedselfoto, stemtranscriptie of tekstbeschrijving via de door jou gekozen AI-provider." } },
+        "pl": { "stringUnit": { "state": "translated", "value": "Kalorie, makroskładniki, błonnik, cukier, tłuszcze nasycone, cholesterol, kofeina, sód, potas i inne szczegółowe wartości odżywcze zwracane dla każdego posiłku są szacunkami generowanymi przez AI na podstawie zdjęcia jedzenia, transkrypcji głosu lub opisu tekstowego przy użyciu wybranego dostawcy AI." } },
+        "pt-BR": { "stringUnit": { "state": "translated", "value": "Calorias, macros, fibras, açúcar, gordura saturada, colesterol, cafeína, sódio, potássio e outros valores nutricionais detalhados de cada refeição são estimativas geradas por IA a partir da foto do alimento, da transcrição de voz ou da descrição em texto, usando o provedor de IA selecionado." } },
+        "ro": { "stringUnit": { "state": "translated", "value": "Caloriile, macronutrienții, fibrele, zahărul, grăsimile saturate, colesterolul, cofeina, sodiul, potasiul și alte valori nutriționale detaliate pentru fiecare masă sunt estimări generate de AI din fotografia alimentului, transcrierea vocală sau descrierea text, folosind furnizorul de AI selectat." } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Калории, макросы, клетчатка, сахар, насыщенные жиры, холестерин, натрий, калий и другие значения по каждому блюду — это оценки ИИ по фото, голосовой записи или текстовому описанию через выбранного вами провайдера." } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "每餐返回的卡路里、宏量营养素、纤维、糖、饱和脂肪、胆固醇、咖啡因、钠、钾及其他详细营养值，都是你所选的 AI 服务商根据食物图片、语音转写或文字描述生成的估算值。" } }
+      }
+    },
+    "Mifflin MD, St Jeor ST, et al. (1990). “A new predictive equation for resting energy expenditure in healthy individuals.” Am J Clin Nutr 51(2):241–247.": {
+      "localizations": {
+        "ar": { "stringUnit": { "state": "translated", "value": "Mifflin MD, St Jeor ST, et al. (1990). «معادلة تنبؤية جديدة لاستهلاك الطاقة أثناء الراحة لدى الأفراد الأصحاء». Am J Clin Nutr 51(2):241–247." } },
+        "az": { "stringUnit": { "state": "translated", "value": "Mifflin MD, St Jeor ST, et al. (1990). «Sağlam şəxslərdə istirahət zamanı enerji sərfi üçün yeni proqnozlaşdırıcı tənlik». Am J Clin Nutr 51(2):241–247." } },
+        "de": { "stringUnit": { "state": "translated", "value": "Mifflin MD, St Jeor ST, et al. (1990). „Eine neue Vorhersagegleichung für den Ruheenergieverbrauch bei gesunden Personen.“ Am J Clin Nutr 51(2):241–247." } },
+        "es": { "stringUnit": { "state": "translated", "value": "Mifflin MD, St Jeor ST, et al. (1990). «Una nueva ecuación predictiva del gasto energético en reposo en personas sanas». Am J Clin Nutr 51(2):241–247." } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Mifflin MD, St Jeor ST, et al. (1990). « Une nouvelle équation prédictive de la dépense énergétique au repos chez les personnes en bonne santé. » Am J Clin Nutr 51(2):241–247." } },
+        "hi": { "stringUnit": { "state": "translated", "value": "Mifflin MD, St Jeor ST, et al. (1990)। “स्वस्थ व्यक्तियों में विश्राम ऊर्जा व्यय के लिए एक नया पूर्वानुमान समीकरण।” Am J Clin Nutr 51(2):241–247." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Mifflin MD, St Jeor ST, et al. (1990). «Una nuova equazione predittiva per il dispendio energetico a riposo in individui sani». Am J Clin Nutr 51(2):241–247." } },
+        "ja": { "stringUnit": { "state": "translated", "value": "Mifflin MD, St Jeor ST, et al. (1990).「健康な人の安静時エネルギー消費量を予測する新しい式。」Am J Clin Nutr 51(2):241–247." } },
+        "ko": { "stringUnit": { "state": "translated", "value": "Mifflin MD, St Jeor ST, et al. (1990). “건강한 사람의 안정 시 에너지 소비량을 예측하는 새로운 방정식.” Am J Clin Nutr 51(2):241–247." } },
+        "nl": { "stringUnit": { "state": "translated", "value": "Mifflin MD, St Jeor ST, et al. (1990). ‘Een nieuwe voorspellende vergelijking voor energieverbruik in rust bij gezonde personen.’ Am J Clin Nutr 51(2):241–247." } },
+        "pl": { "stringUnit": { "state": "translated", "value": "Mifflin MD, St Jeor ST, et al. (1990). „Nowe równanie prognostyczne spoczynkowego wydatku energetycznego u osób zdrowych”. Am J Clin Nutr 51(2):241–247." } },
+        "pt-BR": { "stringUnit": { "state": "translated", "value": "Mifflin MD, St Jeor ST, et al. (1990). “Uma nova equação preditiva para o gasto energético de repouso em indivíduos saudáveis.” Am J Clin Nutr 51(2):241–247." } },
+        "ro": { "stringUnit": { "state": "translated", "value": "Mifflin MD, St Jeor ST, et al. (1990). „O nouă ecuație predictivă pentru consumul energetic în repaus la persoanele sănătoase.” Am J Clin Nutr 51(2):241–247." } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Mifflin MD, St Jeor ST, et al. (1990). «Новое уравнение для прогнозирования энергозатрат в покое у здоровых людей». Am J Clin Nutr 51(2):241–247." } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "Mifflin MD, St Jeor ST, et al. (1990). “健康人静息能量消耗的新预测方程。” Am J Clin Nutr 51(2):241–247." } }
+      }
+    },
+    "McArdle WD, Katch FI, Katch VL. Exercise Physiology: Nutrition, Energy, and Human Performance, 7th ed. Lippincott Williams & Wilkins, 2010.": {
+      "localizations": {
+        "ar": { "stringUnit": { "state": "translated", "value": "McArdle WD, Katch FI, Katch VL. فسيولوجيا التمرين: التغذية والطاقة والأداء البشري، الطبعة السابعة. Lippincott Williams & Wilkins، 2010." } },
+        "az": { "stringUnit": { "state": "translated", "value": "McArdle WD, Katch FI, Katch VL. Məşq fiziologiyası: Qidalanma, enerji və insan performansı, 7-ci nəşr. Lippincott Williams & Wilkins, 2010." } },
+        "de": { "stringUnit": { "state": "translated", "value": "McArdle WD, Katch FI, Katch VL. Trainingsphysiologie: Ernährung, Energie und menschliche Leistungsfähigkeit, 7. Aufl. Lippincott Williams & Wilkins, 2010." } },
+        "es": { "stringUnit": { "state": "translated", "value": "McArdle WD, Katch FI, Katch VL. Fisiología del ejercicio: nutrición, energía y rendimiento humano, 7.ª ed. Lippincott Williams & Wilkins, 2010." } },
+        "fr": { "stringUnit": { "state": "translated", "value": "McArdle WD, Katch FI, Katch VL. Physiologie de l’exercice : nutrition, énergie et performance humaine, 7e éd. Lippincott Williams & Wilkins, 2010." } },
+        "hi": { "stringUnit": { "state": "translated", "value": "McArdle WD, Katch FI, Katch VL. व्यायाम शरीरक्रिया विज्ञान: पोषण, ऊर्जा और मानव प्रदर्शन, 7वाँ संस्करण। Lippincott Williams & Wilkins, 2010." } },
+        "it": { "stringUnit": { "state": "translated", "value": "McArdle WD, Katch FI, Katch VL. Fisiologia dell’esercizio: nutrizione, energia e prestazione umana, 7ª ed. Lippincott Williams & Wilkins, 2010." } },
+        "ja": { "stringUnit": { "state": "translated", "value": "McArdle WD, Katch FI, Katch VL.『運動生理学：栄養、エネルギー、ヒューマンパフォーマンス』第7版。Lippincott Williams & Wilkins, 2010." } },
+        "ko": { "stringUnit": { "state": "translated", "value": "McArdle WD, Katch FI, Katch VL. 운동생리학: 영양, 에너지 및 인간 수행력, 제7판. Lippincott Williams & Wilkins, 2010." } },
+        "nl": { "stringUnit": { "state": "translated", "value": "McArdle WD, Katch FI, Katch VL. Inspanningsfysiologie: voeding, energie en menselijk prestatievermogen, 7e druk. Lippincott Williams & Wilkins, 2010." } },
+        "pl": { "stringUnit": { "state": "translated", "value": "McArdle WD, Katch FI, Katch VL. Fizjologia wysiłku: żywienie, energia i sprawność człowieka, wyd. 7. Lippincott Williams & Wilkins, 2010." } },
+        "pt-BR": { "stringUnit": { "state": "translated", "value": "McArdle WD, Katch FI, Katch VL. Fisiologia do exercício: nutrição, energia e desempenho humano, 7ª ed. Lippincott Williams & Wilkins, 2010." } },
+        "ro": { "stringUnit": { "state": "translated", "value": "McArdle WD, Katch FI, Katch VL. Fiziologia exercițiului: nutriție, energie și performanță umană, ed. a 7-a. Lippincott Williams & Wilkins, 2010." } },
+        "ru": { "stringUnit": { "state": "translated", "value": "McArdle WD, Katch FI, Katch VL. Физиология упражнений: питание, энергия и физическая работоспособность человека, 7-е изд. Lippincott Williams & Wilkins, 2010." } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "McArdle WD, Katch FI, Katch VL.《运动生理学：营养、能量与人体表现》，第 7 版。Lippincott Williams & Wilkins, 2010." } }
+      }
+    },
+    "Standard PAL (Physical Activity Level) coefficients from FAO/WHO/UNU joint expert consultation on human energy requirements (2001). Also widely used by ACSM and USDA Dietary Guidelines.": {
+      "localizations": {
+        "ar": { "stringUnit": { "state": "translated", "value": "معاملات PAL (مستوى النشاط البدني) القياسية من المشاورة المشتركة لخبراء FAO/WHO/UNU بشأن احتياجات الإنسان من الطاقة (2001). وتُستخدم أيضًا على نطاق واسع من قِبل ACSM وفي الإرشادات الغذائية لـ USDA." } },
+        "az": { "stringUnit": { "state": "translated", "value": "İnsanların enerji tələbatına dair FAO/WHO/UNU birgə ekspert məsləhətləşməsindən standart PAL (Fiziki Aktivlik Səviyyəsi) əmsalları (2001). ACSM və USDA-nın Qidalanma Təlimatlarında da geniş istifadə olunur." } },
+        "de": { "stringUnit": { "state": "translated", "value": "Standard-PAL-Koeffizienten (Physical Activity Level, körperliches Aktivitätsniveau) aus der gemeinsamen Expertenkonsultation von FAO/WHO/UNU zum menschlichen Energiebedarf (2001). Auch von ACSM und in den USDA-Ernährungsrichtlinien weit verbreitet." } },
+        "es": { "stringUnit": { "state": "translated", "value": "Coeficientes PAL (nivel de actividad física) estándar de la consulta conjunta de expertos de FAO/WHO/UNU sobre las necesidades energéticas humanas (2001). También se usan ampliamente en ACSM y en las Guías Alimentarias de USDA." } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Coefficients PAL (niveau d’activité physique) standard issus de la consultation conjointe d’experts FAO/WHO/UNU sur les besoins énergétiques humains (2001). Également largement utilisés par l’ACSM et dans les recommandations alimentaires de l’USDA." } },
+        "hi": { "stringUnit": { "state": "translated", "value": "मानव ऊर्जा आवश्यकताओं पर FAO/WHO/UNU के संयुक्त विशेषज्ञ परामर्श (2001) के मानक PAL (शारीरिक गतिविधि स्तर) गुणांक। ACSM और USDA आहार दिशानिर्देशों में भी इनका व्यापक उपयोग होता है।" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Coefficienti PAL (livello di attività fisica) standard dalla consultazione congiunta di esperti FAO/WHO/UNU sul fabbisogno energetico umano (2001). Ampiamente usati anche dall’ACSM e nelle Linee guida alimentari dell’USDA." } },
+        "ja": { "stringUnit": { "state": "translated", "value": "人のエネルギー必要量に関するFAO/WHO/UNU合同専門家会議 (2001) の標準PAL（身体活動レベル）係数。ACSMおよびUSDA食事ガイドラインでも広く使用されています。" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "인간의 에너지 요구량에 관한 FAO/WHO/UNU 합동 전문가 협의(2001)의 표준 PAL(신체 활동 수준) 계수입니다. ACSM 및 USDA 식이 지침에서도 널리 사용됩니다." } },
+        "nl": { "stringUnit": { "state": "translated", "value": "Standaard-PAL-coëfficiënten (Physical Activity Level, lichamelijk activiteitsniveau) uit het gezamenlijke deskundigenoverleg van FAO/WHO/UNU over de menselijke energiebehoefte (2001). Ook breed toegepast door ACSM en in de USDA-voedingsrichtlijnen." } },
+        "pl": { "stringUnit": { "state": "translated", "value": "Standardowe współczynniki PAL (poziomu aktywności fizycznej) ze wspólnej konsultacji ekspertów FAO/WHO/UNU dotyczącej zapotrzebowania energetycznego człowieka (2001). Są też powszechnie stosowane przez ACSM i w wytycznych żywieniowych USDA." } },
+        "pt-BR": { "stringUnit": { "state": "translated", "value": "Coeficientes PAL (nível de atividade física) padrão da consulta conjunta de especialistas FAO/WHO/UNU sobre as necessidades energéticas humanas (2001). Também são amplamente usados pelo ACSM e nas Diretrizes Alimentares do USDA." } },
+        "ro": { "stringUnit": { "state": "translated", "value": "Coeficienți PAL (nivel de activitate fizică) standard din consultarea comună a experților FAO/WHO/UNU privind necesarul energetic uman (2001). Sunt folosiți pe scară largă și de ACSM și în Ghidurile alimentare USDA." } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Стандартные коэффициенты PAL (уровня физической активности) из совместной экспертной консультации FAO/WHO/UNU по энергетическим потребностям человека (2001). Они также широко используются ACSM и в рекомендациях USDA по питанию." } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "来自 FAO/WHO/UNU 人体能量需求联合专家咨询 (2001) 的标准 PAL（身体活动水平）系数。ACSM 和 USDA 膳食指南也广泛采用这些系数。" } }
+      }
+    },
+    "Hall KD, et al. (2011). “Quantification of the effect of energy imbalance on bodyweight.” Lancet 378(9793):826–837. The classic 3,500-kcal-per-pound rule originates from Wishnofsky M (1958), Am J Clin Nutr 6:542–546.": {
+      "localizations": {
+        "ar": { "stringUnit": { "state": "translated", "value": "Hall KD, et al. (2011). «التحديد الكمي لتأثير اختلال توازن الطاقة في وزن الجسم». Lancet 378(9793):826–837. تعود قاعدة 3,500 سعرة حرارية لكل رطل الكلاسيكية إلى Wishnofsky M (1958)، Am J Clin Nutr 6:542–546." } },
+        "az": { "stringUnit": { "state": "translated", "value": "Hall KD, et al. (2011). «Enerji balanssızlığının bədən çəkisinə təsirinin kəmiyyətcə qiymətləndirilməsi». Lancet 378(9793):826–837. Hər funt üçün klassik 3 500 kkal qaydası Wishnofsky M (1958), Am J Clin Nutr 6:542–546 məqaləsindən qaynaqlanır." } },
+        "de": { "stringUnit": { "state": "translated", "value": "Hall KD, et al. (2011). „Quantifizierung der Wirkung eines Energieungleichgewichts auf das Körpergewicht.“ Lancet 378(9793):826–837. Die klassische Regel von 3.500 kcal pro Pfund geht auf Wishnofsky M (1958), Am J Clin Nutr 6:542–546, zurück." } },
+        "es": { "stringUnit": { "state": "translated", "value": "Hall KD, et al. (2011). «Cuantificación del efecto del desequilibrio energético sobre el peso corporal». Lancet 378(9793):826–837. La regla clásica de 3500 kcal por libra procede de Wishnofsky M (1958), Am J Clin Nutr 6:542–546." } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Hall KD, et al. (2011). « Quantification de l’effet du déséquilibre énergétique sur le poids corporel. » Lancet 378(9793):826–837. La règle classique des 3 500 kcal par livre provient de Wishnofsky M (1958), Am J Clin Nutr 6:542–546." } },
+        "hi": { "stringUnit": { "state": "translated", "value": "Hall KD, et al. (2011)। “शरीर के वज़न पर ऊर्जा असंतुलन के प्रभाव का मात्रात्मक आकलन।” Lancet 378(9793):826–837। प्रति पाउंड 3,500 kcal का पारंपरिक नियम Wishnofsky M (1958), Am J Clin Nutr 6:542–546 से आया है।" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Hall KD, et al. (2011). «Quantificazione dell’effetto dello squilibrio energetico sul peso corporeo». Lancet 378(9793):826–837. La classica regola delle 3.500 kcal per libbra deriva da Wishnofsky M (1958), Am J Clin Nutr 6:542–546." } },
+        "ja": { "stringUnit": { "state": "translated", "value": "Hall KD, et al. (2011).「エネルギー不均衡が体重に及ぼす影響の定量化。」Lancet 378(9793):826–837. 1ポンド当たり3,500 kcalという古典的な法則は、Wishnofsky M (1958), Am J Clin Nutr 6:542–546に由来します。" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "Hall KD, et al. (2011). “에너지 불균형이 체중에 미치는 영향의 정량화.” Lancet 378(9793):826–837. 파운드당 3,500 kcal이라는 고전적 규칙은 Wishnofsky M (1958), Am J Clin Nutr 6:542–546에서 유래했습니다." } },
+        "nl": { "stringUnit": { "state": "translated", "value": "Hall KD, et al. (2011). ‘Kwantificering van het effect van energieonbalans op het lichaamsgewicht.’ Lancet 378(9793):826–837. De klassieke regel van 3.500 kcal per pond is afkomstig van Wishnofsky M (1958), Am J Clin Nutr 6:542–546." } },
+        "pl": { "stringUnit": { "state": "translated", "value": "Hall KD, et al. (2011). „Ilościowe określenie wpływu nierównowagi energetycznej na masę ciała”. Lancet 378(9793):826–837. Klasyczna reguła 3500 kcal na funt pochodzi od Wishnofsky M (1958), Am J Clin Nutr 6:542–546." } },
+        "pt-BR": { "stringUnit": { "state": "translated", "value": "Hall KD, et al. (2011). “Quantificação do efeito do desequilíbrio energético sobre o peso corporal.” Lancet 378(9793):826–837. A regra clássica de 3.500 kcal por libra tem origem em Wishnofsky M (1958), Am J Clin Nutr 6:542–546." } },
+        "ro": { "stringUnit": { "state": "translated", "value": "Hall KD, et al. (2011). „Cuantificarea efectului dezechilibrului energetic asupra greutății corporale.” Lancet 378(9793):826–837. Regula clasică de 3.500 kcal per livră provine de la Wishnofsky M (1958), Am J Clin Nutr 6:542–546." } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Hall KD, et al. (2011). «Количественная оценка влияния энергетического дисбаланса на массу тела». Lancet 378(9793):826–837. Классическое правило 3500 ккал на фунт восходит к Wishnofsky M (1958), Am J Clin Nutr 6:542–546." } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "Hall KD, et al. (2011). “能量失衡对体重影响的量化。” Lancet 378(9793):826–837. 经典的每磅 3,500 kcal 规则源自 Wishnofsky M (1958), Am J Clin Nutr 6:542–546." } }
+      }
+    },
+    "Morton RW, et al. (2018). “A systematic review, meta-analysis and meta-regression of the effect of protein supplementation on resistance training-induced gains in muscle mass and strength.” Br J Sports Med 52(6):376–384.": {
+      "localizations": {
+        "ar": { "stringUnit": { "state": "translated", "value": "Morton RW, et al. (2018). «مراجعة منهجية وتحليل تلوي وانحدار تلوي لتأثير مكملات البروتين في الزيادات الناتجة عن تمارين المقاومة في كتلة العضلات وقوتها». Br J Sports Med 52(6):376–384." } },
+        "az": { "stringUnit": { "state": "translated", "value": "Morton RW, et al. (2018). «Müqavimət məşqlərinin yaratdığı əzələ kütləsi və güc artımına zülal əlavələrinin təsirinin sistematik icmalı, meta-analizi və meta-reqressiyası». Br J Sports Med 52(6):376–384." } },
+        "de": { "stringUnit": { "state": "translated", "value": "Morton RW, et al. (2018). „Systematische Übersichtsarbeit, Metaanalyse und Metaregression zur Wirkung einer Proteinsupplementierung auf durch Krafttraining erzielte Zuwächse an Muskelmasse und Kraft.“ Br J Sports Med 52(6):376–384." } },
+        "es": { "stringUnit": { "state": "translated", "value": "Morton RW, et al. (2018). «Revisión sistemática, metaanálisis y metarregresión del efecto de la suplementación con proteínas sobre el aumento de masa muscular y fuerza inducido por el entrenamiento de resistencia». Br J Sports Med 52(6):376–384." } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Morton RW, et al. (2018). « Revue systématique, méta-analyse et méta-régression de l’effet de la supplémentation en protéines sur les gains de masse musculaire et de force induits par l’entraînement en résistance. » Br J Sports Med 52(6):376–384." } },
+        "hi": { "stringUnit": { "state": "translated", "value": "Morton RW, et al. (2018)। “प्रतिरोध प्रशिक्षण से मांसपेशियों के द्रव्यमान और ताकत में होने वाली वृद्धि पर प्रोटीन सप्लीमेंट के प्रभाव की व्यवस्थित समीक्षा, मेटा-विश्लेषण और मेटा-रिग्रेशन।” Br J Sports Med 52(6):376–384." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Morton RW, et al. (2018). «Revisione sistematica, meta-analisi e meta-regressione dell’effetto dell’integrazione proteica sugli aumenti di massa muscolare e forza indotti dall’allenamento di resistenza». Br J Sports Med 52(6):376–384." } },
+        "ja": { "stringUnit": { "state": "translated", "value": "Morton RW, et al. (2018).「レジスタンストレーニングによる筋量と筋力の増加に対するたんぱく質補給の効果についての系統的レビュー、メタ解析、メタ回帰。」Br J Sports Med 52(6):376–384." } },
+        "ko": { "stringUnit": { "state": "translated", "value": "Morton RW, et al. (2018). “저항 운동으로 인한 근육량 및 근력 증가에 단백질 보충이 미치는 영향에 대한 체계적 문헌고찰, 메타분석 및 메타회귀.” Br J Sports Med 52(6):376–384." } },
+        "nl": { "stringUnit": { "state": "translated", "value": "Morton RW, et al. (2018). ‘Een systematische review, meta-analyse en meta-regressie van het effect van eiwitsuppletie op door krachttraining veroorzaakte toename in spiermassa en kracht.’ Br J Sports Med 52(6):376–384." } },
+        "pl": { "stringUnit": { "state": "translated", "value": "Morton RW, et al. (2018). „Przegląd systematyczny, metaanaliza i metaregresja wpływu suplementacji białkiem na przyrost masy mięśniowej i siły wywołany treningiem oporowym”. Br J Sports Med 52(6):376–384." } },
+        "pt-BR": { "stringUnit": { "state": "translated", "value": "Morton RW, et al. (2018). “Revisão sistemática, meta-análise e meta-regressão do efeito da suplementação proteica sobre os ganhos de massa muscular e força induzidos pelo treinamento resistido.” Br J Sports Med 52(6):376–384." } },
+        "ro": { "stringUnit": { "state": "translated", "value": "Morton RW, et al. (2018). „O analiză sistematică, meta-analiză și meta-regresie a efectului suplimentării cu proteine asupra creșterii masei musculare și forței induse de antrenamentul de rezistență.” Br J Sports Med 52(6):376–384." } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Morton RW, et al. (2018). «Систематический обзор, метаанализ и метарегрессия влияния белковых добавок на прирост мышечной массы и силы, вызванный тренировками с отягощениями». Br J Sports Med 52(6):376–384." } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "Morton RW, et al. (2018). “蛋白质补充对抗阻训练引起的肌肉量和力量增长之影响的系统综述、荟萃分析和荟萃回归。” Br J Sports Med 52(6):376–384." } }
+      }
+    },
+    "Estimates rely on the underlying AI model's training data (USDA FoodData Central, manufacturer panels, scientific literature). Accuracy varies by food, portion-size visibility, and provider model. Always cross-check labels for foods you log frequently.": {
+      "localizations": {
+        "ar": { "stringUnit": { "state": "translated", "value": "تعتمد التقديرات على بيانات تدريب نموذج الذكاء الاصطناعي الأساسي (USDA FoodData Central وملصقات القيم الغذائية من الشركات المصنّعة والمراجع العلمية). تختلف الدقة حسب الطعام ومدى وضوح حجم الحصة ونموذج المزوّد. تحقّق دائمًا من الملصقات للأطعمة التي تسجّلها كثيرًا." } },
+        "az": { "stringUnit": { "state": "translated", "value": "Təxminlər əsas AI modelinin təlim məlumatlarına (USDA FoodData Central, istehsalçıların qida etiketləri və elmi ədəbiyyat) əsaslanır. Dəqiqlik qidaya, porsiya ölçüsünün görünməsinə və provayder modelinə görə dəyişir. Tez-tez qeyd etdiyiniz qidaların etiketlərini həmişə yoxlayın." } },
+        "de": { "stringUnit": { "state": "translated", "value": "Die Schätzungen beruhen auf den Trainingsdaten des zugrunde liegenden KI-Modells (USDA FoodData Central, Herstellerangaben, wissenschaftliche Literatur). Die Genauigkeit hängt vom Lebensmittel, der Erkennbarkeit der Portionsgröße und dem Anbietermodell ab. Prüfe bei Lebensmitteln, die du häufig protokollierst, immer die Etikettangaben." } },
+        "es": { "stringUnit": { "state": "translated", "value": "Las estimaciones se basan en los datos de entrenamiento del modelo de IA subyacente (USDA FoodData Central, etiquetas de fabricantes y literatura científica). La precisión varía según el alimento, la visibilidad del tamaño de la porción y el modelo del proveedor. Contrasta siempre las etiquetas de los alimentos que registras con frecuencia." } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Les estimations reposent sur les données d’entraînement du modèle d’IA sous-jacent (USDA FoodData Central, étiquettes des fabricants, littérature scientifique). Leur précision varie selon l’aliment, la visibilité de la taille de la portion et le modèle du fournisseur. Vérifiez toujours les étiquettes des aliments que vous enregistrez souvent." } },
+        "hi": { "stringUnit": { "state": "translated", "value": "अनुमान अंतर्निहित AI मॉडल के प्रशिक्षण डेटा (USDA FoodData Central, निर्माताओं के पोषण लेबल और वैज्ञानिक साहित्य) पर आधारित हैं। सटीकता भोजन, परोसने की मात्रा की स्पष्टता और प्रोवाइडर मॉडल के अनुसार बदलती है। जिन खाद्य पदार्थों को आप अक्सर दर्ज करते हैं, उनके लेबल से हमेशा मिलान करें।" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Le stime si basano sui dati di addestramento del modello IA sottostante (USDA FoodData Central, etichette dei produttori e letteratura scientifica). La precisione varia in base all’alimento, alla visibilità delle dimensioni della porzione e al modello del provider. Verifica sempre le etichette degli alimenti che registri spesso." } },
+        "ja": { "stringUnit": { "state": "translated", "value": "推定値は、基盤となるAIモデルの学習データ（USDA FoodData Central、メーカーの栄養表示、科学文献）に基づきます。精度は食品、分量の見えやすさ、プロバイダーのモデルによって異なります。頻繁に記録する食品は必ずラベルと照合してください。" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "추정치는 기반 AI 모델의 학습 데이터(USDA FoodData Central, 제조업체 영양 표시, 과학 문헌)를 바탕으로 합니다. 정확도는 음식, 1회 제공량의 가시성, 제공자 모델에 따라 달라집니다. 자주 기록하는 음식은 항상 라벨과 대조하세요." } },
+        "nl": { "stringUnit": { "state": "translated", "value": "De schattingen zijn gebaseerd op de trainingsgegevens van het onderliggende AI-model (USDA FoodData Central, voedingsetiketten van fabrikanten en wetenschappelijke literatuur). De nauwkeurigheid varieert per voedingsmiddel, de zichtbaarheid van de portiegrootte en het providermodel. Controleer bij voedingsmiddelen die je vaak logt altijd het etiket." } },
+        "pl": { "stringUnit": { "state": "translated", "value": "Szacunki opierają się na danych treningowych bazowego modelu AI (USDA FoodData Central, etykietach producentów i literaturze naukowej). Dokładność zależy od produktu, widoczności wielkości porcji i modelu dostawcy. W przypadku często rejestrowanych produktów zawsze porównuj wynik z etykietą." } },
+        "pt-BR": { "stringUnit": { "state": "translated", "value": "As estimativas se baseiam nos dados de treinamento do modelo de IA subjacente (USDA FoodData Central, rótulos de fabricantes e literatura científica). A precisão varia conforme o alimento, a visibilidade do tamanho da porção e o modelo do provedor. Sempre confira os rótulos dos alimentos que você registra com frequência." } },
+        "ro": { "stringUnit": { "state": "translated", "value": "Estimările se bazează pe datele de antrenare ale modelului AI subiacent (USDA FoodData Central, etichetele producătorilor și literatura științifică). Precizia variază în funcție de aliment, vizibilitatea dimensiunii porției și modelul furnizorului. Verifică întotdeauna etichetele alimentelor pe care le înregistrezi frecvent." } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Оценки основаны на обучающих данных базовой модели ИИ (USDA FoodData Central, этикетки производителей, научная литература). Точность зависит от продукта, видимости размера порции и модели провайдера. Всегда сверяйтесь с этикетками продуктов, которые часто записываете." } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "估算值依赖底层 AI 模型的训练数据（USDA FoodData Central、制造商营养标签和科学文献）。准确度会因食物、份量是否清晰可见以及服务商模型而异。对于经常记录的食物，请务必与标签核对。" } }
       }
     }
   },
