@@ -427,16 +427,6 @@ private struct AboutSettingsSections: View {
                 }
                 .tint(.primary)
 
-                Link(destination: URL(string: "https://www.instagram.com/fudai.app/")!) {
-                    Label {
-                        Text("Follow on Instagram")
-                    } icon: {
-                        Image(systemName: "camera.fill")
-                            .foregroundStyle(AppColors.calorie)
-                    }
-                }
-                .tint(.primary)
-
                 Link(destination: URL(string: "https://www.linkedin.com/company/fud-ai-app")!) {
                     Label {
                         Text("Follow on LinkedIn")

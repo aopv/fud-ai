@@ -15671,22 +15671,6 @@
         }
       }
     },
-    "Follow on Instagram" : {
-      "localizations" : {
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Obserwuj na Instagramie"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Подписаться в Instagram"
-          }
-        }
-      }
-    },
     "Follow on LinkedIn" : {
       "localizations" : {
         "ar" : {

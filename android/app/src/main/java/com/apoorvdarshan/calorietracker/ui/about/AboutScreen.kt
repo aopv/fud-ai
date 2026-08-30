@@ -29,7 +29,6 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Lightbulb
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarRate
@@ -195,10 +194,6 @@ fun AboutSettingsRows(category: AboutSettingsCategory) {
             AboutSettingsCategory.COMMUNITY -> {
                 AboutRow(Icons.Filled.AlternateEmail, stringResource(R.string.about_follow_x)) {
                     open("https://x.com/apoorvdarshan")
-                }
-                Hairline()
-                AboutRow(Icons.Filled.PhotoCamera, stringResource(R.string.about_follow_instagram)) {
-                    open("https://www.instagram.com/fudai.app/")
                 }
                 Hairline()
                 AboutRow(Icons.Filled.Work, stringResource(R.string.about_follow_linkedin)) {
