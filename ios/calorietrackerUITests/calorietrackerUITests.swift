@@ -71,12 +71,10 @@ final class calorietrackerUITests: XCTestCase {
     }
 
     @MainActor
-    func testAboutHubShowsFiveFocusedCategories() throws {
+    func testSettingsHubShowsFiveFocusedAppInfoCategories() throws {
         let app = XCUIApplication()
         app.launchArguments += ["-AppleLanguages", "(en)"]
         app.launch()
-
-        openSettingsCategory("about", in: app)
 
         let categories = [
             ("appUpdates", "App & Updates", "Open Source (MIT)"),
@@ -86,17 +84,17 @@ final class calorietrackerUITests: XCTestCase {
             ("legal", "Legal", "Privacy Policy"),
         ]
 
-        for (identifier, _, _) in categories {
-            let category = app.buttons["settings.about.\(identifier)"]
-            for _ in 0..<4 where !category.isHittable {
-                app.swipeUp()
-            }
-            XCTAssertTrue(category.waitForExistence(timeout: 3), "Missing About category \(identifier)")
-        }
+        let settings = app.tabBars.buttons["Settings"]
+        XCTAssertTrue(settings.waitForExistence(timeout: 8))
+        settings.tap()
 
         for (identifier, title, expectedAction) in categories {
-            let category = app.buttons["settings.about.\(identifier)"]
-            XCTAssertTrue(category.isHittable, "About category \(identifier) is not tappable")
+            let category = app.buttons["settings.category.\(identifier)"]
+            for _ in 0..<12 where !category.isHittable {
+                app.swipeUp()
+            }
+            XCTAssertTrue(category.waitForExistence(timeout: 3), "Missing Settings category \(identifier)")
+            XCTAssertTrue(category.isHittable, "Settings category \(identifier) is not tappable")
             category.tap()
 
             let navigationBar = app.navigationBars[title]
@@ -111,7 +109,7 @@ final class calorietrackerUITests: XCTestCase {
             let backButton = navigationBar.buttons.firstMatch
             XCTAssertTrue(backButton.exists)
             backButton.tap()
-            XCTAssertTrue(app.navigationBars["About"].waitForExistence(timeout: 3))
+            XCTAssertTrue(app.buttons["settings.category.\(identifier)"].waitForExistence(timeout: 3))
         }
     }
 

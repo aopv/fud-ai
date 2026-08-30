@@ -23,7 +23,6 @@ import androidx.compose.material.icons.filled.AlternateEmail
 import androidx.compose.material.icons.filled.Work
 import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Email
@@ -100,28 +99,6 @@ fun AboutAppHeader() {
             fontSize = 13.sp,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
         )
-    }
-}
-
-@Composable
-fun AboutCategoryHub(onSelect: (AboutSettingsCategory) -> Unit) {
-    Column(Modifier.fillMaxWidth()) {
-        AboutSettingsCategory.entries.forEachIndexed { index, category ->
-            AboutRow(
-                icon = category.icon,
-                label = stringResource(category.titleRes),
-                trailing = {
-                    Icon(
-                        Icons.Filled.ChevronRight,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.42f),
-                        modifier = Modifier.size(20.dp)
-                    )
-                },
-                onClick = { onSelect(category) }
-            )
-            if (index != AboutSettingsCategory.entries.lastIndex) Hairline()
-        }
     }
 }
 

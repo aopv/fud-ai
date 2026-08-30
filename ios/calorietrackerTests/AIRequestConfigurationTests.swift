@@ -5,11 +5,14 @@ import UIKit
 @Suite(.serialized)
 struct AIRequestConfigurationTests {
     @Test func settingsHubKeepsEveryFocusedCategory() {
-        #expect(ProfileSettingsCategory.allCases.count == 11)
-        #expect(Set(ProfileSettingsCategory.allCases.map(\.title)).count == 11)
+        #expect(ProfileSettingsCategory.allCases.count == 15)
+        #expect(Set(ProfileSettingsCategory.allCases.map(\.rawValue)).count == 15)
+        #expect(ProfileSettingsCategory.preferenceCases.count == 10)
+        #expect(ProfileSettingsCategory.appInfoCases.count == 5)
+        #expect(ProfileSettingsCategory.allCases.compactMap(\.aboutCategory).count == 5)
     }
 
-    @Test func aboutHubKeepsEveryFocusedCategory() {
+    @Test func appInfoKeepsEveryFocusedCategory() {
         #expect(AboutSettingsCategory.allCases.count == 5)
         #expect(Set(AboutSettingsCategory.allCases.map(\.rawValue)).count == 5)
     }

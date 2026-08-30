@@ -251,7 +251,7 @@ enum AboutSettingsCategory: String, CaseIterable, Identifiable, Hashable {
     }
 }
 
-private struct AboutSettingsHub: View {
+private struct AboutAppHeaderSection: View {
     var body: some View {
         Section {
             VStack(spacing: 8) {
@@ -272,24 +272,11 @@ private struct AboutSettingsHub: View {
             .padding(.vertical, 8)
         }
         .listRowBackground(AppColors.appCard)
+    }
+}
 
-        Section {
-            ForEach(AboutSettingsCategory.allCases) { category in
-                NavigationLink(value: category) {
-                    Label {
-                        Text(category.title)
-                            .font(.system(.body, design: .rounded, weight: .medium))
-                    } icon: {
-                        Image(systemName: category.systemImage)
-                            .foregroundStyle(AppColors.calorie)
-                            .frame(width: 24)
-                    }
-                }
-                .accessibilityIdentifier("settings.about.\(category.rawValue)")
-            }
-        }
-        .listRowBackground(AppColors.appCard)
-
+private struct AboutFooterSection: View {
+    var body: some View {
         Section {
             VStack(spacing: 4) {
                 Text("Made by Apoorv Darshan")
@@ -303,36 +290,6 @@ private struct AboutSettingsHub: View {
             .listRowBackground(Color.clear)
             .listRowSeparator(.hidden)
         }
-    }
-}
-
-private struct AboutSettingsCategoryView: View {
-    let category: AboutSettingsCategory
-    @Binding var updateState: AppUpdateState
-    let refreshUpdateState: () async -> Void
-
-    var body: some View {
-        List {
-            if category == .support {
-                TipJarSettingsSection()
-            }
-
-            AboutSettingsSections(
-                category: category,
-                updateState: $updateState,
-                refreshUpdateState: refreshUpdateState
-            )
-
-            Color.clear
-                .frame(height: 72)
-                .listRowBackground(Color.clear)
-                .listRowSeparator(.hidden)
-        }
-        .scrollContentBackground(.hidden)
-        .background(AppColors.appBackground)
-        .navigationTitle(Text(category.title))
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar(.visible, for: .navigationBar)
     }
 }
 
@@ -3619,11 +3576,36 @@ enum ProfileSettingsCategory: String, CaseIterable, Identifiable, Hashable {
     case workout
     case healthData
     case dataManagement
-    case about
+    case appUpdates
+    case support
+    case helpFeedback
+    case community
+    case legal
+
+    static let preferenceCases: [Self] = [
+        .personalInfo,
+        .goalsNutrition,
+        .trackingReminders,
+        .notifications,
+        .aiProviders,
+        .speechToText,
+        .appPreferences,
+        .workout,
+        .healthData,
+        .dataManagement
+    ]
+
+    static let appInfoCases: [Self] = [
+        .appUpdates,
+        .support,
+        .helpFeedback,
+        .community,
+        .legal
+    ]
 
     var id: Self { self }
 
-    var title: String {
+    var title: LocalizedStringResource {
         switch self {
         case .personalInfo: "Personal Info"
         case .goalsNutrition: "Goals & Nutrition"
@@ -3635,7 +3617,11 @@ enum ProfileSettingsCategory: String, CaseIterable, Identifiable, Hashable {
         case .workout: "Workout"
         case .healthData: "Health & Data"
         case .dataManagement: "Data Management"
-        case .about: "About"
+        case .appUpdates: "App & Updates"
+        case .support: "Support Fud AI"
+        case .helpFeedback: "Help & Feedback"
+        case .community: "Community"
+        case .legal: "Legal"
         }
     }
 
@@ -3651,8 +3637,41 @@ enum ProfileSettingsCategory: String, CaseIterable, Identifiable, Hashable {
         case .workout: "dumbbell"
         case .healthData: "heart"
         case .dataManagement: "externaldrive"
-        case .about: "info.circle"
+        case .appUpdates: "arrow.triangle.2.circlepath.circle.fill"
+        case .support: "heart.fill"
+        case .helpFeedback: "exclamationmark.bubble.fill"
+        case .community: "person.3.fill"
+        case .legal: "lock.shield.fill"
         }
+    }
+
+    var aboutCategory: AboutSettingsCategory? {
+        switch self {
+        case .appUpdates: .appUpdates
+        case .support: .support
+        case .helpFeedback: .helpFeedback
+        case .community: .community
+        case .legal: .legal
+        default: nil
+        }
+    }
+}
+
+private struct ProfileSettingsCategoryRow: View {
+    let category: ProfileSettingsCategory
+
+    var body: some View {
+        NavigationLink(value: category) {
+            Label {
+                Text(category.title)
+                    .font(.system(.body, design: .rounded, weight: .medium))
+            } icon: {
+                Image(systemName: category.systemImage)
+                    .foregroundStyle(AppColors.calorie)
+                    .frame(width: 24)
+            }
+        }
+        .accessibilityIdentifier("settings.category.\(category.rawValue)")
     }
 }
 
@@ -3830,7 +3849,7 @@ struct ProfileView: View {
         Group {
             if let settingsCategory {
                 settingsList
-                    .navigationTitle(Text(LocalizedStringKey(settingsCategory.title)))
+                    .navigationTitle(Text(settingsCategory.title))
                     .navigationBarTitleDisplayMode(.inline)
                     .toolbar(.visible, for: .navigationBar)
             } else {
@@ -3855,18 +3874,15 @@ struct ProfileView: View {
     private var settingsHub: some View {
         List {
             Section {
-                ForEach(ProfileSettingsCategory.allCases) { category in
-                    NavigationLink(value: category) {
-                        Label {
-                            Text(LocalizedStringKey(category.title))
-                                .font(.system(.body, design: .rounded, weight: .medium))
-                        } icon: {
-                            Image(systemName: category.systemImage)
-                                .foregroundStyle(AppColors.calorie)
-                                .frame(width: 24)
-                        }
-                    }
-                    .accessibilityIdentifier("settings.category.\(category.rawValue)")
+                ForEach(ProfileSettingsCategory.preferenceCases) { category in
+                    ProfileSettingsCategoryRow(category: category)
+                }
+            }
+            .listRowBackground(AppColors.appCard)
+
+            Section {
+                ForEach(ProfileSettingsCategory.appInfoCases) { category in
+                    ProfileSettingsCategoryRow(category: category)
                 }
             }
             .listRowBackground(AppColors.appCard)
@@ -3878,7 +3894,7 @@ struct ProfileView: View {
         }
         .scrollContentBackground(.hidden)
         .background(AppColors.appBackground)
-        .navigationBarHidden(true)
+        .toolbar(.hidden, for: .navigationBar)
     }
 
     private var settingsList: some View {
@@ -5177,20 +5193,29 @@ struct ProfileView: View {
                 .listRowBackground(AppColors.appCard)
                 }
 
-                if settingsCategory == .about {
-                AboutSettingsHub()
+                if let aboutCategory = settingsCategory?.aboutCategory {
+                    if aboutCategory == .appUpdates {
+                        AboutAppHeaderSection()
+                    }
+
+                    if aboutCategory == .support {
+                        TipJarSettingsSection()
+                    }
+
+                    AboutSettingsSections(
+                        category: aboutCategory,
+                        updateState: $updateState,
+                        refreshUpdateState: refreshUpdateState
+                    )
+
+                    if aboutCategory == .legal {
+                        AboutFooterSection()
+                    }
                 }
             }
             .scrollContentBackground(.hidden)
             .modifier(SettingsKeyboardDismissalModifier())
             .background(AppColors.appBackground)
-            .navigationDestination(for: AboutSettingsCategory.self) { category in
-                AboutSettingsCategoryView(
-                    category: category,
-                    updateState: $updateState,
-                    refreshUpdateState: refreshUpdateState
-                )
-            }
             .sheet(isPresented: $showExportDiary) {
                 ExportDiaryView()
             }

@@ -184,7 +184,6 @@ import com.apoorvdarshan.calorietracker.ui.components.FeetInchesWheelPicker
 import com.apoorvdarshan.calorietracker.ui.components.NumericWheelPicker
 import com.apoorvdarshan.calorietracker.ui.components.WheelPicker
 import com.apoorvdarshan.calorietracker.ui.about.AboutAppHeader
-import com.apoorvdarshan.calorietracker.ui.about.AboutCategoryHub
 import com.apoorvdarshan.calorietracker.ui.about.AboutFooter
 import com.apoorvdarshan.calorietracker.ui.about.AboutSettingsCategory
 import com.apoorvdarshan.calorietracker.ui.about.AboutSettingsRows
@@ -219,7 +218,11 @@ private enum class HealthConnectPermissionAction {
     SYNC, ENERGY_GOALS, DAILY_SUMMARY
 }
 
-internal enum class SettingsCategory(val titleRes: Int, val icon: ImageVector) {
+internal enum class SettingsCategory(
+    val titleRes: Int,
+    val icon: ImageVector,
+    val aboutCategory: AboutSettingsCategory? = null
+) {
     PERSONAL_INFO(R.string.settings_section_personal, Icons.Outlined.Person),
     GOALS_NUTRITION(R.string.settings_section_goals, Icons.Outlined.TrackChanges),
     TRACKING_REMINDERS(R.string.settings_section_tracking_reminders, Icons.Outlined.Timer),
@@ -230,7 +233,36 @@ internal enum class SettingsCategory(val titleRes: Int, val icon: ImageVector) {
     WORKOUT(R.string.settings_section_workout, Icons.Outlined.FitnessCenter),
     HEALTH_DATA(R.string.settings_section_health, Icons.Outlined.Favorite),
     DATA_MANAGEMENT(R.string.settings_section_data_management, Icons.Outlined.Download),
-    ABOUT(R.string.nav_about, Icons.Outlined.Info)
+    APP_UPDATES(
+        R.string.about_category_app_updates,
+        AboutSettingsCategory.APP_UPDATES.icon,
+        AboutSettingsCategory.APP_UPDATES
+    ),
+    SUPPORT(
+        R.string.about_category_support,
+        AboutSettingsCategory.SUPPORT.icon,
+        AboutSettingsCategory.SUPPORT
+    ),
+    HELP_FEEDBACK(
+        R.string.about_category_help_feedback,
+        AboutSettingsCategory.HELP_FEEDBACK.icon,
+        AboutSettingsCategory.HELP_FEEDBACK
+    ),
+    COMMUNITY(
+        R.string.about_category_community,
+        AboutSettingsCategory.COMMUNITY.icon,
+        AboutSettingsCategory.COMMUNITY
+    ),
+    LEGAL(
+        R.string.about_category_legal,
+        AboutSettingsCategory.LEGAL.icon,
+        AboutSettingsCategory.LEGAL
+    );
+
+    companion object {
+        val preferenceEntries = entries.filter { it.aboutCategory == null }
+        val appInfoEntries = entries.filter { it.aboutCategory != null }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -258,7 +290,6 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
     var showHealthEnergyGoalsInfo by remember { mutableStateOf(false) }
     var showAdaptiveGoalsInfo by remember { mutableStateOf(false) }
     var selectedCategory by rememberSaveable { mutableStateOf<SettingsCategory?>(null) }
-    var selectedAboutCategory by rememberSaveable { mutableStateOf<AboutSettingsCategory?>(null) }
     var pendingHealthPermissionAction by remember { mutableStateOf<HealthConnectPermissionAction?>(null) }
     val activityContext = LocalContext.current
     val resources = LocalResources.current
@@ -410,11 +441,7 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
     }
 
     BackHandler(enabled = selectedCategory != null) {
-        if (selectedAboutCategory != null) {
-            selectedAboutCategory = null
-        } else {
-            selectedCategory = null
-        }
+        selectedCategory = null
     }
 
     // iOS Settings: bare List, no NavigationBar visible. Match that — no TopAppBar.
@@ -428,26 +455,15 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
             verticalArrangement = Arrangement.spacedBy(18.dp)
         ) {
             if (selectedCategory == null) {
-                SettingsCategoryHub(onSelect = {
-                    selectedAboutCategory = null
-                    selectedCategory = it
-                })
+                SettingsCategoryHub(onSelect = { selectedCategory = it })
                 Spacer(Modifier.height(BottomNavScrollPadding))
                 return@Column
             }
 
-            val activeAboutCategory = selectedAboutCategory
-            if (selectedCategory == SettingsCategory.ABOUT && activeAboutCategory != null) {
-                SettingsAboutCategoryHeader(
-                    category = activeAboutCategory,
-                    onBack = { selectedAboutCategory = null }
-                )
-            } else {
-                SettingsCategoryHeader(
-                    category = selectedCategory!!,
-                    onBack = { selectedCategory = null }
-                )
-            }
+            SettingsCategoryHeader(
+                category = selectedCategory!!,
+                onBack = { selectedCategory = null }
+            )
 
             // Section 1 — Personal Info (matches iOS Section "Personal Info")
             if (selectedCategory == SettingsCategory.PERSONAL_INFO) {
@@ -1180,19 +1196,18 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
             }
             }
 
-            // Section 7 — About (folded in from the former About tab so it's the
-            // last section of Settings; tabs are now Home / Progress / Coach / Settings).
-            if (selectedCategory == SettingsCategory.ABOUT) {
-                if (activeAboutCategory == null) {
+            // App information and support actions are first-class Settings destinations.
+            selectedCategory?.aboutCategory?.let { aboutCategory ->
+                if (aboutCategory == AboutSettingsCategory.APP_UPDATES) {
                     SectionCard { AboutAppHeader() }
-                    SectionCard {
-                        AboutCategoryHub(onSelect = { selectedAboutCategory = it })
-                    }
+                }
+
+                SectionCard {
+                    AboutSettingsRows(aboutCategory)
+                }
+
+                if (aboutCategory == AboutSettingsCategory.LEGAL) {
                     AboutFooter()
-                } else {
-                    SectionCard {
-                        AboutSettingsRows(activeAboutCategory)
-                    }
                 }
             }
 
@@ -1454,37 +1469,50 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
 
 @Composable
 private fun SettingsCategoryHub(onSelect: (SettingsCategory) -> Unit) {
-    SectionCard {
-        SettingsCategory.entries.forEachIndexed { index, category ->
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { onSelect(category) }
-                    .padding(horizontal = 16.dp, vertical = 14.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                FudIconBubble(
-                    icon = category.icon,
-                    size = 28.dp,
-                    iconSize = 17.dp,
-                    tint = AppColors.Calorie
-                )
-                Spacer(Modifier.width(14.dp))
-                Text(
-                    text = stringResource(category.titleRes),
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Medium,
-                    modifier = Modifier.weight(1f)
-                )
-                Icon(
-                    Icons.Filled.ChevronRight,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.42f),
-                    modifier = Modifier.size(20.dp)
-                )
-            }
-            if (index != SettingsCategory.entries.lastIndex) HorizontalDivider()
+    Column(verticalArrangement = Arrangement.spacedBy(18.dp)) {
+        SectionCard {
+            SettingsCategoryRows(SettingsCategory.preferenceEntries, onSelect)
         }
+        SectionCard {
+            SettingsCategoryRows(SettingsCategory.appInfoEntries, onSelect)
+        }
+    }
+}
+
+@Composable
+private fun SettingsCategoryRows(
+    categories: List<SettingsCategory>,
+    onSelect: (SettingsCategory) -> Unit
+) {
+    categories.forEachIndexed { index, category ->
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onSelect(category) }
+                .padding(horizontal = 16.dp, vertical = 14.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            FudIconBubble(
+                icon = category.icon,
+                size = 28.dp,
+                iconSize = 17.dp,
+                tint = AppColors.Calorie
+            )
+            Spacer(Modifier.width(14.dp))
+            Text(
+                text = stringResource(category.titleRes),
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier.weight(1f)
+            )
+            Icon(
+                Icons.Filled.ChevronRight,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.42f),
+                modifier = Modifier.size(20.dp)
+            )
+        }
+        if (index != categories.lastIndex) HorizontalDivider()
     }
 }
 
@@ -1492,15 +1520,6 @@ private fun SettingsCategoryHub(onSelect: (SettingsCategory) -> Unit) {
 private fun SettingsCategoryHeader(category: SettingsCategory, onBack: () -> Unit) {
     SettingsDetailHeader(
         backLabel = stringResource(R.string.nav_settings),
-        title = stringResource(category.titleRes),
-        onBack = onBack
-    )
-}
-
-@Composable
-private fun SettingsAboutCategoryHeader(category: AboutSettingsCategory, onBack: () -> Unit) {
-    SettingsDetailHeader(
-        backLabel = stringResource(R.string.nav_about),
         title = stringResource(category.titleRes),
         onBack = onBack
     )
