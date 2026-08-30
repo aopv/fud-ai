@@ -99,4 +99,27 @@ struct FastingStoreTests {
         #expect(foodStore.addEntry(entry))
         #expect(foodStore.entries.map(\.id) == [entry.id])
     }
+
+    @Test func disablingTrackingPreservesWaterAndCompletesActiveFast() throws {
+        let suite = "FastingStoreTests.\(UUID().uuidString)"
+        let defaults = try #require(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let waterStore = WaterStore(defaults: defaults)
+        let fastingStore = FastingStore(defaults: defaults)
+        let start = Date(timeIntervalSince1970: 1_800_000_000)
+        let disabledAt = start.addingTimeInterval(8 * 3600)
+
+        let water = try #require(waterStore.add(milliliters: 500, on: start))
+        let fast = try #require(fastingStore.start(goalMinutes: 16 * 60, at: start))
+        defaults.set(false, forKey: WaterSettings.enabledKey)
+        defaults.set(false, forKey: FastingSettings.enabledKey)
+        let completed = try #require(fastingStore.endActive(at: disabledAt))
+
+        let restoredWater = WaterStore(defaults: defaults)
+        let restoredFasting = FastingStore(defaults: defaults)
+        #expect(restoredWater.entries.map(\.id) == [water.id])
+        #expect(restoredFasting.sessions.map(\.id) == [fast.id])
+        #expect(restoredFasting.activeSession == nil)
+        #expect(completed.endedAt == disabledAt)
+    }
 }

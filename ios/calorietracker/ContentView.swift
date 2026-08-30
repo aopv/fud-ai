@@ -852,12 +852,14 @@ struct HomeView: View {
 
                 // Unified diary: water and fasting are grouped by their log/end time,
                 // but stay excluded from food calories, macros, sharing and favorites.
-                let diaryFasts = fastingTrackingEnabled
-                    ? fastingStore.completed(on: selectedDate) + (isToday ? [fastingStore.activeSession].compactMap { $0 } : [])
-                    : []
+                // Tracking preferences control new-entry UI, not persisted history.
+                // Keep previously logged water and fasting sessions visible after
+                // either tracker is disabled so the diary never appears to lose data.
+                let diaryFasts = fastingStore.completed(on: selectedDate)
+                    + (isToday ? [fastingStore.activeSession].compactMap { $0 } : [])
                 let mealGroups = homeDiaryMealGroups(
                     foodEntries: foodStore.entries(for: selectedDate),
-                    waterEntries: waterTrackingEnabled ? waterStore.entries(on: selectedDate) : [],
+                    waterEntries: waterStore.entries(on: selectedDate),
                     fastingSessions: diaryFasts,
                     order: foodLogSortOrder
                 )
@@ -4157,7 +4159,10 @@ struct ProfileView: View {
                             .tint(AppColors.calorie)
                             .onChange(of: fastingTrackingEnabled) { _, isEnabled in
                                 if !isEnabled {
-                                    fastingStore.cancelActive()
+                                    // Disabling tracking must never discard an in-progress
+                                    // session. Complete it now so it remains in history and
+                                    // no longer blocks food logging while tracking is off.
+                                    _ = fastingStore.endActive()
                                     notificationManager.cancelFastingGoal()
                                 }
                             }

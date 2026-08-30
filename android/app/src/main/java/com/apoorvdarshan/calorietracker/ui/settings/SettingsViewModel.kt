@@ -793,7 +793,9 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
             if (v) {
                 container.notifications.ensureFastingChannel()
             } else {
-                container.fastingRepository.cancelActive()
+                // End rather than cancel so disabling the feature never deletes
+                // an in-progress fast. The completed session remains in history.
+                container.fastingRepository.endActive()
                 container.notifications.removeFastingChannel()
             }
             _ui.value = _ui.value.copy(fastingTrackingEnabled = v)

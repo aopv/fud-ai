@@ -330,20 +330,20 @@ fun HomeScreen(
             session.endedAt?.atZone(ZoneId.systemDefault())?.toLocalDate() == selectedDate
         }.sortedByDescending { it.endedAt }
     }
-    val diaryFasts = remember(ui.fastingTrackingEnabled, ui.activeFast, completedFasts, isToday) {
-        if (!ui.fastingTrackingEnabled) emptyList()
-        else completedFasts + if (isToday) listOfNotNull(ui.activeFast) else emptyList()
+    // Tracking preferences control new-entry UI, not persisted history. Existing
+    // water and fasting logs remain visible after either tracker is disabled.
+    val diaryFasts = remember(ui.activeFast, completedFasts, isToday) {
+        completedFasts + if (isToday) listOfNotNull(ui.activeFast) else emptyList()
     }
     val diaryMealGroups = remember(
         ui.todayEntries,
         ui.waterEntriesToday,
-        ui.waterTrackingEnabled,
         diaryFasts,
         ui.foodLogSortOrder
     ) {
         homeDiaryMealGroups(
             foodEntries = ui.todayEntries,
-            waterEntries = if (ui.waterTrackingEnabled) ui.waterEntriesToday else emptyList(),
+            waterEntries = ui.waterEntriesToday,
             fastingSessions = diaryFasts,
             sortOrder = ui.foodLogSortOrder
         )
