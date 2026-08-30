@@ -866,38 +866,57 @@ struct HomeView: View {
                     }
                 }
 
-                // Food list
-                let mealGroups = foodStore.entriesByMeal(for: selectedDate, order: foodLogSortOrder)
+                // Unified diary: water is grouped into the matching meal by log time,
+                // but stays excluded from food calories, macros, sharing and favorites.
+                let mealGroups = homeDiaryMealGroups(
+                    foodEntries: foodStore.entries(for: selectedDate),
+                    waterEntries: waterTrackingEnabled ? waterStore.entries(on: selectedDate) : [],
+                    order: foodLogSortOrder
+                )
                 if mealGroups.isEmpty {
                     Section(isToday ? "Today's Food" : "Food Log") {
-                        Text("No foods logged")
+                        Text("No food or water logged")
                             .foregroundStyle(.secondary)
                             .listRowBackground(AppColors.appCard)
                     }
                 } else {
                     ForEach(mealGroups) { group in
                         Section {
-                            ForEach(group.entries) { entry in
-                                FoodRow(entry: entry)
-                                    .listRowBackground(AppColors.appCard)
-                                    .contentShape(Rectangle())
-                                    .onTapGesture {
-                                        editingEntry = entry
-                                        activeSheet = .editFood
+                            ForEach(group.items) { item in
+                                Group {
+                                    switch item {
+                                    case .food(let entry):
+                                        FoodRow(entry: entry)
+                                            .contentShape(Rectangle())
+                                            .onTapGesture {
+                                                editingEntry = entry
+                                                activeSheet = .editFood
+                                            }
+                                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                                Button(role: .destructive) {
+                                                    foodStore.deleteEntry(entry)
+                                                } label: {
+                                                    Label("Delete", systemImage: "trash.fill")
+                                                }
+                                                Button {
+                                                    foodStore.toggleFavorite(entry)
+                                                } label: {
+                                                    Label(foodStore.isFavorite(entry) ? "Unfavorite" : "Favorite", systemImage: foodStore.isFavorite(entry) ? "heart.slash.fill" : "heart.fill")
+                                                }
+                                                .tint(AppColors.calorie)
+                                            }
+                                    case .water(let entry):
+                                        WaterLogRow(entry: entry, unit: waterUnit)
+                                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                                Button(role: .destructive) {
+                                                    waterStore.delete(id: entry.id)
+                                                } label: {
+                                                    Label("Delete", systemImage: "trash.fill")
+                                                }
+                                            }
                                     }
-                                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                        Button(role: .destructive) {
-                                            foodStore.deleteEntry(entry)
-                                        } label: {
-                                            Label("Delete", systemImage: "trash.fill")
-                                        }
-                                        Button {
-                                            foodStore.toggleFavorite(entry)
-                                        } label: {
-                                            Label(foodStore.isFavorite(entry) ? "Unfavorite" : "Favorite", systemImage: foodStore.isFavorite(entry) ? "heart.slash.fill" : "heart.fill")
-                                        }
-                                        .tint(AppColors.calorie)
-                                    }
+                                }
+                                .listRowBackground(AppColors.appCard)
                             }
                         } header: {
                             HStack(alignment: .center) {
@@ -922,56 +941,29 @@ struct HomeView: View {
                                     .padding(.leading, 8)
                                 }
                                 Spacer()
-                                // Share the whole meal as a fudai://add-meal link (issue #107)
-                                Button {
-                                    MealShare.presentShareSheet(for: group.entries)
-                                } label: {
-                                    Image(systemName: "square.and.arrow.up")
-                                        .font(.system(.subheadline, design: .rounded, weight: .semibold))
-                                        .foregroundStyle(AppColors.calorie)
-                                }
-                                .buttonStyle(.plain)
-                                .padding(.trailing, 12)
-                                .textCase(nil)
-                                // Combined nutrients for this meal (issue #103: chicken + pasta + sauce = one total)
-                                VStack(alignment: .trailing, spacing: 1) {
-                                    Text("\(group.totalCalories.formatted()) kcal")
-                                        .font(.system(.subheadline, design: .rounded, weight: .semibold))
-                                        .foregroundStyle(AppColors.calorie)
-                                    Text("\(Int(group.totalProtein.rounded()))P · \(Int(group.totalCarbs.rounded()))C · \(Int(group.totalFat.rounded()))F")
-                                        .font(.system(.caption2, design: .rounded, weight: .medium))
-                                        .foregroundStyle(.secondary)
-                                }
-                                .textCase(nil)
-                            }
-                        }
-                    }
-                }
-
-                // Water remains separate from food nutrition and calories, but its
-                // individual daily logs live in the same diary for easy review/removal.
-                let waterEntries = waterStore.entries(on: selectedDate)
-                if waterTrackingEnabled && !waterEntries.isEmpty {
-                    Section {
-                        ForEach(waterEntries) { entry in
-                            WaterLogRow(entry: entry, unit: waterUnit)
-                                .listRowBackground(AppColors.appCard)
-                                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                    Button(role: .destructive) {
-                                        waterStore.delete(id: entry.id)
+                                if !group.foodEntries.isEmpty {
+                                    // Share and totals include food only; water has no calories/macros.
+                                    Button {
+                                        MealShare.presentShareSheet(for: group.foodEntries)
                                     } label: {
-                                        Label("Delete", systemImage: "trash.fill")
+                                        Image(systemName: "square.and.arrow.up")
+                                            .font(.system(.subheadline, design: .rounded, weight: .semibold))
+                                            .foregroundStyle(AppColors.calorie)
                                     }
+                                    .buttonStyle(.plain)
+                                    .padding(.trailing, 12)
+                                    .textCase(nil)
+                                    VStack(alignment: .trailing, spacing: 1) {
+                                        Text("\(group.totalCalories.formatted()) kcal")
+                                            .font(.system(.subheadline, design: .rounded, weight: .semibold))
+                                            .foregroundStyle(AppColors.calorie)
+                                        Text("\(Int(group.totalProtein.rounded()))P · \(Int(group.totalCarbs.rounded()))C · \(Int(group.totalFat.rounded()))F")
+                                            .font(.system(.caption2, design: .rounded, weight: .medium))
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    .textCase(nil)
                                 }
-                        }
-                    } header: {
-                        HStack {
-                            Label("Water", systemImage: "drop.fill")
-                            Spacer()
-                            Text(waterUnit.formatted(milliliters: waterStore.total(on: selectedDate)))
-                                .font(.system(.subheadline, design: .rounded, weight: .semibold))
-                                .foregroundStyle(AppColors.calorie)
-                                .textCase(nil)
+                            }
                         }
                     }
                 }

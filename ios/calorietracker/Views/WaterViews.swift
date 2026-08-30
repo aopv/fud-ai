@@ -1,5 +1,94 @@
 import SwiftUI
 
+enum HomeDiaryItem: Identifiable {
+    case food(FoodEntry)
+    case water(WaterEntry)
+
+    var id: String {
+        switch self {
+        case .food(let entry): "food-\(entry.id.uuidString)"
+        case .water(let entry): "water-\(entry.id.uuidString)"
+        }
+    }
+
+    var date: Date {
+        switch self {
+        case .food(let entry): entry.timestamp
+        case .water(let entry): entry.date
+        }
+    }
+
+    var meal: MealType {
+        switch self {
+        case .food(let entry): entry.mealType
+        case .water(let entry): MealScheduleSettings.mealType(for: entry.date)
+        }
+    }
+}
+
+struct HomeDiaryMealGroup: Identifiable {
+    let id: String
+    let meal: MealType
+    let items: [HomeDiaryItem]
+
+    var foodEntries: [FoodEntry] {
+        items.compactMap { item in
+            guard case .food(let entry) = item else { return nil }
+            return entry
+        }
+    }
+
+    var totalCalories: Int { foodEntries.reduce(0) { $0 + $1.calories } }
+    var totalProtein: Double { foodEntries.reduce(0) { $0 + $1.protein } }
+    var totalCarbs: Double { foodEntries.reduce(0) { $0 + $1.carbs } }
+    var totalFat: Double { foodEntries.reduce(0) { $0 + $1.fat } }
+}
+
+func homeDiaryMealGroups(
+    foodEntries: [FoodEntry],
+    waterEntries: [WaterEntry],
+    order: FoodLogSortOrder
+) -> [HomeDiaryMealGroup] {
+    let items = (
+        foodEntries.map(HomeDiaryItem.food)
+            + waterEntries.map(HomeDiaryItem.water)
+    ).sorted { $0.date > $1.date }
+
+    switch order {
+    case .standard:
+        return MealType.allCases.compactMap { meal in
+            let mealItems = items.filter { $0.meal == meal }
+            guard !mealItems.isEmpty else { return nil }
+            return HomeDiaryMealGroup(id: "standard-\(meal.rawValue)", meal: meal, items: mealItems)
+        }
+    case .latestMealsFirst:
+        var groups: [HomeDiaryMealGroup] = []
+        var currentMeal: MealType?
+        var currentItems: [HomeDiaryItem] = []
+
+        func appendCurrentGroup() {
+            guard let meal = currentMeal, let first = currentItems.first else { return }
+            groups.append(HomeDiaryMealGroup(
+                id: "latest-\(meal.rawValue)-\(first.id)",
+                meal: meal,
+                items: currentItems
+            ))
+        }
+
+        for item in items {
+            if item.meal == currentMeal {
+                currentItems.append(item)
+            } else {
+                appendCurrentGroup()
+                currentMeal = item.meal
+                currentItems = [item]
+            }
+        }
+        appendCurrentGroup()
+        return groups
+    }
+}
+
 struct WaterLogRow: View {
     let entry: WaterEntry
     let unit: WaterUnit
@@ -9,9 +98,8 @@ struct WaterLogRow: View {
             ZStack {
                 RoundedRectangle(cornerRadius: 14)
                     .fill(AppColors.calorie.opacity(0.12))
-                Image(systemName: "drop.fill")
-                    .font(.system(size: 25, weight: .semibold))
-                    .foregroundStyle(AppColors.calorie)
+                Text("💧")
+                    .font(.system(size: 28))
             }
             .frame(width: 56, height: 56)
 

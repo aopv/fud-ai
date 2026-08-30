@@ -70,6 +70,38 @@ struct WatchWaterLogTests {
         #expect(WaterStore(defaults: defaults).entries(on: day).map(\.id) == [earlierEntry.id])
     }
 
+    @Test func waterAppearsInsideItsTimedMealWithoutChangingFoodTotals() throws {
+        let waterDate = Date(timeIntervalSince1970: 1_786_015_200)
+        let meal = MealScheduleSettings.mealType(for: waterDate)
+        let foodDate = waterDate.addingTimeInterval(-60)
+        let food = FoodEntry(
+            name: "Diary test meal",
+            calories: 420,
+            protein: 30,
+            carbs: 45,
+            fat: 12,
+            timestamp: foodDate,
+            source: .manual,
+            mealType: meal
+        )
+        let water = WaterEntry(date: waterDate, milliliters: 250)
+
+        let groups = homeDiaryMealGroups(
+            foodEntries: [food],
+            waterEntries: [water],
+            order: .standard
+        )
+        let group = try #require(groups.first { $0.meal == meal })
+
+        #expect(group.items.count == 2)
+        #expect(group.items.first?.id == "water-\(water.id.uuidString)")
+        #expect(group.foodEntries.map(\.id) == [food.id])
+        #expect(group.totalCalories == 420)
+        #expect(group.totalProtein == 30)
+        #expect(group.totalCarbs == 45)
+        #expect(group.totalFat == 12)
+    }
+
     @Test func waterReplacesOnlyTheFourthWidgetNutrientWhileEnabled() {
         let nutrients = ["protein", "carbs", "fat", "fiber"].map { id in
             WidgetNutrientValue(

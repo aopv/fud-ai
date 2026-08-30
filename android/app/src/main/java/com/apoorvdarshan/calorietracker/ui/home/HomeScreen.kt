@@ -146,6 +146,7 @@ import com.apoorvdarshan.calorietracker.models.formatFastingDuration
 import com.apoorvdarshan.calorietracker.services.MealShare
 import com.apoorvdarshan.calorietracker.models.FoodSource
 import com.apoorvdarshan.calorietracker.models.MacroValueFormatter
+import com.apoorvdarshan.calorietracker.models.CurrentMealSchedule
 import com.apoorvdarshan.calorietracker.models.MealType
 import com.apoorvdarshan.calorietracker.models.QuickAction
 import com.apoorvdarshan.calorietracker.models.QuickActionRequest
@@ -318,8 +319,17 @@ fun HomeScreen(
     val today = LocalDate.now()
     val selectedDate = ui.date
     val isToday = selectedDate == today
-    val mealGroups = remember(ui.todayEntries, ui.foodLogSortOrder) {
-        foodLogMealGroups(ui.todayEntries, ui.foodLogSortOrder)
+    val diaryMealGroups = remember(
+        ui.todayEntries,
+        ui.waterEntriesToday,
+        ui.waterTrackingEnabled,
+        ui.foodLogSortOrder
+    ) {
+        homeDiaryMealGroups(
+            foodEntries = ui.todayEntries,
+            waterEntries = if (ui.waterTrackingEnabled) ui.waterEntriesToday else emptyList(),
+            sortOrder = ui.foodLogSortOrder
+        )
     }
     val completedFasts = remember(ui.fastingSessions, selectedDate) {
         ui.fastingSessions.filter { session ->
@@ -445,7 +455,7 @@ fun HomeScreen(
 
             // Food log
             item { Spacer(Modifier.height(8.dp)) }
-            if (mealGroups.isEmpty()) {
+            if (diaryMealGroups.isEmpty()) {
                 item { SectionHeader(if (isToday) stringResource(R.string.home_todays_food) else stringResource(R.string.home_food_log)) }
                 item {
                     SectionCardWrapper(isFirst = true, isLast = true) {
@@ -459,15 +469,18 @@ fun HomeScreen(
                     }
                 }
             } else {
-                for ((groupIndex, group) in mealGroups.withIndex()) {
+                for ((groupIndex, group) in diaryMealGroups.withIndex()) {
                     item(key = "header-${group.id}") {
+                        val foodEntries = group.foodEntries
                         MealSectionHeader(
                             meal = group.meal,
-                            totalCalories = group.totalCalories,
+                            totalCalories = group.totalCalories.takeIf { foodEntries.isNotEmpty() },
                             totalProtein = group.totalProtein,
                             totalCarbs = group.totalCarbs,
                             totalFat = group.totalFat,
-                            onShare = { MealShare.share(ctx, group.entries) },
+                            onShare = if (foodEntries.isEmpty()) null else {
+                                { MealShare.share(ctx, foodEntries) }
+                            },
                             showSortMenu = groupIndex == 0,
                             sortOrder = ui.foodLogSortOrder,
                             sortMenuExpanded = showSortMenu,
@@ -479,53 +492,38 @@ fun HomeScreen(
                             }
                         )
                     }
-                    items(group.entries, key = { it.id }) { entry ->
-                        val index = group.entries.indexOf(entry)
+                    items(group.items, key = { it.stableId }) { item ->
+                        val index = group.items.indexOf(item)
                         val isFirst = index == 0
-                        val isLast = index == group.entries.lastIndex
+                        val isLast = index == group.items.lastIndex
                         val rowShape = sectionCardShape(isFirst, isLast)
                         SectionCardWrapper(isFirst = isFirst, isLast = isLast, transparent = true) {
-                            // Tap row -> open EditFoodEntrySheet (matches iOS .onTapGesture).
-                            // Swipe trailing edge -> delete; swipe leading edge -> toggle favorite.
-                            // Mirrors iOS ContentView.swift .swipeActions(edge: .trailing) on the row,
-                            // which exposes Delete (destructive) + Favorite/Unfavorite buttons.
-                            val isFav = ui.isFavorite(entry)
-                            SwipeableFoodRow(
-                                entry = entry,
-                                isFavorite = isFav,
-                                rowShape = rowShape,
-                                onTap = { editingEntry = entry },
-                                onDelete = { vm.deleteEntry(entry.id) },
-                                onToggleFavorite = { vm.toggleFavorite(entry) }
-                            )
-                            if (index != group.entries.lastIndex) Divider()
+                            when (item) {
+                                is HomeDiaryItem.Food -> {
+                                    val entry = item.entry
+                                    // Tap row -> open EditFoodEntrySheet (matches iOS .onTapGesture).
+                                    // Swipe trailing edge -> delete; swipe leading edge -> toggle favorite.
+                                    val isFav = ui.isFavorite(entry)
+                                    SwipeableFoodRow(
+                                        entry = entry,
+                                        isFavorite = isFav,
+                                        rowShape = rowShape,
+                                        onTap = { editingEntry = entry },
+                                        onDelete = { vm.deleteEntry(entry.id) },
+                                        onToggleFavorite = { vm.toggleFavorite(entry) }
+                                    )
+                                }
+                                is HomeDiaryItem.Water -> {
+                                    SwipeableWaterRow(
+                                        entry = item.entry,
+                                        unit = ui.waterUnit,
+                                        rowShape = rowShape,
+                                        onDelete = { vm.deleteWater(item.entry.id) }
+                                    )
+                                }
+                            }
+                            if (!isLast) Divider()
                         }
-                    }
-                }
-            }
-
-            // Water has its own persistence and never changes food calories/macros,
-            // but daily entries sit in the same diary so users can review/delete them.
-            if (ui.waterTrackingEnabled && ui.waterEntriesToday.isNotEmpty()) {
-                item(key = "water-header") {
-                    WaterSectionHeader(
-                        total = ui.waterTodayMl,
-                        unit = ui.waterUnit
-                    )
-                }
-                items(ui.waterEntriesToday, key = { "water-${it.id}" }) { entry ->
-                    val index = ui.waterEntriesToday.indexOf(entry)
-                    val isFirst = index == 0
-                    val isLast = index == ui.waterEntriesToday.lastIndex
-                    val rowShape = sectionCardShape(isFirst, isLast)
-                    SectionCardWrapper(isFirst = isFirst, isLast = isLast, transparent = true) {
-                        SwipeableWaterRow(
-                            entry = entry,
-                            unit = ui.waterUnit,
-                            rowShape = rowShape,
-                            onDelete = { vm.deleteWater(entry.id) }
-                        )
-                        if (!isLast) Divider()
                     }
                 }
             }
@@ -1393,37 +1391,6 @@ private fun SectionHeader(title: String) {
 }
 
 @Composable
-private fun WaterSectionHeader(total: Int, unit: WaterUnit) {
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .padding(start = 22.dp, end = 30.dp, top = 18.dp, bottom = 10.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            Icons.Filled.WaterDrop,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.55f),
-            modifier = Modifier.size(16.dp)
-        )
-        Spacer(Modifier.width(8.dp))
-        Text(
-            stringResource(R.string.water),
-            fontSize = 17.sp,
-            fontWeight = FontWeight.Medium,
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.85f)
-        )
-        Spacer(Modifier.weight(1f))
-        Text(
-            unit.format(total),
-            fontSize = 15.sp,
-            fontWeight = FontWeight.SemiBold,
-            color = AppColors.Calorie
-        )
-    }
-}
-
-@Composable
 private fun MealSectionHeader(
     meal: MealType,
     totalCalories: Int? = null,
@@ -1527,6 +1494,96 @@ private fun MealSectionHeader(
             }
         }
     }
+}
+
+internal sealed interface HomeDiaryItem {
+    val stableId: String
+    val timestamp: Instant
+    val meal: MealType
+
+    data class Food(val entry: FoodEntry) : HomeDiaryItem {
+        override val stableId: String = "food-${entry.id}"
+        override val timestamp: Instant = entry.timestamp
+        override val meal: MealType = entry.mealType
+    }
+
+    data class Water(val entry: WaterEntry) : HomeDiaryItem {
+        override val stableId: String = "water-${entry.id}"
+        override val timestamp: Instant = entry.date
+        override val meal: MealType = CurrentMealSchedule.value.mealTypeAt(
+            entry.date.atZone(ZoneId.systemDefault()).toLocalTime()
+        )
+    }
+}
+
+internal data class HomeDiaryMealGroup(
+    val id: String,
+    val meal: MealType,
+    val items: List<HomeDiaryItem>
+) {
+    val foodEntries: List<FoodEntry>
+        get() = items.mapNotNull { (it as? HomeDiaryItem.Food)?.entry }
+    val totalCalories: Int get() = foodEntries.sumOf { it.calories }
+    val totalProtein: Double get() = foodEntries.sumOf { it.protein }
+    val totalCarbs: Double get() = foodEntries.sumOf { it.carbs }
+    val totalFat: Double get() = foodEntries.sumOf { it.fat }
+}
+
+internal fun homeDiaryMealGroups(
+    foodEntries: List<FoodEntry>,
+    waterEntries: List<WaterEntry>,
+    sortOrder: FoodLogSortOrder
+): List<HomeDiaryMealGroup> {
+    val items = buildList {
+        foodEntries.forEach { add(HomeDiaryItem.Food(it)) }
+        waterEntries.forEach { add(HomeDiaryItem.Water(it)) }
+    }.sortedByDescending { it.timestamp }
+
+    return when (sortOrder) {
+        FoodLogSortOrder.STANDARD -> {
+            val grouped = items.groupBy { it.meal }
+            listOf(MealType.BREAKFAST, MealType.LUNCH, MealType.DINNER, MealType.SNACK, MealType.OTHER)
+                .mapNotNull { meal ->
+                    val mealItems = grouped[meal].orEmpty()
+                    if (mealItems.isEmpty()) null else HomeDiaryMealGroup(
+                        id = "standard-${meal.name}",
+                        meal = meal,
+                        items = mealItems
+                    )
+                }
+        }
+        FoodLogSortOrder.LATEST_MEALS_FIRST -> latestDiaryMealRuns(items)
+    }
+}
+
+private fun latestDiaryMealRuns(items: List<HomeDiaryItem>): List<HomeDiaryMealGroup> {
+    val groups = mutableListOf<HomeDiaryMealGroup>()
+    var currentMeal: MealType? = null
+    val currentItems = mutableListOf<HomeDiaryItem>()
+
+    fun appendCurrentGroup() {
+        val meal = currentMeal ?: return
+        if (currentItems.isEmpty()) return
+        groups += HomeDiaryMealGroup(
+            id = "latest-${groups.size}-${meal.name}-${currentItems.first().stableId}",
+            meal = meal,
+            items = currentItems.toList()
+        )
+    }
+
+    for (item in items) {
+        if (item.meal == currentMeal) {
+            currentItems += item
+        } else {
+            appendCurrentGroup()
+            currentMeal = item.meal
+            currentItems.clear()
+            currentItems += item
+        }
+    }
+
+    appendCurrentGroup()
+    return groups
 }
 
 private data class FoodLogMealGroup(
@@ -1821,11 +1878,9 @@ private fun WaterLogRow(
                 .background(AppColors.Calorie.copy(alpha = 0.12f)),
             contentAlignment = Alignment.Center
         ) {
-            Icon(
-                Icons.Filled.WaterDrop,
-                contentDescription = null,
-                tint = AppColors.Calorie,
-                modifier = Modifier.size(28.dp)
+            Text(
+                text = "💧",
+                fontSize = 28.sp
             )
         }
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
