@@ -825,6 +825,7 @@ fun HomeScreen(
             preferGramsByDefault = ui.preferGramsByDefault,
             profile = ui.profile,
             dayEntries = ui.todayEntries,
+            isSubmitting = ui.foodSaveInProgress,
             source = ui.pendingReviewSource?.source
                 ?: ui.pendingFoodSource
                 ?: if (ui.pendingImageBytes != null) FoodSource.SNAP_FOOD else FoodSource.TEXT_INPUT,
@@ -2565,8 +2566,10 @@ private fun ManualEntryDialog(
     var fiber by remember { mutableStateOf("") }
     var mealType by remember { mutableStateOf(MealType.currentMeal) }
     var mealMenuExpanded by remember { mutableStateOf(false) }
+    var isSubmitting by remember { mutableStateOf(false) }
+    val submissionGate = remember { FoodSubmissionGate() }
 
-    val canSave = name.isNotBlank() && calories.toIntOrNull() != null
+    val canSave = name.isNotBlank() && calories.toIntOrNull() != null && !isSubmitting
 
     FudGlassDialog(onDismissRequest = onDismiss) {
                 Text(stringResource(R.string.manual_title), fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
@@ -2647,6 +2650,8 @@ private fun ManualEntryDialog(
                 FudGlassPrimaryButton(
                     text = stringResource(R.string.action_save),
                     onClick = {
+                        if (!submissionGate.tryBegin()) return@FudGlassPrimaryButton
+                        isSubmitting = true
                         onSave(
                             name.trim(),
                             calories.toIntOrNull() ?: 0,

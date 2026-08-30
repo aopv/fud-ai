@@ -87,6 +87,7 @@ fun FoodResultSheet(
     profile: UserProfile? = null,
     dayEntries: List<FoodEntry> = emptyList(),
     source: FoodSource = FoodSource.TEXT_INPUT,
+    isSubmitting: Boolean = false,
     onWhatIfSuggestion: (suspend (FoodEntry) -> String)? = null,
     onSave: (
         name: String,
@@ -279,7 +280,7 @@ fun FoodResultSheet(
     var whatIfEntry by remember { mutableStateOf<FoodEntry?>(null) }
 
     ModalBottomSheet(
-        onDismissRequest = onDismiss,
+        onDismissRequest = { if (!isSubmitting) onDismiss() },
         sheetState = state,
         shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
         containerColor = sheetSurface
@@ -288,7 +289,8 @@ fun FoodResultSheet(
             title = stringResource(R.string.sheet_review_food),
             primaryLabel = stringResource(R.string.action_log),
             secondaryLabel = stringResource(R.string.action_what_if),
-            onCancel = onDismiss,
+            primaryEnabled = !isSubmitting,
+            onCancel = { if (!isSubmitting) onDismiss() },
             onPrimary = {
                 onSave(
                     name.trim().ifEmpty { analysis.name },

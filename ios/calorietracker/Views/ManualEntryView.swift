@@ -17,6 +17,7 @@ struct ManualEntryView: View {
     @State private var fat = ""
     @State private var fiber = ""
     @State private var mealType: MealType = .currentMeal
+    @State private var submissionGate = FoodSubmissionGate()
     @FocusState private var focused: Field?
 
     let logDate: Date
@@ -78,6 +79,7 @@ struct ManualEntryView: View {
             }
 
             Button {
+                guard submissionGate.begin() else { return }
                 let entry = FoodEntry(
                     name: name.trimmingCharacters(in: .whitespaces),
                     calories: Int(calories) ?? 0,
@@ -98,7 +100,7 @@ struct ManualEntryView: View {
             .buttonStyle(.borderedProminent)
             .tint(AppColors.calorie)
             .controlSize(.large)
-            .disabled(!canSave)
+            .disabled(!canSave || submissionGate.isSubmitting)
 
             Button("Cancel") { onCancel() }
                 .foregroundStyle(.secondary)

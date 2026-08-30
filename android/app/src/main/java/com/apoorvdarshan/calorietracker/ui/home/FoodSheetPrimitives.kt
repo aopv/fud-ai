@@ -34,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
@@ -79,6 +80,7 @@ internal fun SheetReviewToolbar(
     title: String,
     primaryLabel: String,
     secondaryLabel: String? = null,
+    primaryEnabled: Boolean = true,
     onCancel: () -> Unit,
     onPrimary: () -> Unit,
     onSecondary: (() -> Unit)? = null
@@ -106,7 +108,13 @@ internal fun SheetReviewToolbar(
             SheetToolbarPill(secondaryLabel, compact = compact, onClick = onSecondary)
             Spacer(Modifier.width(itemGap))
         }
-        SheetToolbarPill(primaryLabel, bold = true, compact = compact, onClick = onPrimary)
+        SheetToolbarPill(
+            primaryLabel,
+            bold = true,
+            compact = compact,
+            enabled = primaryEnabled,
+            onClick = onPrimary
+        )
     }
 }
 
@@ -115,6 +123,7 @@ private fun SheetToolbarPill(
     label: String,
     bold: Boolean = false,
     compact: Boolean = false,
+    enabled: Boolean = true,
     onClick: () -> Unit
 ) {
     val shape = CircleShape
@@ -148,7 +157,8 @@ private fun SheetToolbarPill(
     }
     Box(
         modifier
-            .clickable(onClick = onClick)
+            .alpha(if (enabled) 1f else 0.55f)
+            .clickable(enabled = enabled, onClick = onClick)
             .padding(horizontal = horizontalPadding, vertical = 8.dp)
     ) {
         Text(

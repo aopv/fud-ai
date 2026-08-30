@@ -3,6 +3,15 @@ import Testing
 @testable import calorietracker
 
 struct FastingStoreTests {
+    @Test func foodSubmissionGateRejectsRepeatedLogging() {
+        var gate = FoodSubmissionGate()
+        let firstSubmissionAccepted = gate.begin()
+        let repeatedSubmissionAccepted = gate.begin()
+
+        #expect(firstSubmissionAccepted)
+        #expect(!repeatedSubmissionAccepted)
+    }
+
     @Test func activeFastPersistsAndCompletesWithoutTouchingFoodData() throws {
         let suite = "FastingStoreTests.\(UUID().uuidString)"
         let defaults = try #require(UserDefaults(suiteName: suite))

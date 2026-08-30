@@ -18,6 +18,7 @@ import com.apoorvdarshan.calorietracker.models.WaterUnit
 import com.apoorvdarshan.calorietracker.services.OpenFoodFactsService
 import com.apoorvdarshan.calorietracker.services.ai.AiError
 import com.apoorvdarshan.calorietracker.services.ai.FoodAnalysis
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -30,6 +31,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.UUID
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.roundToInt
 
 enum class FoodLogSortOrder(val storageValue: String, val displayName: String, val displayNameRes: Int) {
@@ -74,6 +76,7 @@ data class HomeUiState(
      */
     val pendingReviewSource: FoodEntry? = null,
     val analyzing: Boolean = false,
+    val foodSaveInProgress: Boolean = false,
     val foodLoggingBlocked: Boolean = false,
     val fastingOverlap: Boolean = false,
     val error: String? = null
@@ -90,11 +93,22 @@ data class HomeUiState(
     fun isFavorite(entry: FoodEntry): Boolean = entry.favoriteKey in favoriteKeys
 }
 
+internal class FoodSubmissionGate {
+    private val active = AtomicBoolean(false)
+
+    fun tryBegin(): Boolean = active.compareAndSet(false, true)
+
+    fun finish() {
+        active.set(false)
+    }
+}
+
 class HomeViewModel(private val container: AppContainer) : ViewModel() {
     private val _ui = MutableStateFlow(HomeUiState())
     val ui: StateFlow<HomeUiState> = _ui.asStateFlow()
     private val _selectedDate = MutableStateFlow(LocalDate.now())
     private var retryAction: (() -> Unit)? = null
+    private val foodSubmissionGate = FoodSubmissionGate()
 
     init {
         combine(
@@ -422,88 +436,102 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
         selectedServingQuantity: Double? = null,
         editedAnalysis: FoodAnalysis? = null
     ) {
-        val analysis = editedAnalysis ?: _ui.value.pendingAnalysis ?: return
+        val pendingAnalysis = _ui.value.pendingAnalysis ?: return
+        val analysis = editedAnalysis ?: pendingAnalysis
+        if (!foodSubmissionGate.tryBegin()) return
+        _ui.value = _ui.value.copy(foodSaveInProgress = true)
         val reviewSource = _ui.value.pendingReviewSource
         val pendingFoodSource = _ui.value.pendingFoodSource
         val pendingDraftImageFilenames = _ui.value.pendingDraftImageFilenames
         viewModelScope.launch {
-            val imageBytesList = _ui.value.pendingImageBytesList
-            val id = UUID.randomUUID()
-            // If this analysis came from a Saved Meals review, reuse the
-            // template's existing on-disk image so we don't duplicate the
-            // JPEG. Otherwise (fresh AI analysis), persist the in-memory
-            // bytes as a new file under the new entry id.
-            val filenames = when {
-                reviewSource != null -> reviewSource.allImageFilenames
-                pendingDraftImageFilenames.isNotEmpty() -> pendingDraftImageFilenames
-                else -> imageBytesList.mapIndexedNotNull { index, bytes ->
-                    container.imageStore.storeBytes(bytes, if (index == 0) id else UUID.randomUUID())
+            try {
+                val imageBytesList = _ui.value.pendingImageBytesList
+                val id = UUID.randomUUID()
+                // If this analysis came from a Saved Meals review, reuse the
+                // template's existing on-disk image so we don't duplicate the
+                // JPEG. Otherwise (fresh AI analysis), persist the in-memory
+                // bytes as a new file under the new entry id.
+                val filenames = when {
+                    reviewSource != null -> reviewSource.allImageFilenames
+                    pendingDraftImageFilenames.isNotEmpty() -> pendingDraftImageFilenames
+                    else -> imageBytesList.mapIndexedNotNull { index, bytes ->
+                        container.imageStore.storeBytes(bytes, if (index == 0) id else UUID.randomUUID())
+                    }
                 }
+                fun s(v: Int) = (v * scale).roundToInt()
+                fun macro(v: Double) = v * scale
+                fun s(v: Double?) = v?.let { it * scale }
+                val entry = FoodEntry(
+                    id = id,
+                    name = name?.takeIf { it.isNotBlank() } ?: analysis.name,
+                    calories = s(analysis.calories),
+                    protein = macro(analysis.protein),
+                    carbs = macro(analysis.carbs),
+                    fat = macro(analysis.fat),
+                    timestamp = timestampForSelectedDay(),
+                    imageFilename = filenames.firstOrNull(),
+                    additionalImageFilenames = filenames.drop(1),
+                    emoji = analysis.emoji,
+                    source = reviewSource?.source
+                        ?: pendingFoodSource
+                        ?: if (imageBytesList.isNotEmpty()) FoodSource.SNAP_FOOD else FoodSource.TEXT_INPUT,
+                    mealType = mealType,
+                    sugar = s(analysis.sugar),
+                    addedSugar = s(analysis.addedSugar),
+                    fiber = s(analysis.fiber),
+                    saturatedFat = s(analysis.saturatedFat),
+                    monounsaturatedFat = s(analysis.monounsaturatedFat),
+                    polyunsaturatedFat = s(analysis.polyunsaturatedFat),
+                    cholesterol = s(analysis.cholesterol),
+                    caffeine = s(analysis.caffeine),
+                    supplementalNutrients = analysis.supplementalNutrients.mapValues { (_, value) -> s(value) ?: 0.0 },
+                    sodium = s(analysis.sodium),
+                    potassium = s(analysis.potassium),
+                    transFat = s(analysis.transFat),
+                    calcium = s(analysis.calcium),
+                    iron = s(analysis.iron),
+                    magnesium = s(analysis.magnesium),
+                    zinc = s(analysis.zinc),
+                    vitaminA = s(analysis.vitaminA),
+                    vitaminC = s(analysis.vitaminC),
+                    vitaminD = s(analysis.vitaminD),
+                    vitaminB12 = s(analysis.vitaminB12),
+                    vitaminE = s(analysis.vitaminE),
+                    vitaminK = s(analysis.vitaminK),
+                    folate = s(analysis.folate),
+                    omega3 = s(analysis.omega3),
+                    servingSizeGrams = servingGrams ?: analysis.servingSizeGrams,
+                    servingUnitOptions = analysis.servingUnitOptions,
+                    selectedServingUnit = if (analysis.servingUnitOptions.isEmpty()) null else selectedServingUnit,
+                    selectedServingQuantity = if (analysis.servingUnitOptions.isEmpty()) null else selectedServingQuantity,
+                    customNote = analysis.customNote,
+                    progressiveMeal = analysis.progressiveMeal,
+                    ingredients = analysis.ingredients.map { it.scaled(scale) }
+                )
+                if (!container.foodRepository.addEntry(entry)) {
+                    reportFoodBlockedByFast()
+                    return@launch
+                }
+                container.prefs.setPendingFoodAnalysisDraft(null)
+                _ui.value = _ui.value.copy(
+                    pendingAnalysis = null,
+                    pendingImageBytes = null,
+                    pendingAdditionalImageBytes = emptyList(),
+                    pendingFoodSource = null,
+                    pendingDraftImageFilename = null,
+                    pendingDraftAdditionalImageFilenames = emptyList(),
+                    pendingReviewSource = null
+                )
+            } catch (error: CancellationException) {
+                throw error
+            } catch (error: Throwable) {
+                _ui.value = _ui.value.copy(
+                    error = error.localizedMessage ?: container.appContext.getString(R.string.error_analysis_failed)
+                )
+            } finally {
+                foodSubmissionGate.finish()
+                _ui.value = _ui.value.copy(foodSaveInProgress = false)
             }
-            fun s(v: Int) = (v * scale).roundToInt()
-            fun macro(v: Double) = v * scale
-            fun s(v: Double?) = v?.let { it * scale }
-            val entry = FoodEntry(
-                id = id,
-                name = name?.takeIf { it.isNotBlank() } ?: analysis.name,
-                calories = s(analysis.calories),
-                protein = macro(analysis.protein),
-                carbs = macro(analysis.carbs),
-                fat = macro(analysis.fat),
-                timestamp = timestampForSelectedDay(),
-                imageFilename = filenames.firstOrNull(),
-                additionalImageFilenames = filenames.drop(1),
-                emoji = analysis.emoji,
-                source = reviewSource?.source
-                    ?: pendingFoodSource
-                    ?: if (imageBytesList.isNotEmpty()) FoodSource.SNAP_FOOD else FoodSource.TEXT_INPUT,
-                mealType = mealType,
-                sugar = s(analysis.sugar),
-                addedSugar = s(analysis.addedSugar),
-                fiber = s(analysis.fiber),
-                saturatedFat = s(analysis.saturatedFat),
-                monounsaturatedFat = s(analysis.monounsaturatedFat),
-                polyunsaturatedFat = s(analysis.polyunsaturatedFat),
-                cholesterol = s(analysis.cholesterol),
-                caffeine = s(analysis.caffeine),
-                supplementalNutrients = analysis.supplementalNutrients.mapValues { (_, value) -> s(value) ?: 0.0 },
-                sodium = s(analysis.sodium),
-                potassium = s(analysis.potassium),
-                transFat = s(analysis.transFat),
-                calcium = s(analysis.calcium),
-                iron = s(analysis.iron),
-                magnesium = s(analysis.magnesium),
-                zinc = s(analysis.zinc),
-                vitaminA = s(analysis.vitaminA),
-                vitaminC = s(analysis.vitaminC),
-                vitaminD = s(analysis.vitaminD),
-                vitaminB12 = s(analysis.vitaminB12),
-                vitaminE = s(analysis.vitaminE),
-                vitaminK = s(analysis.vitaminK),
-                folate = s(analysis.folate),
-                omega3 = s(analysis.omega3),
-                servingSizeGrams = servingGrams ?: analysis.servingSizeGrams,
-                servingUnitOptions = analysis.servingUnitOptions,
-                selectedServingUnit = if (analysis.servingUnitOptions.isEmpty()) null else selectedServingUnit,
-                selectedServingQuantity = if (analysis.servingUnitOptions.isEmpty()) null else selectedServingQuantity,
-                customNote = analysis.customNote,
-                progressiveMeal = analysis.progressiveMeal,
-                ingredients = analysis.ingredients.map { it.scaled(scale) }
-            )
-            if (!container.foodRepository.addEntry(entry)) {
-                reportFoodBlockedByFast()
-                return@launch
-            }
-            container.prefs.setPendingFoodAnalysisDraft(null)
-            _ui.value = _ui.value.copy(
-                pendingAnalysis = null,
-                pendingImageBytes = null,
-                pendingAdditionalImageBytes = emptyList(),
-                pendingFoodSource = null,
-                pendingDraftImageFilename = null,
-                pendingDraftAdditionalImageFilenames = emptyList(),
-                pendingReviewSource = null
-            )
         }
     }
 

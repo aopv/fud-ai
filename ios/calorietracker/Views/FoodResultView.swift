@@ -1,5 +1,15 @@
 import SwiftUI
 
+struct FoodSubmissionGate {
+    private(set) var isSubmitting = false
+
+    mutating func begin() -> Bool {
+        guard !isSubmitting else { return false }
+        isSubmitting = true
+        return true
+    }
+}
+
 struct FoodResultView: View {
     private enum ScrollTarget: Hashable {
         case quantity
@@ -51,6 +61,7 @@ struct FoodResultView: View {
     @State private var editableIngredients: [MealIngredient]
     @State private var ingredientEditor: IngredientEditorTarget?
     @State private var showWhatIfSheet = false
+    @State private var submissionGate = FoodSubmissionGate()
     @State var mealType: MealType = .currentMeal
 
     let logDate: Date
@@ -502,6 +513,7 @@ struct FoodResultView: View {
                         Button("Log", action: logFood)
                             .font(.system(.body, design: .rounded, weight: .semibold))
                             .tint(AppColors.calorie)
+                            .disabled(submissionGate.isSubmitting)
                     }
                 }
                 .sheet(isPresented: $showWhatIfSheet) {
@@ -547,6 +559,7 @@ struct FoodResultView: View {
     }
 
     private func logFood() {
+        guard submissionGate.begin() else { return }
         let entry = makeFoodEntry(includeImage: true)
         onLog(entry)
         dismiss()
