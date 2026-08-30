@@ -221,13 +221,134 @@ struct ContentView: View {
 }
 
 // MARK: - About (embedded as the last Settings section)
+enum AboutSettingsCategory: String, CaseIterable, Identifiable, Hashable {
+    case appUpdates
+    case support
+    case helpFeedback
+    case community
+    case legal
+
+    var id: Self { self }
+
+    var title: LocalizedStringResource {
+        switch self {
+        case .appUpdates: "App & Updates"
+        case .support: "Support Fud AI"
+        case .helpFeedback: "Help & Feedback"
+        case .community: "Community"
+        case .legal: "Legal"
+        }
+    }
+
+    var systemImage: String {
+        switch self {
+        case .appUpdates: "arrow.triangle.2.circlepath.circle.fill"
+        case .support: "heart.fill"
+        case .helpFeedback: "exclamationmark.bubble.fill"
+        case .community: "person.3.fill"
+        case .legal: "lock.shield.fill"
+        }
+    }
+}
+
+private struct AboutSettingsHub: View {
+    var body: some View {
+        Section {
+            VStack(spacing: 8) {
+                Image("onboardingLogo")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 64, height: 64)
+                    .accessibilityHidden(true)
+
+                Text("Fud AI")
+                    .font(.system(.title2, design: .rounded, weight: .bold))
+
+                Text("Version \(AppUpdateChecker.currentVersionDisplay)")
+                    .font(.system(.footnote, design: .rounded))
+                    .foregroundStyle(.secondary)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 8)
+        }
+        .listRowBackground(AppColors.appCard)
+
+        Section {
+            ForEach(AboutSettingsCategory.allCases) { category in
+                NavigationLink(value: category) {
+                    Label {
+                        Text(category.title)
+                            .font(.system(.body, design: .rounded, weight: .medium))
+                    } icon: {
+                        Image(systemName: category.systemImage)
+                            .foregroundStyle(AppColors.calorie)
+                            .frame(width: 24)
+                    }
+                }
+                .accessibilityIdentifier("settings.about.\(category.rawValue)")
+            }
+        }
+        .listRowBackground(AppColors.appCard)
+
+        Section {
+            VStack(spacing: 4) {
+                Text("Made by Apoorv Darshan")
+                    .font(.system(.footnote, design: .rounded, weight: .medium))
+                    .foregroundStyle(.secondary)
+                Text("with care, for everyone")
+                    .font(.system(.caption2, design: .rounded))
+                    .foregroundStyle(.tertiary)
+            }
+            .frame(maxWidth: .infinity)
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
+        }
+    }
+}
+
+private struct AboutSettingsCategoryView: View {
+    let category: AboutSettingsCategory
+    @Binding var updateState: AppUpdateState
+    let refreshUpdateState: () async -> Void
+
+    var body: some View {
+        List {
+            if category == .support {
+                TipJarSettingsSection()
+            }
+
+            AboutSettingsSections(
+                category: category,
+                updateState: $updateState,
+                refreshUpdateState: refreshUpdateState
+            )
+
+            Color.clear
+                .frame(height: 72)
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
+        }
+        .scrollContentBackground(.hidden)
+        .background(AppColors.appBackground)
+        .navigationTitle(Text(category.title))
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.visible, for: .navigationBar)
+    }
+}
+
 private struct AboutSettingsSections: View {
+    private let category: AboutSettingsCategory
     @Binding private var updateState: AppUpdateState
     private let refreshUpdateState: () async -> Void
 
     @State private var showShareSheet = false
 
-    init(updateState: Binding<AppUpdateState>, refreshUpdateState: @escaping () async -> Void) {
+    init(
+        category: AboutSettingsCategory,
+        updateState: Binding<AppUpdateState>,
+        refreshUpdateState: @escaping () async -> Void
+    ) {
+        self.category = category
         self._updateState = updateState
         self.refreshUpdateState = refreshUpdateState
     }
@@ -238,10 +359,25 @@ private struct AboutSettingsSections: View {
 
     var body: some View {
         Group {
-            Section("About") {
+            switch category {
+            case .appUpdates:
+                Section {
                 updateRow
 
-                // Rate the App
+                    Link(destination: URL(string: "https://github.com/apoorvdarshan/fud-ai")!) {
+                        Label {
+                            Text("Open Source (MIT)")
+                        } icon: {
+                            Image(systemName: "chevron.left.forwardslash.chevron.right")
+                                .foregroundStyle(AppColors.calorie)
+                        }
+                    }
+                    .tint(.primary)
+                }
+                .listRowBackground(AppColors.appCard)
+
+            case .support:
+                Section {
                 Button {
                     requestNativeReview()
                 } label: {
@@ -254,10 +390,6 @@ private struct AboutSettingsSections: View {
                 }
                 .tint(.primary)
 
-                // Share the App — uses UIActivityViewController so both
-                // the personalized message AND the App Store URL get
-                // forwarded to every share target (SwiftUI ShareLink
-                // drops the message arg for most targets).
                 Button {
                     showShareSheet = true
                 } label: {
@@ -270,18 +402,6 @@ private struct AboutSettingsSections: View {
                 }
                 .tint(.primary)
 
-                // Open Source
-                Link(destination: URL(string: "https://github.com/apoorvdarshan/fud-ai")!) {
-                    Label {
-                        Text("Open Source (MIT)")
-                    } icon: {
-                        Image(systemName: "chevron.left.forwardslash.chevron.right")
-                            .foregroundStyle(AppColors.calorie)
-                    }
-                }
-                .tint(.primary)
-
-                // Star the Repo
                 Link(destination: URL(string: "https://github.com/apoorvdarshan/fud-ai")!) {
                     Label {
                         Text("Star on GitHub")
@@ -292,7 +412,6 @@ private struct AboutSettingsSections: View {
                 }
                 .tint(.primary)
 
-                // Vote on Product Hunt
                 Link(destination: URL(string: "https://www.producthunt.com/products/fud-ai-calorie-tracker")!) {
                     Label {
                         Text("Vote on Product Hunt")
@@ -302,8 +421,11 @@ private struct AboutSettingsSections: View {
                     }
                 }
                 .tint(.primary)
+                }
+                .listRowBackground(AppColors.appCard)
 
-                // Report an Issue
+            case .helpFeedback:
+                Section {
                 Link(destination: URL(string: "https://github.com/apoorvdarshan/fud-ai/issues/new?labels=bug&title=Bug:%20")!) {
                     Label {
                         Text("Report an Issue")
@@ -314,7 +436,6 @@ private struct AboutSettingsSections: View {
                 }
                 .tint(.primary)
 
-                // Request a Feature
                 Link(destination: URL(string: "https://github.com/apoorvdarshan/fud-ai/issues/new?labels=enhancement&title=Feature:%20")!) {
                     Label {
                         Text("Request a Feature")
@@ -325,7 +446,6 @@ private struct AboutSettingsSections: View {
                 }
                 .tint(.primary)
 
-                // Contact
                 Link(destination: URL(string: "mailto:apoorv@fud-ai.app")!) {
                     Label {
                         Text("Contact Us")
@@ -335,8 +455,11 @@ private struct AboutSettingsSections: View {
                     }
                 }
                 .tint(.primary)
+                }
+                .listRowBackground(AppColors.appCard)
 
-                // Follow on X
+            case .community:
+                Section {
                 Link(destination: URL(string: "https://x.com/apoorvdarshan")!) {
                     Label {
                         Text("Follow on X")
@@ -347,7 +470,6 @@ private struct AboutSettingsSections: View {
                 }
                 .tint(.primary)
 
-                // Instagram
                 Link(destination: URL(string: "https://www.instagram.com/fudai.app/")!) {
                     Label {
                         Text("Follow on Instagram")
@@ -358,7 +480,6 @@ private struct AboutSettingsSections: View {
                 }
                 .tint(.primary)
 
-                // LinkedIn
                 Link(destination: URL(string: "https://www.linkedin.com/company/fud-ai-app")!) {
                     Label {
                         Text("Follow on LinkedIn")
@@ -368,11 +489,11 @@ private struct AboutSettingsSections: View {
                     }
                 }
                 .tint(.primary)
-            }
-            .listRowBackground(AppColors.appCard)
+                }
+                .listRowBackground(AppColors.appCard)
 
-            Section {
-                // Privacy Policy
+            case .legal:
+                Section {
                 Link(destination: URL(string: "https://fud-ai.app/privacy.html")!) {
                     Label {
                         Text("Privacy Policy")
@@ -383,7 +504,6 @@ private struct AboutSettingsSections: View {
                 }
                 .tint(.primary)
 
-                // Terms of Service
                 Link(destination: URL(string: "https://fud-ai.app/terms.html")!) {
                     Label {
                         Text("Terms of Service")
@@ -393,21 +513,8 @@ private struct AboutSettingsSections: View {
                     }
                 }
                 .tint(.primary)
-            }
-            .listRowBackground(AppColors.appCard)
-
-            Section {
-                VStack(spacing: 4) {
-                    Text("Made by Apoorv Darshan")
-                        .font(.system(.footnote, design: .rounded, weight: .medium))
-                        .foregroundStyle(.secondary)
-                    Text("with care, for everyone")
-                        .font(.system(.caption2, design: .rounded))
-                        .foregroundStyle(.tertiary)
                 }
-                .frame(maxWidth: .infinity)
-                .listRowBackground(Color.clear)
-                .listRowSeparator(.hidden)
+                .listRowBackground(AppColors.appCard)
             }
         }
         .sheet(isPresented: $showShareSheet) {
@@ -5070,23 +5177,20 @@ struct ProfileView: View {
                 .listRowBackground(AppColors.appCard)
                 }
 
-                // Support stays separate and immediately visible before About. App Review
-                // treats external developer-donation links as digital payments (guideline
-                // 3.1.1), so iOS uses the native consumable purchases here.
                 if settingsCategory == .about {
-                TipJarSettingsSection()
-
-                // About — folded in from the former About tab so it's the last
-                // section of Settings (Home / Progress / Coach / Settings = 4 tabs).
-                AboutSettingsSections(
-                    updateState: $updateState,
-                    refreshUpdateState: refreshUpdateState
-                )
+                AboutSettingsHub()
                 }
             }
             .scrollContentBackground(.hidden)
             .modifier(SettingsKeyboardDismissalModifier())
             .background(AppColors.appBackground)
+            .navigationDestination(for: AboutSettingsCategory.self) { category in
+                AboutSettingsCategoryView(
+                    category: category,
+                    updateState: $updateState,
+                    refreshUpdateState: refreshUpdateState
+                )
+            }
             .sheet(isPresented: $showExportDiary) {
                 ExportDiaryView()
             }

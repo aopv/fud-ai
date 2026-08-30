@@ -594,6 +594,11 @@
     <string name="about_follow_linkedin">LinkedInでフォロー</string>
     <string name="about_privacy">プライバシーポリシー</string>
     <string name="about_terms">利用規約</string>
+    <string name="about_category_app_updates">アプリとアップデート</string>
+    <string name="about_category_support">Fud AIをサポート</string>
+    <string name="about_category_help_feedback">ヘルプとフィードバック</string>
+    <string name="about_category_community">コミュニティ</string>
+    <string name="about_category_legal">法的情報</string>
     <string name="about_made_by">Apoorv Darshan 制作</string>
     <string name="about_with_care">すべての人へ、心を込めて</string>
     <string name="about_share_message">食事の記録は Fud AI で。写真を撮るか話すか入力するだけで、AI がカロリーを記録します。無料・オープンソースで、データは端末内に残ります。\n\nダウンロード: https://fud-ai.app</string>

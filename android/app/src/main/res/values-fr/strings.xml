@@ -594,6 +594,11 @@
     <string name="about_follow_linkedin">Suivre sur LinkedIn</string>
     <string name="about_privacy">Politique de confidentialité</string>
     <string name="about_terms">Conditions d\'utilisation</string>
+    <string name="about_category_app_updates">Application et mises à jour</string>
+    <string name="about_category_support">Soutenir Fud AI</string>
+    <string name="about_category_help_feedback">Aide et commentaires</string>
+    <string name="about_category_community">Communauté</string>
+    <string name="about_category_legal">Mentions légales</string>
     <string name="about_made_by">Créé par Apoorv Darshan</string>
     <string name="about_with_care">avec soin, pour tous</string>
     <string name="about_share_message">Je suis mes repas avec Fud AI — prends une photo, parle ou tape, l\'IA enregistre les calories. C\'est gratuit, open source, et tes données restent sur ton appareil.\n\nTélécharger : https://fud-ai.app</string>

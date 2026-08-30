@@ -183,8 +183,10 @@ import com.apoorvdarshan.calorietracker.ui.components.FudIconBubble
 import com.apoorvdarshan.calorietracker.ui.components.FeetInchesWheelPicker
 import com.apoorvdarshan.calorietracker.ui.components.NumericWheelPicker
 import com.apoorvdarshan.calorietracker.ui.components.WheelPicker
+import com.apoorvdarshan.calorietracker.ui.about.AboutAppHeader
+import com.apoorvdarshan.calorietracker.ui.about.AboutCategoryHub
 import com.apoorvdarshan.calorietracker.ui.about.AboutFooter
-import com.apoorvdarshan.calorietracker.ui.about.AboutLegalRows
+import com.apoorvdarshan.calorietracker.ui.about.AboutSettingsCategory
 import com.apoorvdarshan.calorietracker.ui.about.AboutSettingsRows
 import com.apoorvdarshan.calorietracker.ui.components.SplitDecimalWheelPicker
 import com.apoorvdarshan.calorietracker.ui.components.UnitToggle
@@ -256,6 +258,7 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
     var showHealthEnergyGoalsInfo by remember { mutableStateOf(false) }
     var showAdaptiveGoalsInfo by remember { mutableStateOf(false) }
     var selectedCategory by rememberSaveable { mutableStateOf<SettingsCategory?>(null) }
+    var selectedAboutCategory by rememberSaveable { mutableStateOf<AboutSettingsCategory?>(null) }
     var pendingHealthPermissionAction by remember { mutableStateOf<HealthConnectPermissionAction?>(null) }
     val activityContext = LocalContext.current
     val resources = LocalResources.current
@@ -407,7 +410,11 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
     }
 
     BackHandler(enabled = selectedCategory != null) {
-        selectedCategory = null
+        if (selectedAboutCategory != null) {
+            selectedAboutCategory = null
+        } else {
+            selectedCategory = null
+        }
     }
 
     // iOS Settings: bare List, no NavigationBar visible. Match that — no TopAppBar.
@@ -421,15 +428,26 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
             verticalArrangement = Arrangement.spacedBy(18.dp)
         ) {
             if (selectedCategory == null) {
-                SettingsCategoryHub(onSelect = { selectedCategory = it })
+                SettingsCategoryHub(onSelect = {
+                    selectedAboutCategory = null
+                    selectedCategory = it
+                })
                 Spacer(Modifier.height(BottomNavScrollPadding))
                 return@Column
             }
 
-            SettingsCategoryHeader(
-                category = selectedCategory!!,
-                onBack = { selectedCategory = null }
-            )
+            val activeAboutCategory = selectedAboutCategory
+            if (selectedCategory == SettingsCategory.ABOUT && activeAboutCategory != null) {
+                SettingsAboutCategoryHeader(
+                    category = activeAboutCategory,
+                    onBack = { selectedAboutCategory = null }
+                )
+            } else {
+                SettingsCategoryHeader(
+                    category = selectedCategory!!,
+                    onBack = { selectedCategory = null }
+                )
+            }
 
             // Section 1 — Personal Info (matches iOS Section "Personal Info")
             if (selectedCategory == SettingsCategory.PERSONAL_INFO) {
@@ -1165,13 +1183,17 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
             // Section 7 — About (folded in from the former About tab so it's the
             // last section of Settings; tabs are now Home / Progress / Coach / Settings).
             if (selectedCategory == SettingsCategory.ABOUT) {
-            SectionCard {
-                AboutSettingsRows()
-            }
-            SectionCard {
-                AboutLegalRows()
-            }
-            AboutFooter()
+                if (activeAboutCategory == null) {
+                    SectionCard { AboutAppHeader() }
+                    SectionCard {
+                        AboutCategoryHub(onSelect = { selectedAboutCategory = it })
+                    }
+                    AboutFooter()
+                } else {
+                    SectionCard {
+                        AboutSettingsRows(activeAboutCategory)
+                    }
+                }
             }
 
             Spacer(Modifier.height(BottomNavScrollPadding))
@@ -1468,6 +1490,24 @@ private fun SettingsCategoryHub(onSelect: (SettingsCategory) -> Unit) {
 
 @Composable
 private fun SettingsCategoryHeader(category: SettingsCategory, onBack: () -> Unit) {
+    SettingsDetailHeader(
+        backLabel = stringResource(R.string.nav_settings),
+        title = stringResource(category.titleRes),
+        onBack = onBack
+    )
+}
+
+@Composable
+private fun SettingsAboutCategoryHeader(category: AboutSettingsCategory, onBack: () -> Unit) {
+    SettingsDetailHeader(
+        backLabel = stringResource(R.string.nav_about),
+        title = stringResource(category.titleRes),
+        onBack = onBack
+    )
+}
+
+@Composable
+private fun SettingsDetailHeader(backLabel: String, title: String, onBack: () -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Row(
             modifier = Modifier
@@ -1484,13 +1524,13 @@ private fun SettingsCategoryHeader(category: SettingsCategory, onBack: () -> Uni
             )
             Spacer(Modifier.width(6.dp))
             Text(
-                stringResource(R.string.nav_settings),
+                backLabel,
                 color = AppColors.Calorie,
                 fontWeight = FontWeight.SemiBold
             )
         }
         Text(
-            text = stringResource(category.titleRes),
+            text = title,
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onBackground

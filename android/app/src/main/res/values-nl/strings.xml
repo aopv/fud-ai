@@ -594,6 +594,11 @@
     <string name="about_follow_linkedin">Volg op LinkedIn</string>
     <string name="about_privacy">Privacybeleid</string>
     <string name="about_terms">Servicevoorwaarden</string>
+    <string name="about_category_app_updates">App &amp; updates</string>
+    <string name="about_category_support">Steun Fud AI</string>
+    <string name="about_category_help_feedback">Hulp &amp; feedback</string>
+    <string name="about_category_community">Community</string>
+    <string name="about_category_legal">Juridisch</string>
     <string name="about_made_by">Gemaakt door Apoorv Darshan</string>
     <string name="about_with_care">met zorg, voor iedereen</string>
     <string name="about_share_message">Ik houd mijn maaltijden bij met Fud AI — maak een foto, spreek het in of typ het, en de AI logt de calorieën. Het is gratis, open source, en je gegevens blijven op je apparaat.\n\nDownload: https://fud-ai.app</string>

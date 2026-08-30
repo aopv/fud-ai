@@ -71,6 +71,51 @@ final class calorietrackerUITests: XCTestCase {
     }
 
     @MainActor
+    func testAboutHubShowsFiveFocusedCategories() throws {
+        let app = XCUIApplication()
+        app.launchArguments += ["-AppleLanguages", "(en)"]
+        app.launch()
+
+        openSettingsCategory("about", in: app)
+
+        let categories = [
+            ("appUpdates", "App & Updates", "Open Source (MIT)"),
+            ("support", "Support Fud AI", "Rate the App"),
+            ("helpFeedback", "Help & Feedback", "Report an Issue"),
+            ("community", "Community", "Follow on X"),
+            ("legal", "Legal", "Privacy Policy"),
+        ]
+
+        for (identifier, _, _) in categories {
+            let category = app.buttons["settings.about.\(identifier)"]
+            for _ in 0..<4 where !category.isHittable {
+                app.swipeUp()
+            }
+            XCTAssertTrue(category.waitForExistence(timeout: 3), "Missing About category \(identifier)")
+        }
+
+        for (identifier, title, expectedAction) in categories {
+            let category = app.buttons["settings.about.\(identifier)"]
+            XCTAssertTrue(category.isHittable, "About category \(identifier) is not tappable")
+            category.tap()
+
+            let navigationBar = app.navigationBars[title]
+            XCTAssertTrue(navigationBar.waitForExistence(timeout: 3), "Missing \(title) detail page")
+
+            let action = app.staticTexts[expectedAction]
+            for _ in 0..<6 where !action.exists {
+                app.swipeUp()
+            }
+            XCTAssertTrue(action.waitForExistence(timeout: 3), "Missing \(expectedAction) in \(title)")
+
+            let backButton = navigationBar.buttons.firstMatch
+            XCTAssertTrue(backButton.exists)
+            backButton.tap()
+            XCTAssertTrue(app.navigationBars["About"].waitForExistence(timeout: 3))
+        }
+    }
+
+    @MainActor
     func testSeparateTextProviderSettingsAreVisibleAndIndependent() throws {
         let app = XCUIApplication()
         app.launchArguments += [

@@ -3,6 +3,7 @@ package com.apoorvdarshan.calorietracker.ui.about
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -22,6 +23,7 @@ import androidx.compose.material.icons.filled.AlternateEmail
 import androidx.compose.material.icons.filled.Work
 import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Email
@@ -51,6 +53,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.apoorvdarshan.calorietracker.R
@@ -61,23 +64,70 @@ import com.apoorvdarshan.calorietracker.services.update.AndroidUpdateState
 import com.apoorvdarshan.calorietracker.ui.theme.AppColors
 import kotlinx.coroutines.launch
 
-/**
- * Verbatim port of struct AboutSettingsSections in
- * ios/calorietracker/ContentView.swift.
- *
- * The former About tab was folded into Settings as its last section, so this
- * renders the About *rows* (no Scaffold / LazyColumn); the caller wraps the
- * social rows and legal rows in separate Settings cards, matching iOS:
- *   Update / Rate / Share / Open Source / Star / Vote on PH /
- *   Support / Report Issue / Request Feature / Contact / Follow on X /
- *   Follow on Instagram / Follow on LinkedIn, then Privacy Policy / Terms in
- *   their own card, followed by the author footer.
- *
- * Icons are pink (Calorie); labels use the onSurface color; hairline dividers
- * separate the rows, mirroring the iOS grouped-list look.
- */
+enum class AboutSettingsCategory(val titleRes: Int, val icon: ImageVector) {
+    APP_UPDATES(R.string.about_category_app_updates, Icons.Filled.SystemUpdate),
+    SUPPORT(R.string.about_category_support, Icons.Filled.Favorite),
+    HELP_FEEDBACK(R.string.about_category_help_feedback, Icons.Filled.BugReport),
+    COMMUNITY(R.string.about_category_community, Icons.Filled.AlternateEmail),
+    LEGAL(R.string.about_category_legal, Icons.Filled.Lock)
+}
+
 @Composable
-fun AboutSettingsRows() {
+fun AboutAppHeader() {
+    val context = LocalContext.current
+    val currentVersion = remember(context) { AndroidUpdateChecker.currentVersion(context) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Image(
+            painter = painterResource(R.drawable.ic_logo),
+            contentDescription = null,
+            modifier = Modifier.size(64.dp)
+        )
+        Text(
+            text = stringResource(R.string.app_name),
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+        Text(
+            text = stringResource(R.string.about_version_format, currentVersion),
+            fontSize = 13.sp,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
+        )
+    }
+}
+
+@Composable
+fun AboutCategoryHub(onSelect: (AboutSettingsCategory) -> Unit) {
+    Column(Modifier.fillMaxWidth()) {
+        AboutSettingsCategory.entries.forEachIndexed { index, category ->
+            AboutRow(
+                icon = category.icon,
+                label = stringResource(category.titleRes),
+                trailing = {
+                    Icon(
+                        Icons.Filled.ChevronRight,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.42f),
+                        modifier = Modifier.size(20.dp)
+                    )
+                },
+                onClick = { onSelect(category) }
+            )
+            if (index != AboutSettingsCategory.entries.lastIndex) Hairline()
+        }
+    }
+}
+
+/** Rows for one focused About category, embedded in the existing Settings layout. */
+@Composable
+fun AboutSettingsRows(category: AboutSettingsCategory) {
     val ctx = LocalContext.current
     val shareText = stringResource(R.string.about_share_message)
     val shareChooser = stringResource(R.string.about_share_chooser)
@@ -97,9 +147,11 @@ fun AboutSettingsRows() {
         }
     }
 
-    LaunchedEffect(currentVersion) {
-        updateState = AndroidUpdateState.Checking
-        updateState = AndroidUpdateChecker.check(ctx, currentVersion)
+    LaunchedEffect(category, currentVersion) {
+        if (category == AboutSettingsCategory.APP_UPDATES) {
+            updateState = AndroidUpdateState.Checking
+            updateState = AndroidUpdateChecker.check(ctx, currentVersion)
+        }
     }
 
     fun share() {
@@ -119,53 +171,73 @@ fun AboutSettingsRows() {
     fun email() = ctx.startActivity(Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:apoorv@fud-ai.app")))
 
     Column(Modifier.fillMaxWidth()) {
-        UpdateRow(
-            state = updateState,
-            currentVersion = currentVersion,
-            onRefresh = ::refreshUpdateState,
-            onOpenStore = ::openPlayStore
-        )
-        Hairline()
-        AboutRow(Icons.Filled.Star, stringResource(R.string.about_rate), onClick = ::rate)
-        Hairline()
-        AboutRow(Icons.Filled.Share, stringResource(R.string.about_share), onClick = ::share)
-        Hairline()
-        AboutRow(Icons.Filled.Code, stringResource(R.string.about_open_source)) { open("https://github.com/apoorvdarshan/fud-ai") }
-        Hairline()
-        AboutRow(Icons.Filled.StarRate, stringResource(R.string.about_star_github)) { open("https://github.com/apoorvdarshan/fud-ai") }
-        Hairline()
-        AboutRow(Icons.Filled.ThumbUp, stringResource(R.string.about_vote_ph)) { open("https://www.producthunt.com/products/fud-ai-calorie-tracker") }
-        Hairline()
-        AboutRow(Icons.Filled.Favorite, stringResource(R.string.about_support)) { open("https://ko-fi.com/apoorvdarshan") }
-        Hairline()
-        AboutRow(Icons.Filled.BugReport, stringResource(R.string.about_report_issue)) { open("https://github.com/apoorvdarshan/fud-ai/issues/new?labels=bug&title=Bug:%20") }
-        Hairline()
-        AboutRow(Icons.Filled.Lightbulb, stringResource(R.string.about_request_feature)) { open("https://github.com/apoorvdarshan/fud-ai/issues/new?labels=enhancement&title=Feature:%20") }
-        Hairline()
-        AboutRow(Icons.Filled.Email, stringResource(R.string.about_contact), onClick = ::email)
-        Hairline()
-        AboutRow(Icons.Filled.AlternateEmail, stringResource(R.string.about_follow_x)) { open("https://x.com/apoorvdarshan") }
-        Hairline()
-        AboutRow(Icons.Filled.PhotoCamera, stringResource(R.string.about_follow_instagram)) { open("https://www.instagram.com/fudai.app/") }
-        Hairline()
-        AboutRow(Icons.Filled.Work, stringResource(R.string.about_follow_linkedin)) { open("https://www.linkedin.com/company/fud-ai-app") }
-    }
-}
+        when (category) {
+            AboutSettingsCategory.APP_UPDATES -> {
+                UpdateRow(
+                    state = updateState,
+                    currentVersion = currentVersion,
+                    onRefresh = ::refreshUpdateState,
+                    onOpenStore = ::openPlayStore
+                )
+                Hairline()
+                AboutRow(Icons.Filled.Code, stringResource(R.string.about_open_source)) {
+                    open("https://github.com/apoorvdarshan/fud-ai")
+                }
+            }
 
-@Composable
-fun AboutLegalRows() {
-    val ctx = LocalContext.current
+            AboutSettingsCategory.SUPPORT -> {
+                AboutRow(Icons.Filled.Star, stringResource(R.string.about_rate), onClick = ::rate)
+                Hairline()
+                AboutRow(Icons.Filled.Share, stringResource(R.string.about_share), onClick = ::share)
+                Hairline()
+                AboutRow(Icons.Filled.Favorite, stringResource(R.string.about_support)) {
+                    open("https://ko-fi.com/apoorvdarshan")
+                }
+                Hairline()
+                AboutRow(Icons.Filled.StarRate, stringResource(R.string.about_star_github)) {
+                    open("https://github.com/apoorvdarshan/fud-ai")
+                }
+                Hairline()
+                AboutRow(Icons.Filled.ThumbUp, stringResource(R.string.about_vote_ph)) {
+                    open("https://www.producthunt.com/products/fud-ai-calorie-tracker")
+                }
+            }
 
-    fun open(url: String) =
-        ctx.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+            AboutSettingsCategory.HELP_FEEDBACK -> {
+                AboutRow(Icons.Filled.BugReport, stringResource(R.string.about_report_issue)) {
+                    open("https://github.com/apoorvdarshan/fud-ai/issues/new?labels=bug&title=Bug:%20")
+                }
+                Hairline()
+                AboutRow(Icons.Filled.Lightbulb, stringResource(R.string.about_request_feature)) {
+                    open("https://github.com/apoorvdarshan/fud-ai/issues/new?labels=enhancement&title=Feature:%20")
+                }
+                Hairline()
+                AboutRow(Icons.Filled.Email, stringResource(R.string.about_contact), onClick = ::email)
+            }
 
-    Column(Modifier.fillMaxWidth()) {
-        AboutRow(Icons.Filled.Lock, stringResource(R.string.about_privacy)) {
-            open("https://fud-ai.app/privacy.html")
-        }
-        Hairline()
-        AboutRow(Icons.Filled.Description, stringResource(R.string.about_terms)) {
-            open("https://fud-ai.app/terms.html")
+            AboutSettingsCategory.COMMUNITY -> {
+                AboutRow(Icons.Filled.AlternateEmail, stringResource(R.string.about_follow_x)) {
+                    open("https://x.com/apoorvdarshan")
+                }
+                Hairline()
+                AboutRow(Icons.Filled.PhotoCamera, stringResource(R.string.about_follow_instagram)) {
+                    open("https://www.instagram.com/fudai.app/")
+                }
+                Hairline()
+                AboutRow(Icons.Filled.Work, stringResource(R.string.about_follow_linkedin)) {
+                    open("https://www.linkedin.com/company/fud-ai-app")
+                }
+            }
+
+            AboutSettingsCategory.LEGAL -> {
+                AboutRow(Icons.Filled.Lock, stringResource(R.string.about_privacy)) {
+                    open("https://fud-ai.app/privacy.html")
+                }
+                Hairline()
+                AboutRow(Icons.Filled.Description, stringResource(R.string.about_terms)) {
+                    open("https://fud-ai.app/terms.html")
+                }
+            }
         }
     }
 }

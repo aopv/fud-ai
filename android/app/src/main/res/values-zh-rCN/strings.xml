@@ -594,6 +594,11 @@
     <string name="about_follow_linkedin">在 LinkedIn 上关注</string>
     <string name="about_privacy">隐私政策</string>
     <string name="about_terms">服务条款</string>
+    <string name="about_category_app_updates">应用与更新</string>
+    <string name="about_category_support">支持 Fud AI</string>
+    <string name="about_category_help_feedback">帮助与反馈</string>
+    <string name="about_category_community">社区</string>
+    <string name="about_category_legal">法律信息</string>
     <string name="about_made_by">由 Apoorv Darshan 制作</string>
     <string name="about_with_care">用心为每个人</string>
     <string name="about_share_message">我用 Fud AI 记录每一餐——拍照、说话或输入，AI 自动记录卡路里。完全免费、开源，所有数据都保存在你的设备上。\n\n下载：https://fud-ai.app</string>

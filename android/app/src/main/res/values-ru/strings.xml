@@ -594,6 +594,11 @@
     <string name="about_follow_linkedin">Подписаться в LinkedIn</string>
     <string name="about_privacy">Политика конфиденциальности</string>
     <string name="about_terms">Условия использования</string>
+    <string name="about_category_app_updates">Приложение и обновления</string>
+    <string name="about_category_support">Поддержать Fud AI</string>
+    <string name="about_category_help_feedback">Помощь и обратная связь</string>
+    <string name="about_category_community">Сообщество</string>
+    <string name="about_category_legal">Правовая информация</string>
     <string name="about_made_by">Автор: Apoorv Darshan</string>
     <string name="about_with_care">с заботой, для каждого</string>
     <string name="about_share_message">Я слежу за питанием с помощью Fud AI — сфотографируй блюдо, наговори его или введи текстом, и ИИ запишет калории. Бесплатно, с открытым кодом, все данные остаются на твоём устройстве.\n\nСкачать: https://fud-ai.app</string>

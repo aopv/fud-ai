@@ -42494,6 +42494,106 @@
         "ru": { "stringUnit": { "state": "translated", "value": "Управление данными" } },
         "zh-Hans": { "stringUnit": { "state": "translated", "value": "数据管理" } }
       }
+    },
+    "App & Updates": {
+      "localizations": {
+        "ar": { "stringUnit": { "state": "translated", "value": "التطبيق والتحديثات" } },
+        "az": { "stringUnit": { "state": "translated", "value": "Tətbiq və Yeniləmələr" } },
+        "de": { "stringUnit": { "state": "translated", "value": "App & Updates" } },
+        "en": { "stringUnit": { "state": "translated", "value": "App & Updates" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Aplicación y actualizaciones" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Application et mises à jour" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "ऐप और अपडेट" } },
+        "it": { "stringUnit": { "state": "translated", "value": "App e aggiornamenti" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "アプリとアップデート" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "앱 및 업데이트" } },
+        "nl": { "stringUnit": { "state": "translated", "value": "App & updates" } },
+        "pl": { "stringUnit": { "state": "translated", "value": "Aplikacja i aktualizacje" } },
+        "pt-BR": { "stringUnit": { "state": "translated", "value": "App e atualizações" } },
+        "ro": { "stringUnit": { "state": "translated", "value": "Aplicație și actualizări" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Приложение и обновления" } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "应用与更新" } }
+      }
+    },
+    "Support Fud AI": {
+      "localizations": {
+        "ar": { "stringUnit": { "state": "translated", "value": "دعم Fud AI" } },
+        "az": { "stringUnit": { "state": "translated", "value": "Fud AI-ni Dəstəklə" } },
+        "de": { "stringUnit": { "state": "translated", "value": "Fud AI unterstützen" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Support Fud AI" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Apoya Fud AI" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Soutenir Fud AI" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "Fud AI का समर्थन करें" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Sostieni Fud AI" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "Fud AIをサポート" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "Fud AI 지원" } },
+        "nl": { "stringUnit": { "state": "translated", "value": "Steun Fud AI" } },
+        "pl": { "stringUnit": { "state": "translated", "value": "Wesprzyj Fud AI" } },
+        "pt-BR": { "stringUnit": { "state": "translated", "value": "Apoie o Fud AI" } },
+        "ro": { "stringUnit": { "state": "translated", "value": "Susține Fud AI" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Поддержать Fud AI" } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "支持 Fud AI" } }
+      }
+    },
+    "Help & Feedback": {
+      "localizations": {
+        "ar": { "stringUnit": { "state": "translated", "value": "المساعدة والملاحظات" } },
+        "az": { "stringUnit": { "state": "translated", "value": "Kömək və Rəy" } },
+        "de": { "stringUnit": { "state": "translated", "value": "Hilfe & Feedback" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Help & Feedback" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Ayuda y comentarios" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Aide et commentaires" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "सहायता और प्रतिक्रिया" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Aiuto e feedback" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "ヘルプとフィードバック" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "도움말 및 피드백" } },
+        "nl": { "stringUnit": { "state": "translated", "value": "Hulp & feedback" } },
+        "pl": { "stringUnit": { "state": "translated", "value": "Pomoc i opinie" } },
+        "pt-BR": { "stringUnit": { "state": "translated", "value": "Ajuda e feedback" } },
+        "ro": { "stringUnit": { "state": "translated", "value": "Ajutor și feedback" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Помощь и обратная связь" } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "帮助与反馈" } }
+      }
+    },
+    "Community": {
+      "localizations": {
+        "ar": { "stringUnit": { "state": "translated", "value": "المجتمع" } },
+        "az": { "stringUnit": { "state": "translated", "value": "İcma" } },
+        "de": { "stringUnit": { "state": "translated", "value": "Community" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Community" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Comunidad" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Communauté" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "समुदाय" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Community" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "コミュニティ" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "커뮤니티" } },
+        "nl": { "stringUnit": { "state": "translated", "value": "Community" } },
+        "pl": { "stringUnit": { "state": "translated", "value": "Społeczność" } },
+        "pt-BR": { "stringUnit": { "state": "translated", "value": "Comunidade" } },
+        "ro": { "stringUnit": { "state": "translated", "value": "Comunitate" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Сообщество" } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "社区" } }
+      }
+    },
+    "Legal": {
+      "localizations": {
+        "ar": { "stringUnit": { "state": "translated", "value": "القانونية" } },
+        "az": { "stringUnit": { "state": "translated", "value": "Hüquqi" } },
+        "de": { "stringUnit": { "state": "translated", "value": "Rechtliches" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Legal" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Legal" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Mentions légales" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "कानूनी" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Note legali" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "法的情報" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "법률" } },
+        "nl": { "stringUnit": { "state": "translated", "value": "Juridisch" } },
+        "pl": { "stringUnit": { "state": "translated", "value": "Informacje prawne" } },
+        "pt-BR": { "stringUnit": { "state": "translated", "value": "Informações legais" } },
+        "ro": { "stringUnit": { "state": "translated", "value": "Informații juridice" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Правовая информация" } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "法律信息" } }
+      }
     }
   },
   "version" : "1.1"

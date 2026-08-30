@@ -801,6 +801,11 @@
     <string name="about_follow_linkedin">Follow on LinkedIn</string>
     <string name="about_privacy">Privacy Policy</string>
     <string name="about_terms">Terms of Service</string>
+    <string name="about_category_app_updates">App &amp; Updates</string>
+    <string name="about_category_support">Support Fud AI</string>
+    <string name="about_category_help_feedback">Help &amp; Feedback</string>
+    <string name="about_category_community">Community</string>
+    <string name="about_category_legal">Legal</string>
     <string name="about_made_by">Made by Apoorv Darshan</string>
     <string name="about_with_care">with care, for everyone</string>
     <string name="about_share_message">I\'ve been tracking my meals with Fud AI — snap a photo, speak it, or type it, and the AI logs the calories. It\'s free, open source, and your data stays on your device.\n\nDownload: https://fud-ai.app</string>

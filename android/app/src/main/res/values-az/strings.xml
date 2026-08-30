@@ -594,6 +594,11 @@
     <string name="about_follow_linkedin">LinkedIn-də İzlə</string>
     <string name="about_privacy">Məxfilik Siyasəti</string>
     <string name="about_terms">Xidmət Şərtləri</string>
+    <string name="about_category_app_updates">Tətbiq və Yeniləmələr</string>
+    <string name="about_category_support">Fud AI-ni Dəstəklə</string>
+    <string name="about_category_help_feedback">Kömək və Rəy</string>
+    <string name="about_category_community">İcma</string>
+    <string name="about_category_legal">Hüquqi</string>
     <string name="about_made_by">Apoorv Darshan tərəfindən hazırlanıb</string>
     <string name="about_with_care">hər kəs üçün, qayğı ilə</string>
     <string name="about_share_message">Yeməklərimi Fud AI ilə izləyirəm — şəkil çək, danış və ya yaz, süni zəka kaloriləri qeyd etsin. Pulsuz, açıq mənbəlidir və məlumatların cihazında qalır.\n\nEndir: https://fud-ai.app</string>
