@@ -1491,9 +1491,14 @@ private fun SettingsCategoryRows(
     onSelect: (SettingsCategory) -> Unit
 ) {
     categories.forEachIndexed { index, category ->
+        val isSupportCategory = category == SettingsCategory.SUPPORT
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .background(
+                    if (isSupportCategory) AppColors.Calorie.copy(alpha = 0.11f)
+                    else Color.Transparent
+                )
                 .clickable { onSelect(category) }
                 .padding(horizontal = 16.dp, vertical = 14.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -1508,13 +1513,18 @@ private fun SettingsCategoryRows(
             Text(
                 text = stringResource(category.titleRes),
                 style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Medium,
+                color = if (isSupportCategory) AppColors.Calorie else MaterialTheme.colorScheme.onSurface,
+                fontWeight = if (isSupportCategory) FontWeight.SemiBold else FontWeight.Medium,
                 modifier = Modifier.weight(1f)
             )
             Icon(
                 Icons.Filled.ChevronRight,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.42f),
+                tint = if (isSupportCategory) {
+                    AppColors.Calorie.copy(alpha = 0.82f)
+                } else {
+                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.42f)
+                },
                 modifier = Modifier.size(20.dp)
             )
         }

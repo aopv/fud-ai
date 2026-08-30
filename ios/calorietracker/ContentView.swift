@@ -3650,11 +3650,20 @@ enum ProfileSettingsCategory: String, CaseIterable, Identifiable, Hashable {
 private struct ProfileSettingsCategoryRow: View {
     let category: ProfileSettingsCategory
 
+    private var isSupportCategory: Bool {
+        category == .support
+    }
+
     var body: some View {
         NavigationLink(value: category) {
             Label {
                 Text(category.title)
-                    .font(.system(.body, design: .rounded, weight: .medium))
+                    .font(.system(
+                        .body,
+                        design: .rounded,
+                        weight: isSupportCategory ? .semibold : .medium
+                    ))
+                    .foregroundStyle(isSupportCategory ? AppColors.calorie : .primary)
             } icon: {
                 Image(systemName: category.systemImage)
                     .foregroundStyle(AppColors.calorie)
@@ -3866,16 +3875,20 @@ struct ProfileView: View {
             Section {
                 ForEach(ProfileSettingsCategory.preferenceCases) { category in
                     ProfileSettingsCategoryRow(category: category)
+                        .listRowBackground(AppColors.appCard)
                 }
             }
-            .listRowBackground(AppColors.appCard)
 
             Section {
                 ForEach(ProfileSettingsCategory.appInfoCases) { category in
                     ProfileSettingsCategoryRow(category: category)
+                        .listRowBackground(
+                            category == .support
+                                ? AppColors.calorie.opacity(0.11)
+                                : AppColors.appCard
+                        )
                 }
             }
-            .listRowBackground(AppColors.appCard)
 
             Color.clear
                 .frame(height: 72)
