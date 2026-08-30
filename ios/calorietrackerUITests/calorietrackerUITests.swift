@@ -131,6 +131,32 @@ final class calorietrackerUITests: XCTestCase {
     }
 
     @MainActor
+    func testWaterTrackingUsesFixedFourthHomePillar() throws {
+        let app = XCUIApplication()
+        app.launchArguments += [
+            "-AppleLanguages", "(en)",
+            "-waterTrackingEnabled", "YES",
+        ]
+        app.launch()
+
+        XCTAssertTrue(app.staticTexts["Water"].waitForExistence(timeout: 8))
+        XCTAssertTrue(app.staticTexts["View More"].waitForExistence(timeout: 3))
+        app.staticTexts["View More"].tap()
+
+        XCTAssertTrue(app.navigationBars["Nutrition Details"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Protein, Carbs, Fat, Water"].waitForExistence(timeout: 3))
+        XCTAssertTrue(
+            app.staticTexts["Water stays fixed as the fourth Home pillar while Water Tracking is enabled."]
+                .waitForExistence(timeout: 3)
+        )
+
+        app.staticTexts["Home Nutrient Cards"].tap()
+        XCTAssertTrue(app.navigationBars["Home Nutrients"].waitForExistence(timeout: 3))
+        XCTAssertTrue(app.staticTexts["Choose 3 Nutrients"].waitForExistence(timeout: 3))
+        XCTAssertTrue(app.staticTexts["Water"].waitForExistence(timeout: 3))
+    }
+
+    @MainActor
     func testLaunchPerformance() throws {
         // This measures how long it takes to launch your application.
         measure(metrics: [XCTApplicationLaunchMetric()]) {

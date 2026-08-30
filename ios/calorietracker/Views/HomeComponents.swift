@@ -344,14 +344,24 @@ enum HomeTopNutrient: String, CaseIterable, Identifiable {
 }
 
 struct HomeNutrientPickerSheet: View {
+    let waterTrackingEnabled: Bool
     @Binding var selectionRawValue: String
     @Environment(\.dismiss) private var dismiss
     @State private var draftSelection: [HomeTopNutrient]
+    @State private var hiddenFourthNutrient: HomeTopNutrient?
 
-    init(selectionRawValue: Binding<String>) {
+    init(selectionRawValue: Binding<String>, waterTrackingEnabled: Bool) {
+        let storedSelection = HomeTopNutrient.selection(from: selectionRawValue.wrappedValue)
+        let visibleCount = waterTrackingEnabled ? 3 : 4
+        self.waterTrackingEnabled = waterTrackingEnabled
         _selectionRawValue = selectionRawValue
-        _draftSelection = State(initialValue: HomeTopNutrient.selection(from: selectionRawValue.wrappedValue))
+        _draftSelection = State(initialValue: Array(storedSelection.prefix(visibleCount)))
+        _hiddenFourthNutrient = State(
+            initialValue: waterTrackingEnabled ? storedSelection.dropFirst(3).first : nil
+        )
     }
+
+    private var selectionLimit: Int { waterTrackingEnabled ? 3 : 4 }
 
     var body: some View {
         NavigationStack {
@@ -366,6 +376,22 @@ struct HomeNutrientPickerSheet: View {
                                 .font(.system(.caption, design: .rounded, weight: .semibold))
                                 .foregroundStyle(.secondary)
                         }
+                    }
+
+                    if waterTrackingEnabled {
+                        HStack(spacing: 12) {
+                            Label("Water", systemImage: "drop.fill")
+                                .foregroundStyle(AppColors.calorie)
+                            Spacer()
+                            Text("4")
+                                .font(.system(.caption, design: .rounded, weight: .semibold))
+                                .foregroundStyle(.secondary)
+                            Image(systemName: "lock.fill")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
+                        .accessibilityElement(children: .combine)
+                        .accessibilityLabel("Water, fixed as the fourth Home pillar")
                     }
                 }
                 .listRowBackground(AppColors.appCard)
@@ -390,9 +416,17 @@ struct HomeNutrientPickerSheet: View {
                         .buttonStyle(.plain)
                     }
                 } header: {
-                    Text("Choose 4 Nutrients")
+                    if waterTrackingEnabled {
+                        Text("Choose 3 Nutrients")
+                    } else {
+                        Text("Choose 4 Nutrients")
+                    }
                 } footer: {
-                    Text("Pick exactly four nutrients for the Home summary row.")
+                    if waterTrackingEnabled {
+                        Text("Pick three nutrients. Water stays fixed as the fourth Home pillar while tracking is enabled.")
+                    } else {
+                        Text("Pick exactly four nutrients for the Home summary row.")
+                    }
                 }
                 .listRowBackground(AppColors.appCard)
             }
@@ -407,18 +441,19 @@ struct HomeNutrientPickerSheet: View {
 
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Reset") {
-                        draftSelection = HomeTopNutrient.defaultSelection
+                        draftSelection = Array(HomeTopNutrient.defaultSelection.prefix(selectionLimit))
+                        hiddenFourthNutrient = waterTrackingEnabled ? HomeTopNutrient.defaultSelection.last : nil
                     }
                     .tint(AppColors.calorie)
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") {
-                        selectionRawValue = HomeTopNutrient.storageValue(for: draftSelection)
+                        selectionRawValue = HomeTopNutrient.storageValue(for: persistedSelection)
                         dismiss()
                     }
                     .tint(AppColors.calorie)
-                    .disabled(draftSelection.count != 4)
+                    .disabled(draftSelection.count != selectionLimit)
                 }
             }
         }
@@ -427,12 +462,25 @@ struct HomeNutrientPickerSheet: View {
     private func toggle(_ nutrient: HomeTopNutrient) {
         if let index = draftSelection.firstIndex(of: nutrient) {
             draftSelection.remove(at: index)
-        } else if draftSelection.count < 4 {
+        } else if draftSelection.count < selectionLimit {
             draftSelection.append(nutrient)
         } else {
             draftSelection.removeLast()
             draftSelection.append(nutrient)
         }
+    }
+
+    private var persistedSelection: [HomeTopNutrient] {
+        guard waterTrackingEnabled else { return draftSelection }
+
+        var result = draftSelection
+        let candidates = [hiddenFourthNutrient].compactMap { $0 }
+            + HomeTopNutrient.defaultSelection
+            + HomeTopNutrient.allCases
+        if let hidden = candidates.first(where: { !result.contains($0) }) {
+            result.append(hidden)
+        }
+        return result
     }
 }
 

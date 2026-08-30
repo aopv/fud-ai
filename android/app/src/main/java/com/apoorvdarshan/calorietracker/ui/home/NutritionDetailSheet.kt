@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.LocalFireDepartment
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Spa
 import androidx.compose.material.icons.filled.WaterDrop
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -55,6 +56,7 @@ import com.apoorvdarshan.calorietracker.models.MacroValueFormatter
 import com.apoorvdarshan.calorietracker.models.OptionalNutrientGoals
 import com.apoorvdarshan.calorietracker.models.SupplementalNutrient
 import com.apoorvdarshan.calorietracker.models.UserProfile
+import com.apoorvdarshan.calorietracker.models.WaterUnit
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassDialog
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassDialogActions
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassSurface
@@ -80,6 +82,10 @@ fun NutritionDetailSheet(
     profile: UserProfile?,
     homeTopNutrients: List<HomeTopNutrient>,
     optionalGoals: OptionalNutrientGoals,
+    waterTrackingEnabled: Boolean,
+    waterCurrentMl: Int,
+    waterGoalMl: Int,
+    waterUnit: WaterUnit,
     onHomeTopNutrientsChange: (List<HomeTopNutrient>) -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -143,7 +149,31 @@ fun NutritionDetailSheet(
                 Card {
                     HomeCardsRow(
                         selected = homeTopNutrients,
+                        waterTrackingEnabled = waterTrackingEnabled,
                         onClick = { showHomeCardsPicker = true }
+                    )
+                }
+            }
+
+            if (waterTrackingEnabled) {
+                item { SectionHeader(stringResource(R.string.nutrition_section_water)) }
+                item {
+                    Card {
+                        DetailRow(
+                            Icons.Filled.WaterDrop,
+                            stringResource(R.string.water),
+                            waterUnit.displayValue(waterCurrentMl),
+                            waterUnit.symbol,
+                            goal = waterUnit.displayValue(waterGoalMl)
+                        )
+                    }
+                }
+                item {
+                    Text(
+                        stringResource(R.string.home_nutrients_water_fixed),
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
+                        modifier = Modifier.padding(horizontal = 14.dp)
                     )
                 }
             }
@@ -227,6 +257,7 @@ fun NutritionDetailSheet(
     if (showHomeCardsPicker) {
         HomeTopNutrientPickerDialog(
             selected = homeTopNutrients,
+            waterTrackingEnabled = waterTrackingEnabled,
             onSave = onHomeTopNutrientsChange,
             onDismiss = { showHomeCardsPicker = false }
         )
@@ -259,6 +290,7 @@ private fun SectionHeader(title: String) {
 @Composable
 private fun HomeCardsRow(
     selected: List<HomeTopNutrient>,
+    waterTrackingEnabled: Boolean,
     onClick: () -> Unit
 ) {
     Row(
@@ -272,8 +304,16 @@ private fun HomeCardsRow(
         Icon(Icons.Filled.Spa, null, tint = AppColors.Calorie, modifier = Modifier.size(20.dp))
         Column(Modifier.weight(1f)) {
             Text(stringResource(R.string.home_nutrient_cards), fontSize = 17.sp)
+            val nutrientNames = selected
+                .take(if (waterTrackingEnabled) 3 else 4)
+                .map { stringResource(it.displayNameRes) }
+            val displayedNames = if (waterTrackingEnabled) {
+                nutrientNames + stringResource(R.string.water)
+            } else {
+                nutrientNames
+            }
             Text(
-                selected.map { stringResource(it.displayNameRes) }.joinToString(", "),
+                displayedNames.joinToString(", "),
                 fontSize = 13.sp,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
             )
@@ -290,24 +330,35 @@ private fun HomeCardsRow(
 @Composable
 private fun HomeTopNutrientPickerDialog(
     selected: List<HomeTopNutrient>,
+    waterTrackingEnabled: Boolean,
     onSave: (List<HomeTopNutrient>) -> Unit,
     onDismiss: () -> Unit
 ) {
-    var draft by remember(selected) { mutableStateOf(HomeTopNutrient.normalized(selected)) }
+    val normalizedSelection = remember(selected) { HomeTopNutrient.normalized(selected) }
+    val selectionLimit = if (waterTrackingEnabled) 3 else 4
+    var draft by remember(selected, waterTrackingEnabled) {
+        mutableStateOf(normalizedSelection.take(selectionLimit))
+    }
+    val hiddenFourthNutrient = remember(selected, waterTrackingEnabled) {
+        if (waterTrackingEnabled) normalizedSelection.getOrNull(3) else null
+    }
 
     fun toggle(nutrient: HomeTopNutrient) {
         draft = if (nutrient in draft) {
             if (draft.size <= 1) draft else draft - nutrient
         } else {
             // iOS swaps out the last when full (removeLast + append) rather than ignoring.
-            if (draft.size >= 4) draft.dropLast(1) + nutrient else draft + nutrient
+            if (draft.size >= selectionLimit) draft.dropLast(1) + nutrient else draft + nutrient
         }
     }
 
     FudGlassDialog(onDismissRequest = onDismiss) {
         Text(stringResource(R.string.home_nutrients), fontSize = 22.sp, fontWeight = FontWeight.Bold)
         Text(
-            stringResource(R.string.home_nutrients_pick_four),
+            stringResource(
+                if (waterTrackingEnabled) R.string.home_nutrients_pick_three_water
+                else R.string.home_nutrients_pick_four
+            ),
             fontSize = 14.sp,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.62f)
         )
@@ -317,6 +368,42 @@ private fun HomeTopNutrientPickerDialog(
                 .heightIn(max = 430.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            if (waterTrackingEnabled) {
+                item(key = "fixed-water") {
+                    val shape = RoundedCornerShape(16.dp)
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .clip(shape)
+                            .background(AppColors.Calorie.copy(alpha = 0.11f))
+                            .border(0.7.dp, AppColors.Calorie.copy(alpha = 0.22f), shape)
+                            .padding(horizontal = 14.dp, vertical = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            Icons.Filled.WaterDrop,
+                            contentDescription = null,
+                            tint = AppColors.Calorie,
+                            modifier = Modifier.size(28.dp)
+                        )
+                        Spacer(Modifier.width(14.dp))
+                        Column(Modifier.weight(1f)) {
+                            Text(stringResource(R.string.water), fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
+                            Text(
+                                stringResource(R.string.home_nutrients_water_fixed_short),
+                                fontSize = 12.sp,
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
+                            )
+                        }
+                        Icon(
+                            Icons.Filled.Lock,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.45f),
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
+                }
+            }
             items(HomeTopNutrient.values().toList()) { nutrient ->
                 val checked = nutrient in draft
                 val shape = RoundedCornerShape(16.dp)
@@ -398,11 +485,20 @@ private fun HomeTopNutrientPickerDialog(
         FudGlassDialogActions(
             primaryText = stringResource(R.string.action_done),
             onPrimary = {
-                onSave(HomeTopNutrient.normalized(draft))
+                val savedSelection = if (waterTrackingEnabled) {
+                    val hidden = (listOfNotNull(hiddenFourthNutrient) +
+                        HomeTopNutrient.DefaultSelection + HomeTopNutrient.values())
+                        .first { it !in draft }
+                    draft + hidden
+                } else {
+                    draft
+                }
+                onSave(HomeTopNutrient.normalized(savedSelection))
                 onDismiss()
             },
             dismissText = stringResource(R.string.action_cancel),
-            onDismiss = onDismiss
+            onDismiss = onDismiss,
+            primaryEnabled = draft.size == selectionLimit
         )
     }
 }

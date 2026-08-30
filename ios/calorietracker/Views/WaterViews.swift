@@ -1,43 +1,5 @@
 import SwiftUI
 
-struct WaterProgressRow: View {
-    let current: Int
-    let goal: Int
-    let unit: WaterUnit
-
-    private var progress: Double {
-        guard goal > 0 else { return 0 }
-        return min(max(Double(current) / Double(goal), 0), 1)
-    }
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 7) {
-            HStack {
-                Label("Water", systemImage: "drop.fill")
-                    .font(.system(.subheadline, design: .rounded, weight: .semibold))
-                    .foregroundStyle(AppColors.calorie)
-                Spacer()
-                Text("\(unit.displayValue(forMilliliters: current)) / \(unit.formatted(milliliters: goal))")
-                    .font(.system(.caption, design: .rounded, weight: .medium))
-                    .foregroundStyle(.secondary)
-            }
-            GeometryReader { proxy in
-                ZStack(alignment: .leading) {
-                    Capsule()
-                        .fill(AppColors.calorie.opacity(0.16))
-                    Capsule()
-                        .fill(AppColors.calorie)
-                        .frame(width: proxy.size.width * progress)
-                }
-            }
-            .frame(height: 5)
-        }
-        .padding(.vertical, 2)
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel("Water, \(unit.displayValue(forMilliliters: current)) of \(unit.displayValue(forMilliliters: goal)) \(unit.accessibilityName)")
-    }
-}
-
 struct WaterCustomAmountSheet: View {
     let unit: WaterUnit
     let onAdd: (Int) -> Void

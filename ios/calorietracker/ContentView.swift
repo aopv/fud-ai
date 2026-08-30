@@ -623,8 +623,12 @@ struct HomeView: View {
     private var isToday: Bool { Calendar.current.isDateInToday(selectedDate) }
     private var foodLogSortOrder: FoodLogSortOrder { FoodLogSortOrder.order(for: foodLogSortOrderRaw) }
     private var homeTopNutrients: [HomeTopNutrient] { HomeTopNutrient.selection(from: homeTopNutrientsRaw) }
+    private var displayedHomeNutrients: [HomeTopNutrient] {
+        waterTrackingEnabled ? Array(homeTopNutrients.prefix(3)) : homeTopNutrients
+    }
     private var optionalNutrientGoals: OptionalNutrientGoals { OptionalNutrientGoals.decoded(from: optionalNutrientGoalsData) }
     private var waterUnit: WaterUnit { WaterUnit(rawValue: waterUnitRaw) ?? .defaultUnit }
+    private var waterPillarUnit: String { waterUnit == .fluidOunces ? " fl oz" : "ml" }
     private var logDateForSelectedDay: Date { logDate(on: selectedDate) }
 
     private var navigationTitle: String {
@@ -788,7 +792,7 @@ struct HomeView: View {
                         .listRowSeparator(.hidden)
 
                     HStack(alignment: .top, spacing: 4) {
-                        ForEach(homeTopNutrients) { nutrient in
+                        ForEach(displayedHomeNutrients) { nutrient in
                             MacroVerticalBar(
                                 label: nutrient.displayName,
                                 current: nutrient.value(from: foodStore, on: selectedDate),
@@ -798,23 +802,24 @@ struct HomeView: View {
                                 launchFillEpoch: launchFillEpoch
                             )
                         }
+                        if waterTrackingEnabled {
+                            MacroVerticalBar(
+                                label: "Water",
+                                current: waterUnit.displayAmount(
+                                    forMilliliters: waterStore.total(on: selectedDate)
+                                ),
+                                goal: waterUnit.displayAmount(forMilliliters: waterDailyGoal),
+                                unit: waterPillarUnit,
+                                gradient: AppColors.calorieGradient,
+                                launchFillEpoch: launchFillEpoch
+                            )
+                        }
                     }
                     .padding(.vertical, 4)
                     .contentShape(Rectangle())
                     .simultaneousGesture(daySwipeGesture)
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
-
-                    if waterTrackingEnabled {
-                        WaterProgressRow(
-                            current: waterStore.total(on: selectedDate),
-                            goal: waterDailyGoal,
-                            unit: waterUnit
-                        )
-                        .listRowBackground(Color.clear)
-                        .listRowSeparator(.hidden)
-                        .listRowInsets(EdgeInsets(top: 2, leading: 20, bottom: 2, trailing: 20))
-                    }
 
                     Button {
                         showNutritionDetail = true
@@ -2181,16 +2186,22 @@ struct NutritionDetailView: View {
     @Binding var homeTopNutrientsRaw: String
     @Environment(FoodStore.self) private var foodStore
     @Environment(ProfileStore.self) private var profileStore
+    @Environment(WaterStore.self) private var waterStore
     @Environment(\.dismiss) private var dismiss
     @AppStorage(OptionalNutrientGoals.storageKey) private var optionalNutrientGoalsData = Data()
+    @AppStorage(WaterSettings.enabledKey) private var waterTrackingEnabled = false
+    @AppStorage(WaterSettings.dailyGoalKey) private var waterDailyGoal = WaterSettings.defaultDailyGoalMl
+    @AppStorage(WaterSettings.unitKey) private var waterUnitRaw = WaterUnit.defaultUnit.rawValue
     @State private var showHomeNutrientPicker = false
 
     private var userProfile: UserProfile { profileStore.profile }
     private var optionalNutrientGoals: OptionalNutrientGoals { OptionalNutrientGoals.decoded(from: optionalNutrientGoalsData) }
     private var homeTopNutrients: [HomeTopNutrient] { HomeTopNutrient.selection(from: homeTopNutrientsRaw) }
+    private var waterUnit: WaterUnit { WaterUnit(rawValue: waterUnitRaw) ?? .defaultUnit }
     private var homeTopNutrientNames: String {
-        homeTopNutrients
+        let nutrientNames = (waterTrackingEnabled ? Array(homeTopNutrients.prefix(3)) : homeTopNutrients)
             .map(\.displayName)
+        return (waterTrackingEnabled ? nutrientNames + ["Water"] : nutrientNames)
             .joined(separator: ", ")
     }
 
@@ -2218,6 +2229,23 @@ struct NutritionDetailView: View {
                     .buttonStyle(.plain)
                 }
                 .listRowBackground(AppColors.appCard)
+
+                if waterTrackingEnabled {
+                    Section {
+                        NutritionDetailRow(
+                            icon: "drop.fill",
+                            label: "Water",
+                            value: waterUnit.displayValue(forMilliliters: waterStore.total(on: date)),
+                            unit: waterUnit.symbol,
+                            goal: waterUnit.displayValue(forMilliliters: waterDailyGoal)
+                        )
+                    } header: {
+                        Text("Water")
+                    } footer: {
+                        Text("Water stays fixed as the fourth Home pillar while Water Tracking is enabled.")
+                    }
+                    .listRowBackground(AppColors.appCard)
+                }
 
                 Section("Macros") {
                     NutritionDetailRow(icon: "flame.fill", label: "Calories", value: "\(foodStore.calories(for: date))", unit: "kcal", goal: "\(userProfile.effectiveCalories)")
@@ -2265,7 +2293,10 @@ struct NutritionDetailView: View {
             .navigationTitle("Nutrition Details")
             .navigationBarTitleDisplayMode(.inline)
             .sheet(isPresented: $showHomeNutrientPicker) {
-                HomeNutrientPickerSheet(selectionRawValue: $homeTopNutrientsRaw)
+                HomeNutrientPickerSheet(
+                    selectionRawValue: $homeTopNutrientsRaw,
+                    waterTrackingEnabled: waterTrackingEnabled
+                )
             }
             .onChange(of: homeTopNutrientsRaw) { _, _ in
                 refreshWidgetSnapshot()

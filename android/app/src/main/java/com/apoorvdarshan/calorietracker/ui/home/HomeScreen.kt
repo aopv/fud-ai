@@ -150,6 +150,7 @@ import com.apoorvdarshan.calorietracker.models.MealType
 import com.apoorvdarshan.calorietracker.models.QuickAction
 import com.apoorvdarshan.calorietracker.models.QuickActionRequest
 import com.apoorvdarshan.calorietracker.models.ServingUnitOption
+import com.apoorvdarshan.calorietracker.models.WaterUnit
 import com.apoorvdarshan.calorietracker.services.ai.FoodAnalysis
 import com.apoorvdarshan.calorietracker.ui.components.InAppCameraCaptureDialog
 import com.apoorvdarshan.calorietracker.ui.components.MacroCard
@@ -381,24 +382,24 @@ fun HomeScreen(
                             .padding(horizontal = 16.dp),
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
-                        ui.homeTopNutrients.forEach { nutrient ->
+                        ui.homeTopNutrients.take(if (ui.waterTrackingEnabled) 3 else 4).forEach { nutrient ->
                             MacroCard(
                                 label = stringResource(nutrient.displayNameRes),
                                 current = nutrient.current(ui.todayEntries),
-                                goal = nutrient.goal(ui.profile, ui.optionalNutrientGoals),
+                                goal = nutrient.goal(ui.profile, ui.optionalNutrientGoals).toDouble(),
                                 unit = nutrient.unit,
                                 modifier = Modifier.weight(1f)
                             )
                         }
-                    }
-                    if (ui.waterTrackingEnabled) {
-                        Spacer(Modifier.height(8.dp))
-                        WaterProgressRow(
-                            current = ui.waterTodayMl,
-                            goal = ui.waterDailyGoalMl,
-                            unit = ui.waterUnit,
-                            modifier = Modifier.padding(horizontal = 20.dp)
-                        )
+                        if (ui.waterTrackingEnabled) {
+                            MacroCard(
+                                label = stringResource(R.string.water),
+                                current = ui.waterUnit.displayAmount(ui.waterTodayMl),
+                                goal = ui.waterUnit.displayAmount(ui.waterDailyGoalMl),
+                                unit = if (ui.waterUnit == WaterUnit.FLUID_OUNCES) " fl oz" else "ml",
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
                     }
                     Box(
                         Modifier
@@ -789,6 +790,10 @@ fun HomeScreen(
             profile = ui.profile,
             homeTopNutrients = ui.homeTopNutrients,
             optionalGoals = ui.optionalNutrientGoals,
+            waterTrackingEnabled = ui.waterTrackingEnabled,
+            waterCurrentMl = ui.waterTodayMl,
+            waterGoalMl = ui.waterDailyGoalMl,
+            waterUnit = ui.waterUnit,
             onHomeTopNutrientsChange = vm::setHomeTopNutrients,
             onDismiss = { showNutritionDetail = false }
         )

@@ -44,12 +44,12 @@ import com.apoorvdarshan.calorietracker.ui.theme.AppColors
 fun MacroCard(
     label: String,
     current: Double,
-    goal: Int,
+    goal: Double,
     unit: String = "g",
     modifier: Modifier = Modifier,
     gradientColors: List<Color> = listOf(AppColors.CalorieStart, AppColors.CalorieEnd)
 ) {
-    val progress = if (goal > 0) (current.toFloat() / goal).coerceIn(0f, 1f) else 0f
+    val progress = if (goal > 0) (current / goal).toFloat().coerceIn(0f, 1f) else 0f
     // Fill-from-zero on app open (see CalorieHero). Saveable lastEpoch survives tab
     // switches so only a real app-open replays the fill; tab returns snap.
     val epoch = LocalLaunchFillEpoch.current
@@ -67,7 +67,7 @@ fun MacroCard(
     }
     val animated = animatable.value
     val firstColor = gradientColors.firstOrNull() ?: AppColors.Calorie
-    val goalValue = goal.toDouble()
+    val goalValue = goal
     val statusText = when {
         goal <= 0 -> "No goal"
         current == goalValue -> "Goal reached"

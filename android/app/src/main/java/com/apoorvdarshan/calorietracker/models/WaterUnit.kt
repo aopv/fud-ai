@@ -9,9 +9,13 @@ enum class WaterUnit(val storageValue: String, val symbol: String) {
     MILLILITERS("ml", "ml"),
     FLUID_OUNCES("floz", "fl oz");
 
+    fun displayAmount(milliliters: Int): Double =
+        if (this == MILLILITERS) milliliters.toDouble()
+        else milliliters / MILLILITERS_PER_FLUID_OUNCE
+
     fun displayValue(milliliters: Int): String {
         if (this == MILLILITERS) return NumberFormat.getIntegerInstance().format(milliliters)
-        val ounces = milliliters / MILLILITERS_PER_FLUID_OUNCE
+        val ounces = displayAmount(milliliters)
         return if (abs(ounces - ounces.roundToInt()) < 0.05) {
             NumberFormat.getIntegerInstance().format(ounces.roundToInt())
         } else {

@@ -25,9 +25,15 @@ enum WaterUnit: String, CaseIterable, Identifiable {
     var symbol: String { self == .milliliters ? "ml" : "fl oz" }
     var accessibilityName: String { self == .milliliters ? "milliliters" : "fluid ounces" }
 
+    func displayAmount(forMilliliters milliliters: Int) -> Double {
+        self == .milliliters
+            ? Double(milliliters)
+            : Double(milliliters) / Self.millilitersPerFluidOunce
+    }
+
     func displayValue(forMilliliters milliliters: Int) -> String {
         if self == .milliliters { return milliliters.formatted() }
-        let ounces = Double(milliliters) / Self.millilitersPerFluidOunce
+        let ounces = displayAmount(forMilliliters: milliliters)
         if abs(ounces.rounded() - ounces) < 0.05 { return Int(ounces.rounded()).formatted() }
         return ounces.formatted(.number.precision(.fractionLength(1)))
     }

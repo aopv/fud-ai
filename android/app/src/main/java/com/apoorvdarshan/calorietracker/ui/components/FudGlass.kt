@@ -269,7 +269,8 @@ fun FudGlassTextButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    color: Color = AppColors.Calorie
+    color: Color = AppColors.Calorie,
+    enabled: Boolean = true
 ) {
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
     val shape = RoundedCornerShape(14.dp)
@@ -288,11 +289,16 @@ fun FudGlassTextButton(
             .clip(shape)
             .background(fill)
             .border(0.6.dp, border, shape)
-            .clickable(onClick = onClick)
+            .clickable(enabled = enabled, onClick = onClick)
             .padding(horizontal = 14.dp, vertical = 10.dp),
         contentAlignment = Alignment.Center
     ) {
-        Text(text, color = color, fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
+        Text(
+            text,
+            color = color.copy(alpha = if (enabled) color.alpha else color.alpha * 0.38f),
+            fontSize = 15.sp,
+            fontWeight = FontWeight.SemiBold
+        )
     }
 }
 
@@ -303,7 +309,8 @@ fun FudGlassDialogActions(
     modifier: Modifier = Modifier,
     dismissText: String? = null,
     onDismiss: (() -> Unit)? = null,
-    destructive: Boolean = false
+    destructive: Boolean = false,
+    primaryEnabled: Boolean = true
 ) {
     Row(
         modifier.fillMaxWidth(),
@@ -319,6 +326,11 @@ fun FudGlassDialogActions(
             Spacer(Modifier.width(6.dp))
         }
         val primaryColor = if (destructive) Color(0xFFFF453A) else AppColors.Calorie
-        FudGlassTextButton(text = primaryText, onClick = onPrimary, color = primaryColor)
+        FudGlassTextButton(
+            text = primaryText,
+            onClick = onPrimary,
+            color = primaryColor,
+            enabled = primaryEnabled
+        )
     }
 }
