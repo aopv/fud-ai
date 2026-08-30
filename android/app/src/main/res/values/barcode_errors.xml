@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_barcode_invalid">That barcode could not be read. Try scanning it again.</string>
+    <string name="error_barcode_product_not_found">Product not found in Open Food Facts. Scan the nutrition label instead.</string>
+    <string name="error_barcode_missing_nutrition">This barcode was found, but nutrition data is incomplete. Scan the nutrition label instead.</string>
+    <string name="error_barcode_rate_limited">Too many barcode lookups were made. Wait a moment, then try again.</string>
+    <string name="error_barcode_service_unavailable">Open Food Facts is temporarily unavailable. Try again later.</string>
+    <string name="error_barcode_unexpected_response">Open Food Facts returned an unexpected response.</string>
+    <string name="error_barcode_network">Could not connect to Open Food Facts. Check your connection and try again.</string>
+</resources>

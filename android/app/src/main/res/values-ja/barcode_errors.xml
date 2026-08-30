@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_barcode_invalid">このバーコードを読み取れませんでした。もう一度スキャンしてください。</string>
+    <string name="error_barcode_product_not_found">Open Food Facts に商品が見つかりませんでした。代わりに栄養成分表示をスキャンしてください。</string>
+    <string name="error_barcode_missing_nutrition">バーコードは見つかりましたが、栄養データが不完全です。代わりに栄養成分表示をスキャンしてください。</string>
+    <string name="error_barcode_rate_limited">バーコード検索の回数が多すぎます。しばらく待ってから、もう一度お試しください。</string>
+    <string name="error_barcode_service_unavailable">Open Food Facts は一時的に利用できません。後でもう一度お試しください。</string>
+    <string name="error_barcode_unexpected_response">Open Food Facts から予期しない応答が返されました。</string>
+    <string name="error_barcode_network">Open Food Facts に接続できませんでした。接続を確認して、もう一度お試しください。</string>
+</resources>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_barcode_invalid">यह बारकोड पढ़ा नहीं जा सका। इसे फिर से स्कैन करें।</string>
+    <string name="error_barcode_product_not_found">यह उत्पाद Open Food Facts में नहीं मिला। इसके बजाय पोषण लेबल स्कैन करें।</string>
+    <string name="error_barcode_missing_nutrition">यह बारकोड मिला, लेकिन पोषण जानकारी अधूरी है। इसके बजाय पोषण लेबल स्कैन करें।</string>
+    <string name="error_barcode_rate_limited">बहुत अधिक बारकोड खोज की गई हैं। थोड़ी देर प्रतीक्षा करें और फिर प्रयास करें।</string>
+    <string name="error_barcode_service_unavailable">Open Food Facts अभी अस्थायी रूप से उपलब्ध नहीं है। बाद में फिर प्रयास करें।</string>
+    <string name="error_barcode_unexpected_response">Open Food Facts से अनपेक्षित प्रतिक्रिया मिली।</string>
+    <string name="error_barcode_network">Open Food Facts से कनेक्ट नहीं हो सका। अपना कनेक्शन जाँचें और फिर प्रयास करें।</string>
+</resources>

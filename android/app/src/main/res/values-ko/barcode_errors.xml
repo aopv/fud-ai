@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_barcode_invalid">이 바코드를 읽을 수 없습니다. 다시 스캔해 주세요.</string>
+    <string name="error_barcode_product_not_found">Open Food Facts에서 제품을 찾지 못했습니다. 대신 영양 정보 라벨을 스캔해 주세요.</string>
+    <string name="error_barcode_missing_nutrition">바코드는 찾았지만 영양 정보가 불완전합니다. 대신 영양 정보 라벨을 스캔해 주세요.</string>
+    <string name="error_barcode_rate_limited">바코드 조회가 너무 많습니다. 잠시 기다린 후 다시 시도해 주세요.</string>
+    <string name="error_barcode_service_unavailable">Open Food Facts를 일시적으로 사용할 수 없습니다. 나중에 다시 시도해 주세요.</string>
+    <string name="error_barcode_unexpected_response">Open Food Facts에서 예상하지 못한 응답을 반환했습니다.</string>
+    <string name="error_barcode_network">Open Food Facts에 연결할 수 없습니다. 연결을 확인하고 다시 시도해 주세요.</string>
+</resources>

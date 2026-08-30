@@ -419,12 +419,32 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
             try {
                 val analysis = OpenFoodFactsService.lookup(barcode)
                 savePendingDraft(analysis, imageBytes = null, source = FoodSource.BARCODE)
+            } catch (error: CancellationException) {
+                throw error
+            } catch (error: OpenFoodFactsService.LookupException) {
+                _ui.value = _ui.value.copy(
+                    analyzing = false,
+                    error = barcodeLookupErrorMessage(error)
+                )
             } catch (e: Throwable) {
                 _ui.value = _ui.value.copy(analyzing = false, error = e.localizedMessage ?: container.appContext.getString(R.string.error_barcode_lookup_failed))
             } finally {
                 container.analyzingFood.value = false
             }
         }
+    }
+
+    private fun barcodeLookupErrorMessage(error: OpenFoodFactsService.LookupException): String {
+        val messageRes = when (error.failure) {
+            OpenFoodFactsService.LookupFailure.INVALID_BARCODE -> R.string.error_barcode_invalid
+            OpenFoodFactsService.LookupFailure.PRODUCT_NOT_FOUND -> R.string.error_barcode_product_not_found
+            OpenFoodFactsService.LookupFailure.MISSING_NUTRITION -> R.string.error_barcode_missing_nutrition
+            OpenFoodFactsService.LookupFailure.RATE_LIMITED -> R.string.error_barcode_rate_limited
+            OpenFoodFactsService.LookupFailure.SERVICE_UNAVAILABLE -> R.string.error_barcode_service_unavailable
+            OpenFoodFactsService.LookupFailure.UNEXPECTED_RESPONSE -> R.string.error_barcode_unexpected_response
+            OpenFoodFactsService.LookupFailure.NETWORK -> R.string.error_barcode_network
+        }
+        return container.appContext.getString(messageRes)
     }
 
     fun saveAnalysis(

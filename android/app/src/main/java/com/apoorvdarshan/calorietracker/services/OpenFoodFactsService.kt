@@ -1,64 +1,118 @@
 package com.apoorvdarshan.calorietracker.services
 
+import com.apoorvdarshan.calorietracker.BuildConfig
 import com.apoorvdarshan.calorietracker.models.ServingUnitOption
 import com.apoorvdarshan.calorietracker.models.SupplementalNutrient
 import com.apoorvdarshan.calorietracker.services.ai.FoodAnalysis
 import com.apoorvdarshan.calorietracker.services.ai.FoodAnalysisService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.doubleOrNull
+import kotlinx.serialization.json.intOrNull
+import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import org.json.JSONObject
-import java.net.URLEncoder
+import okhttp3.HttpUrl.Companion.toHttpUrl
+import java.io.IOException
 import java.util.Locale
 import kotlin.math.round
 import kotlin.math.roundToInt
 
 object OpenFoodFactsService {
     private const val FIELDS = "product_name,generic_name,brands,quantity,serving_size,serving_quantity,nutriments"
-    private const val USER_AGENT = "FudAI/Android (https://fud-ai.app)"
+    private val API_BASE_URL = "https://world.openfoodfacts.org/".toHttpUrl()
 
-    class LookupException(message: String) : Exception(message)
+    enum class LookupFailure {
+        INVALID_BARCODE,
+        PRODUCT_NOT_FOUND,
+        MISSING_NUTRITION,
+        RATE_LIMITED,
+        SERVICE_UNAVAILABLE,
+        UNEXPECTED_RESPONSE,
+        NETWORK
+    }
+
+    class LookupException(
+        val failure: LookupFailure,
+        val httpStatus: Int? = null,
+        cause: Throwable? = null
+    ) : Exception(null, cause)
 
     suspend fun lookup(
         barcode: String,
-        client: OkHttpClient = FoodAnalysisService.defaultClient
+        client: OkHttpClient = FoodAnalysisService.defaultClient,
+        baseUrl: HttpUrl = API_BASE_URL
     ): FoodAnalysis = withContext(Dispatchers.IO) {
-        val code = barcode.trim()
-        if (code.isEmpty()) throw LookupException("That barcode could not be read. Try scanning it again.")
+        val code = normalizedBarcode(barcode)
+            ?: throw LookupException(LookupFailure.INVALID_BARCODE)
 
-        val encodedCode = URLEncoder.encode(code, "UTF-8")
-        val url = "https://world.openfoodfacts.org/api/v2/product/$encodedCode.json?fields=$FIELDS"
+        val url = baseUrl.newBuilder()
+            .addPathSegments("api/v2/product")
+            .addPathSegment("$code.json")
+            .addQueryParameter("fields", FIELDS)
+            .build()
         val request = Request.Builder()
             .url(url)
-            .addHeader("User-Agent", USER_AGENT)
+            .addHeader("User-Agent", userAgent)
             .build()
 
-        val raw = runCatching { client.newCall(request).execute() }
-            .getOrElse { throw LookupException("Barcode lookup failed: ${it.localizedMessage ?: "network error"}") }
-            .use { response ->
-                if (!response.isSuccessful) {
-                    throw LookupException("Open Food Facts returned an unexpected response.")
+        val raw = try {
+            client.newCall(request).execute().use { response ->
+                when {
+                    response.code == 404 -> throw LookupException(
+                        LookupFailure.PRODUCT_NOT_FOUND,
+                        httpStatus = response.code
+                    )
+                    response.code == 429 -> throw LookupException(
+                        LookupFailure.RATE_LIMITED,
+                        httpStatus = response.code
+                    )
+                    response.code in 500..599 -> throw LookupException(
+                        LookupFailure.SERVICE_UNAVAILABLE,
+                        httpStatus = response.code
+                    )
+                    !response.isSuccessful -> throw LookupException(
+                        LookupFailure.UNEXPECTED_RESPONSE,
+                        httpStatus = response.code
+                    )
                 }
                 response.body?.string().orEmpty()
             }
+        } catch (error: LookupException) {
+            throw error
+        } catch (error: IOException) {
+            throw LookupException(LookupFailure.NETWORK, cause = error)
+        }
 
-        val json = runCatching { JSONObject(raw) }.getOrNull()
-            ?: throw LookupException("Open Food Facts returned an unexpected response.")
-        val product = json.optJSONObject("product")
-        if (json.optInt("status", 0) == 0 || product == null) {
-            throw LookupException("Product not found in Open Food Facts. Scan the nutrition label instead.")
+        val json = runCatching { Json.parseToJsonElement(raw) as? JsonObject }.getOrNull()
+            ?: throw LookupException(LookupFailure.UNEXPECTED_RESPONSE)
+        val product = json["product"] as? JsonObject
+        if (json.flexibleInt("status") == 0 || product == null) {
+            throw LookupException(LookupFailure.PRODUCT_NOT_FOUND)
         }
         analysis(product, code)
     }
 
-    private fun analysis(product: JSONObject, barcode: String): FoodAnalysis {
-        val nutriments = product.optJSONObject("nutriments")
-            ?: throw LookupException("This barcode was found, but nutrition data is incomplete. Scan the nutrition label instead.")
+    internal fun normalizedBarcode(raw: String): String? {
+        val code = raw.trim()
+        if (code.isEmpty() || code.length > 24 || code.any { it !in '0'..'9' }) return null
+        return code
+    }
+
+    private val userAgent: String
+        get() = "FudAI/${BuildConfig.VERSION_NAME} (https://fud-ai.app)"
+
+    private fun analysis(product: JsonObject, barcode: String): FoodAnalysis {
+        val nutriments = product["nutriments"] as? JsonObject
+            ?: throw LookupException(LookupFailure.MISSING_NUTRITION)
 
         val servingGrams = maxOf(
             product.flexibleDouble("serving_quantity")
-                ?: gramsFrom(product.optString("serving_size").takeIf { it.isNotBlank() })
+                ?: gramsFrom(product.string("serving_size"))
                 ?: 100.0,
             1.0
         )
@@ -76,7 +130,7 @@ object OpenFoodFactsService {
         val fat = servingValue("fat")
 
         if (calories == null && protein == null && carbs == null && fat == null) {
-            throw LookupException("This barcode was found, but nutrition data is incomplete. Scan the nutrition label instead.")
+            throw LookupException(LookupFailure.MISSING_NUTRITION)
         }
 
         val servingOption = ServingUnitOption(unit = "serving", gramsPerUnit = servingGrams, quantity = 1.0)
@@ -122,12 +176,12 @@ object OpenFoodFactsService {
         )
     }
 
-    private fun productName(product: JSONObject, barcode: String): String {
+    private fun productName(product: JsonObject, barcode: String): String {
         val primary = firstNonEmpty(
-            product.optString("product_name"),
-            product.optString("generic_name")
+            product.string("product_name"),
+            product.string("generic_name")
         )
-        val brand = product.optString("brands")
+        val brand = product.string("brands").orEmpty()
             .split(",")
             .firstOrNull()
             ?.trim()
@@ -169,12 +223,18 @@ object OpenFoodFactsService {
         }
     }
 
-    private fun JSONObject.flexibleDouble(key: String): Double? {
-        if (!has(key) || isNull(key)) return null
-        return when (val value = opt(key)) {
-            is Number -> value.toDouble()
-            is String -> value.trim().replace(",", ".").toDoubleOrNull()
-            else -> null
-        }?.takeUnless { it.isNaN() || it.isInfinite() }
+    private fun JsonObject.string(key: String): String? =
+        (this[key] as? JsonPrimitive)?.contentOrNull?.trim()?.takeIf { it.isNotEmpty() }
+
+    private fun JsonObject.flexibleInt(key: String): Int? {
+        val value = this[key] as? JsonPrimitive ?: return null
+        return value.intOrNull ?: value.contentOrNull?.trim()?.toIntOrNull()
+    }
+
+    private fun JsonObject.flexibleDouble(key: String): Double? {
+        val value = this[key] as? JsonPrimitive ?: return null
+        return (value.doubleOrNull
+            ?: value.contentOrNull?.trim()?.replace(",", ".")?.toDoubleOrNull())
+            ?.takeUnless { it.isNaN() || it.isInfinite() }
     }
 }

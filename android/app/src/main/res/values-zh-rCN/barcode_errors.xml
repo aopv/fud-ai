@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_barcode_invalid">无法读取此条形码。请重新扫描。</string>
+    <string name="error_barcode_product_not_found">在 Open Food Facts 中未找到该产品。请改为扫描营养成分标签。</string>
+    <string name="error_barcode_missing_nutrition">已找到该条形码，但营养数据不完整。请改为扫描营养成分标签。</string>
+    <string name="error_barcode_rate_limited">条形码查询次数过多。请稍等片刻后重试。</string>
+    <string name="error_barcode_service_unavailable">Open Food Facts 暂时不可用。请稍后重试。</string>
+    <string name="error_barcode_unexpected_response">Open Food Facts 返回了意外响应。</string>
+    <string name="error_barcode_network">无法连接到 Open Food Facts。请检查网络连接后重试。</string>
+</resources>

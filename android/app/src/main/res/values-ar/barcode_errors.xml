@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_barcode_invalid">تعذّر قراءة هذا الرمز الشريطي. حاول مسحه ضوئيًا مرة أخرى.</string>
+    <string name="error_barcode_product_not_found">المنتج غير موجود في Open Food Facts. امسح ملصق القيم الغذائية بدلاً من ذلك.</string>
+    <string name="error_barcode_missing_nutrition">تم العثور على هذا الرمز الشريطي، لكن بيانات التغذية غير مكتملة. امسح ملصق القيم الغذائية بدلاً من ذلك.</string>
+    <string name="error_barcode_rate_limited">تم إجراء عدد كبير جدًا من عمليات البحث عن الرموز الشريطية. انتظر قليلاً ثم حاول مرة أخرى.</string>
+    <string name="error_barcode_service_unavailable">Open Food Facts غير متاح مؤقتًا. حاول مرة أخرى لاحقًا.</string>
+    <string name="error_barcode_unexpected_response">أعاد Open Food Facts استجابة غير متوقعة.</string>
+    <string name="error_barcode_network">تعذّر الاتصال بـ Open Food Facts. تحقّق من اتصالك وحاول مرة أخرى.</string>
+</resources>

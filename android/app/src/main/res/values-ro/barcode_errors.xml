@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_barcode_invalid">Acest cod de bare nu a putut fi citit. Încearcă să îl scanezi din nou.</string>
+    <string name="error_barcode_product_not_found">Produsul nu a fost găsit în Open Food Facts. Scanează în schimb eticheta nutrițională.</string>
+    <string name="error_barcode_missing_nutrition">Codul de bare a fost găsit, dar datele nutriționale sunt incomplete. Scanează în schimb eticheta nutrițională.</string>
+    <string name="error_barcode_rate_limited">Au fost efectuate prea multe căutări de coduri de bare. Așteaptă puțin și încearcă din nou.</string>
+    <string name="error_barcode_service_unavailable">Open Food Facts este temporar indisponibil. Încearcă din nou mai târziu.</string>
+    <string name="error_barcode_unexpected_response">Open Food Facts a returnat un răspuns neașteptat.</string>
+    <string name="error_barcode_network">Conectarea la Open Food Facts a eșuat. Verifică conexiunea și încearcă din nou.</string>
+</resources>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_barcode_invalid">Deze streepjescode kon niet worden gelezen. Scan hem opnieuw.</string>
+    <string name="error_barcode_product_not_found">Product niet gevonden in Open Food Facts. Scan in plaats daarvan het voedingsetiket.</string>
+    <string name="error_barcode_missing_nutrition">De streepjescode is gevonden, maar de voedingsgegevens zijn onvolledig. Scan in plaats daarvan het voedingsetiket.</string>
+    <string name="error_barcode_rate_limited">Er zijn te veel streepjescodes opgezocht. Wacht even en probeer het opnieuw.</string>
+    <string name="error_barcode_service_unavailable">Open Food Facts is tijdelijk niet beschikbaar. Probeer het later opnieuw.</string>
+    <string name="error_barcode_unexpected_response">Open Food Facts gaf een onverwacht antwoord.</string>
+    <string name="error_barcode_network">Kan geen verbinding maken met Open Food Facts. Controleer je verbinding en probeer het opnieuw.</string>
+</resources>
