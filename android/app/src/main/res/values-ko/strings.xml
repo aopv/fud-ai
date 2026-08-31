@@ -729,4 +729,28 @@
     <string name="settings_calc_target_citation">Hall KD, et al. (2011). “에너지 불균형이 체중에 미치는 영향의 정량화.” Lancet 378(9793):826–837. 파운드당 3,500 kcal이라는 고전적 규칙은 Wishnofsky M (1958), Am J Clin Nutr 6:542–546에서 유래했습니다.</string>
     <string name="settings_calc_split_citation">Morton RW, et al. (2018). “저항 운동으로 인한 근육량 및 근력 증가에 단백질 보충이 미치는 영향에 대한 체계적 문헌고찰, 메타분석 및 메타회귀.” Br J Sports Med 52(6):376–384.</string>
     <string name="settings_calc_micro_citation">추정치는 기반 AI 모델의 학습 데이터(USDA FoodData Central, 제조업체 영양 표시, 과학 문헌)를 바탕으로 합니다. 정확도는 음식, 1회 제공량의 가시성, 제공자 모델에 따라 달라집니다. 자주 기록하는 음식은 항상 라벨과 대조하세요.</string>
+
+    <string name="about_litert_notices">LiteRT-LM 서드 파티 고지사항</string>
+    <string name="about_litert_notices_load_error">LiteRT-LM 서드 파티 고지사항을 불러올 수 없습니다.</string>
+    <string name="settings_model_source">모델 출처</string>
+    <string name="settings_model_license_format">%1$s 라이선스</string>
+    <string name="settings_model_requires_8gb">RAM 8GB 기기가 필요합니다</string>
+    <string name="settings_model_low_ram_unsupported">RAM이 적은 기기에서는 지원되지 않습니다</string>
+    <string name="settings_model_processor_unsupported">이 기기의 프로세서는 지원되지 않습니다</string>
+    <string name="action_download">다운로드</string>
+    <string name="ai_provider_local_gemma">Gemma 4 E2B(온디바이스)</string>
+    <string name="ai_key_placeholder_local">API 키 필요 없음</string>
+    <string name="speech_provider_local_whisper">Whisper Base(온디바이스)</string>
+    <string name="speech_key_placeholder_local">API 키 필요 없음</string>
+    <string name="speech_description_local_whisper">다운로드한 다국어 Whisper Base입니다. 오디오는 이 기기에만 유지되며 API 키가 필요하지 않습니다.</string>
+    <string name="settings_on_device_models">온디바이스 모델</string>
+    <string name="settings_on_device_models_info">모델은 앱의 비공개 저장 공간에 다운로드되며 사진, 프롬프트 또는 오디오를 서버로 전송하지 않고 실행됩니다. 다운로드 크기와 모델 라이선스 약관이 적용됩니다.</string>
+    <string name="settings_local_model_not_downloaded_format">%1$s · 다운로드되지 않음</string>
+    <string name="settings_local_model_downloading_format">다운로드 중 · %1$d%%</string>
+    <string name="settings_local_model_installed">설치됨 · 오프라인 사용 가능</string>
+    <string name="settings_view_model_license">모델 라이선스 보기</string>
+    <string name="settings_info_speech_fallback">선택한 녹음 오디오용 STT 제공업체가 실패하면 전사를 다시 시도합니다. 생성하는 것은 전사문뿐이며, 해당 전사문은 계속 일반 텍스트 AI 경로를 따릅니다. Android 기본 음성 인식에는 자체 복구 기능이 이미 있습니다.</string>
+    <string name="settings_speech_fallback_footer">선택한 녹음 오디오 제공업체가 실패할 때 사용됩니다. Android 기본 음성 인식에는 자체 복구 기능이 이미 있습니다.</string>
+    <string name="about_whisper_notices">Whisper Base 타사 고지</string>
+    <string name="about_whisper_notices_load_error">Whisper Base 타사 고지를 불러올 수 없습니다.</string>
 </resources>

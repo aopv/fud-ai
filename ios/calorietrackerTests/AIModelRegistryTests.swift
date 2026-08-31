@@ -2,9 +2,10 @@ import Foundation
 import Testing
 @testable import calorietracker
 
+@MainActor
 struct AIModelRegistryTests {
     @Test func modelPresetsAndDefaultsMatchTheApprovedRegistryOrder() {
-        let registries: [(provider: AIProvider, models: [String])] = [
+        var registries: [(provider: AIProvider, models: [String])] = [
             (.gemini, [
                 "gemini-3.5-flash-lite",
                 "gemini-3.7-flash",
@@ -94,6 +95,10 @@ struct AIModelRegistryTests {
             (.customOpenAI, []),
         ]
 
+        if Gemma4LocalModelManager.isCurrentDeviceSelectable {
+            registries.insert((.gemma4Local, [Gemma4LocalModelManager.modelID]), at: 0)
+        }
+
         #expect(registries.map(\.provider) == AIProvider.visionProviders)
         for registry in registries {
             #expect(registry.provider.models == registry.models)
@@ -102,12 +107,14 @@ struct AIModelRegistryTests {
     }
 
     @Test func textProvidersExposeCurrentTextOnlyChoicesWithoutEnteringVisionRegistry() {
-        #expect(AIProvider.textProviders == AIProvider.allCases)
+        #expect(AIProvider.textProviders == AIProvider.allCases.filter(\.isAvailableOnCurrentDevice))
         #expect(!AIProvider.visionProviders.contains(.appleIntelligence))
         #expect(!AIProvider.visionProviders.contains(.deepseek))
         #expect(!AIProvider.visionProviders.contains(.cerebras))
         #expect(AIProvider.appleIntelligence.textModels == ["System Language Model"])
         #expect(!AIProvider.appleIntelligence.requiresAPIKey)
+        #expect(AIProvider.gemma4Local.models == [Gemma4LocalModelManager.modelID])
+        #expect(!AIProvider.gemma4Local.requiresAPIKey)
         #expect(AIProvider.deepseek.textModels == ["deepseek-v4-flash", "deepseek-v4-pro"])
         #expect(AIProvider.cerebras.textModels == ["gpt-oss-120b", "gemma-4-31b"])
         #expect(AIProvider.groq.defaultTextModel == "openai/gpt-oss-20b")
@@ -232,6 +239,7 @@ struct AIModelRegistryTests {
     @Test func speechProviderDefaultsMatchTheApprovedModels() {
         let defaults: [(provider: SpeechProvider, model: String)] = [
             (.nativeIOS, ""),
+            (.whisperBase, "base"),
             (.gemini, "gemini-3.5-transcribe"),
             (.openai, "gpt-transcribe"),
             (.groq, "whisper-large-v3"),

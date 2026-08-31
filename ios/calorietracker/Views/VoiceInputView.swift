@@ -4,7 +4,7 @@ import AVFoundation
 
 /// Voice input that branches based on the user's selected Speech-to-Text provider:
 /// - Native iOS → live SFSpeechRecognizer streaming with partial results (original behavior)
-/// - Remote providers (Gemini / OpenAI / Groq / Deepgram / AssemblyAI) → record to an m4a file, upload on stop, show transcription when it returns
+/// - Batch providers (local Whisper or remote APIs) → record to an m4a file, transcribe on stop, show the result when it returns
 struct VoiceInputView: View {
     @State private var transcription = ""
     @State private var isRecording = false
@@ -175,7 +175,7 @@ struct VoiceInputView: View {
         if isNative {
             startNativeRecording()
         } else {
-            if SpeechSettings.apiKey(for: provider) == nil {
+            if provider.requiresAPIKey && SpeechSettings.apiKey(for: provider) == nil {
                 permissionError = "No API key configured for \(provider.displayName). Add one in Settings → Speech-to-Text."
                 return
             }

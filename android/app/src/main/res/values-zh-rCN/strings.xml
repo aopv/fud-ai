@@ -729,4 +729,28 @@
     <string name="settings_calc_target_citation">Hall KD, et al. (2011). “能量失衡对体重影响的量化。” Lancet 378(9793):826–837. 经典的每磅 3,500 kcal 规则源自 Wishnofsky M (1958), Am J Clin Nutr 6:542–546.</string>
     <string name="settings_calc_split_citation">Morton RW, et al. (2018). “蛋白质补充对抗阻训练引起的肌肉量和力量增长之影响的系统综述、荟萃分析和荟萃回归。” Br J Sports Med 52(6):376–384.</string>
     <string name="settings_calc_micro_citation">估算值依赖底层 AI 模型的训练数据（USDA FoodData Central、制造商营养标签和科学文献）。准确度会因食物、份量是否清晰可见以及服务商模型而异。对于经常记录的食物，请务必与标签核对。</string>
+
+    <string name="about_litert_notices">LiteRT-LM 第三方声明</string>
+    <string name="about_litert_notices_load_error">无法加载 LiteRT-LM 第三方声明。</string>
+    <string name="settings_model_source">模型来源</string>
+    <string name="settings_model_license_format">%1$s 许可证</string>
+    <string name="settings_model_requires_8gb">需要配备 8 GB 内存的设备</string>
+    <string name="settings_model_low_ram_unsupported">不支持低内存设备</string>
+    <string name="settings_model_processor_unsupported">不支持此设备的处理器</string>
+    <string name="action_download">下载</string>
+    <string name="ai_provider_local_gemma">Gemma 4 E2B（设备端）</string>
+    <string name="ai_key_placeholder_local">无需 API 密钥</string>
+    <string name="speech_provider_local_whisper">Whisper Base（设备端）</string>
+    <string name="speech_key_placeholder_local">无需 API 密钥</string>
+    <string name="speech_description_local_whisper">已下载的多语言 Whisper Base。音频保留在此设备上，无需 API 密钥。</string>
+    <string name="settings_on_device_models">设备端模型</string>
+    <string name="settings_on_device_models_info">模型会下载到应用的私有存储空间，并在不向服务器发送照片、提示或音频的情况下运行。下载大小和模型许可条款适用。</string>
+    <string name="settings_local_model_not_downloaded_format">%1$s · 未下载</string>
+    <string name="settings_local_model_downloading_format">正在下载 · %1$d%%</string>
+    <string name="settings_local_model_installed">已安装 · 可离线使用</string>
+    <string name="settings_view_model_license">查看模型许可证</string>
+    <string name="settings_info_speech_fallback">当所选录音 STT 提供商失败时重试转写。它只生成转写文本；该文本仍会遵循正常的文本 AI 路径。Android 原生语音识别已有自己的恢复机制。</string>
+    <string name="settings_speech_fallback_footer">所选录音提供商失败时使用。Android 原生语音识别已有自己的恢复机制。</string>
+    <string name="about_whisper_notices">Whisper Base 第三方声明</string>
+    <string name="about_whisper_notices_load_error">无法加载 Whisper Base 第三方声明。</string>
 </resources>

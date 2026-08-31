@@ -823,6 +823,13 @@ struct GeminiService {
             }
             #endif
             throw AnalysisError.apiError("Apple Intelligence requires iOS 26 or later on a supported iPhone.")
+        case .liteRTLocal:
+            return try await Gemma4LocalModelManager.shared.generate(
+                prompt: prompt,
+                images: imageDataList,
+                systemPrompt: AIProviderSettings.currentUserContext,
+                maxOutputTokens: AIProviderSettings.maxResponseTokens
+            )
         case .gemini:
             guard let key = apiKey else { throw AnalysisError.noAPIKey }
             return try await callGemini(baseURL: baseURL, model: model, apiKey: key, prompt: prompt, imageDataList: imageDataList)

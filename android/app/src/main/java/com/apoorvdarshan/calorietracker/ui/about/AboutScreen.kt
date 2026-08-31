@@ -3,9 +3,11 @@ package com.apoorvdarshan.calorietracker.ui.about
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,8 +18,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AlternateEmail
 import androidx.compose.material.icons.filled.Work
@@ -59,8 +64,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.apoorvdarshan.calorietracker.services.update.AndroidUpdateChecker
 import com.apoorvdarshan.calorietracker.services.update.AndroidUpdateState
+import com.apoorvdarshan.calorietracker.ui.components.FudGlassDialog
+import com.apoorvdarshan.calorietracker.ui.components.FudGlassDialogActions
 import com.apoorvdarshan.calorietracker.ui.theme.AppColors
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 enum class AboutSettingsCategory(val titleRes: Int, val icon: ImageVector) {
     APP_UPDATES(R.string.about_category_app_updates, Icons.Filled.SystemUpdate),
@@ -109,6 +118,8 @@ fun AboutSettingsRows(category: AboutSettingsCategory) {
     val shareChooser = stringResource(R.string.about_share_chooser)
     val currentVersion = remember(ctx) { AndroidUpdateChecker.currentVersion(ctx) }
     var updateState by remember { mutableStateOf<AndroidUpdateState>(AndroidUpdateState.Idle) }
+    var showLiteRtNotices by remember { mutableStateOf(false) }
+    var showWhisperNotices by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
     fun open(url: String) =
@@ -209,10 +220,131 @@ fun AboutSettingsRows(category: AboutSettingsCategory) {
                 AboutRow(Icons.Filled.Description, stringResource(R.string.about_terms)) {
                     open("https://fud-ai.app/terms.html")
                 }
+                Hairline()
+                AboutRow(
+                    Icons.Filled.Description,
+                    stringResource(R.string.about_litert_notices)
+                ) {
+                    showLiteRtNotices = true
+                }
+                Hairline()
+                AboutRow(
+                    Icons.Filled.Description,
+                    stringResource(R.string.about_whisper_notices)
+                ) {
+                    showWhisperNotices = true
+                }
             }
         }
     }
+
+    if (showLiteRtNotices) {
+        ThirdPartyNoticesDialog(
+            titleRes = R.string.about_litert_notices,
+            loadErrorRes = R.string.about_litert_notices_load_error,
+            assetName = LITERT_NOTICE_ASSET,
+            onDismiss = { showLiteRtNotices = false }
+        )
+    }
+    if (showWhisperNotices) {
+        ThirdPartyNoticesDialog(
+            titleRes = R.string.about_whisper_notices,
+            loadErrorRes = R.string.about_whisper_notices_load_error,
+            assetName = WHISPER_NOTICE_ASSET,
+            onDismiss = { showWhisperNotices = false }
+        )
+    }
 }
+
+@Composable
+private fun ThirdPartyNoticesDialog(
+    @StringRes titleRes: Int,
+    @StringRes loadErrorRes: Int,
+    assetName: String,
+    onDismiss: () -> Unit
+) {
+    val context = LocalContext.current
+    var chunks by remember(context, assetName, loadErrorRes) {
+        mutableStateOf<List<String>?>(null)
+    }
+    LaunchedEffect(context, assetName, loadErrorRes) {
+        chunks = withContext(Dispatchers.IO) {
+            readNoticeChunks(context, assetName, loadErrorRes)
+        }
+    }
+    FudGlassDialog(
+        onDismissRequest = onDismiss,
+        modifier = Modifier.fillMaxHeight(0.9f)
+    ) {
+        Text(
+            text = stringResource(titleRes),
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold
+        )
+        // The largest bundled notice is ~1.9 MB. Lazy 8 KiB chunks keep opening and scrolling
+        // cheap, while SelectionContainer lets users select/copy every displayed section.
+        val visibleChunks = chunks
+        if (visibleChunks == null) {
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(color = AppColors.Calorie)
+            }
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+            ) {
+                items(visibleChunks) { chunk ->
+                    SelectionContainer {
+                        Text(
+                            text = chunk,
+                            modifier = Modifier.fillMaxWidth(),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
+                        )
+                    }
+                }
+            }
+        }
+        FudGlassDialogActions(
+            primaryText = stringResource(R.string.action_done),
+            onPrimary = onDismiss
+        )
+    }
+}
+
+private fun readNoticeChunks(
+    context: Context,
+    assetName: String,
+    @StringRes loadErrorRes: Int
+): List<String> = runCatching {
+    context.assets.open(assetName).bufferedReader().use { reader ->
+        buildList {
+            val chunk = StringBuilder(NOTICE_CHUNK_CHARACTERS)
+            reader.forEachLine { line ->
+                if (chunk.isNotEmpty() &&
+                    chunk.length + line.length + 1 > NOTICE_CHUNK_CHARACTERS
+                ) {
+                    add(chunk.toString())
+                    chunk.clear()
+                }
+                chunk.appendLine(line)
+            }
+            if (chunk.isNotEmpty()) add(chunk.toString())
+        }
+    }
+}.getOrElse {
+    listOf(context.getString(loadErrorRes))
+}
+
+private const val LITERT_NOTICE_ASSET = "THIRD_PARTY_NOTICES_LiteRTLM_v0.16.0.txt"
+private const val WHISPER_NOTICE_ASSET = "THIRD_PARTY_NOTICES_WhisperBase.txt"
+private const val NOTICE_CHUNK_CHARACTERS = 8 * 1024
 
 @Composable
 fun AboutFooter() {

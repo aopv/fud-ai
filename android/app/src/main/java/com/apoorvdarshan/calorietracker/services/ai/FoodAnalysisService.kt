@@ -9,6 +9,7 @@ import com.apoorvdarshan.calorietracker.models.OptionalNutrientGoals
 import com.apoorvdarshan.calorietracker.models.UserProfile
 import com.apoorvdarshan.calorietracker.services.GoalEvidence
 import com.apoorvdarshan.calorietracker.services.health.HealthEnergySummary
+import com.apoorvdarshan.calorietracker.services.ondevice.LocalGemmaRuntime
 import kotlinx.coroutines.flow.first
 import okhttp3.OkHttpClient
 import java.util.Locale
@@ -65,7 +66,8 @@ internal fun multiPhotoAnalysisPrompt(
 class FoodAnalysisService(
     private val prefs: PreferencesStore,
     private val keyStore: KeyStore,
-    private val okHttp: OkHttpClient = defaultClient
+    private val okHttp: OkHttpClient = defaultClient,
+    private val localGemma: LocalGemmaRuntime? = null
 ) {
 
     suspend fun estimateOptionalNutrientGoals(profile: UserProfile?): OptionalNutrientGoals {
@@ -576,6 +578,13 @@ class FoodAnalysisService(
         maxTokens: Int,
         requestTimeoutSeconds: Int
     ): String {
+        if (provider == AIProvider.LOCAL_GEMMA) {
+            return localGemma?.generate(
+                prompt = prompt,
+                images = imageBytesList,
+                maxOutputTokens = maxTokens
+            ) ?: throw AiError.Api("The on-device Gemma runtime is unavailable.")
+        }
         if (baseUrl.isEmpty()) throw AiError.InvalidUrl(baseUrl)
         if (provider.requiresApiKey && apiKey.isNullOrEmpty()) throw AiError.NoApiKey
         val requestClient = clientForProvider(okHttp, provider, requestTimeoutSeconds)
@@ -586,6 +595,7 @@ class FoodAnalysisService(
                 AnthropicClient.analyze(requestClient, baseUrl, model, apiKey!!, prompt, imageBytesList, maxTokens)
             AIProvider.ApiFormat.OPENAI_COMPATIBLE ->
                 OpenAICompatibleClient.analyze(requestClient, baseUrl, model, apiKey, prompt, imageBytesList, provider, maxTokens)
+            AIProvider.ApiFormat.LOCAL -> error("Local inference must be dispatched before network setup.")
         }
     }
 
@@ -601,7 +611,7 @@ class FoodAnalysisService(
         val key = keyStore.apiKey(provider)
         if (provider.requiresApiKey && key.isNullOrEmpty()) return null
         val baseUrl = prefs.customBaseUrl(provider).first()?.takeIf { it.isNotEmpty() } ?: provider.baseUrl
-        if (baseUrl.isEmpty()) return null
+        if (provider != AIProvider.LOCAL_GEMMA && baseUrl.isEmpty()) return null
         return FallbackConfig(provider, model, baseUrl, key)
     }
 
@@ -616,7 +626,7 @@ class FoodAnalysisService(
         val key = keyStore.apiKey(provider)
         if (provider.requiresApiKey && key.isNullOrEmpty()) return null
         val baseUrl = prefs.customBaseUrl(provider).first()?.takeIf { it.isNotEmpty() } ?: provider.baseUrl
-        if (baseUrl.isEmpty()) return null
+        if (provider != AIProvider.LOCAL_GEMMA && baseUrl.isEmpty()) return null
         return FallbackConfig(provider, model, baseUrl, key)
     }
 

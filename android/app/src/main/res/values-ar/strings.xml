@@ -729,4 +729,28 @@
     <string name="settings_calc_target_citation">Hall KD, et al. (2011). «التحديد الكمي لتأثير اختلال توازن الطاقة في وزن الجسم». Lancet 378(9793):826–837. تعود قاعدة 3,500 سعرة حرارية لكل رطل الكلاسيكية إلى Wishnofsky M (1958)، Am J Clin Nutr 6:542–546.</string>
     <string name="settings_calc_split_citation">Morton RW, et al. (2018). «مراجعة منهجية وتحليل تلوي وانحدار تلوي لتأثير مكملات البروتين في الزيادات الناتجة عن تمارين المقاومة في كتلة العضلات وقوتها». Br J Sports Med 52(6):376–384.</string>
     <string name="settings_calc_micro_citation">تعتمد التقديرات على بيانات تدريب نموذج الذكاء الاصطناعي الأساسي (USDA FoodData Central وملصقات القيم الغذائية من الشركات المصنّعة والمراجع العلمية). تختلف الدقة حسب الطعام ومدى وضوح حجم الحصة ونموذج المزوّد. تحقّق دائمًا من الملصقات للأطعمة التي تسجّلها كثيرًا.</string>
+
+    <string name="about_litert_notices">إشعارات الجهات الخارجية لـ LiteRT-LM</string>
+    <string name="about_litert_notices_load_error">تعذّر تحميل إشعارات الجهات الخارجية لـ LiteRT-LM.</string>
+    <string name="settings_model_source">مصدر النموذج</string>
+    <string name="settings_model_license_format">ترخيص %1$s</string>
+    <string name="settings_model_requires_8gb">يتطلب جهازًا بذاكرة RAM سعتها 8 غيغابايت</string>
+    <string name="settings_model_low_ram_unsupported">غير مدعوم على الأجهزة ذات ذاكرة RAM المنخفضة</string>
+    <string name="settings_model_processor_unsupported">معالج هذا الجهاز غير مدعوم</string>
+    <string name="action_download">تنزيل</string>
+    <string name="ai_provider_local_gemma">Gemma 4 E2B (على الجهاز)</string>
+    <string name="ai_key_placeholder_local">لا حاجة إلى مفتاح API</string>
+    <string name="speech_provider_local_whisper">Whisper Base (على الجهاز)</string>
+    <string name="speech_key_placeholder_local">لا حاجة إلى مفتاح API</string>
+    <string name="speech_description_local_whisper">Whisper Base متعدد اللغات الذي تم تنزيله. يبقى الصوت على هذا الجهاز ولا حاجة إلى مفتاح API.</string>
+    <string name="settings_on_device_models">النماذج على الجهاز</string>
+    <string name="settings_on_device_models_info">يتم تنزيل النماذج إلى مساحة التخزين الخاصة بالتطبيق وتشغيلها من دون إرسال الصور أو المطالبات أو الصوت إلى خادم. ينطبق حجم التنزيل وشروط ترخيص النموذج.</string>
+    <string name="settings_local_model_not_downloaded_format">%1$s · لم يتم التنزيل</string>
+    <string name="settings_local_model_downloading_format">جارٍ التنزيل · %1$d%%</string>
+    <string name="settings_local_model_installed">مثبّت · جاهز بلا اتصال</string>
+    <string name="settings_view_model_license">عرض ترخيص النموذج</string>
+    <string name="settings_info_speech_fallback">يعيد محاولة النسخ عند فشل موفر تحويل الكلام إلى نص للصوت المسجّل المحدد. ولا ينتج سوى نص منسوخ؛ ويظل هذا النص يتبع مسار الذكاء الاصطناعي النصي المعتاد. تتضمن ميزة الكلام الأصلية في Android آلية استرداد خاصة بها بالفعل.</string>
+    <string name="settings_speech_fallback_footer">يُستخدم إذا فشل موفر الصوت المسجّل المحدد. تتضمن ميزة الكلام الأصلية في Android آلية استرداد خاصة بها بالفعل.</string>
+    <string name="about_whisper_notices">إشعارات الجهات الخارجية لـ Whisper Base</string>
+    <string name="about_whisper_notices_load_error">تعذّر تحميل إشعارات الجهات الخارجية لـ Whisper Base.</string>
 </resources>

@@ -729,4 +729,28 @@
     <string name="settings_calc_target_citation">Hall KD, et al. (2011). « Quantification de l’effet du déséquilibre énergétique sur le poids corporel. » Lancet 378(9793):826–837. La règle classique des 3 500 kcal par livre provient de Wishnofsky M (1958), Am J Clin Nutr 6:542–546.</string>
     <string name="settings_calc_split_citation">Morton RW, et al. (2018). « Revue systématique, méta-analyse et méta-régression de l’effet de la supplémentation en protéines sur les gains de masse musculaire et de force induits par l’entraînement en résistance. » Br J Sports Med 52(6):376–384.</string>
     <string name="settings_calc_micro_citation">Les estimations reposent sur les données d’entraînement du modèle d’IA sous-jacent (USDA FoodData Central, étiquettes des fabricants, littérature scientifique). Leur précision varie selon l’aliment, la visibilité de la taille de la portion et le modèle du fournisseur. Vérifiez toujours les étiquettes des aliments que vous enregistrez souvent.</string>
+
+    <string name="about_litert_notices">Avis relatifs aux composants tiers de LiteRT-LM</string>
+    <string name="about_litert_notices_load_error">Impossible de charger les avis relatifs aux composants tiers de LiteRT-LM.</string>
+    <string name="settings_model_source">Source du modèle</string>
+    <string name="settings_model_license_format">Licence %1$s</string>
+    <string name="settings_model_requires_8gb">Nécessite un appareil doté de 8 Go de RAM</string>
+    <string name="settings_model_low_ram_unsupported">Non pris en charge sur les appareils disposant de peu de RAM</string>
+    <string name="settings_model_processor_unsupported">Le processeur de cet appareil n’est pas pris en charge</string>
+    <string name="action_download">Télécharger</string>
+    <string name="ai_provider_local_gemma">Gemma 4 E2B (sur l’appareil)</string>
+    <string name="ai_key_placeholder_local">Aucune clé API requise</string>
+    <string name="speech_provider_local_whisper">Whisper Base (sur l’appareil)</string>
+    <string name="speech_key_placeholder_local">Aucune clé API requise</string>
+    <string name="speech_description_local_whisper">Whisper Base multilingue téléchargé. Le contenu audio reste sur cet appareil et aucune clé API n’est requise.</string>
+    <string name="settings_on_device_models">Modèles sur l’appareil</string>
+    <string name="settings_on_device_models_info">Les modèles sont téléchargés dans le stockage privé de l’application et s’exécutent sans envoyer de photos, de requêtes ni de contenu audio à un serveur. La taille du téléchargement et les conditions de licence du modèle s’appliquent.</string>
+    <string name="settings_local_model_not_downloaded_format">%1$s · Non téléchargé</string>
+    <string name="settings_local_model_downloading_format">Téléchargement · %1$d%%</string>
+    <string name="settings_local_model_installed">Installé · Prêt hors ligne</string>
+    <string name="settings_view_model_license">Afficher la licence du modèle</string>
+    <string name="settings_info_speech_fallback">Relance la transcription lorsque le fournisseur STT d’audio enregistré sélectionné échoue. Il produit uniquement une transcription ; celle-ci suit ensuite le parcours normal de l’IA textuelle. La reconnaissance vocale native d’Android dispose déjà de son propre mécanisme de récupération.</string>
+    <string name="settings_speech_fallback_footer">Utilisé si le fournisseur d’audio enregistré sélectionné échoue. La reconnaissance vocale native d’Android dispose déjà de son propre mécanisme de récupération.</string>
+    <string name="about_whisper_notices">Mentions tierces de Whisper Base</string>
+    <string name="about_whisper_notices_load_error">Impossible de charger les mentions tierces de Whisper Base.</string>
 </resources>

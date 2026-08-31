@@ -91,6 +91,7 @@ class AIRequestConfigurationTest {
                 "mistral-large-2512",
                 "ministral-14b-2512"
             ),
+            AIProvider.LOCAL_GEMMA to listOf("gemma-4-E2B-it"),
             AIProvider.OLLAMA to listOf(
                 "qwen3-vl",
                 "qwen3.8",
@@ -195,6 +196,7 @@ class AIRequestConfigurationTest {
     fun speechProviderDefaultsMatchIosRegistry() {
         val defaults = linkedMapOf(
             SpeechProvider.NATIVE to "",
+            SpeechProvider.LOCAL_WHISPER to "ggml-base",
             SpeechProvider.GEMINI to "gemini-3.5-transcribe",
             SpeechProvider.OPENAI to "gpt-transcribe",
             SpeechProvider.GROQ to "whisper-large-v3",
@@ -208,7 +210,7 @@ class AIRequestConfigurationTest {
             assertEquals(model, provider.defaultModel)
         }
         assertEquals(
-            SpeechProvider.values().filter { it != SpeechProvider.NATIVE },
+            SpeechProvider.values().filter { it.requiresApiKey },
             SpeechProvider.remoteProviders
         )
     }

@@ -729,4 +729,28 @@
     <string name="settings_calc_target_citation">Hall KD, et al. (2011). ‘Kwantificering van het effect van energieonbalans op het lichaamsgewicht.’ Lancet 378(9793):826–837. De klassieke regel van 3.500 kcal per pond is afkomstig van Wishnofsky M (1958), Am J Clin Nutr 6:542–546.</string>
     <string name="settings_calc_split_citation">Morton RW, et al. (2018). ‘Een systematische review, meta-analyse en meta-regressie van het effect van eiwitsuppletie op door krachttraining veroorzaakte toename in spiermassa en kracht.’ Br J Sports Med 52(6):376–384.</string>
     <string name="settings_calc_micro_citation">De schattingen zijn gebaseerd op de trainingsgegevens van het onderliggende AI-model (USDA FoodData Central, voedingsetiketten van fabrikanten en wetenschappelijke literatuur). De nauwkeurigheid varieert per voedingsmiddel, de zichtbaarheid van de portiegrootte en het providermodel. Controleer bij voedingsmiddelen die je vaak logt altijd het etiket.</string>
+
+    <string name="about_litert_notices">Kennisgevingen van derden voor LiteRT-LM</string>
+    <string name="about_litert_notices_load_error">De kennisgevingen van derden voor LiteRT-LM konden niet worden geladen.</string>
+    <string name="settings_model_source">Modelbron</string>
+    <string name="settings_model_license_format">%1$s-licentie</string>
+    <string name="settings_model_requires_8gb">Vereist een apparaat met 8 GB RAM</string>
+    <string name="settings_model_low_ram_unsupported">Niet ondersteund op apparaten met weinig RAM</string>
+    <string name="settings_model_processor_unsupported">De processor van dit apparaat wordt niet ondersteund</string>
+    <string name="action_download">Downloaden</string>
+    <string name="ai_provider_local_gemma">Gemma 4 E2B (op het apparaat)</string>
+    <string name="ai_key_placeholder_local">Geen API-sleutel nodig</string>
+    <string name="speech_provider_local_whisper">Whisper Base (op het apparaat)</string>
+    <string name="speech_key_placeholder_local">Geen API-sleutel nodig</string>
+    <string name="speech_description_local_whisper">Gedownloade meertalige Whisper Base. Audio blijft op dit apparaat en er is geen API-sleutel nodig.</string>
+    <string name="settings_on_device_models">Modellen op het apparaat</string>
+    <string name="settings_on_device_models_info">Modellen worden naar de privéopslag van de app gedownload en uitgevoerd zonder foto’s, prompts of audio naar een server te sturen. De downloadgrootte en licentievoorwaarden van het model zijn van toepassing.</string>
+    <string name="settings_local_model_not_downloaded_format">%1$s · Niet gedownload</string>
+    <string name="settings_local_model_downloading_format">Wordt gedownload · %1$d%%</string>
+    <string name="settings_local_model_installed">Geïnstalleerd · Offline gereed</string>
+    <string name="settings_view_model_license">Modellicentie bekijken</string>
+    <string name="settings_info_speech_fallback">Probeert de transcriptie opnieuw als de geselecteerde STT-provider voor opgenomen audio mislukt. Deze maakt alleen een transcript; dat transcript blijft de normale tekst-AI-route volgen. De systeemeigen spraakherkenning van Android heeft al een eigen herstelmechanisme.</string>
+    <string name="settings_speech_fallback_footer">Wordt gebruikt als de geselecteerde provider voor opgenomen audio mislukt. De systeemeigen spraakherkenning van Android heeft al een eigen herstelmechanisme.</string>
+    <string name="about_whisper_notices">Kennisgevingen van derden voor Whisper Base</string>
+    <string name="about_whisper_notices_load_error">De kennisgevingen van derden voor Whisper Base konden niet worden geladen.</string>
 </resources>

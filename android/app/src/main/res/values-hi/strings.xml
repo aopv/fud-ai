@@ -729,4 +729,28 @@
     <string name="settings_calc_target_citation">Hall KD, et al. (2011)। “शरीर के वज़न पर ऊर्जा असंतुलन के प्रभाव का मात्रात्मक आकलन।” Lancet 378(9793):826–837। प्रति पाउंड 3,500 kcal का पारंपरिक नियम Wishnofsky M (1958), Am J Clin Nutr 6:542–546 से आया है।</string>
     <string name="settings_calc_split_citation">Morton RW, et al. (2018)। “प्रतिरोध प्रशिक्षण से मांसपेशियों के द्रव्यमान और ताकत में होने वाली वृद्धि पर प्रोटीन सप्लीमेंट के प्रभाव की व्यवस्थित समीक्षा, मेटा-विश्लेषण और मेटा-रिग्रेशन।” Br J Sports Med 52(6):376–384.</string>
     <string name="settings_calc_micro_citation">अनुमान अंतर्निहित AI मॉडल के प्रशिक्षण डेटा (USDA FoodData Central, निर्माताओं के पोषण लेबल और वैज्ञानिक साहित्य) पर आधारित हैं। सटीकता भोजन, परोसने की मात्रा की स्पष्टता और प्रोवाइडर मॉडल के अनुसार बदलती है। जिन खाद्य पदार्थों को आप अक्सर दर्ज करते हैं, उनके लेबल से हमेशा मिलान करें।</string>
+
+    <string name="about_litert_notices">LiteRT-LM के तृतीय-पक्ष नोटिस</string>
+    <string name="about_litert_notices_load_error">LiteRT-LM के तृतीय-पक्ष नोटिस लोड नहीं किए जा सके।</string>
+    <string name="settings_model_source">मॉडल का स्रोत</string>
+    <string name="settings_model_license_format">%1$s लाइसेंस</string>
+    <string name="settings_model_requires_8gb">8 GB RAM वाले डिवाइस की आवश्यकता है</string>
+    <string name="settings_model_low_ram_unsupported">कम RAM वाले डिवाइस पर समर्थित नहीं है</string>
+    <string name="settings_model_processor_unsupported">इस डिवाइस का प्रोसेसर समर्थित नहीं है</string>
+    <string name="action_download">डाउनलोड करें</string>
+    <string name="ai_provider_local_gemma">Gemma 4 E2B (डिवाइस पर)</string>
+    <string name="ai_key_placeholder_local">किसी API कुंजी की आवश्यकता नहीं</string>
+    <string name="speech_provider_local_whisper">Whisper Base (डिवाइस पर)</string>
+    <string name="speech_key_placeholder_local">किसी API कुंजी की आवश्यकता नहीं</string>
+    <string name="speech_description_local_whisper">डाउनलोड किया गया बहुभाषी Whisper Base। ऑडियो इसी डिवाइस पर रहता है और किसी API कुंजी की आवश्यकता नहीं होती।</string>
+    <string name="settings_on_device_models">डिवाइस पर मॉडल</string>
+    <string name="settings_on_device_models_info">मॉडल ऐप के निजी स्टोरेज में डाउनलोड होते हैं और फ़ोटो, प्रॉम्प्ट या ऑडियो को सर्वर पर भेजे बिना चलते हैं। डाउनलोड का आकार और मॉडल लाइसेंस की शर्तें लागू होती हैं।</string>
+    <string name="settings_local_model_not_downloaded_format">%1$s · डाउनलोड नहीं किया गया</string>
+    <string name="settings_local_model_downloading_format">डाउनलोड हो रहा है · %1$d%%</string>
+    <string name="settings_local_model_installed">इंस्टॉल किया गया · ऑफ़लाइन उपयोग के लिए तैयार</string>
+    <string name="settings_view_model_license">मॉडल लाइसेंस देखें</string>
+    <string name="settings_info_speech_fallback">चुना गया रिकॉर्डेड-ऑडियो STT प्रोवाइडर विफल होने पर ट्रांसक्रिप्शन का फिर से प्रयास करता है। यह केवल ट्रांसक्रिप्ट बनाता है; वह ट्रांसक्रिप्ट फिर भी सामान्य टेक्स्ट AI मार्ग का अनुसरण करता है। Android की मूल स्पीच सुविधा में पहले से अपनी रिकवरी व्यवस्था है।</string>
+    <string name="settings_speech_fallback_footer">चुना गया रिकॉर्डेड-ऑडियो प्रोवाइडर विफल होने पर इसका उपयोग होता है। Android की मूल स्पीच सुविधा में पहले से अपनी रिकवरी व्यवस्था है।</string>
+    <string name="about_whisper_notices">Whisper Base के तृतीय-पक्ष नोटिस</string>
+    <string name="about_whisper_notices_load_error">Whisper Base के तृतीय-पक्ष नोटिस लोड नहीं किए जा सके।</string>
 </resources>

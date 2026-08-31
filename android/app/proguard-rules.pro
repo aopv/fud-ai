@@ -53,6 +53,14 @@
 -dontwarn androidx.work.**
 -dontwarn androidx.room.paging.**
 
+# ─── Embedded LiteRT-LM ─────────────────────────────────────────────────────
+# LiteRT-LM's JNI bridge is registered against Kotlin/Java class and method names.
+# The current AAR does not ship consumer rules, so keep its API intact in release builds.
+-keep class com.google.ai.edge.litertlm.** { *; }
+-keepclasseswithmembernames class * {
+    native <methods>;
+}
+
 # ─── Health Connect ───────────────────────────────────────────────────────────
 # The androidx.health.connect.client AAR ships consumer rules that should
 # survive R8, but defensively keep WeightRecord / NutritionRecord field access.

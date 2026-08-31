@@ -12,6 +12,10 @@
 		F00D10000000000000000001 /* FudAIWatchApp.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = F00D10000000000000000007 /* FudAIWatchApp.app */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F00D10000000000000000002 /* FudAIWatchWidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F00D10000000000000000008 /* FudAIWatchWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F00DAD000000000000000011 /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = F00DAD000000000000000013 /* RevenueCat */; };
+		F00D57000000000000000011 /* WhisperKit in Frameworks */ = {isa = PBXBuildFile; productRef = F00D57000000000000000013 /* WhisperKit */; };
+		F00D58000000000000000011 /* LiteRTLM in Frameworks */ = {isa = PBXBuildFile; productRef = F00D58000000000000000013 /* LiteRTLM */; };
+		F00D59000000000000000011 /* THIRD_PARTY_NOTICES_LiteRTLM_v0.16.0.txt in Resources */ = {isa = PBXBuildFile; fileRef = F00D59000000000000000012 /* THIRD_PARTY_NOTICES_LiteRTLM_v0.16.0.txt */; };
+		F00D5A000000000000000011 /* THIRD_PARTY_NOTICES_WhisperBase.txt in Resources */ = {isa = PBXBuildFile; fileRef = F00D5A000000000000000012 /* THIRD_PARTY_NOTICES_WhisperBase.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -104,6 +108,8 @@
 		BA8E0E372F33F198007DD537 /* calorietrackerShare.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = calorietrackerShare.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		F00D10000000000000000007 /* FudAIWatchApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FudAIWatchApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F00D10000000000000000008 /* FudAIWatchWidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FudAIWatchWidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		F00D59000000000000000012 /* THIRD_PARTY_NOTICES_LiteRTLM_v0.16.0.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = THIRD_PARTY_NOTICES_LiteRTLM_v0.16.0.txt; path = ../local-models/legal/THIRD_PARTY_NOTICES_LiteRTLM_v0.16.0.txt; sourceTree = "<group>"; };
+		F00D5A000000000000000012 /* THIRD_PARTY_NOTICES_WhisperBase.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = THIRD_PARTY_NOTICES_WhisperBase.txt; path = ../local-models/legal/THIRD_PARTY_NOTICES_WhisperBase.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -203,6 +209,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				F00DAD000000000000000011 /* RevenueCat in Frameworks */,
+				F00D57000000000000000011 /* WhisperKit in Frameworks */,
+				F00D58000000000000000011 /* LiteRTLM in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -255,6 +263,8 @@
 			isa = PBXGroup;
 			children = (
 				BA8E0DF52F33F197007DD537 /* calorietracker */,
+				F00D59000000000000000012 /* THIRD_PARTY_NOTICES_LiteRTLM_v0.16.0.txt */,
+				F00D5A000000000000000012 /* THIRD_PARTY_NOTICES_WhisperBase.txt */,
 				BA8E0E252F33F198007DD537 /* FudAIWidgets */,
 				BA8E0E3A2F33F198007DD537 /* calorietrackerShare */,
 				F00D1000000000000000000B /* FudAIWatchApp */,
@@ -305,6 +315,8 @@
 			name = calorietracker;
 			packageProductDependencies = (
 				F00DAD000000000000000013 /* RevenueCat */,
+				F00D57000000000000000013 /* WhisperKit */,
+				F00D58000000000000000013 /* LiteRTLM */,
 			);
 			productName = calorietracker;
 			productReference = BA8E0DF32F33F197007DD537 /* calorietracker.app */;
@@ -507,6 +519,8 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				F00DAD000000000000000012 /* XCRemoteSwiftPackageReference "purchases-ios" */,
+				F00D57000000000000000012 /* XCRemoteSwiftPackageReference "argmax-oss-swift" */,
+				F00D58000000000000000012 /* XCLocalSwiftPackageReference "LiteRTLM" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = BA8E0DF42F33F197007DD537 /* Products */;
@@ -529,6 +543,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F00D59000000000000000011 /* THIRD_PARTY_NOTICES_LiteRTLM_v0.16.0.txt in Resources */,
+				F00D5A000000000000000011 /* THIRD_PARTY_NOTICES_WhisperBase.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1374,13 +1390,38 @@
 				minimumVersion = 5.0.0;
 			};
 		};
+		F00D57000000000000000012 /* XCRemoteSwiftPackageReference "argmax-oss-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/argmaxinc/argmax-oss-swift.git";
+			requirement = {
+				kind = exactVersion;
+				version = 1.1.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		F00D58000000000000000012 /* XCLocalSwiftPackageReference "LiteRTLM" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/LiteRTLM;
+		};
+/* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		F00DAD000000000000000013 /* RevenueCat */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = F00DAD000000000000000012 /* XCRemoteSwiftPackageReference "purchases-ios" */;
 			productName = RevenueCat;
+		};
+		F00D57000000000000000013 /* WhisperKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F00D57000000000000000012 /* XCRemoteSwiftPackageReference "argmax-oss-swift" */;
+			productName = WhisperKit;
+		};
+		F00D58000000000000000013 /* LiteRTLM */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F00D58000000000000000012 /* XCLocalSwiftPackageReference "LiteRTLM" */;
+			productName = LiteRTLM;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -65,7 +65,7 @@ import kotlinx.coroutines.launch
  *  - A quick tap locks into hands-free recording, exposing explicit Send / Cancel.
  *
  * Honors the user's configured STT provider: NATIVE streams via the on-device
- * recognizer (live partial text); remote providers record to a file and are
+ * recognizer (live partial text); recorded-audio providers record to a file and are
  * transcribed on stop via SpeechService, exactly like VoiceInputSheet.
  */
 enum class VoicePhase { Idle, Holding, Locked, Transcribing }
@@ -140,7 +140,7 @@ class CoachVoiceController(
             scope.launch {
                 val text = try {
                     val file = recorder.stop()
-                    if (file != null) container.speechService.transcribeRemote(file).trim() else ""
+                    if (file != null) container.speechService.transcribeRecordedAudio(file).trim() else ""
                 } catch (_: Exception) {
                     ""
                 }

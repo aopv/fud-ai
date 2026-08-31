@@ -103,7 +103,8 @@ android {
                 "src/main/assets",
                 "../../ios/calorietracker/Resources/FreeExerciseDB/dist",
                 "../../ios/calorietracker/Resources/FreeExerciseDB/images",
-                "../../shared/workout-vectors"
+                "../../shared/workout-vectors",
+                "../../local-models/legal"
             )
         }
     }
@@ -147,6 +148,8 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.play.app.update)
     implementation(libs.vico.compose.m3)
+    implementation(libs.litert.lm.android)
+    implementation(libs.whisper.android)
 
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))

@@ -729,4 +729,28 @@
     <string name="settings_calc_target_citation">Hall KD, et al. (2011). „Cuantificarea efectului dezechilibrului energetic asupra greutății corporale.” Lancet 378(9793):826–837. Regula clasică de 3.500 kcal per livră provine de la Wishnofsky M (1958), Am J Clin Nutr 6:542–546.</string>
     <string name="settings_calc_split_citation">Morton RW, et al. (2018). „O analiză sistematică, meta-analiză și meta-regresie a efectului suplimentării cu proteine asupra creșterii masei musculare și forței induse de antrenamentul de rezistență.” Br J Sports Med 52(6):376–384.</string>
     <string name="settings_calc_micro_citation">Estimările se bazează pe datele de antrenare ale modelului AI subiacent (USDA FoodData Central, etichetele producătorilor și literatura științifică). Precizia variază în funcție de aliment, vizibilitatea dimensiunii porției și modelul furnizorului. Verifică întotdeauna etichetele alimentelor pe care le înregistrezi frecvent.</string>
+
+    <string name="about_litert_notices">Notificări privind terții pentru LiteRT-LM</string>
+    <string name="about_litert_notices_load_error">Notificările privind terții pentru LiteRT-LM nu au putut fi încărcate.</string>
+    <string name="settings_model_source">Sursa modelului</string>
+    <string name="settings_model_license_format">Licență %1$s</string>
+    <string name="settings_model_requires_8gb">Necesită un dispozitiv cu 8 GB de RAM</string>
+    <string name="settings_model_low_ram_unsupported">Nu este acceptat pe dispozitivele cu memorie RAM redusă</string>
+    <string name="settings_model_processor_unsupported">Procesorul acestui dispozitiv nu este acceptat</string>
+    <string name="action_download">Descarcă</string>
+    <string name="ai_provider_local_gemma">Gemma 4 E2B (pe dispozitiv)</string>
+    <string name="ai_key_placeholder_local">Nu este necesară nicio cheie API</string>
+    <string name="speech_provider_local_whisper">Whisper Base (pe dispozitiv)</string>
+    <string name="speech_key_placeholder_local">Nu este necesară nicio cheie API</string>
+    <string name="speech_description_local_whisper">Whisper Base multilingv descărcat. Conținutul audio rămâne pe acest dispozitiv și nu este necesară nicio cheie API.</string>
+    <string name="settings_on_device_models">Modele pe dispozitiv</string>
+    <string name="settings_on_device_models_info">Modelele sunt descărcate în spațiul de stocare privat al aplicației și rulează fără a trimite fotografii, solicitări sau conținut audio către un server. Se aplică dimensiunea descărcării și termenii licenței modelului.</string>
+    <string name="settings_local_model_not_downloaded_format">%1$s · Nedescărcat</string>
+    <string name="settings_local_model_downloading_format">Se descarcă · %1$d%%</string>
+    <string name="settings_local_model_installed">Instalat · Gata offline</string>
+    <string name="settings_view_model_license">Vizualizați licența modelului</string>
+    <string name="settings_info_speech_fallback">Reîncearcă transcrierea atunci când furnizorul STT selectat pentru înregistrări audio eșuează. Acesta produce doar o transcriere; transcrierea urmează în continuare traseul normal al IA pentru text. Recunoașterea vocală nativă Android are deja propriul mecanism de recuperare.</string>
+    <string name="settings_speech_fallback_footer">Se utilizează dacă furnizorul selectat pentru înregistrări audio eșuează. Recunoașterea vocală nativă Android are deja propriul mecanism de recuperare.</string>
+    <string name="about_whisper_notices">Notificări terțe Whisper Base</string>
+    <string name="about_whisper_notices_load_error">Notificările terțe Whisper Base nu au putut fi încărcate.</string>
 </resources>

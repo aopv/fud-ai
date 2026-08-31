@@ -4,34 +4,38 @@ import com.apoorvdarshan.calorietracker.data.KeyStore
 import com.apoorvdarshan.calorietracker.data.PreferencesStore
 import com.apoorvdarshan.calorietracker.models.SpeechProvider
 import com.apoorvdarshan.calorietracker.services.ai.FoodAnalysisService
+import com.apoorvdarshan.calorietracker.services.ondevice.LocalWhisperRuntime
 import kotlinx.coroutines.flow.first
 import okhttp3.OkHttpClient
 import java.io.File
 
 /**
- * Routes a single-shot transcription to the currently-selected remote STT provider.
+ * Routes a single-shot recording to the selected local or remote STT provider.
  * Native on-device STT is handled separately via [NativeSpeechRecognizer] since it
  * streams partial results rather than taking a file upload.
  */
 class SpeechService(
     private val prefs: PreferencesStore,
     private val keyStore: KeyStore,
-    private val okHttp: OkHttpClient = FoodAnalysisService.defaultClient
+    private val okHttp: OkHttpClient = FoodAnalysisService.defaultClient,
+    private val localWhisper: LocalWhisperRuntime? = null
 ) {
 
     /** Returns the transcript text. Throws [SttApiError] on any failure. */
-    suspend fun transcribeRemote(audio: File): String {
+    suspend fun transcribeRecordedAudio(audio: File): String {
         val provider = prefs.selectedSpeechProvider.first()
         return try {
-            transcribe(audio, provider)
-        } catch (primaryError: Throwable) {
-            if (primaryError is kotlinx.coroutines.CancellationException) throw primaryError
-            if (!prefs.speechFallbackEnabled.first()) throw primaryError
-            val fallback = prefs.selectedSpeechFallbackProvider.first()
-            if (fallback == provider || !fallback.requiresApiKey || keyStore.speechApiKey(fallback).isNullOrEmpty()) {
-                throw primaryError
+            try {
+                transcribe(audio, provider)
+            } catch (primaryError: Throwable) {
+                if (primaryError is kotlinx.coroutines.CancellationException) throw primaryError
+                if (!prefs.speechFallbackEnabled.first()) throw primaryError
+                val fallback = prefs.selectedSpeechFallbackProvider.first()
+                if (fallback == provider || !isUsableRecordedProvider(fallback)) throw primaryError
+                transcribe(audio, fallback)
             }
-            transcribe(audio, fallback)
+        } finally {
+            runCatching { audio.delete() }
         }
     }
 
@@ -42,6 +46,8 @@ class SpeechService(
         if (provider.requiresApiKey && apiKey.isNullOrEmpty()) throw SttApiError.NoApiKey
 
         return when (provider) {
+            SpeechProvider.LOCAL_WHISPER -> localWhisper?.transcribe(audio, languageCode)
+                ?: error("The on-device Whisper runtime is unavailable.")
             SpeechProvider.GEMINI -> GeminiAudioClient.transcribe(
                 client = okHttp,
                 apiKey = apiKey!!,
@@ -88,7 +94,13 @@ class SpeechService(
                 languageCode = languageCode
             )
             SpeechProvider.NATIVE ->
-                error("NATIVE speech should use NativeSpeechRecognizer, not transcribeRemote().")
+                error("NATIVE speech should use NativeSpeechRecognizer, not a recorded audio file.")
         }
+    }
+
+    private fun isUsableRecordedProvider(provider: SpeechProvider): Boolean = when (provider) {
+        SpeechProvider.NATIVE -> false
+        SpeechProvider.LOCAL_WHISPER -> localWhisper?.isReady() == true
+        else -> !keyStore.speechApiKey(provider).isNullOrEmpty()
     }
 }

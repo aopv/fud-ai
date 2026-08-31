@@ -26,6 +26,10 @@ import com.apoorvdarshan.calorietracker.models.WorkoutSession
 import com.apoorvdarshan.calorietracker.services.ai.ChatService
 import com.apoorvdarshan.calorietracker.services.ai.FoodAnalysisService
 import com.apoorvdarshan.calorietracker.services.health.HealthConnectManager
+import com.apoorvdarshan.calorietracker.services.ondevice.LocalGemmaRuntime
+import com.apoorvdarshan.calorietracker.services.ondevice.LocalModelId
+import com.apoorvdarshan.calorietracker.services.ondevice.LocalModelManager
+import com.apoorvdarshan.calorietracker.services.ondevice.LocalWhisperRuntime
 import com.apoorvdarshan.calorietracker.services.speech.SpeechService
 import com.apoorvdarshan.calorietracker.widget.WidgetRefreshScheduler
 import kotlin.math.roundToInt
@@ -60,6 +64,7 @@ class FudAIApp : Application() {
         WidgetRefreshScheduler.onAppStarted(this)
         container.widgetSnapshotWriter.observe().launchIn(appScope)
         appScope.launch {
+            container.prefs.reconcileLocalModelSelections()
             container.prefs.migrateAIModelSelections()
             container.prefs.migrateMatchingSpeechProviderIfNeeded()
         }
@@ -142,7 +147,12 @@ data class GoalCalculationEvidenceContext(
 
 class AppContainer(app: FudAIApp) {
     val appContext = app.applicationContext
-    val prefs = PreferencesStore(app)
+    val localModels = LocalModelManager(app, FoodAnalysisService.defaultClient)
+    val prefs = PreferencesStore(
+        app,
+        isLocalGemmaExecutable = { localModels.isExecutable(LocalModelId.GEMMA_4_E2B) },
+        isLocalWhisperExecutable = { localModels.isExecutable(LocalModelId.WHISPER_BASE) }
+    )
     val keyStore = KeyStore(app)
     val imageStore = FoodImageStore(app)
     val notifications = NotificationService(app)
@@ -197,9 +207,12 @@ class AppContainer(app: FudAIApp) {
     val fastingRepository = FastingRepository(prefs)
     val workoutRepository = WorkoutRepository(prefs, workoutHealthSync)
 
-    val foodAnalysis = FoodAnalysisService(prefs, keyStore)
-    val chatService = ChatService(prefs, keyStore)
-    val speechService = SpeechService(prefs, keyStore)
+    val localGemma = LocalGemmaRuntime(app, localModels)
+    val localWhisper = LocalWhisperRuntime(app, localModels)
+
+    val foodAnalysis = FoodAnalysisService(prefs, keyStore, localGemma = localGemma)
+    val chatService = ChatService(prefs, keyStore, localGemma = localGemma)
+    val speechService = SpeechService(prefs, keyStore, localWhisper = localWhisper)
 
     val widgetSnapshotWriter = WidgetSnapshotWriter(app, prefs, foodRepository, profileRepository)
     /**

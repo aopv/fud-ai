@@ -18,6 +18,7 @@ import com.apoorvdarshan.calorietracker.models.WorkoutWeightUnit
 import com.apoorvdarshan.calorietracker.models.WeightEntry
 import com.apoorvdarshan.calorietracker.services.WeightAnalysisService
 import com.apoorvdarshan.calorietracker.services.WeightForecast
+import com.apoorvdarshan.calorietracker.services.ondevice.LocalGemmaRuntime
 import kotlinx.coroutines.flow.first
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -45,7 +46,8 @@ import java.util.Locale
 class ChatService(
     private val prefs: PreferencesStore,
     private val keyStore: KeyStore,
-    private val okHttp: OkHttpClient = FoodAnalysisService.defaultClient
+    private val okHttp: OkHttpClient = FoodAnalysisService.defaultClient,
+    private val localGemma: LocalGemmaRuntime? = null
 ) {
 
     suspend fun sendMessage(
@@ -141,6 +143,22 @@ class ChatService(
         maxTokens: Int,
         requestTimeoutSeconds: Int
     ): String {
+        if (provider == AIProvider.LOCAL_GEMMA) {
+            val conversation = buildString {
+                history.takeLast(12).forEach { message ->
+                    append(if (message.role == ChatMessage.Role.USER) "User: " else "Assistant: ")
+                    appendLine(message.content)
+                }
+                append("User: ")
+                append(newUserMessage)
+            }
+            return localGemma?.generate(
+                prompt = conversation,
+                images = imageBytes?.let(::listOf).orEmpty(),
+                maxOutputTokens = maxTokens,
+                systemInstruction = systemPrompt
+            ) ?: throw AiError.Api("The on-device Gemma runtime is unavailable.")
+        }
         if (provider.requiresApiKey && apiKey.isNullOrEmpty()) throw AiError.NoApiKey
         if (baseUrl.isEmpty()) throw AiError.InvalidUrl(baseUrl)
         val requestClient = FoodAnalysisService.clientForProvider(okHttp, provider, requestTimeoutSeconds)
@@ -148,6 +166,7 @@ class ChatService(
             AIProvider.ApiFormat.GEMINI -> runGeminiToolLoop(requestClient, baseUrl, model, apiKey!!, systemPrompt, history, newUserMessage, tools, imageBytes)
             AIProvider.ApiFormat.ANTHROPIC -> runAnthropicToolLoop(requestClient, baseUrl, model, apiKey!!, systemPrompt, history, newUserMessage, tools, imageBytes, maxTokens)
             AIProvider.ApiFormat.OPENAI_COMPATIBLE -> runOpenAIToolLoop(requestClient, baseUrl, model, apiKey, systemPrompt, history, newUserMessage, provider, tools, imageBytes, maxTokens)
+            AIProvider.ApiFormat.LOCAL -> error("Local inference must be dispatched before network setup.")
         }
     }
 
@@ -172,7 +191,7 @@ class ChatService(
         val apiKey = keyStore.apiKey(provider)
         if (provider.requiresApiKey && apiKey.isNullOrEmpty()) return null
         val baseUrl = prefs.customBaseUrl(provider).first()?.takeIf { it.isNotEmpty() } ?: provider.baseUrl
-        if (baseUrl.isEmpty()) return null
+        if (provider != AIProvider.LOCAL_GEMMA && baseUrl.isEmpty()) return null
         return ChatFallbackConfig(provider, model, baseUrl, apiKey)
     }
 

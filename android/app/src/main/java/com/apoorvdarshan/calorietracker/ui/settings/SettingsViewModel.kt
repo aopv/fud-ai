@@ -21,6 +21,8 @@ import com.apoorvdarshan.calorietracker.models.WorkoutRpeScale
 import com.apoorvdarshan.calorietracker.models.WorkoutSplit
 import com.apoorvdarshan.calorietracker.services.AndroidAppIconManager
 import com.apoorvdarshan.calorietracker.services.health.HealthConnectManager
+import com.apoorvdarshan.calorietracker.services.ondevice.LocalModelId
+import com.apoorvdarshan.calorietracker.services.ondevice.LocalModelState
 import com.apoorvdarshan.calorietracker.ui.theme.AppThemeColor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -96,12 +98,29 @@ data class SettingsUiState(
     val textFallbackApiKeyMasked: String = "",
     val optionalNutrientGoals: OptionalNutrientGoals = OptionalNutrientGoals.Default,
     val quickActions: List<QuickAction> = QuickAction.Defaults,
+    val localModelStates: Map<LocalModelId, LocalModelState> = emptyMap(),
     /** A goal-relevant input changed since the last Recalculate. Drives a soft nudge on the
      *  Recalculate row; the button stays tappable at all times — this never disables it. */
     val goalsNeedRecalc: Boolean = false
 ) {
     val heightMetric: Boolean get() = heightUnit == "cm"
     val weightMetric: Boolean get() = weightUnit == "kg"
+    val availableVisionProviders: List<AIProvider>
+        get() = AIProvider.remoteVisionProviders + listOfNotNull(
+            AIProvider.LOCAL_GEMMA.takeIf { localModelStates[LocalModelId.GEMMA_4_E2B]?.executable == true }
+        )
+    val availableTextProviders: List<AIProvider>
+        get() = AIProvider.remoteTextProviders + listOfNotNull(
+            AIProvider.LOCAL_GEMMA.takeIf { localModelStates[LocalModelId.GEMMA_4_E2B]?.executable == true }
+        )
+    val availableSpeechProviders: List<SpeechProvider>
+        get() = SpeechProvider.values().filter { it != SpeechProvider.LOCAL_WHISPER } + listOfNotNull(
+            SpeechProvider.LOCAL_WHISPER.takeIf { localModelStates[LocalModelId.WHISPER_BASE]?.executable == true }
+        )
+    val availableSpeechFallbackProviders: List<SpeechProvider>
+        get() = SpeechProvider.remoteProviders + listOfNotNull(
+            SpeechProvider.LOCAL_WHISPER.takeIf { localModelStates[LocalModelId.WHISPER_BASE]?.executable == true }
+        )
 }
 
 internal fun adaptiveCheckDayAfterManualRecalculation(
@@ -121,6 +140,12 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
         lastRecalcSignature != null && profile != null && lastRecalcSignature != profile.goalInputSignature
 
     init {
+        viewModelScope.launch {
+            container.localModels.states.collect { states ->
+                _ui.value = _ui.value.copy(localModelStates = states)
+            }
+        }
+
         viewModelScope.launch {
             container.workoutRepository.preferences.collect { preferences ->
                 _ui.value = _ui.value.copy(
@@ -274,6 +299,7 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
                 quickActions = quickActions,
                 workoutSplit = workoutPreferences.split,
                 workoutRpeScale = workoutPreferences.rpeScale,
+                localModelStates = container.localModels.states.value,
                 goalsNeedRecalc = needsRecalc(profile)
             )
 
@@ -382,6 +408,7 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
     }
 
     fun selectFallbackProvider(p: AIProvider) {
+        if (p !in _ui.value.availableVisionProviders) return
         viewModelScope.launch {
             container.prefs.setSelectedFallbackProvider(p)
             // Reset model to provider default if old model isn't in the new provider's list.
@@ -423,6 +450,7 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
     }
 
     fun selectTextFallbackProvider(provider: AIProvider) {
+        if (provider !in _ui.value.availableTextProviders) return
         viewModelScope.launch {
             container.prefs.setSelectedTextFallbackProvider(provider)
             val model = provider.supportedTextModelOrDefault(_ui.value.textFallbackModel)
@@ -501,6 +529,7 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
     }
 
     fun selectProvider(p: AIProvider) {
+        if (p !in _ui.value.availableVisionProviders) return
         viewModelScope.launch {
             container.prefs.setSelectedAIProvider(p)
             container.prefs.setSelectedAIModel(p.defaultModel)
@@ -551,6 +580,7 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
     }
 
     fun selectTextProvider(provider: AIProvider) {
+        if (provider !in _ui.value.availableTextProviders) return
         viewModelScope.launch {
             container.prefs.setSelectedTextAIProvider(provider)
             val model = provider.defaultTextModel
@@ -598,6 +628,7 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
     }
 
     fun selectSpeech(p: SpeechProvider) {
+        if (p !in _ui.value.availableSpeechProviders) return
         viewModelScope.launch {
             container.prefs.setSelectedSpeechProvider(p)
             var fallbackProvider = _ui.value.speechFallbackProvider
@@ -649,6 +680,7 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
     }
 
     fun selectSpeechFallbackProvider(provider: SpeechProvider) {
+        if (provider !in _ui.value.availableSpeechFallbackProviders) return
         viewModelScope.launch {
             container.prefs.setSelectedSpeechFallbackProvider(provider)
             val language = container.prefs.selectedSpeechLanguage(provider).first()
@@ -678,6 +710,88 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
                 speechApiKeyMasked = if (provider == _ui.value.selectedSpeech) masked else _ui.value.speechApiKeyMasked
             )
         }
+    }
+
+    fun downloadLocalModel(id: LocalModelId) {
+        container.localModels.download(id)
+    }
+
+    fun deleteLocalModel(id: LocalModelId) {
+        viewModelScope.launch {
+            when (id) {
+                LocalModelId.GEMMA_4_E2B -> resetGemmaSelectionsBeforeDelete()
+                LocalModelId.WHISPER_BASE -> resetWhisperSelectionsBeforeDelete()
+            }
+            container.localModels.delete(id)
+        }
+    }
+
+    private suspend fun resetGemmaSelectionsBeforeDelete() {
+        var state = _ui.value
+        if (state.selectedAI == AIProvider.LOCAL_GEMMA) {
+            container.prefs.setSelectedAIProvider(AIProvider.GEMINI)
+            container.prefs.setSelectedAIModel(AIProvider.GEMINI.defaultModel)
+            state = state.copy(
+                selectedAI = AIProvider.GEMINI,
+                selectedModel = AIProvider.GEMINI.defaultModel,
+                apiKeyMasked = maskKey(container.keyStore.apiKey(AIProvider.GEMINI))
+            )
+        }
+        if (state.selectedTextAI == AIProvider.LOCAL_GEMMA) {
+            container.prefs.setSelectedTextAIProvider(AIProvider.GEMINI)
+            container.prefs.setSelectedTextAIModel(AIProvider.GEMINI.defaultTextModel)
+            state = state.copy(
+                selectedTextAI = AIProvider.GEMINI,
+                selectedTextModel = AIProvider.GEMINI.defaultTextModel,
+                textApiKeyMasked = maskKey(container.keyStore.apiKey(AIProvider.GEMINI))
+            )
+        }
+        if (state.fallbackProvider == AIProvider.LOCAL_GEMMA) {
+            container.prefs.setFallbackEnabled(false)
+            container.prefs.setSelectedFallbackProvider(AIProvider.GEMINI)
+            container.prefs.setSelectedFallbackModel(AIProvider.GEMINI.defaultModel)
+            state = state.copy(
+                fallbackEnabled = false,
+                fallbackProvider = AIProvider.GEMINI,
+                fallbackModel = AIProvider.GEMINI.defaultModel,
+                fallbackApiKeyMasked = maskKey(container.keyStore.apiKey(AIProvider.GEMINI))
+            )
+        }
+        if (state.textFallbackProvider == AIProvider.LOCAL_GEMMA) {
+            container.prefs.setTextFallbackEnabled(false)
+            container.prefs.setSelectedTextFallbackProvider(AIProvider.GEMINI)
+            container.prefs.setSelectedTextFallbackModel(AIProvider.GEMINI.defaultTextModel)
+            state = state.copy(
+                textFallbackEnabled = false,
+                textFallbackProvider = AIProvider.GEMINI,
+                textFallbackModel = AIProvider.GEMINI.defaultTextModel,
+                textFallbackApiKeyMasked = maskKey(container.keyStore.apiKey(AIProvider.GEMINI))
+            )
+        }
+        _ui.value = state
+    }
+
+    private suspend fun resetWhisperSelectionsBeforeDelete() {
+        var state = _ui.value
+        if (state.selectedSpeech == SpeechProvider.LOCAL_WHISPER) {
+            container.prefs.setSelectedSpeechProvider(SpeechProvider.NATIVE)
+            state = state.copy(
+                selectedSpeech = SpeechProvider.NATIVE,
+                selectedSpeechLanguage = container.prefs.selectedSpeechLanguage(SpeechProvider.NATIVE).first(),
+                speechApiKeyMasked = ""
+            )
+        }
+        if (state.speechFallbackProvider == SpeechProvider.LOCAL_WHISPER) {
+            container.prefs.setSpeechFallbackEnabled(false)
+            container.prefs.setSelectedSpeechFallbackProvider(SpeechProvider.GROQ)
+            state = state.copy(
+                speechFallbackEnabled = false,
+                speechFallbackProvider = SpeechProvider.GROQ,
+                speechFallbackLanguage = container.prefs.selectedSpeechLanguage(SpeechProvider.GROQ).first(),
+                speechFallbackApiKeyMasked = maskKey(container.keyStore.speechApiKey(SpeechProvider.GROQ))
+            )
+        }
+        _ui.value = state
     }
 
     fun setHeightUnit(v: String) {

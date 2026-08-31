@@ -48,13 +48,44 @@ private data class HealthEnergyGoalTargetSnapshot(
     val autoBalanceMacro: AutoBalanceMacro? = null
 )
 
+internal fun executableAIProviderOrDefault(
+    provider: AIProvider?,
+    localGemmaExecutable: Boolean,
+    default: AIProvider = AIProvider.GEMINI
+): AIProvider = provider?.takeUnless {
+    it == AIProvider.LOCAL_GEMMA && !localGemmaExecutable
+} ?: default
+
+internal fun executableAIModelOrDefault(
+    provider: AIProvider?,
+    model: String?,
+    localGemmaExecutable: Boolean,
+    defaultModel: String
+): String? = if (provider == AIProvider.LOCAL_GEMMA && !localGemmaExecutable) {
+    defaultModel
+} else {
+    model
+}
+
+internal fun executableSpeechProviderOrDefault(
+    provider: SpeechProvider?,
+    localWhisperExecutable: Boolean,
+    default: SpeechProvider
+): SpeechProvider = provider?.takeUnless {
+    it == SpeechProvider.LOCAL_WHISPER && !localWhisperExecutable
+} ?: default
+
 /**
  * Thin wrapper over DataStore Preferences for all app state except API keys
  * (which live in [KeyStore]). Exposes reactive Flows for reads and suspend
  * functions for writes. Complex values (profile, entries, history) are stored
  * as JSON strings via kotlinx.serialization.
  */
-class PreferencesStore(private val context: Context) : WorkoutStateStore {
+class PreferencesStore(
+    private val context: Context,
+    private val isLocalGemmaExecutable: () -> Boolean = { false },
+    private val isLocalWhisperExecutable: () -> Boolean = { false }
+) : WorkoutStateStore {
 
     private val json = Json { ignoreUnknownKeys = true }
     private val ds get() = context.fudaiDataStore
@@ -413,14 +444,27 @@ class PreferencesStore(private val context: Context) : WorkoutStateStore {
     // -- AI Provider selection --------------------------------------------
     val selectedAIProvider: Flow<AIProvider> = ds.data.map {
         val raw = it[Keys.SELECTED_AI_PROVIDER]
-        AIProvider.visionProviders.firstOrNull { p -> p.name == raw } ?: AIProvider.GEMINI
+        executableAIProviderOrDefault(
+            AIProvider.visionProviders.firstOrNull { p -> p.name == raw },
+            isLocalGemmaExecutable()
+        )
     }
     suspend fun setSelectedAIProvider(p: AIProvider) {
-        val resolved = p.takeIf { it.supportsVision } ?: AIProvider.GEMINI
+        val resolved = executableAIProviderOrDefault(
+            p.takeIf { it.supportsVision },
+            isLocalGemmaExecutable()
+        )
         ds.edit { it[Keys.SELECTED_AI_PROVIDER] = resolved.name }
     }
 
-    val selectedAIModel: Flow<String?> = ds.data.map { it[Keys.SELECTED_AI_MODEL] }
+    val selectedAIModel: Flow<String?> = ds.data.map {
+        executableAIModelOrDefault(
+            storedAIProvider(it[Keys.SELECTED_AI_PROVIDER]),
+            it[Keys.SELECTED_AI_MODEL],
+            isLocalGemmaExecutable(),
+            AIProvider.GEMINI.defaultModel
+        )
+    }
     suspend fun setSelectedAIModel(model: String) {
         ds.edit { it[Keys.SELECTED_AI_MODEL] = AIProvider.normalizeModelId(model) }
     }
@@ -434,14 +478,27 @@ class PreferencesStore(private val context: Context) : WorkoutStateStore {
 
     val selectedTextAIProvider: Flow<AIProvider> = ds.data.map {
         val raw = it[Keys.SELECTED_TEXT_AI_PROVIDER]
-        AIProvider.textProviders.firstOrNull { p -> p.name == raw } ?: AIProvider.GEMINI
+        executableAIProviderOrDefault(
+            AIProvider.textProviders.firstOrNull { p -> p.name == raw },
+            isLocalGemmaExecutable()
+        )
     }
     suspend fun setSelectedTextAIProvider(provider: AIProvider) {
-        val resolved = provider.takeIf { it in AIProvider.textProviders } ?: AIProvider.GEMINI
+        val resolved = executableAIProviderOrDefault(
+            provider.takeIf { it in AIProvider.textProviders },
+            isLocalGemmaExecutable()
+        )
         ds.edit { it[Keys.SELECTED_TEXT_AI_PROVIDER] = resolved.name }
     }
 
-    val selectedTextAIModel: Flow<String?> = ds.data.map { it[Keys.SELECTED_TEXT_AI_MODEL] }
+    val selectedTextAIModel: Flow<String?> = ds.data.map {
+        executableAIModelOrDefault(
+            storedAIProvider(it[Keys.SELECTED_TEXT_AI_PROVIDER]),
+            it[Keys.SELECTED_TEXT_AI_MODEL],
+            isLocalGemmaExecutable(),
+            AIProvider.GEMINI.defaultTextModel
+        )
+    }
     suspend fun setSelectedTextAIModel(model: String) {
         ds.edit { it[Keys.SELECTED_TEXT_AI_MODEL] = AIProvider.normalizeModelId(model) }
     }
@@ -530,6 +587,47 @@ class PreferencesStore(private val context: Context) : WorkoutStateStore {
         }
     }
 
+    /**
+     * Removes persisted local routes whose verified artifact cannot execute on this device.
+     * Provider flows apply the same guard synchronously, so no caller can observe a stale local
+     * route while this small DataStore edit is still starting on a cold launch.
+     */
+    suspend fun reconcileLocalModelSelections() {
+        val gemmaExecutable = isLocalGemmaExecutable()
+        val whisperExecutable = isLocalWhisperExecutable()
+        ds.edit { prefs ->
+            if (!gemmaExecutable) {
+                if (prefs[Keys.SELECTED_AI_PROVIDER] == AIProvider.LOCAL_GEMMA.name) {
+                    prefs[Keys.SELECTED_AI_PROVIDER] = AIProvider.GEMINI.name
+                    prefs[Keys.SELECTED_AI_MODEL] = AIProvider.GEMINI.defaultModel
+                }
+                if (prefs[Keys.SELECTED_TEXT_AI_PROVIDER] == AIProvider.LOCAL_GEMMA.name) {
+                    prefs[Keys.SELECTED_TEXT_AI_PROVIDER] = AIProvider.GEMINI.name
+                    prefs[Keys.SELECTED_TEXT_AI_MODEL] = AIProvider.GEMINI.defaultTextModel
+                }
+                if (prefs[Keys.FALLBACK_PROVIDER] == AIProvider.LOCAL_GEMMA.name) {
+                    prefs[Keys.FALLBACK_ENABLED] = false
+                    prefs[Keys.FALLBACK_PROVIDER] = AIProvider.GEMINI.name
+                    prefs[Keys.FALLBACK_MODEL] = AIProvider.GEMINI.defaultModel
+                }
+                if (prefs[Keys.TEXT_FALLBACK_PROVIDER] == AIProvider.LOCAL_GEMMA.name) {
+                    prefs[Keys.TEXT_FALLBACK_ENABLED] = false
+                    prefs[Keys.TEXT_FALLBACK_PROVIDER] = AIProvider.GEMINI.name
+                    prefs[Keys.TEXT_FALLBACK_MODEL] = AIProvider.GEMINI.defaultTextModel
+                }
+            }
+            if (!whisperExecutable) {
+                if (prefs[Keys.SELECTED_SPEECH_PROVIDER] == SpeechProvider.LOCAL_WHISPER.name) {
+                    prefs[Keys.SELECTED_SPEECH_PROVIDER] = SpeechProvider.NATIVE.name
+                }
+                if (prefs[Keys.SPEECH_FALLBACK_PROVIDER] == SpeechProvider.LOCAL_WHISPER.name) {
+                    prefs[Keys.SPEECH_FALLBACK_ENABLED] = false
+                    prefs[Keys.SPEECH_FALLBACK_PROVIDER] = SpeechProvider.GROQ.name
+                }
+            }
+        }
+    }
+
     /** New-user default applied exactly once when onboarding completes. */
     suspend fun setInitialSpeechProviderForAIProvider(provider: AIProvider) {
         ds.edit { prefs ->
@@ -601,37 +699,69 @@ class PreferencesStore(private val context: Context) : WorkoutStateStore {
 
     // -- Image AI fallback ------------------------------------------------
     // Keep the original storage keys so existing users retain their configured fallback.
-    val fallbackEnabled: Flow<Boolean> = ds.data.map { it[Keys.FALLBACK_ENABLED] ?: false }
+    val fallbackEnabled: Flow<Boolean> = ds.data.map {
+        (it[Keys.FALLBACK_ENABLED] ?: false) &&
+            (it[Keys.FALLBACK_PROVIDER] != AIProvider.LOCAL_GEMMA.name || isLocalGemmaExecutable())
+    }
     suspend fun setFallbackEnabled(v: Boolean) { ds.edit { it[Keys.FALLBACK_ENABLED] = v } }
 
     val selectedFallbackProvider: Flow<AIProvider> = ds.data.map {
         val raw = it[Keys.FALLBACK_PROVIDER]
-        AIProvider.visionProviders.firstOrNull { p -> p.name == raw } ?: AIProvider.GEMINI
+        executableAIProviderOrDefault(
+            AIProvider.visionProviders.firstOrNull { p -> p.name == raw },
+            isLocalGemmaExecutable()
+        )
     }
     suspend fun setSelectedFallbackProvider(p: AIProvider) {
-        val resolved = p.takeIf { it.supportsVision } ?: AIProvider.GEMINI
+        val resolved = executableAIProviderOrDefault(
+            p.takeIf { it.supportsVision },
+            isLocalGemmaExecutable()
+        )
         ds.edit { it[Keys.FALLBACK_PROVIDER] = resolved.name }
     }
 
-    val selectedFallbackModel: Flow<String?> = ds.data.map { it[Keys.FALLBACK_MODEL] }
+    val selectedFallbackModel: Flow<String?> = ds.data.map {
+        executableAIModelOrDefault(
+            storedAIProvider(it[Keys.FALLBACK_PROVIDER]),
+            it[Keys.FALLBACK_MODEL],
+            isLocalGemmaExecutable(),
+            AIProvider.GEMINI.defaultModel
+        )
+    }
     suspend fun setSelectedFallbackModel(model: String) {
         ds.edit { it[Keys.FALLBACK_MODEL] = AIProvider.normalizeModelId(model) }
     }
 
     // -- Text AI fallback -------------------------------------------------
-    val textFallbackEnabled: Flow<Boolean> = ds.data.map { it[Keys.TEXT_FALLBACK_ENABLED] ?: false }
+    val textFallbackEnabled: Flow<Boolean> = ds.data.map {
+        (it[Keys.TEXT_FALLBACK_ENABLED] ?: false) &&
+            (it[Keys.TEXT_FALLBACK_PROVIDER] != AIProvider.LOCAL_GEMMA.name || isLocalGemmaExecutable())
+    }
     suspend fun setTextFallbackEnabled(v: Boolean) { ds.edit { it[Keys.TEXT_FALLBACK_ENABLED] = v } }
 
     val selectedTextFallbackProvider: Flow<AIProvider> = ds.data.map {
         val raw = it[Keys.TEXT_FALLBACK_PROVIDER]
-        AIProvider.textProviders.firstOrNull { provider -> provider.name == raw } ?: AIProvider.GEMINI
+        executableAIProviderOrDefault(
+            AIProvider.textProviders.firstOrNull { provider -> provider.name == raw },
+            isLocalGemmaExecutable()
+        )
     }
     suspend fun setSelectedTextFallbackProvider(provider: AIProvider) {
-        val resolved = provider.takeIf { it in AIProvider.textProviders } ?: AIProvider.GEMINI
+        val resolved = executableAIProviderOrDefault(
+            provider.takeIf { it in AIProvider.textProviders },
+            isLocalGemmaExecutable()
+        )
         ds.edit { it[Keys.TEXT_FALLBACK_PROVIDER] = resolved.name }
     }
 
-    val selectedTextFallbackModel: Flow<String?> = ds.data.map { it[Keys.TEXT_FALLBACK_MODEL] }
+    val selectedTextFallbackModel: Flow<String?> = ds.data.map {
+        executableAIModelOrDefault(
+            storedAIProvider(it[Keys.TEXT_FALLBACK_PROVIDER]),
+            it[Keys.TEXT_FALLBACK_MODEL],
+            isLocalGemmaExecutable(),
+            AIProvider.GEMINI.defaultTextModel
+        )
+    }
     suspend fun setSelectedTextFallbackModel(model: String) {
         ds.edit { it[Keys.TEXT_FALLBACK_MODEL] = AIProvider.normalizeModelId(model) }
     }
@@ -639,22 +769,43 @@ class PreferencesStore(private val context: Context) : WorkoutStateStore {
     // -- Speech Provider selection ---------------------------------------
     val selectedSpeechProvider: Flow<SpeechProvider> = ds.data.map {
         val raw = it[Keys.SELECTED_SPEECH_PROVIDER]
-        SpeechProvider.values().firstOrNull { p -> p.name == raw } ?: SpeechProvider.NATIVE
+        executableSpeechProviderOrDefault(
+            SpeechProvider.values().firstOrNull { p -> p.name == raw },
+            isLocalWhisperExecutable(),
+            SpeechProvider.NATIVE
+        )
     }
     suspend fun setSelectedSpeechProvider(p: SpeechProvider) {
-        ds.edit { it[Keys.SELECTED_SPEECH_PROVIDER] = p.name }
+        val resolved = executableSpeechProviderOrDefault(
+            p,
+            isLocalWhisperExecutable(),
+            SpeechProvider.NATIVE
+        )
+        ds.edit { it[Keys.SELECTED_SPEECH_PROVIDER] = resolved.name }
     }
 
     // -- Speech-to-text fallback -----------------------------------------
-    val speechFallbackEnabled: Flow<Boolean> = ds.data.map { it[Keys.SPEECH_FALLBACK_ENABLED] ?: false }
+    val speechFallbackEnabled: Flow<Boolean> = ds.data.map {
+        (it[Keys.SPEECH_FALLBACK_ENABLED] ?: false) &&
+            (it[Keys.SPEECH_FALLBACK_PROVIDER] != SpeechProvider.LOCAL_WHISPER.name ||
+                isLocalWhisperExecutable())
+    }
     suspend fun setSpeechFallbackEnabled(v: Boolean) { ds.edit { it[Keys.SPEECH_FALLBACK_ENABLED] = v } }
 
     val selectedSpeechFallbackProvider: Flow<SpeechProvider> = ds.data.map {
         val raw = it[Keys.SPEECH_FALLBACK_PROVIDER]
-        SpeechProvider.remoteProviders.firstOrNull { provider -> provider.name == raw } ?: SpeechProvider.GROQ
+        executableSpeechProviderOrDefault(
+            SpeechProvider.recordedFallbackProviders.firstOrNull { provider -> provider.name == raw },
+            isLocalWhisperExecutable(),
+            SpeechProvider.GROQ
+        )
     }
     suspend fun setSelectedSpeechFallbackProvider(provider: SpeechProvider) {
-        val resolved = provider.takeIf { it in SpeechProvider.remoteProviders } ?: SpeechProvider.GROQ
+        val resolved = executableSpeechProviderOrDefault(
+            provider.takeIf { it in SpeechProvider.recordedFallbackProviders },
+            isLocalWhisperExecutable(),
+            SpeechProvider.GROQ
+        )
         ds.edit { it[Keys.SPEECH_FALLBACK_PROVIDER] = resolved.name }
     }
 

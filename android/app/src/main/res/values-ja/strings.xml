@@ -729,4 +729,28 @@
     <string name="settings_calc_target_citation">Hall KD, et al. (2011).「エネルギー不均衡が体重に及ぼす影響の定量化。」Lancet 378(9793):826–837. 1ポンド当たり3,500 kcalという古典的な法則は、Wishnofsky M (1958), Am J Clin Nutr 6:542–546に由来します。</string>
     <string name="settings_calc_split_citation">Morton RW, et al. (2018).「レジスタンストレーニングによる筋量と筋力の増加に対するたんぱく質補給の効果についての系統的レビュー、メタ解析、メタ回帰。」Br J Sports Med 52(6):376–384.</string>
     <string name="settings_calc_micro_citation">推定値は、基盤となるAIモデルの学習データ（USDA FoodData Central、メーカーの栄養表示、科学文献）に基づきます。精度は食品、分量の見えやすさ、プロバイダーのモデルによって異なります。頻繁に記録する食品は必ずラベルと照合してください。</string>
+
+    <string name="about_litert_notices">LiteRT-LM のサードパーティに関する通知</string>
+    <string name="about_litert_notices_load_error">LiteRT-LM のサードパーティに関する通知を読み込めませんでした。</string>
+    <string name="settings_model_source">モデルの配布元</string>
+    <string name="settings_model_license_format">%1$s ライセンス</string>
+    <string name="settings_model_requires_8gb">8 GB の RAM を搭載したデバイスが必要です</string>
+    <string name="settings_model_low_ram_unsupported">RAM 容量の少ないデバイスには対応していません</string>
+    <string name="settings_model_processor_unsupported">このデバイスのプロセッサには対応していません</string>
+    <string name="action_download">ダウンロード</string>
+    <string name="ai_provider_local_gemma">Gemma 4 E2B（オンデバイス）</string>
+    <string name="ai_key_placeholder_local">API キーは不要です</string>
+    <string name="speech_provider_local_whisper">Whisper Base（オンデバイス）</string>
+    <string name="speech_key_placeholder_local">API キーは不要です</string>
+    <string name="speech_description_local_whisper">ダウンロード済みの多言語対応 Whisper Base。音声はこのデバイス内に保持され、API キーは不要です。</string>
+    <string name="settings_on_device_models">オンデバイスモデル</string>
+    <string name="settings_on_device_models_info">モデルはアプリのプライベートストレージにダウンロードされ、写真、プロンプト、音声をサーバーに送信せずに実行されます。ダウンロードサイズとモデルのライセンス条件が適用されます。</string>
+    <string name="settings_local_model_not_downloaded_format">%1$s · 未ダウンロード</string>
+    <string name="settings_local_model_downloading_format">ダウンロード中 · %1$d%%</string>
+    <string name="settings_local_model_installed">インストール済み · オフラインで使用可能</string>
+    <string name="settings_view_model_license">モデルのライセンスを表示</string>
+    <string name="settings_info_speech_fallback">選択した録音音声用 STT プロバイダでエラーが発生した場合に、文字起こしを再試行します。生成されるのは文字起こしのみで、その後も通常のテキスト AI 経路が使用されます。Android の標準音声認識には独自の復旧機能があります。</string>
+    <string name="settings_speech_fallback_footer">選択した録音音声プロバイダでエラーが発生した場合に使用されます。Android の標準音声認識には独自の復旧機能があります。</string>
+    <string name="about_whisper_notices">Whisper Base のサードパーティ通知</string>
+    <string name="about_whisper_notices_load_error">Whisper Base のサードパーティ通知を読み込めませんでした。</string>
 </resources>

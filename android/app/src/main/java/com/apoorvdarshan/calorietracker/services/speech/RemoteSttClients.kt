@@ -48,7 +48,7 @@ object WhisperClient {
         val bodyBuilder = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
             .addFormDataPart("model", model)
-            .addFormDataPart("file", audio.name, audio.asRequestBody("audio/m4a".toMediaType()))
+            .addFormDataPart("file", audio.name, audio.asRequestBody(audio.mimeType().toMediaType()))
         if (!languageCode.isNullOrBlank()) {
             bodyBuilder.addFormDataPart("language", languageCode)
         }
@@ -78,7 +78,7 @@ object GeminiAudioClient {
             val body = interactionPayload(
                 model = model,
                 fileUri = uploadedFile.uri,
-                mimeType = "audio/m4a",
+                mimeType = audio.mimeType(),
                 languageCode = languageCode
             ).toRequestBody("application/json; charset=utf-8".toMediaType())
 
@@ -143,7 +143,7 @@ object GeminiAudioClient {
 
     private suspend fun uploadAudio(client: OkHttpClient, apiKey: String, audio: File): UploadedFile {
         val metadata = JSONObject()
-            .put("file", JSONObject().put("display_name", "fud-ai-speech.m4a"))
+            .put("file", JSONObject().put("display_name", audio.name))
             .toString()
             .toRequestBody("application/json; charset=utf-8".toMediaType())
         val startRequest = Request.Builder()
@@ -152,7 +152,7 @@ object GeminiAudioClient {
             .addHeader("X-Goog-Upload-Protocol", "resumable")
             .addHeader("X-Goog-Upload-Command", "start")
             .addHeader("X-Goog-Upload-Header-Content-Length", audio.length().toString())
-            .addHeader("X-Goog-Upload-Header-Content-Type", "audio/m4a")
+            .addHeader("X-Goog-Upload-Header-Content-Type", audio.mimeType())
             .post(metadata)
             .build()
 
@@ -174,7 +174,7 @@ object GeminiAudioClient {
             .addHeader("Content-Length", audio.length().toString())
             .addHeader("X-Goog-Upload-Offset", "0")
             .addHeader("X-Goog-Upload-Command", "upload, finalize")
-            .post(audio.asRequestBody("audio/m4a".toMediaType()))
+            .post(audio.asRequestBody(audio.mimeType().toMediaType()))
             .build()
         val file = JSONObject(runRequestRaw(client, uploadRequest)).optJSONObject("file")
             ?: throw SttApiError.InvalidResponse
@@ -212,8 +212,8 @@ object DeepgramClient {
         val req = Request.Builder()
             .url("https://api.deepgram.com/v1/listen?model=$model&punctuate=true&smart_format=true$languageQuery")
             .addHeader("Authorization", "Token $apiKey")
-            .addHeader("Content-Type", "audio/m4a")
-            .post(audio.asRequestBody("audio/m4a".toMediaType()))
+            .addHeader("Content-Type", audio.mimeType())
+            .post(audio.asRequestBody(audio.mimeType().toMediaType()))
             .build()
         val body = runRequestRaw(client, req)
         runCatching {
@@ -243,7 +243,7 @@ object AssemblyAIClient {
         val uploadReq = Request.Builder()
             .url("https://api.assemblyai.com/v2/upload")
             .addHeader("authorization", apiKey)
-            .post(audio.asRequestBody("audio/m4a".toMediaType()))
+            .post(audio.asRequestBody(audio.mimeType().toMediaType()))
             .build()
         val uploadJson = JSONObject(runRequestRaw(client, uploadReq))
         val audioUrl = uploadJson.optString("upload_url").takeIf { it.isNotEmpty() }
@@ -293,6 +293,13 @@ private suspend fun runRequest(client: OkHttpClient, req: Request): String {
     return runCatching {
         JSONObject(body).optString("text").takeIf { it.isNotEmpty() }
     }.getOrNull() ?: throw SttApiError.InvalidResponse
+}
+
+private fun File.mimeType(): String = when (extension.lowercase()) {
+    "wav" -> "audio/wav"
+    "mp3" -> "audio/mpeg"
+    "flac" -> "audio/flac"
+    else -> "audio/mp4"
 }
 
 private suspend fun runRequestRaw(client: OkHttpClient, req: Request): String = withContext(Dispatchers.IO) {

@@ -168,6 +168,10 @@ import com.apoorvdarshan.calorietracker.export.DiaryImportMode
 import com.apoorvdarshan.calorietracker.export.DiaryImportPreview
 import com.apoorvdarshan.calorietracker.export.DiaryImporter
 import com.apoorvdarshan.calorietracker.services.health.HealthConnectAvailability
+import com.apoorvdarshan.calorietracker.services.ondevice.LocalModelId
+import com.apoorvdarshan.calorietracker.services.ondevice.LocalModelIneligibility
+import com.apoorvdarshan.calorietracker.services.ondevice.LocalModelInstallStatus
+import com.apoorvdarshan.calorietracker.services.ondevice.LocalModelState
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -813,6 +817,19 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
             // independent provider, model, key, and routing preferences.
             if (selectedCategory == SettingsCategory.AI_PROVIDERS) {
             SectionCard {
+                ui.localModelStates[LocalModelId.GEMMA_4_E2B]?.let { localModel ->
+                    SettingsSubsectionHeader(
+                        title = stringResource(R.string.settings_on_device_models),
+                        icon = Icons.Outlined.Download,
+                        infoText = stringResource(R.string.settings_on_device_models_info)
+                    )
+                    LocalModelRow(
+                        state = localModel,
+                        onDownload = { vm.downloadLocalModel(localModel.descriptor.id) },
+                        onDelete = { vm.deleteLocalModel(localModel.descriptor.id) }
+                    )
+                    HorizontalDivider()
+                }
                 SettingsSubsectionHeader(
                     title = stringResource(R.string.settings_section_ai),
                     icon = Icons.Outlined.SmartToy,
@@ -1000,6 +1017,19 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
 
             if (selectedCategory == SettingsCategory.SPEECH_TO_TEXT) {
             SectionCard {
+                ui.localModelStates[LocalModelId.WHISPER_BASE]?.let { localModel ->
+                    SettingsSubsectionHeader(
+                        title = stringResource(R.string.settings_on_device_models),
+                        icon = Icons.Outlined.Download,
+                        infoText = stringResource(R.string.settings_on_device_models_info)
+                    )
+                    LocalModelRow(
+                        state = localModel,
+                        onDownload = { vm.downloadLocalModel(localModel.descriptor.id) },
+                        onDelete = { vm.deleteLocalModel(localModel.descriptor.id) }
+                    )
+                    HorizontalDivider()
+                }
                 SettingsSubsectionHeader(
                     title = stringResource(R.string.settings_section_speech),
                     icon = Icons.Outlined.Mic,
@@ -1050,12 +1080,14 @@ fun SettingsScreen(container: AppContainer, nav: NavHostController, vm: Settings
                             stringResource(ui.speechFallbackLanguage.displayNameRes),
                             icon = Icons.Outlined.Language
                         ) { sheet = SettingsSheet.SPEECH_FALLBACK_LANGUAGE }
-                        HorizontalDivider()
-                        SettingRow(
-                            stringResource(R.string.settings_api_key),
-                            ui.speechFallbackApiKeyMasked.ifEmpty { stringResource(R.string.settings_not_set) },
-                            icon = Icons.Outlined.Key
-                        ) { sheet = SettingsSheet.SPEECH_FALLBACK_KEY }
+                        if (ui.speechFallbackProvider.requiresApiKey) {
+                            HorizontalDivider()
+                            SettingRow(
+                                stringResource(R.string.settings_api_key),
+                                ui.speechFallbackApiKeyMasked.ifEmpty { stringResource(R.string.settings_not_set) },
+                                icon = Icons.Outlined.Key
+                            ) { sheet = SettingsSheet.SPEECH_FALLBACK_KEY }
+                        }
                     }
                 }
             }
@@ -2119,7 +2151,7 @@ private fun SettingsSheets(
             when (sheet) {
                 SettingsSheet.AI_PROVIDER -> ListSheet(
                     title = stringResource(R.string.sheet_ai_provider),
-                    items = AIProvider.visionProviders,
+                    items = ui.availableVisionProviders,
                     label = { stringResource(it.displayNameRes) },
                     selected = { it == ui.selectedAI },
                     onSelect = { vm.selectProvider(it); onDismiss() },
@@ -2152,7 +2184,7 @@ private fun SettingsSheets(
                 }
                 SettingsSheet.TEXT_PROVIDER -> ListSheet(
                     title = stringResource(R.string.settings_section_text_ai),
-                    items = AIProvider.textProviders,
+                    items = ui.availableTextProviders,
                     label = { stringResource(it.displayNameRes) },
                     selected = { it == ui.selectedTextAI },
                     onSelect = { vm.selectTextProvider(it); onDismiss() },
@@ -2185,7 +2217,7 @@ private fun SettingsSheets(
                 }
                 SettingsSheet.TEXT_FALLBACK_PROVIDER -> ListSheet(
                     title = stringResource(R.string.settings_section_text_fallback),
-                    items = AIProvider.textProviders,
+                    items = ui.availableTextProviders,
                     label = { stringResource(it.displayNameRes) },
                     selected = { it == ui.textFallbackProvider },
                     onSelect = { vm.selectTextFallbackProvider(it); onDismiss() },
@@ -2248,7 +2280,7 @@ private fun SettingsSheets(
                 }
                 SettingsSheet.SPEECH_PROVIDER -> ListSheet(
                     title = stringResource(R.string.sheet_speech_engine),
-                    items = SpeechProvider.values().toList(),
+                    items = ui.availableSpeechProviders,
                     label = { stringResource(it.displayNameRes) },
                     selected = { it == ui.selectedSpeech },
                     onSelect = { vm.selectSpeech(it); onDismiss() },
@@ -2282,7 +2314,7 @@ private fun SettingsSheets(
                 )
                 SettingsSheet.SPEECH_FALLBACK_PROVIDER -> ListSheet(
                     title = stringResource(R.string.settings_section_speech_fallback),
-                    items = SpeechProvider.remoteProviders.filter { it != ui.selectedSpeech },
+                    items = ui.availableSpeechFallbackProviders.filter { it != ui.selectedSpeech },
                     label = { stringResource(it.displayNameRes) },
                     selected = { it == ui.speechFallbackProvider },
                     onSelect = { vm.selectSpeechFallbackProvider(it); onDismiss() },
@@ -2324,7 +2356,7 @@ private fun SettingsSheets(
                 )
                 SettingsSheet.FALLBACK_PROVIDER -> ListSheet(
                     title = stringResource(R.string.sheet_ai_provider),
-                    items = AIProvider.visionProviders,
+                    items = ui.availableVisionProviders,
                     label = { stringResource(it.displayNameRes) },
                     selected = { it == ui.fallbackProvider },
                     onSelect = { vm.selectFallbackProvider(it); onDismiss() },
@@ -3518,6 +3550,111 @@ private fun SettingsSubsectionHeader(
             )
         }
     }
+}
+
+@Composable
+private fun LocalModelRow(
+    state: LocalModelState,
+    onDownload: () -> Unit,
+    onDelete: () -> Unit
+) {
+    val uriHandler = LocalUriHandler.current
+    val unavailableText = when (state.ineligibility) {
+        LocalModelIneligibility.INSUFFICIENT_MEMORY ->
+            stringResource(R.string.settings_model_requires_8gb)
+        LocalModelIneligibility.LOW_RAM_DEVICE ->
+            stringResource(R.string.settings_model_low_ram_unsupported)
+        LocalModelIneligibility.UNSUPPORTED_ABI ->
+            stringResource(R.string.settings_model_processor_unsupported)
+        null -> null
+    }
+    val statusText = unavailableText ?: when (val status = state.status) {
+        LocalModelInstallStatus.NotInstalled -> stringResource(
+            R.string.settings_local_model_not_downloaded_format,
+            formatModelBytes(state.descriptor.expectedBytes)
+        )
+        is LocalModelInstallStatus.Downloading -> stringResource(
+            R.string.settings_local_model_downloading_format,
+            ((status.downloadedBytes * 100L) / status.totalBytes.coerceAtLeast(1L)).coerceIn(0L, 100L)
+        )
+        LocalModelInstallStatus.Installed -> stringResource(R.string.settings_local_model_installed)
+        is LocalModelInstallStatus.Failed -> status.message
+    }
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 11.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(Modifier.weight(1f).padding(end = 8.dp)) {
+            Text(
+                state.descriptor.displayName,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Medium
+            )
+            Text(
+                statusText,
+                style = MaterialTheme.typography.bodySmall,
+                color = if (state.status is LocalModelInstallStatus.Failed) {
+                    MaterialTheme.colorScheme.error
+                } else {
+                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.58f)
+                },
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+            Row(
+                modifier = Modifier.padding(top = 3.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Text(
+                    stringResource(
+                        R.string.settings_model_license_format,
+                        state.descriptor.licenseName
+                    ),
+                    color = AppColors.Calorie,
+                    style = MaterialTheme.typography.labelMedium,
+                    modifier = Modifier.clickable {
+                        uriHandler.openUri(state.descriptor.licenseUrl)
+                    }
+                )
+                Text(
+                    stringResource(R.string.settings_model_source),
+                    color = AppColors.Calorie,
+                    style = MaterialTheme.typography.labelMedium,
+                    modifier = Modifier.clickable {
+                        uriHandler.openUri(state.descriptor.sourceUrl)
+                    }
+                )
+            }
+        }
+        when (val status = state.status) {
+            is LocalModelInstallStatus.Downloading -> {
+                CircularProgressIndicator(
+                    progress = {
+                        status.downloadedBytes.toFloat() / status.totalBytes.coerceAtLeast(1L).toFloat()
+                    },
+                    modifier = Modifier.size(24.dp),
+                    strokeWidth = 2.dp,
+                    color = AppColors.Calorie
+                )
+                TextButton(onClick = onDelete) { Text(stringResource(R.string.action_cancel)) }
+            }
+            LocalModelInstallStatus.Installed ->
+                TextButton(onClick = onDelete) { Text(stringResource(R.string.action_delete)) }
+            LocalModelInstallStatus.NotInstalled,
+            is LocalModelInstallStatus.Failed ->
+                TextButton(onClick = onDownload, enabled = state.eligible) {
+                    Text(stringResource(R.string.action_download))
+                }
+        }
+    }
+}
+
+private fun formatModelBytes(bytes: Long): String = if (bytes >= 1_000_000_000L) {
+    String.format(Locale.US, "%.1f GB", bytes / 1_000_000_000.0)
+} else {
+    String.format(Locale.US, "%.0f MB", bytes / 1_000_000.0)
 }
 
 @Composable

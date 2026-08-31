@@ -1331,7 +1331,7 @@ private fun ProviderStep(
     when (selectorSheet) {
         ProviderSelectorSheet.PROVIDER -> OptionPickerSheet(
             title = stringResource(R.string.sheet_ai_provider),
-            items = AIProvider.visionProviders,
+            items = AIProvider.remoteVisionProviders,
             label = { stringResource(it.displayNameRes) },
             selected = { it == provider },
             onSelect = { onProviderChange(it); selectorSheet = null },

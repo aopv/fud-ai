@@ -529,14 +529,12 @@
     <string name="settings_info_text_fallback" translatable="false">Retries a failed text-only request once. It backs up Text AI when the separate provider is enabled; otherwise it backs up Primary AI for text-only work. It never receives photos.</string>
     <string name="settings_info_image_fallback" translatable="false">Retries a failed request containing one or more photos. The first attempt always uses Primary AI. This fallback is never used for text-only requests. You may use the same provider with a different model.</string>
     <string name="settings_info_speech_to_text" translatable="false">Converts microphone audio into text only. The transcript then follows the normal text route: Text AI when enabled, otherwise Primary AI. Matching provider API keys are reused unless you save a separate STT key.</string>
-    <string name="settings_info_speech_fallback" translatable="false">Retries transcription when the selected remote STT provider fails. It only produces a transcript; that transcript still follows the normal text AI route. Native Android speech already uses on-device, online, and automatic recognition recovery, so a separate STT fallback is available only for remote providers.</string>
     <string name="settings_use_separate_text_provider">Use Separate Text Provider</string>
     <string name="settings_text_provider_footer">When enabled, requests without images—including typed food, voice transcripts, Coach chat, goals, and advice—use this provider. Photo requests keep using the AI Provider above. API keys are shared per provider.</string>
     <string name="settings_section_text_fallback">Text AI Fallback</string>
     <string name="settings_text_fallback_footer">Used only when a text-only AI request fails. It never handles photos.</string>
     <string name="settings_section_speech">Speech-to-Text</string>
     <string name="settings_section_speech_fallback">STT Fallback</string>
-    <string name="settings_speech_fallback_footer">Used only when the selected remote speech provider fails. Native speech already retries its on-device and online recognition modes.</string>
     <string name="settings_native_speech_fallback_footer">Native speech already recovers automatically across Android’s on-device, online, and automatic recognition modes. Choose a remote speech provider above to configure a separate provider fallback.</string>
     <string name="settings_section_workout">Workout</string>
     <string name="settings_training_split" translatable="false">Training Split</string>
@@ -1129,4 +1127,28 @@
     <string name="settings_app_icon_shortcuts">App Icon Shortcuts</string>
     <string name="settings_quick_action_number">Quick Action %1$d</string>
     <string name="settings_quick_actions_footer">Hold the Fud AI app icon to use these shortcuts. Each slot opens its selected logging method directly.</string>
+
+    <string name="action_download">Download</string>
+    <string name="ai_provider_local_gemma">Gemma 4 E2B (On-Device)</string>
+    <string name="ai_key_placeholder_local">No key needed</string>
+    <string name="speech_provider_local_whisper">Whisper Base (On-Device)</string>
+    <string name="speech_key_placeholder_local">Not needed</string>
+    <string name="speech_description_local_whisper">Downloaded multilingual Whisper Base. Audio stays on this device and no API key is needed.</string>
+    <string name="settings_on_device_models">On-device models</string>
+    <string name="settings_on_device_models_info">Models download to private app storage and run without sending photos, prompts, or audio to a server. Download size and model license terms apply.</string>
+    <string name="settings_local_model_not_downloaded_format">%1$s · Not downloaded</string>
+    <string name="settings_local_model_downloading_format">Downloading · %1$d%%</string>
+    <string name="settings_local_model_installed">Installed · Ready offline</string>
+    <string name="settings_view_model_license">View model license</string>
+    <string name="settings_model_source">Model source</string>
+    <string name="settings_model_license_format">%1$s license</string>
+    <string name="settings_model_requires_8gb">Requires an 8 GB RAM device</string>
+    <string name="settings_model_low_ram_unsupported">Not supported on low-RAM devices</string>
+    <string name="settings_model_processor_unsupported">This device’s processor is not supported</string>
+    <string name="settings_info_speech_fallback">Retries transcription when the selected recorded-audio STT provider fails. It only produces a transcript; that transcript still follows the normal text AI route. Native Android speech already has its own recognition recovery.</string>
+    <string name="settings_speech_fallback_footer">Used only when the selected recorded-audio speech provider fails. Native speech already retries its on-device and online recognition modes.</string>
+    <string name="about_litert_notices">LiteRT-LM third-party notices</string>
+    <string name="about_litert_notices_load_error">Could not load the LiteRT-LM third-party notices.</string>
+    <string name="about_whisper_notices">Whisper Base third-party notices</string>
+    <string name="about_whisper_notices_load_error">Could not load the Whisper Base third-party notices.</string>
 </resources>

@@ -460,6 +460,28 @@ private struct AboutSettingsSections: View {
                     }
                 }
                 .tint(.primary)
+
+                NavigationLink {
+                    LiteRTLMNoticesView()
+                } label: {
+                    Label {
+                        Text(LocalModelStrings.text(
+                            "notices.legalRow",
+                            defaultValue: "LiteRT-LM Third-Party Notices"
+                        ))
+                    } icon: {
+                        Image(systemName: "doc.text.magnifyingglass")
+                            .foregroundStyle(AppColors.calorie)
+                    }
+                }
+                .tint(.primary)
+
+                NavigationLink {
+                    WhisperBaseNoticesView()
+                } label: {
+                    Label("Whisper Base · MIT", systemImage: "doc.text.magnifyingglass")
+                }
+                .tint(.primary)
                 }
                 .listRowBackground(AppColors.appCard)
             }
@@ -3495,6 +3517,7 @@ struct ProfileView: View {
     @State private var textFallbackApiKeyText: String = AIProviderSettings.apiKey(for: AIProviderSettings.selectedTextFallbackProvider) ?? ""
     @State private var textFallbackBaseURL: String = AIProviderSettings.customBaseURL(for: AIProviderSettings.selectedTextFallbackProvider) ?? ""
     @State private var showTextFallbackAPIKey = false
+    @State private var localModelAvailabilityRevision = 0
     @State private var selectedSpeechProvider: SpeechProvider = SpeechSettings.selectedProvider
     @State private var selectedSpeechLanguage: SpeechLanguage = SpeechSettings.selectedLanguage(for: SpeechSettings.selectedProvider)
     @State private var speechApiKeyText: String = SpeechSettings.apiKey(for: SpeechSettings.selectedProvider) ?? ""
@@ -4149,7 +4172,7 @@ struct ProfileView: View {
                         Picker(selection: $selectedProvider) {
                             ForEach(AIProvider.visionProviders) { provider in
                                 Label {
-                                    Text(provider.rawValue)
+                                    Text(provider.displayName)
                                 } icon: {
                                     AIProviderBrandIcon(provider: provider)
                                 }
@@ -4164,6 +4187,7 @@ struct ProfileView: View {
                         }
                         .pickerStyle(.menu)
                         .tint(.secondary)
+                        .id("primary-provider-\(localModelAvailabilityRevision)")
                         .onChange(of: selectedProvider) { _, newProvider in
                             AIProviderSettings.selectedProvider = newProvider
                             selectedModel = newProvider.defaultModel
@@ -4324,6 +4348,33 @@ struct ProfileView: View {
                             }
                         }
 
+                        Label(
+                            LocalModelStrings.text(
+                                "settings.onDeviceModel",
+                                defaultValue: "On-Device Model"
+                            ),
+                            systemImage: "iphone.gen3.radiowaves.left.and.right"
+                        )
+                            .font(.system(.subheadline, design: .rounded, weight: .bold))
+                            .foregroundStyle(AppColors.calorie)
+                            .textCase(.uppercase)
+                            .accessibilityAddTraits(.isHeader)
+
+                        Gemma4ModelSettingsView {
+                            selectedProvider = AIProviderSettings.selectedProvider
+                            selectedModel = AIProviderSettings.selectedModel
+                            selectedTextProvider = AIProviderSettings.selectedTextProvider
+                            selectedTextModel = AIProviderSettings.selectedTextModel
+                            separateTextProviderEnabled = AIProviderSettings.separateTextProviderEnabled
+                            selectedFallbackProvider = AIProviderSettings.selectedFallbackProvider
+                            selectedFallbackModel = AIProviderSettings.selectedFallbackModel
+                            fallbackEnabled = AIProviderSettings.fallbackEnabled
+                            selectedTextFallbackProvider = AIProviderSettings.selectedTextFallbackProvider
+                            selectedTextFallbackModel = AIProviderSettings.selectedTextFallbackModel
+                            textFallbackEnabled = AIProviderSettings.textFallbackEnabled
+                            localModelAvailabilityRevision += 1
+                        }
+
                         AISettingsSubsectionHeader(
                             title: "Text AI",
                             systemImage: "text.bubble.fill",
@@ -4347,7 +4398,7 @@ struct ProfileView: View {
                         Picker(selection: $selectedTextProvider) {
                             ForEach(AIProvider.textProviders) { provider in
                                 Label {
-                                    Text(provider.rawValue)
+                                    Text(provider.displayName)
                                 } icon: {
                                     AIProviderBrandIcon(provider: provider)
                                 }
@@ -4362,6 +4413,7 @@ struct ProfileView: View {
                         }
                         .pickerStyle(.menu)
                         .tint(.secondary)
+                        .id("text-provider-\(localModelAvailabilityRevision)")
                         .onChange(of: selectedTextProvider) { _, newProvider in
                             AIProviderSettings.selectedTextProvider = newProvider
                             selectedTextModel = newProvider.defaultTextModel
@@ -4517,14 +4569,15 @@ struct ProfileView: View {
                         }
 
                         if fallbackEnabled {
-                            // Fallback provider list shows all 13 — same provider as primary IS allowed
+                            // Fallback provider list shows all currently available vision providers;
+                            // the same provider as primary IS allowed
                             // (so e.g. Gemini Pro primary + Gemini Flash fallback works for capacity diversity).
                             // The collision is handled at the model layer below + at the runtime check in
                             // AIProviderSettings.currentImageFallbackConfig.
                             Picker(selection: $selectedFallbackProvider) {
                                 ForEach(AIProvider.visionProviders) { provider in
                                     Label {
-                                        Text(provider.rawValue)
+                                        Text(provider.displayName)
                                     } icon: {
                                         AIProviderBrandIcon(provider: provider)
                                     }
@@ -4539,6 +4592,7 @@ struct ProfileView: View {
                             }
                             .pickerStyle(.menu)
                             .tint(.secondary)
+                            .id("image-fallback-provider-\(localModelAvailabilityRevision)")
                             .onChange(of: selectedFallbackProvider) { _, newProvider in
                                 selectFallbackProvider(newProvider)
                             }
@@ -4704,7 +4758,7 @@ struct ProfileView: View {
                         )
 
                         Picker(selection: $selectedSpeechProvider) {
-                            ForEach(SpeechProvider.allCases) { provider in
+                            ForEach(SpeechProvider.availableProviders) { provider in
                                 Label {
                                     Text(provider.displayName)
                                 } icon: {
@@ -4722,6 +4776,7 @@ struct ProfileView: View {
                         .pickerStyle(.menu)
                         .accessibilityIdentifier("settings.speech.provider")
                         .tint(.secondary)
+                        .id("speech-provider-\(localModelAvailabilityRevision)")
                         .onChange(of: selectedSpeechProvider) { _, newProvider in
                             SpeechSettings.selectedProvider = newProvider
                             speechApiKeyText = SpeechSettings.apiKey(for: newProvider) ?? ""
@@ -4730,6 +4785,15 @@ struct ProfileView: View {
                                let alternate = SpeechProvider.remoteProviders.first(where: { $0 != newProvider }) {
                                 selectSpeechFallbackProvider(alternate)
                             }
+                        }
+
+                        WhisperBaseModelSettingsView(selectedProvider: $selectedSpeechProvider) {
+                            selectedSpeechProvider = SpeechSettings.selectedProvider
+                            selectedSpeechFallbackProvider = SpeechSettings.selectedFallbackProvider
+                            speechFallbackEnabled = SpeechSettings.fallbackEnabled
+                            selectedSpeechLanguage = SpeechSettings.selectedLanguage(for: selectedSpeechProvider)
+                            selectedSpeechFallbackLanguage = SpeechSettings.selectedLanguage(for: selectedSpeechFallbackProvider)
+                            localModelAvailabilityRevision += 1
                         }
 
                         Picker(selection: $selectedSpeechLanguage) {
@@ -5214,7 +5278,7 @@ struct ProfileView: View {
             Picker(selection: $selectedTextFallbackProvider) {
                 ForEach(AIProvider.textProviders) { provider in
                     Label {
-                        Text(provider.rawValue)
+                        Text(provider.displayName)
                     } icon: {
                         AIProviderBrandIcon(provider: provider)
                     }
@@ -5229,6 +5293,7 @@ struct ProfileView: View {
             }
             .pickerStyle(.menu)
             .tint(.secondary)
+            .id("text-fallback-provider-\(localModelAvailabilityRevision)")
             .onChange(of: selectedTextFallbackProvider) { _, newProvider in
                 selectTextFallbackProvider(newProvider)
             }
@@ -5380,6 +5445,7 @@ struct ProfileView: View {
                 }
                 .pickerStyle(.menu)
                 .tint(.secondary)
+                .id("speech-fallback-provider-\(localModelAvailabilityRevision)")
                 .onAppear {
                     if !speechFallbackProviderOptions.contains(selectedSpeechFallbackProvider),
                        let alternate = speechFallbackProviderOptions.first {
@@ -5492,7 +5558,7 @@ struct ProfileView: View {
     }
 
     private var speechFallbackProviderOptions: [SpeechProvider] {
-        SpeechProvider.remoteProviders.filter { $0 != selectedSpeechProvider }
+        SpeechProvider.availableBatchProviders.filter { $0 != selectedSpeechProvider }
     }
 
     private var primaryModelPlaceholder: String {

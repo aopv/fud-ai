@@ -914,7 +914,7 @@ struct OnboardingView: View {
                 Spacer()
                 Picker("", selection: $byokProvider) {
                     ForEach(AIProvider.visionProviders) { provider in
-                        Text(provider.rawValue).tag(provider)
+                        Text(provider.displayName).tag(provider)
                     }
                 }
                 .labelsHidden()

@@ -729,4 +729,28 @@
     <string name="settings_calc_target_citation">Hall KD, et al. (2011). «Cuantificación del efecto del desequilibrio energético sobre el peso corporal». Lancet 378(9793):826–837. La regla clásica de 3500 kcal por libra procede de Wishnofsky M (1958), Am J Clin Nutr 6:542–546.</string>
     <string name="settings_calc_split_citation">Morton RW, et al. (2018). «Revisión sistemática, metaanálisis y metarregresión del efecto de la suplementación con proteínas sobre el aumento de masa muscular y fuerza inducido por el entrenamiento de resistencia». Br J Sports Med 52(6):376–384.</string>
     <string name="settings_calc_micro_citation">Las estimaciones se basan en los datos de entrenamiento del modelo de IA subyacente (USDA FoodData Central, etiquetas de fabricantes y literatura científica). La precisión varía según el alimento, la visibilidad del tamaño de la porción y el modelo del proveedor. Contrasta siempre las etiquetas de los alimentos que registras con frecuencia.</string>
+
+    <string name="about_litert_notices">Avisos de terceros de LiteRT-LM</string>
+    <string name="about_litert_notices_load_error">No se pudieron cargar los avisos de terceros de LiteRT-LM.</string>
+    <string name="settings_model_source">Fuente del modelo</string>
+    <string name="settings_model_license_format">Licencia %1$s</string>
+    <string name="settings_model_requires_8gb">Requiere un dispositivo con 8 GB de RAM</string>
+    <string name="settings_model_low_ram_unsupported">No compatible con dispositivos con poca RAM</string>
+    <string name="settings_model_processor_unsupported">El procesador de este dispositivo no es compatible</string>
+    <string name="action_download">Descargar</string>
+    <string name="ai_provider_local_gemma">Gemma 4 E2B (en el dispositivo)</string>
+    <string name="ai_key_placeholder_local">No se necesita clave de API</string>
+    <string name="speech_provider_local_whisper">Whisper Base (en el dispositivo)</string>
+    <string name="speech_key_placeholder_local">No se necesita clave de API</string>
+    <string name="speech_description_local_whisper">Whisper Base multilingüe descargado. El audio permanece en este dispositivo y no se necesita ninguna clave de API.</string>
+    <string name="settings_on_device_models">Modelos en el dispositivo</string>
+    <string name="settings_on_device_models_info">Los modelos se descargan en el almacenamiento privado de la app y se ejecutan sin enviar fotos, instrucciones ni audio a un servidor. Se aplican el tamaño de la descarga y las condiciones de licencia del modelo.</string>
+    <string name="settings_local_model_not_downloaded_format">%1$s · No descargado</string>
+    <string name="settings_local_model_downloading_format">Descargando · %1$d%%</string>
+    <string name="settings_local_model_installed">Instalado · Listo sin conexión</string>
+    <string name="settings_view_model_license">Ver licencia del modelo</string>
+    <string name="settings_info_speech_fallback">Reintenta la transcripción cuando falla el proveedor de STT para audio grabado seleccionado. Solo genera una transcripción; esta sigue la ruta normal de IA de texto. El reconocimiento de voz nativo de Android ya cuenta con su propio mecanismo de recuperación.</string>
+    <string name="settings_speech_fallback_footer">Se usa si falla el proveedor de audio grabado seleccionado. El reconocimiento de voz nativo de Android ya cuenta con su propio mecanismo de recuperación.</string>
+    <string name="about_whisper_notices">Avisos de terceros de Whisper Base</string>
+    <string name="about_whisper_notices_load_error">No se pudieron cargar los avisos de terceros de Whisper Base.</string>
 </resources>

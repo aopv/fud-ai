@@ -9,8 +9,8 @@ import AVFoundation
 ///  - A quick tap `lock()`s into hands-free recording with explicit Send / Cancel.
 ///
 /// Honors the user's configured STT provider (`SpeechSettings.selectedProvider`):
-/// native streams via `SFSpeechRecognizer` with live partial text; remote
-/// providers record to an m4a and transcribe on stop via `SpeechService`.
+/// native streams via `SFSpeechRecognizer` with live partial text; local Whisper
+/// and remote providers record to an m4a and transcribe on stop via `SpeechService`.
 @Observable
 final class CoachVoiceRecorder {
     enum Phase { case idle, holding, locked, transcribing }
@@ -55,7 +55,7 @@ final class CoachVoiceRecorder {
         if isNative {
             startNative()
         } else {
-            guard SpeechSettings.apiKey(for: provider) != nil else {
+            guard !provider.requiresAPIKey || SpeechSettings.apiKey(for: provider) != nil else {
                 fail("No API key for \(provider.displayName). Add one in Settings → Speech-to-Text.")
                 return
             }

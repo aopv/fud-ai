@@ -1008,4 +1008,28 @@
     <string name="notif_fasting_goal_title">Цель голодания достигнута</string>
     <string name="notif_fasting_goal_text">Вы достигли цели голодания %1$s. Завершите голодание, когда будете готовы.</string>
     <string name="home_menu_barcode">Штрихкод</string>
+
+    <string name="about_litert_notices">Уведомления о сторонних компонентах LiteRT-LM</string>
+    <string name="about_litert_notices_load_error">Не удалось загрузить уведомления о сторонних компонентах LiteRT-LM.</string>
+    <string name="settings_model_source">Источник модели</string>
+    <string name="settings_model_license_format">Лицензия %1$s</string>
+    <string name="settings_model_requires_8gb">Требуется устройство с 8 ГБ оперативной памяти</string>
+    <string name="settings_model_low_ram_unsupported">Не поддерживается на устройствах с малым объёмом оперативной памяти</string>
+    <string name="settings_model_processor_unsupported">Процессор этого устройства не поддерживается</string>
+    <string name="action_download">Скачать</string>
+    <string name="ai_provider_local_gemma">Gemma 4 E2B (на устройстве)</string>
+    <string name="ai_key_placeholder_local">Ключ API не требуется</string>
+    <string name="speech_provider_local_whisper">Whisper Base (на устройстве)</string>
+    <string name="speech_key_placeholder_local">Ключ API не требуется</string>
+    <string name="speech_description_local_whisper">Загруженный многоязычный Whisper Base. Аудио остаётся на этом устройстве, ключ API не требуется.</string>
+    <string name="settings_on_device_models">Модели на устройстве</string>
+    <string name="settings_on_device_models_info">Модели загружаются в закрытое хранилище приложения и работают без отправки фотографий, запросов или аудио на сервер. Учитываются размер загрузки и условия лицензии модели.</string>
+    <string name="settings_local_model_not_downloaded_format">%1$s · Не загружено</string>
+    <string name="settings_local_model_downloading_format">Загрузка · %1$d%%</string>
+    <string name="settings_local_model_installed">Установлено · Готово к работе офлайн</string>
+    <string name="settings_view_model_license">Просмотреть лицензию модели</string>
+    <string name="settings_info_speech_fallback">Повторяет транскрипцию при сбое выбранного поставщика STT для записанного аудио. Он создаёт только транскрипт, который затем следует обычному маршруту текстового ИИ. Встроенное распознавание речи Android уже имеет собственный механизм восстановления.</string>
+    <string name="settings_speech_fallback_footer">Используется при сбое выбранного поставщика записанного аудио. Встроенное распознавание речи Android уже имеет собственный механизм восстановления.</string>
+    <string name="about_whisper_notices">Уведомления сторонних компонентов Whisper Base</string>
+    <string name="about_whisper_notices_load_error">Не удалось загрузить уведомления сторонних компонентов Whisper Base.</string>
 </resources>

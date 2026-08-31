@@ -68,6 +68,7 @@ private val AIProvider.logoDrawableRes: Int?
         AIProvider.MISTRAL -> R.drawable.provider_mistral
         AIProvider.DEEPSEEK -> R.drawable.provider_deepseek
         AIProvider.CEREBRAS -> R.drawable.provider_cerebras
+        AIProvider.LOCAL_GEMMA -> null
         AIProvider.OLLAMA -> R.drawable.provider_ollama
         AIProvider.CUSTOM_OPENAI -> null
     }
@@ -75,6 +76,7 @@ private val AIProvider.logoDrawableRes: Int?
 private val SpeechProvider.logoDrawableRes: Int
     get() = when (this) {
         SpeechProvider.NATIVE -> R.drawable.provider_android
+        SpeechProvider.LOCAL_WHISPER -> R.drawable.provider_android
         SpeechProvider.GEMINI -> R.drawable.provider_gemini
         SpeechProvider.OPENAI -> R.drawable.provider_openai
         SpeechProvider.GROQ -> R.drawable.provider_groq

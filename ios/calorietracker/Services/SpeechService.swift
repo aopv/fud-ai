@@ -1,8 +1,8 @@
 import Foundation
 
-/// Routes a recorded audio file to the selected STT provider and returns the transcription.
+/// Routes a recorded audio file to the selected batch STT provider and returns the transcription.
 /// Native iOS transcription uses SFSpeechRecognizer directly in VoiceInputView (streaming);
-/// this service is only for the remote providers that accept a full audio upload.
+/// Whisper Base runs the full recording locally, while remote providers upload it.
 struct SpeechService {
     enum SpeechError: LocalizedError {
         case noAPIKey
@@ -27,7 +27,7 @@ struct SpeechService {
         }
     }
 
-    /// Transcribe an audio file using the selected remote provider, with an optional
+    /// Transcribe an audio file using the selected batch provider, with an optional
     /// independently configured remote STT fallback.
     static func transcribe(audioURL: URL) async throws -> String {
         let provider: SpeechProvider = SpeechSettings.selectedProvider
@@ -36,7 +36,7 @@ struct SpeechService {
         }
 
         do {
-            return try await transcribe(audioData: audioData, provider: provider)
+            return try await transcribe(audioURL: audioURL, audioData: audioData, provider: provider)
         } catch {
             if error is CancellationError { throw error }
             guard SpeechSettings.fallbackEnabled else { throw error }
@@ -45,13 +45,19 @@ struct SpeechService {
                   !fallback.requiresAPIKey || SpeechSettings.apiKey(for: fallback)?.isEmpty == false else {
                 throw error
             }
-            return try await transcribe(audioData: audioData, provider: fallback)
+            return try await transcribe(audioURL: audioURL, audioData: audioData, provider: fallback)
         }
     }
 
-    private static func transcribe(audioData: Data, provider: SpeechProvider) async throws -> String {
+    private static func transcribe(audioURL: URL, audioData: Data, provider: SpeechProvider) async throws -> String {
         let selectedLanguage = SpeechSettings.selectedLanguage(for: provider)
         let languageCode = selectedLanguage.apiLanguageCode
+        if provider == .whisperBase {
+            return try await WhisperBaseModelManager.shared.transcribe(
+                audioURL: audioURL,
+                languageCode: languageCode
+            )
+        }
         guard provider.requiresAPIKey else {
             throw SpeechError.apiError("Native iOS transcription is handled in-view, not via SpeechService.")
         }
@@ -63,6 +69,8 @@ struct SpeechService {
         switch provider {
         case .nativeIOS:
             throw SpeechError.apiError("Native iOS transcription is handled in-view.")
+        case .whisperBase:
+            throw SpeechError.apiError("Whisper Base could not be initialized.")
         case .gemini:
             return try await callGeminiAudio(
                 model: provider.defaultModel,

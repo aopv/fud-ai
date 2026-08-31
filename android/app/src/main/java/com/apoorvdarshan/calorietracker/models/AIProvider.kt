@@ -20,6 +20,7 @@ enum class AIProvider {
     @SerialName("Mistral") MISTRAL,
     @SerialName("DeepSeek") DEEPSEEK,
     @SerialName("Cerebras") CEREBRAS,
+    @SerialName("Gemma 4 E2B (On-Device)") LOCAL_GEMMA,
     @SerialName("Ollama (Local)") OLLAMA,
     @SerialName("Custom (OpenAI-compatible)") CUSTOM_OPENAI;
 
@@ -38,6 +39,7 @@ enum class AIProvider {
         MISTRAL -> R.string.ai_provider_mistral
         DEEPSEEK -> R.string.ai_provider_deepseek
         CEREBRAS -> R.string.ai_provider_cerebras
+        LOCAL_GEMMA -> R.string.ai_provider_local_gemma
         OLLAMA -> R.string.ai_provider_ollama
         CUSTOM_OPENAI -> R.string.ai_provider_custom
     }
@@ -56,6 +58,7 @@ enum class AIProvider {
         MISTRAL -> "https://api.mistral.ai/v1"
         DEEPSEEK -> "https://api.deepseek.com"
         CEREBRAS -> "https://api.cerebras.ai/v1"
+        LOCAL_GEMMA -> ""
         OLLAMA -> "http://localhost:11434/v1"
         CUSTOM_OPENAI -> ""
     }
@@ -143,6 +146,7 @@ enum class AIProvider {
             "mistral-large-2512",
             "ministral-14b-2512"
         )
+        LOCAL_GEMMA -> listOf("gemma-4-E2B-it")
         OLLAMA -> listOf(
             "qwen3-vl",
             "qwen3.8",
@@ -209,7 +213,7 @@ enum class AIProvider {
         }
     }
 
-    val requiresApiKey: Boolean get() = this != OLLAMA
+    val requiresApiKey: Boolean get() = this != OLLAMA && this != LOCAL_GEMMA
     val requiresCustomEndpoint: Boolean get() = this == CUSTOM_OPENAI
     val requiresCustomModelName: Boolean get() = this == CUSTOM_OPENAI
     val usesConfigurableRequestTimeout: Boolean get() = this == OLLAMA || this == CUSTOM_OPENAI
@@ -219,6 +223,7 @@ enum class AIProvider {
     val apiFormat: ApiFormat get() = when (this) {
         GEMINI -> ApiFormat.GEMINI
         ANTHROPIC -> ApiFormat.ANTHROPIC
+        LOCAL_GEMMA -> ApiFormat.LOCAL
         OPENAI, XAI, OPENROUTER, TOGETHER_AI, GROQ, HUGGING_FACE,
         FIREWORKS, DEEP_INFRA, MISTRAL, DEEPSEEK, CEREBRAS, OLLAMA, CUSTOM_OPENAI -> ApiFormat.OPENAI_COMPATIBLE
     }
@@ -238,18 +243,23 @@ enum class AIProvider {
         MISTRAL -> R.string.ai_key_placeholder_mistral
         DEEPSEEK -> R.string.ai_key_placeholder_deepseek
         CEREBRAS -> R.string.ai_key_placeholder_cerebras
+        LOCAL_GEMMA -> R.string.ai_key_placeholder_local
         OLLAMA -> R.string.ai_key_placeholder_ollama
         CUSTOM_OPENAI -> R.string.ai_key_placeholder_custom
     }
 
-    enum class ApiFormat { GEMINI, OPENAI_COMPATIBLE, ANTHROPIC }
+    enum class ApiFormat { GEMINI, OPENAI_COMPATIBLE, ANTHROPIC, LOCAL }
 
     companion object {
         const val DEFAULT_REQUEST_TIMEOUT_SECONDS = 180
 
         val visionProviders: List<AIProvider> get() = values().filter { it.supportsVision }
+        val remoteVisionProviders: List<AIProvider>
+            get() = visionProviders.filter { it != LOCAL_GEMMA }
         val textProviders: List<AIProvider>
             get() = values().filter { it.textModels.isNotEmpty() || it.requiresCustomModelName }
+        val remoteTextProviders: List<AIProvider>
+            get() = textProviders.filter { it != LOCAL_GEMMA }
 
         fun normalizedRequestTimeoutSeconds(value: Int): Int = value.coerceIn(30, 600)
 

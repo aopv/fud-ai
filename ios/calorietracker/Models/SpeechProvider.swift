@@ -2,6 +2,7 @@ import Foundation
 
 enum SpeechProvider: String, CaseIterable, Codable, Identifiable {
     case nativeIOS = "Native iOS (On-Device)"
+    case whisperBase = "Whisper Base (On-Device)"
     case gemini = "Gemini Audio"
     case openai = "OpenAI Whisper"
     case groq = "Groq (Whisper)"
@@ -13,6 +14,14 @@ enum SpeechProvider: String, CaseIterable, Codable, Identifiable {
 
     static var remoteProviders: [SpeechProvider] {
         allCases.filter(\.requiresAPIKey)
+    }
+
+    static var availableProviders: [SpeechProvider] {
+        allCases.filter { $0 != .whisperBase || WhisperBaseModelManager.isCurrentDeviceSelectable }
+    }
+
+    static var availableBatchProviders: [SpeechProvider] {
+        availableProviders.filter { $0 != .nativeIOS }
     }
 
     /// The STT provider that shares credentials and account ownership with a
@@ -34,7 +43,7 @@ enum SpeechProvider: String, CaseIterable, Codable, Identifiable {
         case .openai: .openai
         case .groq: .groq
         case .mistral: .mistral
-        case .nativeIOS, .deepgram, .assemblyai: nil
+        case .nativeIOS, .whisperBase, .deepgram, .assemblyai: nil
         }
     }
 
@@ -42,6 +51,11 @@ enum SpeechProvider: String, CaseIterable, Codable, Identifiable {
     /// used for persisted settings and Keychain lookup keys.
     var displayName: String {
         switch self {
+        case .whisperBase:
+            LocalModelStrings.text(
+                "whisper.providerName",
+                defaultValue: "Whisper Base (On-Device)"
+            )
         case .openai: "OpenAI GPT-Transcribe"
         default: rawValue
         }
@@ -49,7 +63,7 @@ enum SpeechProvider: String, CaseIterable, Codable, Identifiable {
 
     var logoAssetName: String? {
         switch self {
-        case .nativeIOS: nil
+        case .nativeIOS, .whisperBase: nil
         case .gemini: "provider_gemini"
         case .openai: "provider_openai"
         case .groq: "provider_groq"
@@ -59,13 +73,17 @@ enum SpeechProvider: String, CaseIterable, Codable, Identifiable {
         }
     }
 
-    var fallbackSystemImage: String { "apple.logo" }
+    var fallbackSystemImage: String {
+        self == .whisperBase ? "waveform.badge.mic" : "apple.logo"
+    }
 
-    var requiresAPIKey: Bool { self != .nativeIOS }
+    var requiresAPIKey: Bool {
+        self != .nativeIOS && self != .whisperBase
+    }
 
     var apiKeyPlaceholder: String {
         switch self {
-        case .nativeIOS: "Not needed"
+        case .nativeIOS, .whisperBase: "Not needed"
         case .gemini: "AIza..."
         case .openai: "sk-..."
         case .groq: "gsk_..."
@@ -79,6 +97,7 @@ enum SpeechProvider: String, CaseIterable, Codable, Identifiable {
     var defaultModel: String {
         switch self {
         case .nativeIOS: ""
+        case .whisperBase: "base"
         case .gemini: "gemini-3.5-transcribe"
         case .openai: "gpt-transcribe"
         case .groq: "whisper-large-v3"
@@ -94,6 +113,11 @@ enum SpeechProvider: String, CaseIterable, Codable, Identifiable {
             LocalizedDisplayText.text(
                 "Apple's on-device speech recognition. Free, works offline on modern iPhones, real-time partial results. Recommended default.",
                 polish: "Rozpoznawanie mowy Apple na urządzeniu. Bezpłatne, działa offline na nowoczesnych iPhone'ach, pokazuje częściowe wyniki w czasie rzeczywistym. Zalecane domyślnie."
+            )
+        case .whisperBase:
+            LocalModelStrings.text(
+                "whisper.providerDescription",
+                defaultValue: "Multilingual Whisper Base running entirely on this iPhone. Download once for private offline transcription."
             )
         case .gemini:
             LocalizedDisplayText.text(
@@ -292,11 +316,16 @@ struct SpeechSettings {
     static var selectedProvider: SpeechProvider {
         get {
             guard let raw = UserDefaults.standard.string(forKey: providerKey),
-                  let provider = SpeechProvider(rawValue: raw) else { return .nativeIOS }
+                  let provider = SpeechProvider(rawValue: raw),
+                  SpeechProvider.availableProviders.contains(provider) else {
+                UserDefaults.standard.set(SpeechProvider.nativeIOS.rawValue, forKey: providerKey)
+                return .nativeIOS
+            }
             return provider
         }
         set {
-            UserDefaults.standard.set(newValue.rawValue, forKey: providerKey)
+            let resolved = SpeechProvider.availableProviders.contains(newValue) ? newValue : .nativeIOS
+            UserDefaults.standard.set(resolved.rawValue, forKey: providerKey)
         }
     }
 
@@ -309,13 +338,17 @@ struct SpeechSettings {
         get {
             guard let raw = UserDefaults.standard.string(forKey: fallbackProviderKey),
                   let provider = SpeechProvider(rawValue: raw),
-                  provider.requiresAPIKey else {
+                  SpeechProvider.availableBatchProviders.contains(provider) else {
+                if UserDefaults.standard.string(forKey: fallbackProviderKey) == SpeechProvider.whisperBase.rawValue {
+                    UserDefaults.standard.set(false, forKey: fallbackEnabledKey)
+                }
+                UserDefaults.standard.set(SpeechProvider.groq.rawValue, forKey: fallbackProviderKey)
                 return .groq
             }
             return provider
         }
         set {
-            let resolved = newValue.requiresAPIKey ? newValue : .groq
+            let resolved = SpeechProvider.availableBatchProviders.contains(newValue) ? newValue : .groq
             UserDefaults.standard.set(resolved.rawValue, forKey: fallbackProviderKey)
         }
     }
@@ -346,7 +379,7 @@ struct SpeechSettings {
         switch provider {
         case .nativeIOS:
             .device
-        case .gemini, .openai, .groq, .mistral:
+        case .whisperBase, .gemini, .openai, .groq, .mistral:
             .automatic
         case .deepgram:
             .device
@@ -388,6 +421,16 @@ struct SpeechSettings {
         UserDefaults.standard.removeObject(forKey: languageKey)
         for provider in SpeechProvider.allCases {
             UserDefaults.standard.removeObject(forKey: languageKeyPrefix + provider.rawValue)
+        }
+    }
+
+    static func replaceDeletedWhisperSelections(defaults: UserDefaults = .standard) {
+        if defaults.string(forKey: providerKey) == SpeechProvider.whisperBase.rawValue {
+            defaults.set(SpeechProvider.nativeIOS.rawValue, forKey: providerKey)
+        }
+        if defaults.string(forKey: fallbackProviderKey) == SpeechProvider.whisperBase.rawValue {
+            defaults.set(SpeechProvider.groq.rawValue, forKey: fallbackProviderKey)
+            defaults.set(false, forKey: fallbackEnabledKey)
         }
     }
 }

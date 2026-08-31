@@ -8,6 +8,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 enum class SpeechProvider {
     @SerialName("Native (On-Device)") NATIVE,
+    @SerialName("Whisper Base (On-Device)") LOCAL_WHISPER,
     @SerialName("Gemini Audio") GEMINI,
     @SerialName("OpenAI Whisper") OPENAI,
     @SerialName("Groq (Whisper)") GROQ,
@@ -18,6 +19,7 @@ enum class SpeechProvider {
     @get:StringRes
     val displayNameRes: Int get() = when (this) {
         NATIVE -> R.string.speech_provider_native
+        LOCAL_WHISPER -> R.string.speech_provider_local_whisper
         GEMINI -> R.string.speech_provider_gemini
         OPENAI -> R.string.speech_provider_openai
         GROQ -> R.string.speech_provider_groq
@@ -26,19 +28,20 @@ enum class SpeechProvider {
         ASSEMBLY_AI -> R.string.speech_provider_assemblyai
     }
 
-    val requiresApiKey: Boolean get() = this != NATIVE
+    val requiresApiKey: Boolean get() = this != NATIVE && this != LOCAL_WHISPER
 
     val matchingAIProvider: AIProvider? get() = when (this) {
         GEMINI -> AIProvider.GEMINI
         OPENAI -> AIProvider.OPENAI
         GROQ -> AIProvider.GROQ
         MISTRAL -> AIProvider.MISTRAL
-        NATIVE, DEEPGRAM, ASSEMBLY_AI -> null
+        NATIVE, LOCAL_WHISPER, DEEPGRAM, ASSEMBLY_AI -> null
     }
 
     @get:StringRes
     val apiKeyPlaceholderRes: Int get() = when (this) {
         NATIVE -> R.string.speech_key_placeholder_native
+        LOCAL_WHISPER -> R.string.speech_key_placeholder_local
         GEMINI -> R.string.speech_key_placeholder_gemini
         OPENAI -> R.string.speech_key_placeholder_openai
         GROQ -> R.string.speech_key_placeholder_groq
@@ -49,6 +52,7 @@ enum class SpeechProvider {
 
     val defaultModel: String get() = when (this) {
         NATIVE -> ""
+        LOCAL_WHISPER -> "ggml-base"
         GEMINI -> "gemini-3.5-transcribe"
         OPENAI -> "gpt-transcribe"
         GROQ -> "whisper-large-v3"
@@ -60,6 +64,7 @@ enum class SpeechProvider {
     @get:StringRes
     val descriptionRes: Int get() = when (this) {
         NATIVE -> R.string.speech_description_native
+        LOCAL_WHISPER -> R.string.speech_description_local_whisper
         GEMINI -> R.string.speech_description_gemini
         OPENAI -> R.string.speech_description_openai
         GROQ -> R.string.speech_description_groq
@@ -71,6 +76,9 @@ enum class SpeechProvider {
     companion object {
         val remoteProviders: List<SpeechProvider>
             get() = values().filter { it.requiresApiKey }
+
+        val recordedFallbackProviders: List<SpeechProvider>
+            get() = values().filter { it != NATIVE }
 
         /** First-party STT route for a supported Primary AI provider. */
         fun matchingPrimaryAIProvider(provider: AIProvider): SpeechProvider? = when (provider) {

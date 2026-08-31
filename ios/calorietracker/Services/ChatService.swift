@@ -95,6 +95,26 @@ struct ChatService {
                     newUserMessage: newUserMessage,
                     imageData: imageData
                 )
+            case .liteRTLocal:
+                let localHistory = history.suffix(8).map { message in
+                    Gemma4LocalModelManager.ChatTurn(
+                        role: message.role == .user ? .user : .assistant,
+                        text: message.content
+                    )
+                }
+                let localInstructions = """
+                \(systemPrompt)
+
+                ON-DEVICE MODE
+                You cannot call data tools in this mode. Answer only from the profile, forecast, and data summary above. If the question requires unavailable detailed history, say that briefly instead of inventing facts.
+                """
+                return try await Gemma4LocalModelManager.shared.generate(
+                    prompt: newUserMessage,
+                    images: imageData.map { [$0] } ?? [],
+                    systemPrompt: localInstructions,
+                    history: localHistory,
+                    maxOutputTokens: AIProviderSettings.maxResponseTokens
+                )
             case .gemini:
                 return try await callGemini(baseURL: baseURL, model: model, apiKey: apiKey, systemPrompt: systemPrompt, history: history, newUserMessage: newUserMessage, imageData: imageData, tools: tools)
             case .anthropic:

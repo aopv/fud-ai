@@ -729,4 +729,28 @@
     <string name="settings_calc_target_citation">Hall KD, et al. (2011). „Quantifizierung der Wirkung eines Energieungleichgewichts auf das Körpergewicht.“ Lancet 378(9793):826–837. Die klassische Regel von 3.500 kcal pro Pfund geht auf Wishnofsky M (1958), Am J Clin Nutr 6:542–546, zurück.</string>
     <string name="settings_calc_split_citation">Morton RW, et al. (2018). „Systematische Übersichtsarbeit, Metaanalyse und Metaregression zur Wirkung einer Proteinsupplementierung auf durch Krafttraining erzielte Zuwächse an Muskelmasse und Kraft.“ Br J Sports Med 52(6):376–384.</string>
     <string name="settings_calc_micro_citation">Die Schätzungen beruhen auf den Trainingsdaten des zugrunde liegenden KI-Modells (USDA FoodData Central, Herstellerangaben, wissenschaftliche Literatur). Die Genauigkeit hängt vom Lebensmittel, der Erkennbarkeit der Portionsgröße und dem Anbietermodell ab. Prüfe bei Lebensmitteln, die du häufig protokollierst, immer die Etikettangaben.</string>
+
+    <string name="about_litert_notices">Drittanbieterhinweise zu LiteRT-LM</string>
+    <string name="about_litert_notices_load_error">Die Drittanbieterhinweise zu LiteRT-LM konnten nicht geladen werden.</string>
+    <string name="settings_model_source">Modellquelle</string>
+    <string name="settings_model_license_format">%1$s-Lizenz</string>
+    <string name="settings_model_requires_8gb">Erfordert ein Gerät mit 8 GB RAM</string>
+    <string name="settings_model_low_ram_unsupported">Auf Geräten mit wenig Arbeitsspeicher nicht unterstützt</string>
+    <string name="settings_model_processor_unsupported">Der Prozessor dieses Geräts wird nicht unterstützt</string>
+    <string name="action_download">Herunterladen</string>
+    <string name="ai_provider_local_gemma">Gemma 4 E2B (auf dem Gerät)</string>
+    <string name="ai_key_placeholder_local">Kein API-Schlüssel erforderlich</string>
+    <string name="speech_provider_local_whisper">Whisper Base (auf dem Gerät)</string>
+    <string name="speech_key_placeholder_local">Kein API-Schlüssel erforderlich</string>
+    <string name="speech_description_local_whisper">Heruntergeladenes mehrsprachiges Whisper Base. Audiodaten verbleiben auf diesem Gerät und es ist kein API-Schlüssel erforderlich.</string>
+    <string name="settings_on_device_models">Modelle auf dem Gerät</string>
+    <string name="settings_on_device_models_info">Modelle werden in den privaten App-Speicher geladen und ausgeführt, ohne Fotos, Eingaben oder Audiodaten an einen Server zu senden. Downloadgröße und Lizenzbedingungen des Modells gelten.</string>
+    <string name="settings_local_model_not_downloaded_format">%1$s · Nicht heruntergeladen</string>
+    <string name="settings_local_model_downloading_format">Wird heruntergeladen · %1$d%%</string>
+    <string name="settings_local_model_installed">Installiert · Offline bereit</string>
+    <string name="settings_view_model_license">Modelllizenz anzeigen</string>
+    <string name="settings_info_speech_fallback">Wiederholt die Transkription, wenn der ausgewählte STT-Anbieter für Audioaufnahmen fehlschlägt. Er erzeugt lediglich ein Transkript; dieses folgt weiterhin dem normalen Text-KI-Pfad. Die native Android-Spracherkennung verfügt bereits über eine eigene Wiederherstellung.</string>
+    <string name="settings_speech_fallback_footer">Wird verwendet, wenn der ausgewählte Anbieter für Audioaufnahmen fehlschlägt. Die native Android-Spracherkennung verfügt bereits über eine eigene Wiederherstellung.</string>
+    <string name="about_whisper_notices">Drittanbieterhinweise zu Whisper Base</string>
+    <string name="about_whisper_notices_load_error">Die Drittanbieterhinweise zu Whisper Base konnten nicht geladen werden.</string>
 </resources>

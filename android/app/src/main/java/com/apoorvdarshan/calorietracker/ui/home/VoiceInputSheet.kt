@@ -346,7 +346,7 @@ fun VoiceInputSheet(
                                         phase = VoicePhase.TRANSCRIBING
                                         scope.launch {
                                             try {
-                                                transcript = container.speechService.transcribeRemote(file)
+                                                transcript = container.speechService.transcribeRecordedAudio(file)
                                                 phase = VoicePhase.REVIEWING
                                             } catch (e: Throwable) {
                                                 error = e.localizedMessage ?: transcriptionFailedMsg
@@ -370,7 +370,7 @@ fun VoiceInputSheet(
 
             // Analyze / Cancel — iOS match: borderedProminent pink capsule, then
             // a secondary Cancel text button. Native is one-tap (stops the live
-            // recognizer and submits in one click); remote is two-tap (mic to
+            // recognizer and submits in one click); recorded-audio STT is two-tap (mic to
             // stop+transcribe, then Analyze on the reviewed transcript).
             val canAnalyze = transcript.trim().isNotEmpty() && phase != VoicePhase.TRANSCRIBING
             Spacer(Modifier.height(20.dp))

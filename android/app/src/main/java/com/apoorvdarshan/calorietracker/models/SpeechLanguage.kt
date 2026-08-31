@@ -40,6 +40,7 @@ enum class SpeechLanguage(
         fun defaultFor(provider: SpeechProvider): SpeechLanguage = when (provider) {
             SpeechProvider.NATIVE -> DEVICE
             SpeechProvider.DEEPGRAM -> DEVICE
+            SpeechProvider.LOCAL_WHISPER,
             SpeechProvider.GEMINI,
             SpeechProvider.OPENAI,
             SpeechProvider.GROQ,
