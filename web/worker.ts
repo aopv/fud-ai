@@ -1,17 +1,12 @@
+import {
+  CHALLENGE_API_PREFIX,
+  cleanupChallengeData,
+  handleChallengeRequest,
+} from "./challenge-api";
+
 const REPOSITORY = "apoorvdarshan/fud-ai";
 const HISTORY_KEY = "github-star-history-v1";
 const GITHUB_GRAPHQL_URL = "https://api.github.com/graphql";
-
-interface Env {
-  ASSETS: {
-    fetch(request: Request): Promise<Response>;
-  };
-  GITHUB_TOKEN: string;
-  STAR_HISTORY: {
-    get(key: string): Promise<string | null>;
-    put(key: string, value: string): Promise<void>;
-  };
-}
 
 interface GitHubStargazerEdge {
   starredAt: string;
@@ -80,6 +75,13 @@ export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
 
+    if (
+      url.pathname === CHALLENGE_API_PREFIX ||
+      url.pathname.startsWith(`${CHALLENGE_API_PREFIX}/`)
+    ) {
+      return handleChallengeRequest(request, env);
+    }
+
     if (url.pathname === "/star-history.json") {
       const history = await getHistory(env);
       return Response.json(history, {
@@ -98,10 +100,29 @@ export default {
     return env.ASSETS.fetch(request);
   },
 
-  async scheduled(_controller: unknown, env: Env): Promise<void> {
-    await refreshHistory(env);
+  scheduled(_controller: ScheduledController, env: Env, context: ExecutionContext): void {
+    context.waitUntil(runScheduledMaintenance(env));
   },
-};
+} satisfies ExportedHandler<Env>;
+
+async function runScheduledMaintenance(env: Env): Promise<void> {
+  const tasks = [
+    { name: "star_history", promise: refreshHistory(env) },
+    { name: "challenge_cleanup", promise: cleanupChallengeData(env.CHALLENGE_DB) },
+  ];
+  const results = await Promise.allSettled(tasks.map((task) => task.promise));
+  for (const [index, result] of results.entries()) {
+    if (result.status === "rejected") {
+      console.error(
+        JSON.stringify({
+          event: "scheduled_task_error",
+          task: tasks[index]?.name ?? "unknown",
+          errorType: result.reason instanceof Error ? result.reason.name : typeof result.reason,
+        }),
+      );
+    }
+  }
+}
 
 async function getHistory(env: Env): Promise<StarHistory> {
   const cached = await env.STAR_HISTORY.get(HISTORY_KEY);

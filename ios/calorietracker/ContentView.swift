@@ -3010,6 +3010,7 @@ struct ProgressTabView: View {
     @State private var showAllWeights = false
     @State private var showAllBodyFat = false
     @State private var showWorkoutHistory = false
+    @State private var progressOverviewMode: ProgressOverviewMode = .myProgress
 
     private var userProfile: UserProfile { profileStore.profile }
 
@@ -3072,8 +3073,25 @@ struct ProgressTabView: View {
     var body: some View {
         let _ = profileStore.profile
         return NavigationStack {
-            ScrollView {
-                VStack(spacing: 18) {
+            VStack(spacing: 0) {
+                Picker(
+                    WeeklyChallengeL10n.text("Progress view"),
+                    selection: $progressOverviewMode
+                ) {
+                    Text(WeeklyChallengeL10n.text("My Progress"))
+                        .tag(ProgressOverviewMode.myProgress)
+                    Text(WeeklyChallengeL10n.text("Weekly Challenge"))
+                        .tag(ProgressOverviewMode.weeklyChallenge)
+                }
+                .pickerStyle(.segmented)
+                .tint(AppColors.calorie)
+                .padding(.horizontal)
+                .padding(.top, 10)
+                .padding(.bottom, 4)
+
+                if progressOverviewMode == .myProgress {
+                    ScrollView {
+                        VStack(spacing: 18) {
                     // Segmented Picker
                     Picker("Time Range", selection: $timeRange) {
                         ForEach(TimeRange.allCases, id: \.self) { range in
@@ -3146,8 +3164,13 @@ struct ProgressTabView: View {
                     )
                     .padding(.horizontal)
 
+                        }
+                        .padding(.vertical)
+                    }
+                    .background(AppColors.appBackground)
+                } else {
+                    WeeklyChallengeView()
                 }
-                .padding(.vertical)
             }
             .background(AppColors.appBackground)
             .navigationBarHidden(true)
@@ -3422,6 +3445,7 @@ struct ProfileView: View {
     @Environment(BodyMeasurementStore.self) private var bodyMeasurementStore
     @Environment(NotificationManager.self) private var notificationManager
     @Environment(HealthKitManager.self) private var healthKitManager
+    @Environment(WeeklyChallengeStore.self) private var weeklyChallengeStore
     private var profile: UserProfile {
         get { profileStore.profile }
         nonmutating set { profileStore.profile = newValue }
@@ -5212,34 +5236,29 @@ struct ProfileView: View {
             .alert("Delete All Data", isPresented: $showDeleteConfirmation) {
                 Button("Cancel", role: .cancel) { }
                 Button("Delete Everything", role: .destructive) {
-                    // Delete All Data is local-only. We intentionally do NOT touch Apple
-                    // Health samples — that data is personal and belongs to the user, not
-                    // this app's storage. If they want HK cleaned up they can do it from
-                    // the Health app's Sources → Fud AI screen.
-                    foodStore.replaceAllEntries([])
-                    weightStore.replaceAllEntries([])
-                    waterStore.clear()
-                    fastingStore.clear()
-                    strengthWorkoutStore.clearAll()
-                    // Wipe the food-image folder defensively — replaceAllEntries
-                    // already cleans per-entry files, but a belt-and-braces
-                    // deleteAll catches any orphans from earlier crash recovery.
-                    FoodImageStore.shared.deleteAll()
-                    // Cancel all notifications
-                    notificationManager.cancelAllNotifications()
-                    // Wipe all persisted data
-                    let domain = Bundle.main.bundleIdentifier ?? ""
-                    UserDefaults.standard.removePersistentDomain(forName: domain)
-                    // Wipe Keychain API keys
-                    AIProviderSettings.deleteAllData()
-                    SpeechSettings.deleteAllData()
-                    chatStore.reset()
-                    // Wipe the widget snapshot out of the App Group container —
-                    // it lives outside UserDefaults.standard and would otherwise
-                    // keep showing the previous profile's numbers on the widget.
-                    WidgetSnapshot.clear()
-                    WidgetCenter.shared.reloadAllTimelines()
-                    hasCompletedOnboarding = false
+                    Task {
+                        // Try the server first. On failure, only the deletion marker
+                        // and bearer survive in Keychain so deletion can retry later.
+                        await weeklyChallengeStore.deleteRemoteProfileForFullReset()
+
+                        // Apple Health samples remain untouched; users manage those
+                        // from the Health app's Sources > Fud AI screen.
+                        foodStore.replaceAllEntries([])
+                        weightStore.replaceAllEntries([])
+                        waterStore.clear()
+                        fastingStore.clear()
+                        strengthWorkoutStore.clearAll()
+                        FoodImageStore.shared.deleteAll()
+                        notificationManager.cancelAllNotifications()
+                        let domain = Bundle.main.bundleIdentifier ?? ""
+                        UserDefaults.standard.removePersistentDomain(forName: domain)
+                        AIProviderSettings.deleteAllData()
+                        SpeechSettings.deleteAllData()
+                        chatStore.reset()
+                        WidgetSnapshot.clear()
+                        WidgetCenter.shared.reloadAllTimelines()
+                        hasCompletedOnboarding = false
+                    }
                 }
             } message: {
                 Text("This will permanently delete all your data including food logs, weight entries, workout history, and profile. This action cannot be undone.")

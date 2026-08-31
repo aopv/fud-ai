@@ -13,6 +13,7 @@ import com.apoorvdarshan.calorietracker.data.WeightRepository
 import com.apoorvdarshan.calorietracker.data.WaterRepository
 import com.apoorvdarshan.calorietracker.data.WorkoutHealthSync
 import com.apoorvdarshan.calorietracker.data.WorkoutRepository
+import com.apoorvdarshan.calorietracker.data.WeeklyChallengeRepository
 import com.apoorvdarshan.calorietracker.services.FoodImageStore
 import com.apoorvdarshan.calorietracker.services.NotificationService
 import com.apoorvdarshan.calorietracker.services.WidgetSnapshotWriter
@@ -72,6 +73,7 @@ class FudAIApp : Application() {
         // Prune only unreferenced files; logged foods, saved meals, and pending
         // analysis drafts remain untouched.
         appScope.launch { container.foodRepository.pruneOrphanedImages() }
+        appScope.launch { container.weeklyChallengeRepository.retryPendingRemoteDeletion() }
         container.prefs.mealSchedule
             .onEach { CurrentMealSchedule.value = it }
             .launchIn(appScope)
@@ -206,6 +208,7 @@ class AppContainer(app: FudAIApp) {
     val waterRepository = WaterRepository(prefs)
     val fastingRepository = FastingRepository(prefs)
     val workoutRepository = WorkoutRepository(prefs, workoutHealthSync)
+    val weeklyChallengeRepository = WeeklyChallengeRepository(app, keyStore)
 
     val localGemma = LocalGemmaRuntime(app, localModels)
     val localWhisper = LocalWhisperRuntime(app, localModels)

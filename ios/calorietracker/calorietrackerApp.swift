@@ -24,6 +24,7 @@ struct calorietrackerApp: App {
     @State private var waterStore = WaterStore()
     @State private var fastingStore = FastingStore()
     @State private var strengthWorkoutStore = StrengthWorkoutStore()
+    @State private var weeklyChallengeStore = WeeklyChallengeStore()
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
     @AppStorage("appearanceMode") private var appearanceMode = "system"
     @AppStorage("notificationsEnabled") private var notificationsEnabled = false
@@ -70,6 +71,7 @@ struct calorietrackerApp: App {
                         .environment(waterStore)
                         .environment(fastingStore)
                         .environment(strengthWorkoutStore)
+                        .environment(weeklyChallengeStore)
                 } else {
                     OnboardingView(hasCompletedOnboarding: $hasCompletedOnboarding)
                         .environment(notificationManager)
@@ -94,6 +96,9 @@ struct calorietrackerApp: App {
             }
             .onReceive(NotificationCenter.default.publisher(for: .userProfileDidChange)) { _ in
                 refreshWidgetSnapshot()
+            }
+            .task {
+                await weeklyChallengeStore.retryPendingDeletionIfNeeded()
             }
         }
         .onChange(of: scenePhase) { _, newPhase in

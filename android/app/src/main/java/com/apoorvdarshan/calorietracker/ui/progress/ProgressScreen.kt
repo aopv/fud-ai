@@ -56,6 +56,8 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
@@ -149,20 +151,42 @@ enum class TimeRange(@StringRes val labelRes: Int, val days: Int) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProgressScreen(container: AppContainer) {
+    var destination by rememberSaveable { mutableStateOf(ProgressDestination.MY_PROGRESS) }
+    val destinationState = rememberSaveableStateHolder()
+    Column(Modifier.fillMaxSize()) {
+        ProgressDestinationSelector(
+            selected = destination,
+            onSelect = { destination = it },
+            modifier = Modifier.padding(start = 16.dp, top = 12.dp, end = 16.dp, bottom = 4.dp)
+        )
+        Box(Modifier.weight(1f)) {
+            destinationState.SaveableStateProvider(destination.name) {
+                when (destination) {
+                    ProgressDestination.MY_PROGRESS -> MyProgressContent(container)
+                    ProgressDestination.WEEKLY_CHALLENGE -> WeeklyChallengeScreen(container)
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun MyProgressContent(container: AppContainer) {
     val vm: ProgressViewModel = viewModel(factory = ProgressViewModel.Factory(container))
     val ui by vm.ui.collectAsState()
     val foods by container.foodRepository.entries.collectAsState(initial = emptyList())
     val weightUnit by container.prefs.weightUnit.collectAsState(initial = "kg")
     val weightMetric = weightUnit == "kg"
 
-    var range by remember { mutableStateOf(TimeRange.WEEK) }
+    var range by rememberSaveable { mutableStateOf(TimeRange.WEEK) }
     var showAddDialog by remember { mutableStateOf(false) }
     var showAddBodyFatDialog by remember { mutableStateOf(false) }
     var showAllWeights by remember { mutableStateOf(false) }
     var showAllBodyFats by remember { mutableStateOf(false) }
     var showAllWorkouts by remember { mutableStateOf(false) }
     var workoutPendingDelete by remember { mutableStateOf<WorkoutSession?>(null) }
-    var bodyMetric by remember { mutableStateOf(BodyMetric.WEIGHT) }
+    var bodyMetric by rememberSaveable { mutableStateOf(BodyMetric.WEIGHT) }
 
     // Filter weights + body fats to range
     val (rangeStartDate, rangeEndDate) = range.dateRange()

@@ -8,11 +8,34 @@ preview_urls = false
 directory = "."
 binding = "ASSETS"
 not_found_handling = "404-page"
-run_worker_first = ["/star-history.svg", "/star-history.json"]
+run_worker_first = ["/star-history.svg", "/star-history.json", "/api/challenge/v1/*"]
 
 [[kv_namespaces]]
 binding = "STAR_HISTORY"
 id = "3576eb63eadf40f2b7f55afb75e3cd85"
+
+[[d1_databases]]
+binding = "CHALLENGE_DB"
+database_name = "fud-ai-challenge"
+database_id = "767c0604-d776-47be-9d58-5c7b43a1e16e"
+migrations_dir = "migrations"
+
+# Namespace IDs only need to be unique within the Cloudflare account.
+[[ratelimits]]
+name = "CHALLENGE_API_RATE_LIMITER"
+namespace_id = "61001"
+
+  [ratelimits.simple]
+  limit = 120
+  period = 60
+
+[[ratelimits]]
+name = "CHALLENGE_CREATE_RATE_LIMITER"
+namespace_id = "61002"
+
+  [ratelimits.simple]
+  limit = 10
+  period = 60
 
 [triggers]
 crons = ["17 * * * *"]

@@ -2,9 +2,16 @@
   "name": "fud-ai-web",
   "private": true,
   "scripts": {
-    "build": "node scripts/validate-static.mjs"
+    "build": "node scripts/validate-static.mjs",
+    "check": "npm run typecheck && npm test && npm run build",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "types": "wrangler types worker-configuration.d.ts --include-runtime false"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "5.20260830.1",
+    "typescript": "7.0.2",
+    "vitest": "4.1.11",
     "wrangler": "4.114.0"
   },
   "overrides": {

@@ -1217,8 +1217,9 @@ class SettingsViewModel(val container: AppContainer) : ViewModel() {
 
     fun deleteAllData(onComplete: () -> Unit = {}) {
         viewModelScope.launch {
+            val challengeDeleted = container.weeklyChallengeRepository.prepareForDeleteEverything()
             container.prefs.clearAll()
-            container.keyStore.clearAll()
+            container.keyStore.clearAll(preserveWeeklyChallengeToken = !challengeDeleted)
             container.imageStore.clearAll()
             onComplete()
         }

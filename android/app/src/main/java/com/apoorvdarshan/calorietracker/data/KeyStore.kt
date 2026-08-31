@@ -43,8 +43,23 @@ class KeyStore(context: Context) {
         if (key.isNullOrEmpty()) delete(storageKey) else save(storageKey, key)
     }
 
-    fun clearAll() {
-        prefs.edit().clear().apply()
+    fun weeklyChallengeBearerToken(): String? = load(WEEKLY_CHALLENGE_BEARER_TOKEN)
+
+    fun setWeeklyChallengeBearerToken(token: String) {
+        save(WEEKLY_CHALLENGE_BEARER_TOKEN, token)
+    }
+
+    fun clearWeeklyChallengeBearerToken() {
+        delete(WEEKLY_CHALLENGE_BEARER_TOKEN)
+    }
+
+    fun clearAll(preserveWeeklyChallengeToken: Boolean = false) {
+        val challengeToken = if (preserveWeeklyChallengeToken) weeklyChallengeBearerToken() else null
+        prefs.edit().clear().apply {
+            if (challengeToken != null) {
+                putString(WEEKLY_CHALLENGE_BEARER_TOKEN, challengeToken)
+            }
+        }.apply()
     }
 
     companion object {
@@ -52,6 +67,7 @@ class KeyStore(context: Context) {
         private const val FILE_NAME = "fudai_keychain"
         private const val AI_PREFIX = "apikey_"
         private const val STT_PREFIX = "speechApiKey_"
+        private const val WEEKLY_CHALLENGE_BEARER_TOKEN = "weekly_challenge_bearer_token_v1"
 
         /**
          * Open EncryptedSharedPreferences. On Android 14/15 (and occasionally

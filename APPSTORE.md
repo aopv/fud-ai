@@ -72,7 +72,7 @@ OPTIONAL FASTING TRACKING
 Off by default. Choose a 1–168 hour goal, start/end/cancel from the Home + menu, keep the timer across app restarts, optionally receive a local goal alert, and edit completed sessions. Fasting history stays on your device and is not written to Apple Health.
 
 PRIVACY
-No account, Fud AI cloud, analytics, behavioral tracking, or ads. BYOK keys stay in Keychain. Apple Intelligence can process eligible descriptions on-device. Barcode sends only its number to Open Food Facts. MIT licensed.
+No conventional account or sign-in, analytics, behavioral tracking, or ads. BYOK keys stay in Keychain. The optional 18+ Weekly Challenge sends a chosen display name, at most one X or Instagram handle, and seven-day aggregate habit scores to Fud AI; it never sends raw food, water, workout, Health, body-weight, or weight-loss records. Apple Intelligence can process eligible descriptions on-device. Barcode sends only its number to Open Food Facts. MIT licensed.
 
 APPLE HEALTH
 Optional sync for nutrition, weight, height, body fat, and calculated workout calories. External samples can auto-import or restore after reinstall. Energy Burn Goals can use active/total energy. Fasting is local-only. Permissions remain manageable in Health.
@@ -121,6 +121,18 @@ https://fud-ai.app/privacy.html
 https://fud-ai.app/terms.html
 ```
 
+## App Privacy (App Store Connect)
+
+The optional Weekly Challenge introduces first-party server collection. Update the App Privacy answers before submission; all of these are linked to the pseudonymous challenge participant ID, used only for App Functionality, and not used for tracking:
+
+- Contact Info → Name: the chosen public challenge display name.
+- Identifiers → User ID: the generated participant ID and optional X or Instagram handle.
+- Health & Fitness → Health: weekly aggregate nutrition, consistency, and hydration qualifying-day counts only.
+- Health & Fitness → Fitness: weekly activity qualifying-day count and capped aggregate activity calories only.
+- User Content → Other User Content: an optional moderation-report explanation typed by the reporter.
+
+Do not declare raw meals, food names, water entries, workout details, Apple Health records, body weight, weight loss, date of birth, contacts, precise location, analytics, advertising data, or tracking for this feature; the challenge does not transmit them.
+
 ## Support URL
 ```
 https://fud-ai.app
@@ -134,7 +146,7 @@ https://fud-ai.app
 ## Reviewer Notes
 ```
 1) iPhone only — not optimized for iPad. Please review on iPhone.
-2) There is no user account or sign-in — the app is privacy-first and local-first. AI features use a "bring your own key" (BYOK) provider key. For review, a working Google Gemini API key is provided in App Review Information (entered in the Sign-In password field). To enable all AI features: on the "Set Up Your AI" onboarding step (or Settings → AI Access), Provider = Google Gemini, Model = gemini-3.5-flash-lite (the default), paste the provided key into API Key, then Accept & Continue.
+2) There is no conventional user account or sign-in — the app is privacy-first and local-first. AI features use a "bring your own key" (BYOK) provider key. For review, a working Google Gemini API key is provided in App Review Information (entered in the Sign-In password field). To enable all AI features: on the "Set Up Your AI" onboarding step (or Settings → AI Access), Provider = Google Gemini, Model = gemini-3.5-flash-lite (the default), paste the provided key into API Key, then Accept & Continue.
 3) With the key set, all AI features work immediately — Camera/Photos multi-image analysis, Text/Voice logging, "What if?" preview, and AI Coach chat. Logging any meal fills the food log, Home dashboard, and Progress charts; no account or Fud AI server data is needed. (A free Gemini key can also be created at https://aistudio.google.com/apikey.)
 4) The Fud AI Premium subscription from v4.4 has been removed in this version. The app is fully free; no paywall exists.
 5) In-app purchases are 4 optional consumable tips (Settings → About → Tip Jar). They unlock nothing — voluntary support only:
@@ -145,4 +157,5 @@ https://fud-ai.app
    Purchases go through StoreKit via RevenueCat, so App Store sandbox purchase testing is available.
 6) The app shows no ads and does not request tracking. In-app purchases are the 4 optional consumable tips above; nothing else is monetized.
 7) To review intermittent fasting: Settings → Fasting Tracking, enable it, choose a goal, then use Home → + → Start Fast. It is local-only, does not modify nutrition totals, and can be ended or cancelled at any time.
+8) To review the optional Weekly Challenge: Progress → Weekly Challenge. Before enrollment, no leaderboard data is fetched. Enrollment requires explicit 18+ and Community Rules confirmations, a 2–40 character public display name, and optionally exactly one X or Instagram handle. The disclosure shows the exact weekly aggregate payload. Joined users can report or locally block every other participant and manage blocked participants. “Leave & Delete Remote Data” deletes the public profile and scores; Settings → Delete All Data also attempts remote deletion first and safely retries after a connection failure. No date of birth or raw health/food/workout records are uploaded.
 ```
