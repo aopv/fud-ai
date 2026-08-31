@@ -10,7 +10,10 @@ import java.io.InputStreamReader
  * sorting, mirroring the iOS `ExerciseLibraryService` + `FreeExerciseDBLoader`.
  * The asset (exercises.json) is merged in from the iOS resources at build time.
  */
-class ExerciseRepository private constructor(val exercises: List<ExerciseItem>) {
+class ExerciseRepository private constructor(
+    val exercises: List<ExerciseItem>,
+    private val svgFrames: Map<String, GenderedExerciseSvgFrames>
+) {
 
     val availableLevels: List<String> by lazy { sortedUnique(exercises.map { it.level }) }
     val availablePrimaryMuscles: List<String> by lazy { sortedUnique(exercises.flatMap { it.primaryMuscles }) }
@@ -53,6 +56,11 @@ class ExerciseRepository private constructor(val exercises: List<ExerciseItem>) 
         }
         return items.sortedWith(comparator(sort))
     }
+
+    fun visualFor(
+        item: ExerciseItem,
+        gender: com.apoorvdarshan.calorietracker.models.Gender
+    ): ExerciseVisual = ExerciseVisualResolver.resolve(item, gender, svgFrames)
 
     private fun comparator(sort: ExerciseSort): Comparator<ExerciseItem> {
         // Case-SENSITIVE to match Swift's `<` (the dataset is ASCII, so ordinal == Swift order).
@@ -113,7 +121,20 @@ class ExerciseRepository private constructor(val exercises: List<ExerciseItem>) 
                 android.util.Log.e("ExerciseRepository", "failed to load exercises.json", t)
                 emptyList()
             }
-            return ExerciseRepository(items)
+            val assetNames = runCatching { context.assets.list("")?.toSet().orEmpty() }
+                .onFailure { android.util.Log.e("ExerciseRepository", "failed to list exercise assets", it) }
+                .getOrDefault(emptySet())
+            val manifestJSON = runCatching {
+                context.assets.open(ExerciseVisualResolver.MANIFEST_ASSET_NAME)
+                    .bufferedReader(Charsets.UTF_8)
+                    .use { it.readText() }
+            }
+                .onFailure { android.util.Log.e("ExerciseRepository", "failed to load exercise visual manifest", it) }
+                .getOrNull()
+            val svgFrames = manifestJSON
+                ?.let { ExerciseVisualResolver.parseManifest(it, packagedAssetNames = assetNames) }
+                .orEmpty()
+            return ExerciseRepository(items, svgFrames)
         }
 
         /** Asset URI for a bundled exercise image filename (Coil-loadable). */

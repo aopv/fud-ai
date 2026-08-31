@@ -56,12 +56,18 @@ import androidx.compose.ui.unit.sp
 import com.apoorvdarshan.calorietracker.R
 import com.apoorvdarshan.calorietracker.ui.navigation.BottomNavScrollPadding
 import com.apoorvdarshan.calorietracker.data.ExerciseItem
+import com.apoorvdarshan.calorietracker.data.ExerciseVisual
 import com.apoorvdarshan.calorietracker.ui.workouts.AnimatedExerciseImage
 
 private val HERO_HEIGHT = 294.dp
 
 @Composable
-fun ExerciseDetailScreen(item: ExerciseItem, onBack: () -> Unit, modifier: Modifier = Modifier) {
+fun ExerciseDetailScreen(
+    item: ExerciseItem,
+    visual: ExerciseVisual,
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     val colors = workoutsColors()
     var showMetrics by remember { mutableStateOf(false) }
 
@@ -101,13 +107,13 @@ fun ExerciseDetailScreen(item: ExerciseItem, onBack: () -> Unit, modifier: Modif
                 item(key = "pad") { Spacer(Modifier.size(40.dp)) }
             }
 
-            Hero(item = item, showMetrics = showMetrics, onToggle = { showMetrics = !showMetrics })
+            Hero(item = item, visual = visual, showMetrics = showMetrics, onToggle = { showMetrics = !showMetrics })
         }
     }
 }
 
 @Composable
-private fun Hero(item: ExerciseItem, showMetrics: Boolean, onToggle: () -> Unit) {
+private fun Hero(item: ExerciseItem, visual: ExerciseVisual, showMetrics: Boolean, onToggle: () -> Unit) {
     val colors = workoutsColors()
     Box(
         Modifier
@@ -117,7 +123,7 @@ private fun Hero(item: ExerciseItem, showMetrics: Boolean, onToggle: () -> Unit)
             .background(colors.panel.copy(alpha = 0.32f))
             .border(0.5.dp, colors.hairline.copy(alpha = 0.35f), RoundedCornerShape(20.dp))
     ) {
-        AnimatedExerciseImage(item.imagePaths, Modifier.fillMaxSize(), fallbackLabel = item.name)
+        AnimatedExerciseImage(visual, Modifier.fillMaxSize(), fallbackLabel = item.name)
 
         AnimatedVisibility(
             visible = showMetrics,

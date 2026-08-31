@@ -13,14 +13,15 @@ struct AnimatedExerciseVisual: View {
     var animatesFrames = true
     var fallbackSystemImage = "figure.strengthtraining.traditional"
     var fallbackTitle = String(localized: "Exercise")
+    @Environment(ProfileStore.self) private var profileStore
     @State private var animate = false
 
     var body: some View {
-        let imageURLs = resolvedImageURLs
+        let visualAsset = resolvedVisualAsset
 
         ZStack {
-            if !imageURLs.isEmpty {
-                ExerciseImageView(urls: imageURLs, animatesFrames: animatesFrames)
+            if !visualAsset.frames.isEmpty {
+                ExerciseImageView(asset: visualAsset, animatesFrames: animatesFrames)
             } else {
                 fallbackVisual
             }
@@ -34,14 +35,17 @@ struct AnimatedExerciseVisual: View {
         )
     }
 
-    private var resolvedImageURLs: [URL] {
-        let directURLs = FreeExerciseDBAssetResolver.imageURLs(for: imagePaths)
-        if !directURLs.isEmpty {
-            return directURLs
+    private var resolvedVisualAsset: ExerciseVisualAsset {
+        let directAsset = FreeExerciseDBAssetResolver.preferredVisualAsset(
+            for: imagePaths,
+            gender: profileStore.profile.gender
+        )
+        if !directAsset.frames.isEmpty {
+            return directAsset
         }
 
         guard allowsDerivedImageLookup else {
-            return []
+            return .jpeg(urls: [])
         }
 
         let namedURLs = FreeExerciseDBAssetResolver.imageURLs(
@@ -50,14 +54,16 @@ struct AnimatedExerciseVisual: View {
             equipment: equipment
         )
         if !namedURLs.isEmpty {
-            return namedURLs
+            return .jpeg(urls: namedURLs)
         }
 
         guard allowsDerivedImageLookup, let muscleGroup else {
-            return []
+            return .jpeg(urls: [])
         }
 
-        return FreeExerciseDBAssetResolver.imageURLs(forMuscleGroup: muscleGroup, equipment: equipment)
+        return .jpeg(
+            urls: FreeExerciseDBAssetResolver.imageURLs(forMuscleGroup: muscleGroup, equipment: equipment)
+        )
     }
 
     private var fallbackVisual: some View {
@@ -93,11 +99,15 @@ struct AnimatedExerciseVisual: View {
 }
 
 private struct ExerciseImageView: View {
-    let urls: [URL]
+    let asset: ExerciseVisualAsset
     let animatesFrames: Bool
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var frameIndex = 0
     @State private var frames: [UIImage] = []
+
+    private var taskID: ExerciseImageTaskID {
+        ExerciseImageTaskID(asset: asset, animatesFrames: animatesFrames, reduceMotion: reduceMotion)
+    }
 
     var body: some View {
         ZStack {
@@ -106,13 +116,7 @@ private struct ExerciseImageView: View {
 
                 ZStack {
                     ForEach(frames.indices, id: \.self) { index in
-                        Image(uiImage: frames[index])
-                            .resizable()
-                            .scaledToFill()
-                            .saturation(0.30)
-                            .grayscale(0.36)
-                            .contrast(1.10)
-                            .brightness(-0.05)
+                        exerciseFrame(frames[index])
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                             .clipped()
                             .opacity(index == frameIndex ? 1 : 0)
@@ -122,10 +126,10 @@ private struct ExerciseImageView: View {
                 Color.workoutPanel.opacity(0.18)
             }
         }
-        .task(id: urls) {
-            let loadedFrames = ExerciseImageCache.shared.images(for: urls)
+        .task(id: taskID) {
+            let loadedFrames = ExerciseImageCache.shared.images(for: asset.frames)
             if !loadedFrames.isEmpty {
-                frameIndex = 0
+                frameIndex = staticFrameIndex(frameCount: loadedFrames.count)
                 frames = loadedFrames
             }
             guard animatesFrames, frames.count > 1, !reduceMotion else { return }
@@ -138,35 +142,94 @@ private struct ExerciseImageView: View {
         }
     }
 
+    @ViewBuilder
+    private func exerciseFrame(_ image: UIImage) -> some View {
+        if asset.format == .svg {
+            // Xcode compiles the SVG master into a native, vector-preserving image asset.
+            // Aspect-fit keeps its complete transparent canvas instead of cropping it.
+            Image(uiImage: image)
+                .resizable()
+                .scaledToFit()
+        } else {
+            Image(uiImage: image)
+                .resizable()
+                .scaledToFill()
+                .saturation(0.30)
+                .grayscale(0.36)
+                .contrast(1.10)
+                .brightness(-0.05)
+        }
+    }
+
+    private func staticFrameIndex(frameCount: Int) -> Int {
+        guard asset.format == .svg, !animatesFrames || reduceMotion else {
+            return 0
+        }
+
+        return min(asset.representativeFrameIndex, frameCount - 1)
+    }
+}
+
+private struct ExerciseImageTaskID: Equatable {
+    let asset: ExerciseVisualAsset
+    let animatesFrames: Bool
+    let reduceMotion: Bool
 }
 
 private final class ExerciseImageCache {
     static let shared = ExerciseImageCache()
 
-    private var imagesByURL: [URL: UIImage] = [:]
-    private let lock = NSLock()
+    private let imagesByFrame: NSCache<NSString, UIImage> = {
+        let cache = NSCache<NSString, UIImage>()
+        cache.countLimit = 96
+        cache.totalCostLimit = 48 * 1_024 * 1_024
+        return cache
+    }()
 
     private init() {}
 
-    func images(for urls: [URL]) -> [UIImage] {
-        urls.compactMap { image(for: $0) }
+    func images(for frames: [ExerciseVisualFrame]) -> [UIImage] {
+        frames.compactMap { image(for: $0) }
     }
 
-    private func image(for url: URL) -> UIImage? {
-        lock.lock()
-        if let image = imagesByURL[url] {
-            lock.unlock()
+    private func image(for frame: ExerciseVisualFrame) -> UIImage? {
+        let cacheKey = frame.cacheKey
+        if let image = imagesByFrame.object(forKey: cacheKey) {
             return image
         }
-        lock.unlock()
 
-        guard let image = UIImage(contentsOfFile: url.path) else {
+        let image: UIImage?
+        switch frame {
+        case .file(let url):
+            image = UIImage(contentsOfFile: url.path)
+        case .imageAsset(let name):
+            image = UIImage(named: name)
+        }
+
+        guard let image else {
             return nil
         }
 
-        lock.lock()
-        imagesByURL[url] = image
-        lock.unlock()
+        imagesByFrame.setObject(image, forKey: cacheKey, cost: image.estimatedMemoryCost)
         return image
+    }
+}
+
+private extension ExerciseVisualFrame {
+    var cacheKey: NSString {
+        switch self {
+        case .file(let url):
+            return "file:\(url.standardizedFileURL.absoluteString)" as NSString
+        case .imageAsset(let name):
+            return "asset:\(name)" as NSString
+        }
+    }
+}
+
+private extension UIImage {
+    var estimatedMemoryCost: Int {
+        let pixelWidth = max(Int(size.width * scale), 1)
+        let pixelHeight = max(Int(size.height * scale), 1)
+        return pixelWidth * pixelHeight * 4
     }
 }

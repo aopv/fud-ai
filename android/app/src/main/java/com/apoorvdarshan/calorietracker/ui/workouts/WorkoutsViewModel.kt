@@ -11,6 +11,7 @@ import com.apoorvdarshan.calorietracker.data.ExerciseItem
 import com.apoorvdarshan.calorietracker.data.ExerciseRepository
 import com.apoorvdarshan.calorietracker.data.ExerciseSort
 import com.apoorvdarshan.calorietracker.data.WorkoutRepository
+import com.apoorvdarshan.calorietracker.models.Gender
 import com.apoorvdarshan.calorietracker.models.PlannedExercise
 import com.apoorvdarshan.calorietracker.models.WorkoutDate
 import com.apoorvdarshan.calorietracker.models.WorkoutPersistedState
@@ -53,6 +54,7 @@ data class WorkoutDiaryUiState(
     val splitGroups: List<WorkoutSplitGroup> = emptyList(),
     val copyDays: List<WorkoutCopyDayUi> = emptyList(),
     val weightUnit: WorkoutWeightUnit = WorkoutWeightUnit.LBS,
+    val visualGender: Gender = Gender.MALE,
     val isCalculatingBurn: Boolean = false,
     val notice: String? = null
 ) {
@@ -76,6 +78,7 @@ class WorkoutsViewModel(app: Application) : AndroidViewModel(app) {
     private var latestPersistedState = WorkoutPersistedState()
     private var bodyWeightKg = 70.0
     private var workoutWeightUnit = WorkoutWeightUnit.LBS
+    private var profileGender = Gender.MALE
 
     var diaryUiState by mutableStateOf(WorkoutDiaryUiState())
         private set
@@ -157,10 +160,12 @@ class WorkoutsViewModel(app: Application) : AndroidViewModel(app) {
     fun bindWorkoutRepository(
         repository: WorkoutRepository?,
         currentBodyWeightKg: Double,
-        weightUnit: WorkoutWeightUnit
+        weightUnit: WorkoutWeightUnit,
+        profileGender: Gender
     ) {
         bodyWeightKg = currentBodyWeightKg.takeIf { it.isFinite() && it > 0.0 } ?: 70.0
         workoutWeightUnit = weightUnit
+        this.profileGender = profileGender
         if (workoutRepository === repository && repositoryJob != null) {
             rebuildDiaryState()
             return
@@ -169,7 +174,7 @@ class WorkoutsViewModel(app: Application) : AndroidViewModel(app) {
         workoutRepository = repository
         repositoryJob?.cancel()
         if (repository == null) {
-            diaryUiState = diaryUiState.copy(weightUnit = weightUnit)
+            diaryUiState = diaryUiState.copy(weightUnit = weightUnit, visualGender = profileGender)
             return
         }
         repositoryJob = viewModelScope.launch {
@@ -383,7 +388,8 @@ class WorkoutsViewModel(app: Application) : AndroidViewModel(app) {
             preferences = preferences,
             splitGroups = splitGroups,
             copyDays = copyDays,
-            weightUnit = workoutWeightUnit
+            weightUnit = workoutWeightUnit,
+            visualGender = profileGender
         )
     }
 

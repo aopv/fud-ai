@@ -102,7 +102,8 @@ android {
             assets.srcDirs(
                 "src/main/assets",
                 "../../ios/calorietracker/Resources/FreeExerciseDB/dist",
-                "../../ios/calorietracker/Resources/FreeExerciseDB/images"
+                "../../ios/calorietracker/Resources/FreeExerciseDB/images",
+                "../../shared/workout-vectors"
             )
         }
     }
@@ -118,6 +119,7 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3)
     implementation(libs.coil.compose)
+    implementation(libs.coil.svg)
     implementation(libs.gson)
     implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.androidx.compose.ui)
