@@ -447,7 +447,10 @@
 
     <string name="progress_weight_history">वज़न इतिहास</string>
     <string name="progress_body_fat_history">बॉडी फैट इतिहास</string>
-    <string name="progress_history_count_format">%1$d प्रविष्टियाँ · देखने या हटाने के लिए टैप करें</string>
+    <plurals name="progress_history_count_format">
+        <item quantity="one">%1$d प्रविष्टि · देखने या हटाने के लिए टैप करें</item>
+        <item quantity="other">%1$d प्रविष्टियाँ · देखने या हटाने के लिए टैप करें</item>
+    </plurals>
 
     <string name="progress_calories_section">कैलोरी</string>
     <string name="progress_avg_format">औसत: %1$,d kcal</string>
@@ -625,6 +628,58 @@
     <string name="action_remove_goal">लक्ष्य हटाएं</string>
     <string name="progress_metric_weight">वज़न</string>
     <string name="progress_metric_body_fat">बॉडी फैट</string>
+    <string name="progress_metric_workouts">वर्कआउट</string>
+    <string name="progress_metric_heart_rate">नाड़ी</string>
+    <string name="progress_workout_history">वर्कआउट इतिहास</string>
+    <plurals name="progress_workout_history_count_format">
+        <item quantity="one">%1$d गणना किया गया बर्न · देखने या हटाने के लिए टैप करें</item>
+        <item quantity="other">%1$d गणना किए गए बर्न · देखने या हटाने के लिए टैप करें</item>
+    </plurals>
+    <string name="progress_workout_delete_title">वर्कआउट बर्न हटाएँ?</string>
+    <string name="progress_workout_delete_message">यह Fud AI और Health Connect से गणना किया गया बर्न हटाता है। आपकी वर्कआउट डायरी योजना सहेजी रहेगी।</string>
+    <string name="progress_workout_section">वर्कआउट गतिविधि</string>
+    <string name="progress_workout_stat_workouts">वर्कआउट</string>
+    <string name="progress_workout_stat_total">कुल बर्न</string>
+    <string name="progress_workout_stat_average">औसत बर्न</string>
+    <string name="progress_workout_stat_latest">नवीनतम</string>
+    <string name="progress_workout_stat_days">दिन</string>
+    <string name="progress_workout_no_range">इस अवधि में कोई गणना किया गया वर्कआउट बर्न नहीं है</string>
+    <string name="progress_workout_chart_description">%1$s से %2$s तक वर्कआउट बर्न चार्ट। कुल %3$d किलोकैलोरी; नवीनतम %4$d किलोकैलोरी।</string>
+    <string name="progress_heart_rate_section">हृदय गति</string>
+    <string name="progress_heart_rate_measure">मापें</string>
+    <string name="progress_heart_rate_log_manual">मैन्युअल रूप से दर्ज करें</string>
+    <string name="progress_heart_rate_save_reading">रीडिंग सहेजें</string>
+    <string name="progress_heart_rate_no_range">इस अवधि में हृदय गति की कोई रीडिंग नहीं है</string>
+    <string name="progress_heart_rate_stat_latest">नवीनतम</string>
+    <string name="progress_heart_rate_stat_min">न्यूनतम</string>
+    <string name="progress_heart_rate_stat_max">अधिकतम</string>
+    <string name="progress_bpm_format">%1$d बीपीएम</string>
+    <string name="progress_heart_rate_history">हृदय गति इतिहास</string>
+    <string name="progress_heart_rate_delete_title">हृदय गति रीडिंग मिटाएँ?</string>
+    <string name="progress_heart_rate_delete_message">%2$s की %1$d bpm रीडिंग स्थायी रूप से मिटा दी जाएगी।</string>
+    <string name="progress_heart_rate_source_camera">कैमरा</string>
+    <string name="progress_heart_rate_source_manual">मैन्युअल</string>
+    <string name="progress_heart_rate_history_detail">%1$s · %2$s</string>
+    <string name="progress_heart_rate_save_error_title">हृदय गति सेव नहीं हो सकी</string>
+    <string name="progress_heart_rate_save_error_message">आपका मौजूदा हृदय गति डेटा पढ़ा नहीं जा सका, इसलिए उसे बदला नहीं गया। नई रीडिंग सेव नहीं हुई।</string>
+    <string name="progress_heart_rate_delete_error_title">हृदय गति रीडिंग हटाई नहीं जा सकी</string>
+    <string name="progress_heart_rate_delete_error_message">रीडिंग हटाई नहीं जा सकी। आपका मौजूदा हृदय गति डेटा बदला नहीं गया।</string>
+    <string name="progress_heart_rate_quality_format">सिग्नल गुणवत्ता: %1$d%%</string>
+    <string name="progress_heart_rate_disclaimer">केवल स्वास्थ्य अनुमान—यह चिकित्सीय माप नहीं है। यह हृदय की स्थिति का निदान नहीं कर सकता।</string>
+    <string name="progress_heart_rate_chart_description">%1$s से %2$s तक हृदय गति चार्ट। नवीनतम %3$d बीपीएम; सीमा %4$d से %5$d बीपीएम।</string>
+    <string name="progress_heart_rate_manual_title">हृदय गति दर्ज करें</string>
+    <string name="progress_heart_rate_bpm_label">प्रति मिनट धड़कन</string>
+    <string name="progress_heart_rate_manual_range">30 से 250 बीपीएम के बीच मान दर्ज करें।</string>
+    <string name="progress_heart_rate_camera_title">हृदय गति मापें</string>
+    <string name="progress_heart_rate_camera_guidance">पीछे के कैमरे और फ्लैश को उंगली के सिरे से हल्के से ढकें।</string>
+    <string name="progress_heart_rate_camera_measuring">आपकी नाड़ी पढ़ी जा रही है…</string>
+    <string name="progress_heart_rate_camera_hold_still">उंगली स्थिर रखें और सामान्य रूप से साँस लें।</string>
+    <string name="progress_heart_rate_camera_result">%1$d बीपीएम</string>
+    <string name="progress_heart_rate_camera_poor_signal">सिग्नल पर्याप्त साफ़ नहीं था। उंगली की स्थिति बदलकर फिर प्रयास करें।</string>
+    <string name="progress_heart_rate_camera_unavailable">पीछे का कैमरा उपलब्ध नहीं है। आप हृदय गति मैन्युअल रूप से दर्ज कर सकते हैं।</string>
+    <string name="progress_heart_rate_flash_unavailable">कैमरे से मापने के लिए पीछे का फ्लैश आवश्यक है। आप मैन्युअल रूप से दर्ज कर सकते हैं।</string>
+    <string name="progress_heart_rate_permission_denied">कैमरा अनुमति नहीं दी गई। सिस्टम सेटिंग में अनुमति दें या मान मैन्युअल रूप से दर्ज करें।</string>
+    <string name="progress_heart_rate_warmth_warning">फ्लैश गर्म लग सकता है। असहज होने पर उंगली हटा लें और रुक जाएँ।</string>
     <string name="progress_log_body_fat">बॉडी फैट दर्ज करें</string>
     <string name="progress_log_first_body_fat">रुझान देखने के लिए अपना पहला बॉडी फैट % दर्ज करें</string>
     <string name="progress_log_body_fat_title">बॉडी फैट दर्ज करें</string>
@@ -729,7 +784,6 @@
     <string name="settings_calc_target_citation">Hall KD, et al. (2011)। “शरीर के वज़न पर ऊर्जा असंतुलन के प्रभाव का मात्रात्मक आकलन।” Lancet 378(9793):826–837। प्रति पाउंड 3,500 kcal का पारंपरिक नियम Wishnofsky M (1958), Am J Clin Nutr 6:542–546 से आया है।</string>
     <string name="settings_calc_split_citation">Morton RW, et al. (2018)। “प्रतिरोध प्रशिक्षण से मांसपेशियों के द्रव्यमान और ताकत में होने वाली वृद्धि पर प्रोटीन सप्लीमेंट के प्रभाव की व्यवस्थित समीक्षा, मेटा-विश्लेषण और मेटा-रिग्रेशन।” Br J Sports Med 52(6):376–384.</string>
     <string name="settings_calc_micro_citation">अनुमान अंतर्निहित AI मॉडल के प्रशिक्षण डेटा (USDA FoodData Central, निर्माताओं के पोषण लेबल और वैज्ञानिक साहित्य) पर आधारित हैं। सटीकता भोजन, परोसने की मात्रा की स्पष्टता और प्रोवाइडर मॉडल के अनुसार बदलती है। जिन खाद्य पदार्थों को आप अक्सर दर्ज करते हैं, उनके लेबल से हमेशा मिलान करें।</string>
-
     <string name="about_litert_notices">LiteRT-LM के तृतीय-पक्ष नोटिस</string>
     <string name="about_litert_notices_load_error">LiteRT-LM के तृतीय-पक्ष नोटिस लोड नहीं किए जा सके।</string>
     <string name="settings_model_source">मॉडल का स्रोत</string>

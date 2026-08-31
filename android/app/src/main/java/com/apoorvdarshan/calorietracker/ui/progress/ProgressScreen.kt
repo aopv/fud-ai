@@ -1,5 +1,10 @@
 package com.apoorvdarshan.calorietracker.ui.progress
 
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
@@ -8,6 +13,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -22,12 +28,15 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -50,6 +59,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -76,6 +86,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -83,6 +94,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.semantics.Role
 import com.apoorvdarshan.calorietracker.models.BodyMeasurement
 import com.apoorvdarshan.calorietracker.models.Gender
 import com.apoorvdarshan.calorietracker.ui.components.DecimalWheelPicker
@@ -102,9 +114,11 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.core.content.ContextCompat
 import com.apoorvdarshan.calorietracker.AppContainer
 import com.apoorvdarshan.calorietracker.models.BodyFatEntry
 import com.apoorvdarshan.calorietracker.models.FoodEntry
+import com.apoorvdarshan.calorietracker.models.HeartRateSource
 import com.apoorvdarshan.calorietracker.models.MacroValueFormatter
 import com.apoorvdarshan.calorietracker.models.WeightEntry
 import com.apoorvdarshan.calorietracker.models.WorkoutSession
@@ -185,21 +199,67 @@ private fun MyProgressContent(container: AppContainer) {
     var showAllWeights by remember { mutableStateOf(false) }
     var showAllBodyFats by remember { mutableStateOf(false) }
     var showAllWorkouts by remember { mutableStateOf(false) }
+    var showAllHeartRates by remember { mutableStateOf(false) }
+    var showHeartRateMeasurement by remember { mutableStateOf(false) }
+    var showManualHeartRate by remember { mutableStateOf(false) }
+    var showHeartRatePermissionFallback by remember { mutableStateOf(false) }
+    var manualHeartRateValue by remember { mutableStateOf("") }
     var workoutPendingDelete by remember { mutableStateOf<WorkoutSession?>(null) }
-    var bodyMetric by rememberSaveable { mutableStateOf(BodyMetric.WEIGHT) }
+    var selectedMetric by rememberSaveable { mutableStateOf(ProgressMetric.WEIGHT) }
 
     // Filter weights + body fats to range
     val (rangeStartDate, rangeEndDate) = range.dateRange()
     val zone = ZoneId.systemDefault()
     val rangeStart = rangeStartDate.atStartOfDay(zone).toInstant()
-    val rangeEnd = rangeEndDate.atTime(23, 59, 59).atZone(zone).toInstant()
-    val filteredWeights = ui.entries.filter { it.date in rangeStart..rangeEnd }.sortedBy { it.date }
-    val filteredBodyFats = ui.bodyFatEntries.filter { it.date in rangeStart..rangeEnd }.sortedBy { it.date }
+    val rangeEndExclusive = rangeEndDate.plusDays(1).atStartOfDay(zone).toInstant()
+    val filteredWeights = ui.entries
+        .filter { it.date >= rangeStart && it.date < rangeEndExclusive }
+        .sortedBy { it.date }
+    val filteredBodyFats = ui.bodyFatEntries
+        .filter { it.date >= rangeStart && it.date < rangeEndExclusive }
+        .sortedBy { it.date }
+    val reliableWorkoutBurnSessions = remember(ui.workoutBurnSessions) {
+        ui.workoutBurnSessions.filter { session ->
+            session.caloriesBurned?.let { it in 1..5_000 } == true &&
+                runCatching { LocalDate.parse(session.diaryDateKey) }.isSuccess
+        }
+    }
+    val filteredWorkouts = reliableWorkoutBurnSessions.filter { session ->
+        runCatching { LocalDate.parse(session.diaryDateKey) }.getOrNull()?.let { date ->
+            date in rangeStartDate..rangeEndDate
+        } == true
+    }
+    val filteredHeartRates = ui.heartRateEntries
+        .filter { it.date >= rangeStart && it.date < rangeEndExclusive }
+        .sortedBy { it.date }
     // Body Fat segment only renders when the user has opted in — same visibility
     // rule as iOS: hidden entirely for users who never set body fat OR a goal.
     val bodyFatAvailable = ui.bodyFatEntries.isNotEmpty()
         || ui.profile?.bodyFatPercentage != null
         || ui.profile?.goalBodyFatPercentage != null
+    val availableMetrics = availableProgressMetrics(
+        bodyFatAvailable = bodyFatAvailable,
+        workoutHistoryAvailable = reliableWorkoutBurnSessions.isNotEmpty()
+    )
+    LaunchedEffect(availableMetrics, selectedMetric) {
+        if (selectedMetric !in availableMetrics) selectedMetric = ProgressMetric.WEIGHT
+    }
+
+    val context = LocalContext.current
+    val heartRateCameraPermission = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) showHeartRateMeasurement = true else showHeartRatePermissionFallback = true
+    }
+    fun openHeartRateCamera() {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) ==
+            PackageManager.PERMISSION_GRANTED
+        ) {
+            showHeartRateMeasurement = true
+        } else {
+            heartRateCameraPermission.launch(Manifest.permission.CAMERA)
+        }
+    }
 
     // Build per-day calorie totals over the range (drop empty days, like iOS)
     val dailyCalories = remember(foods, range) {
@@ -243,71 +303,69 @@ private fun MyProgressContent(container: AppContainer) {
             // 1. Segmented TimeRange picker
             item { TimeRangePicker(selected = range, onSelect = { range = it }) }
 
-            // 2. Weight / Body Fat chart — single card with a segmented toggle
-            //    when the user has opted into body-fat tracking, or just the
-            //    bare Weight chart (visually identical to v1.0.3) when they
-            //    haven't.
+            // 2. Progress metric selector. Optional metrics keep their stable
+            //    preference order while Heart Rate remains available for a first reading.
             item {
-                if (bodyFatAvailable) {
-                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                        BodyMetricToggle(selected = bodyMetric, onSelect = { bodyMetric = it })
-                        CardSection {
-                            when (bodyMetric) {
-                                BodyMetric.WEIGHT -> WeightSection(
-                                    entries = filteredWeights,
-                                    latest = ui.entries.maxByOrNull { it.date },
-                                    goalKg = ui.profile?.goalWeightKg,
-                                    useMetric = weightMetric,
-                                    onLogWeight = { showAddDialog = true }
-                                )
-                                BodyMetric.BODY_FAT -> BodyFatSection(
-                                    entries = filteredBodyFats,
-                                    latest = ui.bodyFatEntries.maxByOrNull { it.date }?.bodyFatFraction
-                                        ?: ui.profile?.bodyFatPercentage,
-                                    goalFraction = ui.profile?.goalBodyFatPercentage,
-                                    onLogBodyFat = { showAddBodyFatDialog = true }
-                                )
-                            }
-                        }
-                    }
-                } else {
-                    CardSection {
-                        WeightSection(
+                ProgressMetricSelector(
+                    metrics = availableMetrics,
+                    selected = selectedMetric,
+                    onSelect = { selectedMetric = it }
+                )
+            }
+
+            // 3. Selected metric chart.
+            item {
+                CardSection {
+                    when (selectedMetric) {
+                        ProgressMetric.WEIGHT -> WeightSection(
                             entries = filteredWeights,
                             latest = ui.entries.maxByOrNull { it.date },
                             goalKg = ui.profile?.goalWeightKg,
                             useMetric = weightMetric,
                             onLogWeight = { showAddDialog = true }
                         )
+                        ProgressMetric.BODY_FAT -> BodyFatSection(
+                            entries = filteredBodyFats,
+                            latest = ui.bodyFatEntries.maxByOrNull { it.date }?.bodyFatFraction
+                                ?: ui.profile?.bodyFatPercentage,
+                            goalFraction = ui.profile?.goalBodyFatPercentage,
+                            onLogBodyFat = { showAddBodyFatDialog = true }
+                        )
+                        ProgressMetric.WORKOUTS -> WorkoutProgressSection(filteredWorkouts)
+                        ProgressMetric.HEART_RATE -> HeartRateProgressSection(
+                            entries = filteredHeartRates,
+                            onMeasure = ::openHeartRateCamera,
+                            onLogManual = {
+                                manualHeartRateValue = ""
+                                showManualHeartRate = true
+                            }
+                        )
                     }
                 }
             }
 
-            // 3. Weight history link (if any)
-            if (ui.entries.isNotEmpty()) {
-                item {
-                    WeightHistoryLink(count = ui.entries.size) { showAllWeights = true }
+            // 4. The history affordance follows the selected metric instead of stacking
+            //    every history row and making Progress unnecessarily tall.
+            when (selectedMetric) {
+                ProgressMetric.WEIGHT -> if (ui.entries.isNotEmpty()) {
+                    item { WeightHistoryLink(ui.entries.size) { showAllWeights = true } }
                 }
-            }
-
-            // 3b. Body fat history link (if any)
-            if (ui.bodyFatEntries.isNotEmpty()) {
-                item {
-                    BodyFatHistoryLink(count = ui.bodyFatEntries.size) { showAllBodyFats = true }
+                ProgressMetric.BODY_FAT -> if (ui.bodyFatEntries.isNotEmpty()) {
+                    item { BodyFatHistoryLink(ui.bodyFatEntries.size) { showAllBodyFats = true } }
                 }
-            }
-
-            // Calculated workout burns use the same compact history affordance
-            // as weight and body fat. Plans remain in the diary after deletion.
-            if (ui.workoutBurnSessions.isNotEmpty()) {
-                item {
-                    WorkoutHistoryLink(count = ui.workoutBurnSessions.size) {
-                        showAllWorkouts = true
+                ProgressMetric.WORKOUTS -> if (reliableWorkoutBurnSessions.isNotEmpty()) {
+                    item {
+                        WorkoutHistoryLink(reliableWorkoutBurnSessions.size) { showAllWorkouts = true }
+                    }
+                }
+                ProgressMetric.HEART_RATE -> if (ui.heartRateEntries.isNotEmpty()) {
+                    item {
+                        HeartRateHistoryLink(ui.heartRateEntries.size) { showAllHeartRates = true }
                     }
                 }
             }
 
-            // 4. Calorie chart section
+            // 5. Calorie chart section
             item {
                 CardSection {
                     CalorieSection(
@@ -317,7 +375,7 @@ private fun MyProgressContent(container: AppContainer) {
                 }
             }
 
-            // 5. Macro averages
+            // 6. Macro averages
             ui.profile?.let { p ->
                 item {
                     CardSection {
@@ -380,10 +438,103 @@ private fun MyProgressContent(container: AppContainer) {
     }
     if (showAllWorkouts) {
         AllWorkoutHistorySheet(
-            entries = ui.workoutBurnSessions,
+            entries = reliableWorkoutBurnSessions,
             onRequestDelete = { workoutPendingDelete = it },
             onDismiss = { showAllWorkouts = false }
         )
+    }
+    if (showAllHeartRates) {
+        AllHeartRateHistorySheet(
+            entries = ui.heartRateEntries,
+            onDelete = { vm.deleteHeartRate(it.id) },
+            onDismiss = { showAllHeartRates = false }
+        )
+    }
+    if (showManualHeartRate) {
+        ManualHeartRateDialog(
+            value = manualHeartRateValue,
+            onValueChange = { manualHeartRateValue = it },
+            onDismiss = { showManualHeartRate = false },
+            onSave = { bpm ->
+                vm.addHeartRate(bpm, HeartRateSource.MANUAL)
+                showManualHeartRate = false
+            }
+        )
+    }
+    if (showHeartRateMeasurement) {
+        HeartRateMeasurementDialog(
+            onSave = { measurement ->
+                vm.addHeartRate(
+                    bpm = measurement.bpm,
+                    source = HeartRateSource.CAMERA,
+                    quality = measurement.quality
+                )
+                showHeartRateMeasurement = false
+            },
+            onManualFallback = {
+                showHeartRateMeasurement = false
+                manualHeartRateValue = ""
+                showManualHeartRate = true
+            },
+            onDismiss = { showHeartRateMeasurement = false }
+        )
+    }
+    if (showHeartRatePermissionFallback) {
+        FudGlassDialog(onDismissRequest = { showHeartRatePermissionFallback = false }) {
+            Text(
+                stringResource(R.string.progress_heart_rate_camera_title),
+                fontSize = 21.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                stringResource(R.string.progress_heart_rate_permission_denied),
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.68f)
+            )
+            FudGlassDialogActions(
+                primaryText = stringResource(R.string.progress_heart_rate_log_manual),
+                onPrimary = {
+                    showHeartRatePermissionFallback = false
+                    manualHeartRateValue = ""
+                    showManualHeartRate = true
+                },
+                dismissText = stringResource(R.string.action_cancel),
+                onDismiss = { showHeartRatePermissionFallback = false }
+            )
+        }
+    }
+    if (ui.heartRateSaveFailed) {
+        FudGlassDialog(onDismissRequest = vm::dismissHeartRateSaveError) {
+            Text(
+                stringResource(R.string.progress_heart_rate_save_error_title),
+                fontSize = 21.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                stringResource(R.string.progress_heart_rate_save_error_message),
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.68f)
+            )
+            FudGlassDialogActions(
+                primaryText = stringResource(R.string.action_ok),
+                onPrimary = vm::dismissHeartRateSaveError
+            )
+        }
+    }
+    if (ui.heartRateDeleteFailed) {
+        FudGlassDialog(onDismissRequest = vm::dismissHeartRateDeleteError) {
+            Text(
+                stringResource(R.string.progress_heart_rate_delete_error_title),
+                fontSize = 21.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                stringResource(R.string.progress_heart_rate_delete_error_message),
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.68f)
+            )
+            FudGlassDialogActions(
+                primaryText = stringResource(R.string.action_ok),
+                onPrimary = vm::dismissHeartRateDeleteError
+            )
+        }
     }
     workoutPendingDelete?.let { session ->
         FudGlassDialog(onDismissRequest = { workoutPendingDelete = null }) {
@@ -997,7 +1148,7 @@ private fun WeightHistoryLink(count: Int, onClick: () -> Unit) {
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(stringResource(R.string.progress_weight_history), fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
                 Text(
-                    stringResource(R.string.progress_history_count_format, count),
+                    pluralStringResource(R.plurals.progress_history_count_format, count, count),
                     fontSize = 13.sp,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                 )
@@ -1031,7 +1182,7 @@ private fun BodyFatHistoryLink(count: Int, onClick: () -> Unit) {
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(stringResource(R.string.progress_body_fat_history), fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
                 Text(
-                    stringResource(R.string.progress_history_count_format, count),
+                    pluralStringResource(R.plurals.progress_history_count_format, count, count),
                     fontSize = 13.sp,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                 )
@@ -1067,7 +1218,11 @@ private fun WorkoutHistoryLink(count: Int, onClick: () -> Unit) {
                     fontWeight = FontWeight.SemiBold
                 )
                 Text(
-                    stringResource(R.string.progress_workout_history_count_format, count),
+                    pluralStringResource(
+                        R.plurals.progress_workout_history_count_format,
+                        count,
+                        count
+                    ),
                     fontSize = 13.sp,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                 )
@@ -1574,12 +1729,18 @@ private fun formatWeightChange(deltaKg: Double, useMetric: Boolean): String {
 
 // MARK: - Body Fat surfaces ----------------------------------------------
 
-enum class BodyMetric { WEIGHT, BODY_FAT }
-
 @Composable
-private fun BodyMetricToggle(selected: BodyMetric, onSelect: (BodyMetric) -> Unit) {
-    val labelWeight = stringResource(R.string.progress_metric_weight)
-    val labelBodyFat = stringResource(R.string.progress_metric_body_fat)
+private fun ProgressMetricSelector(
+    metrics: List<ProgressMetric>,
+    selected: ProgressMetric,
+    onSelect: (ProgressMetric) -> Unit
+) {
+    val labels = mapOf(
+        ProgressMetric.WEIGHT to stringResource(R.string.progress_metric_weight),
+        ProgressMetric.BODY_FAT to stringResource(R.string.progress_metric_body_fat),
+        ProgressMetric.WORKOUTS to stringResource(R.string.progress_metric_workouts),
+        ProgressMetric.HEART_RATE to stringResource(R.string.progress_metric_heart_rate)
+    )
     val shape = RoundedCornerShape(18.dp)
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
     val trackFill = if (isDark) {
@@ -1588,7 +1749,14 @@ private fun BodyMetricToggle(selected: BodyMetric, onSelect: (BodyMetric) -> Uni
         Color(0xFFE5DAD3).copy(alpha = 0.88f)
     }
     val shadowAlpha = if (isDark) 0.14f else 0.05f
-    Row(
+    val scrollState = rememberScrollState()
+    val density = LocalDensity.current
+    LaunchedEffect(selected, metrics, scrollState.maxValue) {
+        val selectedIndex = metrics.indexOf(selected).coerceAtLeast(0)
+        val targetOffset = with(density) { (selectedIndex * 108).dp.roundToPx() }
+        scrollState.animateScrollTo(targetOffset.coerceAtMost(scrollState.maxValue))
+    }
+    Box(
         modifier = Modifier
             .fillMaxWidth()
             .shadow(
@@ -1618,29 +1786,41 @@ private fun BodyMetricToggle(selected: BodyMetric, onSelect: (BodyMetric) -> Uni
                 ),
                 shape
             )
-            .padding(3.dp),
-        horizontalArrangement = Arrangement.spacedBy(0.dp)
     ) {
-        listOf(BodyMetric.WEIGHT to labelWeight, BodyMetric.BODY_FAT to labelBodyFat).forEach { (metric, label) ->
-            val isSelected = metric == selected
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .clip(RoundedCornerShape(15.dp))
-                    .then(
-                        if (isSelected) Modifier.background(AppColors.CalorieGradient)
-                        else Modifier.background(Color.Transparent)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(scrollState)
+                .selectableGroup()
+                .padding(3.dp),
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            metrics.forEach { metric ->
+                val isSelected = metric == selected
+                Box(
+                    modifier = Modifier
+                        .widthIn(min = 104.dp)
+                        .heightIn(min = 48.dp)
+                        .clip(RoundedCornerShape(15.dp))
+                        .then(
+                            if (isSelected) Modifier.background(AppColors.CalorieGradient)
+                            else Modifier.background(Color.Transparent)
+                        )
+                        .selectable(
+                            selected = isSelected,
+                            role = Role.Tab,
+                            onClick = { onSelect(metric) }
+                        )
+                        .padding(horizontal = 16.dp, vertical = 10.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        labels.getValue(metric),
+                        fontSize = 14.sp,
+                        fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Medium,
+                        color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                     )
-                    .clickable { onSelect(metric) }
-                    .padding(vertical = 8.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    label,
-                    fontSize = 14.sp,
-                    fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Medium,
-                    color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-                )
+                }
             }
         }
     }

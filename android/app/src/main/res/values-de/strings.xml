@@ -447,7 +447,10 @@
 
     <string name="progress_weight_history">Gewichtsverlauf</string>
     <string name="progress_body_fat_history">Körperfettverlauf</string>
-    <string name="progress_history_count_format">%1$d Einträge · tippen zum Anzeigen oder Löschen</string>
+    <plurals name="progress_history_count_format">
+        <item quantity="one">%1$d Eintrag · tippen zum Anzeigen oder Löschen</item>
+        <item quantity="other">%1$d Einträge · tippen zum Anzeigen oder Löschen</item>
+    </plurals>
 
     <string name="progress_calories_section">Kalorien</string>
     <string name="progress_avg_format">Ø: %1$,d kcal</string>
@@ -625,6 +628,58 @@
     <string name="action_remove_goal">Ziel entfernen</string>
     <string name="progress_metric_weight">Gewicht</string>
     <string name="progress_metric_body_fat">Körperfett</string>
+    <string name="progress_metric_workouts">Training</string>
+    <string name="progress_metric_heart_rate">Puls</string>
+    <string name="progress_workout_history">Trainingsverlauf</string>
+    <plurals name="progress_workout_history_count_format">
+        <item quantity="one">%1$d berechneter Verbrauch · zum Anzeigen oder Löschen tippen</item>
+        <item quantity="other">%1$d berechnete Verbräuche · zum Anzeigen oder Löschen tippen</item>
+    </plurals>
+    <string name="progress_workout_delete_title">Trainingsverbrauch löschen?</string>
+    <string name="progress_workout_delete_message">Dies entfernt den berechneten Verbrauch aus Fud AI und Health Connect. Dein Trainingsplan bleibt gespeichert.</string>
+    <string name="progress_workout_section">Trainingsaktivität</string>
+    <string name="progress_workout_stat_workouts">Trainings</string>
+    <string name="progress_workout_stat_total">Gesamtverbrauch</string>
+    <string name="progress_workout_stat_average">Ø Verbrauch</string>
+    <string name="progress_workout_stat_latest">Letzter</string>
+    <string name="progress_workout_stat_days">Tage</string>
+    <string name="progress_workout_no_range">Keine berechneten Trainingsverbräuche in diesem Zeitraum</string>
+    <string name="progress_workout_chart_description">Diagramm des Trainingsverbrauchs von %1$s bis %2$s. Gesamt %3$d Kilokalorien; zuletzt %4$d Kilokalorien.</string>
+    <string name="progress_heart_rate_section">Herzfrequenz</string>
+    <string name="progress_heart_rate_measure">Messen</string>
+    <string name="progress_heart_rate_log_manual">Manuell eintragen</string>
+    <string name="progress_heart_rate_save_reading">Messwert speichern</string>
+    <string name="progress_heart_rate_no_range">Keine Herzfrequenzwerte in diesem Zeitraum</string>
+    <string name="progress_heart_rate_stat_latest">Letzter Wert</string>
+    <string name="progress_heart_rate_stat_min">Minimum</string>
+    <string name="progress_heart_rate_stat_max">Maximum</string>
+    <string name="progress_bpm_format">%1$d bpm</string>
+    <string name="progress_heart_rate_history">Herzfrequenzverlauf</string>
+    <string name="progress_heart_rate_delete_title">Herzfrequenzmessung löschen?</string>
+    <string name="progress_heart_rate_delete_message">Die Messung mit %1$d bpm vom %2$s wird dauerhaft gelöscht.</string>
+    <string name="progress_heart_rate_source_camera">Kamera</string>
+    <string name="progress_heart_rate_source_manual">Manuell</string>
+    <string name="progress_heart_rate_history_detail">%1$s · %2$s</string>
+    <string name="progress_heart_rate_save_error_title">Herzfrequenz konnte nicht gespeichert werden</string>
+    <string name="progress_heart_rate_save_error_message">Deine vorhandenen Herzfrequenzdaten konnten nicht gelesen werden und blieben deshalb unverändert. Es wurde keine neue Messung gespeichert.</string>
+    <string name="progress_heart_rate_delete_error_title">Herzfrequenzmessung konnte nicht gelöscht werden</string>
+    <string name="progress_heart_rate_delete_error_message">Die Messung konnte nicht gelöscht werden. Deine vorhandenen Herzfrequenzdaten blieben unverändert.</string>
+    <string name="progress_heart_rate_quality_format">Signalqualität: %1$d%%</string>
+    <string name="progress_heart_rate_disclaimer">Nur eine Wellness-Schätzung—keine medizinische Messung. Sie kann keine Herzerkrankung diagnostizieren.</string>
+    <string name="progress_heart_rate_chart_description">Herzfrequenzdiagramm von %1$s bis %2$s. Zuletzt %3$d bpm; Bereich %4$d bis %5$d bpm.</string>
+    <string name="progress_heart_rate_manual_title">Herzfrequenz eintragen</string>
+    <string name="progress_heart_rate_bpm_label">Schläge pro Minute</string>
+    <string name="progress_heart_rate_manual_range">Gib einen Wert zwischen 30 und 250 bpm ein.</string>
+    <string name="progress_heart_rate_camera_title">Herzfrequenz messen</string>
+    <string name="progress_heart_rate_camera_guidance">Bedecke Rückkamera und Blitz sanft mit deiner Fingerspitze.</string>
+    <string name="progress_heart_rate_camera_measuring">Puls wird gemessen…</string>
+    <string name="progress_heart_rate_camera_hold_still">Halte den Finger ruhig und atme normal.</string>
+    <string name="progress_heart_rate_camera_result">%1$d bpm</string>
+    <string name="progress_heart_rate_camera_poor_signal">Das Signal war nicht klar genug. Richte die Fingerspitze neu aus und versuche es erneut.</string>
+    <string name="progress_heart_rate_camera_unavailable">Keine Rückkamera verfügbar. Du kannst die Herzfrequenz weiterhin manuell eintragen.</string>
+    <string name="progress_heart_rate_flash_unavailable">Für die Kameramessung ist ein Rückkamera-Blitz erforderlich. Du kannst manuell eintragen.</string>
+    <string name="progress_heart_rate_permission_denied">Der Kamerazugriff wurde nicht erlaubt. Erlaube ihn in den Systemeinstellungen oder trage den Wert manuell ein.</string>
+    <string name="progress_heart_rate_warmth_warning">Der Blitz kann warm werden. Nimm den Finger weg und stoppe, wenn es unangenehm wird.</string>
     <string name="progress_log_body_fat">Körperfett protokollieren</string>
     <string name="progress_log_first_body_fat">Erfasse deinen ersten Körperfettwert, um Trends zu sehen</string>
     <string name="progress_log_body_fat_title">Körperfett protokollieren</string>
@@ -729,7 +784,6 @@
     <string name="settings_calc_target_citation">Hall KD, et al. (2011). „Quantifizierung der Wirkung eines Energieungleichgewichts auf das Körpergewicht.“ Lancet 378(9793):826–837. Die klassische Regel von 3.500 kcal pro Pfund geht auf Wishnofsky M (1958), Am J Clin Nutr 6:542–546, zurück.</string>
     <string name="settings_calc_split_citation">Morton RW, et al. (2018). „Systematische Übersichtsarbeit, Metaanalyse und Metaregression zur Wirkung einer Proteinsupplementierung auf durch Krafttraining erzielte Zuwächse an Muskelmasse und Kraft.“ Br J Sports Med 52(6):376–384.</string>
     <string name="settings_calc_micro_citation">Die Schätzungen beruhen auf den Trainingsdaten des zugrunde liegenden KI-Modells (USDA FoodData Central, Herstellerangaben, wissenschaftliche Literatur). Die Genauigkeit hängt vom Lebensmittel, der Erkennbarkeit der Portionsgröße und dem Anbietermodell ab. Prüfe bei Lebensmitteln, die du häufig protokollierst, immer die Etikettangaben.</string>
-
     <string name="about_litert_notices">Drittanbieterhinweise zu LiteRT-LM</string>
     <string name="about_litert_notices_load_error">Die Drittanbieterhinweise zu LiteRT-LM konnten nicht geladen werden.</string>
     <string name="settings_model_source">Modellquelle</string>

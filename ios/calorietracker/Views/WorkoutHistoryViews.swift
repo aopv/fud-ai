@@ -21,7 +21,7 @@ struct WorkoutHistoryLink: View {
                     Text("Workout History")
                         .font(.system(.body, design: .rounded, weight: .medium))
                         .foregroundStyle(.primary)
-                    Text("\(burnRecordCount) \(burnRecordCount == 1 ? "entry" : "entries") · tap to view or delete")
+                    Text(ProgressHistoryCountText.localized(burnRecordCount))
                         .font(.system(.caption, design: .rounded))
                         .foregroundStyle(.secondary)
                 }

@@ -447,7 +447,10 @@
 
     <string name="progress_weight_history">Cronologia peso</string>
     <string name="progress_body_fat_history">Cronologia grasso corporeo</string>
-    <string name="progress_history_count_format">%1$d voci · tocca per visualizzare o eliminare</string>
+    <plurals name="progress_history_count_format">
+        <item quantity="one">%1$d voce · tocca per visualizzare o eliminare</item>
+        <item quantity="other">%1$d voci · tocca per visualizzare o eliminare</item>
+    </plurals>
 
     <string name="progress_calories_section">Calorie</string>
     <string name="progress_avg_format">Media: %1$,d kcal</string>
@@ -625,6 +628,58 @@
     <string name="action_remove_goal">Rimuovi obiettivo</string>
     <string name="progress_metric_weight">Peso</string>
     <string name="progress_metric_body_fat">Grasso corporeo</string>
+    <string name="progress_metric_workouts">Allenamenti</string>
+    <string name="progress_metric_heart_rate">Battito</string>
+    <string name="progress_workout_history">Cronologia allenamenti</string>
+    <plurals name="progress_workout_history_count_format">
+        <item quantity="one">%1$d consumo calcolato · tocca per vedere o eliminare</item>
+        <item quantity="other">%1$d consumi calcolati · tocca per vedere o eliminare</item>
+    </plurals>
+    <string name="progress_workout_delete_title">Eliminare il consumo dell’allenamento?</string>
+    <string name="progress_workout_delete_message">Rimuove il consumo calcolato da Fud AI e Health Connect. Il piano del diario allenamenti resta salvato.</string>
+    <string name="progress_workout_section">Attività di allenamento</string>
+    <string name="progress_workout_stat_workouts">Allenamenti</string>
+    <string name="progress_workout_stat_total">Consumo totale</string>
+    <string name="progress_workout_stat_average">Consumo medio</string>
+    <string name="progress_workout_stat_latest">Ultimo</string>
+    <string name="progress_workout_stat_days">Giorni</string>
+    <string name="progress_workout_no_range">Nessun consumo di allenamento calcolato in questo intervallo</string>
+    <string name="progress_workout_chart_description">Grafico del consumo degli allenamenti dal %1$s al %2$s. Totale: %3$d chilocalorie; ultimo: %4$d chilocalorie.</string>
+    <string name="progress_heart_rate_section">Frequenza cardiaca</string>
+    <string name="progress_heart_rate_measure">Misura</string>
+    <string name="progress_heart_rate_log_manual">Inserisci manualmente</string>
+    <string name="progress_heart_rate_save_reading">Salva lettura</string>
+    <string name="progress_heart_rate_no_range">Nessuna lettura della frequenza cardiaca in questo intervallo</string>
+    <string name="progress_heart_rate_stat_latest">Ultima</string>
+    <string name="progress_heart_rate_stat_min">Minima</string>
+    <string name="progress_heart_rate_stat_max">Massima</string>
+    <string name="progress_bpm_format">%1$d bpm</string>
+    <string name="progress_heart_rate_history">Cronologia frequenza cardiaca</string>
+    <string name="progress_heart_rate_delete_title">Eliminare la lettura della frequenza cardiaca?</string>
+    <string name="progress_heart_rate_delete_message">La lettura di %1$d bpm del %2$s verrà eliminata definitivamente.</string>
+    <string name="progress_heart_rate_source_camera">Fotocamera</string>
+    <string name="progress_heart_rate_source_manual">Manuale</string>
+    <string name="progress_heart_rate_history_detail">%1$s · %2$s</string>
+    <string name="progress_heart_rate_save_error_title">Impossibile salvare la frequenza cardiaca</string>
+    <string name="progress_heart_rate_save_error_message">Non è stato possibile leggere i dati esistenti della frequenza cardiaca, quindi sono rimasti invariati. Nessuna nuova lettura è stata salvata.</string>
+    <string name="progress_heart_rate_delete_error_title">Impossibile eliminare la lettura della frequenza cardiaca</string>
+    <string name="progress_heart_rate_delete_error_message">Non è stato possibile eliminare la lettura. I dati esistenti della frequenza cardiaca sono rimasti invariati.</string>
+    <string name="progress_heart_rate_quality_format">Qualità del segnale: %1$d%%</string>
+    <string name="progress_heart_rate_disclaimer">Solo una stima di benessere, non una misurazione medica. Non può diagnosticare una patologia cardiaca.</string>
+    <string name="progress_heart_rate_chart_description">Grafico della frequenza cardiaca dal %1$s al %2$s. Ultima: %3$d bpm; intervallo da %4$d a %5$d bpm.</string>
+    <string name="progress_heart_rate_manual_title">Registra frequenza cardiaca</string>
+    <string name="progress_heart_rate_bpm_label">Battiti al minuto</string>
+    <string name="progress_heart_rate_manual_range">Inserisci un valore tra 30 e 250 bpm.</string>
+    <string name="progress_heart_rate_camera_title">Misura frequenza cardiaca</string>
+    <string name="progress_heart_rate_camera_guidance">Copri delicatamente fotocamera posteriore e flash con il polpastrello.</string>
+    <string name="progress_heart_rate_camera_measuring">Lettura del battito…</string>
+    <string name="progress_heart_rate_camera_hold_still">Tieni fermo il dito e respira normalmente.</string>
+    <string name="progress_heart_rate_camera_result">%1$d bpm</string>
+    <string name="progress_heart_rate_camera_poor_signal">Il segnale non era abbastanza chiaro. Regola il dito e riprova.</string>
+    <string name="progress_heart_rate_camera_unavailable">Fotocamera posteriore non disponibile. Puoi registrare manualmente la frequenza cardiaca.</string>
+    <string name="progress_heart_rate_flash_unavailable">Per la misurazione con fotocamera serve il flash posteriore. Puoi registrare manualmente.</string>
+    <string name="progress_heart_rate_permission_denied">Accesso alla fotocamera non concesso. Consentilo nelle impostazioni di sistema o registra manualmente.</string>
+    <string name="progress_heart_rate_warmth_warning">Il flash può scaldarsi. Togli il dito e interrompi se diventa fastidioso.</string>
     <string name="progress_log_body_fat">Registra grasso corporeo</string>
     <string name="progress_log_first_body_fat">Registra il tuo primo % di grasso corporeo per vedere le tendenze</string>
     <string name="progress_log_body_fat_title">Registra grasso corporeo</string>
@@ -729,7 +784,6 @@
     <string name="settings_calc_target_citation">Hall KD, et al. (2011). «Quantificazione dell’effetto dello squilibrio energetico sul peso corporeo». Lancet 378(9793):826–837. La classica regola delle 3.500 kcal per libbra deriva da Wishnofsky M (1958), Am J Clin Nutr 6:542–546.</string>
     <string name="settings_calc_split_citation">Morton RW, et al. (2018). «Revisione sistematica, meta-analisi e meta-regressione dell’effetto dell’integrazione proteica sugli aumenti di massa muscolare e forza indotti dall’allenamento di resistenza». Br J Sports Med 52(6):376–384.</string>
     <string name="settings_calc_micro_citation">Le stime si basano sui dati di addestramento del modello IA sottostante (USDA FoodData Central, etichette dei produttori e letteratura scientifica). La precisione varia in base all’alimento, alla visibilità delle dimensioni della porzione e al modello del provider. Verifica sempre le etichette degli alimenti che registri spesso.</string>
-
     <string name="about_litert_notices">Avvisi di terze parti per LiteRT-LM</string>
     <string name="about_litert_notices_load_error">Impossibile caricare gli avvisi di terze parti per LiteRT-LM.</string>
     <string name="settings_model_source">Fonte del modello</string>

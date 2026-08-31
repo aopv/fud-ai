@@ -3000,6 +3000,7 @@ struct ProgressTabView: View {
     @Environment(FoodStore.self) private var foodStore
     @Environment(WeightStore.self) private var weightStore
     @Environment(BodyFatStore.self) private var bodyFatStore
+    @Environment(HeartRateStore.self) private var heartRateStore
     @Environment(ProfileStore.self) private var profileStore
     @Environment(StrengthWorkoutStore.self) private var strengthWorkoutStore
     @AppStorage("weightUnit") private var weightUnitRaw = "lbs"
@@ -3010,6 +3011,11 @@ struct ProgressTabView: View {
     @State private var showAllWeights = false
     @State private var showAllBodyFat = false
     @State private var showWorkoutHistory = false
+    @State private var progressMetric: ProgressMetric = .weight
+    @State private var showLogHeartRate = false
+    @State private var showHeartRateMeasurement = false
+    @State private var showHeartRateHistory = false
+    @State private var showHeartRateSaveFailed = false
     @State private var progressOverviewMode: ProgressOverviewMode = .myProgress
 
     private var userProfile: UserProfile { profileStore.profile }
@@ -3024,8 +3030,21 @@ struct ProgressTabView: View {
         bodyFatStore.entries(in: dateRange)
     }
 
+    private var filteredHeartRateEntries: [HeartRateEntry] {
+        heartRateStore.entries(in: dateRange)
+    }
+
     private var workoutCalorieSessions: [StrengthWorkoutSession] {
-        strengthWorkoutStore.completedSessions.filter { $0.caloriesBurned != nil }
+        strengthWorkoutStore.completedSessions.filter {
+            WorkoutBurnAggregation.isReliable($0.caloriesBurned)
+        }
+    }
+
+    private var availableProgressMetrics: [ProgressMetric] {
+        ProgressMetric.available(
+            bodyFatAvailable: showsBodyFatSection,
+            workoutBurnAvailable: !workoutCalorieSessions.isEmpty
+        )
     }
 
     /// Show the Body Fat section to anyone who has either logged a reading,
@@ -3102,49 +3121,75 @@ struct ProgressTabView: View {
                     .tint(AppColors.calorie)
                     .padding(.horizontal)
 
-                    // Weight / Body Fat Trend — single card with a segmented
-                    // toggle (when the user has opted into body-fat tracking)
-                    // or just the bare Weight chart (when they haven't, so the
-                    // layout stays identical to v3.1 for those users).
-                    BodyMetricsSection(
-                        weightEntries: filteredWeightEntries,
-                        goalWeightKg: userProfile.goalWeightKg,
-                        currentWeightKg: weightStore.latestEntry?.weightKg,
-                        onLogWeight: { showLogWeight = true },
-                        bodyFatEntries: filteredBodyFatEntries,
-                        goalBodyFatFraction: userProfile.goalBodyFatPercentage,
-                        currentBodyFatFraction: bodyFatStore.latestEntry?.bodyFatFraction ?? userProfile.bodyFatPercentage,
-                        onLogBodyFat: { showLogBodyFat = true },
-                        bodyFatAvailable: showsBodyFatSection
+                    ProgressMetricSelector(
+                        metrics: availableProgressMetrics,
+                        selection: $progressMetric
                     )
                     .padding(.horizontal)
 
-                    // Weight History — tap to view/delete entries
-                    if !weightStore.entries.isEmpty {
-                        WeightHistoryLink(
-                            totalCount: weightStore.entries.count,
-                            onTap: { showAllWeights = true }
-                        )
-                        .padding(.horizontal)
+                    Group {
+                        switch progressMetric {
+                        case .weight:
+                            WeightChartSection(
+                                weightEntries: filteredWeightEntries,
+                                goalWeightKg: userProfile.goalWeightKg,
+                                currentWeightKg: weightStore.latestEntry?.weightKg,
+                                onLogWeight: { showLogWeight = true }
+                            )
+                        case .bodyFat:
+                            BodyFatChartSection(
+                                entries: filteredBodyFatEntries,
+                                goalBodyFatFraction: userProfile.goalBodyFatPercentage,
+                                currentBodyFatFraction: bodyFatStore.latestEntry?.bodyFatFraction
+                                    ?? userProfile.bodyFatPercentage,
+                                onLogBodyFat: { showLogBodyFat = true }
+                            )
+                        case .workouts:
+                            WorkoutBurnChartSection(
+                                sessions: workoutCalorieSessions,
+                                dateRange: dateRange
+                            )
+                        case .heartRate:
+                            HeartRateChartSection(
+                                entries: filteredHeartRateEntries,
+                                onMeasure: { showHeartRateMeasurement = true },
+                                onLogManual: { showLogHeartRate = true }
+                            )
+                        }
                     }
+                    .padding(.horizontal)
 
-                    // Body Fat History — tap to view/delete entries
-                    if !bodyFatStore.entries.isEmpty {
-                        BodyFatHistoryLink(
-                            totalCount: bodyFatStore.entries.count,
-                            onTap: { showAllBodyFat = true }
-                        )
-                        .padding(.horizontal)
+                    Group {
+                        switch progressMetric {
+                        case .weight:
+                            if !weightStore.entries.isEmpty {
+                                WeightHistoryLink(
+                                    totalCount: weightStore.entries.count,
+                                    onTap: { showAllWeights = true }
+                                )
+                            }
+                        case .bodyFat:
+                            if !bodyFatStore.entries.isEmpty {
+                                BodyFatHistoryLink(
+                                    totalCount: bodyFatStore.entries.count,
+                                    onTap: { showAllBodyFat = true }
+                                )
+                            }
+                        case .workouts:
+                            WorkoutHistoryLink(
+                                sessions: workoutCalorieSessions,
+                                onTap: { showWorkoutHistory = true }
+                            )
+                        case .heartRate:
+                            if !heartRateStore.entries.isEmpty {
+                                HeartRateHistoryLink(
+                                    totalCount: heartRateStore.entries.count,
+                                    onTap: { showHeartRateHistory = true }
+                                )
+                            }
+                        }
                     }
-
-                    // Workout History — calculated burns with exercise/set detail.
-                    if !workoutCalorieSessions.isEmpty {
-                        WorkoutHistoryLink(
-                            sessions: workoutCalorieSessions,
-                            onTap: { showWorkoutHistory = true }
-                        )
-                        .padding(.horizontal)
-                    }
+                    .padding(.horizontal)
 
                     // Calorie Trend
                     CalorieChartSection(
@@ -3174,6 +3219,11 @@ struct ProgressTabView: View {
             }
             .background(AppColors.appBackground)
             .navigationBarHidden(true)
+            .onChange(of: availableProgressMetrics, initial: true) { _, metrics in
+                if !metrics.contains(progressMetric) {
+                    progressMetric = .weight
+                }
+            }
             .sheet(isPresented: $showLogWeight) {
                 LogWeightSheet(
                     currentWeightKg: weightStore.latestEntry?.weightKg ?? userProfile.weightKg
@@ -3219,6 +3269,41 @@ struct ProgressTabView: View {
                         strengthWorkoutStore.deleteSession(session.id)
                     }
                 )
+            }
+            .sheet(isPresented: $showLogHeartRate) {
+                LogHeartRateSheet(
+                    initialBPM: heartRateStore.latestEntry?.bpm ?? 72
+                ) { bpm, date in
+                    if !heartRateStore.add(
+                        HeartRateEntry(date: date, bpm: bpm, source: .manual)
+                    ) {
+                        showHeartRateSaveFailed = true
+                    }
+                }
+            }
+            .fullScreenCover(isPresented: $showHeartRateMeasurement) {
+                HeartRateCameraMeasurementView { result in
+                    if !heartRateStore.add(
+                        HeartRateEntry(
+                            bpm: result.bpm,
+                            source: .camera,
+                            quality: result.quality
+                        )
+                    ) {
+                        showHeartRateSaveFailed = true
+                    }
+                }
+            }
+            .sheet(isPresented: $showHeartRateHistory) {
+                HeartRateHistoryView(
+                    entries: heartRateStore.entries,
+                    onDelete: { entry in heartRateStore.delete(entry) }
+                )
+            }
+            .alert("Couldn’t Save Heart Rate", isPresented: $showHeartRateSaveFailed) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text("Your existing heart-rate history could not be read, so Fud AI left it untouched. Use Delete All Data in Settings only if you want to discard it, then try again.")
             }
         }
     }
@@ -3438,6 +3523,7 @@ struct ProfileView: View {
     @Environment(ChatStore.self) private var chatStore
     @Environment(WeightStore.self) private var weightStore
     @Environment(BodyFatStore.self) private var bodyFatStore
+    @Environment(HeartRateStore.self) private var heartRateStore
     @Environment(FoodStore.self) private var foodStore
     @Environment(WaterStore.self) private var waterStore
     @Environment(FastingStore.self) private var fastingStore
@@ -5247,6 +5333,7 @@ struct ProfileView: View {
                         weightStore.replaceAllEntries([])
                         waterStore.clear()
                         fastingStore.clear()
+                        heartRateStore.clear()
                         strengthWorkoutStore.clearAll()
                         FoodImageStore.shared.deleteAll()
                         notificationManager.cancelAllNotifications()

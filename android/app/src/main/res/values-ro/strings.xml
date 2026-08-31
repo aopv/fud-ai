@@ -447,7 +447,10 @@
 
     <string name="progress_weight_history">Istoric greutate</string>
     <string name="progress_body_fat_history">Istoric grăsime corporală</string>
-    <string name="progress_history_count_format">%1$d intrări · atinge pentru a vedea sau șterge</string>
+    <plurals name="progress_history_count_format">
+        <item quantity="one">%1$d intrare · atinge pentru a vedea sau șterge</item>
+        <item quantity="other">%1$d intrări · atinge pentru a vedea sau șterge</item>
+    </plurals>
 
     <string name="progress_calories_section">Calorii</string>
     <string name="progress_avg_format">Med.: %1$,d kcal</string>
@@ -625,6 +628,58 @@
     <string name="action_remove_goal">Elimină ținta</string>
     <string name="progress_metric_weight">Greutate</string>
     <string name="progress_metric_body_fat">Grăsime corporală</string>
+    <string name="progress_metric_workouts">Antrenamente</string>
+    <string name="progress_metric_heart_rate">Puls</string>
+    <string name="progress_workout_history">Istoric antrenamente</string>
+    <plurals name="progress_workout_history_count_format">
+        <item quantity="one">%1$d consum calculat · atinge pentru a vedea sau șterge</item>
+        <item quantity="other">%1$d consumuri calculate · atinge pentru a vedea sau șterge</item>
+    </plurals>
+    <string name="progress_workout_delete_title">Ștergi consumul antrenamentului?</string>
+    <string name="progress_workout_delete_message">Se elimină consumul calculat din Fud AI și Health Connect. Planul din jurnalul de antrenament rămâne salvat.</string>
+    <string name="progress_workout_section">Activitate de antrenament</string>
+    <string name="progress_workout_stat_workouts">Antrenamente</string>
+    <string name="progress_workout_stat_total">Consum total</string>
+    <string name="progress_workout_stat_average">Consum mediu</string>
+    <string name="progress_workout_stat_latest">Recent</string>
+    <string name="progress_workout_stat_days">Zile</string>
+    <string name="progress_workout_no_range">Nu există consumuri calculate pentru antrenamente în această perioadă</string>
+    <string name="progress_workout_chart_description">Graficul consumului din antrenamente de la %1$s la %2$s. Total: %3$d kilocalorii; recent: %4$d kilocalorii.</string>
+    <string name="progress_heart_rate_section">Ritm cardiac</string>
+    <string name="progress_heart_rate_measure">Măsoară</string>
+    <string name="progress_heart_rate_log_manual">Înregistrează manual</string>
+    <string name="progress_heart_rate_save_reading">Salvează valoarea</string>
+    <string name="progress_heart_rate_no_range">Nu există măsurători ale ritmului cardiac în această perioadă</string>
+    <string name="progress_heart_rate_stat_latest">Ultimul</string>
+    <string name="progress_heart_rate_stat_min">Minim</string>
+    <string name="progress_heart_rate_stat_max">Maxim</string>
+    <string name="progress_bpm_format">%1$d bpm</string>
+    <string name="progress_heart_rate_history">Istoric ritm cardiac</string>
+    <string name="progress_heart_rate_delete_title">Ștergeți măsurarea ritmului cardiac?</string>
+    <string name="progress_heart_rate_delete_message">Măsurarea de %1$d bpm din %2$s va fi ștearsă definitiv.</string>
+    <string name="progress_heart_rate_source_camera">Cameră</string>
+    <string name="progress_heart_rate_source_manual">Manual</string>
+    <string name="progress_heart_rate_history_detail">%1$s · %2$s</string>
+    <string name="progress_heart_rate_save_error_title">Ritmul cardiac nu a putut fi salvat</string>
+    <string name="progress_heart_rate_save_error_message">Datele existente despre ritmul cardiac nu au putut fi citite, așa că au rămas neschimbate. Nu a fost salvată nicio măsurare nouă.</string>
+    <string name="progress_heart_rate_delete_error_title">Măsurarea ritmului cardiac nu a putut fi ștearsă</string>
+    <string name="progress_heart_rate_delete_error_message">Măsurarea nu a putut fi ștearsă. Datele existente despre ritmul cardiac au rămas neschimbate.</string>
+    <string name="progress_heart_rate_quality_format">Calitatea semnalului: %1$d%%</string>
+    <string name="progress_heart_rate_disclaimer">Doar o estimare pentru starea de bine, nu o măsurătoare medicală. Nu poate diagnostica o afecțiune cardiacă.</string>
+    <string name="progress_heart_rate_chart_description">Graficul ritmului cardiac de la %1$s la %2$s. Recent: %3$d bpm; interval de la %4$d la %5$d bpm.</string>
+    <string name="progress_heart_rate_manual_title">Înregistrează ritmul cardiac</string>
+    <string name="progress_heart_rate_bpm_label">Bătăi pe minut</string>
+    <string name="progress_heart_rate_manual_range">Introdu o valoare între 30 și 250 bpm.</string>
+    <string name="progress_heart_rate_camera_title">Măsoară ritmul cardiac</string>
+    <string name="progress_heart_rate_camera_guidance">Acoperă ușor camera din spate și blițul cu vârful degetului.</string>
+    <string name="progress_heart_rate_camera_measuring">Îți citim pulsul…</string>
+    <string name="progress_heart_rate_camera_hold_still">Ține degetul nemișcat și respiră normal.</string>
+    <string name="progress_heart_rate_camera_result">%1$d bpm</string>
+    <string name="progress_heart_rate_camera_poor_signal">Semnalul nu a fost suficient de clar. Repoziționează degetul și încearcă din nou.</string>
+    <string name="progress_heart_rate_camera_unavailable">Camera din spate nu este disponibilă. Poți înregistra ritmul cardiac manual.</string>
+    <string name="progress_heart_rate_flash_unavailable">Măsurarea cu camera necesită blițul din spate. Poți înregistra manual.</string>
+    <string name="progress_heart_rate_permission_denied">Accesul la cameră nu a fost acordat. Permite-l din setările sistemului sau înregistrează manual.</string>
+    <string name="progress_heart_rate_warmth_warning">Blițul se poate încălzi. Îndepărtează degetul și oprește-te dacă devine inconfortabil.</string>
     <string name="progress_log_body_fat">Înregistrează grăsimea corporală</string>
     <string name="progress_log_first_body_fat">Înregistrează primul tău % de grăsime corporală pentru a vedea tendințele</string>
     <string name="progress_log_body_fat_title">Înregistrează grăsimea corporală</string>
@@ -729,7 +784,6 @@
     <string name="settings_calc_target_citation">Hall KD, et al. (2011). „Cuantificarea efectului dezechilibrului energetic asupra greutății corporale.” Lancet 378(9793):826–837. Regula clasică de 3.500 kcal per livră provine de la Wishnofsky M (1958), Am J Clin Nutr 6:542–546.</string>
     <string name="settings_calc_split_citation">Morton RW, et al. (2018). „O analiză sistematică, meta-analiză și meta-regresie a efectului suplimentării cu proteine asupra creșterii masei musculare și forței induse de antrenamentul de rezistență.” Br J Sports Med 52(6):376–384.</string>
     <string name="settings_calc_micro_citation">Estimările se bazează pe datele de antrenare ale modelului AI subiacent (USDA FoodData Central, etichetele producătorilor și literatura științifică). Precizia variază în funcție de aliment, vizibilitatea dimensiunii porției și modelul furnizorului. Verifică întotdeauna etichetele alimentelor pe care le înregistrezi frecvent.</string>
-
     <string name="about_litert_notices">Notificări privind terții pentru LiteRT-LM</string>
     <string name="about_litert_notices_load_error">Notificările privind terții pentru LiteRT-LM nu au putut fi încărcate.</string>
     <string name="settings_model_source">Sursa modelului</string>

@@ -447,7 +447,10 @@
 
     <string name="progress_weight_history">سجل الوزن</string>
     <string name="progress_body_fat_history">سجل نسبة الدهون</string>
-    <string name="progress_history_count_format">%1$d إدخالات · اضغط للعرض أو الحذف</string>
+    <plurals name="progress_history_count_format">
+        <item quantity="one">%1$d إدخال · اضغط للعرض أو الحذف</item>
+        <item quantity="other">%1$d إدخالات · اضغط للعرض أو الحذف</item>
+    </plurals>
 
     <string name="progress_calories_section">السعرات الحرارية</string>
     <string name="progress_avg_format">المتوسط: %1$,d kcal</string>
@@ -625,6 +628,58 @@
     <string name="action_remove_goal">إزالة الهدف</string>
     <string name="progress_metric_weight">الوزن</string>
     <string name="progress_metric_body_fat">نسبة الدهون</string>
+    <string name="progress_metric_workouts">التمارين</string>
+    <string name="progress_metric_heart_rate">النبض</string>
+    <string name="progress_workout_history">سجل التمارين</string>
+    <plurals name="progress_workout_history_count_format">
+        <item quantity="one">%1$d عملية حرق محسوبة · اضغط للعرض أو الحذف</item>
+        <item quantity="other">%1$d عمليات حرق محسوبة · اضغط للعرض أو الحذف</item>
+    </plurals>
+    <string name="progress_workout_delete_title">حذف حرق التمرين؟</string>
+    <string name="progress_workout_delete_message">يؤدي هذا إلى إزالة الحرق المحسوب من Fud AI وHealth Connect. ستظل خطة يوميات التمرين محفوظة.</string>
+    <string name="progress_workout_section">نشاط التمارين</string>
+    <string name="progress_workout_stat_workouts">التمارين</string>
+    <string name="progress_workout_stat_total">إجمالي الحرق</string>
+    <string name="progress_workout_stat_average">متوسط الحرق</string>
+    <string name="progress_workout_stat_latest">الأحدث</string>
+    <string name="progress_workout_stat_days">أيام</string>
+    <string name="progress_workout_no_range">لا توجد عمليات حرق تمارين محسوبة في هذه الفترة</string>
+    <string name="progress_workout_chart_description">مخطط حرق التمارين من %1$s إلى %2$s. الإجمالي %3$d سعرة حرارية؛ الأحدث %4$d سعرة حرارية.</string>
+    <string name="progress_heart_rate_section">معدل ضربات القلب</string>
+    <string name="progress_heart_rate_measure">قياس</string>
+    <string name="progress_heart_rate_log_manual">إدخال يدوي</string>
+    <string name="progress_heart_rate_save_reading">حفظ القراءة</string>
+    <string name="progress_heart_rate_no_range">لا توجد قراءات لمعدل ضربات القلب في هذه الفترة</string>
+    <string name="progress_heart_rate_stat_latest">الأحدث</string>
+    <string name="progress_heart_rate_stat_min">الأدنى</string>
+    <string name="progress_heart_rate_stat_max">الأعلى</string>
+    <string name="progress_bpm_format">%1$d نبضة/دقيقة</string>
+    <string name="progress_heart_rate_history">سجل معدل ضربات القلب</string>
+    <string name="progress_heart_rate_delete_title">حذف قراءة معدل ضربات القلب؟</string>
+    <string name="progress_heart_rate_delete_message">سيتم حذف قراءة %1$d نبضة/دقيقة بتاريخ %2$s نهائيًا.</string>
+    <string name="progress_heart_rate_source_camera">الكاميرا</string>
+    <string name="progress_heart_rate_source_manual">يدوي</string>
+    <string name="progress_heart_rate_history_detail">%1$s · %2$s</string>
+    <string name="progress_heart_rate_save_error_title">تعذّر حفظ معدل ضربات القلب</string>
+    <string name="progress_heart_rate_save_error_message">تعذّرت قراءة بيانات معدل ضربات القلب الحالية، لذلك تُركت دون تغيير. لم يتم حفظ أي قراءة جديدة.</string>
+    <string name="progress_heart_rate_delete_error_title">تعذّر حذف قراءة معدل ضربات القلب</string>
+    <string name="progress_heart_rate_delete_error_message">تعذّر حذف القراءة. تُركت بيانات معدل ضربات القلب الحالية دون تغيير.</string>
+    <string name="progress_heart_rate_quality_format">جودة الإشارة: %1$d%%</string>
+    <string name="progress_heart_rate_disclaimer">تقدير للعافية فقط—وليس قياسًا طبيًا. لا يمكنه تشخيص حالة قلبية.</string>
+    <string name="progress_heart_rate_chart_description">مخطط معدل ضربات القلب من %1$s إلى %2$s. الأحدث %3$d نبضة/دقيقة؛ النطاق من %4$d إلى %5$d نبضة/دقيقة.</string>
+    <string name="progress_heart_rate_manual_title">تسجيل معدل ضربات القلب</string>
+    <string name="progress_heart_rate_bpm_label">النبضات في الدقيقة</string>
+    <string name="progress_heart_rate_manual_range">أدخل قيمة بين 30 و250 نبضة/دقيقة.</string>
+    <string name="progress_heart_rate_camera_title">قياس معدل ضربات القلب</string>
+    <string name="progress_heart_rate_camera_guidance">غطِّ الكاميرا الخلفية والفلاش بلطف بطرف إصبعك.</string>
+    <string name="progress_heart_rate_camera_measuring">جارٍ قراءة نبضك…</string>
+    <string name="progress_heart_rate_camera_hold_still">أبقِ إصبعك ثابتًا وتنفس بشكل طبيعي.</string>
+    <string name="progress_heart_rate_camera_result">%1$d نبضة/دقيقة</string>
+    <string name="progress_heart_rate_camera_poor_signal">لم تكن الإشارة واضحة بما يكفي. عدّل موضع إصبعك وحاول مجددًا.</string>
+    <string name="progress_heart_rate_camera_unavailable">الكاميرا الخلفية غير متاحة. لا يزال بإمكانك تسجيل معدل ضربات القلب يدويًا.</string>
+    <string name="progress_heart_rate_flash_unavailable">يلزم فلاش الكاميرا الخلفية للقياس بالكاميرا. لا يزال بإمكانك التسجيل يدويًا.</string>
+    <string name="progress_heart_rate_permission_denied">لم يتم منح إذن الكاميرا. يمكنك السماح به من إعدادات النظام أو التسجيل يدويًا.</string>
+    <string name="progress_heart_rate_warmth_warning">قد تشعر بدفء الفلاش. أزل إصبعك وتوقف إذا أصبح الأمر غير مريح.</string>
     <string name="progress_log_body_fat">تسجيل نسبة الدهون</string>
     <string name="progress_log_first_body_fat">سجّل أول قياس لنسبة الدهون لرؤية الاتجاهات</string>
     <string name="progress_log_body_fat_title">تسجيل نسبة الدهون</string>
@@ -729,7 +784,6 @@
     <string name="settings_calc_target_citation">Hall KD, et al. (2011). «التحديد الكمي لتأثير اختلال توازن الطاقة في وزن الجسم». Lancet 378(9793):826–837. تعود قاعدة 3,500 سعرة حرارية لكل رطل الكلاسيكية إلى Wishnofsky M (1958)، Am J Clin Nutr 6:542–546.</string>
     <string name="settings_calc_split_citation">Morton RW, et al. (2018). «مراجعة منهجية وتحليل تلوي وانحدار تلوي لتأثير مكملات البروتين في الزيادات الناتجة عن تمارين المقاومة في كتلة العضلات وقوتها». Br J Sports Med 52(6):376–384.</string>
     <string name="settings_calc_micro_citation">تعتمد التقديرات على بيانات تدريب نموذج الذكاء الاصطناعي الأساسي (USDA FoodData Central وملصقات القيم الغذائية من الشركات المصنّعة والمراجع العلمية). تختلف الدقة حسب الطعام ومدى وضوح حجم الحصة ونموذج المزوّد. تحقّق دائمًا من الملصقات للأطعمة التي تسجّلها كثيرًا.</string>
-
     <string name="about_litert_notices">إشعارات الجهات الخارجية لـ LiteRT-LM</string>
     <string name="about_litert_notices_load_error">تعذّر تحميل إشعارات الجهات الخارجية لـ LiteRT-LM.</string>
     <string name="settings_model_source">مصدر النموذج</string>

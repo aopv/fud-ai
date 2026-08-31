@@ -35,6 +35,7 @@
     <string name="action_info">Info</string>
     <string name="action_clear">Clear</string>
     <string name="action_delete">Delete</string>
+    <string name="action_download">Download</string>
     <string name="action_continue">Continue</string>
     <string name="action_get_started">Get Started</string>
     <string name="action_log">Log</string>
@@ -127,6 +128,7 @@
     <string name="ai_provider_mistral">Mistral</string>
     <string name="ai_provider_deepseek">DeepSeek</string>
     <string name="ai_provider_cerebras">Cerebras</string>
+    <string name="ai_provider_local_gemma">Gemma 4 E2B (On-Device)</string>
     <string name="ai_provider_ollama">Ollama (Local)</string>
     <string name="ai_provider_custom">Custom (OpenAI-compatible)</string>
 
@@ -144,11 +146,13 @@
     <string name="ai_key_placeholder_mistral">…</string>
     <string name="ai_key_placeholder_deepseek">sk-…</string>
     <string name="ai_key_placeholder_cerebras">csk-…</string>
+    <string name="ai_key_placeholder_local">No key needed</string>
     <string name="ai_key_placeholder_ollama">No key needed</string>
     <string name="ai_key_placeholder_custom">API key (or anything if endpoint doesn\'t need one)</string>
 
     <!-- Speech Provider -->
     <string name="speech_provider_native">Native (On-Device)</string>
+    <string name="speech_provider_local_whisper">Whisper Base (On-Device)</string>
     <string name="speech_provider_gemini">Gemini Audio</string>
     <string name="speech_provider_openai">OpenAI GPT-Transcribe</string>
     <string name="speech_provider_groq">Groq (Whisper)</string>
@@ -157,6 +161,7 @@
     <string name="speech_provider_assemblyai">AssemblyAI</string>
 
     <string name="speech_key_placeholder_native">Not needed</string>
+    <string name="speech_key_placeholder_local">Not needed</string>
     <string name="speech_key_placeholder_gemini">AIza…</string>
     <string name="speech_key_placeholder_openai">sk-…</string>
     <string name="speech_key_placeholder_groq">gsk_…</string>
@@ -165,6 +170,7 @@
     <string name="speech_key_placeholder_assemblyai">Your AssemblyAI key</string>
 
     <string name="speech_description_native">Android\'s on-device speech recognition. Free, works offline on most phones, real-time partial results. Recommended default.</string>
+    <string name="speech_description_local_whisper">Downloaded multilingual Whisper Base. Audio stays on this device and no API key is needed.</string>
     <string name="speech_description_gemini">Gemini 3.5 Transcribe for accurate batch transcription with automatic language detection.</string>
     <string name="speech_description_openai">OpenAI GPT-Transcribe, the current high-accuracy model for recorded audio.</string>
     <string name="speech_description_groq">Groq-hosted Whisper Large v3. Very fast inference, has a free tier.</string>
@@ -242,6 +248,8 @@
     <string name="onboarding_goal_set_later">You can set this later in Settings.</string>
     <string name="progress_metric_weight">Weight</string>
     <string name="progress_metric_body_fat">Body Fat</string>
+    <string name="progress_metric_workouts">Workouts</string>
+    <string name="progress_metric_heart_rate">Pulse</string>
     <string name="progress_log_body_fat">Log Body Fat</string>
     <string name="progress_log_first_body_fat">Log your first body fat % to see trends</string>
     <string name="progress_log_body_fat_title">Log Body Fat</string>
@@ -495,11 +503,62 @@
 
     <string name="progress_weight_history">Weight History</string>
     <string name="progress_body_fat_history">Body Fat History</string>
-    <string name="progress_workout_history" translatable="false">Workout History</string>
-    <string name="progress_workout_history_count_format" translatable="false">%1$d calculated burns · tap to view or delete</string>
-    <string name="progress_workout_delete_title" translatable="false">Delete workout burn?</string>
-    <string name="progress_workout_delete_message" translatable="false">This removes the calculated burn from Fud AI and Health Connect. Your workout diary plan stays saved.</string>
-    <string name="progress_history_count_format">%1$d entries · tap to view or delete</string>
+    <string name="progress_workout_history">Workout History</string>
+    <plurals name="progress_workout_history_count_format">
+        <item quantity="one">%1$d calculated burn · tap to view or delete</item>
+        <item quantity="other">%1$d calculated burns · tap to view or delete</item>
+    </plurals>
+    <string name="progress_workout_delete_title">Delete workout burn?</string>
+    <string name="progress_workout_delete_message">This removes the calculated burn from Fud AI and Health Connect. Your workout diary plan stays saved.</string>
+    <plurals name="progress_history_count_format">
+        <item quantity="one">%1$d entry · tap to view or delete</item>
+        <item quantity="other">%1$d entries · tap to view or delete</item>
+    </plurals>
+
+    <string name="progress_workout_section">Workout Activity</string>
+    <string name="progress_workout_stat_workouts">Workouts</string>
+    <string name="progress_workout_stat_total">Total Burn</string>
+    <string name="progress_workout_stat_average">Avg Burn</string>
+    <string name="progress_workout_stat_latest">Latest</string>
+    <string name="progress_workout_stat_days">Days</string>
+    <string name="progress_workout_no_range">No calculated workout burns in this range</string>
+    <string name="progress_workout_chart_description">Workout burn chart from %1$s to %2$s. Total %3$d kilocalories; latest %4$d kilocalories.</string>
+
+    <string name="progress_heart_rate_section">Heart Rate</string>
+    <string name="progress_heart_rate_measure">Measure</string>
+    <string name="progress_heart_rate_log_manual">Log Manually</string>
+    <string name="progress_heart_rate_save_reading">Save Reading</string>
+    <string name="progress_heart_rate_no_range">No heart-rate readings in this range</string>
+    <string name="progress_heart_rate_stat_latest">Latest</string>
+    <string name="progress_heart_rate_stat_min">Minimum</string>
+    <string name="progress_heart_rate_stat_max">Maximum</string>
+    <string name="progress_bpm_format">%1$d bpm</string>
+    <string name="progress_heart_rate_history">Heart Rate History</string>
+    <string name="progress_heart_rate_delete_title">Delete heart-rate reading?</string>
+    <string name="progress_heart_rate_delete_message">%1$d bpm from %2$s will be permanently deleted.</string>
+    <string name="progress_heart_rate_source_camera">Camera</string>
+    <string name="progress_heart_rate_source_manual">Manual</string>
+    <string name="progress_heart_rate_history_detail">%1$s · %2$s</string>
+    <string name="progress_heart_rate_save_error_title">Couldn\'t save heart rate</string>
+    <string name="progress_heart_rate_save_error_message">Your existing heart-rate data couldn\'t be read, so it was left unchanged. No new reading was saved.</string>
+    <string name="progress_heart_rate_delete_error_title">Couldn\'t delete heart-rate reading</string>
+    <string name="progress_heart_rate_delete_error_message">The reading couldn\'t be deleted. Your existing heart-rate data was left unchanged.</string>
+    <string name="progress_heart_rate_quality_format">Signal quality: %1$d%%</string>
+    <string name="progress_heart_rate_disclaimer">Wellness estimate only—not a medical measurement. It cannot diagnose a heart condition.</string>
+    <string name="progress_heart_rate_chart_description">Heart-rate chart from %1$s to %2$s. Latest %3$d bpm; range %4$d to %5$d bpm.</string>
+    <string name="progress_heart_rate_manual_title">Log Heart Rate</string>
+    <string name="progress_heart_rate_bpm_label">Beats per minute</string>
+    <string name="progress_heart_rate_manual_range">Enter a value from 30 to 250 bpm.</string>
+    <string name="progress_heart_rate_camera_title">Measure Heart Rate</string>
+    <string name="progress_heart_rate_camera_guidance">Gently cover the rear camera and flash with your fingertip.</string>
+    <string name="progress_heart_rate_camera_measuring">Reading your pulse…</string>
+    <string name="progress_heart_rate_camera_hold_still">Keep your finger still and breathe normally.</string>
+    <string name="progress_heart_rate_camera_result">%1$d bpm</string>
+    <string name="progress_heart_rate_camera_poor_signal">The signal was not clear enough. Adjust your fingertip and try again.</string>
+    <string name="progress_heart_rate_camera_unavailable">A rear camera is unavailable. You can still log your heart rate manually.</string>
+    <string name="progress_heart_rate_flash_unavailable">A rear-camera flash is required for camera measurement. You can still log manually.</string>
+    <string name="progress_heart_rate_permission_denied">Camera access was not granted. You can allow it in system settings or log manually.</string>
+    <string name="progress_heart_rate_warmth_warning">The flash may feel warm. Remove your finger and stop if it becomes uncomfortable.</string>
 
     <string name="progress_calories_section">Calories</string>
     <string name="progress_avg_format">Avg: %1$,d kcal</string>
@@ -522,6 +581,17 @@
     <string name="settings_category_ai_providers">AI Providers &amp; Fallbacks</string>
     <string name="settings_section_ai_voice">AI &amp; Voice</string>
     <string name="settings_section_ai">Primary AI</string>
+    <string name="settings_on_device_models">On-device models</string>
+    <string name="settings_on_device_models_info">Models download to private app storage and run without sending photos, prompts, or audio to a server. Download size and model license terms apply.</string>
+    <string name="settings_local_model_not_downloaded_format">%1$s · Not downloaded</string>
+    <string name="settings_local_model_downloading_format">Downloading · %1$d%%</string>
+    <string name="settings_local_model_installed">Installed · Ready offline</string>
+    <string name="settings_view_model_license">View model license</string>
+    <string name="settings_model_source">Model source</string>
+    <string name="settings_model_license_format">%1$s license</string>
+    <string name="settings_model_requires_8gb">Requires an 8 GB RAM device</string>
+    <string name="settings_model_low_ram_unsupported">Not supported on low-RAM devices</string>
+    <string name="settings_model_processor_unsupported">This device’s processor is not supported</string>
     <string name="settings_section_text_ai">Text AI</string>
     <string name="settings_info_about_format" translatable="false">About %1$s</string>
     <string name="settings_info_primary_ai" translatable="false">Handles every request that includes a photo. It also handles text-only requests when Use Separate Text Provider is off. When that switch is on, Text AI handles text-only work instead.</string>
@@ -529,12 +599,14 @@
     <string name="settings_info_text_fallback" translatable="false">Retries a failed text-only request once. It backs up Text AI when the separate provider is enabled; otherwise it backs up Primary AI for text-only work. It never receives photos.</string>
     <string name="settings_info_image_fallback" translatable="false">Retries a failed request containing one or more photos. The first attempt always uses Primary AI. This fallback is never used for text-only requests. You may use the same provider with a different model.</string>
     <string name="settings_info_speech_to_text" translatable="false">Converts microphone audio into text only. The transcript then follows the normal text route: Text AI when enabled, otherwise Primary AI. Matching provider API keys are reused unless you save a separate STT key.</string>
+    <string name="settings_info_speech_fallback">Retries transcription when the selected recorded-audio STT provider fails. It only produces a transcript; that transcript still follows the normal text AI route. Native Android speech already has its own recognition recovery.</string>
     <string name="settings_use_separate_text_provider">Use Separate Text Provider</string>
     <string name="settings_text_provider_footer">When enabled, requests without images—including typed food, voice transcripts, Coach chat, goals, and advice—use this provider. Photo requests keep using the AI Provider above. API keys are shared per provider.</string>
     <string name="settings_section_text_fallback">Text AI Fallback</string>
     <string name="settings_text_fallback_footer">Used only when a text-only AI request fails. It never handles photos.</string>
     <string name="settings_section_speech">Speech-to-Text</string>
     <string name="settings_section_speech_fallback">STT Fallback</string>
+    <string name="settings_speech_fallback_footer">Used only when the selected recorded-audio speech provider fails. Native speech already retries its on-device and online recognition modes.</string>
     <string name="settings_native_speech_fallback_footer">Native speech already recovers automatically across Android’s on-device, online, and automatic recognition modes. Choose a remote speech provider above to configure a separate provider fallback.</string>
     <string name="settings_section_workout">Workout</string>
     <string name="settings_training_split" translatable="false">Training Split</string>
@@ -798,6 +870,8 @@
     <string name="about_follow_linkedin">Follow on LinkedIn</string>
     <string name="about_privacy">Privacy Policy</string>
     <string name="about_terms">Terms of Service</string>
+    <string name="about_litert_notices">LiteRT-LM third-party notices</string>
+    <string name="about_litert_notices_load_error">Could not load the LiteRT-LM third-party notices.</string>
     <string name="about_category_app_updates">App &amp; Updates</string>
     <string name="about_category_support">Support Fud AI</string>
     <string name="about_category_help_feedback">Help &amp; Feedback</string>
@@ -1127,28 +1201,6 @@
     <string name="settings_app_icon_shortcuts">App Icon Shortcuts</string>
     <string name="settings_quick_action_number">Quick Action %1$d</string>
     <string name="settings_quick_actions_footer">Hold the Fud AI app icon to use these shortcuts. Each slot opens its selected logging method directly.</string>
-
-    <string name="action_download">Download</string>
-    <string name="ai_provider_local_gemma">Gemma 4 E2B (On-Device)</string>
-    <string name="ai_key_placeholder_local">No key needed</string>
-    <string name="speech_provider_local_whisper">Whisper Base (On-Device)</string>
-    <string name="speech_key_placeholder_local">Not needed</string>
-    <string name="speech_description_local_whisper">Downloaded multilingual Whisper Base. Audio stays on this device and no API key is needed.</string>
-    <string name="settings_on_device_models">On-device models</string>
-    <string name="settings_on_device_models_info">Models download to private app storage and run without sending photos, prompts, or audio to a server. Download size and model license terms apply.</string>
-    <string name="settings_local_model_not_downloaded_format">%1$s · Not downloaded</string>
-    <string name="settings_local_model_downloading_format">Downloading · %1$d%%</string>
-    <string name="settings_local_model_installed">Installed · Ready offline</string>
-    <string name="settings_view_model_license">View model license</string>
-    <string name="settings_model_source">Model source</string>
-    <string name="settings_model_license_format">%1$s license</string>
-    <string name="settings_model_requires_8gb">Requires an 8 GB RAM device</string>
-    <string name="settings_model_low_ram_unsupported">Not supported on low-RAM devices</string>
-    <string name="settings_model_processor_unsupported">This device’s processor is not supported</string>
-    <string name="settings_info_speech_fallback">Retries transcription when the selected recorded-audio STT provider fails. It only produces a transcript; that transcript still follows the normal text AI route. Native Android speech already has its own recognition recovery.</string>
-    <string name="settings_speech_fallback_footer">Used only when the selected recorded-audio speech provider fails. Native speech already retries its on-device and online recognition modes.</string>
-    <string name="about_litert_notices">LiteRT-LM third-party notices</string>
-    <string name="about_litert_notices_load_error">Could not load the LiteRT-LM third-party notices.</string>
     <string name="about_whisper_notices">Whisper Base third-party notices</string>
     <string name="about_whisper_notices_load_error">Could not load the Whisper Base third-party notices.</string>
 </resources>
