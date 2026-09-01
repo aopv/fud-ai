@@ -50,6 +50,26 @@ struct ExerciseVisualAssetResolverTests {
         #expect(asset.representativeFrameIndex == 0)
     }
 
+    @Test func manifestSupportsVersionedPNGFrames() throws {
+        let femaleFrames = v2FrameNames(gender: "female")
+        let asset = FreeExerciseDBAssetResolver.preferredVisualAsset(
+            for: jpegPaths,
+            gender: .female,
+            manifest: try makeManifest(
+                frameCount: 4,
+                representativeFrameIndex: 2,
+                format: "png",
+                maleFrames: v2FrameNames(gender: "male"),
+                femaleFrames: femaleFrames
+            ),
+            resolveJPEGURL: jpegResolver
+        )
+
+        #expect(asset.format == .png)
+        #expect(asset.frames == femaleFrames.map(ExerciseVisualFrame.imageAsset))
+        #expect(asset.representativeFrameIndex == 2)
+    }
+
     @Test func invalidTwoOrSixFrameSetsFallBackToJPEG() throws {
         for frameCount in [2, 6] {
             let asset = FreeExerciseDBAssetResolver.preferredVisualAsset(
@@ -78,7 +98,7 @@ struct ExerciseVisualAssetResolverTests {
         #expect(asset.frames == svgNames.map(ExerciseVisualFrame.imageAsset))
     }
 
-    @Test func bundledPilotSVGsResolveThroughNativeVectorAssetCatalog() throws {
+    @Test func bundledV2PNGsResolveThroughAssetCatalog() throws {
         let manifestData = try #require(NSDataAsset(name: "ExerciseVisualManifest")?.data)
         let manifest = try ExerciseVisualManifest(data: manifestData)
         #expect(manifest.entry(for: "Barbell_Full_Squat")?.frameCount == 4)
@@ -89,7 +109,7 @@ struct ExerciseVisualAssetResolverTests {
                 gender: gender
             )
 
-            #expect(asset.format == .svg)
+            #expect(asset.format == .png)
             #expect(asset.frames.count == 4)
             #expect(
                 asset.frames.allSatisfy { frame in
@@ -103,6 +123,7 @@ struct ExerciseVisualAssetResolverTests {
     private func makeManifest(
         frameCount: Int,
         representativeFrameIndex: Int = 1,
+        format: String? = nil,
         maleFrames: [String]? = nil,
         femaleFrames: [String]? = nil,
         includeMaleFrames: Bool = true,
@@ -113,6 +134,9 @@ struct ExerciseVisualAssetResolverTests {
             "frameCount": frameCount,
             "representativeFrameIndex": representativeFrameIndex,
         ]
+        if let format {
+            entry["format"] = format
+        }
         if includeMaleFrames {
             entry["maleFrames"] = maleFrames ?? frameNames(gender: "male", count: frameCount)
         }
@@ -129,6 +153,10 @@ struct ExerciseVisualAssetResolverTests {
     private func frameNames(gender: String, count: Int) -> [String] {
         guard count > 0 else { return [] }
         return (0..<count).map { "Barbell_Full_Squat_\(gender)_\($0)" }
+    }
+
+    private func v2FrameNames(gender: String) -> [String] {
+        (0..<4).map { "Barbell_Full_Squat_\(gender)_v2_\($0)" }
     }
 
     private var jpegResolver: (String) -> URL? {

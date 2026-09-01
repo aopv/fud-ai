@@ -12,7 +12,7 @@ import java.io.InputStreamReader
  */
 class ExerciseRepository private constructor(
     val exercises: List<ExerciseItem>,
-    private val svgFrames: Map<String, GenderedExerciseSvgFrames>
+    private val authoredFrames: Map<String, GenderedExerciseFrames>
 ) {
 
     val availableLevels: List<String> by lazy { sortedUnique(exercises.map { it.level }) }
@@ -60,7 +60,7 @@ class ExerciseRepository private constructor(
     fun visualFor(
         item: ExerciseItem,
         gender: com.apoorvdarshan.calorietracker.models.Gender
-    ): ExerciseVisual = ExerciseVisualResolver.resolve(item, gender, svgFrames)
+    ): ExerciseVisual = ExerciseVisualResolver.resolve(item, gender, authoredFrames)
 
     private fun comparator(sort: ExerciseSort): Comparator<ExerciseItem> {
         // Case-SENSITIVE to match Swift's `<` (the dataset is ASCII, so ordinal == Swift order).
@@ -131,10 +131,10 @@ class ExerciseRepository private constructor(
             }
                 .onFailure { android.util.Log.e("ExerciseRepository", "failed to load exercise visual manifest", it) }
                 .getOrNull()
-            val svgFrames = manifestJSON
+            val authoredFrames = manifestJSON
                 ?.let { ExerciseVisualResolver.parseManifest(it, packagedAssetNames = assetNames) }
                 .orEmpty()
-            return ExerciseRepository(items, svgFrames)
+            return ExerciseRepository(items, authoredFrames)
         }
 
         /** Asset URI for a bundled exercise image filename (Coil-loadable). */

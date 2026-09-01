@@ -67,7 +67,37 @@ class ExerciseVisualResolverTest {
     }
 
     @Test
-    fun sharedPilotManifestAndPackagedSourcesAreComplete() {
+    fun manifestSupportsVersionedPngFrames() {
+        val maleFrames = (0 until 4).map { "${item.id}_male_v2_$it" }
+        val femaleFrames = (0 until 4).map { "${item.id}_female_v2_$it" }
+        val manifest = Gson().toJson(
+            mapOf(
+                "schemaVersion" to 1,
+                "exercises" to listOf(
+                    mapOf(
+                        "exerciseId" to item.id,
+                        "format" to "png",
+                        "frameCount" to 4,
+                        "representativeFrameIndex" to 2,
+                        "maleFrames" to maleFrames,
+                        "femaleFrames" to femaleFrames
+                    )
+                )
+            )
+        )
+        val frames = ExerciseVisualResolver.parseManifest(
+            json = manifest,
+            packagedAssetNames = (maleFrames + femaleFrames).map { "$it.png" }
+        )
+
+        val visual = ExerciseVisualResolver.resolve(item, Gender.FEMALE, frames)
+        assertEquals(ExerciseVisualFormat.PNG, visual.format)
+        assertEquals(femaleFrames.map { "$it.png" }, visual.framePaths)
+        assertEquals(2, visual.representativeFrameIndex)
+    }
+
+    @Test
+    fun sharedV2ManifestAndPackagedSourcesAreComplete() {
         val vectorDirectory = File(repositoryRoot(), "shared/workout-vectors")
         val manifest = File(vectorDirectory, ExerciseVisualResolver.MANIFEST_ASSET_NAME)
         assertTrue("Missing shared exercise visual manifest: ${manifest.absolutePath}", manifest.isFile)
@@ -76,15 +106,16 @@ class ExerciseVisualResolverTest {
             json = manifest.readText(),
             packagedAssetNames = vectorDirectory.list()?.toSet().orEmpty()
         )
-        assertSvgVisual(
-            visual = ExerciseVisualResolver.resolve(item, Gender.FEMALE, frames),
-            expectedGender = "female",
-            frameCount = 4,
-            expectedRepresentativeFrame = 2
+        val femaleVisual = ExerciseVisualResolver.resolve(item, Gender.FEMALE, frames)
+        assertEquals(ExerciseVisualFormat.PNG, femaleVisual.format)
+        assertEquals(
+            (0 until 4).map { "${item.id}_female_v2_$it.png" },
+            femaleVisual.framePaths
         )
-        assetNames(4).forEach { assetName ->
+        assertEquals(2, femaleVisual.representativeFrameIndex)
+        v2PngAssetNames().forEach { assetName ->
             val asset = File(vectorDirectory, assetName)
-            assertTrue("Missing pilot workout vector: ${asset.absolutePath}", asset.isFile)
+            assertTrue("Missing v2 workout illustration: ${asset.absolutePath}", asset.isFile)
         }
     }
 
@@ -135,8 +166,14 @@ class ExerciseVisualResolverTest {
         }
     }
 
+    private fun v2PngAssetNames(): Set<String> = buildSet {
+        listOf("male", "female").forEach { gender ->
+            (0 until 4).forEach { frame -> add("${item.id}_${gender}_v2_$frame.png") }
+        }
+    }
+
     private fun repositoryRoot(): File = generateSequence(
-        File(System.getProperty("user.dir")).absoluteFile
+        File(checkNotNull(System.getProperty("user.dir"))).absoluteFile
     ) { directory -> directory.parentFile }
         .firstOrNull { directory ->
             File(directory, "shared/workout-vectors").isDirectory

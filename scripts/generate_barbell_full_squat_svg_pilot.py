@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Generate and validate the Barbell Full Squat vector-motion pilot.
 
-Canonical SVG masters live in a top-level shared directory outside either app
+Legacy SVG pilot masters live in a top-level shared directory outside either app
 bundle. Android packages that directory directly, while iOS compiles generated
 vector-preserving asset-catalog copies. The artwork is deterministic and uses
 SVG primitives only: no embedded bitmap, external reference, font, filter, or
@@ -1016,7 +1016,8 @@ def validate_catalog_assets(
     verify_determinism: bool,
 ) -> None:
     expected_imagesets = {path.parent for path in catalog_assets}
-    actual_imagesets = set(ASSET_CATALOG_DIR.glob(f"{EXERCISE_ID}_*.imageset"))
+    # The production v2 PNG imagesets intentionally coexist with this retired SVG pilot.
+    actual_imagesets = {path for path in expected_imagesets if path.is_dir()}
     if actual_imagesets != expected_imagesets:
         missing = sorted(str(path) for path in expected_imagesets - actual_imagesets)
         extra = sorted(str(path) for path in actual_imagesets - expected_imagesets)
@@ -1097,26 +1098,13 @@ def main() -> int:
     arguments = parse_arguments()
     expected = expected_assets()
     catalog_expected = expected_catalog_assets(expected)
-    expected_manifest = manifest_content()
     if not arguments.check:
         SHARED_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
         for path, content in sorted(expected.items()):
             path.write_text(content, encoding="utf-8", newline="\n")
-        MANIFEST_PATH.write_text(expected_manifest, encoding="utf-8", newline="\n")
         for path, content in sorted(catalog_expected.items()):
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(content, encoding="utf-8", newline="\n")
-        MANIFEST_DATASET_DIR.mkdir(parents=True, exist_ok=True)
-        (MANIFEST_DATASET_DIR / MANIFEST_FILENAME).write_text(
-            expected_manifest,
-            encoding="utf-8",
-            newline="\n",
-        )
-        (MANIFEST_DATASET_DIR / "Contents.json").write_text(
-            manifest_dataset_contents(MANIFEST_FILENAME),
-            encoding="utf-8",
-            newline="\n",
-        )
         for shared_path in expected:
             legacy_path = LEGACY_IOS_OUTPUT_DIR / shared_path.name
             legacy_path.unlink(missing_ok=True)
@@ -1127,10 +1115,9 @@ def main() -> int:
         catalog_expected,
         verify_determinism=True,
     )
-    validate_manifest(expected_manifest, verify_determinism=True)
     mode = "validated" if arguments.check else "generated and validated"
     print(
-        f"{mode} {len(expected)} genuine-vector SVG assets for {EXERCISE_ID}; "
+        f"{mode} {len(expected)} legacy SVG pilot assets for {EXERCISE_ID}; "
         f"viewBox={VIEW_BOX}; frames=0..{FRAME_COUNT - 1}; genders={','.join(GENDERS)}; "
         f"canonical={SHARED_OUTPUT_DIR.relative_to(REPO_ROOT)}; "
         f"iOS vector imagesets={len(expected)}"

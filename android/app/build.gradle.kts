@@ -95,8 +95,8 @@ android {
 
     // Workouts (exercise library ported from Delts): mirror the iOS app's exercise
     // dataset + images without duplicating ~98MB in git — pull the JSON/JPEGs from
-    // the existing FreeExerciseDB resources and gendered SVG frames from the shared
-    // workout-vector source. The merged filenames are available at the assets root.
+    // the existing FreeExerciseDB resources and gender-aware authored frames from the
+    // shared workout-visual source. The merged filenames are available at the assets root.
     sourceSets {
         getByName("main") {
             assets.srcDirs(

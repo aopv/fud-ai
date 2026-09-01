@@ -45,6 +45,41 @@ final class calorietrackerUITests: XCTestCase {
     }
 
     @MainActor
+    func testBarbellFullSquatV2IllustrationRenders() throws {
+        let app = XCUIApplication()
+        app.launchArguments += [
+            "-AppleLanguages", "(en)",
+            "-fudai.workouts.tab.mode.v2", "library",
+        ]
+        app.launch()
+
+        let workouts = app.tabBars.buttons["Workouts"]
+        XCTAssertTrue(workouts.waitForExistence(timeout: 8))
+        workouts.tap()
+
+        let search = app.textFields["workouts.search"]
+        XCTAssertTrue(search.waitForExistence(timeout: 5))
+        let clearSearch = app.buttons["workouts.search.clear"]
+        if clearSearch.exists {
+            clearSearch.tap()
+        }
+        search.tap()
+        search.typeText("Barbell Full Squat")
+
+        let result = app.buttons["workouts.exercise.Barbell_Full_Squat"]
+        XCTAssertTrue(result.waitForExistence(timeout: 5))
+        result.tap()
+
+        let visual = app.buttons["workouts.exercise.visual.Barbell_Full_Squat"]
+        XCTAssertTrue(visual.waitForExistence(timeout: 5))
+
+        let screenshot = XCTAttachment(screenshot: app.screenshot())
+        screenshot.name = "Barbell Full Squat v2 Illustration"
+        screenshot.lifetime = .keepAlways
+        add(screenshot)
+    }
+
+    @MainActor
     func testSpeechProviderPickerOpensInFocusedCategory() throws {
         let app = XCUIApplication()
         app.launchArguments += [

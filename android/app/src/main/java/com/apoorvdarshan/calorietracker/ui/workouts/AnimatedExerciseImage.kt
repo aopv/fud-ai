@@ -39,9 +39,9 @@ import kotlinx.coroutines.delay
 
 /**
  * Cycling exercise visual — the Android analog of the iOS `AnimatedExerciseVisual`.
- * Legacy JPEGs keep their cropped, muted treatment; exercise SVGs render uncropped and
- * in their authored colors. Honors the system "remove animations" setting and shows a
- * meaningful representative SVG frame instead of freezing at the standing pose.
+ * Legacy JPEGs keep their cropped, muted treatment; authored SVG/PNG sequences render
+ * uncropped and in their original colors. Honors the system "remove animations" setting
+ * and shows a meaningful representative frame instead of freezing at the standing pose.
  */
 private val ExerciseImageFilter: ColorFilter = run {
     val saturation = ColorMatrix().apply { setToSaturation(0.19f) }
@@ -131,8 +131,8 @@ fun AnimatedExerciseImage(
                 AsyncImage(
                     model = model,
                     contentDescription = null,
-                    contentScale = if (visual.format == ExerciseVisualFormat.SVG) ContentScale.Fit else contentScale,
-                    colorFilter = if (visual.format == ExerciseVisualFormat.SVG) null else ExerciseImageFilter,
+                    contentScale = if (visual.format == ExerciseVisualFormat.JPEG) contentScale else ContentScale.Fit,
+                    colorFilter = if (visual.format == ExerciseVisualFormat.JPEG) ExerciseImageFilter else null,
                     modifier = Modifier
                         .fillMaxSize()
                         .alpha(if (i == index) 1f else 0f)

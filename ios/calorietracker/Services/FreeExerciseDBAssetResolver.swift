@@ -7,9 +7,10 @@ enum ExerciseVisualFrame: Hashable {
 }
 
 struct ExerciseVisualAsset: Equatable {
-    enum Format: Equatable {
+    enum Format: String, Equatable {
         case jpeg
         case svg
+        case png
     }
 
     let frames: [ExerciseVisualFrame]
@@ -30,6 +31,7 @@ struct ExerciseVisualManifest: Equatable {
         let exerciseID: String
         let frameCount: Int
         let representativeFrameIndex: Int
+        let format: ExerciseVisualAsset.Format
         let maleFrames: [String]
         let femaleFrames: [String]
 
@@ -44,8 +46,9 @@ struct ExerciseVisualManifest: Equatable {
                 femaleFrames.count == record.frameCount,
                 Set(maleFrames).count == record.frameCount,
                 Set(femaleFrames).count == record.frameCount,
-                maleFrames == (0..<record.frameCount).map({ "\(record.exerciseID)_male_\($0)" }),
-                femaleFrames == (0..<record.frameCount).map({ "\(record.exerciseID)_female_\($0)" })
+                let format = ExerciseVisualAsset.Format(rawValue: record.format ?? "svg"),
+                Self.validFrameNames(maleFrames, exerciseID: record.exerciseID, gender: "male"),
+                Self.validFrameNames(femaleFrames, exerciseID: record.exerciseID, gender: "female")
             else {
                 return nil
             }
@@ -53,12 +56,29 @@ struct ExerciseVisualManifest: Equatable {
             exerciseID = record.exerciseID
             frameCount = record.frameCount
             representativeFrameIndex = record.representativeFrameIndex
+            self.format = format
             self.maleFrames = maleFrames
             self.femaleFrames = femaleFrames
         }
 
         func frames(for gender: Gender) -> [String] {
             gender == .female ? femaleFrames : maleFrames
+        }
+
+        private static func validFrameNames(
+            _ names: [String],
+            exerciseID: String,
+            gender: String
+        ) -> Bool {
+            let prefix = "\(exerciseID)_\(gender)_"
+            return names.enumerated().allSatisfy { index, name in
+                name.hasPrefix(prefix) &&
+                    name.hasSuffix("_\(index)") &&
+                    !name.isEmpty &&
+                    name.unicodeScalars.allSatisfy {
+                        CharacterSet.alphanumerics.contains($0) || $0 == "_" || $0 == "-"
+                    }
+            }
         }
     }
 
@@ -71,6 +91,7 @@ struct ExerciseVisualManifest: Equatable {
         let exerciseID: String
         let frameCount: Int
         let representativeFrameIndex: Int
+        let format: String?
         let maleFrames: [String]?
         let femaleFrames: [String]?
 
@@ -78,6 +99,7 @@ struct ExerciseVisualManifest: Equatable {
             case exerciseID = "exerciseId"
             case frameCount
             case representativeFrameIndex
+            case format
             case maleFrames
             case femaleFrames
         }
@@ -156,7 +178,7 @@ struct FreeExerciseDBAssetResolver {
         {
             return ExerciseVisualAsset(
                 frames: entry.frames(for: gender).map(ExerciseVisualFrame.imageAsset),
-                format: .svg,
+                format: entry.format,
                 representativeFrameIndex: entry.representativeFrameIndex
             )
         }

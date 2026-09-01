@@ -2,18 +2,19 @@
   "exercises": [
     {
       "exerciseId": "Barbell_Full_Squat",
+      "format": "png",
       "femaleFrames": [
-        "Barbell_Full_Squat_female_0",
-        "Barbell_Full_Squat_female_1",
-        "Barbell_Full_Squat_female_2",
-        "Barbell_Full_Squat_female_3"
+        "Barbell_Full_Squat_female_v2_0",
+        "Barbell_Full_Squat_female_v2_1",
+        "Barbell_Full_Squat_female_v2_2",
+        "Barbell_Full_Squat_female_v2_3"
       ],
       "frameCount": 4,
       "maleFrames": [
-        "Barbell_Full_Squat_male_0",
-        "Barbell_Full_Squat_male_1",
-        "Barbell_Full_Squat_male_2",
-        "Barbell_Full_Squat_male_3"
+        "Barbell_Full_Squat_male_v2_0",
+        "Barbell_Full_Squat_male_v2_1",
+        "Barbell_Full_Squat_male_v2_2",
+        "Barbell_Full_Squat_male_v2_3"
       ],
       "representativeFrameIndex": 2
     }

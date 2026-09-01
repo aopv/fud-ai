@@ -144,9 +144,8 @@ private struct ExerciseImageView: View {
 
     @ViewBuilder
     private func exerciseFrame(_ image: UIImage) -> some View {
-        if asset.format == .svg {
-            // Xcode compiles the SVG master into a native, vector-preserving image asset.
-            // Aspect-fit keeps its complete transparent canvas instead of cropping it.
+        if asset.format != .jpeg {
+            // Authored SVG/PNG frames keep their full-color transparent canvas uncropped.
             Image(uiImage: image)
                 .resizable()
                 .scaledToFit()
@@ -162,7 +161,7 @@ private struct ExerciseImageView: View {
     }
 
     private func staticFrameIndex(frameCount: Int) -> Int {
-        guard asset.format == .svg, !animatesFrames || reduceMotion else {
+        guard asset.format != .jpeg, !animatesFrames || reduceMotion else {
             return 0
         }
 
