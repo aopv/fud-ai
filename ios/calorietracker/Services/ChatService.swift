@@ -143,12 +143,21 @@ struct ChatService {
                     model: config.model
                 )
             guard let fallback else { throw error }
-            return try await request(
-                provider: fallback.provider,
-                model: fallback.model,
-                baseURL: fallback.baseURL,
-                apiKey: fallback.apiKey
-            )
+            do {
+                return try await request(
+                    provider: fallback.provider,
+                    model: fallback.model,
+                    baseURL: fallback.baseURL,
+                    apiKey: fallback.apiKey
+                )
+            } catch let fallbackError {
+                if fallbackError is CancellationError { throw fallbackError }
+                throw AIRequestErrorPolicy.errorToSurface(
+                    primaryProvider: config.provider,
+                    primaryError: error,
+                    fallbackError: fallbackError
+                )
+            }
         }
     }
 

@@ -102,6 +102,7 @@ final class Gemma4LocalModelManager {
 
     nonisolated static let minimumMemoryClassGB: UInt64 = 8
     nonisolated static let minimumPhysicalMemoryBytes: UInt64 = 8 * 1_024 * 1_024 * 1_024
+    nonisolated static let maxContextTokens = 4_096
     nonisolated static let artifactByteCount: Int64 = 2_588_147_712
     nonisolated static let installationHeadroomBytes: Int64 = 1_024 * 1_024 * 1_024
     nonisolated static let artifactSHA256 = "181938105e0eefd105961417e8da75903eacda102c4fce9ce90f50b97139a63c"
@@ -526,7 +527,7 @@ final class Gemma4LocalModelManager {
                 modelPath: modelURL.path,
                 backend: .gpu,
                 visionBackend: .gpu,
-                maxNumTokens: 8_192,
+                maxNumTokens: Self.maxContextTokens,
                 cacheDir: gpuCache.path
             )
             let gpuEngine = Engine(engineConfig: gpuConfig)
@@ -543,7 +544,7 @@ final class Gemma4LocalModelManager {
                     modelPath: modelURL.path,
                     backend: .cpu(),
                     visionBackend: .cpu(),
-                    maxNumTokens: 8_192,
+                    maxNumTokens: Self.maxContextTokens,
                     cacheDir: cpuCache.path
                 )
                 let cpuEngine = Engine(engineConfig: cpuConfig)

@@ -696,14 +696,23 @@ struct GeminiService {
             ) else {
                 throw error
             }
-            return try await dispatchFoodAnalysis(
-                provider: fallback.provider,
-                model: fallback.model,
-                baseURL: fallback.baseURL,
-                apiKey: fallback.apiKey,
-                prompt: prompt,
-                description: description
-            )
+            do {
+                return try await dispatchFoodAnalysis(
+                    provider: fallback.provider,
+                    model: fallback.model,
+                    baseURL: fallback.baseURL,
+                    apiKey: fallback.apiKey,
+                    prompt: prompt,
+                    description: description
+                )
+            } catch let fallbackError {
+                if fallbackError is CancellationError { throw fallbackError }
+                throw AIRequestErrorPolicy.errorToSurface(
+                    primaryProvider: primary.provider,
+                    primaryError: error,
+                    fallbackError: fallbackError
+                )
+            }
         }
     }
 
@@ -771,14 +780,23 @@ struct GeminiService {
             guard let fallback else {
                 throw error
             }
-            return try await dispatch(
-                provider: fallback.provider,
-                model: fallback.model,
-                baseURL: fallback.baseURL,
-                apiKey: fallback.apiKey,
-                prompt: prompt,
-                imageDataList: imageDataList
-            )
+            do {
+                return try await dispatch(
+                    provider: fallback.provider,
+                    model: fallback.model,
+                    baseURL: fallback.baseURL,
+                    apiKey: fallback.apiKey,
+                    prompt: prompt,
+                    imageDataList: imageDataList
+                )
+            } catch let fallbackError {
+                if fallbackError is CancellationError { throw fallbackError }
+                throw AIRequestErrorPolicy.errorToSurface(
+                    primaryProvider: primary.provider,
+                    primaryError: error,
+                    fallbackError: fallbackError
+                )
+            }
         }
     }
 

@@ -15,6 +15,10 @@ struct Gemma4LocalModelManagerTests {
         #expect(Gemma4LocalModelManager.licenseURL.host == "ai.google.dev")
     }
 
+    @Test func contextWindowMatchesStableMobileLimit() {
+        #expect(Gemma4LocalModelManager.maxContextTokens == 4_096)
+    }
+
     @Test func eligibilityUsesMarketedMemoryClass() {
         let gib: UInt64 = 1_024 * 1_024 * 1_024
 
