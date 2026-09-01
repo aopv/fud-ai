@@ -100,6 +100,7 @@ final class Gemma4LocalModelManager {
 
     static let shared = Gemma4LocalModelManager()
 
+    nonisolated static let minimumMemoryClassGB: UInt64 = 8
     nonisolated static let minimumPhysicalMemoryBytes: UInt64 = 8 * 1_024 * 1_024 * 1_024
     nonisolated static let artifactByteCount: Int64 = 2_588_147_712
     nonisolated static let installationHeadroomBytes: Int64 = 1_024 * 1_024 * 1_024
@@ -346,7 +347,16 @@ final class Gemma4LocalModelManager {
     }
 
     nonisolated static func isEligible(physicalMemoryBytes: UInt64) -> Bool {
-        physicalMemoryBytes >= minimumPhysicalMemoryBytes
+        memoryClassGB(physicalMemoryBytes: physicalMemoryBytes) >= minimumMemoryClassGB
+    }
+
+    /// iOS can report slightly less memory than the phone's marketed RAM because
+    /// part of physical memory is reserved by the system. Round the reported GiB
+    /// upward so an 8 GB device remains in the 8 GB eligibility class.
+    nonisolated static func memoryClassGB(physicalMemoryBytes: UInt64) -> UInt64 {
+        let wholeGiB = physicalMemoryBytes / (1_024 * 1_024 * 1_024)
+        let hasPartialGiB = physicalMemoryBytes % (1_024 * 1_024 * 1_024) != 0
+        return wholeGiB + (hasPartialGiB ? 1 : 0)
     }
 
     nonisolated static func hasRequiredStorage(

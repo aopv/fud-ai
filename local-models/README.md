@@ -20,7 +20,8 @@ anonymously and never ask for a Hugging Face token.
 
 Android determines the marketed memory class from
 `ActivityManager.MemoryInfo.totalMem` because the OS reserves part of physical
-RAM before reporting it. iOS compares `ProcessInfo.physicalMemory` directly.
+RAM before reporting it. iOS similarly rounds the GiB value reported by
+`ProcessInfo.physicalMemory` upward to the marketed memory class.
 The model remains visible with an 8 GB requirement on smaller phones, but it
 does not appear in provider selectors until the artifact is verified and
 executable.

@@ -15,11 +15,15 @@ struct Gemma4LocalModelManagerTests {
         #expect(Gemma4LocalModelManager.licenseURL.host == "ai.google.dev")
     }
 
-    @Test func eligibilityStartsAtExactlyEightGiB() {
-        let threshold = Gemma4LocalModelManager.minimumPhysicalMemoryBytes
-        #expect(!Gemma4LocalModelManager.isEligible(physicalMemoryBytes: threshold - 1))
-        #expect(Gemma4LocalModelManager.isEligible(physicalMemoryBytes: threshold))
-        #expect(Gemma4LocalModelManager.isEligible(physicalMemoryBytes: threshold + 1))
+    @Test func eligibilityUsesMarketedMemoryClass() {
+        let gib: UInt64 = 1_024 * 1_024 * 1_024
+
+        #expect(Gemma4LocalModelManager.memoryClassGB(physicalMemoryBytes: 0) == 0)
+        #expect(Gemma4LocalModelManager.memoryClassGB(physicalMemoryBytes: 7 * gib) == 7)
+        #expect(Gemma4LocalModelManager.memoryClassGB(physicalMemoryBytes: 7 * gib + 1) == 8)
+        #expect(!Gemma4LocalModelManager.isEligible(physicalMemoryBytes: 7 * gib))
+        #expect(Gemma4LocalModelManager.isEligible(physicalMemoryBytes: 7 * gib + 1))
+        #expect(Gemma4LocalModelManager.isEligible(physicalMemoryBytes: 8 * gib))
     }
 
     @Test func storageCheckIncludesInstallationHeadroom() {
