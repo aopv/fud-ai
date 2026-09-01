@@ -3,11 +3,14 @@ package com.apoorvdarshan.calorietracker.ui.progress
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
+import android.util.Size
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
+import androidx.camera.core.resolutionselector.ResolutionSelector
+import androidx.camera.core.resolutionselector.ResolutionStrategy
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.background
@@ -158,6 +161,16 @@ internal fun HeartRateMeasurementDialog(
             val analysis = ImageAnalysis.Builder()
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888)
+                .setResolutionSelector(
+                    ResolutionSelector.Builder()
+                        .setResolutionStrategy(
+                            ResolutionStrategy(
+                                Size(640, 480),
+                                ResolutionStrategy.FALLBACK_RULE_CLOSEST_HIGHER_THEN_LOWER
+                            )
+                        )
+                        .build()
+                )
                 .build()
             boundAnalysis = analysis
             analysis.setAnalyzer(analyzerExecutor) { image ->
@@ -194,6 +207,12 @@ internal fun HeartRateMeasurementDialog(
                     issue = HeartRateCameraIssue.FLASH
                     releaseCapture()
                 } else {
+                    val exposureRange = camera.cameraInfo.exposureState.exposureCompensationRange
+                    if (exposureRange.contains(-1)) {
+                        // A small exposure reduction preserves the pulse waveform instead of
+                        // flattening the red channel under a close-range torch.
+                        camera.cameraControl.setExposureCompensationIndex(-1)
+                    }
                     val torchFuture = camera.cameraControl.enableTorch(true)
                     torchFuture.addListener(
                         {
@@ -389,7 +408,7 @@ private fun HeartRateMeasurementContent(
 
 private const val CAMERA_FRAME_WATCHDOG_MS = 8_000L
 private const val CAMERA_WATCHDOG_POLL_MS = 1_000L
-internal const val ABSOLUTE_TORCH_CAPTURE_MS = 30_000L
+internal const val ABSOLUTE_TORCH_CAPTURE_MS = 45_000L
 
 internal fun hasHeartRateCaptureTimedOut(torchEnabledAtMs: Long, nowMs: Long): Boolean =
     nowMs >= torchEnabledAtMs && nowMs - torchEnabledAtMs >= ABSOLUTE_TORCH_CAPTURE_MS

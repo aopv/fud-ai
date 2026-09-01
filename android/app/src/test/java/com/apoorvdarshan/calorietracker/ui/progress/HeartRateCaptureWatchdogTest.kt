@@ -6,11 +6,11 @@ import org.junit.Test
 
 class HeartRateCaptureWatchdogTest {
     @Test
-    fun absoluteTorchDeadlineTriggersAtThirtySecondsOnly() {
+    fun absoluteTorchDeadlineLeavesTimeToAcquireContact() {
         val enabledAt = 1_000L
 
-        assertFalse(hasHeartRateCaptureTimedOut(enabledAt, enabledAt + 29_999L))
-        assertTrue(hasHeartRateCaptureTimedOut(enabledAt, enabledAt + 30_000L))
+        assertFalse(hasHeartRateCaptureTimedOut(enabledAt, enabledAt + 44_999L))
+        assertTrue(hasHeartRateCaptureTimedOut(enabledAt, enabledAt + 45_000L))
         assertFalse(hasHeartRateCaptureTimedOut(enabledAt, enabledAt - 1L))
     }
 }

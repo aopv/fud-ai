@@ -48,9 +48,9 @@ data class PpgUpdate(
  * finding and maintaining contact; passing null lets the user keep trying until the dialog closes.
  */
 class HeartRateSignalProcessor(
-    private val targetSeconds: Double = 22.0,
+    private val targetSeconds: Double = 15.0,
     private val maximumSessionSeconds: Double = 30.0,
-    private val minimumQuality: Double = 0.42,
+    private val minimumQuality: Double = 0.32,
     private val acquisitionTimeoutSeconds: Double? = DEFAULT_ACQUISITION_TIMEOUT_SECONDS
 ) {
     private val samples = ArrayList<PpgFrameSample>(DEFAULT_SAMPLE_CAPACITY)
@@ -143,13 +143,13 @@ class HeartRateSignalProcessor(
         private const val DEFAULT_SAMPLE_CAPACITY = 960
         internal const val MAX_BUFFERED_SAMPLES = 2_701 // 30 seconds at the accepted 90 Hz ceiling.
 
-        private const val MIN_ANALYSIS_SECONDS = 12.0
-        private const val MIN_SAMPLE_RATE_HZ = 12.0
+        private const val MIN_ANALYSIS_SECONDS = 10.0
+        private const val MIN_SAMPLE_RATE_HZ = 10.0
         private const val MAX_SAMPLE_RATE_HZ = 90.0
-        private const val MAX_GAP_SECONDS = 0.18
-        private const val MAX_GAP_TO_MEDIAN_RATIO = 3.0
-        private const val MAX_CADENCE_COEFFICIENT = 0.20
-        private const val MAX_CADENCE_OUTLIER_FRACTION = 0.08
+        private const val MAX_GAP_SECONDS = 0.30
+        private const val MAX_GAP_TO_MEDIAN_RATIO = 6.0
+        private const val MAX_CADENCE_COEFFICIENT = 0.45
+        private const val MAX_CADENCE_OUTLIER_FRACTION = 0.30
 
         private const val MIN_RED_LEVEL = 85.0
         private const val MAX_RED_LEVEL = 252.0

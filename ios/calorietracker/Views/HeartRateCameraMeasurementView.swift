@@ -341,7 +341,7 @@ private struct HeartRateCameraCaptureView: UIViewControllerRepresentable {
 
 @MainActor
 private final class HeartRateCaptureViewController: UIViewController {
-    private static let maximumWallClockCaptureDuration: TimeInterval = 30
+    private static let maximumWallClockCaptureDuration: TimeInterval = 45
 
     private let onEvent: (HeartRateCameraEvent) -> Void
     private let sessionQueue = DispatchQueue(label: "ai.fud.heartrate.session", qos: .userInitiated)
@@ -523,21 +523,33 @@ private final class HeartRateCaptureViewController: UIViewController {
         let reportUnavailable: @MainActor @Sendable () -> Void = { [weak self] in
             self?.report(.failed(.unavailable))
         }
-        startWallClockWatchdog()
         sessionQueue.async {
             guard !captureGate.isStopped else { return }
             do {
+                // A physical camera's torch may be unavailable until its capture session is
+                // running. Starting the torch first caused real devices to fail before they
+                // could deliver their first frame.
+                session.startRunning()
+                guard session.isRunning, !captureGate.isStopped else {
+                    if session.isRunning { session.stopRunning() }
+                    return
+                }
                 try camera.lockForConfiguration()
                 do {
-                    try camera.setTorchModeOn(level: min(0.5, AVCaptureDevice.maxAvailableTorchLevel))
+                    try camera.setTorchModeOn(level: min(0.35, AVCaptureDevice.maxAvailableTorchLevel))
                     if camera.isFocusModeSupported(.locked) { camera.focusMode = .locked }
                     camera.unlockForConfiguration()
                 } catch {
                     camera.unlockForConfiguration()
                     throw error
                 }
-                guard !captureGate.isStopped else { return }
-                session.startRunning()
+                guard !captureGate.isStopped else {
+                    session.stopRunning()
+                    return
+                }
+                Task { @MainActor [weak self] in
+                    self?.startWallClockWatchdog()
+                }
             } catch {
                 Task { @MainActor in
                     reportUnavailable()

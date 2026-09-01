@@ -155,6 +155,28 @@ class HeartRateSignalProcessorTest {
     }
 
     @Test
+    fun toleratesNormalCameraFrameDrops() {
+        var timestamp = 0L
+        val droppedFrames = buildList {
+            while (timestamp <= 24_000_000_000L) {
+                val time = timestamp / 1_000_000_000.0
+                add(contactSample(timestamp, pulseValue(84, time)))
+                val frame = size
+                timestamp += when {
+                    frame % 83 == 0 -> FRAME_NANOS * 3
+                    frame % 29 == 0 -> FRAME_NANOS * 2
+                    else -> FRAME_NANOS
+                }
+            }
+        }
+
+        val result = HeartRateSignalProcessor.estimate(droppedFrames)
+
+        requireNotNull(result)
+        assertEquals(84.0, result.bpm.toDouble(), 2.0)
+    }
+
+    @Test
     fun estimateRejectsDuplicateAndRegressingTimestamps() {
         val duplicate = synthetic(90).toMutableList().also {
             it[100] = it[100].copy(timestampNanos = it[99].timestampNanos)
