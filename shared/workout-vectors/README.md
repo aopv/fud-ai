@@ -16,13 +16,17 @@ Each manifest entry contains 3–5 ordered frames with matching male and female 
 The apps select an authored animation only when both variants and every packaged file
 are complete; otherwise they retain the exercise database's existing JPEG sequence.
 `exercise-visual-manifest.json` is the runtime source of truth for format, frame names,
-frame count, and the representative static frame. The current production v2 PNG set
-uses four frames:
+frame count, and the representative static frame. The current production v2 PNG sets
+use four frames, with the exact motion adapted to each exercise:
 
-1. standing start
-2. controlled descent
-3. bottom position
-4. ascent
+1. setup or neutral start
+2. first action phase
+3. transition, return, or maximum-range phase
+4. mirrored action or controlled return phase
+
+All v2 PNG sequences use the Barbell Full Squat visual language: realistic hand-drawn
+dark ink contours, natural anatomy and cel/painterly shading, charcoal-black training
+kit, restrained muted-red accents, transparent cutouts, and consistent framing weight.
 
 Personal Info selects the male or female set. The existing `Other` convention uses
 the male artwork until a dedicated inclusive visual set is designed.
@@ -43,4 +47,12 @@ and cannot overwrite the production manifest:
 
 ```sh
 python3 scripts/generate_barbell_full_squat_svg_pilot.py --check
+```
+
+After adding a complete v2 male/female PNG set, sync the iOS catalog copies and both
+runtime manifests, then run the same command in validation-only mode:
+
+```sh
+python3 scripts/sync_workout_visual_assets.py
+python3 scripts/sync_workout_visual_assets.py --check
 ```

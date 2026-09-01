@@ -1,6 +1,276 @@
 {
   "exercises": [
     {
+      "exerciseId": "3_4_Sit-Up",
+      "format": "png",
+      "femaleFrames": [
+        "3_4_Sit-Up_female_v2_0",
+        "3_4_Sit-Up_female_v2_1",
+        "3_4_Sit-Up_female_v2_2",
+        "3_4_Sit-Up_female_v2_3"
+      ],
+      "frameCount": 4,
+      "maleFrames": [
+        "3_4_Sit-Up_male_v2_0",
+        "3_4_Sit-Up_male_v2_1",
+        "3_4_Sit-Up_male_v2_2",
+        "3_4_Sit-Up_male_v2_3"
+      ],
+      "representativeFrameIndex": 2
+    },
+    {
+      "exerciseId": "90_90_Hamstring",
+      "format": "png",
+      "femaleFrames": [
+        "90_90_Hamstring_female_v2_0",
+        "90_90_Hamstring_female_v2_1",
+        "90_90_Hamstring_female_v2_2",
+        "90_90_Hamstring_female_v2_3"
+      ],
+      "frameCount": 4,
+      "maleFrames": [
+        "90_90_Hamstring_male_v2_0",
+        "90_90_Hamstring_male_v2_1",
+        "90_90_Hamstring_male_v2_2",
+        "90_90_Hamstring_male_v2_3"
+      ],
+      "representativeFrameIndex": 2
+    },
+    {
+      "exerciseId": "Ab_Crunch_Machine",
+      "format": "png",
+      "femaleFrames": [
+        "Ab_Crunch_Machine_female_v2_0",
+        "Ab_Crunch_Machine_female_v2_1",
+        "Ab_Crunch_Machine_female_v2_2",
+        "Ab_Crunch_Machine_female_v2_3"
+      ],
+      "frameCount": 4,
+      "maleFrames": [
+        "Ab_Crunch_Machine_male_v2_0",
+        "Ab_Crunch_Machine_male_v2_1",
+        "Ab_Crunch_Machine_male_v2_2",
+        "Ab_Crunch_Machine_male_v2_3"
+      ],
+      "representativeFrameIndex": 2
+    },
+    {
+      "exerciseId": "Ab_Roller",
+      "format": "png",
+      "femaleFrames": [
+        "Ab_Roller_female_v2_0",
+        "Ab_Roller_female_v2_1",
+        "Ab_Roller_female_v2_2",
+        "Ab_Roller_female_v2_3"
+      ],
+      "frameCount": 4,
+      "maleFrames": [
+        "Ab_Roller_male_v2_0",
+        "Ab_Roller_male_v2_1",
+        "Ab_Roller_male_v2_2",
+        "Ab_Roller_male_v2_3"
+      ],
+      "representativeFrameIndex": 2
+    },
+    {
+      "exerciseId": "Adductor",
+      "format": "png",
+      "femaleFrames": [
+        "Adductor_female_v2_0",
+        "Adductor_female_v2_1",
+        "Adductor_female_v2_2",
+        "Adductor_female_v2_3"
+      ],
+      "frameCount": 4,
+      "maleFrames": [
+        "Adductor_male_v2_0",
+        "Adductor_male_v2_1",
+        "Adductor_male_v2_2",
+        "Adductor_male_v2_3"
+      ],
+      "representativeFrameIndex": 2
+    },
+    {
+      "exerciseId": "Adductor_Groin",
+      "format": "png",
+      "femaleFrames": [
+        "Adductor_Groin_female_v2_0",
+        "Adductor_Groin_female_v2_1",
+        "Adductor_Groin_female_v2_2",
+        "Adductor_Groin_female_v2_3"
+      ],
+      "frameCount": 4,
+      "maleFrames": [
+        "Adductor_Groin_male_v2_0",
+        "Adductor_Groin_male_v2_1",
+        "Adductor_Groin_male_v2_2",
+        "Adductor_Groin_male_v2_3"
+      ],
+      "representativeFrameIndex": 2
+    },
+    {
+      "exerciseId": "Advanced_Kettlebell_Windmill",
+      "format": "png",
+      "femaleFrames": [
+        "Advanced_Kettlebell_Windmill_female_v2_0",
+        "Advanced_Kettlebell_Windmill_female_v2_1",
+        "Advanced_Kettlebell_Windmill_female_v2_2",
+        "Advanced_Kettlebell_Windmill_female_v2_3"
+      ],
+      "frameCount": 4,
+      "maleFrames": [
+        "Advanced_Kettlebell_Windmill_male_v2_0",
+        "Advanced_Kettlebell_Windmill_male_v2_1",
+        "Advanced_Kettlebell_Windmill_male_v2_2",
+        "Advanced_Kettlebell_Windmill_male_v2_3"
+      ],
+      "representativeFrameIndex": 2
+    },
+    {
+      "exerciseId": "Air_Bike",
+      "format": "png",
+      "femaleFrames": [
+        "Air_Bike_female_v2_0",
+        "Air_Bike_female_v2_1",
+        "Air_Bike_female_v2_2",
+        "Air_Bike_female_v2_3"
+      ],
+      "frameCount": 4,
+      "maleFrames": [
+        "Air_Bike_male_v2_0",
+        "Air_Bike_male_v2_1",
+        "Air_Bike_male_v2_2",
+        "Air_Bike_male_v2_3"
+      ],
+      "representativeFrameIndex": 2
+    },
+    {
+      "exerciseId": "All_Fours_Quad_Stretch",
+      "format": "png",
+      "femaleFrames": [
+        "All_Fours_Quad_Stretch_female_v2_0",
+        "All_Fours_Quad_Stretch_female_v2_1",
+        "All_Fours_Quad_Stretch_female_v2_2",
+        "All_Fours_Quad_Stretch_female_v2_3"
+      ],
+      "frameCount": 4,
+      "maleFrames": [
+        "All_Fours_Quad_Stretch_male_v2_0",
+        "All_Fours_Quad_Stretch_male_v2_1",
+        "All_Fours_Quad_Stretch_male_v2_2",
+        "All_Fours_Quad_Stretch_male_v2_3"
+      ],
+      "representativeFrameIndex": 2
+    },
+    {
+      "exerciseId": "Alternate_Hammer_Curl",
+      "format": "png",
+      "femaleFrames": [
+        "Alternate_Hammer_Curl_female_v2_0",
+        "Alternate_Hammer_Curl_female_v2_1",
+        "Alternate_Hammer_Curl_female_v2_2",
+        "Alternate_Hammer_Curl_female_v2_3"
+      ],
+      "frameCount": 4,
+      "maleFrames": [
+        "Alternate_Hammer_Curl_male_v2_0",
+        "Alternate_Hammer_Curl_male_v2_1",
+        "Alternate_Hammer_Curl_male_v2_2",
+        "Alternate_Hammer_Curl_male_v2_3"
+      ],
+      "representativeFrameIndex": 2
+    },
+    {
+      "exerciseId": "Alternate_Heel_Touchers",
+      "format": "png",
+      "femaleFrames": [
+        "Alternate_Heel_Touchers_female_v2_0",
+        "Alternate_Heel_Touchers_female_v2_1",
+        "Alternate_Heel_Touchers_female_v2_2",
+        "Alternate_Heel_Touchers_female_v2_3"
+      ],
+      "frameCount": 4,
+      "maleFrames": [
+        "Alternate_Heel_Touchers_male_v2_0",
+        "Alternate_Heel_Touchers_male_v2_1",
+        "Alternate_Heel_Touchers_male_v2_2",
+        "Alternate_Heel_Touchers_male_v2_3"
+      ],
+      "representativeFrameIndex": 2
+    },
+    {
+      "exerciseId": "Alternate_Incline_Dumbbell_Curl",
+      "format": "png",
+      "femaleFrames": [
+        "Alternate_Incline_Dumbbell_Curl_female_v2_0",
+        "Alternate_Incline_Dumbbell_Curl_female_v2_1",
+        "Alternate_Incline_Dumbbell_Curl_female_v2_2",
+        "Alternate_Incline_Dumbbell_Curl_female_v2_3"
+      ],
+      "frameCount": 4,
+      "maleFrames": [
+        "Alternate_Incline_Dumbbell_Curl_male_v2_0",
+        "Alternate_Incline_Dumbbell_Curl_male_v2_1",
+        "Alternate_Incline_Dumbbell_Curl_male_v2_2",
+        "Alternate_Incline_Dumbbell_Curl_male_v2_3"
+      ],
+      "representativeFrameIndex": 2
+    },
+    {
+      "exerciseId": "Alternate_Leg_Diagonal_Bound",
+      "format": "png",
+      "femaleFrames": [
+        "Alternate_Leg_Diagonal_Bound_female_v2_0",
+        "Alternate_Leg_Diagonal_Bound_female_v2_1",
+        "Alternate_Leg_Diagonal_Bound_female_v2_2",
+        "Alternate_Leg_Diagonal_Bound_female_v2_3"
+      ],
+      "frameCount": 4,
+      "maleFrames": [
+        "Alternate_Leg_Diagonal_Bound_male_v2_0",
+        "Alternate_Leg_Diagonal_Bound_male_v2_1",
+        "Alternate_Leg_Diagonal_Bound_male_v2_2",
+        "Alternate_Leg_Diagonal_Bound_male_v2_3"
+      ],
+      "representativeFrameIndex": 2
+    },
+    {
+      "exerciseId": "Alternating_Cable_Shoulder_Press",
+      "format": "png",
+      "femaleFrames": [
+        "Alternating_Cable_Shoulder_Press_female_v2_0",
+        "Alternating_Cable_Shoulder_Press_female_v2_1",
+        "Alternating_Cable_Shoulder_Press_female_v2_2",
+        "Alternating_Cable_Shoulder_Press_female_v2_3"
+      ],
+      "frameCount": 4,
+      "maleFrames": [
+        "Alternating_Cable_Shoulder_Press_male_v2_0",
+        "Alternating_Cable_Shoulder_Press_male_v2_1",
+        "Alternating_Cable_Shoulder_Press_male_v2_2",
+        "Alternating_Cable_Shoulder_Press_male_v2_3"
+      ],
+      "representativeFrameIndex": 2
+    },
+    {
+      "exerciseId": "Alternating_Deltoid_Raise",
+      "format": "png",
+      "femaleFrames": [
+        "Alternating_Deltoid_Raise_female_v2_0",
+        "Alternating_Deltoid_Raise_female_v2_1",
+        "Alternating_Deltoid_Raise_female_v2_2",
+        "Alternating_Deltoid_Raise_female_v2_3"
+      ],
+      "frameCount": 4,
+      "maleFrames": [
+        "Alternating_Deltoid_Raise_male_v2_0",
+        "Alternating_Deltoid_Raise_male_v2_1",
+        "Alternating_Deltoid_Raise_male_v2_2",
+        "Alternating_Deltoid_Raise_male_v2_3"
+      ],
+      "representativeFrameIndex": 2
+    },
+    {
       "exerciseId": "Barbell_Full_Squat",
       "format": "png",
       "femaleFrames": [
