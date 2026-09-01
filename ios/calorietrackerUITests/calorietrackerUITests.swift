@@ -71,13 +71,14 @@ final class calorietrackerUITests: XCTestCase {
     }
 
     @MainActor
-    func testSettingsHubShowsFiveFocusedAppInfoCategories() throws {
+    func testSettingsHubShowsSixFocusedAppInfoCategories() throws {
         let app = XCUIApplication()
         app.launchArguments += ["-AppleLanguages", "(en)"]
         app.launch()
 
         let categories = [
             ("appUpdates", "App & Updates", "Open Source (MIT)"),
+            ("webApp", "Web App & Sync", "Visit fud-ai.app"),
             ("support", "Support Fud AI", "Rate the App"),
             ("helpFeedback", "Help & Feedback", "Report an Issue"),
             ("community", "Community", "Follow on X"),
