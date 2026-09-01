@@ -3,7 +3,6 @@ package com.apoorvdarshan.calorietracker.ui.home
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -22,34 +21,68 @@ import com.apoorvdarshan.calorietracker.models.FoodProductMetadata
 @Composable
 internal fun FoodProductMetadataCard(metadata: FoodProductMetadata) {
     val rows = buildList {
-        add(stringResource(R.string.product_barcode) to metadata.barcode)
-        metadata.packageQuantity?.let { add(stringResource(R.string.product_package) to it) }
-        metadata.nutriScore?.let { add(stringResource(R.string.product_nutri_score) to it) }
-        metadata.novaGroup?.let { add(stringResource(R.string.product_nova_group) to it.toString()) }
-        metadata.ecoScore?.let { add(stringResource(R.string.product_eco_score) to it) }
+        add(ProductMetadataItem(stringResource(R.string.product_barcode), metadata.barcode))
+        metadata.packageQuantity?.let {
+            add(ProductMetadataItem(stringResource(R.string.product_package), it))
+        }
+        metadata.nutriScore?.let {
+            add(ProductMetadataItem(stringResource(R.string.product_nutri_score), it))
+        }
+        metadata.novaGroup?.let {
+            add(ProductMetadataItem(stringResource(R.string.product_nova_group), it.toString()))
+        }
+        metadata.ecoScore?.let {
+            add(ProductMetadataItem(stringResource(R.string.product_eco_score), it))
+        }
         metadata.allergens.takeIf { it.isNotEmpty() }?.let {
-            add(stringResource(R.string.product_allergens) to it.joinToString(", "))
+            add(
+                ProductMetadataItem(
+                    stringResource(R.string.product_allergens),
+                    it.joinToString(", "),
+                    stacked = true
+                )
+            )
         }
         metadata.traces.takeIf { it.isNotEmpty() }?.let {
-            add(stringResource(R.string.product_may_contain) to it.joinToString(", "))
+            add(
+                ProductMetadataItem(
+                    stringResource(R.string.product_may_contain),
+                    it.joinToString(", "),
+                    stacked = true
+                )
+            )
         }
         metadata.labels.takeIf { it.isNotEmpty() }?.let {
-            add(stringResource(R.string.product_labels) to it.joinToString(", "))
+            add(
+                ProductMetadataItem(
+                    stringResource(R.string.product_labels),
+                    it.joinToString(", "),
+                    stacked = true
+                )
+            )
         }
         metadata.categories.takeIf { it.isNotEmpty() }?.let {
-            add(stringResource(R.string.product_categories) to it.joinToString(", "))
+            add(
+                ProductMetadataItem(
+                    stringResource(R.string.product_categories),
+                    it.joinToString(", "),
+                    stacked = true
+                )
+            )
         }
     }
 
     SheetPillCard {
-        rows.forEachIndexed { index, (label, value) ->
+        rows.forEachIndexed { index, item ->
             if (index > 0) SheetHairline()
-            ProductMetadataRow(label = label, value = value)
+            ProductMetadataRow(item)
         }
         metadata.ingredientsText?.let { ingredients ->
             if (rows.isNotEmpty()) SheetHairline()
             Column(
-                modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 18.dp, vertical = 12.dp),
                 verticalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 Text(
@@ -60,6 +93,7 @@ internal fun FoodProductMetadataCard(metadata: FoodProductMetadata) {
                 Text(
                     ingredients,
                     fontSize = 14.sp,
+                    lineHeight = 20.sp,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.68f)
                 )
             }
@@ -67,16 +101,51 @@ internal fun FoodProductMetadataCard(metadata: FoodProductMetadata) {
     }
 }
 
+private data class ProductMetadataItem(
+    val label: String,
+    val value: String,
+    val stacked: Boolean = false
+)
+
 @Composable
-private fun ProductMetadataRow(label: String, value: String) {
+private fun ProductMetadataRow(item: ProductMetadataItem) {
+    if (item.stacked) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 18.dp, vertical = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(5.dp)
+        ) {
+            Text(
+                item.label,
+                fontSize = 15.sp,
+                fontWeight = FontWeight.SemiBold
+            )
+            Text(
+                item.value,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.68f),
+                fontSize = 14.sp,
+                lineHeight = 20.sp
+            )
+        }
+        return
+    }
+
     Row(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 18.dp, vertical = 12.dp),
         verticalAlignment = Alignment.Top
     ) {
-        Text(label, fontSize = 15.sp)
-        Spacer(Modifier.weight(1f))
         Text(
-            value,
+            item.label,
+            fontSize = 15.sp,
+            modifier = Modifier
+                .weight(1f)
+                .padding(end = 12.dp)
+        )
+        Text(
+            item.value,
             modifier = Modifier.weight(1.6f),
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.68f),
             fontSize = 15.sp,
