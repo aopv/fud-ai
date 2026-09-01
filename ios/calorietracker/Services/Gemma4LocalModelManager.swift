@@ -539,7 +539,7 @@ final class Gemma4LocalModelManager {
         state = .preparing
         do {
             let loadedEngine: Engine
-            let gpuCache = cacheDirectory.appendingPathComponent("GPU", isDirectory: true)
+            let gpuCache = cacheDirectory.appendingPathComponent("GPUText-CPUVision", isDirectory: true)
             try fileManager.createDirectory(at: gpuCache, withIntermediateDirectories: true)
             let gpuConfig = try Self.engineConfig(
                 modelPath: modelURL.path,
