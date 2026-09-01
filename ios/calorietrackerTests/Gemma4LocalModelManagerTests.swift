@@ -1,4 +1,5 @@
 import Foundation
+import LiteRTLM
 import Testing
 @testable import calorietracker
 
@@ -17,6 +18,24 @@ struct Gemma4LocalModelManagerTests {
 
     @Test func contextWindowMatchesStableMobileLimit() {
         #expect(Gemma4LocalModelManager.maxContextTokens == 4_096)
+    }
+
+    @Test func iosVisionEncoderUsesCPUWhileTextKeepsRequestedBackend() throws {
+        let gpuConfig = try Gemma4LocalModelManager.engineConfig(
+            modelPath: "/model.litertlm",
+            backend: .gpu,
+            cacheDir: "/cache"
+        )
+        let cpuConfig = try Gemma4LocalModelManager.engineConfig(
+            modelPath: "/model.litertlm",
+            backend: .cpu(threadCount: 2),
+            cacheDir: "/cache"
+        )
+
+        #expect(gpuConfig.backend == .gpu)
+        #expect(gpuConfig.visionBackend == .cpu(threadCount: 4))
+        #expect(cpuConfig.backend == .cpu(threadCount: 2))
+        #expect(cpuConfig.visionBackend == .cpu(threadCount: 4))
     }
 
     @Test func eligibilityUsesMarketedMemoryClass() {

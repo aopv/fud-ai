@@ -103,6 +103,7 @@ final class Gemma4LocalModelManager {
     nonisolated static let minimumMemoryClassGB: UInt64 = 8
     nonisolated static let minimumPhysicalMemoryBytes: UInt64 = 8 * 1_024 * 1_024 * 1_024
     nonisolated static let maxContextTokens = 4_096
+    nonisolated static let visionThreadCount = 4
     nonisolated static let artifactByteCount: Int64 = 2_588_147_712
     nonisolated static let installationHeadroomBytes: Int64 = 1_024 * 1_024 * 1_024
     nonisolated static let artifactSHA256 = "181938105e0eefd105961417e8da75903eacda102c4fce9ce90f50b97139a63c"
@@ -372,6 +373,23 @@ final class Gemma4LocalModelManager {
         return availableBytes >= artifactBytes + headroomBytes
     }
 
+    nonisolated static func engineConfig(
+        modelPath: String,
+        backend: Backend,
+        cacheDir: String
+    ) throws -> EngineConfig {
+        try EngineConfig(
+            modelPath: modelPath,
+            backend: backend,
+            // Gemma 4's vision encoder currently fails Metal preparation on iOS
+            // (STABLEHLO_COMPOSITE). Keep text generation on the requested backend,
+            // but compile the vision tower with XNNPACK.
+            visionBackend: .cpu(threadCount: visionThreadCount),
+            maxNumTokens: maxContextTokens,
+            cacheDir: cacheDir
+        )
+    }
+
     nonisolated static func hasVerifiedInstall(
         modelURL: URL,
         verificationMarkerURL: URL,
@@ -523,11 +541,9 @@ final class Gemma4LocalModelManager {
             let loadedEngine: Engine
             let gpuCache = cacheDirectory.appendingPathComponent("GPU", isDirectory: true)
             try fileManager.createDirectory(at: gpuCache, withIntermediateDirectories: true)
-            let gpuConfig = try EngineConfig(
+            let gpuConfig = try Self.engineConfig(
                 modelPath: modelURL.path,
                 backend: .gpu,
-                visionBackend: .gpu,
-                maxNumTokens: Self.maxContextTokens,
                 cacheDir: gpuCache.path
             )
             let gpuEngine = Engine(engineConfig: gpuConfig)
@@ -540,11 +556,9 @@ final class Gemma4LocalModelManager {
                 // once with an isolated XNNPACK cache before surfacing the error.
                 let cpuCache = cacheDirectory.appendingPathComponent("CPU", isDirectory: true)
                 try fileManager.createDirectory(at: cpuCache, withIntermediateDirectories: true)
-                let cpuConfig = try EngineConfig(
+                let cpuConfig = try Self.engineConfig(
                     modelPath: modelURL.path,
                     backend: .cpu(),
-                    visionBackend: .cpu(),
-                    maxNumTokens: Self.maxContextTokens,
                     cacheDir: cpuCache.path
                 )
                 let cpuEngine = Engine(engineConfig: cpuConfig)
