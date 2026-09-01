@@ -3,6 +3,7 @@ package com.apoorvdarshan.calorietracker.services.ai
 import com.apoorvdarshan.calorietracker.models.ServingUnitOption
 import com.apoorvdarshan.calorietracker.models.OptionalNutrientGoals
 import com.apoorvdarshan.calorietracker.models.MealIngredient
+import com.apoorvdarshan.calorietracker.models.FoodProductMetadata
 import com.apoorvdarshan.calorietracker.models.SupplementalNutrient
 import com.apoorvdarshan.calorietracker.models.UserProfile
 import kotlinx.serialization.Serializable
@@ -58,7 +59,8 @@ data class FoodAnalysis(
     val servingSizeIsKnown: Boolean = true,
     val customNote: String? = null,
     val progressiveMeal: Boolean = false,
-    val ingredients: List<MealIngredient> = emptyList()
+    val ingredients: List<MealIngredient> = emptyList(),
+    val productMetadata: FoodProductMetadata? = null
 )
 
 /** Per-100g nutrition-label reading. Scaled to a real serving via [scaled]. */

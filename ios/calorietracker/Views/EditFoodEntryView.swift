@@ -238,6 +238,11 @@ struct EditFoodEntryView: View {
                         }
                     }
 
+                    if let productMetadata = entry.productMetadata,
+                       productMetadata.hasDisplayDetails {
+                        FoodProductMetadataSection(metadata: productMetadata)
+                    }
+
                     Section("Serving") {
                         HStack {
                             Text("Quantity")
@@ -600,7 +605,8 @@ struct EditFoodEntryView: View {
                 : selectedServingQuantity,
             customNote: customNote.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? nil : customNote,
             progressiveMeal: entry.progressiveMeal,
-            ingredients: scaledIngredients
+            ingredients: scaledIngredients,
+            productMetadata: entry.productMetadata
         )
         foodStore.updateEntry(updated)
         dismiss()

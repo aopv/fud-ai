@@ -444,6 +444,11 @@ fun EditFoodEntrySheet(
                 }
             }
 
+            currentBaseEntry.productMetadata?.takeIf { it.hasDisplayDetails }?.let { metadata ->
+                item { SheetSectionHeader(stringResource(R.string.product_information)) }
+                item { FoodProductMetadataCard(metadata) }
+            }
+
             item { SheetSectionHeader(stringResource(R.string.sheet_serving)) }
             item {
                 ServingQuantityCard(

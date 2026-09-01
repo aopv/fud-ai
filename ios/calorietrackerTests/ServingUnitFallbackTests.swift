@@ -208,6 +208,38 @@ struct ServingUnitFallbackTests {
         #expect(decoded.progressiveMeal)
     }
 
+    @Test func productMetadataSurvivesFoodEntryRoundTripAndDuplication() throws {
+        let metadata = FoodProductMetadata(
+            barcode: "3017620422003",
+            packageQuantity: "400 g",
+            ingredientsText: "Sugar, palm oil, hazelnuts",
+            allergens: ["Milk", "Hazelnuts"],
+            traces: ["Soy"],
+            nutriScore: "E",
+            novaGroup: 4,
+            ecoScore: "D",
+            labels: ["Vegetarian"],
+            categories: ["Spreads"],
+            imageURL: URL(string: "https://images.openfoodfacts.org/product.jpg")
+        )
+        let original = FoodEntry(
+            name: "Hazelnut spread",
+            calories: 539,
+            protein: 6.3,
+            carbs: 57.5,
+            fat: 30.9,
+            source: .barcode,
+            productMetadata: metadata
+        )
+
+        let data = try JSONEncoder().encode(original)
+        let decoded = try JSONDecoder().decode(FoodEntry.self, from: data)
+        let duplicated = decoded.duplicatedForLogging(at: Date(timeIntervalSince1970: 1_700_000_000))
+
+        #expect(decoded.productMetadata == metadata)
+        #expect(duplicated.productMetadata == metadata)
+    }
+
     @Test func standardMultiPhotoPromptKeepsMultipleViewBehavior() {
         let prompt = GeminiService.multiPhotoAnalysisPrompt(progressiveMeal: false)
 

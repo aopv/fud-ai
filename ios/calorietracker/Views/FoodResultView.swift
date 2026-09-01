@@ -19,6 +19,7 @@ struct FoodResultView: View {
     let emoji: String?
     let source: FoodSource
     let progressiveMeal: Bool
+    let productMetadata: FoodProductMetadata?
 
     @State private var baseServingSizeGrams: Double
     @State private var servingUnitOptions: [ServingUnitOption]
@@ -127,6 +128,7 @@ struct FoodResultView: View {
         fat: Double,
         ingredients: [MealIngredient] = [],
         progressiveMeal: Bool = false,
+        productMetadata: FoodProductMetadata? = nil,
         servingSizeGrams: Double = 100,
         sugar: Double? = nil,
         addedSugar: Double? = nil,
@@ -177,6 +179,7 @@ struct FoodResultView: View {
         self.emoji = emoji
         self.source = source
         self.progressiveMeal = progressiveMeal
+        self.productMetadata = productMetadata
         self._baseServingSizeGrams = State(initialValue: servingSizeGrams)
         self._servingUnitOptions = State(initialValue: normalizedServingUnitOptions)
         self._servingSizeIsKnown = State(initialValue: servingSizeIsKnown)
@@ -343,6 +346,10 @@ struct FoodResultView: View {
                             TextField("Food name", text: $name)
                                 .multilineTextAlignment(.trailing)
                         }
+                    }
+
+                    if let productMetadata, productMetadata.hasDisplayDetails {
+                        FoodProductMetadataSection(metadata: productMetadata)
                     }
 
                     Section("Serving") {
@@ -621,7 +628,8 @@ struct FoodResultView: View {
                 ? (servingUnitOptions.isEmpty ? nil : selectedServingQuantity)
                 : selectedServingQuantity,
             progressiveMeal: progressiveMeal,
-            ingredients: scaledIngredients
+            ingredients: scaledIngredients,
+            productMetadata: productMetadata
         )
     }
 

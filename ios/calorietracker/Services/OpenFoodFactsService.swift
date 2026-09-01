@@ -1,6 +1,11 @@
 import Foundation
 
 enum OpenFoodFactsService {
+    struct LookupResult {
+        let analysis: GeminiService.FoodAnalysis
+        let productImageData: Data?
+    }
+
     enum LookupError: LocalizedError {
         case invalidBarcode
         case productNotFound
@@ -122,7 +127,25 @@ enum OpenFoodFactsService {
         }
     }
 
-    private static let fields = "product_name,generic_name,brands,quantity,serving_size,serving_quantity,nutriments"
+    static func lookupWithImage(
+        barcode: String,
+        session: URLSession = .shared
+    ) async throws -> LookupResult {
+        let analysis = try await lookup(barcode: barcode, session: session)
+        let imageData = try await productImageData(
+            from: analysis.productMetadata?.imageURL,
+            session: session
+        )
+        return LookupResult(analysis: analysis, productImageData: imageData)
+    }
+
+    private static let fields = [
+        "product_name", "generic_name", "brands", "quantity",
+        "product_quantity", "product_quantity_unit", "serving_size", "serving_quantity",
+        "nutriments", "ingredients_text", "allergens_tags", "traces_tags",
+        "nutriscore_grade", "nova_group", "ecoscore_grade", "labels_tags",
+        "categories_tags", "image_front_url",
+    ].joined(separator: ",")
 
     private static func requestURL(for code: String) -> URL? {
         guard !code.isEmpty,
@@ -136,6 +159,9 @@ enum OpenFoodFactsService {
         }
 
         components.queryItems = [URLQueryItem(name: "fields", value: fields)]
+        if let languageCode = Locale.current.language.languageCode?.identifier {
+            components.queryItems?.append(URLQueryItem(name: "lc", value: languageCode))
+        }
         return components.url
     }
 
@@ -168,6 +194,27 @@ enum OpenFoodFactsService {
 
         let name = productName(from: product, barcode: barcode)
         let servingOption = ServingUnitOption(unit: "serving", gramsPerUnit: servingGrams, quantity: 1)
+        var servingOptions = [servingOption]
+        if let packageGrams = packageGrams(from: product),
+           abs(packageGrams - servingGrams) > 0.01 {
+            servingOptions.append(ServingUnitOption(unit: "package", gramsPerUnit: packageGrams, quantity: 1))
+        }
+        let novaGroup = product.novaGroup
+            .map { Int($0.value.rounded()) }
+            .flatMap { (1...4).contains($0) ? $0 : nil }
+        let metadata = FoodProductMetadata(
+            barcode: barcode,
+            packageQuantity: firstNonEmpty(product.quantity),
+            ingredientsText: firstNonEmpty(product.ingredientsText),
+            allergens: displayTags(product.allergenTags, limit: 16),
+            traces: displayTags(product.traceTags, limit: 16),
+            nutriScore: normalizedScore(product.nutriScore),
+            novaGroup: novaGroup,
+            ecoScore: normalizedScore(product.ecoScore),
+            labels: displayTags(product.labelTags, limit: 12),
+            categories: displayTags(product.categoryTags, limit: 8),
+            imageURL: product.imageFrontURL.flatMap(URL.init(string:))
+        )
 
         return GeminiService.FoodAnalysis(
             name: name,
@@ -204,9 +251,10 @@ enum OpenFoodFactsService {
             vitaminK: micrograms(servingValue("vitamin-k", in: nutriments, scale: scale)),
             folate: micrograms(servingValue("folates", in: nutriments, scale: scale)),
             omega3: rounded(servingValue("omega-3-fat", in: nutriments, scale: scale)),
-            servingUnitOptions: [servingOption],
+            servingUnitOptions: servingOptions,
             selectedServingUnit: servingOption.unit,
-            selectedServingQuantity: 1
+            selectedServingQuantity: 1,
+            productMetadata: metadata
         )
     }
 
@@ -246,6 +294,83 @@ enum OpenFoodFactsService {
         values
             .compactMap { $0?.trimmingCharacters(in: .whitespacesAndNewlines) }
             .first { !$0.isEmpty }
+    }
+
+    private static func packageGrams(from product: OpenFoodFactsProduct) -> Double? {
+        if let value = product.productQuantity?.value,
+           let unit = product.productQuantityUnit?.lowercased() {
+            switch unit {
+            case "kg": return value * 1_000
+            case "mg": return value / 1_000
+            case "g": return value
+            case "l": return value * 1_000
+            case "ml": return value
+            default: break
+            }
+        }
+        guard let quantity = product.quantity?.trimmingCharacters(in: .whitespacesAndNewlines),
+              quantity.range(
+                of: #"^[0-9]+(?:[.,][0-9]+)?\s*(?:kg|mg|g|oz|ml|l)$"#,
+                options: [.regularExpression, .caseInsensitive]
+              ) != nil
+        else { return nil }
+        return grams(from: quantity)
+    }
+
+    private static func displayTags(_ tags: [String]?, limit: Int) -> [String] {
+        var seen = Set<String>()
+        return (tags ?? []).compactMap { raw in
+            let withoutLanguage = raw.replacingOccurrences(
+                of: #"^[a-z]{2}:"#,
+                with: "",
+                options: .regularExpression
+            )
+            let display = withoutLanguage
+                .replacingOccurrences(of: "-", with: " ")
+                .replacingOccurrences(of: "_", with: " ")
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !display.isEmpty else { return nil }
+            let key = display.lowercased()
+            guard seen.insert(key).inserted else { return nil }
+            return display.localizedCapitalized
+        }.prefix(limit).map(\.self)
+    }
+
+    private static func normalizedScore(_ value: String?) -> String? {
+        guard let value = firstNonEmpty(value) else { return nil }
+        let normalized = value.lowercased()
+        guard normalized != "unknown", normalized != "not-applicable" else { return nil }
+        return value.uppercased()
+    }
+
+    private static func productImageData(from url: URL?, session: URLSession) async throws -> Data? {
+        guard let url,
+              url.scheme == "https",
+              url.host == "images.openfoodfacts.org"
+        else { return nil }
+
+        var request = URLRequest(url: url)
+        request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
+        request.setValue("image/*", forHTTPHeaderField: "Accept")
+
+        let data: Data
+        let response: URLResponse
+        do {
+            (data, response) = try await session.data(for: request)
+        } catch let error as URLError where error.code == .cancelled {
+            throw CancellationError()
+        } catch is CancellationError {
+            throw CancellationError()
+        } catch {
+            return nil
+        }
+
+        guard let http = response as? HTTPURLResponse,
+              (200..<300).contains(http.statusCode),
+              http.mimeType?.hasPrefix("image/") == true,
+              data.count <= 5_000_000
+        else { return nil }
+        return data
     }
 
     private static func rounded(_ value: Double?) -> Double? {
@@ -298,6 +423,18 @@ enum OpenFoodFactsService {
         let servingSize: String?
         let servingQuantity: FlexibleDouble?
         let nutriments: OpenFoodFactsNutriments?
+        let quantity: String?
+        let productQuantity: FlexibleDouble?
+        let productQuantityUnit: String?
+        let ingredientsText: String?
+        let allergenTags: [String]?
+        let traceTags: [String]?
+        let nutriScore: String?
+        let novaGroup: FlexibleDouble?
+        let ecoScore: String?
+        let labelTags: [String]?
+        let categoryTags: [String]?
+        let imageFrontURL: String?
 
         private enum CodingKeys: String, CodingKey {
             case productName = "product_name"
@@ -306,6 +443,18 @@ enum OpenFoodFactsService {
             case servingSize = "serving_size"
             case servingQuantity = "serving_quantity"
             case nutriments
+            case quantity
+            case productQuantity = "product_quantity"
+            case productQuantityUnit = "product_quantity_unit"
+            case ingredientsText = "ingredients_text"
+            case allergenTags = "allergens_tags"
+            case traceTags = "traces_tags"
+            case nutriScore = "nutriscore_grade"
+            case novaGroup = "nova_group"
+            case ecoScore = "ecoscore_grade"
+            case labelTags = "labels_tags"
+            case categoryTags = "categories_tags"
+            case imageFrontURL = "image_front_url"
         }
     }
 

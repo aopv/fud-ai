@@ -3,6 +3,7 @@ package com.apoorvdarshan.calorietracker.services
 import com.apoorvdarshan.calorietracker.BuildConfig
 import com.apoorvdarshan.calorietracker.models.ServingUnitOption
 import com.apoorvdarshan.calorietracker.models.SupplementalNutrient
+import com.apoorvdarshan.calorietracker.models.FoodProductMetadata
 import com.apoorvdarshan.calorietracker.services.ai.FoodAnalysis
 import com.apoorvdarshan.calorietracker.services.ai.FoodAnalysisService
 import kotlinx.coroutines.Dispatchers
@@ -17,14 +18,26 @@ import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.HttpUrl.Companion.toHttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import java.io.IOException
 import java.util.Locale
 import kotlin.math.round
 import kotlin.math.roundToInt
 
 object OpenFoodFactsService {
-    private const val FIELDS = "product_name,generic_name,brands,quantity,serving_size,serving_quantity,nutriments"
+    private val FIELDS = listOf(
+        "product_name", "generic_name", "brands", "quantity",
+        "product_quantity", "product_quantity_unit", "serving_size", "serving_quantity",
+        "nutriments", "ingredients_text", "allergens_tags", "traces_tags",
+        "nutriscore_grade", "nova_group", "ecoscore_grade", "labels_tags",
+        "categories_tags", "image_front_url"
+    ).joinToString(",")
     private val API_BASE_URL = "https://world.openfoodfacts.org/".toHttpUrl()
+
+    data class LookupResult(
+        val analysis: FoodAnalysis,
+        val productImageBytes: ByteArray?
+    )
 
     enum class LookupFailure {
         INVALID_BARCODE,
@@ -54,6 +67,7 @@ object OpenFoodFactsService {
             .addPathSegments("api/v2/product")
             .addPathSegment("$code.json")
             .addQueryParameter("fields", FIELDS)
+            .addQueryParameter("lc", Locale.getDefault().language)
             .build()
         val request = Request.Builder()
             .url(url)
@@ -97,6 +111,18 @@ object OpenFoodFactsService {
         analysis(product, code)
     }
 
+    suspend fun lookupWithImage(
+        barcode: String,
+        client: OkHttpClient = FoodAnalysisService.defaultClient,
+        baseUrl: HttpUrl = API_BASE_URL
+    ): LookupResult = withContext(Dispatchers.IO) {
+        val analysis = lookup(barcode = barcode, client = client, baseUrl = baseUrl)
+        LookupResult(
+            analysis = analysis,
+            productImageBytes = productImageBytes(analysis.productMetadata?.imageUrl, client)
+        )
+    }
+
     internal fun normalizedBarcode(raw: String): String? {
         val code = raw.trim()
         if (code.isEmpty() || code.length > 24 || code.any { it !in '0'..'9' }) return null
@@ -134,6 +160,25 @@ object OpenFoodFactsService {
         }
 
         val servingOption = ServingUnitOption(unit = "serving", gramsPerUnit = servingGrams, quantity = 1.0)
+        val servingOptions = buildList {
+            add(servingOption)
+            packageGrams(product)?.takeIf { kotlin.math.abs(it - servingGrams) > 0.01 }?.let {
+                add(ServingUnitOption(unit = "package", gramsPerUnit = it, quantity = 1.0))
+            }
+        }
+        val metadata = FoodProductMetadata(
+            barcode = barcode,
+            packageQuantity = product.string("quantity"),
+            ingredientsText = product.string("ingredients_text"),
+            allergens = displayTags(product.stringList("allergens_tags"), 16),
+            traces = displayTags(product.stringList("traces_tags"), 16),
+            nutriScore = normalizedScore(product.string("nutriscore_grade")),
+            novaGroup = product.flexibleInt("nova_group")?.takeIf { it in 1..4 },
+            ecoScore = normalizedScore(product.string("ecoscore_grade")),
+            labels = displayTags(product.stringList("labels_tags"), 12),
+            categories = displayTags(product.stringList("categories_tags"), 8),
+            imageUrl = product.string("image_front_url")
+        )
         return FoodAnalysis(
             name = productName(product, barcode),
             calories = (calories ?: 0.0).roundToInt(),
@@ -170,10 +215,73 @@ object OpenFoodFactsService {
             vitaminK = micrograms(servingValue("vitamin-k")),
             folate = micrograms(servingValue("folates")),
             omega3 = rounded(servingValue("omega-3-fat")),
-            servingUnitOptions = listOf(servingOption),
+            servingUnitOptions = servingOptions,
             selectedServingUnit = servingOption.unit,
-            selectedServingQuantity = 1.0
+            selectedServingQuantity = 1.0,
+            productMetadata = metadata
         )
+    }
+
+    private fun packageGrams(product: JsonObject): Double? {
+        val quantity = product.flexibleDouble("product_quantity")
+        val unit = product.string("product_quantity_unit")?.lowercase(Locale.US)
+        if (quantity != null && unit != null) {
+            when (unit) {
+                "kg" -> return quantity * 1_000.0
+                "mg" -> return quantity / 1_000.0
+                "g" -> return quantity
+                "l" -> return quantity * 1_000.0
+                "ml" -> return quantity
+            }
+        }
+        val displayQuantity = product.string("quantity") ?: return null
+        if (!Regex("^[0-9]+(?:[.,][0-9]+)?\\s*(?:kg|mg|g|oz|ml|l)$", RegexOption.IGNORE_CASE)
+                .matches(displayQuantity)
+        ) return null
+        return gramsFrom(displayQuantity)
+    }
+
+    private fun displayTags(tags: List<String>, limit: Int): List<String> {
+        val seen = mutableSetOf<String>()
+        return tags.mapNotNull { raw ->
+            val display = raw
+                .replace(Regex("^[a-z]{2}:"), "")
+                .replace('-', ' ')
+                .replace('_', ' ')
+                .trim()
+            val key = display.lowercase(Locale.US)
+            display.takeIf { it.isNotEmpty() && seen.add(key) }
+                ?.replaceFirstChar { first -> first.titlecase() }
+        }.take(limit)
+    }
+
+    private fun normalizedScore(value: String?): String? = value
+        ?.trim()
+        ?.takeIf { it.isNotEmpty() && it != "unknown" && it != "not-applicable" }
+        ?.uppercase(Locale.US)
+
+    private fun productImageBytes(urlString: String?, client: OkHttpClient): ByteArray? {
+        val url = urlString?.toHttpUrlOrNull()
+            ?.takeIf { it.isHttps && it.host == "images.openfoodfacts.org" }
+            ?: return null
+        val request = Request.Builder()
+            .url(url)
+            .addHeader("User-Agent", userAgent)
+            .addHeader("Accept", "image/*")
+            .build()
+        return try {
+            client.newCall(request).execute().use { response ->
+                val body = response.body ?: return null
+                val length = body.contentLength()
+                if (!response.isSuccessful ||
+                    body.contentType()?.type != "image" ||
+                    length > MAX_PRODUCT_IMAGE_BYTES
+                ) return null
+                body.bytes().takeIf { it.size <= MAX_PRODUCT_IMAGE_BYTES }
+            }
+        } catch (_: IOException) {
+            null
+        }
     }
 
     private fun productName(product: JsonObject, barcode: String): String {
@@ -226,6 +334,11 @@ object OpenFoodFactsService {
     private fun JsonObject.string(key: String): String? =
         (this[key] as? JsonPrimitive)?.contentOrNull?.trim()?.takeIf { it.isNotEmpty() }
 
+    private fun JsonObject.stringList(key: String): List<String> =
+        (this[key] as? kotlinx.serialization.json.JsonArray)
+            ?.mapNotNull { (it as? JsonPrimitive)?.contentOrNull }
+            .orEmpty()
+
     private fun JsonObject.flexibleInt(key: String): Int? {
         val value = this[key] as? JsonPrimitive ?: return null
         return value.intOrNull ?: value.contentOrNull?.trim()?.toIntOrNull()
@@ -237,4 +350,6 @@ object OpenFoodFactsService {
             ?: value.contentOrNull?.trim()?.replace(",", ".")?.toDoubleOrNull())
             ?.takeUnless { it.isNaN() || it.isInfinite() }
     }
+
+    private const val MAX_PRODUCT_IMAGE_BYTES = 5_000_000
 }

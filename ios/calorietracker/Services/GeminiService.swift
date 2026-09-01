@@ -44,6 +44,7 @@ struct GeminiService {
         var requiresServingUnitFallback = false
         var progressiveMeal = false
         var ingredients: [MealIngredient] = []
+        var productMetadata: FoodProductMetadata? = nil
     }
 
     struct NutritionLabelAnalysis {

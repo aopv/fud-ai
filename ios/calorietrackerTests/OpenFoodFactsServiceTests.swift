@@ -3,6 +3,7 @@ import Testing
 @testable import calorietracker
 
 @Suite("Open Food Facts barcode lookup", .serialized)
+@MainActor
 struct OpenFoodFactsServiceTests {
     @Test func successfulLookupPreservesLeadingZerosInPath() async throws {
         let session = makeSession { request in
@@ -15,6 +16,16 @@ struct OpenFoodFactsServiceTests {
                     "status": 1,
                     "product": {
                         "product_name": "Test Product",
+                        "quantity": "250 g",
+                        "ingredients_text": "Oats, milk",
+                        "allergens_tags": ["en:milk"],
+                        "traces_tags": ["en:nuts"],
+                        "nutriscore_grade": "a",
+                        "nova_group": 2,
+                        "ecoscore_grade": "b",
+                        "labels_tags": ["en:organic"],
+                        "categories_tags": ["en:cereals"],
+                        "image_front_url": "https://images.openfoodfacts.org/test.jpg",
                         "serving_quantity": 50,
                         "nutriments": {
                             "energy-kcal_100g": 200,
@@ -37,6 +48,45 @@ struct OpenFoodFactsServiceTests {
         #expect(result.carbs == 15)
         #expect(result.fat == 2.5)
         #expect(result.servingSizeGrams == 50)
+        #expect(result.servingUnitOptions.map(\.unit) == ["serving", "package"])
+        #expect(result.productMetadata?.barcode == "0012345678901")
+        #expect(result.productMetadata?.packageQuantity == "250 g")
+        #expect(result.productMetadata?.ingredientsText == "Oats, milk")
+        #expect(result.productMetadata?.allergens == ["Milk"])
+        #expect(result.productMetadata?.traces == ["Nuts"])
+        #expect(result.productMetadata?.nutriScore == "A")
+        #expect(result.productMetadata?.novaGroup == 2)
+        #expect(result.productMetadata?.ecoScore == "B")
+        #expect(result.productMetadata?.labels == ["Organic"])
+        #expect(result.productMetadata?.categories == ["Cereals"])
+    }
+
+    @Test func lookupWithImageDownloadsTrustedProductPhoto() async throws {
+        let expectedImage = Data([0xFF, 0xD8, 0xFF, 0xD9])
+        let session = makeSession { request in
+            if request.url?.host == "images.openfoodfacts.org" {
+                let response = HTTPURLResponse(
+                    url: request.url!,
+                    statusCode: 200,
+                    httpVersion: "HTTP/1.1",
+                    headerFields: ["Content-Type": "image/jpeg"]
+                )!
+                return (response, expectedImage)
+            }
+            return response(
+                for: request,
+                statusCode: 200,
+                json: #"{"status":1,"product":{"product_name":"Test","serving_quantity":100,"image_front_url":"https://images.openfoodfacts.org/test.jpg","nutriments":{"energy-kcal_100g":100,"proteins_100g":1,"carbohydrates_100g":2,"fat_100g":3}}}"#
+            )
+        }
+        defer { finish(session) }
+
+        let result = try await OpenFoodFactsService.lookupWithImage(
+            barcode: "0012345678901",
+            session: session
+        )
+
+        #expect(result.productImageData == expectedImage)
     }
 
     @Test func nonASCIIOrOversizedBarcodesAreRejectedBeforeTransport() async {

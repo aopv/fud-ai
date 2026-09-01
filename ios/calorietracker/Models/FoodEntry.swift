@@ -362,6 +362,7 @@ struct FoodEntry: Identifiable, Codable {
     var customNote: String?
     var progressiveMeal: Bool
     var ingredients: [MealIngredient]
+    var productMetadata: FoodProductMetadata?
 
     /// HealthKit/Health Connect can restore nutrition totals without restoring
     /// the food's original mass. Keep that state explicit instead of silently
@@ -439,7 +440,8 @@ struct FoodEntry: Identifiable, Codable {
         selectedServingQuantity: Double? = nil,
         customNote: String? = nil,
         progressiveMeal: Bool = false,
-        ingredients: [MealIngredient] = []
+        ingredients: [MealIngredient] = [],
+        productMetadata: FoodProductMetadata? = nil
     ) {
         self.id = id
         self.name = name
@@ -486,6 +488,7 @@ struct FoodEntry: Identifiable, Codable {
         self.customNote = customNote
         self.progressiveMeal = progressiveMeal
         self.ingredients = ingredients
+        self.productMetadata = productMetadata
     }
 
     private enum CodingKeys: String, CodingKey {
@@ -501,6 +504,7 @@ struct FoodEntry: Identifiable, Codable {
         case vitaminA, vitaminC, vitaminD, vitaminB12, vitaminE, vitaminK, folate, omega3
         case servingSizeGrams
         case servingUnitOptions, selectedServingUnit, selectedServingQuantity, customNote, progressiveMeal, ingredients
+        case productMetadata
     }
 
     private static func decodeDouble(
@@ -575,6 +579,7 @@ struct FoodEntry: Identifiable, Codable {
         customNote = try container.decodeIfPresent(String.self, forKey: .customNote)
         progressiveMeal = try container.decodeIfPresent(Bool.self, forKey: .progressiveMeal) ?? false
         ingredients = try container.decodeIfPresent([MealIngredient].self, forKey: .ingredients) ?? []
+        productMetadata = try container.decodeIfPresent(FoodProductMetadata.self, forKey: .productMetadata)
     }
 
     func encode(to encoder: Encoder) throws {
@@ -634,6 +639,7 @@ struct FoodEntry: Identifiable, Codable {
         if !ingredients.isEmpty {
             try container.encode(ingredients, forKey: .ingredients)
         }
+        try container.encodeIfPresent(productMetadata, forKey: .productMetadata)
     }
 
     var timeString: String {
@@ -701,7 +707,8 @@ struct FoodEntry: Identifiable, Codable {
             selectedServingQuantity: selectedServingQuantity,
             customNote: customNote,
             progressiveMeal: progressiveMeal,
-            ingredients: ingredients
+            ingredients: ingredients,
+            productMetadata: productMetadata
         )
     }
 }

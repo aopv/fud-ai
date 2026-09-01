@@ -1434,6 +1434,7 @@ struct HomeView: View {
                             fat: result.fat,
                             ingredients: result.ingredients,
                             progressiveMeal: result.progressiveMeal,
+                            productMetadata: result.productMetadata,
                             servingSizeGrams: result.servingSizeGrams,
                             sugar: result.sugar,
                             addedSugar: result.addedSugar,
@@ -1534,7 +1535,8 @@ struct HomeView: View {
                         selectedServingQuantity: entry.reviewSelectedServingQuantity,
                         servingSizeIsKnown: entry.hasKnownServingSize,
                         progressiveMeal: entry.progressiveMeal,
-                        ingredients: entry.ingredients
+                        ingredients: entry.ingredients,
+                        productMetadata: entry.productMetadata
                     )
                     activeSheet = .foodResult
                 })
@@ -1829,9 +1831,15 @@ struct HomeView: View {
 
         Task {
             do {
-                let result = try await OpenFoodFactsService.lookup(barcode: trimmedBarcode)
+                let lookup = try await OpenFoodFactsService.lookupWithImage(barcode: trimmedBarcode)
+                let result = lookup.analysis
                 currentFoodResult = result
                 currentEmoji = result.emoji
+                if let imageData = lookup.productImageData,
+                   let image = UIImage(data: imageData) {
+                    currentImage = image
+                    currentImages = [image]
+                }
                 retryRequest = nil
                 activeSheet = .foodResult
             } catch {

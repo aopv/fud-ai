@@ -256,7 +256,8 @@ fun FoodResultSheet(
             selectedServingQuantity
         },
         servingSizeIsKnown = servingSizeIsKnown,
-        ingredients = editableIngredients
+        ingredients = editableIngredients,
+        productMetadata = analysis.productMetadata
     )
     fun previewEntry() = FoodEntry(
         name = name.trim().ifEmpty { analysis.name },
@@ -305,7 +306,8 @@ fun FoodResultSheet(
         } else {
             selectedServingQuantity
         },
-        ingredients = scaledIngredients()
+        ingredients = scaledIngredients(),
+        productMetadata = analysis.productMetadata
     )
     var whatIfEntry by remember { mutableStateOf<FoodEntry?>(null) }
 
@@ -407,6 +409,11 @@ fun FoodResultSheet(
                         modifier = Modifier.weight(2f)
                     )
                 }
+            }
+
+            analysis.productMetadata?.takeIf { it.hasDisplayDetails }?.let { metadata ->
+                item { SheetSectionHeader(stringResource(R.string.product_information)) }
+                item { FoodProductMetadataCard(metadata) }
             }
 
             item { SheetSectionHeader(stringResource(R.string.sheet_serving)) }

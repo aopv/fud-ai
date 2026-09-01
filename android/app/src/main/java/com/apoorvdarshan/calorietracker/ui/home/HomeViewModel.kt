@@ -417,8 +417,12 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
             )
             discardPendingDraft(previousDraftImages)
             try {
-                val analysis = OpenFoodFactsService.lookup(barcode)
-                savePendingDraft(analysis, imageBytes = null, source = FoodSource.BARCODE)
+                val lookup = OpenFoodFactsService.lookupWithImage(barcode)
+                savePendingDraft(
+                    analysis = lookup.analysis,
+                    imageBytes = lookup.productImageBytes,
+                    source = FoodSource.BARCODE
+                )
             } catch (error: CancellationException) {
                 throw error
             } catch (error: OpenFoodFactsService.LookupException) {
@@ -539,7 +543,8 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
                     },
                     customNote = analysis.customNote,
                     progressiveMeal = analysis.progressiveMeal,
-                    ingredients = analysis.ingredients.map { it.scaled(scale) }
+                    ingredients = analysis.ingredients.map { it.scaled(scale) },
+                    productMetadata = analysis.productMetadata
                 )
                 if (!container.foodRepository.addEntry(entry)) {
                     reportFoodBlockedByFast()
@@ -860,5 +865,6 @@ private fun FoodEntry.toAnalysis(): FoodAnalysis = FoodAnalysis(
     servingSizeIsKnown = hasKnownServingSize,
     customNote = customNote,
     progressiveMeal = progressiveMeal,
-    ingredients = ingredients
+    ingredients = ingredients,
+    productMetadata = productMetadata
 )

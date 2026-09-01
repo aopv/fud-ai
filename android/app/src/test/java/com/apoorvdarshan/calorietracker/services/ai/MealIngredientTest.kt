@@ -1,11 +1,13 @@
 package com.apoorvdarshan.calorietracker.services.ai
 
 import com.apoorvdarshan.calorietracker.models.FoodEntry
+import com.apoorvdarshan.calorietracker.models.FoodProductMetadata
 import com.apoorvdarshan.calorietracker.models.FoodSource
 import com.apoorvdarshan.calorietracker.models.MealIngredient
 import com.apoorvdarshan.calorietracker.models.totals
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import java.time.Instant
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -52,6 +54,39 @@ class MealIngredientTest {
         val decoded = format.decodeFromString<FoodEntry>(format.encodeToString(original))
 
         assertTrue(decoded.progressiveMeal)
+    }
+
+    @Test
+    fun productMetadataSurvivesFoodEntryRoundTripAndDuplication() {
+        val format = Json { ignoreUnknownKeys = true }
+        val metadata = FoodProductMetadata(
+            barcode = "3017620422003",
+            packageQuantity = "400 g",
+            ingredientsText = "Sugar, palm oil, hazelnuts",
+            allergens = listOf("Milk", "Hazelnuts"),
+            traces = listOf("Soy"),
+            nutriScore = "E",
+            novaGroup = 4,
+            ecoScore = "D",
+            labels = listOf("Vegetarian"),
+            categories = listOf("Spreads"),
+            imageUrl = "https://images.openfoodfacts.org/product.jpg"
+        )
+        val original = FoodEntry(
+            name = "Hazelnut spread",
+            calories = 539,
+            protein = 6.3,
+            carbs = 57.5,
+            fat = 30.9,
+            source = FoodSource.BARCODE,
+            productMetadata = metadata
+        )
+
+        val decoded = format.decodeFromString<FoodEntry>(format.encodeToString(original))
+        val duplicated = decoded.duplicatedForLogging(Instant.parse("2026-08-30T12:00:00Z"))
+
+        assertEquals(metadata, decoded.productMetadata)
+        assertEquals(metadata, duplicated.productMetadata)
     }
 
     @Test
