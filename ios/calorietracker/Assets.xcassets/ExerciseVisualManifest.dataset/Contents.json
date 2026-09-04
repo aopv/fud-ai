@@ -1,0 +1,12 @@
+{
+  "data": [
+    {
+      "filename": "exercise-visual-manifest.json",
+      "idiom": "universal"
+    }
+  ],
+  "info": {
+    "author": "xcode",
+    "version": 1
+  }
+}

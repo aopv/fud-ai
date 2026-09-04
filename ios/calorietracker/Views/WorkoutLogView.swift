@@ -851,7 +851,8 @@ private struct WorkoutLogExerciseCard: View {
                         imagePaths: exercise.imagePaths,
                         height: 64,
                         fillsWidth: false,
-                        allowsDerivedImageLookup: false
+                        allowsDerivedImageLookup: false,
+                        animatesFrames: false
                     )
                     .frame(width: 64, height: 64)
                     .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
@@ -1789,7 +1790,8 @@ private struct WorkoutLogPickerRow: View {
                         imagePaths: item.imagePaths,
                         height: 58,
                         fillsWidth: false,
-                        allowsDerivedImageLookup: false
+                        allowsDerivedImageLookup: false,
+                        animatesFrames: false
                     )
                     .frame(width: 76, height: 58)
                     .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))

@@ -1,0 +1,155 @@
+package com.apoorvdarshan.calorietracker.data
+
+import com.apoorvdarshan.calorietracker.models.Gender
+import com.google.gson.Gson
+import com.google.gson.annotations.SerializedName
+
+enum class ExerciseVisualFormat {
+    JPEG,
+    SVG,
+    PNG
+}
+
+data class ExerciseVisual(
+    val framePaths: List<String>,
+    val format: ExerciseVisualFormat,
+    val representativeFrameIndex: Int
+) {
+    companion object {
+        fun jpeg(paths: List<String>): ExerciseVisual = ExerciseVisual(
+            framePaths = paths,
+            format = ExerciseVisualFormat.JPEG,
+            representativeFrameIndex = 0
+        )
+    }
+}
+
+/** Complete gender-specific authored frame sets discovered in the flat exercise asset directory. */
+internal data class GenderedExerciseFrames(
+    val male: List<String>,
+    val female: List<String>,
+    val format: ExerciseVisualFormat,
+    val representativeFrameIndex: Int
+) {
+    fun forGender(gender: Gender): List<String> = when (gender) {
+        Gender.FEMALE -> female
+        // OTHER intentionally uses the male visual convention so its result is deterministic.
+        Gender.MALE, Gender.OTHER -> male
+    }
+}
+
+internal object ExerciseVisualResolver {
+    const val MANIFEST_ASSET_NAME = "exercise-visual-manifest.json"
+
+    private data class ManifestDocument(
+        @SerializedName("schemaVersion")
+        val schemaVersion: Int? = null,
+        @SerializedName("exercises")
+        val exercises: List<ManifestRecord>? = null
+    )
+
+    private data class ManifestRecord(
+        @SerializedName("exerciseId")
+        val exerciseId: String? = null,
+        @SerializedName("frameCount")
+        val frameCount: Int? = null,
+        @SerializedName("representativeFrameIndex")
+        val representativeFrameIndex: Int? = null,
+        @SerializedName("format")
+        val format: String? = null,
+        @SerializedName("maleFrames")
+        val maleFrames: List<String>? = null,
+        @SerializedName("femaleFrames")
+        val femaleFrames: List<String>? = null
+    )
+
+    /**
+     * Parses the shared packaging manifest and exposes only atomic male/female sets with 3–5
+     * contiguous frames. When [packagedAssetNames] is supplied, every referenced asset must also
+     * exist in the APK asset root; a partial package therefore falls back to the existing JPEGs.
+     */
+    fun parseManifest(
+        json: String,
+        packagedAssetNames: Collection<String>? = null
+    ): Map<String, GenderedExerciseFrames> {
+        val document = runCatching { Gson().fromJson(json, ManifestDocument::class.java) }
+            .getOrNull()
+            ?: return emptyMap()
+        if (document.schemaVersion != 1) return emptyMap()
+
+        val entries = mutableMapOf<String, GenderedExerciseFrames>()
+        val duplicateIDs = mutableSetOf<String>()
+        document.exercises.orEmpty().forEach { record ->
+            val exerciseID = record.exerciseId?.takeIf { it.isNotBlank() } ?: return@forEach
+            val frameCount = record.frameCount?.takeIf { it in 3..5 } ?: return@forEach
+            val representative = record.representativeFrameIndex
+                ?.takeIf { it in 0 until frameCount }
+                ?: return@forEach
+            val format = when (record.format?.lowercase()) {
+                null, "svg" -> ExerciseVisualFormat.SVG
+                "png" -> ExerciseVisualFormat.PNG
+                else -> return@forEach
+            }
+            val extension = format.name.lowercase()
+            val maleNames = record.maleFrames
+                ?.takeIf { validFrameNames(it, exerciseID, "male", frameCount) }
+                ?: return@forEach
+            val femaleNames = record.femaleFrames
+                ?.takeIf { validFrameNames(it, exerciseID, "female", frameCount) }
+                ?: return@forEach
+            val malePaths = maleNames.map { "$it.$extension" }
+            val femalePaths = femaleNames.map { "$it.$extension" }
+            if (packagedAssetNames != null &&
+                !(malePaths + femalePaths).all(packagedAssetNames::contains)
+            ) {
+                return@forEach
+            }
+
+            if (entries.containsKey(exerciseID)) {
+                duplicateIDs += exerciseID
+            } else {
+                entries[exerciseID] = GenderedExerciseFrames(
+                    male = malePaths,
+                    female = femalePaths,
+                    format = format,
+                    representativeFrameIndex = representative
+                )
+            }
+        }
+        duplicateIDs.forEach { entries.remove(it) }
+        return entries
+    }
+
+    private fun validFrameNames(
+        names: List<String>,
+        exerciseID: String,
+        gender: String,
+        frameCount: Int
+    ): Boolean {
+        val safeName = Regex("^[A-Za-z0-9_-]+$")
+        val prefix = "${exerciseID}_${gender}_"
+        return names.size == frameCount &&
+            names.distinct().size == frameCount &&
+            names.withIndex().all { (index, name) ->
+                name.startsWith(prefix) && safeName.matches(name) && name.endsWith("_$index")
+            }
+    }
+
+    fun resolve(
+        item: ExerciseItem,
+        gender: Gender,
+        authoredFrames: Map<String, GenderedExerciseFrames>
+    ): ExerciseVisual {
+        val authoredSet = authoredFrames[item.id]
+        val frames = authoredSet?.forGender(gender)
+        return if (frames.isNullOrEmpty()) {
+            ExerciseVisual.jpeg(item.imagePaths)
+        } else {
+            ExerciseVisual(
+                framePaths = frames,
+                format = authoredSet.format,
+                representativeFrameIndex = authoredSet.representativeFrameIndex
+            )
+        }
+    }
+}
