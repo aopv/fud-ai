@@ -1,0 +1,868 @@
+{
+  "summary": {
+    "generated_at": "2026-09-04T12:24:25.878062+00:00",
+    "source": "shared/workout-vectors",
+    "images_audited": 8,
+    "exercises_audited": 1,
+    "images_with_candidate_flags": 8,
+    "exercises_with_candidate_flags": 1,
+    "visual_review_status": "not_assessed_by_numerical_audit",
+    "visual_review_ledger_paths": [
+      "artifacts/workout-visual-qa/audit-visual-observations.json",
+      "artifacts/workout-visual-qa/review-initial-exercises.md"
+    ],
+    "image_flag_counts": {
+      "large_opaque_pale_region": 4,
+      "possible_precropped_flat_boundary": 7,
+      "suspected_baked_checkerboard": 8
+    },
+    "sequence_flag_counts": {
+      "near_duplicate_frames": 1
+    },
+    "limits": [
+      "This is read-only numerical triage, not a visual pass or a repair.",
+      "Pale regions may be legitimate shoes, teeth, equipment highlights, or clothing; inspect before editing.",
+      "Bounding-box and alpha-area changes can represent correct exercise movement, not inconsistent person scale.",
+      "Flat artwork boundaries can be normal equipment geometry; they only flag possible pre-cropped content.",
+      "Duplicate return poses and static stretch frames can be intentional; review before treating as defects.",
+      "Small enclosed remnants and subtle limb or identity discontinuities can evade these heuristics.",
+      "Machine-queue review states remain pending; actual visual findings and repair acceptance are tracked in the separate linked ledgers."
+    ]
+  },
+  "exercises": [
+    {
+      "exercise_id": "Band_Skull_Crusher",
+      "review_status": "pending",
+      "candidate_flags": [
+        "large_opaque_pale_region",
+        "near_duplicate_frames",
+        "possible_precropped_flat_boundary",
+        "suspected_baked_checkerboard"
+      ],
+      "score": 204.13208,
+      "candidate_image_count": 8,
+      "sequences": [
+        {
+          "gender": "male",
+          "flags": [
+            "near_duplicate_frames"
+          ],
+          "review_status": "pending",
+          "visible_area_ratio": 1.045878,
+          "bbox_width_ratio": 1.0,
+          "bbox_height_ratio": 1.32258,
+          "longest_occupancy_ratio": 1.0,
+          "bottom_span": 0.0,
+          "alpha_center_x_span": 0.019288,
+          "alpha_center_y_span": 0.022207,
+          "exact_duplicate_pairs": [],
+          "near_duplicate_pairs": [
+            {
+              "frames": [
+                1,
+                2
+              ],
+              "mean_error": 0.011248
+            }
+          ]
+        },
+        {
+          "gender": "female",
+          "flags": [],
+          "review_status": "pending",
+          "visible_area_ratio": 1.054538,
+          "bbox_width_ratio": 1.0,
+          "bbox_height_ratio": 1.349577,
+          "longest_occupancy_ratio": 1.0,
+          "bottom_span": 0.0,
+          "alpha_center_x_span": 0.021082,
+          "alpha_center_y_span": 0.023836,
+          "exact_duplicate_pairs": [],
+          "near_duplicate_pairs": []
+        }
+      ],
+      "review_priority_rank": 1
+    }
+  ],
+  "images": [
+    {
+      "exercise_id": "Band_Skull_Crusher",
+      "gender": "male",
+      "frame": 0,
+      "file": "Band_Skull_Crusher_male_v2_0.png",
+      "review_status": "pending",
+      "flags": [
+        "suspected_baked_checkerboard"
+      ],
+      "file_sha256": "ff860a12e54b466f2372e528c987baf6e4ec2a2b1fea82d55fcd320b39ba5653",
+      "size": [
+        1024,
+        768
+      ],
+      "bbox": [
+        12,
+        212,
+        1012,
+        756
+      ],
+      "bbox_normalized": [
+        0.011719,
+        0.276042,
+        0.988281,
+        0.984375
+      ],
+      "bbox_width_fraction": 0.976562,
+      "bbox_height_fraction": 0.708333,
+      "bbox_longest_fraction": 0.976562,
+      "visible_fraction": 0.335033,
+      "alpha_center": [
+        0.487288,
+        0.636965
+      ],
+      "bottom_fraction": 0.984375,
+      "edge_visible_pixels": 0,
+      "bbox_vertical_flat_cut_pixels": 11,
+      "bbox_horizontal_flat_cut_pixels": 19,
+      "transparent_fraction": 0.664967,
+      "partially_transparent_fraction": 0.0,
+      "opaque_pale_fraction": 0.024708,
+      "opaque_pale_of_visible": 0.073747,
+      "pale_components": [
+        {
+          "fraction": 0.005127,
+          "bbox": [
+            240,
+            268,
+            304,
+            356
+          ]
+        },
+        {
+          "fraction": 0.005066,
+          "bbox": [
+            112,
+            508,
+            168,
+            620
+          ]
+        },
+        {
+          "fraction": 0.004069,
+          "bbox": [
+            180,
+            276,
+            232,
+            372
+          ]
+        },
+        {
+          "fraction": 0.001587,
+          "bbox": [
+            144,
+            412,
+            188,
+            488
+          ]
+        },
+        {
+          "fraction": 0.00116,
+          "bbox": [
+            852,
+            552,
+            868,
+            636
+          ]
+        }
+      ],
+      "largest_pale_component_fraction": 0.005127,
+      "neutral_horizontal_transitions": 78,
+      "neutral_vertical_transitions": 84,
+      "checker_transition_score": 0.001647,
+      "visible_pixel_sha256": "21c971bdae8ee02a96f846b2235ed514ff5953abb89268f40c687e729bda3158",
+      "score": 101.538086
+    },
+    {
+      "exercise_id": "Band_Skull_Crusher",
+      "gender": "male",
+      "frame": 1,
+      "file": "Band_Skull_Crusher_male_v2_1.png",
+      "review_status": "pending",
+      "flags": [
+        "possible_precropped_flat_boundary",
+        "suspected_baked_checkerboard",
+        "large_opaque_pale_region"
+      ],
+      "file_sha256": "2b9f75311bf3abfa35d8d93c7fd505b5a9842b2020ed06ef251f9b9806a64bc0",
+      "size": [
+        1024,
+        768
+      ],
+      "bbox": [
+        12,
+        100,
+        1012,
+        756
+      ],
+      "bbox_normalized": [
+        0.011719,
+        0.130208,
+        0.988281,
+        0.984375
+      ],
+      "bbox_width_fraction": 0.976562,
+      "bbox_height_fraction": 0.854167,
+      "bbox_longest_fraction": 0.976562,
+      "visible_fraction": 0.34328,
+      "alpha_center": [
+        0.483887,
+        0.624858
+      ],
+      "bottom_fraction": 0.984375,
+      "edge_visible_pixels": 0,
+      "bbox_vertical_flat_cut_pixels": 45,
+      "bbox_horizontal_flat_cut_pixels": 19,
+      "transparent_fraction": 0.65672,
+      "partially_transparent_fraction": 0.0,
+      "opaque_pale_fraction": 0.031471,
+      "opaque_pale_of_visible": 0.091678,
+      "pale_components": [
+        {
+          "fraction": 0.008545,
+          "bbox": [
+            252,
+            160,
+            312,
+            360
+          ]
+        },
+        {
+          "fraction": 0.006795,
+          "bbox": [
+            192,
+            164,
+            272,
+            364
+          ]
+        },
+        {
+          "fraction": 0.006246,
+          "bbox": [
+            108,
+            492,
+            172,
+            620
+          ]
+        },
+        {
+          "fraction": 0.001709,
+          "bbox": [
+            148,
+            408,
+            192,
+            492
+          ]
+        },
+        {
+          "fraction": 0.00116,
+          "bbox": [
+            852,
+            548,
+            868,
+            636
+          ]
+        }
+      ],
+      "largest_pale_component_fraction": 0.008545,
+      "neutral_horizontal_transitions": 319,
+      "neutral_vertical_transitions": 348,
+      "checker_transition_score": 0.006779,
+      "visible_pixel_sha256": "e81184c2390cb0e3a291562862f111b108a2d2a3e442d73ea6eedc09e525094c",
+      "score": 182.563477
+    },
+    {
+      "exercise_id": "Band_Skull_Crusher",
+      "gender": "male",
+      "frame": 2,
+      "file": "Band_Skull_Crusher_male_v2_2.png",
+      "review_status": "pending",
+      "flags": [
+        "possible_precropped_flat_boundary",
+        "suspected_baked_checkerboard",
+        "large_opaque_pale_region"
+      ],
+      "file_sha256": "e1e1fb7c0bd7ccc69a0eae8c983043d1b69c11eac194cd2b108cabc3b556445d",
+      "size": [
+        1024,
+        768
+      ],
+      "bbox": [
+        12,
+        59,
+        1012,
+        756
+      ],
+      "bbox_normalized": [
+        0.011719,
+        0.076823,
+        0.988281,
+        0.984375
+      ],
+      "bbox_width_fraction": 0.976562,
+      "bbox_height_fraction": 0.907552,
+      "bbox_longest_fraction": 0.976562,
+      "visible_fraction": 0.344507,
+      "alpha_center": [
+        0.481093,
+        0.619797
+      ],
+      "bottom_fraction": 0.984375,
+      "edge_visible_pixels": 0,
+      "bbox_vertical_flat_cut_pixels": 45,
+      "bbox_horizontal_flat_cut_pixels": 19,
+      "transparent_fraction": 0.655493,
+      "partially_transparent_fraction": 0.0,
+      "opaque_pale_fraction": 0.031654,
+      "opaque_pale_of_visible": 0.091883,
+      "pale_components": [
+        {
+          "fraction": 0.008138,
+          "bbox": [
+            184,
+            116,
+            276,
+            376
+          ]
+        },
+        {
+          "fraction": 0.008097,
+          "bbox": [
+            104,
+            408,
+            192,
+            620
+          ]
+        },
+        {
+          "fraction": 0.007528,
+          "bbox": [
+            248,
+            120,
+            300,
+            356
+          ]
+        },
+        {
+          "fraction": 0.001221,
+          "bbox": [
+            852,
+            548,
+            868,
+            640
+          ]
+        },
+        {
+          "fraction": 0.000936,
+          "bbox": [
+            408,
+            536,
+            440,
+            568
+          ]
+        }
+      ],
+      "largest_pale_component_fraction": 0.008138,
+      "neutral_horizontal_transitions": 382,
+      "neutral_vertical_transitions": 442,
+      "checker_transition_score": 0.00836,
+      "visible_pixel_sha256": "78e27e742ae3d947a5bf8ff25c0b09830e51c7c708e5d3942d9500d0b5e0cbb1",
+      "score": 182.441406
+    },
+    {
+      "exercise_id": "Band_Skull_Crusher",
+      "gender": "male",
+      "frame": 3,
+      "file": "Band_Skull_Crusher_male_v2_3.png",
+      "review_status": "pending",
+      "flags": [
+        "possible_precropped_flat_boundary",
+        "suspected_baked_checkerboard"
+      ],
+      "file_sha256": "9a37fdb55568cfe47177e619d1f35260e10e8d2323f7eb85f5ce1f8f9588ee11",
+      "size": [
+        1024,
+        768
+      ],
+      "bbox": [
+        12,
+        229,
+        1012,
+        756
+      ],
+      "bbox_normalized": [
+        0.011719,
+        0.298177,
+        0.988281,
+        0.984375
+      ],
+      "bbox_width_fraction": 0.976562,
+      "bbox_height_fraction": 0.686198,
+      "bbox_longest_fraction": 0.976562,
+      "visible_fraction": 0.329395,
+      "alpha_center": [
+        0.500381,
+        0.642004
+      ],
+      "bottom_fraction": 0.984375,
+      "edge_visible_pixels": 0,
+      "bbox_vertical_flat_cut_pixels": 45,
+      "bbox_horizontal_flat_cut_pixels": 20,
+      "transparent_fraction": 0.670605,
+      "partially_transparent_fraction": 0.0,
+      "opaque_pale_fraction": 0.022333,
+      "opaque_pale_of_visible": 0.067799,
+      "pale_components": [
+        {
+          "fraction": 0.007568,
+          "bbox": [
+            216,
+            288,
+            340,
+            360
+          ]
+        },
+        {
+          "fraction": 0.003357,
+          "bbox": [
+            104,
+            484,
+            156,
+            616
+          ]
+        },
+        {
+          "fraction": 0.001973,
+          "bbox": [
+            144,
+            520,
+            176,
+            616
+          ]
+        },
+        {
+          "fraction": 0.0012,
+          "bbox": [
+            860,
+            548,
+            876,
+            632
+          ]
+        },
+        {
+          "fraction": 0.000977,
+          "bbox": [
+            152,
+            420,
+            180,
+            484
+          ]
+        }
+      ],
+      "largest_pale_component_fraction": 0.007568,
+      "neutral_horizontal_transitions": 78,
+      "neutral_vertical_transitions": 63,
+      "checker_transition_score": 0.001426,
+      "visible_pixel_sha256": "1698966bdfdd8ba462eadc99bb0454ebd41eed165d0b0afe2ac60024be185ab8",
+      "score": 122.270508
+    },
+    {
+      "exercise_id": "Band_Skull_Crusher",
+      "gender": "female",
+      "frame": 0,
+      "file": "Band_Skull_Crusher_female_v2_0.png",
+      "review_status": "pending",
+      "flags": [
+        "possible_precropped_flat_boundary",
+        "suspected_baked_checkerboard"
+      ],
+      "file_sha256": "a4ca1efef722c69a270f4e7591a7367123f6f13dd49dc5401ce016b0c7ae0474",
+      "size": [
+        1024,
+        768
+      ],
+      "bbox": [
+        12,
+        272,
+        1012,
+        756
+      ],
+      "bbox_normalized": [
+        0.011719,
+        0.354167,
+        0.988281,
+        0.984375
+      ],
+      "bbox_width_fraction": 0.976562,
+      "bbox_height_fraction": 0.630208,
+      "bbox_longest_fraction": 0.976562,
+      "visible_fraction": 0.280509,
+      "alpha_center": [
+        0.49891,
+        0.668248
+      ],
+      "bottom_fraction": 0.984375,
+      "edge_visible_pixels": 0,
+      "bbox_vertical_flat_cut_pixels": 31,
+      "bbox_horizontal_flat_cut_pixels": 42,
+      "transparent_fraction": 0.719491,
+      "partially_transparent_fraction": 0.0,
+      "opaque_pale_fraction": 0.01783,
+      "opaque_pale_of_visible": 0.063563,
+      "pale_components": [
+        {
+          "fraction": 0.005941,
+          "bbox": [
+            228,
+            332,
+            344,
+            392
+          ]
+        },
+        {
+          "fraction": 0.004272,
+          "bbox": [
+            152,
+            540,
+            240,
+            632
+          ]
+        },
+        {
+          "fraction": 0.000814,
+          "bbox": [
+            856,
+            704,
+            904,
+            728
+          ]
+        },
+        {
+          "fraction": 0.000793,
+          "bbox": [
+            184,
+            364,
+            224,
+            476
+          ]
+        },
+        {
+          "fraction": 0.00061,
+          "bbox": [
+            908,
+            716,
+            984,
+            732
+          ]
+        }
+      ],
+      "largest_pale_component_fraction": 0.005941,
+      "neutral_horizontal_transitions": 218,
+      "neutral_vertical_transitions": 218,
+      "checker_transition_score": 0.004435,
+      "visible_pixel_sha256": "bcbb454d4f41c301b290350df4dcf893e23a5ed6ac9fda0d2604d70fa0a8d396",
+      "score": 121.782227
+    },
+    {
+      "exercise_id": "Band_Skull_Crusher",
+      "gender": "female",
+      "frame": 1,
+      "file": "Band_Skull_Crusher_female_v2_1.png",
+      "review_status": "pending",
+      "flags": [
+        "possible_precropped_flat_boundary",
+        "suspected_baked_checkerboard",
+        "large_opaque_pale_region"
+      ],
+      "file_sha256": "5e83abcb79ba9dda1ec152141bdc011728926951fd25ee60794fa2803982a08f",
+      "size": [
+        1024,
+        768
+      ],
+      "bbox": [
+        12,
+        220,
+        1012,
+        756
+      ],
+      "bbox_normalized": [
+        0.011719,
+        0.286458,
+        0.988281,
+        0.984375
+      ],
+      "bbox_width_fraction": 0.976562,
+      "bbox_height_fraction": 0.697917,
+      "bbox_longest_fraction": 0.976562,
+      "visible_fraction": 0.288053,
+      "alpha_center": [
+        0.494023,
+        0.656646
+      ],
+      "bottom_fraction": 0.984375,
+      "edge_visible_pixels": 0,
+      "bbox_vertical_flat_cut_pixels": 33,
+      "bbox_horizontal_flat_cut_pixels": 40,
+      "transparent_fraction": 0.711947,
+      "partially_transparent_fraction": 0.0,
+      "opaque_pale_fraction": 0.024849,
+      "opaque_pale_of_visible": 0.086265,
+      "pale_components": [
+        {
+          "fraction": 0.012634,
+          "bbox": [
+            240,
+            272,
+            360,
+            396
+          ]
+        },
+        {
+          "fraction": 0.00356,
+          "bbox": [
+            160,
+            540,
+            244,
+            632
+          ]
+        },
+        {
+          "fraction": 0.002075,
+          "bbox": [
+            188,
+            280,
+            264,
+            484
+          ]
+        },
+        {
+          "fraction": 0.000956,
+          "bbox": [
+            144,
+            496,
+            184,
+            628
+          ]
+        },
+        {
+          "fraction": 0.000712,
+          "bbox": [
+            856,
+            704,
+            908,
+            728
+          ]
+        }
+      ],
+      "largest_pale_component_fraction": 0.012634,
+      "neutral_horizontal_transitions": 253,
+      "neutral_vertical_transitions": 277,
+      "checker_transition_score": 0.005386,
+      "visible_pixel_sha256": "805c8ba8deea967869fc80677331124207916a159dd15ad50aaa860434e30f80",
+      "score": 183.790283
+    },
+    {
+      "exercise_id": "Band_Skull_Crusher",
+      "gender": "female",
+      "frame": 2,
+      "file": "Band_Skull_Crusher_female_v2_2.png",
+      "review_status": "pending",
+      "flags": [
+        "possible_precropped_flat_boundary",
+        "suspected_baked_checkerboard",
+        "large_opaque_pale_region"
+      ],
+      "file_sha256": "e989becfcd5dec68bf489aedb377180b10927d13ce894b6f506e29fb67c5cb4e",
+      "size": [
+        1024,
+        768
+      ],
+      "bbox": [
+        12,
+        119,
+        1012,
+        756
+      ],
+      "bbox_normalized": [
+        0.011719,
+        0.154948,
+        0.988281,
+        0.984375
+      ],
+      "bbox_width_fraction": 0.976562,
+      "bbox_height_fraction": 0.829427,
+      "bbox_longest_fraction": 0.976562,
+      "visible_fraction": 0.292881,
+      "alpha_center": [
+        0.491795,
+        0.645977
+      ],
+      "bottom_fraction": 0.984375,
+      "edge_visible_pixels": 0,
+      "bbox_vertical_flat_cut_pixels": 31,
+      "bbox_horizontal_flat_cut_pixels": 40,
+      "transparent_fraction": 0.707119,
+      "partially_transparent_fraction": 0.0,
+      "opaque_pale_fraction": 0.02542,
+      "opaque_pale_of_visible": 0.086792,
+      "pale_components": [
+        {
+          "fraction": 0.013774,
+          "bbox": [
+            240,
+            180,
+            340,
+            392
+          ]
+        },
+        {
+          "fraction": 0.002584,
+          "bbox": [
+            164,
+            540,
+            244,
+            628
+          ]
+        },
+        {
+          "fraction": 0.002075,
+          "bbox": [
+            216,
+            176,
+            292,
+            412
+          ]
+        },
+        {
+          "fraction": 0.001221,
+          "bbox": [
+            148,
+            512,
+            184,
+            628
+          ]
+        },
+        {
+          "fraction": 0.000712,
+          "bbox": [
+            856,
+            704,
+            912,
+            728
+          ]
+        }
+      ],
+      "largest_pale_component_fraction": 0.013774,
+      "neutral_horizontal_transitions": 269,
+      "neutral_vertical_transitions": 265,
+      "checker_transition_score": 0.005432,
+      "visible_pixel_sha256": "31435caadc7be30ed46b29df8ec13dc0f8331df2d28ae3f722b138a76b4ca043",
+      "score": 184.13208
+    },
+    {
+      "exercise_id": "Band_Skull_Crusher",
+      "gender": "female",
+      "frame": 3,
+      "file": "Band_Skull_Crusher_female_v2_3.png",
+      "review_status": "pending",
+      "flags": [
+        "possible_precropped_flat_boundary",
+        "suspected_baked_checkerboard"
+      ],
+      "file_sha256": "e4fbea5af88f678532cf1d108232b5ddbf6fa8bba9854998f784059139beb8f8",
+      "size": [
+        1024,
+        768
+      ],
+      "bbox": [
+        12,
+        284,
+        1012,
+        756
+      ],
+      "bbox_normalized": [
+        0.011719,
+        0.369792,
+        0.988281,
+        0.984375
+      ],
+      "bbox_width_fraction": 0.976562,
+      "bbox_height_fraction": 0.614583,
+      "bbox_longest_fraction": 0.976562,
+      "visible_fraction": 0.277734,
+      "alpha_center": [
+        0.512877,
+        0.669813
+      ],
+      "bottom_fraction": 0.984375,
+      "edge_visible_pixels": 0,
+      "bbox_vertical_flat_cut_pixels": 62,
+      "bbox_horizontal_flat_cut_pixels": 31,
+      "transparent_fraction": 0.722266,
+      "partially_transparent_fraction": 0.0,
+      "opaque_pale_fraction": 0.013653,
+      "opaque_pale_of_visible": 0.049158,
+      "pale_components": [
+        {
+          "fraction": 0.003642,
+          "bbox": [
+            252,
+            344,
+            360,
+            392
+          ]
+        },
+        {
+          "fraction": 0.002889,
+          "bbox": [
+            168,
+            540,
+            248,
+            628
+          ]
+        },
+        {
+          "fraction": 0.001322,
+          "bbox": [
+            152,
+            508,
+            188,
+            628
+          ]
+        },
+        {
+          "fraction": 0.000712,
+          "bbox": [
+            864,
+            708,
+            928,
+            724
+          ]
+        },
+        {
+          "fraction": 0.00057,
+          "bbox": [
+            684,
+            552,
+            708,
+            576
+          ]
+        }
+      ],
+      "largest_pale_component_fraction": 0.003642,
+      "neutral_horizontal_transitions": 137,
+      "neutral_vertical_transitions": 150,
+      "checker_transition_score": 0.002917,
+      "visible_pixel_sha256": "309a934fa06854aaff681fee197a9badba8dc1d50de2686f7c5a4442a6d6c2c2",
+      "score": 121.092529
+    }
+  ]
+}

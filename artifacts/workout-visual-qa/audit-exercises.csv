@@ -1,0 +1,876 @@
+review_priority_rank,exercise_id,review_status,score,candidate_image_count,candidate_flags
+1,Double_Leg_Butt_Kick,pending,308.424072,8,"['large_opaque_pale_region', 'near_duplicate_frames', 'possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy', 'suspected_baked_checkerboard']"
+2,Double_Kettlebell_Jerk,pending,302.966309,3,"['large_opaque_pale_region', 'near_duplicate_frames', 'possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy', 'suspected_baked_checkerboard']"
+3,Kipping_Muscle_Up,pending,290.0,7,"['large_opaque_pale_region', 'possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy', 'suspected_baked_checkerboard']"
+4,Triceps_Overhead_Extension_with_Rope,pending,288.049316,4,"['large_opaque_pale_region', 'possible_edge_clipping', 'possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+5,Bench_Dips,pending,287.91748,8,"['large_opaque_pale_region', 'possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy', 'suspected_baked_checkerboard']"
+6,Double_Kettlebell_Push_Press,pending,283.979492,3,"['large_opaque_pale_region', 'near_duplicate_frames', 'possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy', 'suspected_baked_checkerboard']"
+7,Dumbbell_Clean,pending,283.161621,6,"['large_opaque_pale_region', 'near_duplicate_frames', 'possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+8,Monster_Walk,pending,280.727539,7,"['large_opaque_pale_region', 'possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+9,Squat_with_Bands,pending,269.644775,6,"['large_opaque_pale_region', 'possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy', 'suspected_baked_checkerboard']"
+10,One_Half_Locust,pending,268.526611,4,"['large_opaque_pale_region', 'near_duplicate_frames', 'possible_position_variation', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+11,Tate_Press,pending,266.640625,7,"['large_opaque_pale_region', 'possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy', 'suspected_baked_checkerboard']"
+12,Drop_Push,pending,264.650879,8,"['large_opaque_pale_region', 'possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+13,Double_Kettlebell_Snatch,pending,264.443359,7,"['large_opaque_pale_region', 'possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy', 'suspected_baked_checkerboard']"
+14,Cocoons,pending,264.150391,7,"['large_opaque_pale_region', 'possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+15,Kettlebell_Turkish_Get-Up_Lunge_style,pending,263.967285,8,"['large_opaque_pale_region', 'possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy', 'suspected_baked_checkerboard']"
+16,Kettlebell_Turkish_Get-Up_Squat_style,pending,263.869629,8,"['large_opaque_pale_region', 'possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy', 'suspected_baked_checkerboard']"
+17,Keg_Load,pending,262.929688,8,"['large_opaque_pale_region', 'possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+18,Bradford_Rocky_Presses,pending,257.697754,8,"['large_opaque_pale_region', 'possible_edge_clipping', 'possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+19,Standing_Hamstring_and_Calf_Stretch,pending,256.706543,8,"['large_opaque_pale_region', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy', 'suspected_baked_checkerboard']"
+20,Split_Jump,pending,253.513184,5,"['large_opaque_pale_region', 'possible_position_variation', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+21,Bottoms_Up,pending,252.561035,3,"['large_opaque_pale_region', 'possible_position_variation', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+22,Push-Ups_With_Feet_Elevated,pending,252.536621,3,"['large_opaque_pale_region', 'possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+23,Barbell_Ab_Rollout,pending,251.456299,8,"['large_opaque_pale_region', 'possible_position_variation', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+24,Side_to_Side_Box_Shuffle,pending,249.375,4,"['large_opaque_pale_region', 'possible_position_variation', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+25,Palms-Down_Dumbbell_Wrist_Curl_Over_A_Bench,pending,247.860107,6,"['large_opaque_pale_region', 'near_duplicate_frames', 'possible_edge_clipping', 'suspected_baked_checkerboard']"
+26,Dumbbell_Bench_Press,pending,247.202148,8,"['large_opaque_pale_region', 'near_duplicate_frames', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy', 'suspected_baked_checkerboard']"
+27,Downward_Facing_Balance,pending,246.324463,8,"['large_opaque_pale_region', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+28,Shoulder_Press_-_With_Bands,pending,244.541016,8,"['large_opaque_pale_region', 'near_duplicate_frames', 'possible_position_variation', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+29,Bent-Arm_Barbell_Pullover,pending,244.345703,3,"['large_opaque_pale_region', 'possible_position_variation', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+30,Backward_Medicine_Ball_Throw,pending,243.546143,2,"['large_opaque_pale_region', 'possible_position_variation', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+31,Clean,pending,243.118896,5,"['large_opaque_pale_region', 'possible_position_variation', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+32,Kneeling_Single-Arm_High_Pulley_Row,pending,242.897949,7,"['large_opaque_pale_region', 'near_duplicate_frames', 'possible_edge_clipping', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+33,Trail_Running_Walking,pending,240.947266,3,"['large_opaque_pale_region', 'possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+34,Weighted_Bench_Dip,pending,236.474609,8,"['large_opaque_pale_region', 'possible_edge_clipping', 'possible_position_variation', 'possible_scale_variation', 'small_canvas_occupancy', 'suspected_baked_checkerboard']"
+35,Barbell_Glute_Bridge,pending,231.829834,8,"['large_opaque_pale_region', 'near_duplicate_frames', 'possible_position_variation', 'small_canvas_occupancy', 'suspected_baked_checkerboard']"
+36,Bosu_Ball_Cable_Crunch_With_Side_Bends,pending,230.0,8,"['large_opaque_pale_region', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+37,Lying_Hamstring,pending,229.321289,7,"['large_opaque_pale_region', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy', 'suspected_baked_checkerboard']"
+38,Chest_Stretch_on_Stability_Ball,pending,228.892822,8,"['large_opaque_pale_region', 'possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+39,Isometric_Chest_Squeezes,pending,228.666992,2,"['large_opaque_pale_region', 'near_duplicate_frames', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+40,Kettlebell_Windmill,pending,228.14209,3,"['large_opaque_pale_region', 'possible_position_variation', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+41,Hug_Knees_To_Chest,pending,227.672119,8,"['large_opaque_pale_region', 'possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+42,Standing_Alternating_Dumbbell_Press,pending,226.90918,8,"['large_opaque_pale_region', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+43,Goblet_Squat,pending,225.712891,1,"['large_opaque_pale_region', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+44,Standing_Palms-Up_Barbell_Behind_The_Back_Wrist_Curl,pending,224.754639,8,"['large_opaque_pale_region', 'near_duplicate_frames', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+45,Cable_One_Arm_Tricep_Extension,pending,224.473877,8,"['large_opaque_pale_region', 'near_duplicate_frames', 'possible_position_variation', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+46,Barbell_Squat_To_A_Bench,pending,223.564453,4,"['large_opaque_pale_region', 'possible_position_variation', 'possible_scale_variation', 'small_canvas_occupancy', 'suspected_baked_checkerboard']"
+47,Dumbbell_Bench_Press_with_Neutral_Grip,pending,223.173828,8,"['large_opaque_pale_region', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy', 'suspected_baked_checkerboard']"
+48,Side_Bridge,pending,223.063965,8,"['large_opaque_pale_region', 'possible_position_variation', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+49,Power_Snatch_from_Blocks,pending,222.954102,4,"['large_opaque_pale_region', 'possible_position_variation', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+50,Dumbbell_Prone_Incline_Curl,pending,222.850342,4,"['large_opaque_pale_region', 'possible_edge_clipping', 'possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+51,Lunge_Pass_Through,pending,220.750732,7,"['near_duplicate_frames', 'possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy', 'suspected_baked_checkerboard']"
+52,Windmills,pending,219.726562,6,"['large_opaque_pale_region', 'possible_position_variation', 'suspected_baked_checkerboard']"
+53,Calf_Raises_-_With_Bands,pending,218.591309,8,"['large_opaque_pale_region', 'near_duplicate_frames', 'suspected_baked_checkerboard']"
+54,Stride_Jump_Crossover,pending,215.856934,4,"['large_opaque_pale_region', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+55,Triceps_Pushdown_-_Rope_Attachment,pending,212.37793,8,"['large_opaque_pale_region', 'near_duplicate_frames', 'suspected_baked_checkerboard']"
+56,Knee_Hip_Raise_On_Parallel_Bars,pending,210.101318,8,"['large_opaque_pale_region', 'near_duplicate_frames', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+57,Reverse_Machine_Flyes,pending,210.0,8,"['large_opaque_pale_region', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+58,Pallof_Press,pending,209.625244,7,"['large_opaque_pale_region', 'near_duplicate_frames', 'possible_edge_clipping', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+59,Seated_Good_Mornings,pending,207.630615,1,"['large_opaque_pale_region', 'possible_scale_variation', 'small_canvas_occupancy', 'suspected_baked_checkerboard']"
+60,Barbell_Hack_Squat,pending,207.093506,2,"['possible_position_variation', 'possible_scale_variation', 'small_canvas_occupancy', 'suspected_baked_checkerboard']"
+61,Dumbbell_Alternate_Bicep_Curl,pending,206.951904,7,"['large_opaque_pale_region', 'near_duplicate_frames', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+62,Hyperextensions_Back_Extensions,pending,206.213379,2,"['large_opaque_pale_region', 'possible_position_variation', 'suspected_baked_checkerboard']"
+63,Seated_Floor_Hamstring_Stretch,pending,205.584717,8,"['large_opaque_pale_region', 'possible_position_variation', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+64,Lying_Close-Grip_Bar_Curl_On_High_Pulley,pending,205.24292,8,"['large_opaque_pale_region', 'near_duplicate_frames', 'suspected_baked_checkerboard']"
+65,Cable_Wrist_Curl,pending,205.169678,8,"['large_opaque_pale_region', 'near_duplicate_frames', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+66,Incline_Dumbbell_Press,pending,204.193115,4,"['large_opaque_pale_region', 'near_duplicate_frames', 'suspected_baked_checkerboard']"
+67,Band_Skull_Crusher,pending,204.13208,8,"['large_opaque_pale_region', 'near_duplicate_frames', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+68,Chain_Handle_Extension,pending,204.058838,8,"['large_opaque_pale_region', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+69,Hip_Circles_prone,pending,203.997803,8,"['large_opaque_pale_region', 'possible_position_variation', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+70,Smith_Machine_Calf_Raise,pending,203.704834,7,"['large_opaque_pale_region', 'near_duplicate_frames', 'suspected_baked_checkerboard']"
+71,Seated_Calf_Raise,pending,203.4729,8,"['large_opaque_pale_region', 'near_duplicate_frames', 'suspected_baked_checkerboard']"
+72,Behind_Head_Chest_Stretch,pending,203.417969,7,"['large_opaque_pale_region', 'near_duplicate_frames', 'suspected_baked_checkerboard']"
+73,Seated_Palm-Up_Barbell_Wrist_Curl,pending,203.00293,7,"['large_opaque_pale_region', 'near_duplicate_frames', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+74,Side_Jackknife,pending,202.929688,4,"['large_opaque_pale_region', 'possible_position_variation', 'suspected_baked_checkerboard']"
+75,Smith_Machine_Reverse_Calf_Raises,pending,202.247314,8,"['large_opaque_pale_region', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+76,Supine_Two-Arm_Overhead_Throw,pending,202.191162,6,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy', 'suspected_baked_checkerboard']"
+77,Chest_Push_from_3_point_stance,pending,201.049805,7,"['near_duplicate_frames', 'possible_position_variation', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+78,Suspended_Split_Squat,pending,200.927734,8,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+79,Linear_Acceleration_Wall_Drill,pending,198.737793,8,"['large_opaque_pale_region', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+80,Flat_Bench_Cable_Flyes,pending,198.436279,8,"['large_opaque_pale_region', 'possible_edge_clipping', 'suspected_baked_checkerboard']"
+81,Smith_Machine_Squat,pending,196.177979,6,"['possible_edge_clipping', 'possible_position_variation', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+82,Standing_Towel_Triceps_Extension,pending,195.872803,4,"['near_duplicate_frames', 'possible_edge_clipping', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+83,Face_Pull,pending,195.836182,7,"['possible_edge_clipping', 'possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+84,Lying_Cable_Curl,pending,194.624023,8,"['large_opaque_pale_region', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+85,Seated_Dumbbell_Curl,pending,190.577393,6,"['large_opaque_pale_region', 'near_duplicate_frames', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+86,Dumbbell_Incline_Row,pending,190.150146,2,"['large_opaque_pale_region', 'near_duplicate_frames', 'suspected_baked_checkerboard']"
+87,Smith_Machine_Leg_Press,pending,189.436035,8,"['large_opaque_pale_region', 'near_duplicate_frames', 'suspected_baked_checkerboard']"
+88,Prone_Manual_Hamstring,pending,188.416748,6,"['large_opaque_pale_region', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+89,One-Arm_Kettlebell_Clean,pending,188.233643,8,"['large_opaque_pale_region', 'near_duplicate_frames', 'suspected_baked_checkerboard']"
+90,Side_Lateral_Raise,pending,188.148193,8,"['large_opaque_pale_region', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+91,Barbell_Bench_Press_-_Medium_Grip,pending,186.768799,7,"['large_opaque_pale_region', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+92,Wide-Grip_Standing_Barbell_Curl,pending,186.707764,7,"['large_opaque_pale_region', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+93,Barbell_Hip_Thrust,pending,186.5979,8,"['large_opaque_pale_region', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+94,Seated_Triceps_Press,pending,186.384277,8,"['large_opaque_pale_region', 'near_duplicate_frames', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+95,Hamstring-SMR,pending,186.14624,7,"['large_opaque_pale_region', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+96,Open_Palm_Kettlebell_Clean,pending,186.104736,2,"['possible_position_variation', 'possible_scale_variation', 'small_canvas_occupancy', 'suspected_baked_checkerboard']"
+97,Decline_Push-Up,pending,185.999756,8,"['large_opaque_pale_region', 'possible_position_variation', 'suspected_baked_checkerboard']"
+98,Seated_Calf_Stretch,pending,185.908203,8,"['large_opaque_pale_region', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+99,Wide-Grip_Lat_Pulldown,pending,185.792236,7,"['large_opaque_pale_region', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+100,Barbell_Ab_Rollout_-_On_Knees,pending,185.743408,8,"['large_opaque_pale_region', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+101,Kettlebell_Seated_Press,pending,185.401611,8,"['large_opaque_pale_region', 'near_duplicate_frames', 'suspected_baked_checkerboard']"
+102,Shoulder_Circles,pending,185.395508,8,"['large_opaque_pale_region', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+103,Drag_Curl,pending,184.89502,7,"['large_opaque_pale_region', 'near_duplicate_frames', 'suspected_baked_checkerboard']"
+104,Middle_Back_Shrug,pending,184.89502,8,"['large_opaque_pale_region', 'near_duplicate_frames', 'suspected_baked_checkerboard']"
+105,External_Rotation_with_Cable,pending,184.833984,8,"['large_opaque_pale_region', 'near_duplicate_frames', 'possible_edge_clipping', 'suspected_baked_checkerboard']"
+106,Rowing_Stationary,pending,184.620361,8,"['large_opaque_pale_region', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+107,Platform_Hamstring_Slides,pending,184.595947,4,"['large_opaque_pale_region', 'possible_position_variation', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+108,Dumbbell_Flyes,pending,184.492188,8,"['large_opaque_pale_region', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+109,Leverage_Deadlift,pending,184.309082,8,"['large_opaque_pale_region', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+110,Lying_Cambered_Barbell_Row,pending,184.241943,6,"['large_opaque_pale_region', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+111,Lying_Bent_Leg_Groin,pending,184.205322,8,"['large_opaque_pale_region', 'near_duplicate_frames', 'suspected_baked_checkerboard']"
+112,Wide-Grip_Decline_Barbell_Bench_Press,pending,184.150391,4,"['large_opaque_pale_region', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+113,Barbell_Guillotine_Bench_Press,pending,183.839111,8,"['large_opaque_pale_region', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+114,Sumo_Deadlift_with_Chains,pending,183.479004,1,"['large_opaque_pale_region', 'possible_position_variation', 'suspected_baked_checkerboard']"
+115,Medicine_Ball_Scoop_Throw,pending,183.430176,3,"['large_opaque_pale_region', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+116,Incline_Push-Up,pending,183.375244,6,"['large_opaque_pale_region', 'possible_position_variation', 'suspected_baked_checkerboard']"
+117,Preacher_Hammer_Dumbbell_Curl,pending,183.369141,6,"['large_opaque_pale_region', 'near_duplicate_frames', 'suspected_baked_checkerboard']"
+118,Seated_Barbell_Military_Press,pending,183.338623,6,"['large_opaque_pale_region', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+119,Russian_Twist,pending,183.308105,8,"['large_opaque_pale_region', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+120,Dumbbell_Incline_Shoulder_Raise,pending,183.302002,8,"['large_opaque_pale_region', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+121,Cable_Incline_Pushdown,pending,183.253174,6,"['large_opaque_pale_region', 'near_duplicate_frames', 'suspected_baked_checkerboard']"
+122,Chain_Press,pending,183.204346,3,"['large_opaque_pale_region', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+123,Box_Skip,pending,183.051758,2,"['large_opaque_pale_region', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+124,Seated_One-arm_Cable_Pulley_Rows,pending,182.954102,8,"['large_opaque_pale_region', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+125,Barbell_Curls_Lying_Against_An_Incline,pending,182.728271,8,"['large_opaque_pale_region', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+126,Incline_Hammer_Curls,pending,182.697754,8,"['large_opaque_pale_region', 'near_duplicate_frames', 'suspected_baked_checkerboard']"
+127,Clean_Pull,pending,181.733398,6,"['possible_edge_clipping', 'possible_position_variation', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+128,Hang_Snatch,pending,181.452637,4,"['possible_position_variation', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+129,Forward_Drag_with_Press,pending,181.348877,7,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+130,Barbell_Full_Squat,pending,181.275635,8,"['possible_position_variation', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+131,Knee_Tuck_Jump,pending,181.239014,4,"['possible_position_variation', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+132,Dancers_Stretch,pending,181.000977,2,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+133,Otis-Up,pending,180.891113,2,"['possible_position_variation', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+134,Snatch_from_Blocks,pending,180.866699,1,"['possible_position_variation', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+135,Wide-Grip_Decline_Barbell_Pullover,pending,180.848389,1,"['possible_position_variation', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+136,Sandbag_Load,pending,180.750732,4,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy', 'suspected_baked_checkerboard']"
+137,Catch_and_Overhead_Throw,pending,176.916504,8,"['possible_edge_clipping', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+138,London_Bridges,pending,176.45874,8,"['possible_edge_clipping', 'possible_position_variation', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+139,Machine_Bench_Press,pending,173.922119,8,"['large_opaque_pale_region', 'suspected_baked_checkerboard']"
+140,Cable_Reverse_Wrist_Curl_Palms_Down,pending,169.265137,7,"['large_opaque_pale_region', 'suspected_baked_checkerboard']"
+141,Full_Range-Of-Motion_Lat_Pulldown,pending,168.496094,4,"['large_opaque_pale_region', 'suspected_baked_checkerboard']"
+142,Leverage_Iso_Row,pending,168.062744,8,"['large_opaque_pale_region', 'suspected_baked_checkerboard']"
+143,Seated_Close-Grip_Concentration_Barbell_Curl,pending,167.733154,8,"['large_opaque_pale_region', 'suspected_baked_checkerboard']"
+144,Dumbbell_Floor_Press,pending,167.409668,8,"['large_opaque_pale_region', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+145,Pull_Through,pending,166.99585,7,"['possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy', 'suspected_baked_checkerboard']"
+146,Bent_Over_Low-Pulley_Side_Lateral,pending,166.713867,8,"['large_opaque_pale_region', 'suspected_baked_checkerboard']"
+147,Frog_Sit-Ups,pending,166.409912,6,"['possible_position_variation', 'small_canvas_occupancy', 'suspected_baked_checkerboard']"
+148,Wide_Stance_Stiff_Legs,pending,166.330566,5,"['possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy', 'suspected_baked_checkerboard']"
+149,One_Arm_Dumbbell_Preacher_Curl,pending,166.072998,8,"['large_opaque_pale_region', 'suspected_baked_checkerboard']"
+150,Leverage_Incline_Chest_Press,pending,165.999756,4,"['large_opaque_pale_region', 'suspected_baked_checkerboard']"
+151,Reverse_Hyperextension,pending,165.700684,2,"['large_opaque_pale_region', 'suspected_baked_checkerboard']"
+152,Bent_Over_One-Arm_Long_Bar_Row,pending,165.627441,7,"['large_opaque_pale_region', 'suspected_baked_checkerboard']"
+153,Cable_Rear_Delt_Fly,pending,165.249023,8,"['large_opaque_pale_region', 'suspected_baked_checkerboard']"
+154,Standing_Low-Pulley_Deltoid_Raise,pending,165.183105,7,"['near_duplicate_frames', 'possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy']"
+155,Shoulder_Stretch,pending,165.047607,8,"['large_opaque_pale_region', 'suspected_baked_checkerboard']"
+156,Dumbbell_Bicep_Curl,pending,164.699707,8,"['large_opaque_pale_region', 'suspected_baked_checkerboard']"
+157,Zottman_Preacher_Curl,pending,163.771973,8,"['large_opaque_pale_region', 'suspected_baked_checkerboard']"
+158,Straight_Bar_Bench_Mid_Rows,pending,163.546143,2,"['large_opaque_pale_region', 'suspected_baked_checkerboard']"
+159,Cat_Stretch,pending,163.430176,4,"['large_opaque_pale_region', 'suspected_baked_checkerboard']"
+160,Chin-Up,pending,163.424072,8,"['large_opaque_pale_region', 'suspected_baked_checkerboard']"
+161,Machine_Shoulder_Military_Press,pending,163.356934,3,"['large_opaque_pale_region', 'suspected_baked_checkerboard']"
+162,Rack_Pull_with_Bands,pending,163.253174,4,"['large_opaque_pale_region', 'suspected_baked_checkerboard']"
+163,Kneeling_Cable_Triceps_Extension,pending,162.966309,6,"['large_opaque_pale_region', 'possible_edge_clipping', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+164,Spider_Curl,pending,162.832031,6,"['large_opaque_pale_region', 'suspected_baked_checkerboard']"
+165,Ankle_On_The_Knee,pending,162.789307,4,"['large_opaque_pale_region', 'suspected_baked_checkerboard']"
+166,Smith_Machine_Incline_Bench_Press,pending,162.728271,4,"['large_opaque_pale_region', 'suspected_baked_checkerboard']"
+167,Jogging_Treadmill,pending,162.661133,5,"['large_opaque_pale_region', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+168,Elevated_Back_Lunge,pending,162.606201,4,"['large_opaque_pale_region', 'possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation']"
+169,Anti-Gravity_Press,pending,162.56958,8,"['large_opaque_pale_region', 'suspected_baked_checkerboard']"
+170,Standing_Bent-Over_One-Arm_Dumbbell_Triceps_Extension,pending,162.520752,1,"['large_opaque_pale_region', 'suspected_baked_checkerboard']"
+171,Calf_Stretch_Hands_Against_Wall,pending,162.502441,1,"['large_opaque_pale_region', 'suspected_baked_checkerboard']"
+172,Weighted_Crunches,pending,162.062988,2,"['possible_position_variation', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+173,Snatch_Deadlift,pending,161.794434,2,"['possible_position_variation', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+174,Plate_Twist,pending,161.745605,5,"['possible_position_variation', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+175,Deadlift_with_Bands,pending,161.373291,6,"['possible_precropped_flat_boundary', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+176,Muscle_Up,pending,161.348877,3,"['possible_position_variation', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+177,Standing_Calf_Raises,pending,161.202393,6,"['near_duplicate_frames', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+178,Wrist_Rotations_with_Straight_Bar,pending,161.12915,5,"['near_duplicate_frames', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+179,Weighted_Squat,pending,161.068115,3,"['possible_position_variation', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+180,Heaving_Snatch_Balance,pending,160.939941,6,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+181,Cable_Hammer_Curls_-_Rope_Attachment,pending,160.775146,8,"['near_duplicate_frames', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+182,Standing_Soleus_And_Achilles_Stretch,pending,157.801514,7,"['large_opaque_pale_region', 'possible_edge_clipping', 'possible_precropped_flat_boundary', 'possible_scale_variation']"
+183,Battling_Ropes,pending,156.78833,8,"['possible_edge_clipping', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+184,Smith_Machine_Behind_the_Back_Shrug,pending,156.544189,6,"['possible_edge_clipping', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+185,Ab_Roller,pending,156.281738,8,"['possible_edge_clipping', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+186,Cable_Crossover,pending,156.019287,8,"['possible_edge_clipping', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+187,Elevated_Cable_Rows,pending,155.915527,6,"['possible_edge_clipping', 'possible_position_variation', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+188,Lying_Rear_Delt_Raise,pending,155.817871,7,"['possible_edge_clipping', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+189,Single_Leg_Glute_Bridge,pending,155.292969,5,"['large_opaque_pale_region', 'possible_edge_clipping', 'possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation']"
+190,Single-Leg_High_Box_Squat,pending,145.183105,8,"['near_duplicate_frames', 'possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy']"
+191,Hanging_Leg_Raise,pending,145.0,4,"['near_duplicate_frames', 'possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy']"
+192,Worlds_Greatest_Stretch,pending,143.533936,2,"['large_opaque_pale_region', 'possible_position_variation', 'possible_scale_variation', 'small_canvas_occupancy']"
+193,Seated_Two-Arm_Palms-Up_Low-Pulley_Wrist_Curl,pending,142.319336,4,"['near_duplicate_frames', 'suspected_baked_checkerboard']"
+194,Double_Kettlebell_Windmill,pending,141.818848,5,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+195,Yoke_Walk,pending,141.763916,5,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+196,Circus_Bell,pending,141.568604,3,"['possible_scale_variation', 'suspected_baked_checkerboard']"
+197,Cross_Body_Hammer_Curl,pending,141.513672,2,"['near_duplicate_frames', 'suspected_baked_checkerboard']"
+198,One_Leg_Barbell_Squat,pending,141.483154,3,"['possible_scale_variation', 'suspected_baked_checkerboard']"
+199,Bodyweight_Squat,pending,141.434326,1,"['possible_scale_variation', 'suspected_baked_checkerboard']"
+200,On-Your-Back_Quad_Stretch,pending,141.416016,1,"['possible_position_variation', 'suspected_baked_checkerboard']"
+201,Kettlebell_Hang_Clean,pending,141.409912,1,"['possible_scale_variation', 'suspected_baked_checkerboard']"
+202,See-Saw_Press_Alternating_Side_Press,pending,141.391602,3,"['near_duplicate_frames', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+203,Push_Press_-_Behind_the_Neck,pending,141.312256,5,"['possible_precropped_flat_boundary', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+204,Barbell_Walking_Lunge,pending,141.275635,5,"['possible_scale_variation', 'suspected_baked_checkerboard']"
+205,Box_Squat_with_Bands,pending,141.257324,3,"['possible_scale_variation', 'suspected_baked_checkerboard']"
+206,Weighted_Ball_Side_Bend,pending,141.257324,5,"['large_opaque_pale_region', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+207,Palms-Up_Barbell_Wrist_Curl_Over_A_Bench,pending,141.135254,2,"['near_duplicate_frames', 'suspected_baked_checkerboard']"
+208,Sledgehammer_Swings,pending,141.123047,4,"['possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy', 'suspected_baked_checkerboard']"
+209,Side_Lying_Groin_Stretch,pending,141.098633,1,"['possible_position_variation', 'suspected_baked_checkerboard']"
+210,Stomach_Vacuum,pending,141.098633,2,"['near_duplicate_frames', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+211,Cable_Rope_Overhead_Triceps_Extension,pending,141.062012,3,"['near_duplicate_frames', 'suspected_baked_checkerboard']"
+212,Hack_Squat,pending,141.031494,4,"['possible_scale_variation', 'suspected_baked_checkerboard']"
+213,Lying_Dumbbell_Tricep_Extension,pending,141.019287,4,"['possible_position_variation', 'suspected_baked_checkerboard']"
+214,Reverse_Flyes,pending,141.00708,1,"['possible_scale_variation', 'suspected_baked_checkerboard']"
+215,Double_Kettlebell_Alternating_Hang_Clean,pending,140.994873,4,"['possible_scale_variation', 'suspected_baked_checkerboard']"
+216,Alternating_Hang_Clean,pending,140.98877,3,"['near_duplicate_frames', 'suspected_baked_checkerboard']"
+217,Seated_Glute,pending,140.921631,1,"['near_duplicate_frames', 'suspected_baked_checkerboard']"
+218,Knee_Circles,pending,140.872803,8,"['near_duplicate_frames', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+219,Seated_Band_Hamstring_Curl,pending,140.872803,2,"['near_duplicate_frames', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+220,Chair_Upper_Body_Stretch,pending,140.866699,6,"['possible_precropped_flat_boundary', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+221,Heavy_Bag_Thrust,pending,140.799561,6,"['possible_position_variation', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+222,Isometric_Neck_Exercise_-_Front_And_Back,pending,140.799561,1,"['near_duplicate_frames', 'suspected_baked_checkerboard']"
+223,Squat_with_Plate_Movers,pending,140.78125,1,"['possible_scale_variation', 'suspected_baked_checkerboard']"
+224,Conans_Wheel,pending,140.762939,5,"['possible_precropped_flat_boundary', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+225,Cable_Preacher_Curl,pending,140.756836,1,"['near_duplicate_frames', 'suspected_baked_checkerboard']"
+226,Front_Barbell_Squat,pending,140.146484,7,"['possible_edge_clipping', 'possible_position_variation', 'possible_scale_variation', 'small_canvas_occupancy']"
+227,Hanging_Pike,pending,140.0,1,"['near_duplicate_frames', 'possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation']"
+228,Smith_Machine_Hip_Raise,pending,136.434326,8,"['possible_edge_clipping', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+229,Smith_Incline_Shoulder_Raise,pending,135.915527,8,"['possible_edge_clipping', 'suspected_baked_checkerboard']"
+230,Hanging_Bar_Good_Morning,pending,135.897217,8,"['possible_edge_clipping', 'suspected_baked_checkerboard']"
+231,JM_Press,pending,135.805664,4,"['possible_edge_clipping', 'suspected_baked_checkerboard']"
+232,Ring_Dips,pending,135.0,8,"['possible_edge_clipping', 'possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation']"
+233,Supine_One-Arm_Overhead_Throw,pending,126.959229,5,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy']"
+234,Barbell_Deadlift,pending,125.457764,8,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy']"
+235,Runners_Stretch,pending,125.177002,3,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy']"
+236,Dumbbell_Squat,pending,125.10376,2,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy']"
+237,The_Straddle,pending,125.079346,8,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy']"
+238,Dumbbell_Seated_Box_Jump,pending,125.073242,6,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy']"
+239,Bench_Jump,pending,125.061035,4,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy']"
+240,Kettlebell_Sumo_High_Pull,pending,125.054932,7,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy']"
+241,Barbell_Rear_Delt_Row,pending,125.0,8,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy']"
+242,Landmine_Linear_Jammer,pending,125.0,8,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy']"
+243,Rocket_Jump,pending,125.0,8,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy']"
+244,Romanian_Deadlift_from_Deficit,pending,125.0,8,"['near_duplicate_frames', 'possible_position_variation', 'possible_scale_variation', 'small_canvas_occupancy']"
+245,Bent_Over_Two-Arm_Long_Bar_Row,pending,122.069092,2,"['near_duplicate_frames', 'suspected_baked_checkerboard']"
+246,Concentration_Curls,pending,122.050781,6,"['possible_position_variation', 'suspected_baked_checkerboard']"
+247,Box_Squat,pending,121.837158,6,"['possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+248,Lower_Back_Curl,pending,121.763916,8,"['possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+249,Supine_Chest_Throw,pending,121.721191,3,"['possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+250,Rickshaw_Carry,pending,121.690674,8,"['near_duplicate_frames', 'suspected_baked_checkerboard']"
+251,Smith_Machine_Bench_Press,pending,121.647949,8,"['possible_scale_variation', 'suspected_baked_checkerboard']"
+252,Side-Lying_Floor_Stretch,pending,121.501465,8,"['possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+253,Behind_The_Back_Cable_Wrist_Curl,pending,121.452637,8,"['near_duplicate_frames', 'suspected_baked_checkerboard']"
+254,Hip_Lift_with_Band,pending,121.318359,3,"['possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+255,Incline_Cable_Chest_Press,pending,121.293945,6,"['possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+256,Barbell_Incline_Shoulder_Raise,pending,121.263428,8,"['possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+257,Standing_Barbell_Press_Behind_Neck,pending,121.220703,1,"['possible_scale_variation', 'suspected_baked_checkerboard']"
+258,Straight-Arm_Dumbbell_Pullover,pending,121.202393,5,"['possible_scale_variation', 'suspected_baked_checkerboard']"
+259,Power_Stairs,pending,121.147461,7,"['possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+260,Chair_Leg_Extended_Stretch,pending,121.12915,6,"['possible_position_variation', 'suspected_baked_checkerboard']"
+261,Barbell_Seated_Calf_Raise,pending,121.116943,8,"['possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+262,Push-Ups_With_Feet_On_An_Exercise_Ball,pending,120.98877,1,"['possible_position_variation', 'suspected_baked_checkerboard']"
+263,Around_The_Worlds,pending,120.970459,1,"['possible_scale_variation', 'suspected_baked_checkerboard']"
+264,High_Cable_Curls,pending,120.964355,8,"['possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+265,Leg_Press,pending,120.952148,2,"['possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+266,One-Arm_Long_Bar_Row,pending,120.946045,1,"['near_duplicate_frames', 'suspected_baked_checkerboard']"
+267,Calf_Stretch_Elbows_Against_Wall,pending,120.90332,2,"['near_duplicate_frames', 'suspected_baked_checkerboard']"
+268,Lower_Back-SMR,pending,120.90332,8,"['possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+269,Barbell_Shoulder_Press,pending,120.872803,4,"['possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+270,Side_Leg_Raises,pending,120.872803,2,"['possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+271,Decline_Smith_Press,pending,120.866699,4,"['possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+272,Piriformis-SMR,pending,120.842285,6,"['possible_position_variation', 'suspected_baked_checkerboard']"
+273,Standing_Military_Press,pending,120.842285,4,"['possible_precropped_flat_boundary', 'possible_scale_variation', 'suspected_baked_checkerboard']"
+274,T-Bar_Row_with_Handle,pending,120.823975,2,"['near_duplicate_frames', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+275,Sled_Push,pending,120.811768,7,"['possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+276,Barbell_Shrug_Behind_The_Back,pending,120.787354,4,"['near_duplicate_frames', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+277,Seated_Cable_Rows,pending,120.769043,8,"['possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+278,Speed_Band_Overhead_Triceps,pending,120.750732,3,"['possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+279,Dumbbell_Lunges,pending,120.268555,0,"['near_duplicate_frames', 'possible_position_variation', 'possible_scale_variation']"
+280,Jerk_Dip_Squat,pending,115.20752,8,"['near_duplicate_frames', 'possible_edge_clipping', 'possible_position_variation', 'possible_precropped_flat_boundary']"
+281,Dumbbell_One-Arm_Triceps_Extension,pending,115.183105,1,"['near_duplicate_frames', 'possible_edge_clipping', 'possible_precropped_flat_boundary', 'possible_scale_variation']"
+282,Hang_Clean,pending,105.292969,2,"['possible_position_variation', 'possible_scale_variation', 'small_canvas_occupancy']"
+283,Dumbbell_Squat_To_A_Bench,pending,105.250244,1,"['possible_position_variation', 'possible_scale_variation', 'small_canvas_occupancy']"
+284,Stiff-Legged_Barbell_Deadlift,pending,105.219727,5,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy']"
+285,Kneeling_Jump_Squat,pending,105.195312,6,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy']"
+286,Trap_Bar_Deadlift,pending,105.170898,2,"['possible_position_variation', 'possible_scale_variation', 'small_canvas_occupancy']"
+287,Leg_Pull-In,pending,105.158691,3,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy']"
+288,Dumbbell_Rear_Lunge,pending,105.085449,2,"['possible_position_variation', 'possible_scale_variation', 'small_canvas_occupancy']"
+289,Floor_Glute-Ham_Raise,pending,105.073242,3,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy']"
+290,Stiff-Legged_Dumbbell_Deadlift,pending,105.067139,6,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy']"
+291,Clean_and_Press,pending,105.061035,2,"['possible_position_variation', 'possible_scale_variation', 'small_canvas_occupancy']"
+292,Groin_and_Back_Stretch,pending,105.048828,3,"['possible_position_variation', 'possible_scale_variation', 'small_canvas_occupancy']"
+293,Overhead_Slam,pending,105.048828,3,"['possible_position_variation', 'possible_scale_variation', 'small_canvas_occupancy']"
+294,Narrow_Stance_Squats,pending,105.0,4,"['possible_position_variation', 'possible_scale_variation', 'small_canvas_occupancy']"
+295,One-Arm_Kettlebell_Snatch,pending,105.0,4,"['possible_position_variation', 'possible_scale_variation', 'small_canvas_occupancy']"
+296,One-Arm_Kettlebell_Split_Snatch,pending,105.0,6,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy']"
+297,One-Arm_Medicine_Ball_Slam,pending,105.0,2,"['possible_position_variation', 'possible_scale_variation', 'small_canvas_occupancy']"
+298,Return_Push_from_Stance,pending,105.0,8,"['near_duplicate_frames', 'possible_scale_variation', 'small_canvas_occupancy']"
+299,Speed_Squats,pending,105.0,2,"['possible_position_variation', 'possible_scale_variation', 'small_canvas_occupancy']"
+300,Weighted_Jump_Squat,pending,105.0,1,"['possible_position_variation', 'possible_scale_variation', 'small_canvas_occupancy']"
+301,One_Arm_Pronated_Dumbbell_Triceps_Extension,pending,102.185059,2,['suspected_baked_checkerboard']
+302,Seated_Front_Deltoid,pending,102.178955,4,['suspected_baked_checkerboard']
+303,Side_Laterals_to_Front_Raise,pending,102.075195,4,"['possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+304,Seated_Side_Lateral_Raise,pending,101.837158,1,['suspected_baked_checkerboard']
+305,One-Arm_Flat_Bench_Dumbbell_Flye,pending,101.818848,6,['suspected_baked_checkerboard']
+306,Standing_Bradford_Press,pending,101.794434,4,"['large_opaque_pale_region', 'suspected_baked_checkerboard']"
+307,Step-up_with_Knee_Raise,pending,101.763916,6,"['possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+308,Standing_Overhead_Barbell_Triceps_Extension,pending,101.751709,3,['suspected_baked_checkerboard']
+309,Reverse_Flyes_With_External_Rotation,pending,101.702881,5,['suspected_baked_checkerboard']
+310,Cable_Crunch,pending,101.672363,8,['suspected_baked_checkerboard']
+311,Cable_Hip_Adduction,pending,101.489258,4,['suspected_baked_checkerboard']
+312,Standing_Rope_Crunch,pending,101.464844,3,['suspected_baked_checkerboard']
+313,Bent-Arm_Dumbbell_Pullover,pending,101.45874,4,"['possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+314,Lying_Leg_Curls,pending,101.312256,5,"['possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+315,Barbell_Incline_Bench_Press_-_Medium_Grip,pending,101.196289,5,['suspected_baked_checkerboard']
+316,Close-Grip_Push-Up_off_of_a_Dumbbell,pending,101.123047,2,"['small_canvas_occupancy', 'suspected_baked_checkerboard']"
+317,Incline_Cable_Flye,pending,101.104736,6,"['possible_edge_clipping', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+318,Shotgun_Row,pending,101.043701,2,['suspected_baked_checkerboard']
+319,Neck-SMR,pending,101.025391,2,"['possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+320,Standing_One-Arm_Cable_Curl,pending,101.025391,7,"['possible_edge_clipping', 'suspected_baked_checkerboard']"
+321,Decline_Reverse_Crunch,pending,100.994873,1,['suspected_baked_checkerboard']
+322,Rack_Pulls,pending,100.952148,4,"['possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
+323,V-Bar_Pulldown,pending,100.909424,1,['suspected_baked_checkerboard']
+324,Walking_Treadmill,pending,100.909424,1,['suspected_baked_checkerboard']
+325,Machine_Bicep_Curl,pending,100.891113,4,"['large_opaque_pale_region', 'suspected_baked_checkerboard']"
+326,Dumbbell_Lying_One-Arm_Rear_Lateral_Raise,pending,100.88501,8,['suspected_baked_checkerboard']
+327,Oblique_Crunches,pending,100.787354,1,['suspected_baked_checkerboard']
+328,Snatch_Pull,pending,100.732422,2,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation']"
+329,Barbell_Lunge,pending,100.604248,4,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation']"
+330,Dead_Bug,pending,100.592041,1,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation']"
+331,Jackknife_Sit-Up,pending,100.561523,3,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation']"
+332,Exercise_Ball_Pull-In,pending,100.55542,7,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation']"
+333,Lying_Face_Down_Plate_Neck_Resistance,pending,100.408936,0,"['near_duplicate_frames', 'possible_position_variation', 'possible_scale_variation']"
+334,Chest_Push_single_response,pending,100.292969,3,"['near_duplicate_frames', 'possible_position_variation', 'possible_precropped_flat_boundary']"
+335,Snatch,pending,100.231934,5,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation']"
+336,Freehand_Jump_Squat,pending,100.22583,4,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation']"
+337,Log_Lift,pending,100.12207,5,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation']"
+338,Clock_Push-Up,pending,100.079346,2,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation']"
+339,Upward_Stretch,pending,100.067139,5,"['near_duplicate_frames', 'possible_precropped_flat_boundary', 'possible_scale_variation']"
+340,Ball_Leg_Curl,pending,100.048828,2,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation']"
+341,Lateral_Bound,pending,100.0,3,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation']"
+342,Butt-Ups,pending,95.439453,7,"['near_duplicate_frames', 'possible_edge_clipping', 'possible_precropped_flat_boundary']"
+343,Smith_Single-Leg_Split_Squat,pending,95.402832,2,"['possible_edge_clipping', 'possible_position_variation', 'possible_scale_variation']"
+344,Cross_Over_-_With_Bands,pending,95.146484,8,"['near_duplicate_frames', 'possible_edge_clipping', 'possible_precropped_flat_boundary']"
+345,Isometric_Wipers,pending,95.140381,1,"['near_duplicate_frames', 'possible_edge_clipping', 'possible_precropped_flat_boundary', 'possible_scale_variation']"
+346,Dips_-_Chest_Version,pending,95.10376,6,"['possible_edge_clipping', 'possible_precropped_flat_boundary', 'possible_scale_variation']"
+347,V-Bar_Pullup,pending,95.048828,5,"['near_duplicate_frames', 'possible_edge_clipping', 'possible_precropped_flat_boundary']"
+348,Triceps_Pushdown,pending,95.0,6,"['near_duplicate_frames', 'possible_edge_clipping', 'possible_precropped_flat_boundary']"
+349,Plyo_Kettlebell_Pushups,pending,85.567627,4,"['possible_position_variation', 'possible_scale_variation', 'small_canvas_occupancy']"
+350,Tuck_Crunch,pending,85.500488,2,"['possible_position_variation', 'possible_scale_variation', 'small_canvas_occupancy']"
+351,3_4_Sit-Up,pending,85.463867,4,"['possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy']"
+352,Chair_Lower_Back_Stretch,pending,85.439453,8,"['possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy']"
+353,Rope_Straight-Arm_Pulldown,pending,85.231934,8,"['near_duplicate_frames', 'possible_precropped_flat_boundary', 'small_canvas_occupancy']"
+354,Rocky_Pull-Ups_Pulldowns,pending,85.22583,8,"['near_duplicate_frames', 'possible_position_variation', 'small_canvas_occupancy']"
+355,Incline_Push-Up_Wide,pending,85.219727,8,"['near_duplicate_frames', 'possible_scale_variation', 'small_canvas_occupancy']"
+356,Single-Leg_Leg_Extension,pending,85.213623,8,"['near_duplicate_frames', 'possible_precropped_flat_boundary', 'small_canvas_occupancy']"
+357,Pyramid,pending,85.177002,8,"['possible_position_variation', 'possible_precropped_flat_boundary', 'small_canvas_occupancy']"
+358,Intermediate_Groin_Stretch,pending,85.097656,8,"['near_duplicate_frames', 'possible_scale_variation', 'small_canvas_occupancy']"
+359,Internal_Rotation_with_Band,pending,85.079346,8,"['near_duplicate_frames', 'possible_precropped_flat_boundary', 'small_canvas_occupancy']"
+360,Single-Arm_Push-Up,pending,85.079346,8,"['near_duplicate_frames', 'possible_position_variation', 'small_canvas_occupancy']"
+361,Sled_Overhead_Triceps_Extension,pending,85.067139,6,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy']"
+362,Dumbbell_Shoulder_Press,pending,85.054932,6,"['near_duplicate_frames', 'possible_scale_variation', 'small_canvas_occupancy']"
+363,Quad_Stretch,pending,85.054932,5,"['possible_position_variation', 'possible_precropped_flat_boundary', 'small_canvas_occupancy']"
+364,Quick_Leap,pending,85.054932,1,"['possible_position_variation', 'possible_scale_variation', 'small_canvas_occupancy']"
+365,Car_Deadlift,pending,85.0,4,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy']"
+366,Dumbbell_Tricep_Extension_-Pronated_Grip,pending,85.0,5,"['possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy']"
+367,Front_Raise_And_Pullover,pending,85.0,2,"['possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy']"
+368,Incline_Push-Up_Depth_Jump,pending,85.0,8,"['near_duplicate_frames', 'possible_precropped_flat_boundary', 'small_canvas_occupancy']"
+369,One-Arm_Kettlebell_Push_Press,pending,85.0,2,"['possible_position_variation', 'possible_scale_variation', 'small_canvas_occupancy']"
+370,Push-Ups_-_Close_Triceps_Position,pending,85.0,3,"['possible_position_variation', 'possible_scale_variation', 'small_canvas_occupancy']"
+371,Reverse_Band_Deadlift,pending,85.0,8,"['near_duplicate_frames', 'possible_position_variation', 'possible_precropped_flat_boundary', 'small_canvas_occupancy']"
+372,Romanian_Deadlift,pending,85.0,8,"['possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy']"
+373,Rope_Jumping,pending,85.0,8,"['near_duplicate_frames', 'possible_precropped_flat_boundary', 'small_canvas_occupancy']"
+374,Single-Cone_Sprint_Drill,pending,85.0,8,"['near_duplicate_frames', 'possible_scale_variation', 'small_canvas_occupancy']"
+375,Upper_Back-Leg_Grab,pending,85.0,6,"['possible_position_variation', 'possible_precropped_flat_boundary', 'small_canvas_occupancy']"
+376,Spell_Caster,pending,84.962158,8,"['large_opaque_pale_region', 'possible_precropped_flat_boundary']"
+377,Standing_Cable_Wood_Chop,pending,80.860596,0,"['possible_position_variation', 'possible_scale_variation']"
+378,Power_Snatch,pending,80.775146,0,"['possible_position_variation', 'possible_scale_variation']"
+379,Flat_Bench_Leg_Pull-In,pending,80.671387,0,"['possible_position_variation', 'possible_scale_variation']"
+380,Inchworm,pending,80.488281,0,"['possible_position_variation', 'possible_scale_variation']"
+381,Suspended_Fallout,pending,80.476074,5,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation']"
+382,Frog_Hops,pending,80.445557,0,"['possible_position_variation', 'possible_scale_variation']"
+383,Muscle_Snatch,pending,80.421143,0,"['possible_position_variation', 'possible_scale_variation']"
+384,One-Arm_Open_Palm_Kettlebell_Clean,pending,80.408936,0,"['possible_position_variation', 'possible_scale_variation']"
+385,Standing_Long_Jump,pending,80.390625,0,"['possible_position_variation', 'possible_scale_variation']"
+386,Hang_Snatch_-_Below_Knees,pending,80.354004,0,"['possible_position_variation', 'possible_scale_variation']"
+387,Push_Up_to_Side_Plank,pending,80.32959,0,"['possible_position_variation', 'possible_scale_variation']"
+388,Barbell_Squat,pending,80.317383,0,"['possible_position_variation', 'possible_scale_variation']"
+389,Linear_3-Part_Start_Technique,pending,80.280762,0,"['possible_position_variation', 'possible_scale_variation']"
+390,Power_Clean_from_Blocks,pending,80.238037,4,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation']"
+391,Squat_with_Chains,pending,80.238037,1,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation']"
+392,Flat_Bench_Lying_Leg_Raise,pending,80.231934,0,"['possible_position_variation', 'possible_scale_variation']"
+393,Leg-Over_Floor_Press,pending,80.128174,4,"['near_duplicate_frames', 'possible_precropped_flat_boundary', 'possible_scale_variation']"
+394,Standing_Dumbbell_Straight-Arm_Front_Delt_Raise_Above_Head,pending,80.12207,4,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation']"
+395,Power_Clean,pending,80.097656,0,"['possible_position_variation', 'possible_scale_variation']"
+396,Split_Snatch,pending,80.091553,0,"['possible_position_variation', 'possible_scale_variation']"
+397,Clean_and_Jerk,pending,80.0,0,"['possible_position_variation', 'possible_scale_variation']"
+398,Lateral_Cone_Hops,pending,80.0,0,"['near_duplicate_frames', 'possible_position_variation']"
+399,One-Arm_Kettlebell_Swings,pending,80.0,1,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation']"
+400,Plyo_Push-up,pending,80.0,0,"['possible_position_variation', 'possible_scale_variation']"
+401,Sit-Up,pending,80.0,0,"['possible_position_variation', 'possible_scale_variation']"
+402,Spider_Crawl,pending,80.0,0,"['possible_position_variation', 'possible_scale_variation']"
+403,Standing_Dumbbell_Triceps_Extension,pending,80.0,0,"['near_duplicate_frames', 'possible_position_variation', 'possible_scale_variation']"
+404,Overhead_Triceps,pending,75.921631,1,"['near_duplicate_frames', 'possible_edge_clipping']"
+405,Cable_Russian_Twists,pending,75.689697,8,"['near_duplicate_frames', 'possible_edge_clipping', 'possible_precropped_flat_boundary']"
+406,Inverted_Row_with_Straps,pending,75.457764,5,"['possible_edge_clipping', 'possible_position_variation', 'possible_precropped_flat_boundary']"
+407,One-Arm_Kettlebell_Clean_and_Jerk,pending,75.317383,1,"['possible_edge_clipping', 'possible_scale_variation']"
+408,Front_Barbell_Squat_To_A_Bench,pending,75.213623,8,"['possible_edge_clipping', 'possible_position_variation']"
+409,One-Arm_Kettlebell_Jerk,pending,75.213623,3,"['possible_edge_clipping', 'possible_scale_variation']"
+410,Bench_Sprint,pending,75.128174,4,"['possible_edge_clipping', 'possible_precropped_flat_boundary', 'possible_scale_variation']"
+411,Incline_Dumbbell_Flyes_-_With_A_Twist,pending,75.109863,1,"['possible_edge_clipping', 'possible_scale_variation']"
+412,Kettlebell_Thruster,pending,75.0,1,"['possible_edge_clipping', 'possible_scale_variation']"
+413,One_Knee_To_Chest,pending,75.0,3,"['possible_edge_clipping', 'possible_position_variation', 'possible_precropped_flat_boundary']"
+414,Inverted_Row,pending,65.579834,8,"['near_duplicate_frames', 'small_canvas_occupancy']"
+415,Quadriceps-SMR,pending,65.524902,8,"['possible_position_variation', 'small_canvas_occupancy']"
+416,Chair_Squat,pending,65.488281,3,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy']"
+417,Reverse_Band_Sumo_Deadlift,pending,65.488281,8,"['near_duplicate_frames', 'small_canvas_occupancy']"
+418,Stiff_Leg_Barbell_Good_Morning,pending,65.463867,4,"['possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy']"
+419,Squats_-_With_Bands,pending,65.305176,3,"['possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy']"
+420,Reverse_Crunch,pending,65.286865,7,"['possible_scale_variation', 'small_canvas_occupancy']"
+421,Incline_Push-Up_Medium,pending,65.250244,8,"['possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy']"
+422,Reverse_Band_Power_Squat,pending,65.22583,8,"['near_duplicate_frames', 'small_canvas_occupancy']"
+423,Standing_Toe_Touches,pending,65.213623,4,"['possible_scale_variation', 'small_canvas_occupancy']"
+424,One-Arm_Overhead_Kettlebell_Squats,pending,65.12207,1,"['possible_position_variation', 'possible_scale_variation', 'small_canvas_occupancy']"
+425,Incline_Push-Up_Reverse_Grip,pending,65.115967,8,"['near_duplicate_frames', 'small_canvas_occupancy']"
+426,Decline_Crunch,pending,65.109863,8,"['possible_scale_variation', 'small_canvas_occupancy']"
+427,Reverse_Barbell_Curl,pending,65.097656,8,"['near_duplicate_frames', 'small_canvas_occupancy']"
+428,Single-Leg_Lateral_Hop,pending,65.097656,8,"['near_duplicate_frames', 'small_canvas_occupancy']"
+429,Incline_Push-Up_Close-Grip,pending,65.091553,8,"['near_duplicate_frames', 'small_canvas_occupancy']"
+430,Recumbent_Bike,pending,65.079346,8,"['near_duplicate_frames', 'small_canvas_occupancy']"
+431,Close-Grip_Dumbbell_Press,pending,65.073242,6,"['near_duplicate_frames', 'possible_precropped_flat_boundary', 'small_canvas_occupancy']"
+432,Narrow_Stance_Hack_Squats,pending,65.073242,1,"['possible_scale_variation', 'small_canvas_occupancy']"
+433,Natural_Glute_Ham_Raise,pending,65.054932,2,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy']"
+434,Reverse_Band_Bench_Press,pending,65.048828,8,"['near_duplicate_frames', 'small_canvas_occupancy']"
+435,Rope_Climb,pending,65.048828,8,"['near_duplicate_frames', 'small_canvas_occupancy']"
+436,Dumbbell_Seated_One-Leg_Calf_Raise,pending,65.0,3,"['near_duplicate_frames', 'possible_precropped_flat_boundary', 'small_canvas_occupancy']"
+437,Glute_Ham_Raise,pending,65.0,2,"['possible_scale_variation', 'small_canvas_occupancy']"
+438,One-Arm_Kettlebell_Split_Jerk,pending,65.0,1,"['possible_scale_variation', 'small_canvas_occupancy']"
+439,Press_Sit-Up,pending,65.0,2,"['possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy']"
+440,Rocking_Standing_Calf_Raise,pending,65.0,8,"['near_duplicate_frames', 'small_canvas_occupancy']"
+441,Single-Arm_Linear_Jammer,pending,65.0,8,"['near_duplicate_frames', 'possible_precropped_flat_boundary', 'small_canvas_occupancy']"
+442,Wrist_Circles,pending,61.922607,6,"['near_duplicate_frames', 'possible_precropped_flat_boundary']"
+443,Snatch_Shrug,pending,61.055908,2,"['possible_precropped_flat_boundary', 'possible_scale_variation']"
+444,Reverse_Grip_Triceps_Pushdown,pending,60.976562,4,"['near_duplicate_frames', 'possible_precropped_flat_boundary', 'possible_scale_variation']"
+445,Bodyweight_Flyes,pending,60.744629,0,"['possible_position_variation', 'possible_scale_variation']"
+446,Shoulder_Raise,pending,60.634766,2,"['near_duplicate_frames', 'possible_precropped_flat_boundary']"
+447,Low_Pulley_Row_To_Neck,pending,60.622559,5,"['possible_precropped_flat_boundary', 'possible_scale_variation']"
+448,Lying_Supine_Dumbbell_Curl,pending,60.579834,0,"['possible_position_variation', 'possible_scale_variation']"
+449,Squat_Jerk,pending,60.55542,5,"['possible_precropped_flat_boundary', 'possible_scale_variation']"
+450,Chest_Push_multiple_response,pending,60.537109,7,"['possible_position_variation', 'possible_precropped_flat_boundary']"
+451,Dumbbell_One-Arm_Upright_Row,pending,60.512695,1,"['near_duplicate_frames', 'possible_precropped_flat_boundary']"
+452,Seated_Dumbbell_Palms-Up_Wrist_Curl,pending,60.500488,4,"['near_duplicate_frames', 'possible_precropped_flat_boundary']"
+453,Wide_Stance_Barbell_Squat,pending,60.500488,6,"['possible_position_variation', 'possible_precropped_flat_boundary']"
+454,Side_Neck_Stretch,pending,60.494385,3,"['near_duplicate_frames', 'possible_precropped_flat_boundary']"
+455,Weighted_Sit-Ups_-_With_Bands,pending,60.488281,3,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation']"
+456,Kneeling_Forearm_Stretch,pending,60.421143,0,"['possible_position_variation', 'possible_scale_variation']"
+457,Straight_Raises_on_Incline_Bench,pending,60.378418,2,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation']"
+458,Lunge_Sprint,pending,60.366211,2,"['possible_position_variation', 'possible_precropped_flat_boundary']"
+459,Bodyweight_Walking_Lunge,pending,60.360107,1,"['possible_precropped_flat_boundary', 'possible_scale_variation']"
+460,Sumo_Deadlift_with_Bands,pending,60.3479,1,"['possible_position_variation', 'possible_precropped_flat_boundary']"
+461,Kettlebell_Dead_Clean,pending,60.341797,0,"['near_duplicate_frames', 'possible_position_variation']"
+462,Pullups,pending,60.341797,6,"['possible_precropped_flat_boundary', 'possible_scale_variation']"
+463,Moving_Claw_Series,pending,60.32959,2,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation']"
+464,Single_Leg_Push-off,pending,60.311279,2,"['possible_precropped_flat_boundary', 'possible_scale_variation']"
+465,Scapular_Pull-Up,pending,60.305176,8,"['near_duplicate_frames', 'possible_precropped_flat_boundary']"
+466,Band_Good_Morning_Pull_Through,pending,60.299072,0,"['near_duplicate_frames', 'possible_scale_variation']"
+467,Standing_Dumbbell_Reverse_Curl,pending,60.299072,1,"['near_duplicate_frames', 'possible_precropped_flat_boundary']"
+468,Oblique_Crunches_-_On_The_Floor,pending,60.292969,6,"['possible_position_variation', 'possible_precropped_flat_boundary', 'possible_scale_variation']"
+469,Push-Up_Wide,pending,60.292969,0,"['possible_position_variation', 'possible_scale_variation']"
+470,Air_Bike,pending,60.286865,6,"['near_duplicate_frames', 'possible_precropped_flat_boundary']"
+471,Alternate_Heel_Touchers,pending,60.286865,6,"['near_duplicate_frames', 'possible_precropped_flat_boundary']"
+472,Olympic_Squat,pending,60.250244,0,"['possible_position_variation', 'possible_scale_variation']"
+473,Front_Squats_With_Two_Kettlebells,pending,60.244141,1,"['possible_precropped_flat_boundary', 'possible_scale_variation']"
+474,Barbell_Shrug,pending,60.238037,2,"['near_duplicate_frames', 'possible_precropped_flat_boundary']"
+475,Standing_Hip_Flexors,pending,60.201416,1,"['possible_precropped_flat_boundary', 'possible_scale_variation']"
+476,Atlas_Stones,pending,60.189209,1,"['possible_precropped_flat_boundary', 'possible_scale_variation']"
+477,Axle_Deadlift,pending,60.189209,0,"['possible_position_variation', 'possible_scale_variation']"
+478,Clean_Deadlift,pending,60.189209,0,"['near_duplicate_frames', 'possible_position_variation']"
+479,Hamstring_Stretch,pending,60.140381,0,"['possible_position_variation', 'possible_scale_variation']"
+480,Deadlift_with_Chains,pending,60.134277,0,"['possible_position_variation', 'possible_scale_variation']"
+481,Kettlebell_Pistol_Squat,pending,60.134277,1,"['possible_precropped_flat_boundary', 'possible_scale_variation']"
+482,Standing_Low-Pulley_One-Arm_Triceps_Extension,pending,60.12207,2,"['near_duplicate_frames', 'possible_precropped_flat_boundary']"
+483,Push_Press,pending,60.109863,1,"['possible_precropped_flat_boundary', 'possible_scale_variation']"
+484,Atlas_Stone_Trainer,pending,60.097656,1,"['possible_precropped_flat_boundary', 'possible_scale_variation']"
+485,Tire_Flip,pending,60.091553,6,"['possible_position_variation', 'possible_precropped_flat_boundary']"
+486,Wrist_Roller,pending,60.085449,5,"['near_duplicate_frames', 'possible_precropped_flat_boundary']"
+487,Adductor_Groin,pending,60.073242,7,"['near_duplicate_frames', 'possible_precropped_flat_boundary']"
+488,Gironda_Sternum_Chins,pending,60.073242,8,"['possible_position_variation', 'possible_precropped_flat_boundary']"
+489,Stairmaster,pending,60.073242,1,"['near_duplicate_frames', 'possible_precropped_flat_boundary']"
+490,Dynamic_Back_Stretch,pending,60.067139,4,"['possible_position_variation', 'possible_precropped_flat_boundary']"
+491,Hang_Clean_-_Below_the_Knees,pending,60.067139,0,"['possible_position_variation', 'possible_scale_variation']"
+492,Seated_Head_Harness_Neck_Resistance,pending,60.061035,8,"['near_duplicate_frames', 'possible_precropped_flat_boundary']"
+493,Standing_Olympic_Plate_Hand_Squeeze,pending,60.061035,2,"['near_duplicate_frames', 'possible_precropped_flat_boundary']"
+494,Zottman_Curl,pending,60.054932,1,"['near_duplicate_frames', 'possible_precropped_flat_boundary']"
+495,Elbows_Back,pending,60.048828,1,"['near_duplicate_frames', 'possible_precropped_flat_boundary']"
+496,Standing_Palm-In_One-Arm_Dumbbell_Press,pending,60.048828,1,"['possible_precropped_flat_boundary', 'possible_scale_variation']"
+497,Alternating_Deltoid_Raise,pending,60.0,2,"['near_duplicate_frames', 'possible_precropped_flat_boundary']"
+498,Box_Squat_with_Chains,pending,60.0,1,"['possible_precropped_flat_boundary', 'possible_scale_variation']"
+499,Cable_Internal_Rotation,pending,60.0,5,"['near_duplicate_frames', 'possible_precropped_flat_boundary']"
+500,Dumbbell_One-Arm_Shoulder_Press,pending,60.0,4,"['possible_precropped_flat_boundary', 'possible_scale_variation']"
+501,Elbow_Circles,pending,60.0,1,"['near_duplicate_frames', 'possible_precropped_flat_boundary']"
+502,External_Rotation_with_Band,pending,60.0,1,"['near_duplicate_frames', 'possible_precropped_flat_boundary']"
+503,Front_Dumbbell_Raise,pending,60.0,4,"['near_duplicate_frames', 'possible_precropped_flat_boundary']"
+504,Front_Squat_Clean_Grip,pending,60.0,1,"['possible_position_variation', 'possible_precropped_flat_boundary']"
+505,Gorilla_Chin_Crunch,pending,60.0,1,"['possible_precropped_flat_boundary', 'possible_scale_variation']"
+506,Handstand_Push-Ups,pending,60.0,1,"['near_duplicate_frames', 'possible_precropped_flat_boundary']"
+507,Leg_Lift,pending,60.0,4,"['possible_position_variation', 'possible_precropped_flat_boundary']"
+508,One-Arm_Kettlebell_Military_Press_To_The_Side,pending,60.0,2,"['possible_precropped_flat_boundary', 'possible_scale_variation']"
+509,One-Arm_Kettlebell_Para_Press,pending,60.0,0,"['near_duplicate_frames', 'possible_scale_variation']"
+510,Scissors_Jump,pending,60.0,2,"['possible_position_variation', 'possible_precropped_flat_boundary']"
+511,Side_Wrist_Pull,pending,60.0,4,"['near_duplicate_frames', 'possible_precropped_flat_boundary']"
+512,Single-Leg_Stride_Jump,pending,60.0,0,"['possible_position_variation', 'possible_scale_variation']"
+513,Standing_Biceps_Stretch,pending,60.0,2,"['near_duplicate_frames', 'possible_precropped_flat_boundary']"
+514,Standing_Dumbbell_Press,pending,60.0,0,"['near_duplicate_frames', 'possible_scale_variation']"
+515,Step_Mill,pending,60.0,1,"['near_duplicate_frames', 'possible_precropped_flat_boundary']"
+516,Standing_Hip_Circles,pending,55.616455,1,"['near_duplicate_frames', 'possible_edge_clipping']"
+517,Smith_Machine_Bent_Over_Row,pending,55.585938,7,"['possible_edge_clipping', 'possible_precropped_flat_boundary']"
+518,Dumbbell_Lying_Rear_Lateral_Raise,pending,55.488281,1,"['possible_edge_clipping', 'possible_scale_variation']"
+519,Barbell_Step_Ups,pending,55.45166,8,"['possible_edge_clipping', 'possible_scale_variation']"
+520,Suspended_Row,pending,55.195312,8,"['possible_edge_clipping', 'possible_precropped_flat_boundary']"
+521,Cable_Rope_Rear-Delt_Rows,pending,55.146484,8,"['near_duplicate_frames', 'possible_edge_clipping']"
+522,Suspended_Reverse_Crunch,pending,55.128174,3,"['possible_edge_clipping', 'possible_precropped_flat_boundary', 'possible_scale_variation']"
+523,Straight-Arm_Pulldown,pending,55.12207,2,"['near_duplicate_frames', 'possible_edge_clipping']"
+524,Pushups_Close_and_Wide_Hand_Positions,pending,55.109863,4,"['possible_edge_clipping', 'possible_position_variation', 'possible_precropped_flat_boundary']"
+525,Front_Box_Jump,pending,55.10376,8,"['possible_edge_clipping', 'possible_scale_variation']"
+526,Butt_Lift_Bridge,pending,55.091553,8,"['possible_edge_clipping', 'possible_precropped_flat_boundary']"
+527,Standing_Concentration_Curl,pending,55.067139,6,"['possible_edge_clipping', 'possible_precropped_flat_boundary']"
+528,Triceps_Pushdown_-_V-Bar_Attachment,pending,55.061035,7,"['possible_edge_clipping', 'possible_precropped_flat_boundary']"
+529,Kneeling_High_Pulley_Row,pending,55.0,8,"['possible_edge_clipping', 'possible_scale_variation']"
+530,Seated_Bent-Over_Two-Arm_Dumbbell_Triceps_Extension,pending,45.091553,4,"['possible_precropped_flat_boundary', 'small_canvas_occupancy']"
+531,Toe_Touchers,pending,45.091553,8,"['possible_precropped_flat_boundary', 'small_canvas_occupancy']"
+532,Mountain_Climbers,pending,45.048828,2,"['possible_precropped_flat_boundary', 'possible_scale_variation', 'small_canvas_occupancy']"
+533,Intermediate_Hip_Flexor_and_Quad_Stretch,pending,45.0,8,"['possible_precropped_flat_boundary', 'small_canvas_occupancy']"
+534,Single-Arm_Cable_Crossover,pending,45.0,8,"['possible_scale_variation', 'small_canvas_occupancy']"
+535,Single-Leg_Hop_Progression,pending,45.0,8,"['near_duplicate_frames', 'small_canvas_occupancy']"
+536,Weighted_Ball_Hyperextension,pending,45.0,1,"['possible_position_variation', 'small_canvas_occupancy']"
+537,Split_Clean,pending,41.184082,0,['possible_position_variation']
+538,Ankle_Circles,pending,41.11084,0,['near_duplicate_frames']
+539,Body-Up,pending,40.732422,0,['possible_position_variation']
+540,Snatch_Balance,pending,40.689697,6,"['possible_precropped_flat_boundary', 'possible_scale_variation']"
+541,Kneeling_Squat,pending,40.683594,0,['possible_scale_variation']
+542,Linear_Depth_Jump,pending,40.65918,0,['possible_position_variation']
+543,Plie_Dumbbell_Squat,pending,40.628662,0,['possible_scale_variation']
+544,Smith_Machine_One-Arm_Upright_Row,pending,40.610352,0,['near_duplicate_frames']
+545,Lying_Close-Grip_Barbell_Triceps_Press_To_Chin,pending,40.598145,0,['possible_position_variation']
+546,Barbell_Side_Split_Squat,pending,40.592041,0,['possible_scale_variation']
+547,Side_Hop-Sprint,pending,40.592041,6,"['possible_position_variation', 'possible_precropped_flat_boundary']"
+548,Wide-Grip_Barbell_Bench_Press,pending,40.57373,0,['possible_position_variation']
+549,Lying_Triceps_Press,pending,40.537109,0,['possible_position_variation']
+550,Barbell_Curl,pending,40.531006,4,"['near_duplicate_frames', 'possible_precropped_flat_boundary']"
+551,Reverse_Barbell_Preacher_Curls,pending,40.531006,0,['near_duplicate_frames']
+552,Frankenstein_Squat,pending,40.518799,0,['possible_scale_variation']
+553,Wide-Grip_Rear_Pull-Up,pending,40.512695,0,['near_duplicate_frames']
+554,Wind_Sprints,pending,40.512695,0,['possible_scale_variation']
+555,Plate_Pinch,pending,40.500488,0,"['near_duplicate_frames', 'possible_scale_variation']"
+556,Kettlebell_One-Legged_Deadlift,pending,40.494385,0,['possible_scale_variation']
+557,Exercise_Ball_Crunch,pending,40.488281,2,"['possible_position_variation', 'possible_precropped_flat_boundary']"
+558,Lying_Close-Grip_Barbell_Triceps_Extension_Behind_The_Head,pending,40.469971,0,['possible_position_variation']
+559,Lying_Glute,pending,40.45166,4,"['possible_position_variation', 'possible_precropped_flat_boundary']"
+560,Bottoms-Up_Clean_From_The_Hang_Position,pending,40.439453,0,['possible_scale_variation']
+561,Vertical_Swing,pending,40.439453,0,['possible_scale_variation']
+562,Mixed_Grip_Chin,pending,40.43335,0,['possible_position_variation']
+563,Split_Squat_with_Dumbbells,pending,40.43335,0,['possible_scale_variation']
+564,Extended_Range_One-Arm_Kettlebell_Floor_Press,pending,40.427246,0,['possible_position_variation']
+565,Lying_One-Arm_Lateral_Raise,pending,40.427246,0,['possible_position_variation']
+566,Zercher_Squats,pending,40.421143,0,['possible_scale_variation']
+567,Kettlebell_Pass_Between_The_Legs,pending,40.415039,0,['possible_scale_variation']
+568,Flutter_Kicks,pending,40.408936,5,"['possible_position_variation', 'possible_precropped_flat_boundary']"
+569,One_Arm_Chin-Up,pending,40.396729,0,['possible_position_variation']
+570,Overhead_Squat,pending,40.384521,0,['possible_scale_variation']
+571,Standing_Dumbbell_Calf_Raise,pending,40.378418,0,['near_duplicate_frames']
+572,Lying_Crossover,pending,40.372314,1,"['possible_position_variation', 'possible_precropped_flat_boundary']"
+573,Pushups,pending,40.341797,0,['possible_position_variation']
+574,Speed_Box_Squat,pending,40.341797,0,['possible_scale_variation']
+575,Side_To_Side_Chins,pending,40.32959,8,"['possible_position_variation', 'possible_precropped_flat_boundary']"
+576,Crunches,pending,40.317383,0,"['possible_position_variation', 'possible_scale_variation']"
+577,Good_Morning,pending,40.311279,0,['possible_scale_variation']
+578,Jerk_Balance,pending,40.311279,0,['possible_scale_variation']
+579,Weighted_Pull_Ups,pending,40.311279,0,['possible_position_variation']
+580,Two-Arm_Kettlebell_Clean,pending,40.305176,0,['possible_scale_variation']
+581,Front_Plate_Raise,pending,40.286865,0,['near_duplicate_frames']
+582,Standing_Lateral_Stretch,pending,40.286865,1,"['possible_precropped_flat_boundary', 'possible_scale_variation']"
+583,Deficit_Deadlift,pending,40.238037,0,['possible_scale_variation']
+584,Hammer_Grip_Incline_DB_Bench_Press,pending,40.213623,0,['possible_scale_variation']
+585,Low_Cable_Crossover,pending,40.20752,0,['near_duplicate_frames']
+586,One_Arm_Dumbbell_Bench_Press,pending,40.20752,7,"['possible_position_variation', 'possible_precropped_flat_boundary']"
+587,Side_Standing_Long_Jump,pending,40.189209,8,"['possible_precropped_flat_boundary', 'possible_scale_variation']"
+588,Front_Cable_Raise,pending,40.183105,2,"['near_duplicate_frames', 'possible_precropped_flat_boundary']"
+589,Palms-Up_Dumbbell_Wrist_Curl_Over_A_Bench,pending,40.183105,0,['near_duplicate_frames']
+590,Standing_One-Arm_Dumbbell_Triceps_Extension,pending,40.177002,0,['near_duplicate_frames']
+591,Front_Cone_Hops_or_hurdle_hops,pending,40.170898,0,['possible_scale_variation']
+592,Cross-Body_Crunch,pending,40.158691,1,"['possible_position_variation', 'possible_precropped_flat_boundary']"
+593,One_Arm_Lat_Pulldown,pending,40.152588,1,"['possible_precropped_flat_boundary', 'possible_scale_variation']"
+594,Seated_Dumbbell_Palms-Down_Wrist_Curl,pending,40.140381,0,['near_duplicate_frames']
+595,Clean_from_Blocks,pending,40.134277,7,"['possible_position_variation', 'possible_precropped_flat_boundary']"
+596,Dips_-_Triceps_Version,pending,40.128174,0,['possible_scale_variation']
+597,Kettlebell_Seesaw_Press,pending,40.128174,0,"['near_duplicate_frames', 'possible_scale_variation']"
+598,Bent_Over_Two-Dumbbell_Row_With_Palms_In,pending,40.12207,0,['near_duplicate_frames']
+599,Dumbbell_Shrug,pending,40.12207,0,['near_duplicate_frames']
+600,Box_Jump_Multiple_Response,pending,40.109863,0,"['possible_position_variation', 'possible_scale_variation']"
+601,Hurdle_Hops,pending,40.097656,0,['possible_position_variation']
+602,Seated_Hamstring,pending,40.097656,3,"['near_duplicate_frames', 'possible_precropped_flat_boundary']"
+603,Spinal_Stretch,pending,40.097656,1,"['possible_precropped_flat_boundary', 'possible_scale_variation']"
+604,Triceps_Stretch,pending,40.097656,0,['near_duplicate_frames']
+605,Alternate_Incline_Dumbbell_Curl,pending,40.091553,0,['near_duplicate_frames']
+606,Bent_Over_Barbell_Row,pending,40.091553,0,"['near_duplicate_frames', 'possible_position_variation']"
+607,Reverse_Plate_Curls,pending,40.091553,0,['near_duplicate_frames']
+608,Scissor_Kick,pending,40.091553,3,"['near_duplicate_frames', 'possible_precropped_flat_boundary']"
+609,Standing_Cable_Chest_Press,pending,40.091553,0,['near_duplicate_frames']
+610,Band_Good_Morning,pending,40.085449,0,['possible_scale_variation']
+611,Dumbbell_Step_Ups,pending,40.085449,3,"['possible_position_variation', 'possible_precropped_flat_boundary']"
+612,Band_Assisted_Pull-Up,pending,40.079346,0,"['near_duplicate_frames', 'possible_scale_variation']"
+613,Clean_Shrug,pending,40.079346,0,['near_duplicate_frames']
+614,Cable_Incline_Triceps_Extension,pending,40.073242,0,['near_duplicate_frames']
+615,Calf_Press,pending,40.073242,0,['near_duplicate_frames']
+616,Dumbbell_Lying_Supination,pending,40.073242,8,"['near_duplicate_frames', 'possible_precropped_flat_boundary']"
+617,Alternating_Kettlebell_Row,pending,40.067139,0,['near_duplicate_frames']
+618,Calf-Machine_Shoulder_Shrug,pending,40.067139,2,"['near_duplicate_frames', 'possible_precropped_flat_boundary']"
+619,Good_Morning_off_Pins,pending,40.067139,1,"['possible_precropped_flat_boundary', 'possible_scale_variation']"
+620,Band_Pull_Apart,pending,40.061035,0,['near_duplicate_frames']
+621,Crunch_-_Legs_On_Exercise_Ball,pending,40.061035,3,"['possible_position_variation', 'possible_precropped_flat_boundary']"
+622,Kneeling_Hip_Flexor,pending,40.061035,1,"['possible_position_variation', 'possible_precropped_flat_boundary']"
+623,Lateral_Box_Jump,pending,40.061035,0,['possible_position_variation']
+624,Alternate_Hammer_Curl,pending,40.054932,0,['near_duplicate_frames']
+625,Alternating_Cable_Shoulder_Press,pending,40.0,0,['near_duplicate_frames']
+626,Alternating_Floor_Press,pending,40.0,1,"['exact_duplicate_frames', 'possible_precropped_flat_boundary']"
+627,Alternating_Kettlebell_Press,pending,40.0,0,['near_duplicate_frames']
+628,Balance_Board,pending,40.0,0,['near_duplicate_frames']
+629,Band_Hip_Adductions,pending,40.0,6,"['near_duplicate_frames', 'possible_precropped_flat_boundary']"
+630,Bicycling,pending,40.0,2,"['near_duplicate_frames', 'possible_precropped_flat_boundary']"
+631,Bicycling_Stationary,pending,40.0,0,['near_duplicate_frames']
+632,Butterfly,pending,40.0,3,"['possible_position_variation', 'possible_precropped_flat_boundary']"
+633,Calf_Raise_On_A_Dumbbell,pending,40.0,0,['near_duplicate_frames']
+634,Childs_Pose,pending,40.0,0,['near_duplicate_frames']
+635,Crossover_Reverse_Lunge,pending,40.0,3,"['possible_precropped_flat_boundary', 'possible_scale_variation']"
+636,Depth_Jump_Leap,pending,40.0,1,"['possible_position_variation', 'possible_precropped_flat_boundary']"
+637,Donkey_Calf_Raises,pending,40.0,1,"['possible_precropped_flat_boundary', 'possible_scale_variation']"
+638,Elliptical_Trainer,pending,40.0,0,['near_duplicate_frames']
+639,Fast_Skipping,pending,40.0,3,"['near_duplicate_frames', 'possible_precropped_flat_boundary']"
+640,Kneeling_Cable_Crunch_With_Alternating_Oblique_Twists,pending,40.0,0,['near_duplicate_frames']
+641,Middle_Back_Stretch,pending,40.0,0,['near_duplicate_frames']
+642,One-Arm_Kettlebell_Row,pending,40.0,1,"['near_duplicate_frames', 'possible_precropped_flat_boundary']"
+643,Pallof_Press_With_Rotation,pending,40.0,2,"['near_duplicate_frames', 'possible_precropped_flat_boundary']"
+644,Plank,pending,40.0,0,['possible_scale_variation']
+645,Seated_Cable_Shoulder_Press,pending,40.0,1,"['possible_position_variation', 'possible_precropped_flat_boundary']"
+646,Seated_Overhead_Stretch,pending,40.0,1,"['possible_precropped_flat_boundary', 'possible_scale_variation']"
+647,Seated_Palms-Down_Barbell_Wrist_Curl,pending,40.0,0,['near_duplicate_frames']
+648,Single_Dumbbell_Raise,pending,40.0,1,"['near_duplicate_frames', 'possible_precropped_flat_boundary']"
+649,Standing_Biceps_Cable_Curl,pending,40.0,5,"['near_duplicate_frames', 'possible_precropped_flat_boundary']"
+650,Standing_Pelvic_Tilt,pending,40.0,0,['near_duplicate_frames']
+651,Sumo_Deadlift,pending,40.0,0,['possible_position_variation']
+652,Superman,pending,40.0,2,"['possible_position_variation', 'possible_precropped_flat_boundary']"
+653,Thigh_Abductor,pending,40.0,0,['near_duplicate_frames']
+654,Lying_High_Bench_Barbell_Curl,pending,35.354004,1,['possible_edge_clipping']
+655,Reverse_Triceps_Bench_Press,pending,35.305176,1,['possible_edge_clipping']
+656,Lying_Machine_Squat,pending,35.286865,2,"['possible_edge_clipping', 'possible_precropped_flat_boundary']"
+657,One_Arm_Against_Wall,pending,35.244141,8,['possible_edge_clipping']
+658,Pin_Presses,pending,35.219727,8,['possible_edge_clipping']
+659,Wide-Grip_Pulldown_Behind_The_Neck,pending,35.152588,3,['possible_edge_clipping']
+660,Machine_Preacher_Curls,pending,35.146484,1,['possible_edge_clipping']
+661,Iron_Cross,pending,35.073242,8,['possible_edge_clipping']
+662,Preacher_Curl,pending,35.0,1,['possible_edge_clipping']
+663,One-Arm_Dumbbell_Row,pending,25.115967,4,"['possible_precropped_flat_boundary', 'small_canvas_occupancy']"
+664,Reverse_Band_Box_Squat,pending,25.10376,8,['small_canvas_occupancy']
+665,Rope_Crunch,pending,25.061035,8,['small_canvas_occupancy']
+666,All_Fours_Quad_Stretch,pending,25.0,5,['small_canvas_occupancy']
+667,Seated_Flat_Bench_Leg_Pull-In,pending,25.0,4,['small_canvas_occupancy']
+668,Upright_Row_-_With_Bands,pending,20.927734,2,['possible_precropped_flat_boundary']
+669,Standing_Palms-In_Dumbbell_Press,pending,20.823975,0,['possible_scale_variation']
+670,Bent_Over_Two-Dumbbell_Row,pending,20.732422,0,['near_duplicate_frames']
+671,Physioball_Hip_Bridge,pending,20.671387,5,['possible_precropped_flat_boundary']
+672,Barbell_Side_Bend,pending,20.622559,0,['near_duplicate_frames']
+673,Smith_Machine_Upright_Row,pending,20.604248,2,['possible_precropped_flat_boundary']
+674,Barbell_Rollout_from_Bench,pending,20.585938,3,['possible_precropped_flat_boundary']
+675,Upright_Cable_Row,pending,20.579834,4,['possible_precropped_flat_boundary']
+676,Sled_Drag_-_Harness,pending,20.57373,8,['possible_precropped_flat_boundary']
+677,Rear_Leg_Raises,pending,20.567627,0,['near_duplicate_frames']
+678,Incline_Dumbbell_Flyes,pending,20.55542,0,['possible_scale_variation']
+679,Jefferson_Squats,pending,20.549316,0,['possible_scale_variation']
+680,Parallel_Bar_Dip,pending,20.549316,4,['possible_precropped_flat_boundary']
+681,Anterior_Tibialis-SMR,pending,20.543213,2,['possible_precropped_flat_boundary']
+682,Cable_Seated_Crunch,pending,20.524902,0,['near_duplicate_frames']
+683,Incline_Dumbbell_Bench_With_Palms_Facing_In,pending,20.518799,0,['possible_scale_variation']
+684,Overhead_Lat,pending,20.518799,0,['possible_position_variation']
+685,Hip_Flexion_with_Band,pending,20.512695,0,['near_duplicate_frames']
+686,Skating,pending,20.476074,6,['possible_precropped_flat_boundary']
+687,Kettlebell_Figure_8,pending,20.469971,0,['near_duplicate_frames']
+688,Knee_Across_The_Body,pending,20.43335,6,['possible_precropped_flat_boundary']
+689,One-Arm_Side_Deadlift,pending,20.408936,0,['possible_scale_variation']
+690,Glute_Kickback,pending,20.402832,6,['possible_precropped_flat_boundary']
+691,Rhomboids-SMR,pending,20.390625,6,['possible_precropped_flat_boundary']
+692,Cuban_Press,pending,20.384521,0,['possible_scale_variation']
+693,Hug_A_Ball,pending,20.384521,8,['possible_precropped_flat_boundary']
+694,Lying_Face_Up_Plate_Neck_Resistance,pending,20.384521,2,['possible_precropped_flat_boundary']
+695,Decline_Dumbbell_Flyes,pending,20.378418,0,['possible_position_variation']
+696,One_Arm_Floor_Press,pending,20.366211,0,['possible_position_variation']
+697,Floor_Press,pending,20.360107,0,['possible_position_variation']
+698,Elbow_to_Knee,pending,20.3479,4,['possible_precropped_flat_boundary']
+699,Janda_Sit-Up,pending,20.341797,8,['possible_precropped_flat_boundary']
+700,Close-Grip_EZ-Bar_Press,pending,20.335693,0,['possible_position_variation']
+701,Cable_Judo_Flip,pending,20.32959,0,['possible_position_variation']
+702,Decline_EZ_Bar_Triceps_Extension,pending,20.32959,0,['possible_position_variation']
+703,Smith_Machine_Close-Grip_Bench_Press,pending,20.317383,3,['possible_precropped_flat_boundary']
+704,Standing_Barbell_Calf_Raise,pending,20.299072,1,['possible_precropped_flat_boundary']
+705,Kettlebell_Pirate_Ships,pending,20.292969,3,['possible_precropped_flat_boundary']
+706,Close-Grip_Front_Lat_Pulldown,pending,20.268555,2,['possible_precropped_flat_boundary']
+707,Decline_Oblique_Crunch,pending,20.268555,1,['possible_precropped_flat_boundary']
+708,Standing_Front_Barbell_Raise_Over_Head,pending,20.268555,0,['near_duplicate_frames']
+709,Cable_Chest_Press,pending,20.256348,0,['near_duplicate_frames']
+710,Standing_Inner-Biceps_Curl,pending,20.250244,0,['near_duplicate_frames']
+711,Leg-Up_Hamstring_Stretch,pending,20.244141,8,['possible_precropped_flat_boundary']
+712,Machine_Triceps_Extension,pending,20.244141,0,['possible_scale_variation']
+713,Tricep_Dumbbell_Kickback,pending,20.238037,3,['possible_precropped_flat_boundary']
+714,Hip_Extension_with_Bands,pending,20.219727,0,['possible_position_variation']
+715,Sled_Overhead_Backward_Walk,pending,20.213623,6,['possible_precropped_flat_boundary']
+716,Thigh_Adductor,pending,20.195312,3,['possible_precropped_flat_boundary']
+717,Running_Treadmill,pending,20.189209,8,['possible_precropped_flat_boundary']
+718,Seated_One-Arm_Dumbbell_Palms-Up_Wrist_Curl,pending,20.189209,0,['near_duplicate_frames']
+719,90_90_Hamstring,pending,20.177002,4,['possible_precropped_flat_boundary']
+720,Upper_Back_Stretch,pending,20.170898,4,['possible_precropped_flat_boundary']
+721,Standing_Dumbbell_Upright_Row,pending,20.164795,1,['possible_precropped_flat_boundary']
+722,Sled_Row,pending,20.158691,3,['possible_precropped_flat_boundary']
+723,Smith_Machine_Stiff-Legged_Deadlift,pending,20.158691,0,['possible_scale_variation']
+724,Bent_Press,pending,20.140381,0,['possible_scale_variation']
+725,Seated_Dumbbell_Press,pending,20.140381,5,['possible_precropped_flat_boundary']
+726,Car_Drivers,pending,20.134277,0,['near_duplicate_frames']
+727,Chest_Push_with_Run_Release,pending,20.134277,2,['possible_precropped_flat_boundary']
+728,Floor_Press_with_Chains,pending,20.134277,0,['possible_position_variation']
+729,Chest_And_Front_Of_Shoulder_Stretch,pending,20.128174,2,['possible_precropped_flat_boundary']
+730,Iliotibial_Tract-SMR,pending,20.128174,1,['possible_precropped_flat_boundary']
+731,Standing_Cable_Lift,pending,20.128174,4,['possible_precropped_flat_boundary']
+732,Calves-SMR,pending,20.12207,2,['possible_precropped_flat_boundary']
+733,Overhead_Cable_Curl,pending,20.12207,4,['possible_precropped_flat_boundary']
+734,Farmers_Walk,pending,20.115967,6,['possible_precropped_flat_boundary']
+735,Seated_Hamstring_and_Calf_Stretch,pending,20.115967,5,['possible_precropped_flat_boundary']
+736,Dumbbell_Side_Bend,pending,20.097656,1,['possible_precropped_flat_boundary']
+737,Dumbbell_Lying_Pronation,pending,20.091553,0,['possible_position_variation']
+738,Front_Two-Dumbbell_Raise,pending,20.091553,4,['possible_precropped_flat_boundary']
+739,Cable_Reverse_Crunch,pending,20.085449,6,['possible_precropped_flat_boundary']
+740,Two-Arm_Kettlebell_Military_Press,pending,20.085449,4,['possible_precropped_flat_boundary']
+741,EZ-Bar_Skullcrusher,pending,20.079346,8,['possible_precropped_flat_boundary']
+742,Hammer_Curls,pending,20.079346,0,['near_duplicate_frames']
+743,Seated_Dumbbell_Inner_Biceps_Curl,pending,20.079346,3,['possible_precropped_flat_boundary']
+744,Torso_Rotation,pending,20.079346,0,['possible_scale_variation']
+745,Close-Grip_EZ-Bar_Curl_with_Band,pending,20.073242,0,['near_duplicate_frames']
+746,Isometric_Neck_Exercise_-_Sides,pending,20.073242,0,['near_duplicate_frames']
+747,Svend_Press,pending,20.073242,1,['possible_precropped_flat_boundary']
+748,Crucifix,pending,20.067139,0,['near_duplicate_frames']
+749,Dynamic_Chest_Stretch,pending,20.067139,4,['possible_precropped_flat_boundary']
+750,Kettlebell_Arnold_Press,pending,20.067139,4,['possible_precropped_flat_boundary']
+751,Tricep_Side_Stretch,pending,20.067139,1,['possible_precropped_flat_boundary']
+752,Chin_To_Chest_Stretch,pending,20.061035,3,['possible_precropped_flat_boundary']
+753,Adductor,pending,20.054932,0,['near_duplicate_frames']
+754,Bent_Over_Dumbbell_Rear_Delt_Raise_With_Head_On_Bench,pending,20.048828,2,['possible_precropped_flat_boundary']
+755,Seated_Bent-Over_One-Arm_Dumbbell_Triceps_Extension,pending,20.048828,3,['possible_precropped_flat_boundary']
+756,Single_Leg_Butt_Kick,pending,20.048828,4,['possible_precropped_flat_boundary']
+757,Arm_Circles,pending,20.0,0,['near_duplicate_frames']
+758,Board_Press,pending,20.0,1,['possible_precropped_flat_boundary']
+759,Decline_Dumbbell_Triceps_Extension,pending,20.0,0,['possible_position_variation']
+760,EZ-Bar_Curl,pending,20.0,5,['possible_precropped_flat_boundary']
+761,Front_Leg_Raises,pending,20.0,3,['possible_precropped_flat_boundary']
+762,Hyperextensions_With_No_Hyperextension_Bench,pending,20.0,0,['possible_position_variation']
+763,Incline_Bench_Pull,pending,20.0,0,['possible_position_variation']
+764,Lateral_Raise_-_With_Bands,pending,20.0,4,['possible_precropped_flat_boundary']
+765,Leg_Extensions,pending,20.0,4,['possible_precropped_flat_boundary']
+766,Leverage_Decline_Chest_Press,pending,20.0,2,['possible_precropped_flat_boundary']
+767,Looking_At_Ceiling,pending,20.0,2,['possible_precropped_flat_boundary']
+768,On_Your_Side_Quad_Stretch,pending,20.0,1,['possible_precropped_flat_boundary']
+769,Peroneals-SMR,pending,20.0,2,['possible_precropped_flat_boundary']
+770,Seated_Bent-Over_Rear_Delt_Raise,pending,20.0,2,['possible_precropped_flat_boundary']
+771,Seated_Leg_Tucks,pending,20.0,0,['possible_scale_variation']
+772,Sled_Reverse_Flye,pending,20.0,1,['possible_precropped_flat_boundary']
+773,Smith_Machine_Pistol_Squat,pending,1.568604,0,[]
+774,Bent-Knee_Hip_Raise,pending,1.550293,0,[]
+775,Two-Arm_Dumbbell_Preacher_Curl,pending,1.104736,0,[]
+776,Neck_Press,pending,0.921631,0,[]
+777,Cable_Iron_Cross,pending,0.878906,0,[]
+778,Body_Tricep_Press,pending,0.848389,0,[]
+779,Smith_Machine_Overhead_Shoulder_Press,pending,0.78125,0,[]
+780,Smith_Machine_Decline_Press,pending,0.775146,0,[]
+781,Carioca_Quick_Step,pending,0.762939,0,[]
+782,One_Arm_Supinated_Dumbbell_Triceps_Extension,pending,0.732422,0,[]
+783,Two-Arm_Kettlebell_Jerk,pending,0.726318,0,[]
+784,Standing_Bent-Over_Two-Arm_Dumbbell_Triceps_Extension,pending,0.67749,0,[]
+785,Pelvic_Tilt_Into_Bridge,pending,0.671387,0,[]
+786,Brachialis-SMR,pending,0.665283,0,[]
+787,Incline_Dumbbell_Curl,pending,0.665283,0,[]
+788,Sit_Squats,pending,0.610352,0,[]
+789,Incline_Inner_Biceps_Curl,pending,0.57373,0,[]
+790,One-Legged_Cable_Kickback,pending,0.567627,0,[]
+791,Groiners,pending,0.55542,0,[]
+792,Seated_One-Arm_Dumbbell_Palms-Down_Wrist_Curl,pending,0.549316,0,[]
+793,Cable_Lying_Triceps_Extension,pending,0.543213,0,[]
+794,Power_Jerk,pending,0.537109,0,[]
+795,Two-Arm_Kettlebell_Row,pending,0.537109,0,[]
+796,One-Arm_Kettlebell_Floor_Press,pending,0.524902,0,[]
+797,Standing_Elevated_Quad_Stretch,pending,0.494385,0,[]
+798,Decline_Barbell_Bench_Press,pending,0.469971,0,[]
+799,Lying_Prone_Quadriceps,pending,0.445557,0,[]
+800,Reverse_Grip_Bent-Over_Rows,pending,0.439453,0,[]
+801,Finger_Curls,pending,0.415039,0,[]
+802,One_Handed_Hang,pending,0.415039,0,[]
+803,Standing_Gastrocnemius_Calf_Stretch,pending,0.415039,0,[]
+804,Cable_Shrugs,pending,0.408936,0,[]
+805,Lying_T-Bar_Row,pending,0.408936,0,[]
+806,Foot-SMR,pending,0.390625,0,[]
+807,Leverage_Shoulder_Press,pending,0.390625,0,[]
+808,Palms-Down_Wrist_Curl_Over_A_Bench,pending,0.372314,0,[]
+809,One-Arm_Side_Laterals,pending,0.366211,0,[]
+810,Prowler_Sprint,pending,0.366211,0,[]
+811,One-Arm_Incline_Lateral_Raise,pending,0.360107,0,[]
+812,Back_Flyes_-_With_Bands,pending,0.341797,0,[]
+813,Underhand_Cable_Pulldowns,pending,0.305176,0,[]
+814,Seated_Biceps,pending,0.292969,0,[]
+815,Iron_Crosses_stretch,pending,0.280762,0,[]
+816,Decline_Dumbbell_Bench_Press,pending,0.268555,0,[]
+817,Ab_Crunch_Machine,pending,0.238037,0,[]
+818,IT_Band_and_Glute_Stretch,pending,0.238037,0,[]
+819,Arnold_Dumbbell_Press,pending,0.22583,0,[]
+820,Close-Grip_Standing_Barbell_Curl,pending,0.22583,0,[]
+821,Standing_Leg_Curl,pending,0.22583,0,[]
+822,Low_Cable_Triceps_Extension,pending,0.219727,0,[]
+823,Split_Jerk,pending,0.219727,0,[]
+824,Incline_Barbell_Triceps_Extension,pending,0.213623,0,[]
+825,Leverage_Shrug,pending,0.213623,0,[]
+826,Calf_Press_On_The_Leg_Press_Machine,pending,0.20752,0,[]
+827,Backward_Drag,pending,0.201416,0,[]
+828,Standing_Two-Arm_Overhead_Throw,pending,0.195312,0,[]
+829,Bench_Press_with_Chains,pending,0.189209,0,[]
+830,Star_Jump,pending,0.189209,0,[]
+831,Smith_Machine_Hang_Power_Clean,pending,0.183105,0,[]
+832,External_Rotation,pending,0.177002,0,[]
+833,Cable_Deadlifts,pending,0.170898,0,[]
+834,Close-Grip_EZ_Bar_Curl,pending,0.164795,0,[]
+835,Dumbbell_Scaption,pending,0.158691,0,[]
+836,Kneeling_Arm_Drill,pending,0.158691,0,[]
+837,Rack_Delivery,pending,0.158691,0,[]
+838,Flexor_Incline_Dumbbell_Curls,pending,0.152588,0,[]
+839,Reverse_Cable_Curl,pending,0.146484,0,[]
+840,Seated_Barbell_Twist,pending,0.140381,0,[]
+841,Bench_Press_-_With_Bands,pending,0.134277,0,[]
+842,Decline_Close-Grip_Bench_To_Skull_Crusher,pending,0.134277,0,[]
+843,Suspended_Push-Up,pending,0.134277,0,[]
+844,Front_Incline_Dumbbell_Raise,pending,0.128174,0,[]
+845,One-Arm_High-Pulley_Cable_Side_Bends,pending,0.128174,0,[]
+846,Round_The_World_Shoulder_Stretch,pending,0.12207,0,[]
+847,Standing_One-Arm_Dumbbell_Curl_Over_Incline_Bench,pending,0.12207,0,[]
+848,Medicine_Ball_Full_Twist,pending,0.115967,0,[]
+849,Rickshaw_Deadlift,pending,0.097656,0,[]
+850,Alternate_Leg_Diagonal_Bound,pending,0.073242,0,[]
+851,Dumbbell_Raise,pending,0.073242,0,[]
+852,Upright_Barbell_Row,pending,0.067139,0,[]
+853,Bench_Press_-_Powerlifting,pending,0.061035,0,[]
+854,Close-Grip_Barbell_Bench_Press,pending,0.061035,0,[]
+855,Landmine_180s,pending,0.061035,0,[]
+856,Leverage_Chest_Press,pending,0.061035,0,[]
+857,Narrow_Stance_Leg_Press,pending,0.048828,0,[]
+858,Advanced_Kettlebell_Windmill,pending,0.0,0,[]
+859,Alternating_Renegade_Row,pending,0.0,0,[]
+860,Bear_Crawl_Sled_Drags,pending,0.0,0,[]
+861,Bodyweight_Mid_Row,pending,0.0,0,[]
+862,Cable_Seated_Lateral_Raise,pending,0.0,0,[]
+863,Cable_Shoulder_Press,pending,0.0,0,[]
+864,Crunch_-_Hands_Overhead,pending,0.0,0,[]
+865,Dip_Machine,pending,0.0,0,[]
+866,Latissimus_Dorsi-SMR,pending,0.0,0,[]
+867,Leverage_High_Row,pending,0.0,0,[]
+868,Medicine_Ball_Chest_Pass,pending,0.0,0,[]
+869,Overhead_Stretch,pending,0.0,0,[]
+870,Peroneals_Stretch,pending,0.0,0,[]
+871,Posterior_Tibialis_Stretch,pending,0.0,0,[]
+872,Power_Partials,pending,0.0,0,[]
+873,Seated_Leg_Curl,pending,0.0,0,[]
+874,Split_Squats,pending,0.0,0,[]
+875,Weighted_Sissy_Squat,pending,0.0,0,[]

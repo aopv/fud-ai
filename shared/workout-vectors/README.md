@@ -69,6 +69,20 @@ accidentally saved in place of the illustration:
 python3 scripts/verify_workout_visual_pixels.py
 ```
 
+This basic pixel check does **not** prove that enclosed background gaps are clean
+or that consecutive frames have consistent scale. The September 2026 quality
+review found baked checkerboards inside otherwise transparent PNGs. Read-only
+candidate triage is available with:
+
+```sh
+python3 scripts/audit_workout_visual_quality.py
+```
+
+See `artifacts/workout-visual-qa/README.md` for numerical versus visual-review
+coverage and rejected built-in repair attempts. Do not treat candidate flags as
+accepted fixes. Workout list, grid, and diary thumbnails continue to animate;
+the image rollout must not disable existing animation behavior.
+
 The one-time importer used to reconstruct the canonical corpus from completed local
 generation batches validates every source before writing and copies only exact
 canonical filenames:

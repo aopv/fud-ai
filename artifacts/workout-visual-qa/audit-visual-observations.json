@@ -1,0 +1,30 @@
+{
+  "note": "Manual observations are separate from numerical candidate flags. No images were edited by this audit.",
+  "exerciseObservations": [
+    {
+      "exerciseId": "Band_Skull_Crusher",
+      "reviewStatus": "visually_confirmed_background_defect",
+      "reviewedFrames": [
+        "Band_Skull_Crusher_male_v2_0.png",
+        "Band_Skull_Crusher_male_v2_1.png",
+        "Band_Skull_Crusher_male_v2_2.png",
+        "Band_Skull_Crusher_male_v2_3.png",
+        "Band_Skull_Crusher_female_v2_0.png",
+        "Band_Skull_Crusher_female_v2_1.png",
+        "Band_Skull_Crusher_female_v2_2.png",
+        "Band_Skull_Crusher_female_v2_3.png"
+      ],
+      "confirmedDefects": [
+        "All eight frames show visible light checkerboard inside the region enclosed by the red band, arm, head, and bench.",
+        "Female frame 3 has an abrupt vertical cutoff at the forward shoe tip near x=1012; the toe appears cropped even though the PNG retains a 12-pixel transparent canvas margin."
+      ],
+      "reviewCautions": [
+        "White shoe soles and specular equipment highlights are artwork and must remain intact.",
+        "The bench circular cutouts contain opaque light pixels. The intended geometry should be preserved, and only actual background openings made transparent.",
+        "Changing hand height and arm reach is expected exercise motion. Do not normalize each pose bounding box independently."
+      ],
+      "repairStatus": "pending_builtin_image_edit",
+      "finalAcceptanceStatus": "pending"
+    }
+  ]
+}

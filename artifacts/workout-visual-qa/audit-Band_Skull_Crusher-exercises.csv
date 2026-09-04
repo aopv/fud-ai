@@ -1,0 +1,2 @@
+review_priority_rank,exercise_id,review_status,score,candidate_image_count,candidate_flags
+1,Band_Skull_Crusher,pending,204.13208,8,"['large_opaque_pale_region', 'near_duplicate_frames', 'possible_precropped_flat_boundary', 'suspected_baked_checkerboard']"
