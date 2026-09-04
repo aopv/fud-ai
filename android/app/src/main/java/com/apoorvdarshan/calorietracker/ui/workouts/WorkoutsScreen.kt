@@ -90,7 +90,6 @@ import com.apoorvdarshan.calorietracker.ui.workouts.AnimatedExerciseImage
 import com.apoorvdarshan.calorietracker.data.ExerciseItem
 import com.apoorvdarshan.calorietracker.data.ExerciseRepository
 import com.apoorvdarshan.calorietracker.data.ExerciseSort
-import com.apoorvdarshan.calorietracker.data.ExerciseVisual
 import com.apoorvdarshan.calorietracker.ui.workouts.WorkoutsViewModel
 
 @Composable
@@ -105,12 +104,11 @@ fun WorkoutsScreen(container: AppContainer, modifier: Modifier = Modifier) {
     val weightUnit = WorkoutWeightUnit.fromStorage(weightUnitRaw)
     val bodyWeightKg = latestWeight?.weightKg ?: profile?.weightKg ?: 70.0
 
-    LaunchedEffect(container.workoutRepository, bodyWeightKg, weightUnit, profile?.gender) {
+    LaunchedEffect(container.workoutRepository, bodyWeightKg, weightUnit) {
         vm.bindWorkoutRepository(
             repository = container.workoutRepository,
             currentBodyWeightKg = bodyWeightKg,
-            weightUnit = weightUnit,
-            profileGender = profile?.gender ?: com.apoorvdarshan.calorietracker.models.Gender.MALE
+            weightUnit = weightUnit
         )
     }
 
@@ -118,12 +116,7 @@ fun WorkoutsScreen(container: AppContainer, modifier: Modifier = Modifier) {
         ?: vm.openExerciseId?.let { id -> repo.exercises.firstOrNull { it.id == id } }
     if (openItem != null) {
         BackHandler(onBack = vm::closeExerciseDetail)
-        ExerciseDetailScreen(
-            item = openItem,
-            visual = repo.visualFor(openItem, vm.diaryUiState.visualGender),
-            onBack = vm::closeExerciseDetail,
-            modifier = modifier
-        )
+        ExerciseDetailScreen(item = openItem, onBack = vm::closeExerciseDetail, modifier = modifier)
         return
     }
 
@@ -283,11 +276,7 @@ private fun WorkoutLibraryScreen(
                 item(key = "empty") { EmptyState() }
             } else {
                 items(items, key = { it.id }) { item ->
-                    ExerciseRow(
-                        item = item,
-                        visual = repo.visualFor(item, vm.diaryUiState.visualGender),
-                        onClick = { vm.openExerciseId = item.id }
-                    )
+                    ExerciseRow(item = item, onClick = { vm.openExerciseId = item.id })
                     HorizontalDivider(
                         color = workoutsColors().hairline.copy(alpha = 0.28f),
                         thickness = 0.5.dp,
@@ -571,7 +560,6 @@ internal fun CapsuleButton(text: String, icon: ImageVector, tint: Color, enabled
 @Composable
 internal fun ExerciseRow(
     item: ExerciseItem,
-    visual: ExerciseVisual,
     onClick: () -> Unit,
     trailingContent: @Composable () -> Unit = {
         Icon(
@@ -598,7 +586,7 @@ internal fun ExerciseRow(
                 .background(colors.panel.copy(alpha = 0.32f))
                 .border(0.5.dp, colors.hairline.copy(alpha = 0.38f), RoundedCornerShape(18.dp))
         ) {
-            AnimatedExerciseImage(visual, Modifier.fillMaxSize())
+            AnimatedExerciseImage(item.imagePaths, Modifier.fillMaxSize())
         }
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(9.dp)) {
             Text(item.name, color = colors.charcoal, fontSize = 17.sp, fontWeight = FontWeight.SemiBold, maxLines = 2, overflow = TextOverflow.Ellipsis)

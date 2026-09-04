@@ -94,16 +94,15 @@ android {
     }
 
     // Workouts (exercise library ported from Delts): mirror the iOS app's exercise
-    // dataset + images without duplicating ~98MB in git — pull the JSON/JPEGs from
-    // the existing FreeExerciseDB resources and gender-aware authored frames from the
-    // shared workout-visual source. The merged filenames are available at the assets root.
+    // dataset + images without duplicating ~98MB in git — pull them straight from
+    // the iOS resources at build time. The JSON (exercises.json) and the 1,746
+    // JPGs land flat at the assets root.
     sourceSets {
         getByName("main") {
             assets.srcDirs(
                 "src/main/assets",
                 "../../ios/calorietracker/Resources/FreeExerciseDB/dist",
                 "../../ios/calorietracker/Resources/FreeExerciseDB/images",
-                "../../shared/workout-vectors",
                 "../../local-models/legal"
             )
         }
@@ -120,7 +119,6 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3)
     implementation(libs.coil.compose)
-    implementation(libs.coil.svg)
     implementation(libs.gson)
     implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.androidx.compose.ui)

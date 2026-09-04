@@ -14,7 +14,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -30,18 +29,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import coil.decode.SvgDecoder
-import coil.request.ImageRequest
 import com.apoorvdarshan.calorietracker.data.ExerciseRepository
-import com.apoorvdarshan.calorietracker.data.ExerciseVisual
-import com.apoorvdarshan.calorietracker.data.ExerciseVisualFormat
 import kotlinx.coroutines.delay
 
 /**
- * Cycling exercise visual — the Android analog of the iOS `AnimatedExerciseVisual`.
- * Legacy JPEGs keep their cropped, muted treatment; authored SVG/PNG sequences render
- * uncropped and in their original colors. Honors the system "remove animations" setting
- * and shows a meaningful representative frame instead of freezing at the standing pose.
+ * Muted, cycling exercise visual — the Android analog of the iOS
+ * `AnimatedExerciseVisual`. All frames are stacked and the current one is shown
+ * at full opacity (instant cut every 0.85s, no fade), with iOS's desaturated /
+ * higher-contrast / darker color treatment. Honors the system "remove
+ * animations" setting, and shows a fallback visual when there are no images.
  */
 private val ExerciseImageFilter: ColorFilter = run {
     val saturation = ColorMatrix().apply { setToSaturation(0.19f) }
@@ -61,13 +57,12 @@ private val ExerciseImageFilter: ColorFilter = run {
 
 @Composable
 fun AnimatedExerciseImage(
-    visual: ExerciseVisual,
+    imagePaths: List<String>,
     modifier: Modifier = Modifier,
     contentScale: ContentScale = ContentScale.Crop,
     fallbackLabel: String? = null
 ) {
     val colors = workoutsColors()
-    val imagePaths = visual.framePaths
 
     if (imagePaths.isEmpty()) {
         Box(
@@ -96,16 +91,9 @@ fun AnimatedExerciseImage(
     val animationsEnabled = remember {
         Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1f) != 0f
     }
-    val representativeIndex = visual.representativeFrameIndex.coerceIn(imagePaths.indices)
-    var index by remember(imagePaths, visual.format, animationsEnabled) {
-        mutableIntStateOf(if (animationsEnabled) 0 else representativeIndex)
-    }
+    var index by remember(imagePaths) { mutableIntStateOf(0) }
 
-    LaunchedEffect(imagePaths, visual.format, animationsEnabled) {
-        if (!animationsEnabled) {
-            index = representativeIndex
-            return@LaunchedEffect
-        }
+    LaunchedEffect(imagePaths, animationsEnabled) {
         if (imagePaths.size > 1 && animationsEnabled) {
             while (true) {
                 delay(850)
@@ -116,28 +104,15 @@ fun AnimatedExerciseImage(
 
     Box(modifier) {
         imagePaths.forEachIndexed { i, path ->
-            key(path, visual.format) {
-                val assetUri = ExerciseRepository.imageAssetUri(path)
-                val model = remember(path, visual.format) {
-                    if (visual.format == ExerciseVisualFormat.SVG) {
-                        ImageRequest.Builder(context)
-                            .data(assetUri)
-                            .decoderFactory(SvgDecoder.Factory())
-                            .build()
-                    } else {
-                        assetUri
-                    }
-                }
-                AsyncImage(
-                    model = model,
-                    contentDescription = null,
-                    contentScale = if (visual.format == ExerciseVisualFormat.JPEG) contentScale else ContentScale.Fit,
-                    colorFilter = if (visual.format == ExerciseVisualFormat.JPEG) ExerciseImageFilter else null,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .alpha(if (i == index) 1f else 0f)
-                )
-            }
+            AsyncImage(
+                model = ExerciseRepository.imageAssetUri(path),
+                contentDescription = null,
+                contentScale = contentScale,
+                colorFilter = ExerciseImageFilter,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .alpha(if (i == index) 1f else 0f)
+            )
         }
     }
 }

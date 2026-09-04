@@ -99,7 +99,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.sp
 import com.apoorvdarshan.calorietracker.data.ExerciseRepository
-import com.apoorvdarshan.calorietracker.data.ExerciseVisual
 import com.apoorvdarshan.calorietracker.R
 import com.apoorvdarshan.calorietracker.models.PlannedExercise
 import com.apoorvdarshan.calorietracker.models.PlannedSet
@@ -270,7 +269,6 @@ internal fun WorkoutDiaryScreen(
                     ) {
                         WorkoutExerciseCard(
                             exercise = exercise,
-                            visual = exerciseRepository.visualFor(exercise.asExerciseItem(), state.visualGender),
                             weightUnit = state.weightUnit,
                             rpePlaceholder = state.preferences.rpeScale.inputPlaceholder,
                             isSaved = isSaved,
@@ -379,7 +377,6 @@ internal fun WorkoutDiaryScreen(
             savedExerciseIds = state.savedExerciseIds,
             initialSource = if (request.isSavedContext) WorkoutPickerSource.SAVED else viewModel.pickerSource(),
             initialFilterState = viewModel.pickerFilter(request.contextId),
-            visualGender = state.visualGender,
             preferredEquipment = state.preferences.equipment,
             hidePrimaryFilter = request.muscles.isNotEmpty() &&
                 state.preferences.split in setOf(
@@ -808,7 +805,6 @@ private fun BoxScope.WorkoutExerciseSwipeBackground(offsetPx: Float, isSaved: Bo
 @Composable
 private fun WorkoutExerciseCard(
     exercise: PlannedExercise,
-    visual: ExerciseVisual,
     modifier: Modifier = Modifier,
     weightUnit: WorkoutWeightUnit,
     rpePlaceholder: String,
@@ -848,7 +844,7 @@ private fun WorkoutExerciseCard(
                             RoundedCornerShape(16.dp)
                         )
                 ) {
-                    AnimatedExerciseImage(visual, Modifier.fillMaxSize())
+                    AnimatedExerciseImage(exercise.imagePaths, Modifier.fillMaxSize())
                 }
                 Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(5.dp)) {
                     Text(

@@ -684,7 +684,6 @@
 			buildSettings = {
 				APP_DISPLAY_NAME = "Fud AI Debug";
 				APP_GROUP_IDENTIFIER = group.com.apoorvdarshan.calorietracker.debug;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = NO;
 				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "AppIconRed AppIconOrange AppIconGreen AppIconMint AppIconTeal AppIconBlue AppIconPurple AppIconYellow AppIconCoral AppIconRoseGold AppIconMochaBrown AppIconIndigo AppIconLavender AppIconSkyCyan AppIconGraphite AppIconBabyPink AppIconLime";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -736,7 +735,6 @@
 			buildSettings = {
 				APP_DISPLAY_NAME = "Fud AI";
 				APP_GROUP_IDENTIFIER = group.com.apoorvdarshan.calorietracker;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = NO;
 				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "AppIconRed AppIconOrange AppIconGreen AppIconMint AppIconTeal AppIconBlue AppIconPurple AppIconYellow AppIconCoral AppIconRoseGold AppIconMochaBrown AppIconIndigo AppIconLavender AppIconSkyCyan AppIconGraphite AppIconBabyPink AppIconLime";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;

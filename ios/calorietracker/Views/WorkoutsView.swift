@@ -222,7 +222,6 @@ private struct ExerciseLibraryBrowserView: View {
                         } label: {
                             ExerciseLibraryRow(item: item)
                         }
-                        .accessibilityIdentifier("workouts.exercise.\(item.id)")
                         .buttonStyle(.plain)
                         .padding(.horizontal, 20)
 
@@ -542,7 +541,6 @@ private struct WorkoutsSearchPill: View {
                 .foregroundStyle(searchText.isEmpty ? Color.workoutSecondaryAccent : Color.workoutAccent)
 
             TextField("Search", text: $searchText)
-                .accessibilityIdentifier("workouts.search")
                 .textFieldStyle(.plain)
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(Color.workoutCharcoal)
@@ -560,8 +558,6 @@ private struct WorkoutsSearchPill: View {
                         .foregroundStyle(Color.workoutMutedText)
                 }
                 .buttonStyle(.plain)
-                .accessibilityIdentifier("workouts.search.clear")
-                .accessibilityLabel("Clear search")
             }
         }
         .padding(.horizontal, 14)
@@ -751,8 +747,7 @@ private struct ExerciseLibraryRow: View {
             imagePaths: item.imagePaths,
             height: 104,
             fillsWidth: false,
-            allowsDerivedImageLookup: false,
-            animatesFrames: false
+            allowsDerivedImageLookup: false
         )
         .frame(width: 104, height: 104)
         .background(Color.workoutPanel.opacity(0.32), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
@@ -879,7 +874,6 @@ struct ExerciseLibraryDetailView: View {
         .animation(.snappy(duration: 0.28), value: isMetricsPresented)
         .clipped()
         .accessibilityElement(children: .combine)
-        .accessibilityIdentifier("workouts.exercise.visual.\(item.id)")
         .accessibilityLabel(Text("\(item.name) exercise visual"))
     }
 

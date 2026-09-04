@@ -77,8 +77,6 @@ import androidx.compose.ui.unit.sp
 import com.apoorvdarshan.calorietracker.data.ExerciseItem
 import com.apoorvdarshan.calorietracker.data.ExerciseRepository
 import com.apoorvdarshan.calorietracker.data.ExerciseSort
-import com.apoorvdarshan.calorietracker.data.ExerciseVisual
-import com.apoorvdarshan.calorietracker.models.Gender
 import com.apoorvdarshan.calorietracker.models.WorkoutSplitGroup
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassSurface
 import com.apoorvdarshan.calorietracker.ui.components.FudGlassTextButton
@@ -130,7 +128,6 @@ internal fun WorkoutPickerSheet(
     savedExerciseIds: Set<String>,
     initialSource: WorkoutPickerSource,
     initialFilterState: WorkoutPickerFilterState,
-    visualGender: Gender,
     preferredEquipment: Set<String>,
     hidePrimaryFilter: Boolean,
     onSourceChange: (WorkoutPickerSource) -> Unit,
@@ -244,7 +241,6 @@ internal fun WorkoutPickerSheet(
         if (preview != null) {
             ExercisePickerPreview(
                 item = preview,
-                visual = repository.visualFor(preview, visualGender),
                 isSelected = preview.id in selectedExerciseIds,
                 onToggle = { onToggleExercise(preview) },
                 onBack = { previewItem = null }
@@ -386,7 +382,6 @@ internal fun WorkoutPickerSheet(
                         items(items.take(120), key = { it.id }) { item ->
                             ExerciseRow(
                                 item = item,
-                                visual = repository.visualFor(item, visualGender),
                                 onClick = { onToggleExercise(item) },
                                 trailingContent = {
                                     Row(
@@ -450,7 +445,6 @@ internal fun WorkoutPickerSheet(
 @Composable
 private fun ExercisePickerPreview(
     item: ExerciseItem,
-    visual: ExerciseVisual,
     isSelected: Boolean,
     onToggle: () -> Unit,
     onBack: () -> Unit
@@ -464,7 +458,6 @@ private fun ExercisePickerPreview(
     ) {
         ExerciseDetailScreen(
             item = item,
-            visual = visual,
             onBack = onBack,
             modifier = Modifier.fillMaxSize()
         )
