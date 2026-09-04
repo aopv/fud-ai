@@ -16,6 +16,15 @@ from pathlib import Path
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 SHARED_DIRECTORY = REPOSITORY_ROOT / "shared" / "workout-vectors"
 IOS_CATALOG = REPOSITORY_ROOT / "ios" / "calorietracker" / "Assets.xcassets"
+EXERCISE_DATABASE = (
+    REPOSITORY_ROOT
+    / "ios"
+    / "calorietracker"
+    / "Resources"
+    / "FreeExerciseDB"
+    / "dist"
+    / "exercises.json"
+)
 SHARED_MANIFEST = SHARED_DIRECTORY / "exercise-visual-manifest.json"
 IOS_MANIFEST = (
     IOS_CATALOG
@@ -25,8 +34,13 @@ IOS_MANIFEST = (
 FRAME_COUNT = 4
 FRAME_INDICES = tuple(range(FRAME_COUNT))
 GENDERS = ("male", "female")
+EXPECTED_EXERCISE_COUNT = 875
+EXPECTED_ASSET_COUNT = EXPECTED_EXERCISE_COUNT * len(GENDERS) * FRAME_COUNT
 ASSET_PATTERN = re.compile(
     r"^(?P<exercise_id>.+)_(?P<gender>male|female)_v2_(?P<frame>[0-9]+)\.png$"
+)
+ASSET_STEM_PATTERN = re.compile(
+    r"^(?P<exercise_id>.+)_(?P<gender>male|female)_v2_(?P<frame>[0-9]+)$"
 )
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 
@@ -41,10 +55,17 @@ def parse_arguments() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def display_path(path: Path) -> str:
+    try:
+        return str(path.relative_to(REPOSITORY_ROOT))
+    except ValueError:
+        return str(path)
+
+
 def png_metadata(asset: Path) -> tuple[int, int, bool]:
     data = asset.read_bytes()
     if not data.startswith(PNG_SIGNATURE):
-        raise ValueError(f"not a PNG: {asset.relative_to(REPOSITORY_ROOT)}")
+        raise ValueError(f"not a PNG: {display_path(asset)}")
 
     offset = len(PNG_SIGNATURE)
     width = height = color_type = None
@@ -54,7 +75,7 @@ def png_metadata(asset: Path) -> tuple[int, int, bool]:
         chunk_type = data[offset + 4 : offset + 8]
         chunk_data = data[offset + 8 : offset + 8 + length]
         if len(chunk_data) != length:
-            raise ValueError(f"truncated PNG: {asset.relative_to(REPOSITORY_ROOT)}")
+            raise ValueError(f"truncated PNG: {display_path(asset)}")
         if chunk_type == b"IHDR":
             width, height, _, color_type, _, _, _ = struct.unpack(">IIBBBBB", chunk_data)
         elif chunk_type == b"tRNS":
@@ -64,9 +85,42 @@ def png_metadata(asset: Path) -> tuple[int, int, bool]:
         offset += 12 + length
 
     if width is None or height is None or color_type is None:
-        raise ValueError(f"missing PNG header: {asset.relative_to(REPOSITORY_ROOT)}")
+        raise ValueError(f"missing PNG header: {display_path(asset)}")
     has_alpha = color_type in (4, 6) or has_transparency_chunk
     return width, height, has_alpha
+
+
+def expected_exercise_ids() -> set[str]:
+    document = json.loads(EXERCISE_DATABASE.read_text())
+    if not isinstance(document, list):
+        raise ValueError("exercise database root must be an array")
+
+    exercise_ids: list[str] = []
+    for index, exercise in enumerate(document):
+        if not isinstance(exercise, dict):
+            raise ValueError(f"exercise database item {index} must be an object")
+        exercise_id = exercise.get("id")
+        if not isinstance(exercise_id, str) or not exercise_id:
+            raise ValueError(f"exercise database item {index} has no valid id")
+        exercise_ids.append(exercise_id)
+
+    unique_ids = set(exercise_ids)
+    if len(unique_ids) != len(exercise_ids):
+        raise ValueError("exercise database contains duplicate ids")
+    if len(unique_ids) != EXPECTED_EXERCISE_COUNT:
+        raise ValueError(
+            f"exercise database must contain {EXPECTED_EXERCISE_COUNT} ids, "
+            f"found {len(unique_ids)}"
+        )
+    return unique_ids
+
+
+def summarize_values(values: set[str], *, limit: int = 12) -> str:
+    ordered = sorted(values)
+    displayed = ", ".join(ordered[:limit])
+    if len(ordered) > limit:
+        displayed += f", ... (+{len(ordered) - limit} more)"
+    return displayed
 
 
 def imageset_contents(filename: str) -> dict[str, object]:
@@ -131,6 +185,71 @@ def validate_sequence(
                 raise ValueError(f"{asset.name}: PNG has no alpha channel")
 
 
+def validate_sequence_inventory(
+    sequences: dict[str, dict[str, dict[int, Path]]],
+    expected_ids: set[str],
+) -> None:
+    actual_ids = set(sequences)
+    if actual_ids != expected_ids:
+        missing = expected_ids - actual_ids
+        unexpected = actual_ids - expected_ids
+        details: list[str] = []
+        if missing:
+            details.append(
+                f"missing {len(missing)} ids ({summarize_values(missing)})"
+            )
+        if unexpected:
+            details.append(
+                f"unexpected {len(unexpected)} ids "
+                f"({summarize_values(unexpected)})"
+            )
+        raise ValueError(
+            "shared workout sequence ids differ from database: "
+            + "; ".join(details)
+        )
+
+    asset_count = sum(
+        len(frames)
+        for by_gender in sequences.values()
+        for frames in by_gender.values()
+    )
+    if asset_count != EXPECTED_ASSET_COUNT:
+        raise ValueError(
+            f"shared corpus must contain {EXPECTED_ASSET_COUNT} PNG assets, "
+            f"found {asset_count}"
+        )
+
+
+def validate_ios_imageset_inventory(
+    expected_stems: set[str],
+    *,
+    check: bool,
+) -> None:
+    actual_stems: set[str] = set()
+    for imageset in IOS_CATALOG.glob("*_v2_*.imageset"):
+        if ASSET_STEM_PATTERN.fullmatch(imageset.stem) is None:
+            raise ValueError(
+                f"invalid generated iOS imageset name: "
+                f"{imageset.relative_to(REPOSITORY_ROOT)}"
+            )
+        actual_stems.add(imageset.stem)
+
+    unexpected = actual_stems - expected_stems
+    if unexpected:
+        raise ValueError(
+            f"iOS asset catalog contains {len(unexpected)} stale generated "
+            f"imagesets ({summarize_values(unexpected)})"
+        )
+
+    if check:
+        missing = expected_stems - actual_stems
+        if missing:
+            raise ValueError(
+                f"iOS asset catalog is missing {len(missing)} generated "
+                f"imagesets ({summarize_values(missing)})"
+            )
+
+
 def sync_ios_asset(asset: Path, *, check: bool) -> None:
     imageset = IOS_CATALOG / f"{asset.stem}.imageset"
     ios_asset = imageset / asset.name
@@ -193,9 +312,19 @@ def sync_manifest(document: dict[str, object], *, check: bool) -> None:
 def main() -> int:
     arguments = parse_arguments()
     try:
+        expected_ids = expected_exercise_ids()
         sequences = discover_sequences()
+        validate_sequence_inventory(sequences, expected_ids)
         for exercise_id, by_gender in sequences.items():
             validate_sequence(exercise_id, by_gender)
+        expected_stems = {
+            frames[frame].stem
+            for by_gender in sequences.values()
+            for frames in by_gender.values()
+            for frame in FRAME_INDICES
+        }
+        validate_ios_imageset_inventory(expected_stems, check=arguments.check)
+        for by_gender in sequences.values():
             for gender in GENDERS:
                 for frame in FRAME_INDICES:
                     sync_ios_asset(by_gender[gender][frame], check=arguments.check)

@@ -27,6 +27,8 @@ use four frames, with the exact motion adapted to each exercise:
 All v2 PNG sequences use the Barbell Full Squat visual language: realistic hand-drawn
 dark ink contours, natural anatomy and cel/painterly shading, charcoal-black training
 kit, restrained muted-red accents, transparent cutouts, and consistent framing weight.
+The production corpus contains exactly 875 exercises and 7,000 PNG frames: four male
+and four female frames for every exercise in the bundled FreeExerciseDB catalogue.
 
 Personal Info selects the male or female set. The existing `Other` convention uses
 the male artwork until a dedicated inclusive visual set is designed.
@@ -49,10 +51,47 @@ and cannot overwrite the production manifest:
 python3 scripts/generate_barbell_full_squat_svg_pilot.py --check
 ```
 
-After adding a complete v2 male/female PNG set, sync the iOS catalog copies and both
-runtime manifests, then run the same command in validation-only mode:
+The sync command intentionally rejects partial corpora, unknown exercise IDs, stale
+iOS image sets, and anything other than the complete 875-exercise/7,000-frame set.
+After changing a v2 sequence, sync the iOS catalog copies and both runtime manifests,
+then run the same command in validation-only mode:
 
 ```sh
 python3 scripts/sync_workout_visual_assets.py
 python3 scripts/sync_workout_visual_assets.py --check
 ```
+
+For pixel-level QA, install Pillow and run the following check. It decodes every
+frame and rejects invisible artwork, fully opaque exports, and solid-color masks
+accidentally saved in place of the illustration:
+
+```sh
+python3 scripts/verify_workout_visual_pixels.py
+```
+
+The one-time importer used to reconstruct the canonical corpus from completed local
+generation batches validates every source before writing and copies only exact
+canonical filenames:
+
+```sh
+python3 scripts/import_workout_visual_assets.py --dry-run
+python3 scripts/import_workout_visual_assets.py
+```
+
+## Torso Rotation recovery
+
+The original final exports for this exercise contained black alpha-mask silhouettes.
+The eight replacements use the built-in image tool to edit the full-color batch-094
+source illustrations, which show the exercise ball required by the database.
+The shared prompt for each gender/frame was:
+
+> Remove the baked white/light-gray checkerboard background, preserving the exact
+> athlete, full-color hand-drawn ink/cel shading, charcoal outfit with muted-red
+> trim, exercise ball, body proportions, foot positions, and torso/ball motion.
+> Return a genuinely transparent 1024x768 landscape PNG with the entire person and
+> ball visible, centered with clear margins. No crop, text, grid, watermark,
+> decorative background, or multiple panels.
+
+Male frame 1 additionally requested that the head look toward the ball on image-left.
+Final packaging preserves existing alpha, removes a residual neutral perimeter when
+the tool returns RGB, and resizes onto the standard transparent 1024x768 canvas.

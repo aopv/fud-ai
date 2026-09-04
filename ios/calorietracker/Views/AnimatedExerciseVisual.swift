@@ -127,9 +127,13 @@ private struct ExerciseImageView: View {
             }
         }
         .task(id: taskID) {
-            let loadedFrames = ExerciseImageCache.shared.images(for: asset.frames)
+            frames = []
+            frameIndex = 0
+
+            let frameSources = frameSourcesToLoad
+            let loadedFrames = ExerciseImageCache.shared.images(for: frameSources)
+            guard !Task.isCancelled else { return }
             if !loadedFrames.isEmpty {
-                frameIndex = staticFrameIndex(frameCount: loadedFrames.count)
                 frames = loadedFrames
             }
             guard animatesFrames, frames.count > 1, !reduceMotion else { return }
@@ -160,12 +164,14 @@ private struct ExerciseImageView: View {
         }
     }
 
-    private func staticFrameIndex(frameCount: Int) -> Int {
-        guard asset.format != .jpeg, !animatesFrames || reduceMotion else {
-            return 0
-        }
+    private var frameSourcesToLoad: [ExerciseVisualFrame] {
+        guard !asset.frames.isEmpty else { return [] }
+        guard !animatesFrames || reduceMotion else { return asset.frames }
 
-        return min(asset.representativeFrameIndex, frameCount - 1)
+        let representativeIndex = asset.format == .jpeg
+            ? 0
+            : min(asset.representativeFrameIndex, asset.frames.count - 1)
+        return [asset.frames[representativeIndex]]
     }
 }
 

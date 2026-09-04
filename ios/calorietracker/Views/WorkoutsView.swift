@@ -751,7 +751,8 @@ private struct ExerciseLibraryRow: View {
             imagePaths: item.imagePaths,
             height: 104,
             fillsWidth: false,
-            allowsDerivedImageLookup: false
+            allowsDerivedImageLookup: false,
+            animatesFrames: false
         )
         .frame(width: 104, height: 104)
         .background(Color.workoutPanel.opacity(0.32), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
