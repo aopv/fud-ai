@@ -1,0 +1,94 @@
+{
+  "frames": 8,
+  "canonical_writes": 0,
+  "checks": [
+    {
+      "file": "Barbell_Ab_Rollout_-_On_Knees_male_v2_0.png",
+      "RGBA": true,
+      "size": [
+        1024,
+        768
+      ],
+      "zero_visible_edge_pixels": true,
+      "candidate_matches_viewed_stage_hash": true,
+      "visual_acceptance": "background_and_framing"
+    },
+    {
+      "file": "Barbell_Ab_Rollout_-_On_Knees_male_v2_1.png",
+      "RGBA": true,
+      "size": [
+        1024,
+        768
+      ],
+      "zero_visible_edge_pixels": true,
+      "candidate_matches_viewed_stage_hash": true,
+      "visual_acceptance": "background_and_framing"
+    },
+    {
+      "file": "Barbell_Ab_Rollout_-_On_Knees_male_v2_2.png",
+      "RGBA": true,
+      "size": [
+        1024,
+        768
+      ],
+      "zero_visible_edge_pixels": true,
+      "candidate_matches_viewed_stage_hash": true,
+      "visual_acceptance": "background_and_framing"
+    },
+    {
+      "file": "Barbell_Ab_Rollout_-_On_Knees_male_v2_3.png",
+      "RGBA": true,
+      "size": [
+        1024,
+        768
+      ],
+      "zero_visible_edge_pixels": true,
+      "candidate_matches_viewed_stage_hash": true,
+      "visual_acceptance": "background_and_framing"
+    },
+    {
+      "file": "Barbell_Ab_Rollout_-_On_Knees_female_v2_0.png",
+      "RGBA": true,
+      "size": [
+        1024,
+        768
+      ],
+      "zero_visible_edge_pixels": true,
+      "candidate_matches_viewed_stage_hash": true,
+      "visual_acceptance": "background_and_framing"
+    },
+    {
+      "file": "Barbell_Ab_Rollout_-_On_Knees_female_v2_1.png",
+      "RGBA": true,
+      "size": [
+        1024,
+        768
+      ],
+      "zero_visible_edge_pixels": true,
+      "candidate_matches_viewed_stage_hash": true,
+      "visual_acceptance": "background_and_framing"
+    },
+    {
+      "file": "Barbell_Ab_Rollout_-_On_Knees_female_v2_2.png",
+      "RGBA": true,
+      "size": [
+        1024,
+        768
+      ],
+      "zero_visible_edge_pixels": true,
+      "candidate_matches_viewed_stage_hash": true,
+      "visual_acceptance": "background_and_framing"
+    },
+    {
+      "file": "Barbell_Ab_Rollout_-_On_Knees_female_v2_3.png",
+      "RGBA": true,
+      "size": [
+        1024,
+        768
+      ],
+      "zero_visible_edge_pixels": true,
+      "candidate_matches_viewed_stage_hash": true,
+      "visual_acceptance": "background_and_framing"
+    }
+  ]
+}

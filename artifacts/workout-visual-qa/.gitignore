@@ -22,3 +22,22 @@ recovered-kneeling-framed-v2/images/
 recovered-kneeling-framed-v2/*.png
 recovered-kneeling-shadow-cleanup/images/
 edge-refined-pilot/*.png
+# Preserve final candidates/review evidence; intermediate previews stay local.
+**/*-preview.png
+recovered-kneeling-framed-v4/**/*.png
+recovered-kneeling-framed-v4/*.png
+recovered-kneeling-framed-v5-base/**/*.png
+recovered-kneeling-framed-v5-base/*.png
+recovered-kneeling-framed-v5-edge/**/*.png
+recovered-kneeling-framed-v5-edge/*.png
+recovered-kneeling-contact-cleanup/images/
+parallel-review/Alternate_Heel_Touchers/*.png
+parallel-review/Alternate_Hammer_Curl/*.png
+parallel-review/3_4_Sit-Up/*.png
+hamstring-reviewed-final/originals/*.png
+squat-reviewed-final/*-dark.png
+squat-reviewed-final/*-light.png
+squat-reviewed-final/*-full-review.png
+!squat-reviewed-final/contact-dark.png
+!squat-reviewed-final/contact-light.png
+!squat-reviewed-final/original-contact-dark.png

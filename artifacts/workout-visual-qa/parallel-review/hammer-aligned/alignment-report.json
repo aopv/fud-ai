@@ -1,0 +1,526 @@
+{
+  "schema_version": 1,
+  "algorithm_revision": "stationary-anchors-v2",
+  "source": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/background-full/images",
+  "algorithm": "Reviewed stationary anchors; mutual SIFT + robust uniform scale/translation; shared pose-union fit.",
+  "scope": "Geometric triage only; no image-quality or exercise-technique pass is implied.",
+  "counts": {
+    "needs_review": 2
+  },
+  "sequence_count": 2,
+  "frame_count": 8,
+  "sequences": [
+    {
+      "exercise_id": "Alternate_Hammer_Curl",
+      "gender": "male",
+      "profile": {
+        "reviewed": true,
+        "reason": "All four male frames reviewed: both feet stay planted and the head remains upright; only the alternating forearms and dumbbells move.",
+        "regions": [
+          {
+            "name": "head",
+            "box": [
+              0.44,
+              0.04,
+              0.56,
+              0.24
+            ]
+          },
+          {
+            "name": "left_foot",
+            "box": [
+              0.39,
+              0.85,
+              0.51,
+              0.94
+            ]
+          },
+          {
+            "name": "right_foot",
+            "box": [
+              0.49,
+              0.9,
+              0.6,
+              0.99
+            ]
+          }
+        ]
+      },
+      "status": "needs_review",
+      "flags": [
+        "anchors_not_independently_distributed"
+      ],
+      "frames": [
+        {
+          "bbox": [
+            374,
+            52,
+            649,
+            756
+          ],
+          "size": [
+            1024,
+            768
+          ],
+          "opaque_pale_fraction": 0.000309,
+          "flat_vertical_boundary": 8,
+          "flat_horizontal_boundary": 20,
+          "edge_pixels": 0,
+          "flags": [],
+          "file": "Alternate_Hammer_Curl_male_v2_0.png",
+          "sha256": "89165db052be93229e343e8a5b027c1ee913d977704ba13d218d96beefaa6f3b",
+          "registration": {
+            "accepted": true,
+            "reference": true
+          }
+        },
+        {
+          "bbox": [
+            361,
+            52,
+            663,
+            756
+          ],
+          "size": [
+            1024,
+            768
+          ],
+          "opaque_pale_fraction": 0.000258,
+          "flat_vertical_boundary": 2,
+          "flat_horizontal_boundary": 17,
+          "edge_pixels": 0,
+          "flags": [],
+          "file": "Alternate_Hammer_Curl_male_v2_1.png",
+          "sha256": "a79e57f4da3c9140278d052910440186cb1b8e83410e6c66579b94151248b91e",
+          "registration": {
+            "matches": 57,
+            "accepted": false,
+            "reasons": [
+              "anchors_not_independently_distributed"
+            ],
+            "inliers": 49,
+            "inlier_ratio": 0.8596,
+            "residual_p90_px": 1.0148,
+            "rotation_degrees": 0.0344,
+            "anchor_span_px": [
+              68.06999969482422,
+              121.79000091552734
+            ],
+            "region_support": {
+              "0": 49,
+              "1": 0,
+              "2": 0
+            },
+            "diagnostic_transform": {
+              "scale": 0.999692,
+              "tx": -10.3408,
+              "ty": -0.01334
+            },
+            "independent_fits": [
+              {
+                "region": 0,
+                "scale": 0.999692,
+                "tx": -10.3408,
+                "ty": -0.01334
+              }
+            ],
+            "affine_anisotropy": 1.0071
+          }
+        },
+        {
+          "bbox": [
+            374,
+            49,
+            649,
+            756
+          ],
+          "size": [
+            1024,
+            768
+          ],
+          "opaque_pale_fraction": 0.00032,
+          "flat_vertical_boundary": 9,
+          "flat_horizontal_boundary": 4,
+          "edge_pixels": 0,
+          "flags": [],
+          "file": "Alternate_Hammer_Curl_male_v2_2.png",
+          "sha256": "cf4c625585086bc88f786330c979f436ea2379602287d9d884169a4c1316aa67",
+          "registration": {
+            "matches": 59,
+            "accepted": true,
+            "reasons": [],
+            "inliers": 58,
+            "inlier_ratio": 0.9831,
+            "residual_p90_px": 1.5716,
+            "rotation_degrees": -0.0316,
+            "anchor_span_px": [
+              121.20999908447266,
+              684.4400024414062
+            ],
+            "region_support": {
+              "0": 43,
+              "1": 8,
+              "2": 7
+            },
+            "diagnostic_transform": {
+              "scale": 0.9954158,
+              "tx": 2.51492,
+              "ty": 3.21395
+            },
+            "independent_fits": [
+              {
+                "region": 0,
+                "scale": 0.9979894,
+                "tx": 1.13497,
+                "ty": 2.93552
+              },
+              {
+                "region": 1,
+                "scale": 1.002863,
+                "tx": -1.14648,
+                "ty": -2.13439
+              },
+              {
+                "region": 2,
+                "scale": 0.9905238,
+                "tx": 5.70429,
+                "ty": 6.97667
+              }
+            ],
+            "affine_anisotropy": 1.0068
+          }
+        },
+        {
+          "bbox": [
+            385,
+            50,
+            639,
+            756
+          ],
+          "size": [
+            1024,
+            768
+          ],
+          "opaque_pale_fraction": 0.000291,
+          "flat_vertical_boundary": 16,
+          "flat_horizontal_boundary": 19,
+          "edge_pixels": 0,
+          "flags": [],
+          "file": "Alternate_Hammer_Curl_male_v2_3.png",
+          "sha256": "4590f13709a623b15fbbe5ca405e1900a21727b4102f08111cd02d177979abb2",
+          "registration": {
+            "matches": 43,
+            "accepted": true,
+            "reasons": [],
+            "inliers": 42,
+            "inlier_ratio": 0.9767,
+            "residual_p90_px": 3.5474,
+            "rotation_degrees": -0.4758,
+            "anchor_span_px": [
+              121.20999908447266,
+              678.4000244140625
+            ],
+            "region_support": {
+              "0": 27,
+              "1": 8,
+              "2": 7
+            },
+            "diagnostic_transform": {
+              "scale": 0.9952322,
+              "tx": -11.28436,
+              "ty": 3.15813
+            },
+            "independent_fits": [
+              {
+                "region": 0,
+                "scale": 0.9987123,
+                "tx": -14.88024,
+                "ty": 2.77293
+              },
+              {
+                "region": 1,
+                "scale": 0.9894344,
+                "tx": -4.85528,
+                "ty": 6.97537
+              },
+              {
+                "region": 2,
+                "scale": 0.9908684,
+                "tx": -6.0585,
+                "ty": 6.50099
+              }
+            ],
+            "affine_anisotropy": 1.0147
+          }
+        }
+      ],
+      "size": [
+        1024,
+        768
+      ],
+      "diagnostic_bbox_range_px": [
+        24,
+        3,
+        24,
+        0
+      ],
+      "bbox_warning": "BBox variation includes legitimate motion and is never used as a per-frame scale estimate."
+    },
+    {
+      "exercise_id": "Alternate_Hammer_Curl",
+      "gender": "female",
+      "profile": {
+        "reviewed": true,
+        "reason": "All four female frames reviewed: planted feet and upright head are stationary while alternating arms and dumbbells move. Ponytail silhouette is preserved.",
+        "regions": [
+          {
+            "name": "head",
+            "box": [
+              0.44,
+              0.04,
+              0.55,
+              0.23
+            ]
+          },
+          {
+            "name": "left_foot",
+            "box": [
+              0.39,
+              0.87,
+              0.51,
+              0.95
+            ]
+          },
+          {
+            "name": "right_foot",
+            "box": [
+              0.49,
+              0.91,
+              0.6,
+              0.99
+            ]
+          }
+        ]
+      },
+      "status": "needs_review",
+      "flags": [
+        "anchors_not_independently_distributed",
+        "independent_anchor_geometry_disagrees"
+      ],
+      "frames": [
+        {
+          "bbox": [
+            372,
+            38,
+            651,
+            756
+          ],
+          "size": [
+            1024,
+            768
+          ],
+          "opaque_pale_fraction": 3.8e-05,
+          "flat_vertical_boundary": 21,
+          "flat_horizontal_boundary": 7,
+          "edge_pixels": 0,
+          "flags": [],
+          "file": "Alternate_Hammer_Curl_female_v2_0.png",
+          "sha256": "a063481820f891146e153566b16e96edbbd8a90c49b6058836bf61c3e30f1df2",
+          "registration": {
+            "accepted": true,
+            "reference": true
+          }
+        },
+        {
+          "bbox": [
+            361,
+            38,
+            663,
+            756
+          ],
+          "size": [
+            1024,
+            768
+          ],
+          "opaque_pale_fraction": 0.0,
+          "flat_vertical_boundary": 10,
+          "flat_horizontal_boundary": 5,
+          "edge_pixels": 0,
+          "flags": [],
+          "file": "Alternate_Hammer_Curl_female_v2_1.png",
+          "sha256": "12ca6bb597005fbe38fb6980a26f00eae1777bc4d679a59d94142cfa48f7cbc3",
+          "registration": {
+            "matches": 61,
+            "accepted": false,
+            "reasons": [
+              "anchors_not_independently_distributed"
+            ],
+            "inliers": 60,
+            "inlier_ratio": 0.9836,
+            "residual_p90_px": 2.2979,
+            "rotation_degrees": -0.1069,
+            "anchor_span_px": [
+              93.72000122070312,
+              697.0800170898438
+            ],
+            "region_support": {
+              "0": 43,
+              "1": 13,
+              "2": 4
+            },
+            "diagnostic_transform": {
+              "scale": 1.0002753,
+              "tx": -17.11872,
+              "ty": 0.02777
+            },
+            "independent_fits": [
+              {
+                "region": 0,
+                "scale": 1.0070052,
+                "tx": -20.94576,
+                "ty": -0.73775
+              },
+              {
+                "region": 1,
+                "scale": 0.9934535,
+                "tx": -12.90717,
+                "ty": 4.77568
+              }
+            ],
+            "affine_anisotropy": 1.0058
+          }
+        },
+        {
+          "bbox": [
+            372,
+            39,
+            651,
+            756
+          ],
+          "size": [
+            1024,
+            768
+          ],
+          "opaque_pale_fraction": 0.0,
+          "flat_vertical_boundary": 7,
+          "flat_horizontal_boundary": 25,
+          "edge_pixels": 0,
+          "flags": [],
+          "file": "Alternate_Hammer_Curl_female_v2_2.png",
+          "sha256": "1b4a89b89c1b18439e981679f5dc464f1e93056ea36cea8fcaf6135e7ba89702",
+          "registration": {
+            "matches": 59,
+            "accepted": false,
+            "reasons": [
+              "anchors_not_independently_distributed"
+            ],
+            "inliers": 59,
+            "inlier_ratio": 1.0,
+            "residual_p90_px": 2.0321,
+            "rotation_degrees": -0.0207,
+            "anchor_span_px": [
+              101.76000213623047,
+              679.5
+            ],
+            "region_support": {
+              "0": 47,
+              "1": 9,
+              "2": 3
+            },
+            "diagnostic_transform": {
+              "scale": 1.0004162,
+              "tx": -2.05298,
+              "ty": -0.69373
+            },
+            "independent_fits": [
+              {
+                "region": 0,
+                "scale": 1.0076002,
+                "tx": -5.76895,
+                "ty": -1.48813
+              },
+              {
+                "region": 1,
+                "scale": 0.9971913,
+                "tx": -0.22434,
+                "ty": 1.20123
+              }
+            ],
+            "affine_anisotropy": 1.006
+          }
+        },
+        {
+          "bbox": [
+            390,
+            39,
+            633,
+            756
+          ],
+          "size": [
+            1024,
+            768
+          ],
+          "opaque_pale_fraction": 6.1e-05,
+          "flat_vertical_boundary": 15,
+          "flat_horizontal_boundary": 21,
+          "edge_pixels": 0,
+          "flags": [],
+          "file": "Alternate_Hammer_Curl_female_v2_3.png",
+          "sha256": "825be23c3fa0c25530f6ca0fd24c5ec75408a07650c9d4100d9c3481c40a8e35",
+          "registration": {
+            "matches": 41,
+            "accepted": false,
+            "reasons": [
+              "anchors_not_independently_distributed",
+              "independent_anchor_geometry_disagrees"
+            ],
+            "inliers": 41,
+            "inlier_ratio": 1.0,
+            "residual_p90_px": 2.5085,
+            "rotation_degrees": 0.0091,
+            "anchor_span_px": [
+              102.66000366210938,
+              701.0599975585938
+            ],
+            "region_support": {
+              "0": 31,
+              "1": 8,
+              "2": 2
+            },
+            "diagnostic_transform": {
+              "scale": 1.0001353,
+              "tx": -22.0626,
+              "ty": -0.73936
+            },
+            "independent_fits": [
+              {
+                "region": 0,
+                "scale": 1.0079201,
+                "tx": -26.16233,
+                "ty": -1.5109
+              },
+              {
+                "region": 1,
+                "scale": 1.0445062,
+                "tx": -44.3493,
+                "ty": -31.10501
+              }
+            ],
+            "affine_anisotropy": 1.0127
+          }
+        }
+      ],
+      "size": [
+        1024,
+        768
+      ],
+      "diagnostic_bbox_range_px": [
+        29,
+        1,
+        30,
+        0
+      ],
+      "bbox_warning": "BBox variation includes legitimate motion and is never used as a per-frame scale estimate."
+    }
+  ]
+}

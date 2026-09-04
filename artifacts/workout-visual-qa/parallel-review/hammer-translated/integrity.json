@@ -1,0 +1,196 @@
+{
+  "status": "pending_visual_review",
+  "scope": "Exact integer translations only, independently reviewed head and planted feet",
+  "frames": [
+    {
+      "file": "Alternate_Hammer_Curl_male_v2_0.png",
+      "source_sha256": "8e484e6d9d0757eb88dd6278f6676780e36470410af8d5405a6fd4b53876d562",
+      "candidate_sha256": "6defe9dbf7620ccfa3cff3c7640e6926aa6db86ca4d4da21ada3a25945614f10",
+      "translation": [
+        12,
+        -20
+      ],
+      "scale": 1,
+      "anchor_checks": [],
+      "visible_rgba_changed": 0,
+      "visible_pixel_count": 92867,
+      "clipped_visible_pixels": 0
+    },
+    {
+      "file": "Alternate_Hammer_Curl_male_v2_1.png",
+      "source_sha256": "3f1abe513ab8752dcff0800997fda619d20c107fc817065325730422a9bb81cc",
+      "candidate_sha256": "725affa16316d7edd5bc9e1aabc4c03fc4e22538e374f2ebc96bbdbdcbd1c6c8",
+      "translation": [
+        0,
+        -20
+      ],
+      "scale": 1,
+      "anchor_checks": [
+        {
+          "region": "head",
+          "confidence": 0.9707679152488708,
+          "dx": 11,
+          "dy": 0
+        },
+        {
+          "region": "planted_shoes",
+          "confidence": 0.9028734564781189,
+          "dx": 12,
+          "dy": 0
+        }
+      ],
+      "visible_rgba_changed": 0,
+      "visible_pixel_count": 96940,
+      "clipped_visible_pixels": 0
+    },
+    {
+      "file": "Alternate_Hammer_Curl_male_v2_2.png",
+      "source_sha256": "fb2c083aaac00f016a005699fb08f75d597e4b3ab10622d6169afb1bec1263b4",
+      "candidate_sha256": "fe9e14b7b9357add6b9a5ac682e8b418b53ba8a5632a387c3d625c95d18a21cc",
+      "translation": [
+        12,
+        -18
+      ],
+      "scale": 1,
+      "anchor_checks": [
+        {
+          "region": "head",
+          "confidence": 0.9698574542999268,
+          "dx": 0,
+          "dy": -3
+        },
+        {
+          "region": "planted_shoes",
+          "confidence": 0.8980825543403625,
+          "dx": -1,
+          "dy": 0
+        }
+      ],
+      "visible_rgba_changed": 0,
+      "visible_pixel_count": 93315,
+      "clipped_visible_pixels": 0
+    },
+    {
+      "file": "Alternate_Hammer_Curl_male_v2_3.png",
+      "source_sha256": "c5f2a1d54308104e85d481bda5a69224351eff9f3bd2b5859e310ebd8d05774d",
+      "candidate_sha256": "0f1aa0ec63f9e8107bf3538ca65ce8355fced3579d97ce8746425c45e94780ac",
+      "translation": [
+        -2,
+        -18
+      ],
+      "scale": 1,
+      "anchor_checks": [
+        {
+          "region": "head",
+          "confidence": 0.9470871686935425,
+          "dx": 16,
+          "dy": -3
+        },
+        {
+          "region": "planted_shoes",
+          "confidence": 0.9144780039787292,
+          "dx": 11,
+          "dy": 0
+        }
+      ],
+      "visible_rgba_changed": 0,
+      "visible_pixel_count": 87794,
+      "clipped_visible_pixels": 0
+    },
+    {
+      "file": "Alternate_Hammer_Curl_female_v2_0.png",
+      "source_sha256": "a9a34b4db3ef4b3903eabcae740089140c16700eb45c131fc46e8910244e1bef",
+      "candidate_sha256": "f8f3f0b6a471e634e29cc03cd8cea0e8111af51933d29b5216daecb844d6c8a2",
+      "translation": [
+        14,
+        -13
+      ],
+      "scale": 1,
+      "anchor_checks": [],
+      "visible_rgba_changed": 0,
+      "visible_pixel_count": 95210,
+      "clipped_visible_pixels": 0
+    },
+    {
+      "file": "Alternate_Hammer_Curl_female_v2_1.png",
+      "source_sha256": "16741a982e47a221c7e33bab6a15574bcb6a35d6f7a7399b9fda46fe21d9cccb",
+      "candidate_sha256": "212c942ae94bf32acabbcc2c2d93b0923a8392eb61d0453e4dd6776e14cd3b87",
+      "translation": [
+        -2,
+        -13
+      ],
+      "scale": 1,
+      "anchor_checks": [
+        {
+          "region": "head",
+          "confidence": 0.9749290347099304,
+          "dx": 17,
+          "dy": 0
+        },
+        {
+          "region": "planted_shoes",
+          "confidence": 0.9549670219421387,
+          "dx": 16,
+          "dy": 0
+        }
+      ],
+      "visible_rgba_changed": 0,
+      "visible_pixel_count": 99170,
+      "clipped_visible_pixels": 0
+    },
+    {
+      "file": "Alternate_Hammer_Curl_female_v2_2.png",
+      "source_sha256": "935e1eb50c6d8770e2d753fc110b60e66bb6c033d6ca3497d5bea33dce4c64bd",
+      "candidate_sha256": "68c8c1d39fcd79c8a4650f50eaa5466e26be552c6770f87c0a84a6ab98b80584",
+      "translation": [
+        12,
+        -14
+      ],
+      "scale": 1,
+      "anchor_checks": [
+        {
+          "region": "head",
+          "confidence": 0.9692482352256775,
+          "dx": 2,
+          "dy": 1
+        },
+        {
+          "region": "planted_shoes",
+          "confidence": 0.9361234903335571,
+          "dx": 2,
+          "dy": 1
+        }
+      ],
+      "visible_rgba_changed": 0,
+      "visible_pixel_count": 95237,
+      "clipped_visible_pixels": 0
+    },
+    {
+      "file": "Alternate_Hammer_Curl_female_v2_3.png",
+      "source_sha256": "de82f809b5e2be45acf16934a54eaa1613e87046f871b701fd9eb0b2dfaed059",
+      "candidate_sha256": "e29a8c8429d29ebdc66a25df6bcd90a5bec91c1b5db27f449ed2f3c0218cc767",
+      "translation": [
+        -8,
+        -14
+      ],
+      "scale": 1,
+      "anchor_checks": [
+        {
+          "region": "head",
+          "confidence": 0.9421546459197998,
+          "dx": 22,
+          "dy": 1
+        },
+        {
+          "region": "planted_shoes",
+          "confidence": 0.9338434338569641,
+          "dx": 22,
+          "dy": 1
+        }
+      ],
+      "visible_rgba_changed": 0,
+      "visible_pixel_count": 90135,
+      "clipped_visible_pixels": 0
+    }
+  ]
+}

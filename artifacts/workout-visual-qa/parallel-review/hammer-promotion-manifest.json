@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "exercises": [
+    {
+      "exercise_id": "Alternate_Hammer_Curl",
+      "acceptance": "background_and_framing",
+      "review_record_path": "artifacts/workout-visual-qa/parallel-review/review-alternate-hammer-curl.md",
+      "review_record_sha256": "ae4a689c9f1e59057ce816ba1e1ee8d7252dfb3aa00ee871888a65c099517f38",
+      "frames": [
+        {
+          "asset_name": "Alternate_Hammer_Curl_male_v2_0",
+          "candidate_path": "artifacts/workout-visual-qa/parallel-review/hammer-translated/Alternate_Hammer_Curl_male_v2_0.png",
+          "candidate_sha256": "6defe9dbf7620ccfa3cff3c7640e6926aa6db86ca4d4da21ada3a25945614f10",
+          "original_shared_sha256": "8e484e6d9d0757eb88dd6278f6676780e36470410af8d5405a6fd4b53876d562"
+        },
+        {
+          "asset_name": "Alternate_Hammer_Curl_male_v2_1",
+          "candidate_path": "artifacts/workout-visual-qa/parallel-review/hammer-translated/Alternate_Hammer_Curl_male_v2_1.png",
+          "candidate_sha256": "725affa16316d7edd5bc9e1aabc4c03fc4e22538e374f2ebc96bbdbdcbd1c6c8",
+          "original_shared_sha256": "3f1abe513ab8752dcff0800997fda619d20c107fc817065325730422a9bb81cc"
+        },
+        {
+          "asset_name": "Alternate_Hammer_Curl_male_v2_2",
+          "candidate_path": "artifacts/workout-visual-qa/parallel-review/hammer-translated/Alternate_Hammer_Curl_male_v2_2.png",
+          "candidate_sha256": "fe9e14b7b9357add6b9a5ac682e8b418b53ba8a5632a387c3d625c95d18a21cc",
+          "original_shared_sha256": "fb2c083aaac00f016a005699fb08f75d597e4b3ab10622d6169afb1bec1263b4"
+        },
+        {
+          "asset_name": "Alternate_Hammer_Curl_male_v2_3",
+          "candidate_path": "artifacts/workout-visual-qa/parallel-review/hammer-translated/Alternate_Hammer_Curl_male_v2_3.png",
+          "candidate_sha256": "0f1aa0ec63f9e8107bf3538ca65ce8355fced3579d97ce8746425c45e94780ac",
+          "original_shared_sha256": "c5f2a1d54308104e85d481bda5a69224351eff9f3bd2b5859e310ebd8d05774d"
+        },
+        {
+          "asset_name": "Alternate_Hammer_Curl_female_v2_0",
+          "candidate_path": "artifacts/workout-visual-qa/parallel-review/hammer-translated/Alternate_Hammer_Curl_female_v2_0.png",
+          "candidate_sha256": "f8f3f0b6a471e634e29cc03cd8cea0e8111af51933d29b5216daecb844d6c8a2",
+          "original_shared_sha256": "a9a34b4db3ef4b3903eabcae740089140c16700eb45c131fc46e8910244e1bef"
+        },
+        {
+          "asset_name": "Alternate_Hammer_Curl_female_v2_1",
+          "candidate_path": "artifacts/workout-visual-qa/parallel-review/hammer-translated/Alternate_Hammer_Curl_female_v2_1.png",
+          "candidate_sha256": "212c942ae94bf32acabbcc2c2d93b0923a8392eb61d0453e4dd6776e14cd3b87",
+          "original_shared_sha256": "16741a982e47a221c7e33bab6a15574bcb6a35d6f7a7399b9fda46fe21d9cccb"
+        },
+        {
+          "asset_name": "Alternate_Hammer_Curl_female_v2_2",
+          "candidate_path": "artifacts/workout-visual-qa/parallel-review/hammer-translated/Alternate_Hammer_Curl_female_v2_2.png",
+          "candidate_sha256": "68c8c1d39fcd79c8a4650f50eaa5466e26be552c6770f87c0a84a6ab98b80584",
+          "original_shared_sha256": "935e1eb50c6d8770e2d753fc110b60e66bb6c033d6ca3497d5bea33dce4c64bd"
+        },
+        {
+          "asset_name": "Alternate_Hammer_Curl_female_v2_3",
+          "candidate_path": "artifacts/workout-visual-qa/parallel-review/hammer-translated/Alternate_Hammer_Curl_female_v2_3.png",
+          "candidate_sha256": "e29a8c8429d29ebdc66a25df6bcd90a5bec91c1b5db27f449ed2f3c0218cc767",
+          "original_shared_sha256": "de82f809b5e2be45acf16934a54eaa1613e87046f871b701fd9eb0b2dfaed059"
+        }
+      ]
+    }
+  ]
+}

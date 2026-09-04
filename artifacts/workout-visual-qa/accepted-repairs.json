@@ -1,0 +1,45 @@
+{
+  "verified_at": "2026-09-04T13:21:30.806253+00:00",
+  "accepted_exercises": 5,
+  "total_exercises": 875,
+  "accepted_unique_frames": 40,
+  "phone_installation": "not_installed_this_repair_pass",
+  "scope": "Reviewed background and presentation repairs, preserving original source pose limitations documented in individual reviews",
+  "exercises": [
+    {
+      "exercise_id": "Band_Pull_Apart",
+      "promotion_manifest": "artifacts/workout-visual-qa/reviewed-band-pull-apart-promotion.json",
+      "manifest_sha256": "5a2f71b61faaae4d4777444390777f61056d7264257010e4c5b40f935477a073",
+      "frames_verified": 8,
+      "shared_ios_bytes_match": true
+    },
+    {
+      "exercise_id": "Band_Skull_Crusher",
+      "promotion_manifest": "artifacts/workout-visual-qa/reviewed-band-skull-crusher-promotion.json",
+      "manifest_sha256": "5b95a643a185fecd39476bc9807ea7ace3a423e4811cb90710b33782c28b7ea5",
+      "frames_verified": 8,
+      "shared_ios_bytes_match": true
+    },
+    {
+      "exercise_id": "Alternate_Hammer_Curl",
+      "promotion_manifest": "artifacts/workout-visual-qa/parallel-review/hammer-promotion-manifest.json",
+      "manifest_sha256": "10f16dc453dea231b4bfa32e5932ce32f213bbdea2e4182c262c11494460b662",
+      "frames_verified": 8,
+      "shared_ios_bytes_match": true
+    },
+    {
+      "exercise_id": "Barbell_Full_Squat",
+      "promotion_manifest": "artifacts/workout-visual-qa/squat-reviewed-final/promotion-manifest.json",
+      "manifest_sha256": "2138845b0af0c57ff9182488270d652ef53506f722d7b91996a9ccba523aada6",
+      "frames_verified": 8,
+      "shared_ios_bytes_match": true
+    },
+    {
+      "exercise_id": "Barbell_Ab_Rollout_-_On_Knees",
+      "promotion_manifest": "artifacts/workout-visual-qa/recovered-kneeling-framed-v5/promotion-manifest.json",
+      "manifest_sha256": "ac6bce1e6ab8a780b555176bdb489178926fd32f6ae066dda08ad416cb663fb1",
+      "frames_verified": 8,
+      "shared_ios_bytes_match": true
+    }
+  ]
+}

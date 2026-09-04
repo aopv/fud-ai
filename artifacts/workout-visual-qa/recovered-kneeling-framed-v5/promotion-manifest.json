@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "exercises": [
+    {
+      "exercise_id": "Barbell_Ab_Rollout_-_On_Knees",
+      "acceptance": "background_and_framing",
+      "review_record_path": "artifacts/workout-visual-qa/recovered-kneeling-framed-v5/final-review.md",
+      "review_record_sha256": "a69b304289e013ffce1caba7ff897b2565788dbc9ca711661a6aaa643a8810a8",
+      "frames": [
+        {
+          "asset_name": "Barbell_Ab_Rollout_-_On_Knees_male_v2_0",
+          "candidate_path": "artifacts/workout-visual-qa/recovered-kneeling-framed-v5/images/Barbell_Ab_Rollout_-_On_Knees_male_v2_0.png",
+          "candidate_sha256": "cac7f4a1f4a22617a274ddfc7087af63b67b6aa7ddf5a99316a9ba675c3c22b7",
+          "original_shared_sha256": "9b46018b87fba81763839979daf55f3ed30dff0129f8b32a30387fa40935d40d"
+        },
+        {
+          "asset_name": "Barbell_Ab_Rollout_-_On_Knees_male_v2_1",
+          "candidate_path": "artifacts/workout-visual-qa/recovered-kneeling-framed-v5/images/Barbell_Ab_Rollout_-_On_Knees_male_v2_1.png",
+          "candidate_sha256": "35f1d1445736bce8be3694c5476b6aa596d12985650620ded4a0781fbbb4747d",
+          "original_shared_sha256": "02770ac1820a2f8710955fb2259b4c0809a460fd2aa02fef21f2f8b15898ed95"
+        },
+        {
+          "asset_name": "Barbell_Ab_Rollout_-_On_Knees_male_v2_2",
+          "candidate_path": "artifacts/workout-visual-qa/recovered-kneeling-framed-v5/images/Barbell_Ab_Rollout_-_On_Knees_male_v2_2.png",
+          "candidate_sha256": "e9652676796fcc39e50ff2a5a8c7bda0232ce8bb99e9fd89809fd9427c7c40b3",
+          "original_shared_sha256": "de641c6f23fc70bbc63bce547a21c82c5f3cda6512f593e230567c696a8c9578"
+        },
+        {
+          "asset_name": "Barbell_Ab_Rollout_-_On_Knees_male_v2_3",
+          "candidate_path": "artifacts/workout-visual-qa/recovered-kneeling-framed-v5/images/Barbell_Ab_Rollout_-_On_Knees_male_v2_3.png",
+          "candidate_sha256": "5b558627b723380fdc14ff41c3cbd1d7022f0fbf9f3e842c5a928d2fa6b42427",
+          "original_shared_sha256": "13ef3c5f68579bea7d4c5133156ea2fa41125950a4371449a60ff8a82df622c3"
+        },
+        {
+          "asset_name": "Barbell_Ab_Rollout_-_On_Knees_female_v2_0",
+          "candidate_path": "artifacts/workout-visual-qa/recovered-kneeling-framed-v5/images/Barbell_Ab_Rollout_-_On_Knees_female_v2_0.png",
+          "candidate_sha256": "fdcc5f4a36f9a5a303658167e698a08f05810484b56b45f848637544b89cece7",
+          "original_shared_sha256": "3a181ce87d6856b01d805d4b3b1837ec569cb540f19a816a1cf4bb32556fcbc1"
+        },
+        {
+          "asset_name": "Barbell_Ab_Rollout_-_On_Knees_female_v2_1",
+          "candidate_path": "artifacts/workout-visual-qa/recovered-kneeling-framed-v5/images/Barbell_Ab_Rollout_-_On_Knees_female_v2_1.png",
+          "candidate_sha256": "62ca49b16c5722f568bc5a8a0e3d6011bad8c86edfb24f69cc4d9bc00a0f45ea",
+          "original_shared_sha256": "938a4076580e96f04b989d01273db3392eddb223a0da1c7fdd13df281fb10bcd"
+        },
+        {
+          "asset_name": "Barbell_Ab_Rollout_-_On_Knees_female_v2_2",
+          "candidate_path": "artifacts/workout-visual-qa/recovered-kneeling-framed-v5/images/Barbell_Ab_Rollout_-_On_Knees_female_v2_2.png",
+          "candidate_sha256": "010a1e539520d846dc43b3dec55c97433e2213fd1811ce03cb7b90fd326fb8bd",
+          "original_shared_sha256": "c464f0752862941fb6fa4ebc8cedbd6bf9bb49e391d1e49f6c77bab25e182792"
+        },
+        {
+          "asset_name": "Barbell_Ab_Rollout_-_On_Knees_female_v2_3",
+          "candidate_path": "artifacts/workout-visual-qa/recovered-kneeling-framed-v5/images/Barbell_Ab_Rollout_-_On_Knees_female_v2_3.png",
+          "candidate_sha256": "0f5cf2469144bd63f21ba9a95470f35a4e4ddbbfbfe3c92f9c7ee17fbfc839d4",
+          "original_shared_sha256": "ea3ffca9e7b5f6d58747392a2ca0d79704ebb6aec55b716a069bbd0d34b61f4b"
+        }
+      ]
+    }
+  ]
+}

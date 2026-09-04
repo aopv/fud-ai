@@ -15,32 +15,52 @@ API is used in this repair pass.
 
 ### Applied checkpoint
 
-**2 / 875 exercises are accepted and integrated: Band Pull Apart and Band Skull
-Crusher.** Sixteen exact reviewed PNGs were copied to both shared and iOS assets
-(32 platform files). Post-copy SHA checks and the full 875/7,000 sync check passed.
+**5 / 875 exercises are accepted and integrated:** Band Pull Apart, Band Skull
+Crusher, Barbell Full Squat, Barbell Ab Rollout - On Knees, and Alternate Hammer
+Curl. Forty exact reviewed PNGs are present in both shared and iOS assets
+(80 platform copies). `accepted-repairs.json` pins the five review manifests;
+post-copy SHA checks and the full 875/7,000 sync check passed.
 The originals remain in Git history and in local promotion backups. No app code,
 manifest, exercise IDs, instructions, logging behavior, or animation settings
 were changed in this image-repair pass. No new phone build was installed.
 
 The cleanup, matte-edge, alignment, and promotion suites currently contain
-**37 passing safety tests**. Visual review is still required in addition to them.
+**48 passing safety tests**. Visual review is still required in addition to them.
+
+The latest checkpoint used three worker agents alongside the root: one improved
+queue scheduling and reviewed Hamstring, one completed Squat, and one completed
+the recovered kneeling rollout. The root reviewed/aligned Hammer Curl and
+promoted only full accepted sets. Hamstring, Heel Touchers and 3/4 Sit-Up have
+additional source-crop/remnant findings and are **not accepted**. Original pose
+limitations (especially kneeling male frame 2) are explicitly retained in the
+individual reviews; these are background/framing repairs, not redrawn anatomy.
 
 ### Full candidate pass
 
-The remaining **6,984 frames / 873 exercises** are being staged separately at
+The remaining **6,960 frames / 870 exercises** are being staged separately at
 `background-full/`. This directory is intentionally ignored by Git: unfinished
 candidates must not enter app assets or repository releases. Durable progress is
 in `background-full/run-state.json`, and each finished frame has a hash-keyed
 record under `records/`. Confirm the recorded PID is alive before treating the
 state as active; a stopped process can leave an old `running` record.
 
-The launch on 2026-09-04 started at 12:57:32 UTC (local PID 13366). It is a local
+The priority-first restart on 2026-09-04 started at 13:20:30 UTC (local PID 24415),
+reusing 155 valid cached frames outside the now-accepted sets. The old PID 13366
+was interrupted and confirmed exited; all 326 cached PNGs then passed decoding
+verification. It is a local
 CPU process, not a scheduled Codex task, and does not perform visual acceptance,
 promotion, device installation, or unattended generation. It will pause if the
 Mac sleeps. Initial full-pass samples took about 5–8 seconds per frame, so the
 whole pass takes hours. This is not a promise of complete library repair when
 inference finishes: source cropping, perspective, foreground protection and
-frame-sequence review remain separate.
+frame-sequence review remain separate. Priority processing puts complete
+exercise sets with suspected checkerboards or large pale remnants first but
+retains every selected frame. It does not treat unflagged images as accepted.
+Inference is bypassed only when current pixel analysis proves the cleanup
+cannot change the frame. Existing valid cache is counted from startup, with
+`queue_frames_visited` reported separately, so changing order does not erase
+progress. The priority pass has 1,259 flagged frames; unflagged sibling frames
+are also processed to keep exercise sets together. No new total ETA is claimed.
 
 Resume the exact staging pass from the repository with the tested Python runtime
 (or a new environment installed from the pinned requirements):
@@ -48,8 +68,12 @@ Resume the exact staging pass from the repository with the tested Python runtime
 ```sh
 /tmp/fudai-workout-matting.FCLmtL/venv/bin/python scripts/repair_workout_visual_backgrounds.py \
   --exclude-exercise Band_Pull_Apart --exclude-exercise Band_Skull_Crusher \
+  --exclude-exercise Barbell_Full_Squat \
+  --exclude-exercise Barbell_Ab_Rollout_-_On_Knees \
+  --exclude-exercise Alternate_Hammer_Curl \
   --output artifacts/workout-visual-qa/background-full \
-  --overrides artifacts/workout-visual-qa/background-reviewed-overrides.json
+  --overrides artifacts/workout-visual-qa/background-reviewed-overrides.json \
+  --priority-audit artifacts/workout-visual-qa/audit.json
 ```
 
 The output-folder lock prevents duplicate workers. Existing records are reused
@@ -72,9 +96,16 @@ only when source, recipe, reviewed override, and candidate hashes match.
   the standing-rollout originals, and a female Skull Crusher toe extension made
   from matching existing shoe pixels. These source repairs require cleanup and
   final framing review before promotion.
-- The best eight recovered kneeling candidates are under
-  `recovered-kneeling-framed-v3/`. Broad floors and bad slicing are corrected, but
-  thin gray rims and tiny contact marks remain; they are **not accepted/promoted**.
+- The accepted eight recovered kneeling frames are under
+  `recovered-kneeling-framed-v5/images/`; their hash-linked final review and
+  promotion manifest were verified and applied. Earlier v1-v4 outputs remain
+  unaccepted intermediate stages. Narrow rim and contact repairs preserve
+  shoes and interior anatomy, with source-pose caveats explicitly documented.
+- `squat-reviewed-final/` contains the applied eight-frame squat repair with
+  identity geometry and protected footwear/shaft highlights. Squat depth is
+  motion, not a reason to independently zoom each pose.
+- `parallel-review/hammer-translated/` contains the applied Hammer Curl repair.
+  Only integer translations were used; all visible RGBA pixels are unchanged.
 - `background-reviewed-overrides.json` records manually reviewed openings that
   the semantic segmenter missed; it never identifies every white pixel as
   background. `edge-refined-pilot/` contains optional matte-edge candidates.

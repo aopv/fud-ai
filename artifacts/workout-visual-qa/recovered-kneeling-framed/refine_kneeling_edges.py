@@ -1,6 +1,7 @@
 """Candidate-only root edge refinement with per-frame shoe protections."""
 import hashlib
 import json
+import argparse
 from pathlib import Path
 import sys
 import numpy as np
@@ -36,6 +37,13 @@ def composite(image, color):
 
 
 def main():
+    global SOURCE, OUTPUT
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--input",type=Path,default=SOURCE)
+    parser.add_argument("--output",type=Path,default=OUTPUT)
+    args=parser.parse_args();SOURCE=args.input.resolve();OUTPUT=args.output.resolve()
+    if not OUTPUT.is_relative_to(QA) or OUTPUT==SOURCE or OUTPUT.is_relative_to(SOURCE):
+        raise ValueError("output must be separate visual-QA staging")
     (OUTPUT / "images").mkdir(parents=True, exist_ok=True)
     framing = json.loads((SOURCE / "framing-report.json").read_text())
     report = {"method": "root refine_workout_matte_edges.refine with reviewed shoe protection boxes", "frames": []}
@@ -78,7 +86,7 @@ def main():
     (OUTPUT/"edge-refinement-report.json").write_text(json.dumps(report,indent=2)+"\n")
     print(json.dumps({"output":str(OUTPUT),"frames":len(report["frames"]),
                       "edge_pixels_unmatted":sum(r["edge_pixels_unmatted"] for r in report["frames"]),
-                      "source_integrity":"All eight framed-v2 hashes unchanged; no canonical writes"}))
+                      "source_integrity":"All eight input framed-source hashes unchanged; no canonical writes"}))
 
 
 if __name__=="__main__":

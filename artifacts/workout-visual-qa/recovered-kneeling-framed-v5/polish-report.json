@@ -1,0 +1,186 @@
+{
+  "recipe": "reviewed-dark-neutral-rim-v1",
+  "frames": [
+    {
+      "file": "Barbell_Ab_Rollout_-_On_Knees_male_v2_0.png",
+      "source": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovered-kneeling-framed-v5-edge/images/Barbell_Ab_Rollout_-_On_Knees_male_v2_0.png",
+      "source_sha256": "e998fb7aafc7a466feecea251b8f46c5bbd25142839b240e3a54b0e93996646b",
+      "output": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovered-kneeling-framed-v5/images/Barbell_Ab_Rollout_-_On_Knees_male_v2_0.png",
+      "output_sha256": "cac7f4a1f4a22617a274ddfc7087af63b67b6aa7ddf5a99316a9ba675c3c22b7",
+      "edge_pixels_changed": 2944,
+      "protected_shoe_boxes": [
+        [
+          911,
+          406,
+          969,
+          525
+        ]
+      ],
+      "geometry_unchanged": true,
+      "review_status": "pending"
+    },
+    {
+      "file": "Barbell_Ab_Rollout_-_On_Knees_male_v2_1.png",
+      "source": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovered-kneeling-framed-v5-edge/images/Barbell_Ab_Rollout_-_On_Knees_male_v2_1.png",
+      "source_sha256": "dd5eb8bf89e42bcdc9978cbcd67dfb655bee1ab81f0b87c9558628dae912ebac",
+      "output": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovered-kneeling-framed-v5/images/Barbell_Ab_Rollout_-_On_Knees_male_v2_1.png",
+      "output_sha256": "35f1d1445736bce8be3694c5476b6aa596d12985650620ded4a0781fbbb4747d",
+      "edge_pixels_changed": 3676,
+      "protected_shoe_boxes": [
+        [
+          821,
+          366,
+          890,
+          444
+        ],
+        [
+          886,
+          387,
+          956,
+          512
+        ]
+      ],
+      "geometry_unchanged": true,
+      "review_status": "pending"
+    },
+    {
+      "file": "Barbell_Ab_Rollout_-_On_Knees_male_v2_2.png",
+      "source": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovered-kneeling-framed-v5-edge/images/Barbell_Ab_Rollout_-_On_Knees_male_v2_2.png",
+      "source_sha256": "f31e4f04b3d3ec8aa720d9b8ec00d63c7e7674ab401d51ec2494ad8d9510c3cf",
+      "output": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovered-kneeling-framed-v5/images/Barbell_Ab_Rollout_-_On_Knees_male_v2_2.png",
+      "output_sha256": "e9652676796fcc39e50ff2a5a8c7bda0232ce8bb99e9fd89809fd9427c7c40b3",
+      "edge_pixels_changed": 3005,
+      "protected_shoe_boxes": [
+        [
+          791,
+          335,
+          873,
+          438
+        ],
+        [
+          870,
+          348,
+          937,
+          469
+        ]
+      ],
+      "geometry_unchanged": true,
+      "review_status": "pending"
+    },
+    {
+      "file": "Barbell_Ab_Rollout_-_On_Knees_male_v2_3.png",
+      "source": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovered-kneeling-framed-v5-edge/images/Barbell_Ab_Rollout_-_On_Knees_male_v2_3.png",
+      "source_sha256": "bde1daef4615535e1c783bd54948849841a4617f0ae1973e95338157f61b4c14",
+      "output": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovered-kneeling-framed-v5/images/Barbell_Ab_Rollout_-_On_Knees_male_v2_3.png",
+      "output_sha256": "5b558627b723380fdc14ff41c3cbd1d7022f0fbf9f3e842c5a928d2fa6b42427",
+      "edge_pixels_changed": 2779,
+      "protected_shoe_boxes": [
+        [
+          866,
+          410,
+          946,
+          537
+        ]
+      ],
+      "geometry_unchanged": true,
+      "review_status": "pending"
+    },
+    {
+      "file": "Barbell_Ab_Rollout_-_On_Knees_female_v2_0.png",
+      "source": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovered-kneeling-framed-v5-edge/images/Barbell_Ab_Rollout_-_On_Knees_female_v2_0.png",
+      "source_sha256": "a06af57f9e5f26cba2d0e3baa303bfd537a5d5998b33a00b83c79c538241626b",
+      "output": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovered-kneeling-framed-v5/images/Barbell_Ab_Rollout_-_On_Knees_female_v2_0.png",
+      "output_sha256": "fdcc5f4a36f9a5a303658167e698a08f05810484b56b45f848637544b89cece7",
+      "edge_pixels_changed": 3589,
+      "protected_shoe_boxes": [
+        [
+          795,
+          355,
+          854,
+          445
+        ],
+        [
+          850,
+          363,
+          914,
+          493
+        ]
+      ],
+      "geometry_unchanged": true,
+      "review_status": "pending"
+    },
+    {
+      "file": "Barbell_Ab_Rollout_-_On_Knees_female_v2_1.png",
+      "source": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovered-kneeling-framed-v5-edge/images/Barbell_Ab_Rollout_-_On_Knees_female_v2_1.png",
+      "source_sha256": "8bdcb59e6fa233950980c12c306afa93bd9e6354924d44f86a0c5dc64782e121",
+      "output": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovered-kneeling-framed-v5/images/Barbell_Ab_Rollout_-_On_Knees_female_v2_1.png",
+      "output_sha256": "62ca49b16c5722f568bc5a8a0e3d6011bad8c86edfb24f69cc4d9bc00a0f45ea",
+      "edge_pixels_changed": 3784,
+      "protected_shoe_boxes": [
+        [
+          769,
+          336,
+          837,
+          424
+        ],
+        [
+          832,
+          350,
+          901,
+          475
+        ]
+      ],
+      "geometry_unchanged": true,
+      "review_status": "pending"
+    },
+    {
+      "file": "Barbell_Ab_Rollout_-_On_Knees_female_v2_2.png",
+      "source": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovered-kneeling-framed-v5-edge/images/Barbell_Ab_Rollout_-_On_Knees_female_v2_2.png",
+      "source_sha256": "255b65e2262bb039d6497814ce984f4bc231489a4265e759936f0a763dbaa3e6",
+      "output": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovered-kneeling-framed-v5/images/Barbell_Ab_Rollout_-_On_Knees_female_v2_2.png",
+      "output_sha256": "010a1e539520d846dc43b3dec55c97433e2213fd1811ce03cb7b90fd326fb8bd",
+      "edge_pixels_changed": 3531,
+      "protected_shoe_boxes": [
+        [
+          784,
+          343,
+          841,
+          411
+        ],
+        [
+          835,
+          353,
+          892,
+          475
+        ]
+      ],
+      "geometry_unchanged": true,
+      "review_status": "pending"
+    },
+    {
+      "file": "Barbell_Ab_Rollout_-_On_Knees_female_v2_3.png",
+      "source": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovered-kneeling-framed-v5-edge/images/Barbell_Ab_Rollout_-_On_Knees_female_v2_3.png",
+      "source_sha256": "d28f0c195fc92b86b18425654d3230885aaf72d5052078dc6bd1f6c203899855",
+      "output": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovered-kneeling-framed-v5/images/Barbell_Ab_Rollout_-_On_Knees_female_v2_3.png",
+      "output_sha256": "0f5cf2469144bd63f21ba9a95470f35a4e4ddbbfbfe3c92f9c7ee17fbfc839d4",
+      "edge_pixels_changed": 3458,
+      "protected_shoe_boxes": [
+        [
+          796,
+          359,
+          856,
+          447
+        ],
+        [
+          856,
+          373,
+          919,
+          501
+        ]
+      ],
+      "geometry_unchanged": true,
+      "review_status": "pending"
+    }
+  ],
+  "scope": "only <=3px exterior neutral rim; no geometry change; shoe protections unchanged"
+}

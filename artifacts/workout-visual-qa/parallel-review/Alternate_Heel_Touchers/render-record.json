@@ -1,0 +1,102 @@
+{
+  "exercise": "Alternate_Heel_Touchers",
+  "frames": [
+    {
+      "file": "Alternate_Heel_Touchers_male_v2_0.png",
+      "source_sha256": "402a8bb5be4deab161c36d3102f4b5789280188adc3c3ee4c60a7d991c2f109e",
+      "size": [
+        1024,
+        768
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "file": "Alternate_Heel_Touchers_male_v2_1.png",
+      "source_sha256": "7bf8110f6fcb5438da8ea33f256df7b638ab04e63eb2bf95cad0ff1213fe9e0d",
+      "size": [
+        1024,
+        768
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "file": "Alternate_Heel_Touchers_male_v2_2.png",
+      "source_sha256": "1f480114b5844b9bee2a8594c115ea137dcd3458d564fcdd3b674f6eb3d3ec7b",
+      "size": [
+        1024,
+        768
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "file": "Alternate_Heel_Touchers_male_v2_3.png",
+      "source_sha256": "8568711cf44660765d52d430a12635f3a76cfdb64277bdac5abde9a36881b838",
+      "size": [
+        1024,
+        768
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "file": "Alternate_Heel_Touchers_female_v2_0.png",
+      "source_sha256": "47273f0cc21ebbf644d6da3a1eff626a3b4e36b9132908204e193447ec1d44ea",
+      "size": [
+        1024,
+        768
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "file": "Alternate_Heel_Touchers_female_v2_1.png",
+      "source_sha256": "fce14168f9aa0e2e26b79ffe8297f658acbc6c8afdf0b3917d5854dbba733cab",
+      "size": [
+        1024,
+        768
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "file": "Alternate_Heel_Touchers_female_v2_2.png",
+      "source_sha256": "c3ae75263a0373f026a02e243268df59eb917cb2ab2c4173584853218f9c9f41",
+      "size": [
+        1024,
+        768
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "file": "Alternate_Heel_Touchers_female_v2_3.png",
+      "source_sha256": "97be18d97b4a050c6e9093e560e50bdbb8fbb4b914e8638c25f2e5da23b03b54",
+      "size": [
+        1024,
+        768
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    }
+  ],
+  "status": "rendered_for_review_not_accepted"
+}

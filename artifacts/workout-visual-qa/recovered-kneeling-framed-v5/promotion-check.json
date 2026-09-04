@@ -1,0 +1,11 @@
+{
+  "status": "check_passed_no_writes",
+  "exercises": 1,
+  "frames": 8,
+  "would_replace_platform_pngs": 16,
+  "full_catalog_references_verified": 7000,
+  "exercise_ids": ["Barbell_Ab_Rollout_-_On_Knees"],
+  "review_manifest_sha256": "ac6bce1e6ab8a780b555176bdb489178926fd32f6ae066dda08ad416cb663fb1",
+  "command": "scripts/promote_reviewed_workout_repairs.py --review artifacts/workout-visual-qa/recovered-kneeling-framed-v5/promotion-manifest.json --check",
+  "canonical_writes": 0
+}

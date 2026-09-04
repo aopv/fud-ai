@@ -1,0 +1,348 @@
+{
+  "frames": [
+    {
+      "asset_name": "Barbell_Full_Squat_male_v2_0",
+      "candidate_path": "artifacts/workout-visual-qa/squat-reviewed-final/Barbell_Full_Squat_male_v2_0.png",
+      "candidate_sha256": "418f2460661bde1fcaa0c52cb19dcd2d903a323f9e52beca857c11156fa01e1d",
+      "original_shared_sha256": "7b288c3fdacf8885ba9156695cbe12736405b38d15a298133f5a8528374dd06a",
+      "background_source_sha256": "29ba5416034fbdc3ecbb25f16586dea6a26306dcbfd7c64c2ba747ddb592cdf7",
+      "alpha_bbox": [
+        157,
+        36,
+        867,
+        753
+      ],
+      "shared_transform": {
+        "scale": 1,
+        "translation": [
+          0,
+          0
+        ]
+      },
+      "protected_rectangles": [
+        [
+          350,
+          665,
+          695,
+          768
+        ],
+        [
+          148,
+          150,
+          880,
+          193
+        ]
+      ],
+      "protected_main_foreground_rgba_identical": true,
+      "interior_rgba_identical": true,
+      "extra_thin_rim_pixels_unmatted": 239,
+      "edge_refinement": {
+        "edge_pixels_unmatted": 684,
+        "speck_pixels_removed": 523,
+        "acceptance": "pending_visual_review",
+        "regions": []
+      }
+    },
+    {
+      "asset_name": "Barbell_Full_Squat_male_v2_1",
+      "candidate_path": "artifacts/workout-visual-qa/squat-reviewed-final/Barbell_Full_Squat_male_v2_1.png",
+      "candidate_sha256": "6472180d7acf48a615a09942c2456ab34ff6022943de5dff82f3bfbd3d0d2403",
+      "original_shared_sha256": "069451a3778521d55e29f1abcd480a7428b9eb28da7d677ffd2c6883b546edff",
+      "background_source_sha256": "f2a46c6ef7ee0fb4b0b359064a925757e55b9b5a5b65f74583342f23b47d96ee",
+      "alpha_bbox": [
+        151,
+        137,
+        873,
+        755
+      ],
+      "shared_transform": {
+        "scale": 1,
+        "translation": [
+          0,
+          0
+        ]
+      },
+      "protected_rectangles": [
+        [
+          350,
+          665,
+          695,
+          768
+        ],
+        [
+          145,
+          248,
+          880,
+          296
+        ]
+      ],
+      "protected_main_foreground_rgba_identical": true,
+      "interior_rgba_identical": true,
+      "extra_thin_rim_pixels_unmatted": 206,
+      "edge_refinement": {
+        "edge_pixels_unmatted": 745,
+        "speck_pixels_removed": 260,
+        "acceptance": "pending_visual_review",
+        "regions": []
+      }
+    },
+    {
+      "asset_name": "Barbell_Full_Squat_male_v2_2",
+      "candidate_path": "artifacts/workout-visual-qa/squat-reviewed-final/Barbell_Full_Squat_male_v2_2.png",
+      "candidate_sha256": "0bd8e89a5f1560690be19a912cf57ddbda4b78fa39bd2cca0134ee186500dabc",
+      "original_shared_sha256": "da077023f4b2a72dd217a8436da375478e5dbf75a4f648581067b681957d2690",
+      "background_source_sha256": "971cdd67e5edaa6067964b0ff9f7001f62ec9c95626b3027cef24f8f186a43ef",
+      "alpha_bbox": [
+        153,
+        233,
+        871,
+        756
+      ],
+      "shared_transform": {
+        "scale": 1,
+        "translation": [
+          0,
+          0
+        ]
+      },
+      "protected_rectangles": [
+        [
+          350,
+          665,
+          695,
+          768
+        ],
+        [
+          148,
+          348,
+          880,
+          387
+        ]
+      ],
+      "protected_main_foreground_rgba_identical": true,
+      "interior_rgba_identical": true,
+      "extra_thin_rim_pixels_unmatted": 215,
+      "edge_refinement": {
+        "edge_pixels_unmatted": 640,
+        "speck_pixels_removed": 350,
+        "acceptance": "pending_visual_review",
+        "regions": []
+      }
+    },
+    {
+      "asset_name": "Barbell_Full_Squat_male_v2_3",
+      "candidate_path": "artifacts/workout-visual-qa/squat-reviewed-final/Barbell_Full_Squat_male_v2_3.png",
+      "candidate_sha256": "7137a0b45c8b55b5afa4436483373f6c0007e4625eb1d83de70ce0455f1004b8",
+      "original_shared_sha256": "79b7173621035e3e644d1c4832d46fe83e8f7e613e3a21e8eff292fdb947aabd",
+      "background_source_sha256": "4ac801ac45370256b9cd3b03e7765a89f74b0f5a7c8648cb5fae7a157b334fc0",
+      "alpha_bbox": [
+        151,
+        74,
+        875,
+        755
+      ],
+      "shared_transform": {
+        "scale": 1,
+        "translation": [
+          0,
+          0
+        ]
+      },
+      "protected_rectangles": [
+        [
+          350,
+          665,
+          695,
+          768
+        ],
+        [
+          145,
+          190,
+          880,
+          231
+        ]
+      ],
+      "protected_main_foreground_rgba_identical": true,
+      "interior_rgba_identical": true,
+      "extra_thin_rim_pixels_unmatted": 354,
+      "edge_refinement": {
+        "edge_pixels_unmatted": 592,
+        "speck_pixels_removed": 496,
+        "acceptance": "pending_visual_review",
+        "regions": []
+      }
+    },
+    {
+      "asset_name": "Barbell_Full_Squat_female_v2_0",
+      "candidate_path": "artifacts/workout-visual-qa/squat-reviewed-final/Barbell_Full_Squat_female_v2_0.png",
+      "candidate_sha256": "7578cfc5f372b48a2d2358600e9a0a8c4851205d453b504b9d46658837180d41",
+      "original_shared_sha256": "fabbae75ff100f2103c8baabced58b8b596e8f71a03f7fa50670c01a0a6c8647",
+      "background_source_sha256": "5f2c5304236172028716eeb3be6a60a51c5c8c3eba484b372f642e99938fc8a0",
+      "alpha_bbox": [
+        157,
+        32,
+        866,
+        755
+      ],
+      "shared_transform": {
+        "scale": 1,
+        "translation": [
+          0,
+          0
+        ]
+      },
+      "protected_rectangles": [
+        [
+          350,
+          665,
+          695,
+          768
+        ],
+        [
+          148,
+          150,
+          880,
+          193
+        ]
+      ],
+      "protected_main_foreground_rgba_identical": true,
+      "interior_rgba_identical": true,
+      "extra_thin_rim_pixels_unmatted": 413,
+      "edge_refinement": {
+        "edge_pixels_unmatted": 623,
+        "speck_pixels_removed": 553,
+        "acceptance": "pending_visual_review",
+        "regions": []
+      }
+    },
+    {
+      "asset_name": "Barbell_Full_Squat_female_v2_1",
+      "candidate_path": "artifacts/workout-visual-qa/squat-reviewed-final/Barbell_Full_Squat_female_v2_1.png",
+      "candidate_sha256": "7481194b7d7dc6938a9008c63bad37973871d7260523d0d4b937860b1c24eda6",
+      "original_shared_sha256": "396ba2f13143348b45fdccadc59740ae1e0ff11f0462904f333052b70d6e134b",
+      "background_source_sha256": "18f36208e909ef9cb723cb7afb050089c2470424a109fcd6184430849450b495",
+      "alpha_bbox": [
+        149,
+        135,
+        873,
+        755
+      ],
+      "shared_transform": {
+        "scale": 1,
+        "translation": [
+          0,
+          0
+        ]
+      },
+      "protected_rectangles": [
+        [
+          350,
+          665,
+          695,
+          768
+        ],
+        [
+          145,
+          246,
+          880,
+          295
+        ]
+      ],
+      "protected_main_foreground_rgba_identical": true,
+      "interior_rgba_identical": true,
+      "extra_thin_rim_pixels_unmatted": 284,
+      "edge_refinement": {
+        "edge_pixels_unmatted": 639,
+        "speck_pixels_removed": 407,
+        "acceptance": "pending_visual_review",
+        "regions": []
+      }
+    },
+    {
+      "asset_name": "Barbell_Full_Squat_female_v2_2",
+      "candidate_path": "artifacts/workout-visual-qa/squat-reviewed-final/Barbell_Full_Squat_female_v2_2.png",
+      "candidate_sha256": "945b595eb19d686304e8ca708b851c04dbfa5a76d6bde0dd1086f7aa976f59b7",
+      "original_shared_sha256": "8ca9e90b1ffe9df1fcc20473e87b39b88ec5c0a816261e242794aed378f8bd9d",
+      "background_source_sha256": "95f1dc5381516036e97494189dda1868a902ebef13490e6db76865456d5628e5",
+      "alpha_bbox": [
+        153,
+        228,
+        874,
+        753
+      ],
+      "shared_transform": {
+        "scale": 1,
+        "translation": [
+          0,
+          0
+        ]
+      },
+      "protected_rectangles": [
+        [
+          350,
+          665,
+          695,
+          768
+        ],
+        [
+          148,
+          342,
+          880,
+          386
+        ]
+      ],
+      "protected_main_foreground_rgba_identical": true,
+      "interior_rgba_identical": true,
+      "extra_thin_rim_pixels_unmatted": 338,
+      "edge_refinement": {
+        "edge_pixels_unmatted": 677,
+        "speck_pixels_removed": 367,
+        "acceptance": "pending_visual_review",
+        "regions": []
+      }
+    },
+    {
+      "asset_name": "Barbell_Full_Squat_female_v2_3",
+      "candidate_path": "artifacts/workout-visual-qa/squat-reviewed-final/Barbell_Full_Squat_female_v2_3.png",
+      "candidate_sha256": "ccf1d368fb7b212dc5b51720466ae4525006636fa4f6dc9e057edbb08cfb805f",
+      "original_shared_sha256": "de4497de4cc863e4ad0e7c2d04d199020c4efddb45093de5935e1659a9880725",
+      "background_source_sha256": "2ad5dbf91c736b6c87a5ef9d4576acca917fae0e0bddebceecc062ea969cc363",
+      "alpha_bbox": [
+        147,
+        67,
+        872,
+        755
+      ],
+      "shared_transform": {
+        "scale": 1,
+        "translation": [
+          0,
+          0
+        ]
+      },
+      "protected_rectangles": [
+        [
+          350,
+          665,
+          695,
+          768
+        ],
+        [
+          145,
+          186,
+          880,
+          230
+        ]
+      ],
+      "protected_main_foreground_rgba_identical": true,
+      "interior_rgba_identical": true,
+      "extra_thin_rim_pixels_unmatted": 481,
+      "edge_refinement": {
+        "edge_pixels_unmatted": 511,
+        "speck_pixels_removed": 513,
+        "acceptance": "pending_visual_review",
+        "regions": []
+      }
+    }
+  ]
+}

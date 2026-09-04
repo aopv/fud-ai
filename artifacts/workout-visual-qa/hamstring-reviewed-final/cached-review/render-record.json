@@ -1,0 +1,102 @@
+{
+  "exercise": "90_90_Hamstring",
+  "frames": [
+    {
+      "file": "90_90_Hamstring_male_v2_0.png",
+      "source_sha256": "6d237467579b9303400172d680a9a15c22f5daf3978180ce3041ccc95b19d705",
+      "size": [
+        1024,
+        768
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "file": "90_90_Hamstring_male_v2_1.png",
+      "source_sha256": "01f4a5fafc500d0900dada1db42c739bfc88f82fe27bcd0f2419e58d31c12a3a",
+      "size": [
+        1024,
+        768
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "file": "90_90_Hamstring_male_v2_2.png",
+      "source_sha256": "7541f7483fb133ccf2d1eb052ef03510272445b7c8088802e6028be5f6d11bff",
+      "size": [
+        1024,
+        768
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "file": "90_90_Hamstring_male_v2_3.png",
+      "source_sha256": "bfc6ea335d41c93b918a1e099ae61e775629087460724b1f2f7c3578205a0867",
+      "size": [
+        1024,
+        768
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "file": "90_90_Hamstring_female_v2_0.png",
+      "source_sha256": "059269a4d5fe99713bf39cda17ace8a955060334be8cb4e9d179ada5f2eac06c",
+      "size": [
+        1024,
+        768
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "file": "90_90_Hamstring_female_v2_1.png",
+      "source_sha256": "d7efac39fb9f6fd4d5ffedd67b8ed2ea28953108336a0c799231f59fd90e9b7d",
+      "size": [
+        1024,
+        768
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "file": "90_90_Hamstring_female_v2_2.png",
+      "source_sha256": "32ce4805a2a01cd208f5b25f315140bf601ed4e33fe8bcd5f3cc34ed3ef6687b",
+      "size": [
+        1024,
+        768
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "file": "90_90_Hamstring_female_v2_3.png",
+      "source_sha256": "7dbc23cfb9cbed219444388aa65ca8b495d2f0cef52ccc8bd93eb095f946855a",
+      "size": [
+        1024,
+        768
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    }
+  ],
+  "status": "rendered_for_review_not_accepted"
+}

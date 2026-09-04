@@ -1,0 +1,102 @@
+{
+  "exercise": "Alternate_Hammer_Curl",
+  "frames": [
+    {
+      "file": "Alternate_Hammer_Curl_male_v2_0.png",
+      "source_sha256": "89165db052be93229e343e8a5b027c1ee913d977704ba13d218d96beefaa6f3b",
+      "size": [
+        1024,
+        768
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "file": "Alternate_Hammer_Curl_male_v2_1.png",
+      "source_sha256": "a79e57f4da3c9140278d052910440186cb1b8e83410e6c66579b94151248b91e",
+      "size": [
+        1024,
+        768
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "file": "Alternate_Hammer_Curl_male_v2_2.png",
+      "source_sha256": "cf4c625585086bc88f786330c979f436ea2379602287d9d884169a4c1316aa67",
+      "size": [
+        1024,
+        768
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "file": "Alternate_Hammer_Curl_male_v2_3.png",
+      "source_sha256": "4590f13709a623b15fbbe5ca405e1900a21727b4102f08111cd02d177979abb2",
+      "size": [
+        1024,
+        768
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "file": "Alternate_Hammer_Curl_female_v2_0.png",
+      "source_sha256": "a063481820f891146e153566b16e96edbbd8a90c49b6058836bf61c3e30f1df2",
+      "size": [
+        1024,
+        768
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "file": "Alternate_Hammer_Curl_female_v2_1.png",
+      "source_sha256": "12ca6bb597005fbe38fb6980a26f00eae1777bc4d679a59d94142cfa48f7cbc3",
+      "size": [
+        1024,
+        768
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "file": "Alternate_Hammer_Curl_female_v2_2.png",
+      "source_sha256": "1b4a89b89c1b18439e981679f5dc464f1e93056ea36cea8fcaf6135e7ba89702",
+      "size": [
+        1024,
+        768
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "file": "Alternate_Hammer_Curl_female_v2_3.png",
+      "source_sha256": "825be23c3fa0c25530f6ca0fd24c5ec75408a07650c9d4100d9c3481c40a8e35",
+      "size": [
+        1024,
+        768
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    }
+  ],
+  "status": "rendered_for_review_not_accepted"
+}

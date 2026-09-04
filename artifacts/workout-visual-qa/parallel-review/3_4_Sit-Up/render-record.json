@@ -1,0 +1,102 @@
+{
+  "exercise": "3_4_Sit-Up",
+  "frames": [
+    {
+      "file": "3_4_Sit-Up_male_v2_0.png",
+      "source_sha256": "35adbefe522853d88c5be3909570de3389612c4cb1fc73f724094358a296e689",
+      "size": [
+        1024,
+        768
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "file": "3_4_Sit-Up_male_v2_1.png",
+      "source_sha256": "6e5e8ef3de8606fa6a2283d0ae416f81fe8fe21f22a97ced580d209e64286d8f",
+      "size": [
+        1024,
+        768
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "file": "3_4_Sit-Up_male_v2_2.png",
+      "source_sha256": "4b0f0ee973da25da8a9d6fb5e49885de0383fddfc67983684b09faeced0414b4",
+      "size": [
+        1024,
+        768
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "file": "3_4_Sit-Up_male_v2_3.png",
+      "source_sha256": "d48a6470853543dd552aaf24e6cfc916049a3f9655ebc160ccc271c05db24e54",
+      "size": [
+        1024,
+        768
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "file": "3_4_Sit-Up_female_v2_0.png",
+      "source_sha256": "9d6526886deb2523fab07069f1f1ca827230cf8fd9c81e5ce8ee3f9e4313a5f7",
+      "size": [
+        1024,
+        768
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "file": "3_4_Sit-Up_female_v2_1.png",
+      "source_sha256": "ca8ba0297642cbd77fb08e2d8abbd00fc0c7cb87aa39aa907b877f69232abf8c",
+      "size": [
+        1024,
+        768
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "file": "3_4_Sit-Up_female_v2_2.png",
+      "source_sha256": "a31bc8b31d7396daa0247a8d7288bcb593a69e374b2743590b6150fc37acc703",
+      "size": [
+        1024,
+        768
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "file": "3_4_Sit-Up_female_v2_3.png",
+      "source_sha256": "afdf4dadd663930d9487511fd62909fdb63f0f6efa5f91c0c8267c624f1e00d2",
+      "size": [
+        1024,
+        768
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    }
+  ],
+  "status": "rendered_for_review_not_accepted"
+}
