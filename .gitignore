@@ -24,3 +24,6 @@ ios/build-sim/
 
 # Xcode per-user state (scheme order, workspace UI) — meaningless off this machine
 ios/**/xcuserdata/
+
+# Generated review contact sheets (regenerate via scripts/render_workout_review.py)
+artifacts/workout-visual-qa/review-batches/**/previews/
