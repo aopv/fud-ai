@@ -288,12 +288,12 @@ def main() -> int:
     (args.output / (prefix + ".json")).write_text(json.dumps({"summary": summary, "exercises": exercise_reports, "images": images}, indent=2) + "\n")
     with (args.output / (prefix + "-images.csv")).open("w", newline="") as handle:
         fields = ["file", "exercise_id", "gender", "frame", "review_status", "score", "flags", "bbox", "visible_fraction", "largest_pale_component_fraction", "checker_transition_score", "file_sha256"]
-        writer = csv.DictWriter(handle, fieldnames=fields, extrasaction="ignore")
+        writer = csv.DictWriter(handle, fieldnames=fields, extrasaction="ignore", lineterminator="\n")
         writer.writeheader()
         writer.writerows(images)
     with (args.output / (prefix + "-exercises.csv")).open("w", newline="") as handle:
         fields = ["review_priority_rank", "exercise_id", "review_status", "score", "candidate_image_count", "candidate_flags"]
-        writer = csv.DictWriter(handle, fieldnames=fields, extrasaction="ignore")
+        writer = csv.DictWriter(handle, fieldnames=fields, extrasaction="ignore", lineterminator="\n")
         writer.writeheader()
         writer.writerows(exercise_reports)
     lines = ["# Workout artwork audit", "", f"Read-only numerical audit of {len(images):,} images for {len(entries)} exercises.", "", "No source images were changed. This numerical queue does not track visual acceptance; candidates are not confirmed defects.", "", "Visual findings are recorded separately in [Band Skull Crusher observations](audit-visual-observations.json) and [initial exercise review](review-initial-exercises.md). Pending machine-queue statuses do not override those ledgers.", "", "## Summary", ""]
