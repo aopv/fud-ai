@@ -1,0 +1,1576 @@
+{
+  "recipe": "reviewed-neutral-shadow-native-v1",
+  "component_predicate": "source alpha>=16, minRGB>=100, maxRGB-minRGB<=20; 8-connectivity",
+  "warning": "NOT compatible with default pale>=185 recipe; only use exact reviewed source hashes. No global gray removal.",
+  "coordinate_space": "native recovered crop; same coordinates as RAW source crop before cleanup",
+  "frames": [
+    {
+      "file": "Barbell_Ab_Rollout_-_On_Knees_male_v2_0.png",
+      "input": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovered-kneeling-cleanup/images/Barbell_Ab_Rollout_-_On_Knees_male_v2_0.png",
+      "input_sha256": "0529a32a10a942ad2556740171e13f8dcc7f55c9539ed0c0fc95ef6598a3559c",
+      "raw_source": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovery-rollout/recovered-raw/Barbell_Ab_Rollout_-_On_Knees_male_v2_0.png",
+      "raw_source_sha256": "3717d07caeee48089d02e165607422a1bbdff12663c3e054f17da35d9136a32f",
+      "remove_seeds": [
+        [
+          305,
+          279
+        ],
+        [
+          429,
+          273
+        ],
+        [
+          415,
+          268
+        ],
+        [
+          456,
+          272
+        ],
+        [
+          411,
+          281
+        ],
+        [
+          91,
+          281
+        ],
+        [
+          56,
+          287
+        ],
+        [
+          388,
+          343
+        ],
+        [
+          354,
+          349
+        ]
+      ],
+      "protect_seeds": [
+        [
+          456,
+          226
+        ],
+        [
+          49,
+          214
+        ],
+        [
+          63,
+          228
+        ],
+        [
+          23,
+          232
+        ],
+        [
+          76,
+          240
+        ],
+        [
+          114,
+          248
+        ],
+        [
+          347,
+          268
+        ],
+        [
+          209,
+          267
+        ],
+        [
+          361,
+          283
+        ],
+        [
+          302,
+          285
+        ],
+        [
+          405,
+          301
+        ],
+        [
+          379,
+          309
+        ]
+      ],
+      "removed_labels": [
+        288,
+        311,
+        320,
+        337,
+        348,
+        351,
+        360,
+        427,
+        429
+      ],
+      "protected_labels": [
+        149,
+        158,
+        199,
+        209,
+        217,
+        238,
+        269,
+        294,
+        347,
+        356,
+        365,
+        392
+      ],
+      "removed_pixels": 798,
+      "rgb_changed_pixels": 0,
+      "output_sha256": "25de0bd9cb46a53bb68a83aa429f6fbae925de975b5d185a66482a5c13653183",
+      "removed_regions": [
+        {
+          "label": 288,
+          "bbox": [
+            281,
+            259,
+            334,
+            286
+          ],
+          "area": 372
+        },
+        {
+          "label": 311,
+          "bbox": [
+            420,
+            265,
+            441,
+            278
+          ],
+          "area": 110
+        },
+        {
+          "label": 320,
+          "bbox": [
+            411,
+            266,
+            420,
+            270
+          ],
+          "area": 29
+        },
+        {
+          "label": 337,
+          "bbox": [
+            453,
+            270,
+            460,
+            274
+          ],
+          "area": 14
+        },
+        {
+          "label": 348,
+          "bbox": [
+            408,
+            275,
+            417,
+            296
+          ],
+          "area": 51
+        },
+        {
+          "label": 351,
+          "bbox": [
+            81,
+            276,
+            98,
+            286
+          ],
+          "area": 44
+        },
+        {
+          "label": 360,
+          "bbox": [
+            49,
+            283,
+            68,
+            289
+          ],
+          "area": 57
+        },
+        {
+          "label": 427,
+          "bbox": [
+            380,
+            339,
+            394,
+            348
+          ],
+          "area": 32
+        },
+        {
+          "label": 429,
+          "bbox": [
+            343,
+            344,
+            371,
+            353
+          ],
+          "area": 89
+        }
+      ],
+      "review_status": "pending output review"
+    },
+    {
+      "file": "Barbell_Ab_Rollout_-_On_Knees_male_v2_1.png",
+      "input": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovered-kneeling-cleanup/images/Barbell_Ab_Rollout_-_On_Knees_male_v2_1.png",
+      "input_sha256": "e8e8cc37c44c4dc696fa4d1077aeaafb665948741fc41d2e3b5f046996bafdbe",
+      "raw_source": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovery-rollout/recovered-raw/Barbell_Ab_Rollout_-_On_Knees_male_v2_1.png",
+      "raw_source_sha256": "e8cf4e501f0300ea9811b5348db5ac8c6565a9d0dd808a96a85e4f81ad950644",
+      "remove_seeds": [
+        [
+          519,
+          187
+        ],
+        [
+          544,
+          194
+        ],
+        [
+          481,
+          208
+        ],
+        [
+          410,
+          213
+        ],
+        [
+          94,
+          248
+        ],
+        [
+          59,
+          254
+        ],
+        [
+          367,
+          317
+        ],
+        [
+          330,
+          323
+        ]
+      ],
+      "protect_seeds": [
+        [
+          518,
+          119
+        ],
+        [
+          558,
+          124
+        ],
+        [
+          572,
+          163
+        ],
+        [
+          577,
+          170
+        ],
+        [
+          51,
+          177
+        ],
+        [
+          66,
+          192
+        ],
+        [
+          25,
+          196
+        ],
+        [
+          79,
+          206
+        ],
+        [
+          106,
+          213
+        ],
+        [
+          190,
+          234
+        ],
+        [
+          307,
+          241
+        ],
+        [
+          278,
+          254
+        ],
+        [
+          352,
+          266
+        ],
+        [
+          391,
+          277
+        ]
+      ],
+      "removed_labels": [
+        281,
+        282,
+        336,
+        345,
+        462,
+        483,
+        559,
+        561
+      ],
+      "protected_labels": [
+        90,
+        111,
+        122,
+        222,
+        209,
+        275,
+        291,
+        309,
+        340,
+        399,
+        447,
+        474,
+        497,
+        511
+      ],
+      "removed_pixels": 1235,
+      "rgb_changed_pixels": 0,
+      "output_sha256": "a89fb76c1577b28f82f4539b30d3b575417adba0e405e336e807a89fe2eaa358",
+      "removed_regions": [
+        {
+          "label": 281,
+          "bbox": [
+            511,
+            185,
+            529,
+            190
+          ],
+          "area": 48
+        },
+        {
+          "label": 282,
+          "bbox": [
+            539,
+            187,
+            553,
+            198
+          ],
+          "area": 44
+        },
+        {
+          "label": 336,
+          "bbox": [
+            457,
+            202,
+            502,
+            217
+          ],
+          "area": 265
+        },
+        {
+          "label": 345,
+          "bbox": [
+            370,
+            204,
+            456,
+            221
+          ],
+          "area": 632
+        },
+        {
+          "label": 462,
+          "bbox": [
+            86,
+            243,
+            102,
+            253
+          ],
+          "area": 44
+        },
+        {
+          "label": 483,
+          "bbox": [
+            50,
+            250,
+            75,
+            257
+          ],
+          "area": 68
+        },
+        {
+          "label": 559,
+          "bbox": [
+            358,
+            312,
+            374,
+            322
+          ],
+          "area": 42
+        },
+        {
+          "label": 561,
+          "bbox": [
+            319,
+            318,
+            349,
+            326
+          ],
+          "area": 92
+        }
+      ],
+      "review_status": "pending output review"
+    },
+    {
+      "file": "Barbell_Ab_Rollout_-_On_Knees_male_v2_2.png",
+      "input": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovered-kneeling-cleanup/images/Barbell_Ab_Rollout_-_On_Knees_male_v2_2.png",
+      "input_sha256": "78e10ab3ef136f1986ceb379bb7404a1566b13d4397137c83ee20fc3701bcf3c",
+      "raw_source": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovery-rollout/recovered-raw/Barbell_Ab_Rollout_-_On_Knees_male_v2_2.png",
+      "raw_source_sha256": "54053caf2b910d4d2d5777d65e4f484652871aaeb06424df08c307eacec81c53",
+      "remove_seeds": [
+        [
+          560,
+          97
+        ],
+        [
+          583,
+          103
+        ],
+        [
+          604,
+          102
+        ],
+        [
+          414,
+          137
+        ],
+        [
+          91,
+          191
+        ],
+        [
+          55,
+          197
+        ],
+        [
+          370,
+          266
+        ],
+        [
+          334,
+          272
+        ]
+      ],
+      "protect_seeds": [
+        [
+          541,
+          24
+        ],
+        [
+          552,
+          31
+        ],
+        [
+          595,
+          33
+        ],
+        [
+          557,
+          48
+        ],
+        [
+          607,
+          69
+        ],
+        [
+          520,
+          73
+        ],
+        [
+          50,
+          117
+        ],
+        [
+          62,
+          135
+        ],
+        [
+          22,
+          138
+        ],
+        [
+          75,
+          150
+        ],
+        [
+          105,
+          157
+        ],
+        [
+          193,
+          179
+        ],
+        [
+          319,
+          184
+        ],
+        [
+          281,
+          201
+        ],
+        [
+          356,
+          214
+        ],
+        [
+          396,
+          224
+        ]
+      ],
+      "removed_labels": [
+        116,
+        119,
+        127,
+        146,
+        338,
+        372,
+        456,
+        459
+      ],
+      "protected_labels": [
+        2,
+        12,
+        18,
+        37,
+        45,
+        95,
+        134,
+        180,
+        193,
+        208,
+        221,
+        277,
+        324,
+        367,
+        392,
+        406
+      ],
+      "removed_pixels": 3242,
+      "rgb_changed_pixels": 0,
+      "output_sha256": "13515927f367f43af6bc0be5f02ef0be839f93cd20a46708dfc6a46122457fbe",
+      "removed_regions": [
+        {
+          "label": 116,
+          "bbox": [
+            556,
+            93,
+            565,
+            100
+          ],
+          "area": 32
+        },
+        {
+          "label": 119,
+          "bbox": [
+            576,
+            98,
+            599,
+            106
+          ],
+          "area": 63
+        },
+        {
+          "label": 127,
+          "bbox": [
+            600,
+            100,
+            608,
+            104
+          ],
+          "area": 17
+        },
+        {
+          "label": 146,
+          "bbox": [
+            314,
+            109,
+            555,
+            172
+          ],
+          "area": 2853
+        },
+        {
+          "label": 338,
+          "bbox": [
+            82,
+            184,
+            99,
+            196
+          ],
+          "area": 52
+        },
+        {
+          "label": 372,
+          "bbox": [
+            45,
+            194,
+            71,
+            200
+          ],
+          "area": 71
+        },
+        {
+          "label": 456,
+          "bbox": [
+            361,
+            259,
+            377,
+            271
+          ],
+          "area": 47
+        },
+        {
+          "label": 459,
+          "bbox": [
+            323,
+            268,
+            352,
+            276
+          ],
+          "area": 107
+        }
+      ],
+      "review_status": "pending output review"
+    },
+    {
+      "file": "Barbell_Ab_Rollout_-_On_Knees_male_v2_3.png",
+      "input": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovered-kneeling-cleanup/images/Barbell_Ab_Rollout_-_On_Knees_male_v2_3.png",
+      "input_sha256": "308ae3bf8b823b4f388dd5c6869a31b3104b422e91e3138e3920d436c51cf201",
+      "raw_source": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovery-rollout/recovered-raw/Barbell_Ab_Rollout_-_On_Knees_male_v2_3.png",
+      "raw_source_sha256": "918d60777ae5005a4f6f8d2c697157647b00e895af70933aca6f3ea43ab8cda3",
+      "remove_seeds": [
+        [
+          407,
+          274
+        ],
+        [
+          302,
+          275
+        ],
+        [
+          388,
+          281
+        ],
+        [
+          89,
+          276
+        ],
+        [
+          56,
+          282
+        ],
+        [
+          365,
+          336
+        ],
+        [
+          332,
+          342
+        ]
+      ],
+      "protect_seeds": [
+        [
+          436,
+          234
+        ],
+        [
+          443,
+          249
+        ],
+        [
+          47,
+          212
+        ],
+        [
+          61,
+          225
+        ],
+        [
+          23,
+          228
+        ],
+        [
+          74,
+          237
+        ],
+        [
+          106,
+          244
+        ],
+        [
+          324,
+          264
+        ],
+        [
+          192,
+          262
+        ],
+        [
+          280,
+          279
+        ],
+        [
+          347,
+          288
+        ],
+        [
+          390,
+          298
+        ]
+      ],
+      "removed_labels": [
+        327,
+        331,
+        343,
+        334,
+        344,
+        411,
+        414
+      ],
+      "protected_labels": [
+        155,
+        249,
+        147,
+        190,
+        204,
+        215,
+        226,
+        248,
+        266,
+        337,
+        353,
+        367
+      ],
+      "removed_pixels": 430,
+      "rgb_changed_pixels": 0,
+      "output_sha256": "c71329ad285b3000dc880eb81d22dad9c14f8ad69a5a7538caa0d41ff01bc52d",
+      "removed_regions": [
+        {
+          "label": 327,
+          "bbox": [
+            400,
+            269,
+            422,
+            279
+          ],
+          "area": 106
+        },
+        {
+          "label": 331,
+          "bbox": [
+            295,
+            271,
+            308,
+            280
+          ],
+          "area": 74
+        },
+        {
+          "label": 343,
+          "bbox": [
+            385,
+            277,
+            393,
+            284
+          ],
+          "area": 28
+        },
+        {
+          "label": 334,
+          "bbox": [
+            79,
+            272,
+            97,
+            281
+          ],
+          "area": 42
+        },
+        {
+          "label": 344,
+          "bbox": [
+            47,
+            278,
+            72,
+            284
+          ],
+          "area": 60
+        },
+        {
+          "label": 411,
+          "bbox": [
+            357,
+            333,
+            372,
+            341
+          ],
+          "area": 37
+        },
+        {
+          "label": 414,
+          "bbox": [
+            321,
+            339,
+            347,
+            346
+          ],
+          "area": 83
+        }
+      ],
+      "review_status": "pending output review"
+    },
+    {
+      "file": "Barbell_Ab_Rollout_-_On_Knees_female_v2_0.png",
+      "input": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovered-kneeling-cleanup/images/Barbell_Ab_Rollout_-_On_Knees_female_v2_0.png",
+      "input_sha256": "3d20f12826a984c0a06d8e866342f8a1e47a45c71e6d864ce65b92c7a94fba96",
+      "raw_source": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovery-rollout/recovered-raw/Barbell_Ab_Rollout_-_On_Knees_female_v2_0.png",
+      "raw_source_sha256": "a631d7e6b18ac10069a0e7e04699969507013c046c1a78bb3ac49fc71d90479c",
+      "remove_seeds": [
+        [
+          454,
+          321
+        ],
+        [
+          409,
+          331
+        ],
+        [
+          89,
+          344
+        ],
+        [
+          56,
+          349
+        ],
+        [
+          376,
+          391
+        ],
+        [
+          340,
+          395
+        ]
+      ],
+      "protect_seeds": [
+        [
+          426,
+          233
+        ],
+        [
+          465,
+          254
+        ],
+        [
+          463,
+          267
+        ],
+        [
+          465,
+          273
+        ],
+        [
+          46,
+          286
+        ],
+        [
+          62,
+          294
+        ],
+        [
+          24,
+          299
+        ],
+        [
+          75,
+          304
+        ],
+        [
+          331,
+          321
+        ],
+        [
+          102,
+          308
+        ],
+        [
+          199,
+          321
+        ],
+        [
+          298,
+          334
+        ],
+        [
+          400,
+          347
+        ]
+      ],
+      "removed_labels": [
+        437,
+        461,
+        488,
+        512,
+        555,
+        557
+      ],
+      "protected_labels": [
+        202,
+        214,
+        269,
+        282,
+        277,
+        318,
+        351,
+        352,
+        358,
+        371,
+        411,
+        475,
+        493
+      ],
+      "removed_pixels": 428,
+      "rgb_changed_pixels": 0,
+      "output_sha256": "0b7f05e52443ea875c1980f58f629c4d24b6a42776a27686870a2c27bb344db2",
+      "removed_regions": [
+        {
+          "label": 437,
+          "bbox": [
+            446,
+            321,
+            462,
+            323
+          ],
+          "area": 27
+        },
+        {
+          "label": 461,
+          "bbox": [
+            393,
+            327,
+            426,
+            340
+          ],
+          "area": 192
+        },
+        {
+          "label": 488,
+          "bbox": [
+            81,
+            341,
+            96,
+            348
+          ],
+          "area": 41
+        },
+        {
+          "label": 512,
+          "bbox": [
+            47,
+            346,
+            70,
+            351
+          ],
+          "area": 45
+        },
+        {
+          "label": 555,
+          "bbox": [
+            366,
+            387,
+            384,
+            395
+          ],
+          "area": 59
+        },
+        {
+          "label": 557,
+          "bbox": [
+            330,
+            391,
+            356,
+            398
+          ],
+          "area": 64
+        }
+      ],
+      "review_status": "pending output review"
+    },
+    {
+      "file": "Barbell_Ab_Rollout_-_On_Knees_female_v2_1.png",
+      "input": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovered-kneeling-cleanup/images/Barbell_Ab_Rollout_-_On_Knees_female_v2_1.png",
+      "input_sha256": "d01b238382c6ac57ffcb383d22e28f0dccac4998dbbf63e72ece5c865c19eb85",
+      "raw_source": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovery-rollout/recovered-raw/Barbell_Ab_Rollout_-_On_Knees_female_v2_1.png",
+      "raw_source_sha256": "a26e7574aff8b7415c238e87e98c8f28c52826a3a7ca8dc2e299bb4df17eddf6",
+      "remove_seeds": [
+        [
+          512,
+          252
+        ],
+        [
+          462,
+          263
+        ],
+        [
+          402,
+          268
+        ],
+        [
+          85,
+          283
+        ],
+        [
+          50,
+          289
+        ],
+        [
+          363,
+          335
+        ],
+        [
+          328,
+          340
+        ]
+      ],
+      "protect_seeds": [
+        [
+          487,
+          164
+        ],
+        [
+          525,
+          185
+        ],
+        [
+          522,
+          198
+        ],
+        [
+          525,
+          204
+        ],
+        [
+          40,
+          222
+        ],
+        [
+          56,
+          233
+        ],
+        [
+          20,
+          236
+        ],
+        [
+          70,
+          243
+        ],
+        [
+          318,
+          265
+        ],
+        [
+          88,
+          245
+        ],
+        [
+          179,
+          261
+        ],
+        [
+          281,
+          277
+        ],
+        [
+          386,
+          291
+        ]
+      ],
+      "removed_labels": [
+        402,
+        426,
+        435,
+        495,
+        514,
+        568,
+        571
+      ],
+      "protected_labels": [
+        130,
+        151,
+        225,
+        245,
+        255,
+        318,
+        340,
+        349,
+        369,
+        373,
+        403,
+        483,
+        505
+      ],
+      "removed_pixels": 764,
+      "rgb_changed_pixels": 0,
+      "output_sha256": "c37313a7873b470a61e2dd99c58094bd09590f05f3a9ab2f53557187d5220256",
+      "removed_regions": [
+        {
+          "label": 402,
+          "bbox": [
+            506,
+            251,
+            519,
+            253
+          ],
+          "area": 16
+        },
+        {
+          "label": 426,
+          "bbox": [
+            441,
+            257,
+            482,
+            273
+          ],
+          "area": 214
+        },
+        {
+          "label": 435,
+          "bbox": [
+            378,
+            258,
+            429,
+            275
+          ],
+          "area": 313
+        },
+        {
+          "label": 495,
+          "bbox": [
+            77,
+            276,
+            93,
+            287
+          ],
+          "area": 55
+        },
+        {
+          "label": 514,
+          "bbox": [
+            43,
+            286,
+            61,
+            291
+          ],
+          "area": 49
+        },
+        {
+          "label": 568,
+          "bbox": [
+            352,
+            332,
+            371,
+            340
+          ],
+          "area": 57
+        },
+        {
+          "label": 571,
+          "bbox": [
+            318,
+            337,
+            340,
+            343
+          ],
+          "area": 60
+        }
+      ],
+      "review_status": "pending output review"
+    },
+    {
+      "file": "Barbell_Ab_Rollout_-_On_Knees_female_v2_2.png",
+      "input": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovered-kneeling-cleanup/images/Barbell_Ab_Rollout_-_On_Knees_female_v2_2.png",
+      "input_sha256": "f1a380c4bf89d52ffa32824e4489458159ebcc09a510d771e99d438815bc5e35",
+      "raw_source": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovery-rollout/recovered-raw/Barbell_Ab_Rollout_-_On_Knees_female_v2_2.png",
+      "raw_source_sha256": "101a691b66c893a3043dbcf560077a47b3a981c316d633469ca1a627009e8cd2",
+      "remove_seeds": [
+        [
+          505,
+          146
+        ],
+        [
+          505,
+          156
+        ],
+        [
+          431,
+          164
+        ],
+        [
+          410,
+          173
+        ],
+        [
+          80,
+          205
+        ],
+        [
+          45,
+          210
+        ],
+        [
+          355,
+          257
+        ],
+        [
+          318,
+          262
+        ]
+      ],
+      "protect_seeds": [
+        [
+          525,
+          53
+        ],
+        [
+          565,
+          72
+        ],
+        [
+          563,
+          85
+        ],
+        [
+          566,
+          92
+        ],
+        [
+          36,
+          142
+        ],
+        [
+          53,
+          152
+        ],
+        [
+          18,
+          157
+        ],
+        [
+          66,
+          163
+        ],
+        [
+          79,
+          165
+        ],
+        [
+          149,
+          178
+        ],
+        [
+          310,
+          186
+        ],
+        [
+          256,
+          196
+        ],
+        [
+          378,
+          213
+        ]
+      ],
+      "removed_labels": [
+        259,
+        282,
+        290,
+        353,
+        448,
+        454,
+        511,
+        513
+      ],
+      "protected_labels": [
+        49,
+        76,
+        124,
+        133,
+        181,
+        266,
+        293,
+        294,
+        324,
+        346,
+        322,
+        412,
+        457
+      ],
+      "removed_pixels": 1202,
+      "rgb_changed_pixels": 0,
+      "output_sha256": "9aa81d3b0298fcb71a7be6f944f77f37a38ef812ca9d22f8867617509ed18595",
+      "removed_regions": [
+        {
+          "label": 259,
+          "bbox": [
+            501,
+            142,
+            510,
+            151
+          ],
+          "area": 9
+        },
+        {
+          "label": 282,
+          "bbox": [
+            489,
+            150,
+            521,
+            165
+          ],
+          "area": 176
+        },
+        {
+          "label": 290,
+          "bbox": [
+            395,
+            153,
+            482,
+            173
+          ],
+          "area": 798
+        },
+        {
+          "label": 353,
+          "bbox": [
+            407,
+            173,
+            415,
+            175
+          ],
+          "area": 10
+        },
+        {
+          "label": 448,
+          "bbox": [
+            74,
+            202,
+            86,
+            208
+          ],
+          "area": 38
+        },
+        {
+          "label": 454,
+          "bbox": [
+            36,
+            206,
+            59,
+            212
+          ],
+          "area": 58
+        },
+        {
+          "label": 511,
+          "bbox": [
+            345,
+            254,
+            362,
+            262
+          ],
+          "area": 47
+        },
+        {
+          "label": 513,
+          "bbox": [
+            307,
+            259,
+            333,
+            265
+          ],
+          "area": 66
+        }
+      ],
+      "review_status": "pending output review"
+    },
+    {
+      "file": "Barbell_Ab_Rollout_-_On_Knees_female_v2_3.png",
+      "input": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovered-kneeling-cleanup/images/Barbell_Ab_Rollout_-_On_Knees_female_v2_3.png",
+      "input_sha256": "d4fc75cc0b2c20834e321f4ba822139c8d905929385f3522fd2197897de88adc",
+      "raw_source": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovery-rollout/recovered-raw/Barbell_Ab_Rollout_-_On_Knees_female_v2_3.png",
+      "raw_source_sha256": "a8eb2bb41c02866f5c8cc16a96d708a26b5a000ec211ea107383e23d1a2b6cf1",
+      "remove_seeds": [
+        [
+          396,
+          328
+        ],
+        [
+          87,
+          337
+        ],
+        [
+          56,
+          343
+        ],
+        [
+          366,
+          385
+        ],
+        [
+          331,
+          390
+        ]
+      ],
+      "protect_seeds": [
+        [
+          423,
+          227
+        ],
+        [
+          464,
+          249
+        ],
+        [
+          460,
+          262
+        ],
+        [
+          463,
+          267
+        ],
+        [
+          46,
+          280
+        ],
+        [
+          62,
+          288
+        ],
+        [
+          24,
+          293
+        ],
+        [
+          75,
+          298
+        ],
+        [
+          323,
+          319
+        ],
+        [
+          100,
+          302
+        ],
+        [
+          196,
+          316
+        ],
+        [
+          292,
+          330
+        ],
+        [
+          388,
+          343
+        ]
+      ],
+      "removed_labels": [
+        412,
+        432,
+        446,
+        492,
+        494
+      ],
+      "protected_labels": [
+        170,
+        181,
+        239,
+        253,
+        248,
+        289,
+        307,
+        308,
+        313,
+        328,
+        351,
+        423,
+        439
+      ],
+      "removed_pixels": 445,
+      "rgb_changed_pixels": 0,
+      "output_sha256": "14c87e392c77eabf299b0bf13a06bcf5e5f6482e97dda1d9b0d5e2b8d18b8445",
+      "removed_regions": [
+        {
+          "label": 412,
+          "bbox": [
+            381,
+            323,
+            416,
+            337
+          ],
+          "area": 231
+        },
+        {
+          "label": 432,
+          "bbox": [
+            81,
+            333,
+            93,
+            341
+          ],
+          "area": 39
+        },
+        {
+          "label": 446,
+          "bbox": [
+            46,
+            340,
+            72,
+            345
+          ],
+          "area": 52
+        },
+        {
+          "label": 492,
+          "bbox": [
+            357,
+            382,
+            373,
+            389
+          ],
+          "area": 61
+        },
+        {
+          "label": 494,
+          "bbox": [
+            321,
+            386,
+            343,
+            393
+          ],
+          "area": 62
+        }
+      ],
+      "review_status": "pending output review"
+    }
+  ]
+}

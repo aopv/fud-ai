@@ -1,0 +1,24 @@
+# Retain local experiments without adding every duplicate PNG to app history.
+experiments/
+alignment-initial-experiment/
+alignment-initial-highres-experiment/
+alignment-initial-reviewed-experiment/
+alignment-initial-final-experiment/
+background-pilot/masks/
+background-pilot/images/
+background-pilot/*-preview.png
+background-pilot/records/
+promotion-backups/
+recovered-kneeling-cleanup/masks/
+background-full/
+**/.repair.lock
+**/__pycache__/
+# Intermediate renders are reproducible from the retained scripts and records.
+recovered-kneeling-cleanup/images/
+recovered-kneeling-cleanup/*-preview.png
+recovered-kneeling-framed/images/
+recovered-kneeling-framed/*.png
+recovered-kneeling-framed-v2/images/
+recovered-kneeling-framed-v2/*.png
+recovered-kneeling-shadow-cleanup/images/
+edge-refined-pilot/*.png

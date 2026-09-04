@@ -1,0 +1,9 @@
+{
+  "edge_pixels_unmatted": 1152,
+  "speck_pixels_removed": 407,
+  "acceptance": "pending_visual_review",
+  "regions": [],
+  "source": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/background-pilot/images/Barbell_Full_Squat_female_v2_1.png",
+  "source_sha256": "18f36208e909ef9cb723cb7afb050089c2470424a109fcd6184430849450b495",
+  "candidate_sha256": "2aecc1a2ee89056e4738f2c938beed44b75b218fdcf29938967fd253240138c0"
+}

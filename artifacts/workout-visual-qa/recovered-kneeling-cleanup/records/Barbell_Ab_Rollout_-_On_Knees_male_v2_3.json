@@ -1,0 +1,378 @@
+{
+  "selected_regions": [
+    1,
+    2,
+    3
+  ],
+  "removed_visible_pixels": 114343,
+  "uncertain_pixels_retained": 5,
+  "rgb_changed_pixels": 0,
+  "regions": [
+    {
+      "label": 1,
+      "area": 106803,
+      "bbox": [
+        0,
+        0,
+        458,
+        368
+      ],
+      "center": [
+        217.6,
+        178.51
+      ],
+      "max_radius": 72.17,
+      "gray_std": 8.11,
+      "horizontal_transitions": 811,
+      "vertical_transitions": 2886,
+      "touches_transparency": false,
+      "checker_candidate": true,
+      "background_fraction": 0.9988,
+      "foreground_fraction": 0.0
+    },
+    {
+      "label": 2,
+      "area": 7498,
+      "bbox": [
+        169,
+        133,
+        252,
+        265
+      ],
+      "center": [
+        210.48,
+        207.29
+      ],
+      "max_radius": 37.95,
+      "gray_std": 5.83,
+      "horizontal_transitions": 194,
+      "vertical_transitions": 204,
+      "touches_transparency": false,
+      "checker_candidate": true,
+      "background_fraction": 0.9977,
+      "foreground_fraction": 0.0
+    },
+    {
+      "label": 3,
+      "area": 47,
+      "bbox": [
+        403,
+        201,
+        418,
+        209
+      ],
+      "center": [
+        411.09,
+        203.98
+      ],
+      "max_radius": 2.8,
+      "gray_std": 20.35,
+      "horizontal_transitions": 16,
+      "vertical_transitions": 16,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.8298,
+      "foreground_fraction": 0.0
+    },
+    {
+      "label": 4,
+      "area": 83,
+      "bbox": [
+        420,
+        201,
+        440,
+        219
+      ],
+      "center": [
+        431.47,
+        207.37
+      ],
+      "max_radius": 2.2,
+      "gray_std": 20.12,
+      "horizontal_transitions": 36,
+      "vertical_transitions": 40,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.494,
+      "foreground_fraction": 0.0602
+    },
+    {
+      "label": 6,
+      "area": 32,
+      "bbox": [
+        15,
+        226,
+        30,
+        231
+      ],
+      "center": [
+        21.66,
+        227.75
+      ],
+      "max_radius": 1.4,
+      "gray_std": 18.75,
+      "horizontal_transitions": 16,
+      "vertical_transitions": 13,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0,
+      "foreground_fraction": 1.0
+    },
+    {
+      "label": 7,
+      "area": 64,
+      "bbox": [
+        427,
+        226,
+        442,
+        274
+      ],
+      "center": [
+        437.56,
+        249.78
+      ],
+      "max_radius": 1.0,
+      "gray_std": 19.82,
+      "horizontal_transitions": 9,
+      "vertical_transitions": 25,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0156,
+      "foreground_fraction": 0.375
+    },
+    {
+      "label": 8,
+      "area": 17,
+      "bbox": [
+        67,
+        229,
+        73,
+        239
+      ],
+      "center": [
+        68.88,
+        233.12
+      ],
+      "max_radius": 1.4,
+      "gray_std": 19.45,
+      "horizontal_transitions": 7,
+      "vertical_transitions": 7,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0,
+      "foreground_fraction": 1.0
+    },
+    {
+      "label": 15,
+      "area": 14,
+      "bbox": [
+        77,
+        238,
+        86,
+        241
+      ],
+      "center": [
+        81.71,
+        238.5
+      ],
+      "max_radius": 1.0,
+      "gray_std": 9.21,
+      "horizontal_transitions": 2,
+      "vertical_transitions": 3,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0,
+      "foreground_fraction": 1.0
+    },
+    {
+      "label": 19,
+      "area": 43,
+      "bbox": [
+        112,
+        244,
+        132,
+        251
+      ],
+      "center": [
+        121.7,
+        246.93
+      ],
+      "max_radius": 1.4,
+      "gray_std": 13.34,
+      "horizontal_transitions": 9,
+      "vertical_transitions": 16,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0,
+      "foreground_fraction": 1.0
+    },
+    {
+      "label": 21,
+      "area": 25,
+      "bbox": [
+        164,
+        256,
+        184,
+        262
+      ],
+      "center": [
+        172.32,
+        258.16
+      ],
+      "max_radius": 1.0,
+      "gray_std": 10.53,
+      "horizontal_transitions": 12,
+      "vertical_transitions": 3,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0,
+      "foreground_fraction": 1.0
+    },
+    {
+      "label": 23,
+      "area": 12,
+      "bbox": [
+        186,
+        260,
+        196,
+        263
+      ],
+      "center": [
+        190.25,
+        261.33
+      ],
+      "max_radius": 1.0,
+      "gray_std": 4.09,
+      "horizontal_transitions": 1,
+      "vertical_transitions": 1,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0,
+      "foreground_fraction": 1.0
+    },
+    {
+      "label": 30,
+      "area": 13,
+      "bbox": [
+        262,
+        268,
+        267,
+        273
+      ],
+      "center": [
+        263.69,
+        270.0
+      ],
+      "max_radius": 1.4,
+      "gray_std": 18.46,
+      "horizontal_transitions": 6,
+      "vertical_transitions": 5,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0,
+      "foreground_fraction": 1.0
+    },
+    {
+      "label": 36,
+      "area": 61,
+      "bbox": [
+        271,
+        278,
+        305,
+        285
+      ],
+      "center": [
+        288.77,
+        280.92
+      ],
+      "max_radius": 1.4,
+      "gray_std": 15.41,
+      "horizontal_transitions": 30,
+      "vertical_transitions": 24,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0,
+      "foreground_fraction": 1.0
+    },
+    {
+      "label": 37,
+      "area": 17,
+      "bbox": [
+        345,
+        283,
+        352,
+        290
+      ],
+      "center": [
+        347.65,
+        286.29
+      ],
+      "max_radius": 1.0,
+      "gray_std": 14.65,
+      "horizontal_transitions": 9,
+      "vertical_transitions": 5,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0,
+      "foreground_fraction": 1.0
+    },
+    {
+      "label": 39,
+      "area": 15,
+      "bbox": [
+        350,
+        287,
+        355,
+        292
+      ],
+      "center": [
+        352.13,
+        289.07
+      ],
+      "max_radius": 1.4,
+      "gray_std": 12.97,
+      "horizontal_transitions": 5,
+      "vertical_transitions": 6,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0,
+      "foreground_fraction": 1.0
+    },
+    {
+      "label": 41,
+      "area": 160,
+      "bbox": [
+        358,
+        292,
+        413,
+        305
+      ],
+      "center": [
+        391.22,
+        297.69
+      ],
+      "max_radius": 2.2,
+      "gray_std": 18.35,
+      "horizontal_transitions": 51,
+      "vertical_transitions": 71,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0,
+      "foreground_fraction": 1.0
+    }
+  ],
+  "file": "Barbell_Ab_Rollout_-_On_Knees_male_v2_3.png",
+  "source": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovery-rollout/recovered-raw/Barbell_Ab_Rollout_-_On_Knees_male_v2_3.png",
+  "source_sha256": "918d60777ae5005a4f6f8d2c697157647b00e895af70933aca6f3ea43ab8cda3",
+  "candidate_sha256": "308ae3bf8b823b4f388dd5c6869a31b3104b422e91e3138e3920d436c51cf201",
+  "size": [
+    458,
+    368
+  ],
+  "recipe": "pale-neural-guard-v2",
+  "model": "birefnet-general-lite",
+  "mask_sha256": "d51831dbaa70a8a5f17dd005252b30213dc8a3f00306a58333e443916b8664c4",
+  "override_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+  "seconds": 13.392,
+  "acceptance": "pending_visual_review"
+}

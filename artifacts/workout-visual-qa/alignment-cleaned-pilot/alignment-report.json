@@ -1,0 +1,600 @@
+{
+  "schema_version": 1,
+  "algorithm_revision": "stationary-anchors-v2",
+  "source": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/background-pilot/images",
+  "algorithm": "Reviewed stationary anchors; mutual SIFT + robust uniform scale/translation; shared pose-union fit.",
+  "scope": "Geometric triage only; no image-quality or exercise-technique pass is implied.",
+  "counts": {
+    "high_confidence_anchor_alignment": 2
+  },
+  "sequence_count": 2,
+  "frame_count": 8,
+  "sequences": [
+    {
+      "exercise_id": "Band_Pull_Apart",
+      "gender": "male",
+      "profile": {
+        "reviewed": true,
+        "reason": "Both feet and head remain stationary throughout the band pull; only arms/band move.",
+        "regions": [
+          {
+            "name": "left_foot",
+            "box": [
+              0.36,
+              0.86,
+              0.48,
+              0.99
+            ]
+          },
+          {
+            "name": "right_foot",
+            "box": [
+              0.53,
+              0.86,
+              0.63,
+              0.99
+            ]
+          },
+          {
+            "name": "head",
+            "box": [
+              0.44,
+              0.01,
+              0.56,
+              0.18
+            ]
+          }
+        ]
+      },
+      "status": "high_confidence_anchor_alignment",
+      "flags": [],
+      "frames": [
+        {
+          "bbox": [
+            366,
+            14,
+            657,
+            754
+          ],
+          "size": [
+            1024,
+            768
+          ],
+          "opaque_pale_fraction": 0.000245,
+          "flat_vertical_boundary": 6,
+          "flat_horizontal_boundary": 19,
+          "edge_pixels": 0,
+          "flags": [],
+          "file": "Band_Pull_Apart_male_v2_0.png",
+          "sha256": "643f14eb975f5cbca51b2fb2e820cfe06acb440d10fb68ee783d65255a5946a1",
+          "registration": {
+            "accepted": true,
+            "reference": true
+          },
+          "approved_transform": {
+            "scale": 0.9726094,
+            "tx": 17.83865,
+            "ty": 10.59314
+          },
+          "experiment_output": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/alignment-cleaned-pilot/images/Band_Pull_Apart_male_v2_0.png"
+        },
+        {
+          "bbox": [
+            363,
+            14,
+            660,
+            754
+          ],
+          "size": [
+            1024,
+            768
+          ],
+          "opaque_pale_fraction": 0.000264,
+          "flat_vertical_boundary": 5,
+          "flat_horizontal_boundary": 11,
+          "edge_pixels": 0,
+          "flags": [],
+          "file": "Band_Pull_Apart_male_v2_1.png",
+          "sha256": "50d021f1eb12033821230dbc9f4a1859bd55ab4de235d5a120c94ab73eae1475",
+          "registration": {
+            "matches": 60,
+            "accepted": true,
+            "reasons": [],
+            "inliers": 60,
+            "inlier_ratio": 1.0,
+            "residual_p90_px": 2.3694,
+            "rotation_degrees": -0.0741,
+            "anchor_span_px": [
+              181.3800048828125,
+              719.1099853515625
+            ],
+            "region_support": {
+              "0": 13,
+              "1": 10,
+              "2": 37
+            },
+            "diagnostic_transform": {
+              "scale": 0.9998556,
+              "tx": -3.66678,
+              "ty": -0.21355
+            },
+            "independent_fits": [
+              {
+                "region": 0,
+                "scale": 1.0245636,
+                "tx": -15.1554,
+                "ty": -17.89444
+              },
+              {
+                "region": 1,
+                "scale": 1.0153648,
+                "tx": -10.6045,
+                "ty": -11.09186
+              },
+              {
+                "region": 2,
+                "scale": 1.0042388,
+                "tx": -6.2454,
+                "ty": -0.51014
+              }
+            ],
+            "affine_anisotropy": 1.02
+          },
+          "approved_transform": {
+            "scale": 0.972469,
+            "tx": 14.27231,
+            "ty": 10.38543
+          },
+          "experiment_output": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/alignment-cleaned-pilot/images/Band_Pull_Apart_male_v2_1.png"
+        },
+        {
+          "bbox": [
+            245,
+            14,
+            778,
+            754
+          ],
+          "size": [
+            1024,
+            768
+          ],
+          "opaque_pale_fraction": 0.000238,
+          "flat_vertical_boundary": 5,
+          "flat_horizontal_boundary": 6,
+          "edge_pixels": 0,
+          "flags": [],
+          "file": "Band_Pull_Apart_male_v2_2.png",
+          "sha256": "b97ff60b0c8d2d368620d08d0bd7cbb4408cf5ee095faf73b8b01e19df53ec0d",
+          "registration": {
+            "matches": 56,
+            "accepted": true,
+            "reasons": [],
+            "inliers": 56,
+            "inlier_ratio": 1.0,
+            "residual_p90_px": 1.3646,
+            "rotation_degrees": -0.0146,
+            "anchor_span_px": [
+              210.49000549316406,
+              720.780029296875
+            ],
+            "region_support": {
+              "0": 10,
+              "1": 14,
+              "2": 32
+            },
+            "diagnostic_transform": {
+              "scale": 0.9980924,
+              "tx": -2.44637,
+              "ty": 1.49936
+            },
+            "independent_fits": [
+              {
+                "region": 0,
+                "scale": 1.0161015,
+                "tx": -9.82136,
+                "ty": -11.52252
+              },
+              {
+                "region": 1,
+                "scale": 1.0086688,
+                "tx": -8.73518,
+                "ty": -5.86602
+              },
+              {
+                "region": 2,
+                "scale": 1.0170359,
+                "tx": -12.13464,
+                "ty": -0.06824
+              }
+            ],
+            "affine_anisotropy": 1.0038
+          },
+          "approved_transform": {
+            "scale": 0.9707541,
+            "tx": 15.45929,
+            "ty": 12.05143
+          },
+          "experiment_output": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/alignment-cleaned-pilot/images/Band_Pull_Apart_male_v2_2.png"
+        },
+        {
+          "bbox": [
+            324,
+            14,
+            700,
+            754
+          ],
+          "size": [
+            1024,
+            768
+          ],
+          "opaque_pale_fraction": 0.000225,
+          "flat_vertical_boundary": 5,
+          "flat_horizontal_boundary": 10,
+          "edge_pixels": 0,
+          "flags": [],
+          "file": "Band_Pull_Apart_male_v2_3.png",
+          "sha256": "738412caa8ca7ee223f60af02f7af16a342cb375969937d3efaa7f6431174c86",
+          "registration": {
+            "matches": 54,
+            "accepted": true,
+            "reasons": [],
+            "inliers": 53,
+            "inlier_ratio": 0.9815,
+            "residual_p90_px": 1.7836,
+            "rotation_degrees": -0.0372,
+            "anchor_span_px": [
+              193.50999450683594,
+              719.1099853515625
+            ],
+            "region_support": {
+              "0": 12,
+              "1": 12,
+              "2": 29
+            },
+            "diagnostic_transform": {
+              "scale": 0.996589,
+              "tx": -1.96135,
+              "ty": 2.28745
+            },
+            "independent_fits": [
+              {
+                "region": 0,
+                "scale": 1.016285,
+                "tx": -10.31862,
+                "ty": -11.86989
+              },
+              {
+                "region": 1,
+                "scale": 1.0067046,
+                "tx": -7.45922,
+                "ty": -4.73002
+              },
+              {
+                "region": 2,
+                "scale": 1.0168697,
+                "tx": -12.5942,
+                "ty": 0.55279
+              }
+            ],
+            "affine_anisotropy": 1.0222
+          },
+          "approved_transform": {
+            "scale": 0.9692919,
+            "tx": 15.93103,
+            "ty": 12.81793
+          },
+          "experiment_output": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/alignment-cleaned-pilot/images/Band_Pull_Apart_male_v2_3.png"
+        }
+      ],
+      "size": [
+        1024,
+        768
+      ],
+      "diagnostic_bbox_range_px": [
+        121,
+        0,
+        121,
+        0
+      ],
+      "bbox_warning": "BBox variation includes legitimate motion and is never used as a per-frame scale estimate.",
+      "common_union_transform": {
+        "scale": 0.9726094,
+        "tx": 17.83865,
+        "ty": 10.59314
+      }
+    },
+    {
+      "exercise_id": "Band_Pull_Apart",
+      "gender": "female",
+      "profile": {
+        "reviewed": true,
+        "reason": "Both feet and head remain stationary throughout the band pull; only arms/band move.",
+        "regions": [
+          {
+            "name": "left_foot",
+            "box": [
+              0.36,
+              0.86,
+              0.48,
+              0.99
+            ]
+          },
+          {
+            "name": "right_foot",
+            "box": [
+              0.53,
+              0.86,
+              0.63,
+              0.99
+            ]
+          },
+          {
+            "name": "head",
+            "box": [
+              0.44,
+              0.01,
+              0.56,
+              0.18
+            ]
+          }
+        ]
+      },
+      "status": "high_confidence_anchor_alignment",
+      "flags": [],
+      "frames": [
+        {
+          "bbox": [
+            376,
+            14,
+            647,
+            754
+          ],
+          "size": [
+            1024,
+            768
+          ],
+          "opaque_pale_fraction": 0.000155,
+          "flat_vertical_boundary": 6,
+          "flat_horizontal_boundary": 4,
+          "edge_pixels": 0,
+          "flags": [],
+          "file": "Band_Pull_Apart_female_v2_0.png",
+          "sha256": "9a0fe4985f480599f6660f2a62d02b4c4dc2b2397e216a9477ca9a0b7187569f",
+          "registration": {
+            "accepted": true,
+            "reference": true
+          },
+          "approved_transform": {
+            "scale": 0.9722907,
+            "tx": 7.56348,
+            "ty": 10.89281
+          },
+          "experiment_output": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/alignment-cleaned-pilot/images/Band_Pull_Apart_female_v2_0.png"
+        },
+        {
+          "bbox": [
+            334,
+            14,
+            689,
+            754
+          ],
+          "size": [
+            1024,
+            768
+          ],
+          "opaque_pale_fraction": 0.000284,
+          "flat_vertical_boundary": 5,
+          "flat_horizontal_boundary": 19,
+          "edge_pixels": 0,
+          "flags": [],
+          "file": "Band_Pull_Apart_female_v2_1.png",
+          "sha256": "5b14ed741e0a159c22e6d185195ec10c4b306fdab04297b73f825f20e3fdd946",
+          "registration": {
+            "matches": 82,
+            "accepted": true,
+            "reasons": [],
+            "inliers": 82,
+            "inlier_ratio": 1.0,
+            "residual_p90_px": 1.1179,
+            "rotation_degrees": 0.0088,
+            "anchor_span_px": [
+              198.47000122070312,
+              717.5700073242188
+            ],
+            "region_support": {
+              "0": 16,
+              "1": 13,
+              "2": 53
+            },
+            "diagnostic_transform": {
+              "scale": 0.9997682,
+              "tx": 8.43691,
+              "ty": -0.48973
+            },
+            "independent_fits": [
+              {
+                "region": 0,
+                "scale": 0.9979302,
+                "tx": 8.93538,
+                "ty": 0.80329
+              },
+              {
+                "region": 1,
+                "scale": 1.0068292,
+                "tx": 4.60379,
+                "ty": -5.59099
+              },
+              {
+                "region": 2,
+                "scale": 1.0035653,
+                "tx": 6.52455,
+                "ty": -0.77729
+              }
+            ],
+            "affine_anisotropy": 1.0039
+          },
+          "approved_transform": {
+            "scale": 0.9720653,
+            "tx": 15.76661,
+            "ty": 10.41665
+          },
+          "experiment_output": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/alignment-cleaned-pilot/images/Band_Pull_Apart_female_v2_1.png"
+        },
+        {
+          "bbox": [
+            280,
+            14,
+            744,
+            754
+          ],
+          "size": [
+            1024,
+            768
+          ],
+          "opaque_pale_fraction": 0.000159,
+          "flat_vertical_boundary": 5,
+          "flat_horizontal_boundary": 13,
+          "edge_pixels": 0,
+          "flags": [],
+          "file": "Band_Pull_Apart_female_v2_2.png",
+          "sha256": "10b7a863348d39728acb1726a8c717c21949b099062fe283b266128859682977",
+          "registration": {
+            "matches": 74,
+            "accepted": true,
+            "reasons": [],
+            "inliers": 74,
+            "inlier_ratio": 1.0,
+            "residual_p90_px": 1.2548,
+            "rotation_degrees": -0.0001,
+            "anchor_span_px": [
+              190.0500030517578,
+              719.7000122070312
+            ],
+            "region_support": {
+              "0": 14,
+              "1": 8,
+              "2": 52
+            },
+            "diagnostic_transform": {
+              "scale": 1.0000173,
+              "tx": 6.80359,
+              "ty": -0.37305
+            },
+            "independent_fits": [
+              {
+                "region": 0,
+                "scale": 0.992339,
+                "tx": 10.08279,
+                "ty": 5.06371
+              },
+              {
+                "region": 1,
+                "scale": 1.0033206,
+                "tx": 5.07431,
+                "ty": -2.86436
+              },
+              {
+                "region": 2,
+                "scale": 1.0006889,
+                "tx": 6.46227,
+                "ty": -0.42188
+              }
+            ],
+            "affine_anisotropy": 1.0024
+          },
+          "approved_transform": {
+            "scale": 0.9723075,
+            "tx": 14.17854,
+            "ty": 10.53009
+          },
+          "experiment_output": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/alignment-cleaned-pilot/images/Band_Pull_Apart_female_v2_2.png"
+        },
+        {
+          "bbox": [
+            337,
+            14,
+            687,
+            754
+          ],
+          "size": [
+            1024,
+            768
+          ],
+          "opaque_pale_fraction": 0.00025,
+          "flat_vertical_boundary": 4,
+          "flat_horizontal_boundary": 17,
+          "edge_pixels": 0,
+          "flags": [],
+          "file": "Band_Pull_Apart_female_v2_3.png",
+          "sha256": "194ab87b784a06bccf1134383662355e60bdaede8224a85b0aa65126c12afcd2",
+          "registration": {
+            "matches": 50,
+            "accepted": true,
+            "reasons": [],
+            "inliers": 50,
+            "inlier_ratio": 1.0,
+            "residual_p90_px": 1.1702,
+            "rotation_degrees": -0.016,
+            "anchor_span_px": [
+              159.86000061035156,
+              694.5999755859375
+            ],
+            "region_support": {
+              "0": 8,
+              "1": 10,
+              "2": 32
+            },
+            "diagnostic_transform": {
+              "scale": 0.999884,
+              "tx": 2.68101,
+              "ty": -0.51764
+            },
+            "independent_fits": [
+              {
+                "region": 0,
+                "scale": 0.9879323,
+                "tx": 7.90967,
+                "ty": 7.98488
+              },
+              {
+                "region": 1,
+                "scale": 1.0168024,
+                "tx": -6.72281,
+                "ty": -12.61868
+              },
+              {
+                "region": 2,
+                "scale": 0.9995922,
+                "tx": 2.77443,
+                "ty": -0.47472
+              }
+            ],
+            "affine_anisotropy": 1.0051
+          },
+          "approved_transform": {
+            "scale": 0.9721779,
+            "tx": 10.1702,
+            "ty": 10.38951
+          },
+          "experiment_output": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/alignment-cleaned-pilot/images/Band_Pull_Apart_female_v2_3.png"
+        }
+      ],
+      "size": [
+        1024,
+        768
+      ],
+      "diagnostic_bbox_range_px": [
+        96,
+        0,
+        97,
+        0
+      ],
+      "bbox_warning": "BBox variation includes legitimate motion and is never used as a per-frame scale estimate.",
+      "common_union_transform": {
+        "scale": 0.9722907,
+        "tx": 7.56348,
+        "ty": 10.89281
+      }
+    }
+  ]
+}

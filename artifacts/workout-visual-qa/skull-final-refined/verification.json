@@ -1,0 +1,212 @@
+{
+  "frames": [
+    {
+      "asset_name": "Band_Skull_Crusher_male_v2_0",
+      "candidate_path": "artifacts/workout-visual-qa/skull-final-refined/Band_Skull_Crusher_male_v2_0.png",
+      "candidate_sha256": "f5f08fd4c4205d198e2522274b38a66cc51e8f30f29ccc693bab21ba6a5daaee",
+      "original_shared_sha256": "ff860a12e54b466f2372e528c987baf6e4ec2a2b1fea82d55fcd320b39ba5653",
+      "canvas": [
+        1024,
+        768
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        48,
+        225,
+        985,
+        737
+      ],
+      "refinement_changed_pixels": 457,
+      "interior_identical_to_unrefined": true,
+      "protected_shoe_box_identical_to_unrefined": true,
+      "edge_pixels_unmatted": 450,
+      "speck_pixels_removed": 7
+    },
+    {
+      "asset_name": "Band_Skull_Crusher_male_v2_1",
+      "candidate_path": "artifacts/workout-visual-qa/skull-final-refined/Band_Skull_Crusher_male_v2_1.png",
+      "candidate_sha256": "57dcb813ae60585d237c5bbbd79eb3cf756cd292b15de2120521dbd729446edc",
+      "original_shared_sha256": "2b9f75311bf3abfa35d8d93c7fd505b5a9842b2020ed06ef251f9b9806a64bc0",
+      "canvas": [
+        1024,
+        768
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        43,
+        119,
+        981,
+        736
+      ],
+      "refinement_changed_pixels": 558,
+      "interior_identical_to_unrefined": true,
+      "protected_shoe_box_identical_to_unrefined": true,
+      "edge_pixels_unmatted": 545,
+      "speck_pixels_removed": 13
+    },
+    {
+      "asset_name": "Band_Skull_Crusher_male_v2_2",
+      "candidate_path": "artifacts/workout-visual-qa/skull-final-refined/Band_Skull_Crusher_male_v2_2.png",
+      "candidate_sha256": "f7031ca6c01458a25eb8e6593bbbd71a8696b934137f49ad0fc38bb4798fa5eb",
+      "original_shared_sha256": "e1e1fb7c0bd7ccc69a0eae8c983043d1b69c11eac194cd2b108cabc3b556445d",
+      "canvas": [
+        1024,
+        768
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        43,
+        81,
+        980,
+        736
+      ],
+      "refinement_changed_pixels": 463,
+      "interior_identical_to_unrefined": true,
+      "protected_shoe_box_identical_to_unrefined": true,
+      "edge_pixels_unmatted": 450,
+      "speck_pixels_removed": 13
+    },
+    {
+      "asset_name": "Band_Skull_Crusher_male_v2_3",
+      "candidate_path": "artifacts/workout-visual-qa/skull-final-refined/Band_Skull_Crusher_male_v2_3.png",
+      "candidate_sha256": "65cf68dca3c6611991a88b75b2ce0dc474d3520708622126598ea0606b6953ae",
+      "original_shared_sha256": "9a37fdb55568cfe47177e619d1f35260e10e8d2323f7eb85f5ce1f8f9588ee11",
+      "canvas": [
+        1024,
+        768
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        39,
+        242,
+        977,
+        736
+      ],
+      "refinement_changed_pixels": 392,
+      "interior_identical_to_unrefined": true,
+      "protected_shoe_box_identical_to_unrefined": true,
+      "edge_pixels_unmatted": 385,
+      "speck_pixels_removed": 7
+    },
+    {
+      "asset_name": "Band_Skull_Crusher_female_v2_0",
+      "candidate_path": "artifacts/workout-visual-qa/skull-final-refined/Band_Skull_Crusher_female_v2_0.png",
+      "candidate_sha256": "cd4c47ee39f3d6391edf72495eb65d574056079cfd7bc005947ac4317d509db2",
+      "original_shared_sha256": "a4ca1efef722c69a270f4e7591a7367123f6f13dd49dc5401ce016b0c7ae0474",
+      "canvas": [
+        1024,
+        768
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        46,
+        283,
+        981,
+        737
+      ],
+      "refinement_changed_pixels": 528,
+      "interior_identical_to_unrefined": true,
+      "protected_shoe_box_identical_to_unrefined": true,
+      "edge_pixels_unmatted": 521,
+      "speck_pixels_removed": 7
+    },
+    {
+      "asset_name": "Band_Skull_Crusher_female_v2_1",
+      "candidate_path": "artifacts/workout-visual-qa/skull-final-refined/Band_Skull_Crusher_female_v2_1.png",
+      "candidate_sha256": "10248f05f459fc2d57952915ec169b15da90b3e4ace753fa12c290b1f35e3eba",
+      "original_shared_sha256": "5e83abcb79ba9dda1ec152141bdc011728926951fd25ee60794fa2803982a08f",
+      "canvas": [
+        1024,
+        768
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        44,
+        235,
+        979,
+        736
+      ],
+      "refinement_changed_pixels": 626,
+      "interior_identical_to_unrefined": true,
+      "protected_shoe_box_identical_to_unrefined": true,
+      "edge_pixels_unmatted": 614,
+      "speck_pixels_removed": 12
+    },
+    {
+      "asset_name": "Band_Skull_Crusher_female_v2_2",
+      "candidate_path": "artifacts/workout-visual-qa/skull-final-refined/Band_Skull_Crusher_female_v2_2.png",
+      "candidate_sha256": "06b5db22e8d1b379436d6a004254a0c92c17c2556def40319d099f6858cde00f",
+      "original_shared_sha256": "e989becfcd5dec68bf489aedb377180b10927d13ce894b6f506e29fb67c5cb4e",
+      "canvas": [
+        1024,
+        768
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        45,
+        141,
+        980,
+        737
+      ],
+      "refinement_changed_pixels": 685,
+      "interior_identical_to_unrefined": true,
+      "protected_shoe_box_identical_to_unrefined": true,
+      "edge_pixels_unmatted": 672,
+      "speck_pixels_removed": 13
+    },
+    {
+      "asset_name": "Band_Skull_Crusher_female_v2_3",
+      "candidate_path": "artifacts/workout-visual-qa/skull-final-refined/Band_Skull_Crusher_female_v2_3.png",
+      "candidate_sha256": "fdf8c13455f4b9cad3f1e71629a10c081edc283b192cf3a91f06d4077eab6f1b",
+      "original_shared_sha256": "e4fbea5af88f678532cf1d108232b5ddbf6fa8bba9854998f784059139beb8f8",
+      "canvas": [
+        1024,
+        768
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        39,
+        294,
+        984,
+        737
+      ],
+      "refinement_changed_pixels": 464,
+      "interior_identical_to_unrefined": true,
+      "protected_shoe_box_identical_to_unrefined": true,
+      "edge_pixels_unmatted": 454,
+      "speck_pixels_removed": 10
+    }
+  ]
+}

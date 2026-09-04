@@ -1,0 +1,326 @@
+[
+  {
+    "gender": "male",
+    "frame": 0,
+    "source": "/Users/apoorvdarshan/workout-art-batches/batch-004/source-sheets/Barbell_Ab_Rollout_-_On_Knees_male.png",
+    "source_size": [
+      2172,
+      724
+    ],
+    "crop_box": [
+      16,
+      160,
+      493,
+      535
+    ],
+    "ownership_polygon": null,
+    "output": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovery-rollout/recovered-raw/Barbell_Ab_Rollout_-_On_Knees_male_v2_0.png",
+    "output_size": [
+      477,
+      375
+    ],
+    "lost_subject_ink_pixels": 0,
+    "retained_neighbor_ink_pixels": 0,
+    "background_cleanup_applied": false,
+    "resized": false
+  },
+  {
+    "gender": "male",
+    "frame": 1,
+    "source": "/Users/apoorvdarshan/workout-art-batches/batch-004/source-sheets/Barbell_Ab_Rollout_-_On_Knees_male.png",
+    "source_size": [
+      2172,
+      724
+    ],
+    "crop_box": [
+      495,
+      225,
+      1085,
+      570
+    ],
+    "ownership_polygon": [
+      [
+        495,
+        225
+      ],
+      [
+        1085,
+        225
+      ],
+      [
+        1085,
+        400
+      ],
+      [
+        1080,
+        410
+      ],
+      [
+        1068,
+        425
+      ],
+      [
+        1028,
+        444
+      ],
+      [
+        1028,
+        570
+      ],
+      [
+        495,
+        570
+      ]
+    ],
+    "output": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovery-rollout/recovered-raw/Barbell_Ab_Rollout_-_On_Knees_male_v2_1.png",
+    "output_size": [
+      590,
+      345
+    ],
+    "lost_subject_ink_pixels": 0,
+    "retained_neighbor_ink_pixels": 0,
+    "background_cleanup_applied": false,
+    "resized": false
+  },
+  {
+    "gender": "male",
+    "frame": 2,
+    "source": "/Users/apoorvdarshan/workout-art-batches/batch-004/source-sheets/Barbell_Ab_Rollout_-_On_Knees_male.png",
+    "source_size": [
+      2172,
+      724
+    ],
+    "crop_box": [
+      1030,
+      315,
+      1655,
+      610
+    ],
+    "ownership_polygon": [
+      [
+        1085,
+        315
+      ],
+      [
+        1655,
+        315
+      ],
+      [
+        1655,
+        610
+      ],
+      [
+        1030,
+        610
+      ],
+      [
+        1030,
+        444
+      ],
+      [
+        1068,
+        425
+      ],
+      [
+        1080,
+        410
+      ],
+      [
+        1085,
+        400
+      ]
+    ],
+    "output": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovery-rollout/recovered-raw/Barbell_Ab_Rollout_-_On_Knees_male_v2_2.png",
+    "output_size": [
+      625,
+      295
+    ],
+    "lost_subject_ink_pixels": 0,
+    "retained_neighbor_ink_pixels": 0,
+    "background_cleanup_applied": false,
+    "resized": false
+  },
+  {
+    "gender": "male",
+    "frame": 3,
+    "source": "/Users/apoorvdarshan/workout-art-batches/batch-004/source-sheets/Barbell_Ab_Rollout_-_On_Knees_male.png",
+    "source_size": [
+      2172,
+      724
+    ],
+    "crop_box": [
+      1660,
+      180,
+      2118,
+      548
+    ],
+    "ownership_polygon": null,
+    "output": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovery-rollout/recovered-raw/Barbell_Ab_Rollout_-_On_Knees_male_v2_3.png",
+    "output_size": [
+      458,
+      368
+    ],
+    "lost_subject_ink_pixels": 0,
+    "retained_neighbor_ink_pixels": 0,
+    "background_cleanup_applied": false,
+    "resized": false
+  },
+  {
+    "gender": "female",
+    "frame": 0,
+    "source": "/Users/apoorvdarshan/workout-art-batches/batch-004/source-sheets/Barbell_Ab_Rollout_-_On_Knees_female.png",
+    "source_size": [
+      2172,
+      724
+    ],
+    "crop_box": [
+      22,
+      120,
+      513,
+      545
+    ],
+    "ownership_polygon": null,
+    "output": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovery-rollout/recovered-raw/Barbell_Ab_Rollout_-_On_Knees_female_v2_0.png",
+    "output_size": [
+      491,
+      425
+    ],
+    "lost_subject_ink_pixels": 0,
+    "retained_neighbor_ink_pixels": 0,
+    "background_cleanup_applied": false,
+    "resized": false
+  },
+  {
+    "gender": "female",
+    "frame": 1,
+    "source": "/Users/apoorvdarshan/workout-art-batches/batch-004/source-sheets/Barbell_Ab_Rollout_-_On_Knees_female.png",
+    "source_size": [
+      2172,
+      724
+    ],
+    "crop_box": [
+      514,
+      190,
+      1063,
+      557
+    ],
+    "ownership_polygon": [
+      [
+        514,
+        190
+      ],
+      [
+        1063,
+        190
+      ],
+      [
+        1063,
+        425
+      ],
+      [
+        1056,
+        439
+      ],
+      [
+        1020,
+        446
+      ],
+      [
+        1020,
+        557
+      ],
+      [
+        514,
+        557
+      ]
+    ],
+    "output": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovery-rollout/recovered-raw/Barbell_Ab_Rollout_-_On_Knees_female_v2_1.png",
+    "output_size": [
+      549,
+      367
+    ],
+    "lost_subject_ink_pixels": 0,
+    "retained_neighbor_ink_pixels": 0,
+    "background_cleanup_applied": false,
+    "resized": false
+  },
+  {
+    "gender": "female",
+    "frame": 2,
+    "source": "/Users/apoorvdarshan/workout-art-batches/batch-004/source-sheets/Barbell_Ab_Rollout_-_On_Knees_female.png",
+    "source_size": [
+      2172,
+      724
+    ],
+    "crop_box": [
+      1030,
+      303,
+      1625,
+      590
+    ],
+    "ownership_polygon": [
+      [
+        1063,
+        303
+      ],
+      [
+        1625,
+        303
+      ],
+      [
+        1625,
+        590
+      ],
+      [
+        1030,
+        590
+      ],
+      [
+        1030,
+        446
+      ],
+      [
+        1056,
+        439
+      ],
+      [
+        1063,
+        425
+      ]
+    ],
+    "output": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovery-rollout/recovered-raw/Barbell_Ab_Rollout_-_On_Knees_female_v2_2.png",
+    "output_size": [
+      595,
+      287
+    ],
+    "lost_subject_ink_pixels": 0,
+    "retained_neighbor_ink_pixels": 0,
+    "background_cleanup_applied": false,
+    "resized": false
+  },
+  {
+    "gender": "female",
+    "frame": 3,
+    "source": "/Users/apoorvdarshan/workout-art-batches/batch-004/source-sheets/Barbell_Ab_Rollout_-_On_Knees_female.png",
+    "source_size": [
+      2172,
+      724
+    ],
+    "crop_box": [
+      1640,
+      130,
+      2134,
+      549
+    ],
+    "ownership_polygon": null,
+    "output": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovery-rollout/recovered-raw/Barbell_Ab_Rollout_-_On_Knees_female_v2_3.png",
+    "output_size": [
+      494,
+      419
+    ],
+    "lost_subject_ink_pixels": 0,
+    "retained_neighbor_ink_pixels": 0,
+    "background_cleanup_applied": false,
+    "resized": false
+  }
+]

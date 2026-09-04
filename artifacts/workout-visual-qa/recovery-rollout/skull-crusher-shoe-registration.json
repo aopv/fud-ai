@@ -1,0 +1,53 @@
+[
+  {
+    "donor_frame": 0,
+    "donor_source": "/Users/apoorvdarshan/.codex/generated_images/01a05d35-f69e-7912-bd85-0163e1e7586d/exec-4b61de22-80a0-4f5e-a8c4-579d4167effd.png",
+    "target_source": "/Users/apoorvdarshan/.codex/generated_images/01a05d35-f69e-7912-bd85-0163e1e7586d/exec-598b751f-09a3-46f7-b58f-fabaf978a83b.png",
+    "roi_origin": [
+      1100,
+      680
+    ],
+    "uniform_scale": 1.065,
+    "translation_relative_roi_pixels": [
+      68,
+      32
+    ],
+    "masked_rgb_rmse": 20.937302153547066,
+    "registered_roi_image": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovery-rollout/skull-crusher-shoe-donor-0-registered.png",
+    "canonical_modified": false
+  },
+  {
+    "donor_frame": 1,
+    "donor_source": "/Users/apoorvdarshan/.codex/generated_images/01a05d35-f69e-7912-bd85-0163e1e7586d/exec-7234b0df-0293-42cf-a9bb-a8becd2fd2ab.png",
+    "target_source": "/Users/apoorvdarshan/.codex/generated_images/01a05d35-f69e-7912-bd85-0163e1e7586d/exec-598b751f-09a3-46f7-b58f-fabaf978a83b.png",
+    "roi_origin": [
+      1100,
+      680
+    ],
+    "uniform_scale": 1.0299999999999998,
+    "translation_relative_roi_pixels": [
+      32,
+      -56
+    ],
+    "masked_rgb_rmse": 19.083314213100728,
+    "registered_roi_image": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovery-rollout/skull-crusher-shoe-donor-1-registered.png",
+    "canonical_modified": false
+  },
+  {
+    "donor_frame": 2,
+    "donor_source": "/Users/apoorvdarshan/.codex/generated_images/01a05d35-f69e-7912-bd85-0163e1e7586d/exec-51b585e8-3b8d-4fc9-b90d-31ff7cccbdd4.png",
+    "target_source": "/Users/apoorvdarshan/.codex/generated_images/01a05d35-f69e-7912-bd85-0163e1e7586d/exec-598b751f-09a3-46f7-b58f-fabaf978a83b.png",
+    "roi_origin": [
+      1100,
+      680
+    ],
+    "uniform_scale": 1.0350000000000001,
+    "translation_relative_roi_pixels": [
+      48,
+      -44
+    ],
+    "masked_rgb_rmse": 15.110880204838226,
+    "registered_roi_image": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovery-rollout/skull-crusher-shoe-donor-2-registered.png",
+    "canonical_modified": false
+  }
+]

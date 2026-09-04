@@ -1,0 +1,26 @@
+{
+  "Band_Skull_Crusher_male_v2_1.png": {
+    "remove_seeds": [[278, 280]],
+    "reason": "Visually reviewed checkerboard triangle enclosed by the red band and forearm, not clothing or metal."
+  },
+  "Band_Skull_Crusher_female_v2_0.png": {
+    "remove_seeds": [[201, 418], [156, 560]],
+    "reason": "Visually reviewed narrow white openings between two red band strands, above and below the hair."
+  },
+  "Band_Skull_Crusher_female_v2_2.png": {
+    "remove_seeds": [[293, 307]],
+    "reason": "Visually reviewed checkerboard triangle between red band and forearm."
+  },
+  "Kipping_Muscle_Up_male_v2_0.png": {
+    "remove_seeds": [[477, 144], [540, 151]],
+    "reason": "Visually reviewed enclosed interiors of two wooden rings, not their rims."
+  },
+  "Kipping_Muscle_Up_male_v2_3.png": {
+    "remove_seeds": [[463, 455]],
+    "reason": "Visually reviewed retained seven-pixel opening in ring/hand region."
+  },
+  "Barbell_Ab_Rollout_male_v2_2.png": {
+    "remove_seeds": [[365, 585]],
+    "reason": "Visually reviewed residual pale background opening, not shoe or bar highlights."
+  }
+}

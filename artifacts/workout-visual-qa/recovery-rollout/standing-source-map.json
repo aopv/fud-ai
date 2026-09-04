@@ -1,0 +1,23 @@
+{
+  "exercise_id": "Barbell_Ab_Rollout",
+  "generated_image_directory": "/Users/apoorvdarshan/.codex/generated_images/01a05d36-07db-7eb1-90c0-3efcde752796",
+  "source_dimensions": [1448, 1086],
+  "matching_method": "Visual comparison of complete current sequence and nine original task outputs; frame-specific athlete pose and barbell proportions match.",
+  "frames": {
+    "male_0": "exec-a36c517e-2bab-4bda-8c66-2837d1b0620d.png",
+    "male_1": "exec-51ddb2e7-7f08-47b3-bd85-cd7853cb5a30.png",
+    "male_2": "exec-da54fa81-c891-4b26-bdb8-f1c85b78bb8a.png",
+    "male_3": "exec-18ae0f8e-e8b5-47e2-b408-ef164723180f.png",
+    "female_0": "exec-30d06a25-003d-4036-8d29-d4130064e891.png",
+    "female_1": "exec-8da45a01-90fe-43cb-96d9-fefd726b84e5.png",
+    "female_2": "exec-7f2e9327-f388-4d86-a543-9ae2e0c3f6b6.png",
+    "female_3": "exec-0dd0bb6b-a26f-4d14-ad74-c63864195f65.png"
+  },
+  "unselected_earlier_variant": "exec-10f4adff-143a-42cb-94de-5305dc97ba85.png",
+  "qa": {
+    "all_subjects_and_equipment_visibly_complete": true,
+    "background_cleanup_still_required": true,
+    "frame_alignment_still_required": true,
+    "new_generation_needed_for_clipping": false
+  }
+}

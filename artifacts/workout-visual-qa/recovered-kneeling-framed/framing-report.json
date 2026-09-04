@@ -1,0 +1,453 @@
+{
+  "status": "candidate only; visual review recorded separately",
+  "exercise_id": "Barbell_Ab_Rollout_-_On_Knees",
+  "method": "common per-gender uniform scale; fixed knee anchor; premultiplied-alpha bilinear affine resampling",
+  "canvas": [
+    1024,
+    768
+  ],
+  "common_canvas_anchor": [
+    750.0,
+    510.0
+  ],
+  "padding": {
+    "horizontal": 40,
+    "vertical": 24,
+    "resampling_margin": 3
+  },
+  "per_frame_independent_resizing": false,
+  "source_alpha_support_threshold": 1,
+  "source_rgb_reconstruction": "Never infer alpha from RGB; invisible neighboring RGB is multiplied by zero before resampling.",
+  "intrinsic_caveats": [
+    "Male frame2 has a much straighter knee/leg silhouette than other kneeling frames; source recovery does not change this anatomy.",
+    "Frames0 and3 are separately drawn start-like poses, so head/arm/plate details are not pixel-identical loop endpoints.",
+    "Rolling toward the three-quarter camera can legitimately increase projected plate size; do not erase that perspective merely to equalize equipment bounding boxes."
+  ],
+  "genders": {
+    "male": {
+      "shared_uniform_scale": 1.42,
+      "requested_initial_scale": 1.42,
+      "source_knee_relative_union_xyxy": [
+        -473.0,
+        -249.0,
+        150.0,
+        141.0
+      ],
+      "transformed_union_xyxy": [
+        78.34000000000003,
+        156.42000000000002,
+        963.0,
+        710.22
+      ],
+      "scale_limits": [
+        1.42,
+        1.4947145877378436,
+        1.54,
+        1.9397590361445782,
+        1.6382978723404256
+      ]
+    },
+    "female": {
+      "shared_uniform_scale": 1.42,
+      "requested_initial_scale": 1.42,
+      "source_knee_relative_union_xyxy": [
+        -472.0,
+        -310.0,
+        115.0,
+        111.0
+      ],
+      "transformed_union_xyxy": [
+        79.75999999999999,
+        69.80000000000001,
+        913.3,
+        667.62
+      ],
+      "scale_limits": [
+        1.42,
+        1.4978813559322033,
+        2.008695652173913,
+        1.5580645161290323,
+        2.081081081081081
+      ]
+    }
+  },
+  "frames": [
+    {
+      "key": "male_0",
+      "source": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovered-kneeling-cleanup/images/Barbell_Ab_Rollout_-_On_Knees_male_v2_0.png",
+      "output": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovered-kneeling-framed/images/Barbell_Ab_Rollout_-_On_Knees_male_v2_0.png",
+      "source_size": [
+        477,
+        375
+      ],
+      "source_bbox_alpha_ge1": [
+        12,
+        16,
+        466,
+        353
+      ],
+      "output_bbox_alpha_ge1": [
+        317,
+        156,
+        963,
+        635
+      ],
+      "source_anchor": [
+        316.0,
+        265.0
+      ],
+      "affine_matrix": [
+        [
+          1.42,
+          0.0,
+          301.28000000000003
+        ],
+        [
+          0.0,
+          1.42,
+          133.70000000000005
+        ]
+      ],
+      "transformed_anchor": [
+        750.0,
+        510.0
+      ],
+      "source_sha256_before": "0529a32a10a942ad2556740171e13f8dcc7f55c9539ed0c0fc95ef6598a3559c",
+      "source_sha256_after": "0529a32a10a942ad2556740171e13f8dcc7f55c9539ed0c0fc95ef6598a3559c",
+      "output_sha256": "80415c67cb1e67fe6cd82868dfe825b105e04045a3c43e37dd043294a57eda25",
+      "output_edge_visible_pixels": 0,
+      "output_fully_transparent_fraction": 0.849119,
+      "visual_review_status": "pending"
+    },
+    {
+      "key": "male_1",
+      "source": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovered-kneeling-cleanup/images/Barbell_Ab_Rollout_-_On_Knees_male_v2_1.png",
+      "output": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovered-kneeling-framed/images/Barbell_Ab_Rollout_-_On_Knees_male_v2_1.png",
+      "source_size": [
+        590,
+        345
+      ],
+      "source_bbox_alpha_ge1": [
+        15,
+        20,
+        578,
+        326
+      ],
+      "output_bbox_alpha_ge1": [
+        151,
+        256,
+        952,
+        692
+      ],
+      "source_anchor": [
+        436.0,
+        198.0
+      ],
+      "affine_matrix": [
+        [
+          1.42,
+          0.0,
+          130.88
+        ],
+        [
+          0.0,
+          1.42,
+          228.84000000000003
+        ]
+      ],
+      "transformed_anchor": [
+        750.0,
+        510.0
+      ],
+      "source_sha256_before": "e8e8cc37c44c4dc696fa4d1077aeaafb665948741fc41d2e3b5f046996bafdbe",
+      "source_sha256_after": "e8e8cc37c44c4dc696fa4d1077aeaafb665948741fc41d2e3b5f046996bafdbe",
+      "output_sha256": "f6b62494f41e8059fba14aa73627025515dd36efec1262ee74f3111b7396df55",
+      "output_edge_visible_pixels": 0,
+      "output_fully_transparent_fraction": 0.83573,
+      "visual_review_status": "pending"
+    },
+    {
+      "key": "male_2",
+      "source": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovered-kneeling-cleanup/images/Barbell_Ab_Rollout_-_On_Knees_male_v2_2.png",
+      "output": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovered-kneeling-framed/images/Barbell_Ab_Rollout_-_On_Knees_male_v2_2.png",
+      "source_size": [
+        625,
+        295
+      ],
+      "source_bbox_alpha_ge1": [
+        12,
+        19,
+        613,
+        276
+      ],
+      "output_bbox_alpha_ge1": [
+        77,
+        344,
+        932,
+        711
+      ],
+      "source_anchor": [
+        485.0,
+        135.0
+      ],
+      "affine_matrix": [
+        [
+          1.42,
+          0.0,
+          61.30000000000007
+        ],
+        [
+          0.0,
+          1.42,
+          318.3
+        ]
+      ],
+      "transformed_anchor": [
+        750.0,
+        510.0
+      ],
+      "source_sha256_before": "78e10ab3ef136f1986ceb379bb7404a1566b13d4397137c83ee20fc3701bcf3c",
+      "source_sha256_after": "78e10ab3ef136f1986ceb379bb7404a1566b13d4397137c83ee20fc3701bcf3c",
+      "output_sha256": "c6301f2a37a95ca46c750db8067a3604709fd599bafbe27a226b4d07abae4939",
+      "output_edge_visible_pixels": 0,
+      "output_fully_transparent_fraction": 0.844828,
+      "visual_review_status": "pending"
+    },
+    {
+      "key": "male_3",
+      "source": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovered-kneeling-cleanup/images/Barbell_Ab_Rollout_-_On_Knees_male_v2_3.png",
+      "output": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovered-kneeling-framed/images/Barbell_Ab_Rollout_-_On_Knees_male_v2_3.png",
+      "source_size": [
+        458,
+        368
+      ],
+      "source_bbox_alpha_ge1": [
+        13,
+        18,
+        444,
+        346
+      ],
+      "output_bbox_alpha_ge1": [
+        325,
+        161,
+        938,
+        628
+      ],
+      "source_anchor": [
+        312.0,
+        263.0
+      ],
+      "affine_matrix": [
+        [
+          1.42,
+          0.0,
+          306.96000000000004
+        ],
+        [
+          0.0,
+          1.42,
+          136.54000000000002
+        ]
+      ],
+      "transformed_anchor": [
+        750.0,
+        510.0
+      ],
+      "source_sha256_before": "308ae3bf8b823b4f388dd5c6869a31b3104b422e91e3138e3920d436c51cf201",
+      "source_sha256_after": "308ae3bf8b823b4f388dd5c6869a31b3104b422e91e3138e3920d436c51cf201",
+      "output_sha256": "fbfaa7728c65c428ba27753fb4a2fb9852081ccf21c7bf0c278b5e16d17334cb",
+      "output_edge_visible_pixels": 0,
+      "output_fully_transparent_fraction": 0.857708,
+      "visual_review_status": "pending"
+    },
+    {
+      "key": "female_0",
+      "source": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovered-kneeling-cleanup/images/Barbell_Ab_Rollout_-_On_Knees_female_v2_0.png",
+      "output": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovered-kneeling-framed/images/Barbell_Ab_Rollout_-_On_Knees_female_v2_0.png",
+      "source_size": [
+        491,
+        425
+      ],
+      "source_bbox_alpha_ge1": [
+        13,
+        15,
+        480,
+        398
+      ],
+      "output_bbox_alpha_ge1": [
+        246,
+        69,
+        911,
+        614
+      ],
+      "source_anchor": [
+        367.0,
+        325.0
+      ],
+      "affine_matrix": [
+        [
+          1.42,
+          0.0,
+          228.86
+        ],
+        [
+          0.0,
+          1.42,
+          48.5
+        ]
+      ],
+      "transformed_anchor": [
+        750.0,
+        510.0
+      ],
+      "source_sha256_before": "3d20f12826a984c0a06d8e866342f8a1e47a45c71e6d864ce65b92c7a94fba96",
+      "source_sha256_after": "3d20f12826a984c0a06d8e866342f8a1e47a45c71e6d864ce65b92c7a94fba96",
+      "output_sha256": "42e06bf0a9afadfcc6eb0b134e4f9fd2a89603f34d80c12da37642b2f0cc04a0",
+      "output_edge_visible_pixels": 0,
+      "output_fully_transparent_fraction": 0.838732,
+      "visual_review_status": "pending"
+    },
+    {
+      "key": "female_1",
+      "source": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovered-kneeling-cleanup/images/Barbell_Ab_Rollout_-_On_Knees_female_v2_1.png",
+      "output": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovered-kneeling-framed/images/Barbell_Ab_Rollout_-_On_Knees_female_v2_1.png",
+      "source_size": [
+        549,
+        367
+      ],
+      "source_bbox_alpha_ge1": [
+        10,
+        13,
+        540,
+        343
+      ],
+      "output_bbox_alpha_ge1": [
+        143,
+        148,
+        897,
+        618
+      ],
+      "source_anchor": [
+        437.0,
+        267.0
+      ],
+      "affine_matrix": [
+        [
+          1.42,
+          0.0,
+          129.46000000000004
+        ],
+        [
+          0.0,
+          1.42,
+          130.86
+        ]
+      ],
+      "transformed_anchor": [
+        750.0,
+        510.0
+      ],
+      "source_sha256_before": "d01b238382c6ac57ffcb383d22e28f0dccac4998dbbf63e72ece5c865c19eb85",
+      "source_sha256_after": "d01b238382c6ac57ffcb383d22e28f0dccac4998dbbf63e72ece5c865c19eb85",
+      "output_sha256": "090e159b7935cb5aa4d54e5dab6af3a8702ba394833dff758986f7d4429accce",
+      "output_edge_visible_pixels": 0,
+      "output_fully_transparent_fraction": 0.83382,
+      "visual_review_status": "pending"
+    },
+    {
+      "key": "female_2",
+      "source": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovered-kneeling-cleanup/images/Barbell_Ab_Rollout_-_On_Knees_female_v2_2.png",
+      "output": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovered-kneeling-framed/images/Barbell_Ab_Rollout_-_On_Knees_female_v2_2.png",
+      "source_size": [
+        595,
+        287
+      ],
+      "source_bbox_alpha_ge1": [
+        11,
+        13,
+        581,
+        265
+      ],
+      "output_bbox_alpha_ge1": [
+        79,
+        309,
+        890,
+        668
+      ],
+      "source_anchor": [
+        483.0,
+        154.0
+      ],
+      "affine_matrix": [
+        [
+          1.42,
+          0.0,
+          64.13999999999999
+        ],
+        [
+          0.0,
+          1.42,
+          291.32000000000005
+        ]
+      ],
+      "transformed_anchor": [
+        750.0,
+        510.0
+      ],
+      "source_sha256_before": "f1a380c4bf89d52ffa32824e4489458159ebcc09a510d771e99d438815bc5e35",
+      "source_sha256_after": "f1a380c4bf89d52ffa32824e4489458159ebcc09a510d771e99d438815bc5e35",
+      "output_sha256": "c26c7611ad1d2b9a35a8b63949628e40feeb15ff832bf95b5e769c7329dc1570",
+      "output_edge_visible_pixels": 0,
+      "output_fully_transparent_fraction": 0.846879,
+      "visual_review_status": "pending"
+    },
+    {
+      "key": "female_3",
+      "source": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovered-kneeling-cleanup/images/Barbell_Ab_Rollout_-_On_Knees_female_v2_3.png",
+      "output": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovered-kneeling-framed/images/Barbell_Ab_Rollout_-_On_Knees_female_v2_3.png",
+      "source_size": [
+        494,
+        419
+      ],
+      "source_bbox_alpha_ge1": [
+        13,
+        15,
+        479,
+        393
+      ],
+      "output_bbox_alpha_ge1": [
+        251,
+        83,
+        914,
+        621
+      ],
+      "source_anchor": [
+        364.0,
+        315.0
+      ],
+      "affine_matrix": [
+        [
+          1.42,
+          0.0,
+          233.12
+        ],
+        [
+          0.0,
+          1.42,
+          62.700000000000045
+        ]
+      ],
+      "transformed_anchor": [
+        750.0,
+        510.0
+      ],
+      "source_sha256_before": "d4fc75cc0b2c20834e321f4ba822139c8d905929385f3522fd2197897de88adc",
+      "source_sha256_after": "d4fc75cc0b2c20834e321f4ba822139c8d905929385f3522fd2197897de88adc",
+      "output_sha256": "29fce9b89b490251846003f92c8c2d001f4579df094b2064e4685b871f711a15",
+      "output_edge_visible_pixels": 0,
+      "output_fully_transparent_fraction": 0.840758,
+      "visual_review_status": "pending"
+    }
+  ],
+  "source_integrity": "All eight input hashes unchanged. No canonical or packaged asset modified."
+}

@@ -1,0 +1,14 @@
+{
+  "Kipping_Muscle_Up_male_v2_0.png": {
+    "remove_seeds": [[477, 144], [540, 151]],
+    "protect_seeds": []
+  },
+  "Kipping_Muscle_Up_male_v2_3.png": {
+    "remove_seeds": [[463, 455]],
+    "protect_seeds": []
+  },
+  "Barbell_Ab_Rollout_male_v2_2.png": {
+    "remove_seeds": [[365, 585]],
+    "protect_seeds": []
+  }
+}

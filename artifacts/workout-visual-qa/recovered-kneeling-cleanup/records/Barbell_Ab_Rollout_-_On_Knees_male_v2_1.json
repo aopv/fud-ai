@@ -1,0 +1,509 @@
+{
+  "selected_regions": [
+    1,
+    3
+  ],
+  "removed_visible_pixels": 133298,
+  "uncertain_pixels_retained": 41,
+  "rgb_changed_pixels": 0,
+  "regions": [
+    {
+      "label": 1,
+      "area": 125834,
+      "bbox": [
+        0,
+        0,
+        590,
+        345
+      ],
+      "center": [
+        275.45,
+        167.54
+      ],
+      "max_radius": 79.38,
+      "gray_std": 9.65,
+      "horizontal_transitions": 1143,
+      "vertical_transitions": 3829,
+      "touches_transparency": true,
+      "checker_candidate": true,
+      "background_fraction": 0.9984,
+      "foreground_fraction": 0.0001
+    },
+    {
+      "label": 2,
+      "area": 73,
+      "bbox": [
+        500,
+        106,
+        521,
+        121
+      ],
+      "center": [
+        510.79,
+        111.56
+      ],
+      "max_radius": 2.2,
+      "gray_std": 18.19,
+      "horizontal_transitions": 29,
+      "vertical_transitions": 35,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0137,
+      "foreground_fraction": 0.7123
+    },
+    {
+      "label": 3,
+      "area": 7505,
+      "bbox": [
+        168,
+        118,
+        275,
+        237
+      ],
+      "center": [
+        224.41,
+        184.74
+      ],
+      "max_radius": 36.55,
+      "gray_std": 5.45,
+      "horizontal_transitions": 140,
+      "vertical_transitions": 159,
+      "touches_transparency": false,
+      "checker_candidate": true,
+      "background_fraction": 0.9968,
+      "foreground_fraction": 0.0
+    },
+    {
+      "label": 4,
+      "area": 43,
+      "bbox": [
+        551,
+        121,
+        565,
+        131
+      ],
+      "center": [
+        558.0,
+        123.79
+      ],
+      "max_radius": 2.0,
+      "gray_std": 14.2,
+      "horizontal_transitions": 14,
+      "vertical_transitions": 20,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0,
+      "foreground_fraction": 1.0
+    },
+    {
+      "label": 5,
+      "area": 8,
+      "bbox": [
+        520,
+        123,
+        522,
+        128
+      ],
+      "center": [
+        520.62,
+        124.62
+      ],
+      "max_radius": 1.0,
+      "gray_std": 23.58,
+      "horizontal_transitions": 1,
+      "vertical_transitions": 3,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0,
+      "foreground_fraction": 1.0
+    },
+    {
+      "label": 6,
+      "area": 28,
+      "bbox": [
+        519,
+        127,
+        531,
+        144
+      ],
+      "center": [
+        523.96,
+        135.0
+      ],
+      "max_radius": 1.0,
+      "gray_std": 22.44,
+      "horizontal_transitions": 8,
+      "vertical_transitions": 14,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.3929,
+      "foreground_fraction": 0.25
+    },
+    {
+      "label": 7,
+      "area": 17,
+      "bbox": [
+        567,
+        127,
+        571,
+        137
+      ],
+      "center": [
+        568.71,
+        131.29
+      ],
+      "max_radius": 1.0,
+      "gray_std": 14.64,
+      "horizontal_transitions": 5,
+      "vertical_transitions": 10,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0,
+      "foreground_fraction": 1.0
+    },
+    {
+      "label": 9,
+      "area": 12,
+      "bbox": [
+        570,
+        139,
+        572,
+        146
+      ],
+      "center": [
+        570.58,
+        141.58
+      ],
+      "max_radius": 1.0,
+      "gray_std": 18.39,
+      "horizontal_transitions": 5,
+      "vertical_transitions": 6,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0,
+      "foreground_fraction": 0.75
+    },
+    {
+      "label": 10,
+      "area": 75,
+      "bbox": [
+        562,
+        144,
+        576,
+        194
+      ],
+      "center": [
+        571.31,
+        167.59
+      ],
+      "max_radius": 1.4,
+      "gray_std": 21.68,
+      "horizontal_transitions": 18,
+      "vertical_transitions": 29,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0,
+      "foreground_fraction": 0.9333
+    },
+    {
+      "label": 13,
+      "area": 10,
+      "bbox": [
+        540,
+        171,
+        543,
+        177
+      ],
+      "center": [
+        540.8,
+        173.8
+      ],
+      "max_radius": 1.0,
+      "gray_std": 16.72,
+      "horizontal_transitions": 3,
+      "vertical_transitions": 3,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.7,
+      "foreground_fraction": 0.0
+    },
+    {
+      "label": 17,
+      "area": 37,
+      "bbox": [
+        18,
+        192,
+        33,
+        198
+      ],
+      "center": [
+        24.81,
+        195.0
+      ],
+      "max_radius": 1.4,
+      "gray_std": 17.44,
+      "horizontal_transitions": 17,
+      "vertical_transitions": 19,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0,
+      "foreground_fraction": 1.0
+    },
+    {
+      "label": 18,
+      "area": 18,
+      "bbox": [
+        71,
+        198,
+        77,
+        206
+      ],
+      "center": [
+        73.28,
+        201.5
+      ],
+      "max_radius": 2.0,
+      "gray_std": 19.49,
+      "horizontal_transitions": 6,
+      "vertical_transitions": 9,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0,
+      "foreground_fraction": 1.0
+    },
+    {
+      "label": 20,
+      "area": 13,
+      "bbox": [
+        76,
+        200,
+        82,
+        207
+      ],
+      "center": [
+        77.54,
+        202.92
+      ],
+      "max_radius": 1.4,
+      "gray_std": 22.4,
+      "horizontal_transitions": 4,
+      "vertical_transitions": 4,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0,
+      "foreground_fraction": 1.0
+    },
+    {
+      "label": 21,
+      "area": 43,
+      "bbox": [
+        82,
+        206,
+        104,
+        213
+      ],
+      "center": [
+        90.81,
+        208.81
+      ],
+      "max_radius": 2.0,
+      "gray_std": 8.36,
+      "horizontal_transitions": 10,
+      "vertical_transitions": 11,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0,
+      "foreground_fraction": 1.0
+    },
+    {
+      "label": 22,
+      "area": 41,
+      "bbox": [
+        107,
+        213,
+        128,
+        219
+      ],
+      "center": [
+        118.05,
+        215.27
+      ],
+      "max_radius": 2.0,
+      "gray_std": 9.64,
+      "horizontal_transitions": 9,
+      "vertical_transitions": 13,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0,
+      "foreground_fraction": 1.0
+    },
+    {
+      "label": 24,
+      "area": 27,
+      "bbox": [
+        160,
+        227,
+        181,
+        233
+      ],
+      "center": [
+        169.89,
+        229.26
+      ],
+      "max_radius": 1.0,
+      "gray_std": 11.75,
+      "horizontal_transitions": 14,
+      "vertical_transitions": 3,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0,
+      "foreground_fraction": 1.0
+    },
+    {
+      "label": 26,
+      "area": 48,
+      "bbox": [
+        182,
+        231,
+        221,
+        242
+      ],
+      "center": [
+        199.42,
+        235.9
+      ],
+      "max_radius": 1.0,
+      "gray_std": 9.29,
+      "horizontal_transitions": 19,
+      "vertical_transitions": 6,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0,
+      "foreground_fraction": 1.0
+    },
+    {
+      "label": 32,
+      "area": 9,
+      "bbox": [
+        256,
+        250,
+        264,
+        252
+      ],
+      "center": [
+        259.56,
+        250.44
+      ],
+      "max_radius": 1.0,
+      "gray_std": 9.02,
+      "horizontal_transitions": 2,
+      "vertical_transitions": 0,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0,
+      "foreground_fraction": 1.0
+    },
+    {
+      "label": 33,
+      "area": 81,
+      "bbox": [
+        268,
+        251,
+        302,
+        261
+      ],
+      "center": [
+        284.47,
+        255.21
+      ],
+      "max_radius": 1.4,
+      "gray_std": 17.89,
+      "horizontal_transitions": 45,
+      "vertical_transitions": 40,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0,
+      "foreground_fraction": 1.0
+    },
+    {
+      "label": 34,
+      "area": 16,
+      "bbox": [
+        345,
+        259,
+        352,
+        267
+      ],
+      "center": [
+        347.44,
+        262.62
+      ],
+      "max_radius": 1.4,
+      "gray_std": 16.55,
+      "horizontal_transitions": 7,
+      "vertical_transitions": 7,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0,
+      "foreground_fraction": 1.0
+    },
+    {
+      "label": 36,
+      "area": 21,
+      "bbox": [
+        350,
+        264,
+        356,
+        269
+      ],
+      "center": [
+        352.24,
+        265.81
+      ],
+      "max_radius": 2.2,
+      "gray_std": 14.45,
+      "horizontal_transitions": 10,
+      "vertical_transitions": 9,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0,
+      "foreground_fraction": 1.0
+    },
+    {
+      "label": 38,
+      "area": 159,
+      "bbox": [
+        358,
+        270,
+        416,
+        283
+      ],
+      "center": [
+        393.17,
+        276.42
+      ],
+      "max_radius": 3.0,
+      "gray_std": 21.64,
+      "horizontal_transitions": 72,
+      "vertical_transitions": 74,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0,
+      "foreground_fraction": 1.0
+    }
+  ],
+  "file": "Barbell_Ab_Rollout_-_On_Knees_male_v2_1.png",
+  "source": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovery-rollout/recovered-raw/Barbell_Ab_Rollout_-_On_Knees_male_v2_1.png",
+  "source_sha256": "e8cf4e501f0300ea9811b5348db5ac8c6565a9d0dd808a96a85e4f81ad950644",
+  "candidate_sha256": "e8e8cc37c44c4dc696fa4d1077aeaafb665948741fc41d2e3b5f046996bafdbe",
+  "size": [
+    590,
+    345
+  ],
+  "recipe": "pale-neural-guard-v2",
+  "model": "birefnet-general-lite",
+  "mask_sha256": "f2b8ac03f3fd970a62d939c0fc4a6673b1f7827c456a561a3ab30a9023359aaf",
+  "override_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+  "seconds": 11.945,
+  "acceptance": "pending_visual_review"
+}

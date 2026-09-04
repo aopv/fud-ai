@@ -1,0 +1,96 @@
+{
+  "frames": 8,
+  "canonical_promotions": 0,
+  "all_stage_hash_checks_pass": true,
+  "visual_ledger": "visual-review.md",
+  "checks": [
+    {
+      "file": "Barbell_Ab_Rollout_-_On_Knees_female_v2_0.png",
+      "all_stage_source_hashes_match": true,
+      "output_rgba": true,
+      "output_size": [
+        1024,
+        768
+      ],
+      "visible_canvas_edge_pixels": 0,
+      "final_visual_review": "reviewed_hold_for_edge_polish"
+    },
+    {
+      "file": "Barbell_Ab_Rollout_-_On_Knees_female_v2_1.png",
+      "all_stage_source_hashes_match": true,
+      "output_rgba": true,
+      "output_size": [
+        1024,
+        768
+      ],
+      "visible_canvas_edge_pixels": 0,
+      "final_visual_review": "reviewed_hold_for_edge_polish"
+    },
+    {
+      "file": "Barbell_Ab_Rollout_-_On_Knees_female_v2_2.png",
+      "all_stage_source_hashes_match": true,
+      "output_rgba": true,
+      "output_size": [
+        1024,
+        768
+      ],
+      "visible_canvas_edge_pixels": 0,
+      "final_visual_review": "reviewed_hold_for_edge_polish"
+    },
+    {
+      "file": "Barbell_Ab_Rollout_-_On_Knees_female_v2_3.png",
+      "all_stage_source_hashes_match": true,
+      "output_rgba": true,
+      "output_size": [
+        1024,
+        768
+      ],
+      "visible_canvas_edge_pixels": 0,
+      "final_visual_review": "reviewed_hold_for_edge_polish"
+    },
+    {
+      "file": "Barbell_Ab_Rollout_-_On_Knees_male_v2_0.png",
+      "all_stage_source_hashes_match": true,
+      "output_rgba": true,
+      "output_size": [
+        1024,
+        768
+      ],
+      "visible_canvas_edge_pixels": 0,
+      "final_visual_review": "reviewed_hold_for_edge_polish"
+    },
+    {
+      "file": "Barbell_Ab_Rollout_-_On_Knees_male_v2_1.png",
+      "all_stage_source_hashes_match": true,
+      "output_rgba": true,
+      "output_size": [
+        1024,
+        768
+      ],
+      "visible_canvas_edge_pixels": 0,
+      "final_visual_review": "reviewed_hold_for_edge_polish"
+    },
+    {
+      "file": "Barbell_Ab_Rollout_-_On_Knees_male_v2_2.png",
+      "all_stage_source_hashes_match": true,
+      "output_rgba": true,
+      "output_size": [
+        1024,
+        768
+      ],
+      "visible_canvas_edge_pixels": 0,
+      "final_visual_review": "reviewed_hold_for_edge_polish"
+    },
+    {
+      "file": "Barbell_Ab_Rollout_-_On_Knees_male_v2_3.png",
+      "all_stage_source_hashes_match": true,
+      "output_rgba": true,
+      "output_size": [
+        1024,
+        768
+      ],
+      "visible_canvas_edge_pixels": 0,
+      "final_visual_review": "reviewed_hold_for_edge_polish"
+    }
+  ]
+}

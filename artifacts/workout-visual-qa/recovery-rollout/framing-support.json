@@ -1,0 +1,59 @@
+{
+  "status": "review guidance, not automatically applied",
+  "coordinate_convention": "All landmarks use uncropped source pixels unless explicitly marked recovered_crop_coordinates; manually estimated feature boxes are approximate, not segmentation ground truth.",
+  "kneeling": {
+    "exercise_id": "Barbell_Ab_Rollout_-_On_Knees",
+    "source_kind": "one coherent 2172x724 sheet per sex",
+    "inputs": "recovery-manifest.json",
+    "preferred_transform": "one common uniform scale across all source-native crops; one fixed knee-contact anchor; no independent fit-to-width",
+    "preview_starting_point_only": {
+      "canvas": [1024, 768],
+      "uniform_scale": 1.42,
+      "knee_anchor_on_canvas": [750, 510],
+      "padding_intent": "approximately 40px horizontal and at least 24px vertical, recompute over cleaned visible alpha union before finalizing"
+    },
+    "recovered_crop_coordinates": {
+      "male_0": {"knee_anchor": [316, 265], "near_plate_box": [326, 244, 409, 351]},
+      "male_1": {"knee_anchor": [436, 198], "near_plate_box": [300, 213, 390, 326]},
+      "male_2": {"knee_anchor": [485, 135], "near_plate_box": [302, 157, 395, 277], "anchor_confidence": "low; extended knees less distinct"},
+      "male_3": {"knee_anchor": [312, 263], "near_plate_box": [304, 241, 384, 343]},
+      "female_0": {"knee_anchor": [367, 325], "near_plate_box": [316, 290, 393, 398]},
+      "female_1": {"knee_anchor": [437, 267], "near_plate_box": [304, 234, 383, 342]},
+      "female_2": {"knee_anchor": [483, 154], "near_plate_box": [295, 154, 374, 264]},
+      "female_3": {"knee_anchor": [364, 315], "near_plate_box": [306, 287, 387, 392]}
+    },
+    "intrinsic_caveats": [
+      "Male frame2 has a much straighter knee/leg silhouette than other kneeling frames; source recovery does not change this anatomy.",
+      "Frames0 and3 are separately drawn start-like poses, so head/arm/plate details are not pixel-identical loop endpoints.",
+      "Rolling toward the three-quarter camera can legitimately increase projected plate size; do not erase that perspective merely to equalize equipment bounding boxes."
+    ]
+  },
+  "standing": {
+    "exercise_id": "Barbell_Ab_Rollout",
+    "source_kind": "eight independently generated 1448x1086 frames",
+    "inputs": "standing-source-map.json",
+    "preferred_transform": "manual small per-frame uniform scale calibration using equipment plus athlete landmarks; stationary toe/forefoot contact anchor; then one common final scale fitted to the union",
+    "source_coordinate_features": {
+      "male_0": {"near_plate_box": [1063, 697, 1302, 960], "near_toe_anchor": [834, 917]},
+      "male_1": {"near_plate_box": [784, 633, 963, 852], "near_toe_anchor": [1115, 775]},
+      "male_2": {"near_plate_box": [787, 630, 958, 851], "near_toe_anchor": [1266, 764]},
+      "male_3": {"near_plate_box": [776, 601, 932, 805], "near_toe_anchor": [1178, 779]},
+      "female_0": {"near_plate_box": [1105, 686, 1338, 953], "near_toe_anchor": [834, 914]},
+      "female_1": {"near_plate_box": [724, 634, 896, 847], "near_toe_anchor": [1140, 761]},
+      "female_2": {"near_plate_box": [712, 607, 890, 826], "near_toe_anchor": [1285, 755]},
+      "female_3": {"near_plate_box": [762, 598, 943, 833], "near_toe_anchor": [1146, 819]}
+    },
+    "plate_height_relative_to_frame0_approx": {
+      "male": [1.0, 0.833, 0.84, 0.776],
+      "female": [1.0, 0.798, 0.82, 0.88]
+    },
+    "intrinsic_caveats": [
+      "Per-frame plate/athlete proportions and viewpoint vary; a single translation cannot fix those variations.",
+      "Uniform scale corrections stabilize one chosen reference but cannot make independently redrawn body proportions and equipment identical simultaneously.",
+      "The wheel is a moving exercise element and must not be used as the fixed horizontal anchor.",
+      "Toe versus heel contact changes across the action; anchor the supporting forefoot rather than the rightmost or lowest overall-alpha pixel."
+    ]
+  },
+  "alpha_requirement": "Preserve input alpha by multiplying the cleanup mask with original alpha. In recovered kneeling crops, hidden RGB outside the manual polygon still contains neighboring sprites; converting to RGB and regenerating alpha would resurrect them.",
+  "safe_transform_formula": "p_out = shared_scale * per_frame_uniform_calibration * (p_source_or_crop - frame_anchor) + common_canvas_anchor. Compute transformed visible-alpha bounds for all four frames; reduce shared_scale once if any frame exceeds padding. Never independently rescale each frame to fit its own box."
+}

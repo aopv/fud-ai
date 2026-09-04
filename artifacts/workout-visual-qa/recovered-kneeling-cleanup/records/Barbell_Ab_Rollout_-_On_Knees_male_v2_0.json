@@ -1,0 +1,399 @@
+{
+  "selected_regions": [
+    1,
+    2
+  ],
+  "removed_visible_pixels": 121331,
+  "uncertain_pixels_retained": 1,
+  "rgb_changed_pixels": 0,
+  "regions": [
+    {
+      "label": 1,
+      "area": 112818,
+      "bbox": [
+        0,
+        0,
+        477,
+        375
+      ],
+      "center": [
+        219.61,
+        182.28
+      ],
+      "max_radius": 85.1,
+      "gray_std": 7.87,
+      "horizontal_transitions": 764,
+      "vertical_transitions": 2867,
+      "touches_transparency": false,
+      "checker_candidate": true,
+      "background_fraction": 0.9991,
+      "foreground_fraction": 0.0
+    },
+    {
+      "label": 2,
+      "area": 8514,
+      "bbox": [
+        182,
+        132,
+        279,
+        270
+      ],
+      "center": [
+        231.63,
+        210.38
+      ],
+      "max_radius": 39.35,
+      "gray_std": 5.89,
+      "horizontal_transitions": 215,
+      "vertical_transitions": 273,
+      "touches_transparency": false,
+      "checker_candidate": true,
+      "background_fraction": 0.9969,
+      "foreground_fraction": 0.0
+    },
+    {
+      "label": 3,
+      "area": 75,
+      "bbox": [
+        437,
+        198,
+        459,
+        217
+      ],
+      "center": [
+        448.99,
+        203.77
+      ],
+      "max_radius": 2.2,
+      "gray_std": 20.44,
+      "horizontal_transitions": 32,
+      "vertical_transitions": 33,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.2267,
+      "foreground_fraction": 0.5733
+    },
+    {
+      "label": 6,
+      "area": 64,
+      "bbox": [
+        450,
+        220,
+        463,
+        272
+      ],
+      "center": [
+        458.61,
+        245.53
+      ],
+      "max_radius": 1.0,
+      "gray_std": 19.58,
+      "horizontal_transitions": 9,
+      "vertical_transitions": 30,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0625,
+      "foreground_fraction": 0.4375
+    },
+    {
+      "label": 7,
+      "area": 36,
+      "bbox": [
+        15,
+        229,
+        32,
+        235
+      ],
+      "center": [
+        22.36,
+        231.42
+      ],
+      "max_radius": 1.4,
+      "gray_std": 15.04,
+      "horizontal_transitions": 15,
+      "vertical_transitions": 16,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0,
+      "foreground_fraction": 1.0
+    },
+    {
+      "label": 8,
+      "area": 16,
+      "bbox": [
+        69,
+        232,
+        75,
+        241
+      ],
+      "center": [
+        71.06,
+        236.38
+      ],
+      "max_radius": 1.4,
+      "gray_std": 18.15,
+      "horizontal_transitions": 5,
+      "vertical_transitions": 8,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0,
+      "foreground_fraction": 1.0
+    },
+    {
+      "label": 10,
+      "area": 8,
+      "bbox": [
+        74,
+        235,
+        78,
+        241
+      ],
+      "center": [
+        75.12,
+        237.5
+      ],
+      "max_radius": 1.0,
+      "gray_std": 15.77,
+      "horizontal_transitions": 2,
+      "vertical_transitions": 4,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0,
+      "foreground_fraction": 1.0
+    },
+    {
+      "label": 13,
+      "area": 16,
+      "bbox": [
+        79,
+        241,
+        91,
+        244
+      ],
+      "center": [
+        84.38,
+        241.75
+      ],
+      "max_radius": 1.0,
+      "gray_std": 3.17,
+      "horizontal_transitions": 1,
+      "vertical_transitions": 1,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0,
+      "foreground_fraction": 1.0
+    },
+    {
+      "label": 15,
+      "area": 66,
+      "bbox": [
+        104,
+        246,
+        144,
+        255
+      ],
+      "center": [
+        122.59,
+        249.67
+      ],
+      "max_radius": 1.0,
+      "gray_std": 11.91,
+      "horizontal_transitions": 19,
+      "vertical_transitions": 19,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0,
+      "foreground_fraction": 1.0
+    },
+    {
+      "label": 17,
+      "area": 23,
+      "bbox": [
+        176,
+        261,
+        198,
+        266
+      ],
+      "center": [
+        186.3,
+        263.22
+      ],
+      "max_radius": 1.0,
+      "gray_std": 8.83,
+      "horizontal_transitions": 8,
+      "vertical_transitions": 1,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0,
+      "foreground_fraction": 1.0
+    },
+    {
+      "label": 18,
+      "area": 124,
+      "bbox": [
+        282,
+        260,
+        295,
+        279
+      ],
+      "center": [
+        287.42,
+        270.61
+      ],
+      "max_radius": 4.39,
+      "gray_std": 20.79,
+      "horizontal_transitions": 34,
+      "vertical_transitions": 40,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0,
+      "foreground_fraction": 1.0
+    },
+    {
+      "label": 20,
+      "area": 20,
+      "bbox": [
+        200,
+        266,
+        215,
+        269
+      ],
+      "center": [
+        207.05,
+        266.9
+      ],
+      "max_radius": 1.0,
+      "gray_std": 5.85,
+      "horizontal_transitions": 2,
+      "vertical_transitions": 3,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0,
+      "foreground_fraction": 1.0
+    },
+    {
+      "label": 30,
+      "area": 109,
+      "bbox": [
+        276,
+        280,
+        327,
+        292
+      ],
+      "center": [
+        303.81,
+        285.35
+      ],
+      "max_radius": 2.0,
+      "gray_std": 16.74,
+      "horizontal_transitions": 56,
+      "vertical_transitions": 48,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0,
+      "foreground_fraction": 1.0
+    },
+    {
+      "label": 32,
+      "area": 41,
+      "bbox": [
+        313,
+        280,
+        329,
+        286
+      ],
+      "center": [
+        322.83,
+        282.41
+      ],
+      "max_radius": 2.0,
+      "gray_std": 14.76,
+      "horizontal_transitions": 8,
+      "vertical_transitions": 12,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0,
+      "foreground_fraction": 1.0
+    },
+    {
+      "label": 34,
+      "area": 17,
+      "bbox": [
+        368,
+        287,
+        375,
+        295
+      ],
+      "center": [
+        370.41,
+        291.18
+      ],
+      "max_radius": 1.4,
+      "gray_std": 18.49,
+      "horizontal_transitions": 7,
+      "vertical_transitions": 7,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0,
+      "foreground_fraction": 1.0
+    },
+    {
+      "label": 37,
+      "area": 18,
+      "bbox": [
+        373,
+        292,
+        378,
+        297
+      ],
+      "center": [
+        375.17,
+        293.83
+      ],
+      "max_radius": 2.0,
+      "gray_std": 23.24,
+      "horizontal_transitions": 5,
+      "vertical_transitions": 11,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0,
+      "foreground_fraction": 1.0
+    },
+    {
+      "label": 39,
+      "area": 197,
+      "bbox": [
+        381,
+        297,
+        439,
+        310
+      ],
+      "center": [
+        414.49,
+        302.38
+      ],
+      "max_radius": 3.0,
+      "gray_std": 13.76,
+      "horizontal_transitions": 47,
+      "vertical_transitions": 85,
+      "touches_transparency": false,
+      "checker_candidate": false,
+      "background_fraction": 0.0,
+      "foreground_fraction": 1.0
+    }
+  ],
+  "file": "Barbell_Ab_Rollout_-_On_Knees_male_v2_0.png",
+  "source": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/recovery-rollout/recovered-raw/Barbell_Ab_Rollout_-_On_Knees_male_v2_0.png",
+  "source_sha256": "3717d07caeee48089d02e165607422a1bbdff12663c3e054f17da35d9136a32f",
+  "candidate_sha256": "0529a32a10a942ad2556740171e13f8dcc7f55c9539ed0c0fc95ef6598a3559c",
+  "size": [
+    477,
+    375
+  ],
+  "recipe": "pale-neural-guard-v2",
+  "model": "birefnet-general-lite",
+  "mask_sha256": "d71f7ccacf5d4b0661275ae499fbcb12ba2d2914a69394e970612536362d4bb6",
+  "override_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+  "seconds": 8.638,
+  "acceptance": "pending_visual_review"
+}

@@ -1,0 +1,9 @@
+{
+  "edge_pixels_unmatted": 851,
+  "speck_pixels_removed": 0,
+  "acceptance": "pending_visual_review",
+  "regions": [],
+  "source": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/background-pilot/images/Barbell_Ab_Rollout_female_v2_2.png",
+  "source_sha256": "06948477f0d4e89a66381d6a4292db78c378f3a6b1dca7fad2e748a7ae6b1a42",
+  "candidate_sha256": "5a7ddbbe858c0882c35b73bcccefd1268e7c36685a9228be89871d839040bd8f"
+}

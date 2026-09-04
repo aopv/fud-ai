@@ -1,0 +1,9 @@
+{
+  "edge_pixels_unmatted": 1017,
+  "speck_pixels_removed": 0,
+  "acceptance": "pending_visual_review",
+  "regions": [],
+  "source": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/background-pilot/images/Barbell_Ab_Rollout_male_v2_1.png",
+  "source_sha256": "b98e1e484ef38c69b64c4a583b3cf74b7f12d47af0739cff893d3840f18f94ec",
+  "candidate_sha256": "b88fa466a9688799e4defb326eaa186095802d5c3ea25cdec76cc5583b80220e"
+}

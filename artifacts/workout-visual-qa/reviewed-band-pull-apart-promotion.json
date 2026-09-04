@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "exercises": [
+    {
+      "exercise_id": "Band_Pull_Apart",
+      "acceptance": "background_and_framing",
+      "review_record_path": "artifacts/workout-visual-qa/review-band-pull-apart-cleaned-aligned.md",
+      "review_record_sha256": "bdbc85421011969ff47bdca2c427b42b4b520c2637a1b3153b9d34294bcbd28f",
+      "frames": [
+        {
+          "asset_name": "Band_Pull_Apart_male_v2_0",
+          "candidate_path": "artifacts/workout-visual-qa/alignment-cleaned-pilot/images/Band_Pull_Apart_male_v2_0.png",
+          "candidate_sha256": "26729b06443b7d3f8107bb4a899c6731d792f484c56e34d7866cf4561daf10af",
+          "original_shared_sha256": "5a6e489447d0beb8d04b601c2d8fe56d9178e67221239292f96970376a91d8ac"
+        },
+        {
+          "asset_name": "Band_Pull_Apart_male_v2_1",
+          "candidate_path": "artifacts/workout-visual-qa/alignment-cleaned-pilot/images/Band_Pull_Apart_male_v2_1.png",
+          "candidate_sha256": "53eab3e8e9d3caa356315814c1de100565eac4ae4a6b01ec14b11668e11c7300",
+          "original_shared_sha256": "9efd2f7cef62dd95163f3c2b4b310a024accc0c692c9702588fef5e3eb9105ea"
+        },
+        {
+          "asset_name": "Band_Pull_Apart_male_v2_2",
+          "candidate_path": "artifacts/workout-visual-qa/alignment-cleaned-pilot/images/Band_Pull_Apart_male_v2_2.png",
+          "candidate_sha256": "584b8b560557d7e6a7bb2a6e2cb439b48c406cfd25f3430374c9035bfecd6fcb",
+          "original_shared_sha256": "c003d64ed7ad9941063791ee8b2d266dbe2989bcbe8f91b5a7f0d6152498a7c8"
+        },
+        {
+          "asset_name": "Band_Pull_Apart_male_v2_3",
+          "candidate_path": "artifacts/workout-visual-qa/alignment-cleaned-pilot/images/Band_Pull_Apart_male_v2_3.png",
+          "candidate_sha256": "f20262e95d5192674deefaf1c7be99a224d89056bcdac8ee98cded076a01a30a",
+          "original_shared_sha256": "3835651d198701fdcfd9ff808699b4f6d6b89860937d2106be77e0876b33f5bd"
+        },
+        {
+          "asset_name": "Band_Pull_Apart_female_v2_0",
+          "candidate_path": "artifacts/workout-visual-qa/alignment-cleaned-pilot/images/Band_Pull_Apart_female_v2_0.png",
+          "candidate_sha256": "b8c5f1d7ab0623763a8477fe485b7c3550410ed75b191be67bc7fbd22b418dd7",
+          "original_shared_sha256": "bc9e73781e7bd7f41a3e66d65aab4a8aa24c754946b8a171ab4dd878f2673741"
+        },
+        {
+          "asset_name": "Band_Pull_Apart_female_v2_1",
+          "candidate_path": "artifacts/workout-visual-qa/alignment-cleaned-pilot/images/Band_Pull_Apart_female_v2_1.png",
+          "candidate_sha256": "0b94e49125bb1081c4b17373eca8759479d5233c87e98b022989a7127e07232b",
+          "original_shared_sha256": "cdaa135f9c3cd82f22ff7667287063d1ea18cb646463c7ee7927610a7f07befd"
+        },
+        {
+          "asset_name": "Band_Pull_Apart_female_v2_2",
+          "candidate_path": "artifacts/workout-visual-qa/alignment-cleaned-pilot/images/Band_Pull_Apart_female_v2_2.png",
+          "candidate_sha256": "cc8963db9f6a9c5565b392f568a1f2711d4de5891bf6b3ea67b097808bab6666",
+          "original_shared_sha256": "395026470d87bc18987c5bb33be4bef75bcb3674d64a3ad1b54a933d997dbcbf"
+        },
+        {
+          "asset_name": "Band_Pull_Apart_female_v2_3",
+          "candidate_path": "artifacts/workout-visual-qa/alignment-cleaned-pilot/images/Band_Pull_Apart_female_v2_3.png",
+          "candidate_sha256": "3a54d3dde729a6b3a57d74e28e3196e5a0bab0863824d238168e2081e6cfccbf",
+          "original_shared_sha256": "527ad64ef977aadd4d17c4ee626da54d3be1c6ec85cd9a87000084e223e46df9"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "edge_pixels_unmatted": 450,
+  "speck_pixels_removed": 7,
+  "acceptance": "pending_visual_review",
+  "regions": [],
+  "source": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/skull-final-candidates/Band_Skull_Crusher_male_v2_0.png",
+  "source_sha256": "e4873c127add192b49aad7ce227ccccc17ef7e88c87615bf219e524ff1818a40",
+  "candidate_sha256": "f5f08fd4c4205d198e2522274b38a66cc51e8f30f29ccc693bab21ba6a5daaee"
+}

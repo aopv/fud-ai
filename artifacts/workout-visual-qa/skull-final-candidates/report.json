@@ -1,0 +1,394 @@
+{
+  "toe_registration": {
+    "scale": 0.70975,
+    "translation": [
+      -15.75,
+      75.25
+    ],
+    "rgb_rmse": 11.69663439995641,
+    "comparison_box": [
+      850,
+      620,
+      1011,
+      738
+    ],
+    "method": "uniform scale and translation only"
+  },
+  "toe_added_bbox": [
+    1011,
+    655,
+    1024,
+    718
+  ],
+  "visible_input_pixels_preserved_before_fit": true,
+  "frames": [
+    {
+      "gender": "male",
+      "frame": 0,
+      "input": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/background-pilot/images/Band_Skull_Crusher_male_v2_0.png",
+      "output": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/skull-final-candidates/Band_Skull_Crusher_male_v2_0.png",
+      "input_alpha_bbox": [
+        12,
+        212,
+        1012,
+        756
+      ],
+      "output_alpha_bbox": [
+        48,
+        225,
+        985,
+        737
+      ],
+      "bench_feet_before": [
+        [
+          130.76807228915663,
+          747.0
+        ],
+        [
+          723.7064220183486,
+          752.0
+        ]
+      ],
+      "bench_translation_only": [
+        4.5277830416469556,
+        0.25
+      ],
+      "scale": 0.9359558700030681,
+      "canvas": [
+        1024,
+        768
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "gender": "male",
+      "frame": 1,
+      "input": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/background-pilot/images/Band_Skull_Crusher_male_v2_1.png",
+      "output": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/skull-final-candidates/Band_Skull_Crusher_male_v2_1.png",
+      "input_alpha_bbox": [
+        12,
+        100,
+        1012,
+        756
+      ],
+      "output_alpha_bbox": [
+        43,
+        119,
+        981,
+        736
+      ],
+      "bench_feet_before": [
+        [
+          138.1253918495298,
+          748.0
+        ],
+        [
+          725.8964401294498,
+          753.0
+        ]
+      ],
+      "bench_translation_only": [
+        -0.24588579409027034,
+        -0.75
+      ],
+      "scale": 0.9359558700030681,
+      "canvas": [
+        1024,
+        768
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "gender": "male",
+      "frame": 2,
+      "input": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/background-pilot/images/Band_Skull_Crusher_male_v2_2.png",
+      "output": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/skull-final-candidates/Band_Skull_Crusher_male_v2_2.png",
+      "input_alpha_bbox": [
+        12,
+        59,
+        1012,
+        756
+      ],
+      "output_alpha_bbox": [
+        43,
+        81,
+        980,
+        736
+      ],
+      "bench_feet_before": [
+        [
+          138.07471264367817,
+          747.0
+        ],
+        [
+          724.9635761589404,
+          753.0
+        ]
+      ],
+      "bench_translation_only": [
+        0.24588579409027034,
+        -0.25
+      ],
+      "scale": 0.9359558700030681,
+      "canvas": [
+        1024,
+        768
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "gender": "male",
+      "frame": 3,
+      "input": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/background-pilot/images/Band_Skull_Crusher_male_v2_3.png",
+      "output": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/skull-final-candidates/Band_Skull_Crusher_male_v2_3.png",
+      "input_alpha_bbox": [
+        12,
+        229,
+        1012,
+        756
+      ],
+      "output_alpha_bbox": [
+        39,
+        242,
+        977,
+        736
+      ],
+      "bench_feet_before": [
+        [
+          140.7229916897507,
+          746.0
+        ],
+        [
+          730.940625,
+          752.0
+        ]
+      ],
+      "bench_translation_only": [
+        -4.066778149475738,
+        0.75
+      ],
+      "scale": 0.9359558700030681,
+      "canvas": [
+        1024,
+        768
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "gender": "female",
+      "frame": 0,
+      "input": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/background-pilot/images/Band_Skull_Crusher_female_v2_0.png",
+      "output": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/skull-final-candidates/Band_Skull_Crusher_female_v2_0.png",
+      "input_alpha_bbox": [
+        12,
+        272,
+        1012,
+        756
+      ],
+      "output_alpha_bbox": [
+        46,
+        283,
+        981,
+        737
+      ],
+      "bench_feet_before": [
+        [
+          213.59649122807016,
+          753.0
+        ],
+        [
+          778.2206703910615,
+          755.0
+        ]
+      ],
+      "bench_translation_only": [
+        1.451266235019034,
+        -0.5
+      ],
+      "scale": 0.932806324110672,
+      "canvas": [
+        1024,
+        768
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "gender": "female",
+      "frame": 1,
+      "input": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/background-pilot/images/Band_Skull_Crusher_female_v2_1.png",
+      "output": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/skull-final-candidates/Band_Skull_Crusher_female_v2_1.png",
+      "input_alpha_bbox": [
+        12,
+        220,
+        1012,
+        756
+      ],
+      "output_alpha_bbox": [
+        44,
+        235,
+        979,
+        736
+      ],
+      "bench_feet_before": [
+        [
+          216.94662921348313,
+          752.0
+        ],
+        [
+          778.4344023323615,
+          755.0
+        ]
+      ],
+      "bench_translation_only": [
+        -0.3306687283374572,
+        0.0
+      ],
+      "scale": 0.932806324110672,
+      "canvas": [
+        1024,
+        768
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "gender": "female",
+      "frame": 2,
+      "input": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/background-pilot/images/Band_Skull_Crusher_female_v2_2.png",
+      "output": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/skull-final-candidates/Band_Skull_Crusher_female_v2_2.png",
+      "input_alpha_bbox": [
+        12,
+        119,
+        1012,
+        756
+      ],
+      "output_alpha_bbox": [
+        45,
+        141,
+        980,
+        737
+      ],
+      "bench_feet_before": [
+        [
+          215.94054054054055,
+          752.0
+        ],
+        [
+          778.1178160919541,
+          755.0
+        ]
+      ],
+      "bench_translation_only": [
+        0.33066872833751404,
+        0.0
+      ],
+      "scale": 0.932806324110672,
+      "canvas": [
+        1024,
+        768
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "gender": "female",
+      "frame": 3,
+      "input": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/background-pilot/images/Band_Skull_Crusher_female_v2_3.png",
+      "output": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/skull-final-candidates/Band_Skull_Crusher_female_v2_3.png",
+      "input_alpha_bbox": [
+        12,
+        284,
+        1024,
+        756
+      ],
+      "output_alpha_bbox": [
+        39,
+        294,
+        984,
+        737
+      ],
+      "bench_feet_before": [
+        [
+          220.4802110817942,
+          752.0
+        ],
+        [
+          785.827485380117,
+          755.0
+        ]
+      ],
+      "bench_translation_only": [
+        -5.7940011863707355,
+        0.0
+      ],
+      "scale": 0.932806324110672,
+      "canvas": [
+        1024,
+        768
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    }
+  ],
+  "groups": [
+    {
+      "gender": "male",
+      "shared_scale": 0.9359558700030681,
+      "union_before_fit": [
+        7.933221850524262,
+        58.75,
+        1016.5277830416469,
+        756.75
+      ],
+      "common_translation": [
+        32.57485444096521,
+        27.71539537517822
+      ],
+      "bench_anchor": [
+        431.76503019539956,
+        749.75
+      ],
+      "max_manual_or_measured_shift_px": 4.5277830416469556
+    },
+    {
+      "gender": "female",
+      "shared_scale": 0.932806324110672,
+      "union_before_fit": [
+        6.2059988136292645,
+        119.0,
+        1018.2059988136293,
+        756.0
+      ],
+      "common_translation": [
+        34.2110050592233,
+        30.798418972332
+      ],
+      "bench_anchor": [
+        497.35984704458485,
+        753.5
+      ],
+      "max_manual_or_measured_shift_px": 5.7940011863707355
+    }
+  ]
+}

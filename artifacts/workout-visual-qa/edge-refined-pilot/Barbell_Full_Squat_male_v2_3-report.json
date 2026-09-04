@@ -1,0 +1,9 @@
+{
+  "edge_pixels_unmatted": 968,
+  "speck_pixels_removed": 496,
+  "acceptance": "pending_visual_review",
+  "regions": [],
+  "source": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/background-pilot/images/Barbell_Full_Squat_male_v2_3.png",
+  "source_sha256": "4ac801ac45370256b9cd3b03e7765a89f74b0f5a7c8648cb5fae7a157b334fc0",
+  "candidate_sha256": "3817a791c84be7d989d71c06e66efc447568d207324721174259a1924b01f72b"
+}
