@@ -59,7 +59,7 @@ const BATCH = {
       "defer": 1
     },
     "generatedAt": "2026-09-04T23:51:41.927858+00:00",
-    "workspaceRoot": "/workspace"
+    "workspaceRoot": "/Users/apoorvdarshan/fud-ai"
   },
   "exercises": [
     {
@@ -80,18 +80,18 @@ const BATCH = {
       ],
       "suggestedRoute": "script_fix",
       "auditJsonPath": "audit-only/Barbell_Glute_Bridge/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Glute_Bridge/Barbell_Glute_Bridge_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Glute_Bridge/Barbell_Glute_Bridge_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Glute_Bridge",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Glute_Bridge/Barbell_Glute_Bridge_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Glute_Bridge/Barbell_Glute_Bridge_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Glute_Bridge",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Barbell_Glute_Bridge_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Barbell_Glute_Bridge_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Barbell_Glute_Bridge_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Barbell_Glute_Bridge_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Barbell_Glute_Bridge_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Barbell_Glute_Bridge_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Barbell_Glute_Bridge_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Barbell_Glute_Bridge_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Glute_Bridge_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Glute_Bridge_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Glute_Bridge_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Glute_Bridge_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Glute_Bridge_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Glute_Bridge_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Glute_Bridge_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Glute_Bridge_female_v2_3.png"
       ]
     },
     {
@@ -113,18 +113,18 @@ const BATCH = {
       ],
       "suggestedRoute": "redraw",
       "auditJsonPath": "audit-only/Barbell_Rear_Delt_Row/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Rear_Delt_Row/Barbell_Rear_Delt_Row_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Rear_Delt_Row/Barbell_Rear_Delt_Row_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Rear_Delt_Row",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Rear_Delt_Row/Barbell_Rear_Delt_Row_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Rear_Delt_Row/Barbell_Rear_Delt_Row_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Rear_Delt_Row",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Barbell_Rear_Delt_Row_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Barbell_Rear_Delt_Row_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Barbell_Rear_Delt_Row_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Barbell_Rear_Delt_Row_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Barbell_Rear_Delt_Row_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Barbell_Rear_Delt_Row_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Barbell_Rear_Delt_Row_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Barbell_Rear_Delt_Row_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Rear_Delt_Row_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Rear_Delt_Row_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Rear_Delt_Row_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Rear_Delt_Row_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Rear_Delt_Row_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Rear_Delt_Row_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Rear_Delt_Row_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Rear_Delt_Row_female_v2_3.png"
       ]
     },
     {
@@ -144,18 +144,18 @@ const BATCH = {
       ],
       "suggestedRoute": "redraw",
       "auditJsonPath": "audit-only/Bent_Over_One-Arm_Long_Bar_Row/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Bent_Over_One-Arm_Long_Bar_Row/Bent_Over_One-Arm_Long_Bar_Row_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Bent_Over_One-Arm_Long_Bar_Row/Bent_Over_One-Arm_Long_Bar_Row_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Bent_Over_One-Arm_Long_Bar_Row",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Bent_Over_One-Arm_Long_Bar_Row/Bent_Over_One-Arm_Long_Bar_Row_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Bent_Over_One-Arm_Long_Bar_Row/Bent_Over_One-Arm_Long_Bar_Row_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Bent_Over_One-Arm_Long_Bar_Row",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Bent_Over_One-Arm_Long_Bar_Row_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Bent_Over_One-Arm_Long_Bar_Row_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Bent_Over_One-Arm_Long_Bar_Row_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Bent_Over_One-Arm_Long_Bar_Row_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Bent_Over_One-Arm_Long_Bar_Row_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Bent_Over_One-Arm_Long_Bar_Row_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Bent_Over_One-Arm_Long_Bar_Row_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Bent_Over_One-Arm_Long_Bar_Row_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Bent_Over_One-Arm_Long_Bar_Row_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Bent_Over_One-Arm_Long_Bar_Row_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Bent_Over_One-Arm_Long_Bar_Row_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Bent_Over_One-Arm_Long_Bar_Row_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Bent_Over_One-Arm_Long_Bar_Row_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Bent_Over_One-Arm_Long_Bar_Row_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Bent_Over_One-Arm_Long_Bar_Row_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Bent_Over_One-Arm_Long_Bar_Row_female_v2_3.png"
       ]
     },
     {
@@ -175,18 +175,18 @@ const BATCH = {
       ],
       "suggestedRoute": "script_fix",
       "auditJsonPath": "audit-only/Bottoms_Up/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Bottoms_Up/Bottoms_Up_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Bottoms_Up/Bottoms_Up_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Bottoms_Up",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Bottoms_Up/Bottoms_Up_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Bottoms_Up/Bottoms_Up_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Bottoms_Up",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Bottoms_Up_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Bottoms_Up_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Bottoms_Up_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Bottoms_Up_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Bottoms_Up_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Bottoms_Up_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Bottoms_Up_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Bottoms_Up_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Bottoms_Up_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Bottoms_Up_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Bottoms_Up_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Bottoms_Up_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Bottoms_Up_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Bottoms_Up_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Bottoms_Up_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Bottoms_Up_female_v2_3.png"
       ]
     },
     {
@@ -206,18 +206,18 @@ const BATCH = {
       ],
       "suggestedRoute": "redraw",
       "auditJsonPath": "audit-only/Brachialis-SMR/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Brachialis-SMR/Brachialis-SMR_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Brachialis-SMR/Brachialis-SMR_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Brachialis-SMR",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Brachialis-SMR/Brachialis-SMR_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Brachialis-SMR/Brachialis-SMR_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Brachialis-SMR",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Brachialis-SMR_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Brachialis-SMR_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Brachialis-SMR_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Brachialis-SMR_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Brachialis-SMR_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Brachialis-SMR_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Brachialis-SMR_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Brachialis-SMR_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Brachialis-SMR_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Brachialis-SMR_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Brachialis-SMR_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Brachialis-SMR_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Brachialis-SMR_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Brachialis-SMR_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Brachialis-SMR_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Brachialis-SMR_female_v2_3.png"
       ]
     },
     {
@@ -236,18 +236,18 @@ const BATCH = {
       ],
       "suggestedRoute": "redraw",
       "auditJsonPath": "audit-only/Cable_Hip_Adduction/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Cable_Hip_Adduction/Cable_Hip_Adduction_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Cable_Hip_Adduction/Cable_Hip_Adduction_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Cable_Hip_Adduction",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Cable_Hip_Adduction/Cable_Hip_Adduction_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Cable_Hip_Adduction/Cable_Hip_Adduction_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Cable_Hip_Adduction",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Cable_Hip_Adduction_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Cable_Hip_Adduction_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Cable_Hip_Adduction_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Cable_Hip_Adduction_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Cable_Hip_Adduction_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Cable_Hip_Adduction_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Cable_Hip_Adduction_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Cable_Hip_Adduction_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Cable_Hip_Adduction_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Cable_Hip_Adduction_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Cable_Hip_Adduction_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Cable_Hip_Adduction_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Cable_Hip_Adduction_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Cable_Hip_Adduction_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Cable_Hip_Adduction_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Cable_Hip_Adduction_female_v2_3.png"
       ]
     },
     {
@@ -266,18 +266,18 @@ const BATCH = {
       ],
       "suggestedRoute": "script_fix",
       "auditJsonPath": "audit-only/Cable_Wrist_Curl/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Cable_Wrist_Curl/Cable_Wrist_Curl_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Cable_Wrist_Curl/Cable_Wrist_Curl_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Cable_Wrist_Curl",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Cable_Wrist_Curl/Cable_Wrist_Curl_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Cable_Wrist_Curl/Cable_Wrist_Curl_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Cable_Wrist_Curl",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Cable_Wrist_Curl_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Cable_Wrist_Curl_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Cable_Wrist_Curl_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Cable_Wrist_Curl_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Cable_Wrist_Curl_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Cable_Wrist_Curl_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Cable_Wrist_Curl_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Cable_Wrist_Curl_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Cable_Wrist_Curl_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Cable_Wrist_Curl_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Cable_Wrist_Curl_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Cable_Wrist_Curl_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Cable_Wrist_Curl_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Cable_Wrist_Curl_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Cable_Wrist_Curl_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Cable_Wrist_Curl_female_v2_3.png"
       ]
     },
     {
@@ -294,18 +294,18 @@ const BATCH = {
       ],
       "suggestedRoute": "redraw",
       "auditJsonPath": "audit-only/Calf_Stretch_Elbows_Against_Wall/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Calf_Stretch_Elbows_Against_Wall/Calf_Stretch_Elbows_Against_Wall_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Calf_Stretch_Elbows_Against_Wall/Calf_Stretch_Elbows_Against_Wall_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Calf_Stretch_Elbows_Against_Wall",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Calf_Stretch_Elbows_Against_Wall/Calf_Stretch_Elbows_Against_Wall_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Calf_Stretch_Elbows_Against_Wall/Calf_Stretch_Elbows_Against_Wall_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Calf_Stretch_Elbows_Against_Wall",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Calf_Stretch_Elbows_Against_Wall_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Calf_Stretch_Elbows_Against_Wall_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Calf_Stretch_Elbows_Against_Wall_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Calf_Stretch_Elbows_Against_Wall_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Calf_Stretch_Elbows_Against_Wall_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Calf_Stretch_Elbows_Against_Wall_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Calf_Stretch_Elbows_Against_Wall_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Calf_Stretch_Elbows_Against_Wall_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Calf_Stretch_Elbows_Against_Wall_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Calf_Stretch_Elbows_Against_Wall_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Calf_Stretch_Elbows_Against_Wall_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Calf_Stretch_Elbows_Against_Wall_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Calf_Stretch_Elbows_Against_Wall_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Calf_Stretch_Elbows_Against_Wall_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Calf_Stretch_Elbows_Against_Wall_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Calf_Stretch_Elbows_Against_Wall_female_v2_3.png"
       ]
     },
     {
@@ -327,18 +327,18 @@ const BATCH = {
       ],
       "suggestedRoute": "redraw",
       "auditJsonPath": "audit-only/Chest_Push_multiple_response/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Chest_Push_multiple_response/Chest_Push_multiple_response_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Chest_Push_multiple_response/Chest_Push_multiple_response_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Chest_Push_multiple_response",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Chest_Push_multiple_response/Chest_Push_multiple_response_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Chest_Push_multiple_response/Chest_Push_multiple_response_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Chest_Push_multiple_response",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Chest_Push_multiple_response_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Chest_Push_multiple_response_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Chest_Push_multiple_response_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Chest_Push_multiple_response_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Chest_Push_multiple_response_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Chest_Push_multiple_response_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Chest_Push_multiple_response_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Chest_Push_multiple_response_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Chest_Push_multiple_response_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Chest_Push_multiple_response_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Chest_Push_multiple_response_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Chest_Push_multiple_response_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Chest_Push_multiple_response_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Chest_Push_multiple_response_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Chest_Push_multiple_response_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Chest_Push_multiple_response_female_v2_3.png"
       ]
     },
     {
@@ -356,18 +356,18 @@ const BATCH = {
       ],
       "suggestedRoute": "redraw",
       "auditJsonPath": "audit-only/Chest_Push_with_Run_Release/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Chest_Push_with_Run_Release/Chest_Push_with_Run_Release_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Chest_Push_with_Run_Release/Chest_Push_with_Run_Release_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Chest_Push_with_Run_Release",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Chest_Push_with_Run_Release/Chest_Push_with_Run_Release_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Chest_Push_with_Run_Release/Chest_Push_with_Run_Release_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Chest_Push_with_Run_Release",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Chest_Push_with_Run_Release_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Chest_Push_with_Run_Release_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Chest_Push_with_Run_Release_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Chest_Push_with_Run_Release_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Chest_Push_with_Run_Release_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Chest_Push_with_Run_Release_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Chest_Push_with_Run_Release_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Chest_Push_with_Run_Release_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Chest_Push_with_Run_Release_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Chest_Push_with_Run_Release_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Chest_Push_with_Run_Release_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Chest_Push_with_Run_Release_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Chest_Push_with_Run_Release_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Chest_Push_with_Run_Release_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Chest_Push_with_Run_Release_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Chest_Push_with_Run_Release_female_v2_3.png"
       ]
     },
     {
@@ -385,18 +385,18 @@ const BATCH = {
       ],
       "suggestedRoute": "redraw",
       "auditJsonPath": "audit-only/Decline_Close-Grip_Bench_To_Skull_Crusher/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Decline_Close-Grip_Bench_To_Skull_Crusher/Decline_Close-Grip_Bench_To_Skull_Crusher_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Decline_Close-Grip_Bench_To_Skull_Crusher/Decline_Close-Grip_Bench_To_Skull_Crusher_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Decline_Close-Grip_Bench_To_Skull_Crusher",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Decline_Close-Grip_Bench_To_Skull_Crusher/Decline_Close-Grip_Bench_To_Skull_Crusher_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Decline_Close-Grip_Bench_To_Skull_Crusher/Decline_Close-Grip_Bench_To_Skull_Crusher_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Decline_Close-Grip_Bench_To_Skull_Crusher",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Decline_Close-Grip_Bench_To_Skull_Crusher_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Decline_Close-Grip_Bench_To_Skull_Crusher_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Decline_Close-Grip_Bench_To_Skull_Crusher_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Decline_Close-Grip_Bench_To_Skull_Crusher_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Decline_Close-Grip_Bench_To_Skull_Crusher_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Decline_Close-Grip_Bench_To_Skull_Crusher_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Decline_Close-Grip_Bench_To_Skull_Crusher_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Decline_Close-Grip_Bench_To_Skull_Crusher_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Decline_Close-Grip_Bench_To_Skull_Crusher_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Decline_Close-Grip_Bench_To_Skull_Crusher_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Decline_Close-Grip_Bench_To_Skull_Crusher_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Decline_Close-Grip_Bench_To_Skull_Crusher_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Decline_Close-Grip_Bench_To_Skull_Crusher_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Decline_Close-Grip_Bench_To_Skull_Crusher_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Decline_Close-Grip_Bench_To_Skull_Crusher_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Decline_Close-Grip_Bench_To_Skull_Crusher_female_v2_3.png"
       ]
     },
     {
@@ -417,18 +417,18 @@ const BATCH = {
       ],
       "suggestedRoute": "redraw",
       "auditJsonPath": "audit-only/Downward_Facing_Balance/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Downward_Facing_Balance/Downward_Facing_Balance_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Downward_Facing_Balance/Downward_Facing_Balance_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Downward_Facing_Balance",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Downward_Facing_Balance/Downward_Facing_Balance_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Downward_Facing_Balance/Downward_Facing_Balance_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Downward_Facing_Balance",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Downward_Facing_Balance_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Downward_Facing_Balance_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Downward_Facing_Balance_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Downward_Facing_Balance_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Downward_Facing_Balance_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Downward_Facing_Balance_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Downward_Facing_Balance_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Downward_Facing_Balance_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Downward_Facing_Balance_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Downward_Facing_Balance_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Downward_Facing_Balance_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Downward_Facing_Balance_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Downward_Facing_Balance_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Downward_Facing_Balance_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Downward_Facing_Balance_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Downward_Facing_Balance_female_v2_3.png"
       ]
     },
     {
@@ -446,18 +446,18 @@ const BATCH = {
       ],
       "suggestedRoute": "redraw",
       "auditJsonPath": "audit-only/Dumbbell_Lying_One-Arm_Rear_Lateral_Raise/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Dumbbell_Lying_One-Arm_Rear_Lateral_Raise/Dumbbell_Lying_One-Arm_Rear_Lateral_Raise_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Dumbbell_Lying_One-Arm_Rear_Lateral_Raise/Dumbbell_Lying_One-Arm_Rear_Lateral_Raise_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Dumbbell_Lying_One-Arm_Rear_Lateral_Raise",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Dumbbell_Lying_One-Arm_Rear_Lateral_Raise/Dumbbell_Lying_One-Arm_Rear_Lateral_Raise_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Dumbbell_Lying_One-Arm_Rear_Lateral_Raise/Dumbbell_Lying_One-Arm_Rear_Lateral_Raise_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Dumbbell_Lying_One-Arm_Rear_Lateral_Raise",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Dumbbell_Lying_One-Arm_Rear_Lateral_Raise_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Dumbbell_Lying_One-Arm_Rear_Lateral_Raise_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Dumbbell_Lying_One-Arm_Rear_Lateral_Raise_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Dumbbell_Lying_One-Arm_Rear_Lateral_Raise_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Dumbbell_Lying_One-Arm_Rear_Lateral_Raise_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Dumbbell_Lying_One-Arm_Rear_Lateral_Raise_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Dumbbell_Lying_One-Arm_Rear_Lateral_Raise_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Dumbbell_Lying_One-Arm_Rear_Lateral_Raise_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Dumbbell_Lying_One-Arm_Rear_Lateral_Raise_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Dumbbell_Lying_One-Arm_Rear_Lateral_Raise_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Dumbbell_Lying_One-Arm_Rear_Lateral_Raise_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Dumbbell_Lying_One-Arm_Rear_Lateral_Raise_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Dumbbell_Lying_One-Arm_Rear_Lateral_Raise_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Dumbbell_Lying_One-Arm_Rear_Lateral_Raise_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Dumbbell_Lying_One-Arm_Rear_Lateral_Raise_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Dumbbell_Lying_One-Arm_Rear_Lateral_Raise_female_v2_3.png"
       ]
     },
     {
@@ -475,18 +475,18 @@ const BATCH = {
       ],
       "suggestedRoute": "script_fix",
       "auditJsonPath": "audit-only/Dumbbell_Lying_Supination/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Dumbbell_Lying_Supination/Dumbbell_Lying_Supination_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Dumbbell_Lying_Supination/Dumbbell_Lying_Supination_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Dumbbell_Lying_Supination",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Dumbbell_Lying_Supination/Dumbbell_Lying_Supination_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Dumbbell_Lying_Supination/Dumbbell_Lying_Supination_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Dumbbell_Lying_Supination",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Dumbbell_Lying_Supination_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Dumbbell_Lying_Supination_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Dumbbell_Lying_Supination_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Dumbbell_Lying_Supination_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Dumbbell_Lying_Supination_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Dumbbell_Lying_Supination_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Dumbbell_Lying_Supination_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Dumbbell_Lying_Supination_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Dumbbell_Lying_Supination_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Dumbbell_Lying_Supination_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Dumbbell_Lying_Supination_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Dumbbell_Lying_Supination_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Dumbbell_Lying_Supination_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Dumbbell_Lying_Supination_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Dumbbell_Lying_Supination_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Dumbbell_Lying_Supination_female_v2_3.png"
       ]
     },
     {
@@ -509,18 +509,18 @@ const BATCH = {
       ],
       "suggestedRoute": "redraw",
       "auditJsonPath": "audit-only/Dumbbell_Tricep_Extension_-Pronated_Grip/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Dumbbell_Tricep_Extension_-Pronated_Grip/Dumbbell_Tricep_Extension_-Pronated_Grip_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Dumbbell_Tricep_Extension_-Pronated_Grip/Dumbbell_Tricep_Extension_-Pronated_Grip_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Dumbbell_Tricep_Extension_-Pronated_Grip",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Dumbbell_Tricep_Extension_-Pronated_Grip/Dumbbell_Tricep_Extension_-Pronated_Grip_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Dumbbell_Tricep_Extension_-Pronated_Grip/Dumbbell_Tricep_Extension_-Pronated_Grip_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Dumbbell_Tricep_Extension_-Pronated_Grip",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Dumbbell_Tricep_Extension_-Pronated_Grip_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Dumbbell_Tricep_Extension_-Pronated_Grip_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Dumbbell_Tricep_Extension_-Pronated_Grip_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Dumbbell_Tricep_Extension_-Pronated_Grip_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Dumbbell_Tricep_Extension_-Pronated_Grip_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Dumbbell_Tricep_Extension_-Pronated_Grip_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Dumbbell_Tricep_Extension_-Pronated_Grip_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Dumbbell_Tricep_Extension_-Pronated_Grip_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Dumbbell_Tricep_Extension_-Pronated_Grip_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Dumbbell_Tricep_Extension_-Pronated_Grip_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Dumbbell_Tricep_Extension_-Pronated_Grip_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Dumbbell_Tricep_Extension_-Pronated_Grip_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Dumbbell_Tricep_Extension_-Pronated_Grip_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Dumbbell_Tricep_Extension_-Pronated_Grip_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Dumbbell_Tricep_Extension_-Pronated_Grip_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Dumbbell_Tricep_Extension_-Pronated_Grip_female_v2_3.png"
       ]
     },
     {
@@ -541,18 +541,18 @@ const BATCH = {
       ],
       "suggestedRoute": "redraw",
       "auditJsonPath": "audit-only/Dynamic_Back_Stretch/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Dynamic_Back_Stretch/Dynamic_Back_Stretch_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Dynamic_Back_Stretch/Dynamic_Back_Stretch_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Dynamic_Back_Stretch",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Dynamic_Back_Stretch/Dynamic_Back_Stretch_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Dynamic_Back_Stretch/Dynamic_Back_Stretch_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Dynamic_Back_Stretch",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Dynamic_Back_Stretch_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Dynamic_Back_Stretch_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Dynamic_Back_Stretch_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Dynamic_Back_Stretch_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Dynamic_Back_Stretch_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Dynamic_Back_Stretch_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Dynamic_Back_Stretch_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Dynamic_Back_Stretch_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Dynamic_Back_Stretch_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Dynamic_Back_Stretch_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Dynamic_Back_Stretch_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Dynamic_Back_Stretch_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Dynamic_Back_Stretch_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Dynamic_Back_Stretch_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Dynamic_Back_Stretch_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Dynamic_Back_Stretch_female_v2_3.png"
       ]
     },
     {
@@ -581,18 +581,18 @@ const BATCH = {
       ],
       "suggestedRoute": "redraw",
       "auditJsonPath": "audit-only/EZ-Bar_Skullcrusher/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/EZ-Bar_Skullcrusher/EZ-Bar_Skullcrusher_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/EZ-Bar_Skullcrusher/EZ-Bar_Skullcrusher_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/EZ-Bar_Skullcrusher",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/EZ-Bar_Skullcrusher/EZ-Bar_Skullcrusher_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/EZ-Bar_Skullcrusher/EZ-Bar_Skullcrusher_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/EZ-Bar_Skullcrusher",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/EZ-Bar_Skullcrusher_male_v2_0.png",
-        "/workspace/shared/workout-vectors/EZ-Bar_Skullcrusher_male_v2_1.png",
-        "/workspace/shared/workout-vectors/EZ-Bar_Skullcrusher_male_v2_2.png",
-        "/workspace/shared/workout-vectors/EZ-Bar_Skullcrusher_male_v2_3.png",
-        "/workspace/shared/workout-vectors/EZ-Bar_Skullcrusher_female_v2_0.png",
-        "/workspace/shared/workout-vectors/EZ-Bar_Skullcrusher_female_v2_1.png",
-        "/workspace/shared/workout-vectors/EZ-Bar_Skullcrusher_female_v2_2.png",
-        "/workspace/shared/workout-vectors/EZ-Bar_Skullcrusher_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/EZ-Bar_Skullcrusher_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/EZ-Bar_Skullcrusher_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/EZ-Bar_Skullcrusher_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/EZ-Bar_Skullcrusher_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/EZ-Bar_Skullcrusher_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/EZ-Bar_Skullcrusher_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/EZ-Bar_Skullcrusher_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/EZ-Bar_Skullcrusher_female_v2_3.png"
       ]
     },
     {
@@ -613,18 +613,18 @@ const BATCH = {
       ],
       "suggestedRoute": "redraw",
       "auditJsonPath": "audit-only/Front_Barbell_Squat_To_A_Bench/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Front_Barbell_Squat_To_A_Bench/Front_Barbell_Squat_To_A_Bench_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Front_Barbell_Squat_To_A_Bench/Front_Barbell_Squat_To_A_Bench_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Front_Barbell_Squat_To_A_Bench",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Front_Barbell_Squat_To_A_Bench/Front_Barbell_Squat_To_A_Bench_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Front_Barbell_Squat_To_A_Bench/Front_Barbell_Squat_To_A_Bench_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Front_Barbell_Squat_To_A_Bench",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Front_Barbell_Squat_To_A_Bench_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Front_Barbell_Squat_To_A_Bench_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Front_Barbell_Squat_To_A_Bench_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Front_Barbell_Squat_To_A_Bench_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Front_Barbell_Squat_To_A_Bench_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Front_Barbell_Squat_To_A_Bench_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Front_Barbell_Squat_To_A_Bench_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Front_Barbell_Squat_To_A_Bench_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Front_Barbell_Squat_To_A_Bench_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Front_Barbell_Squat_To_A_Bench_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Front_Barbell_Squat_To_A_Bench_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Front_Barbell_Squat_To_A_Bench_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Front_Barbell_Squat_To_A_Bench_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Front_Barbell_Squat_To_A_Bench_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Front_Barbell_Squat_To_A_Bench_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Front_Barbell_Squat_To_A_Bench_female_v2_3.png"
       ]
     },
     {
@@ -646,18 +646,18 @@ const BATCH = {
       ],
       "suggestedRoute": "redraw",
       "auditJsonPath": "audit-only/Kettlebell_Turkish_Get-Up_Lunge_style/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Kettlebell_Turkish_Get-Up_Lunge_style/Kettlebell_Turkish_Get-Up_Lunge_style_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Kettlebell_Turkish_Get-Up_Lunge_style/Kettlebell_Turkish_Get-Up_Lunge_style_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Kettlebell_Turkish_Get-Up_Lunge_style",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Kettlebell_Turkish_Get-Up_Lunge_style/Kettlebell_Turkish_Get-Up_Lunge_style_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Kettlebell_Turkish_Get-Up_Lunge_style/Kettlebell_Turkish_Get-Up_Lunge_style_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Kettlebell_Turkish_Get-Up_Lunge_style",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Kettlebell_Turkish_Get-Up_Lunge_style_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Kettlebell_Turkish_Get-Up_Lunge_style_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Kettlebell_Turkish_Get-Up_Lunge_style_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Kettlebell_Turkish_Get-Up_Lunge_style_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Kettlebell_Turkish_Get-Up_Lunge_style_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Kettlebell_Turkish_Get-Up_Lunge_style_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Kettlebell_Turkish_Get-Up_Lunge_style_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Kettlebell_Turkish_Get-Up_Lunge_style_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Kettlebell_Turkish_Get-Up_Lunge_style_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Kettlebell_Turkish_Get-Up_Lunge_style_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Kettlebell_Turkish_Get-Up_Lunge_style_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Kettlebell_Turkish_Get-Up_Lunge_style_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Kettlebell_Turkish_Get-Up_Lunge_style_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Kettlebell_Turkish_Get-Up_Lunge_style_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Kettlebell_Turkish_Get-Up_Lunge_style_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Kettlebell_Turkish_Get-Up_Lunge_style_female_v2_3.png"
       ]
     },
     {
@@ -676,18 +676,18 @@ const BATCH = {
       ],
       "suggestedRoute": "redraw",
       "auditJsonPath": "audit-only/Kettlebell_Turkish_Get-Up_Squat_style/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Kettlebell_Turkish_Get-Up_Squat_style/Kettlebell_Turkish_Get-Up_Squat_style_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Kettlebell_Turkish_Get-Up_Squat_style/Kettlebell_Turkish_Get-Up_Squat_style_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Kettlebell_Turkish_Get-Up_Squat_style",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Kettlebell_Turkish_Get-Up_Squat_style/Kettlebell_Turkish_Get-Up_Squat_style_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Kettlebell_Turkish_Get-Up_Squat_style/Kettlebell_Turkish_Get-Up_Squat_style_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Kettlebell_Turkish_Get-Up_Squat_style",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Kettlebell_Turkish_Get-Up_Squat_style_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Kettlebell_Turkish_Get-Up_Squat_style_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Kettlebell_Turkish_Get-Up_Squat_style_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Kettlebell_Turkish_Get-Up_Squat_style_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Kettlebell_Turkish_Get-Up_Squat_style_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Kettlebell_Turkish_Get-Up_Squat_style_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Kettlebell_Turkish_Get-Up_Squat_style_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Kettlebell_Turkish_Get-Up_Squat_style_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Kettlebell_Turkish_Get-Up_Squat_style_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Kettlebell_Turkish_Get-Up_Squat_style_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Kettlebell_Turkish_Get-Up_Squat_style_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Kettlebell_Turkish_Get-Up_Squat_style_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Kettlebell_Turkish_Get-Up_Squat_style_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Kettlebell_Turkish_Get-Up_Squat_style_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Kettlebell_Turkish_Get-Up_Squat_style_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Kettlebell_Turkish_Get-Up_Squat_style_female_v2_3.png"
       ]
     },
     {
@@ -706,18 +706,18 @@ const BATCH = {
       ],
       "suggestedRoute": "script_fix",
       "auditJsonPath": "audit-only/3_4_Sit-Up/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/3_4_Sit-Up/3_4_Sit-Up_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/3_4_Sit-Up/3_4_Sit-Up_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/3_4_Sit-Up",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/3_4_Sit-Up/3_4_Sit-Up_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/3_4_Sit-Up/3_4_Sit-Up_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/3_4_Sit-Up",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/3_4_Sit-Up_male_v2_0.png",
-        "/workspace/shared/workout-vectors/3_4_Sit-Up_male_v2_1.png",
-        "/workspace/shared/workout-vectors/3_4_Sit-Up_male_v2_2.png",
-        "/workspace/shared/workout-vectors/3_4_Sit-Up_male_v2_3.png",
-        "/workspace/shared/workout-vectors/3_4_Sit-Up_female_v2_0.png",
-        "/workspace/shared/workout-vectors/3_4_Sit-Up_female_v2_1.png",
-        "/workspace/shared/workout-vectors/3_4_Sit-Up_female_v2_2.png",
-        "/workspace/shared/workout-vectors/3_4_Sit-Up_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/3_4_Sit-Up_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/3_4_Sit-Up_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/3_4_Sit-Up_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/3_4_Sit-Up_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/3_4_Sit-Up_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/3_4_Sit-Up_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/3_4_Sit-Up_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/3_4_Sit-Up_female_v2_3.png"
       ]
     },
     {
@@ -737,18 +737,18 @@ const BATCH = {
       ],
       "suggestedRoute": "script_fix",
       "auditJsonPath": "audit-only/Ab_Crunch_Machine/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Ab_Crunch_Machine/Ab_Crunch_Machine_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Ab_Crunch_Machine/Ab_Crunch_Machine_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Ab_Crunch_Machine",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Ab_Crunch_Machine/Ab_Crunch_Machine_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Ab_Crunch_Machine/Ab_Crunch_Machine_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Ab_Crunch_Machine",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Ab_Crunch_Machine_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Ab_Crunch_Machine_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Ab_Crunch_Machine_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Ab_Crunch_Machine_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Ab_Crunch_Machine_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Ab_Crunch_Machine_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Ab_Crunch_Machine_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Ab_Crunch_Machine_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Ab_Crunch_Machine_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Ab_Crunch_Machine_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Ab_Crunch_Machine_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Ab_Crunch_Machine_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Ab_Crunch_Machine_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Ab_Crunch_Machine_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Ab_Crunch_Machine_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Ab_Crunch_Machine_female_v2_3.png"
       ]
     },
     {
@@ -766,18 +766,18 @@ const BATCH = {
       ],
       "suggestedRoute": "script_fix",
       "auditJsonPath": "audit-only/Ab_Roller/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Ab_Roller/Ab_Roller_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Ab_Roller/Ab_Roller_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Ab_Roller",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Ab_Roller/Ab_Roller_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Ab_Roller/Ab_Roller_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Ab_Roller",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Ab_Roller_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Ab_Roller_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Ab_Roller_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Ab_Roller_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Ab_Roller_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Ab_Roller_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Ab_Roller_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Ab_Roller_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Ab_Roller_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Ab_Roller_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Ab_Roller_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Ab_Roller_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Ab_Roller_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Ab_Roller_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Ab_Roller_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Ab_Roller_female_v2_3.png"
       ]
     },
     {
@@ -796,18 +796,18 @@ const BATCH = {
       ],
       "suggestedRoute": "script_fix",
       "auditJsonPath": "audit-only/Adductor_Groin/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Adductor_Groin/Adductor_Groin_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Adductor_Groin/Adductor_Groin_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Adductor_Groin",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Adductor_Groin/Adductor_Groin_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Adductor_Groin/Adductor_Groin_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Adductor_Groin",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Adductor_Groin_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Adductor_Groin_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Adductor_Groin_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Adductor_Groin_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Adductor_Groin_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Adductor_Groin_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Adductor_Groin_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Adductor_Groin_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Adductor_Groin_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Adductor_Groin_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Adductor_Groin_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Adductor_Groin_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Adductor_Groin_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Adductor_Groin_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Adductor_Groin_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Adductor_Groin_female_v2_3.png"
       ]
     },
     {
@@ -823,18 +823,18 @@ const BATCH = {
       ],
       "suggestedRoute": "script_fix",
       "auditJsonPath": "audit-only/Alternate_Heel_Touchers/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Alternate_Heel_Touchers/Alternate_Heel_Touchers_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Alternate_Heel_Touchers/Alternate_Heel_Touchers_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Alternate_Heel_Touchers",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Alternate_Heel_Touchers/Alternate_Heel_Touchers_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Alternate_Heel_Touchers/Alternate_Heel_Touchers_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Alternate_Heel_Touchers",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Alternate_Heel_Touchers_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Alternate_Heel_Touchers_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Alternate_Heel_Touchers_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Alternate_Heel_Touchers_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Alternate_Heel_Touchers_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Alternate_Heel_Touchers_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Alternate_Heel_Touchers_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Alternate_Heel_Touchers_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Alternate_Heel_Touchers_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Alternate_Heel_Touchers_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Alternate_Heel_Touchers_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Alternate_Heel_Touchers_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Alternate_Heel_Touchers_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Alternate_Heel_Touchers_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Alternate_Heel_Touchers_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Alternate_Heel_Touchers_female_v2_3.png"
       ]
     },
     {
@@ -851,18 +851,18 @@ const BATCH = {
       ],
       "suggestedRoute": "script_fix",
       "auditJsonPath": "audit-only/Alternating_Deltoid_Raise/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Alternating_Deltoid_Raise/Alternating_Deltoid_Raise_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Alternating_Deltoid_Raise/Alternating_Deltoid_Raise_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Alternating_Deltoid_Raise",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Alternating_Deltoid_Raise/Alternating_Deltoid_Raise_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Alternating_Deltoid_Raise/Alternating_Deltoid_Raise_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Alternating_Deltoid_Raise",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Alternating_Deltoid_Raise_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Alternating_Deltoid_Raise_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Alternating_Deltoid_Raise_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Alternating_Deltoid_Raise_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Alternating_Deltoid_Raise_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Alternating_Deltoid_Raise_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Alternating_Deltoid_Raise_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Alternating_Deltoid_Raise_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Alternating_Deltoid_Raise_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Alternating_Deltoid_Raise_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Alternating_Deltoid_Raise_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Alternating_Deltoid_Raise_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Alternating_Deltoid_Raise_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Alternating_Deltoid_Raise_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Alternating_Deltoid_Raise_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Alternating_Deltoid_Raise_female_v2_3.png"
       ]
     },
     {
@@ -877,18 +877,18 @@ const BATCH = {
       ],
       "suggestedRoute": "defer",
       "auditJsonPath": "audit-only/Alternating_Floor_Press/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Alternating_Floor_Press/Alternating_Floor_Press_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Alternating_Floor_Press/Alternating_Floor_Press_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Alternating_Floor_Press",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Alternating_Floor_Press/Alternating_Floor_Press_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Alternating_Floor_Press/Alternating_Floor_Press_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Alternating_Floor_Press",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Alternating_Floor_Press_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Alternating_Floor_Press_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Alternating_Floor_Press_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Alternating_Floor_Press_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Alternating_Floor_Press_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Alternating_Floor_Press_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Alternating_Floor_Press_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Alternating_Floor_Press_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Alternating_Floor_Press_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Alternating_Floor_Press_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Alternating_Floor_Press_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Alternating_Floor_Press_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Alternating_Floor_Press_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Alternating_Floor_Press_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Alternating_Floor_Press_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Alternating_Floor_Press_female_v2_3.png"
       ]
     },
     {
@@ -903,18 +903,18 @@ const BATCH = {
       ],
       "suggestedRoute": "script_fix",
       "auditJsonPath": "audit-only/Alternating_Hang_Clean/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Alternating_Hang_Clean/Alternating_Hang_Clean_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Alternating_Hang_Clean/Alternating_Hang_Clean_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Alternating_Hang_Clean",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Alternating_Hang_Clean/Alternating_Hang_Clean_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Alternating_Hang_Clean/Alternating_Hang_Clean_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Alternating_Hang_Clean",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Alternating_Hang_Clean_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Alternating_Hang_Clean_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Alternating_Hang_Clean_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Alternating_Hang_Clean_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Alternating_Hang_Clean_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Alternating_Hang_Clean_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Alternating_Hang_Clean_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Alternating_Hang_Clean_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Alternating_Hang_Clean_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Alternating_Hang_Clean_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Alternating_Hang_Clean_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Alternating_Hang_Clean_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Alternating_Hang_Clean_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Alternating_Hang_Clean_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Alternating_Hang_Clean_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Alternating_Hang_Clean_female_v2_3.png"
       ]
     },
     {
@@ -929,18 +929,18 @@ const BATCH = {
       ],
       "suggestedRoute": "script_fix",
       "auditJsonPath": "audit-only/Alternating_Kettlebell_Press/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Alternating_Kettlebell_Press/Alternating_Kettlebell_Press_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Alternating_Kettlebell_Press/Alternating_Kettlebell_Press_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Alternating_Kettlebell_Press",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Alternating_Kettlebell_Press/Alternating_Kettlebell_Press_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Alternating_Kettlebell_Press/Alternating_Kettlebell_Press_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Alternating_Kettlebell_Press",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Alternating_Kettlebell_Press_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Alternating_Kettlebell_Press_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Alternating_Kettlebell_Press_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Alternating_Kettlebell_Press_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Alternating_Kettlebell_Press_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Alternating_Kettlebell_Press_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Alternating_Kettlebell_Press_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Alternating_Kettlebell_Press_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Alternating_Kettlebell_Press_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Alternating_Kettlebell_Press_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Alternating_Kettlebell_Press_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Alternating_Kettlebell_Press_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Alternating_Kettlebell_Press_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Alternating_Kettlebell_Press_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Alternating_Kettlebell_Press_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Alternating_Kettlebell_Press_female_v2_3.png"
       ]
     },
     {
@@ -956,18 +956,18 @@ const BATCH = {
       ],
       "suggestedRoute": "script_fix",
       "auditJsonPath": "audit-only/Ankle_Circles/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Ankle_Circles/Ankle_Circles_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Ankle_Circles/Ankle_Circles_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Ankle_Circles",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Ankle_Circles/Ankle_Circles_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Ankle_Circles/Ankle_Circles_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Ankle_Circles",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Ankle_Circles_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Ankle_Circles_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Ankle_Circles_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Ankle_Circles_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Ankle_Circles_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Ankle_Circles_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Ankle_Circles_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Ankle_Circles_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Ankle_Circles_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Ankle_Circles_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Ankle_Circles_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Ankle_Circles_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Ankle_Circles_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Ankle_Circles_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Ankle_Circles_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Ankle_Circles_female_v2_3.png"
       ]
     },
     {
@@ -982,18 +982,18 @@ const BATCH = {
       ],
       "suggestedRoute": "script_fix",
       "auditJsonPath": "audit-only/Ankle_On_The_Knee/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Ankle_On_The_Knee/Ankle_On_The_Knee_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Ankle_On_The_Knee/Ankle_On_The_Knee_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Ankle_On_The_Knee",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Ankle_On_The_Knee/Ankle_On_The_Knee_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Ankle_On_The_Knee/Ankle_On_The_Knee_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Ankle_On_The_Knee",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Ankle_On_The_Knee_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Ankle_On_The_Knee_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Ankle_On_The_Knee_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Ankle_On_The_Knee_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Ankle_On_The_Knee_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Ankle_On_The_Knee_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Ankle_On_The_Knee_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Ankle_On_The_Knee_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Ankle_On_The_Knee_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Ankle_On_The_Knee_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Ankle_On_The_Knee_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Ankle_On_The_Knee_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Ankle_On_The_Knee_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Ankle_On_The_Knee_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Ankle_On_The_Knee_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Ankle_On_The_Knee_female_v2_3.png"
       ]
     },
     {
@@ -1013,18 +1013,18 @@ const BATCH = {
       ],
       "suggestedRoute": "script_fix",
       "auditJsonPath": "audit-only/Anti-Gravity_Press/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Anti-Gravity_Press/Anti-Gravity_Press_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Anti-Gravity_Press/Anti-Gravity_Press_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Anti-Gravity_Press",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Anti-Gravity_Press/Anti-Gravity_Press_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Anti-Gravity_Press/Anti-Gravity_Press_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Anti-Gravity_Press",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Anti-Gravity_Press_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Anti-Gravity_Press_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Anti-Gravity_Press_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Anti-Gravity_Press_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Anti-Gravity_Press_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Anti-Gravity_Press_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Anti-Gravity_Press_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Anti-Gravity_Press_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Anti-Gravity_Press_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Anti-Gravity_Press_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Anti-Gravity_Press_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Anti-Gravity_Press_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Anti-Gravity_Press_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Anti-Gravity_Press_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Anti-Gravity_Press_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Anti-Gravity_Press_female_v2_3.png"
       ]
     },
     {
@@ -1039,18 +1039,18 @@ const BATCH = {
       ],
       "suggestedRoute": "script_fix",
       "auditJsonPath": "audit-only/Arnold_Dumbbell_Press/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Arnold_Dumbbell_Press/Arnold_Dumbbell_Press_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Arnold_Dumbbell_Press/Arnold_Dumbbell_Press_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Arnold_Dumbbell_Press",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Arnold_Dumbbell_Press/Arnold_Dumbbell_Press_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Arnold_Dumbbell_Press/Arnold_Dumbbell_Press_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Arnold_Dumbbell_Press",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Arnold_Dumbbell_Press_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Arnold_Dumbbell_Press_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Arnold_Dumbbell_Press_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Arnold_Dumbbell_Press_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Arnold_Dumbbell_Press_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Arnold_Dumbbell_Press_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Arnold_Dumbbell_Press_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Arnold_Dumbbell_Press_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Arnold_Dumbbell_Press_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Arnold_Dumbbell_Press_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Arnold_Dumbbell_Press_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Arnold_Dumbbell_Press_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Arnold_Dumbbell_Press_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Arnold_Dumbbell_Press_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Arnold_Dumbbell_Press_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Arnold_Dumbbell_Press_female_v2_3.png"
       ]
     },
     {
@@ -1070,18 +1070,18 @@ const BATCH = {
       ],
       "suggestedRoute": "script_fix",
       "auditJsonPath": "audit-only/Around_The_Worlds/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Around_The_Worlds/Around_The_Worlds_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Around_The_Worlds/Around_The_Worlds_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Around_The_Worlds",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Around_The_Worlds/Around_The_Worlds_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Around_The_Worlds/Around_The_Worlds_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Around_The_Worlds",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Around_The_Worlds_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Around_The_Worlds_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Around_The_Worlds_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Around_The_Worlds_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Around_The_Worlds_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Around_The_Worlds_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Around_The_Worlds_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Around_The_Worlds_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Around_The_Worlds_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Around_The_Worlds_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Around_The_Worlds_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Around_The_Worlds_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Around_The_Worlds_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Around_The_Worlds_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Around_The_Worlds_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Around_The_Worlds_female_v2_3.png"
       ]
     },
     {
@@ -1096,18 +1096,18 @@ const BATCH = {
       ],
       "suggestedRoute": "script_fix",
       "auditJsonPath": "audit-only/Atlas_Stone_Trainer/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Atlas_Stone_Trainer/Atlas_Stone_Trainer_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Atlas_Stone_Trainer/Atlas_Stone_Trainer_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Atlas_Stone_Trainer",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Atlas_Stone_Trainer/Atlas_Stone_Trainer_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Atlas_Stone_Trainer/Atlas_Stone_Trainer_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Atlas_Stone_Trainer",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Atlas_Stone_Trainer_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Atlas_Stone_Trainer_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Atlas_Stone_Trainer_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Atlas_Stone_Trainer_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Atlas_Stone_Trainer_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Atlas_Stone_Trainer_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Atlas_Stone_Trainer_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Atlas_Stone_Trainer_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Atlas_Stone_Trainer_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Atlas_Stone_Trainer_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Atlas_Stone_Trainer_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Atlas_Stone_Trainer_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Atlas_Stone_Trainer_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Atlas_Stone_Trainer_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Atlas_Stone_Trainer_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Atlas_Stone_Trainer_female_v2_3.png"
       ]
     },
     {
@@ -1124,18 +1124,18 @@ const BATCH = {
       ],
       "suggestedRoute": "script_fix",
       "auditJsonPath": "audit-only/Atlas_Stones/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Atlas_Stones/Atlas_Stones_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Atlas_Stones/Atlas_Stones_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Atlas_Stones",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Atlas_Stones/Atlas_Stones_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Atlas_Stones/Atlas_Stones_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Atlas_Stones",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Atlas_Stones_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Atlas_Stones_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Atlas_Stones_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Atlas_Stones_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Atlas_Stones_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Atlas_Stones_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Atlas_Stones_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Atlas_Stones_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Atlas_Stones_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Atlas_Stones_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Atlas_Stones_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Atlas_Stones_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Atlas_Stones_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Atlas_Stones_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Atlas_Stones_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Atlas_Stones_female_v2_3.png"
       ]
     },
     {
@@ -1156,18 +1156,18 @@ const BATCH = {
       ],
       "suggestedRoute": "script_fix",
       "auditJsonPath": "audit-only/Back_Flyes_-_With_Bands/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Back_Flyes_-_With_Bands/Back_Flyes_-_With_Bands_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Back_Flyes_-_With_Bands/Back_Flyes_-_With_Bands_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Back_Flyes_-_With_Bands",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Back_Flyes_-_With_Bands/Back_Flyes_-_With_Bands_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Back_Flyes_-_With_Bands/Back_Flyes_-_With_Bands_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Back_Flyes_-_With_Bands",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Back_Flyes_-_With_Bands_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Back_Flyes_-_With_Bands_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Back_Flyes_-_With_Bands_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Back_Flyes_-_With_Bands_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Back_Flyes_-_With_Bands_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Back_Flyes_-_With_Bands_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Back_Flyes_-_With_Bands_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Back_Flyes_-_With_Bands_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Back_Flyes_-_With_Bands_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Back_Flyes_-_With_Bands_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Back_Flyes_-_With_Bands_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Back_Flyes_-_With_Bands_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Back_Flyes_-_With_Bands_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Back_Flyes_-_With_Bands_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Back_Flyes_-_With_Bands_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Back_Flyes_-_With_Bands_female_v2_3.png"
       ]
     },
     {
@@ -1184,18 +1184,18 @@ const BATCH = {
       ],
       "suggestedRoute": "script_fix",
       "auditJsonPath": "audit-only/Backward_Drag/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Backward_Drag/Backward_Drag_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Backward_Drag/Backward_Drag_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Backward_Drag",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Backward_Drag/Backward_Drag_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Backward_Drag/Backward_Drag_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Backward_Drag",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Backward_Drag_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Backward_Drag_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Backward_Drag_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Backward_Drag_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Backward_Drag_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Backward_Drag_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Backward_Drag_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Backward_Drag_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Backward_Drag_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Backward_Drag_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Backward_Drag_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Backward_Drag_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Backward_Drag_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Backward_Drag_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Backward_Drag_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Backward_Drag_female_v2_3.png"
       ]
     },
     {
@@ -1214,18 +1214,18 @@ const BATCH = {
       ],
       "suggestedRoute": "script_fix",
       "auditJsonPath": "audit-only/Backward_Medicine_Ball_Throw/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Backward_Medicine_Ball_Throw/Backward_Medicine_Ball_Throw_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Backward_Medicine_Ball_Throw/Backward_Medicine_Ball_Throw_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Backward_Medicine_Ball_Throw",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Backward_Medicine_Ball_Throw/Backward_Medicine_Ball_Throw_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Backward_Medicine_Ball_Throw/Backward_Medicine_Ball_Throw_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Backward_Medicine_Ball_Throw",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Backward_Medicine_Ball_Throw_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Backward_Medicine_Ball_Throw_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Backward_Medicine_Ball_Throw_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Backward_Medicine_Ball_Throw_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Backward_Medicine_Ball_Throw_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Backward_Medicine_Ball_Throw_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Backward_Medicine_Ball_Throw_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Backward_Medicine_Ball_Throw_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Backward_Medicine_Ball_Throw_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Backward_Medicine_Ball_Throw_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Backward_Medicine_Ball_Throw_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Backward_Medicine_Ball_Throw_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Backward_Medicine_Ball_Throw_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Backward_Medicine_Ball_Throw_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Backward_Medicine_Ball_Throw_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Backward_Medicine_Ball_Throw_female_v2_3.png"
       ]
     },
     {
@@ -1243,18 +1243,18 @@ const BATCH = {
       ],
       "suggestedRoute": "script_fix",
       "auditJsonPath": "audit-only/Ball_Leg_Curl/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Ball_Leg_Curl/Ball_Leg_Curl_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Ball_Leg_Curl/Ball_Leg_Curl_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Ball_Leg_Curl",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Ball_Leg_Curl/Ball_Leg_Curl_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Ball_Leg_Curl/Ball_Leg_Curl_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Ball_Leg_Curl",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Ball_Leg_Curl_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Ball_Leg_Curl_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Ball_Leg_Curl_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Ball_Leg_Curl_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Ball_Leg_Curl_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Ball_Leg_Curl_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Ball_Leg_Curl_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Ball_Leg_Curl_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Ball_Leg_Curl_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Ball_Leg_Curl_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Ball_Leg_Curl_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Ball_Leg_Curl_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Ball_Leg_Curl_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Ball_Leg_Curl_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Ball_Leg_Curl_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Ball_Leg_Curl_female_v2_3.png"
       ]
     },
     {
@@ -1273,18 +1273,18 @@ const BATCH = {
       ],
       "suggestedRoute": "script_fix",
       "auditJsonPath": "audit-only/Band_Assisted_Pull-Up/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Band_Assisted_Pull-Up/Band_Assisted_Pull-Up_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Band_Assisted_Pull-Up/Band_Assisted_Pull-Up_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Band_Assisted_Pull-Up",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Band_Assisted_Pull-Up/Band_Assisted_Pull-Up_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Band_Assisted_Pull-Up/Band_Assisted_Pull-Up_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Band_Assisted_Pull-Up",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Band_Assisted_Pull-Up_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Band_Assisted_Pull-Up_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Band_Assisted_Pull-Up_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Band_Assisted_Pull-Up_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Band_Assisted_Pull-Up_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Band_Assisted_Pull-Up_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Band_Assisted_Pull-Up_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Band_Assisted_Pull-Up_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Band_Assisted_Pull-Up_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Band_Assisted_Pull-Up_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Band_Assisted_Pull-Up_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Band_Assisted_Pull-Up_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Band_Assisted_Pull-Up_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Band_Assisted_Pull-Up_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Band_Assisted_Pull-Up_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Band_Assisted_Pull-Up_female_v2_3.png"
       ]
     },
     {
@@ -1301,18 +1301,18 @@ const BATCH = {
       ],
       "suggestedRoute": "script_fix",
       "auditJsonPath": "audit-only/Band_Good_Morning/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Band_Good_Morning/Band_Good_Morning_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Band_Good_Morning/Band_Good_Morning_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Band_Good_Morning",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Band_Good_Morning/Band_Good_Morning_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Band_Good_Morning/Band_Good_Morning_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Band_Good_Morning",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Band_Good_Morning_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Band_Good_Morning_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Band_Good_Morning_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Band_Good_Morning_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Band_Good_Morning_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Band_Good_Morning_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Band_Good_Morning_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Band_Good_Morning_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Band_Good_Morning_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Band_Good_Morning_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Band_Good_Morning_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Band_Good_Morning_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Band_Good_Morning_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Band_Good_Morning_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Band_Good_Morning_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Band_Good_Morning_female_v2_3.png"
       ]
     },
     {
@@ -1329,18 +1329,18 @@ const BATCH = {
       ],
       "suggestedRoute": "script_fix",
       "auditJsonPath": "audit-only/Band_Good_Morning_Pull_Through/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Band_Good_Morning_Pull_Through/Band_Good_Morning_Pull_Through_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Band_Good_Morning_Pull_Through/Band_Good_Morning_Pull_Through_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Band_Good_Morning_Pull_Through",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Band_Good_Morning_Pull_Through/Band_Good_Morning_Pull_Through_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Band_Good_Morning_Pull_Through/Band_Good_Morning_Pull_Through_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Band_Good_Morning_Pull_Through",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Band_Good_Morning_Pull_Through_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Band_Good_Morning_Pull_Through_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Band_Good_Morning_Pull_Through_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Band_Good_Morning_Pull_Through_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Band_Good_Morning_Pull_Through_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Band_Good_Morning_Pull_Through_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Band_Good_Morning_Pull_Through_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Band_Good_Morning_Pull_Through_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Band_Good_Morning_Pull_Through_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Band_Good_Morning_Pull_Through_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Band_Good_Morning_Pull_Through_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Band_Good_Morning_Pull_Through_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Band_Good_Morning_Pull_Through_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Band_Good_Morning_Pull_Through_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Band_Good_Morning_Pull_Through_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Band_Good_Morning_Pull_Through_female_v2_3.png"
       ]
     },
     {
@@ -1355,18 +1355,18 @@ const BATCH = {
       ],
       "suggestedRoute": "script_fix",
       "auditJsonPath": "audit-only/Band_Hip_Adductions/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Band_Hip_Adductions/Band_Hip_Adductions_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Band_Hip_Adductions/Band_Hip_Adductions_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Band_Hip_Adductions",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Band_Hip_Adductions/Band_Hip_Adductions_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Band_Hip_Adductions/Band_Hip_Adductions_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Band_Hip_Adductions",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Band_Hip_Adductions_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Band_Hip_Adductions_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Band_Hip_Adductions_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Band_Hip_Adductions_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Band_Hip_Adductions_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Band_Hip_Adductions_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Band_Hip_Adductions_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Band_Hip_Adductions_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Band_Hip_Adductions_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Band_Hip_Adductions_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Band_Hip_Adductions_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Band_Hip_Adductions_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Band_Hip_Adductions_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Band_Hip_Adductions_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Band_Hip_Adductions_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Band_Hip_Adductions_female_v2_3.png"
       ]
     },
     {
@@ -1384,18 +1384,18 @@ const BATCH = {
       ],
       "suggestedRoute": "script_fix",
       "auditJsonPath": "audit-only/Barbell_Ab_Rollout/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Ab_Rollout/Barbell_Ab_Rollout_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Ab_Rollout/Barbell_Ab_Rollout_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Ab_Rollout",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Ab_Rollout/Barbell_Ab_Rollout_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Ab_Rollout/Barbell_Ab_Rollout_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Ab_Rollout",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Barbell_Ab_Rollout_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Barbell_Ab_Rollout_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Barbell_Ab_Rollout_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Barbell_Ab_Rollout_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Barbell_Ab_Rollout_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Barbell_Ab_Rollout_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Barbell_Ab_Rollout_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Barbell_Ab_Rollout_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Ab_Rollout_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Ab_Rollout_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Ab_Rollout_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Ab_Rollout_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Ab_Rollout_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Ab_Rollout_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Ab_Rollout_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Ab_Rollout_female_v2_3.png"
       ]
     },
     {
@@ -1416,18 +1416,18 @@ const BATCH = {
       ],
       "suggestedRoute": "script_fix",
       "auditJsonPath": "audit-only/Barbell_Bench_Press_-_Medium_Grip/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Bench_Press_-_Medium_Grip/Barbell_Bench_Press_-_Medium_Grip_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Bench_Press_-_Medium_Grip/Barbell_Bench_Press_-_Medium_Grip_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Bench_Press_-_Medium_Grip",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Bench_Press_-_Medium_Grip/Barbell_Bench_Press_-_Medium_Grip_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Bench_Press_-_Medium_Grip/Barbell_Bench_Press_-_Medium_Grip_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Bench_Press_-_Medium_Grip",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Barbell_Bench_Press_-_Medium_Grip_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Barbell_Bench_Press_-_Medium_Grip_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Barbell_Bench_Press_-_Medium_Grip_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Barbell_Bench_Press_-_Medium_Grip_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Barbell_Bench_Press_-_Medium_Grip_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Barbell_Bench_Press_-_Medium_Grip_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Barbell_Bench_Press_-_Medium_Grip_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Barbell_Bench_Press_-_Medium_Grip_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Bench_Press_-_Medium_Grip_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Bench_Press_-_Medium_Grip_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Bench_Press_-_Medium_Grip_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Bench_Press_-_Medium_Grip_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Bench_Press_-_Medium_Grip_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Bench_Press_-_Medium_Grip_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Bench_Press_-_Medium_Grip_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Bench_Press_-_Medium_Grip_female_v2_3.png"
       ]
     },
     {
@@ -1444,18 +1444,18 @@ const BATCH = {
       ],
       "suggestedRoute": "script_fix",
       "auditJsonPath": "audit-only/Barbell_Curl/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Curl/Barbell_Curl_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Curl/Barbell_Curl_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Curl",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Curl/Barbell_Curl_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Curl/Barbell_Curl_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Curl",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Barbell_Curl_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Barbell_Curl_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Barbell_Curl_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Barbell_Curl_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Barbell_Curl_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Barbell_Curl_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Barbell_Curl_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Barbell_Curl_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Curl_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Curl_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Curl_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Curl_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Curl_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Curl_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Curl_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Curl_female_v2_3.png"
       ]
     },
     {
@@ -1474,18 +1474,18 @@ const BATCH = {
       ],
       "suggestedRoute": "script_fix",
       "auditJsonPath": "audit-only/Barbell_Curls_Lying_Against_An_Incline/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Curls_Lying_Against_An_Incline/Barbell_Curls_Lying_Against_An_Incline_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Curls_Lying_Against_An_Incline/Barbell_Curls_Lying_Against_An_Incline_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Curls_Lying_Against_An_Incline",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Curls_Lying_Against_An_Incline/Barbell_Curls_Lying_Against_An_Incline_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Curls_Lying_Against_An_Incline/Barbell_Curls_Lying_Against_An_Incline_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Curls_Lying_Against_An_Incline",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Barbell_Curls_Lying_Against_An_Incline_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Barbell_Curls_Lying_Against_An_Incline_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Barbell_Curls_Lying_Against_An_Incline_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Barbell_Curls_Lying_Against_An_Incline_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Barbell_Curls_Lying_Against_An_Incline_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Barbell_Curls_Lying_Against_An_Incline_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Barbell_Curls_Lying_Against_An_Incline_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Barbell_Curls_Lying_Against_An_Incline_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Curls_Lying_Against_An_Incline_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Curls_Lying_Against_An_Incline_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Curls_Lying_Against_An_Incline_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Curls_Lying_Against_An_Incline_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Curls_Lying_Against_An_Incline_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Curls_Lying_Against_An_Incline_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Curls_Lying_Against_An_Incline_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Curls_Lying_Against_An_Incline_female_v2_3.png"
       ]
     },
     {
@@ -1506,18 +1506,18 @@ const BATCH = {
       ],
       "suggestedRoute": "script_fix",
       "auditJsonPath": "audit-only/Barbell_Deadlift/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Deadlift/Barbell_Deadlift_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Deadlift/Barbell_Deadlift_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Deadlift",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Deadlift/Barbell_Deadlift_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Deadlift/Barbell_Deadlift_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Deadlift",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Barbell_Deadlift_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Barbell_Deadlift_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Barbell_Deadlift_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Barbell_Deadlift_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Barbell_Deadlift_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Barbell_Deadlift_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Barbell_Deadlift_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Barbell_Deadlift_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Deadlift_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Deadlift_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Deadlift_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Deadlift_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Deadlift_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Deadlift_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Deadlift_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Deadlift_female_v2_3.png"
       ]
     },
     {
@@ -1538,18 +1538,18 @@ const BATCH = {
       ],
       "suggestedRoute": "script_fix",
       "auditJsonPath": "audit-only/Barbell_Guillotine_Bench_Press/result.json",
-      "maleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Guillotine_Bench_Press/Barbell_Guillotine_Bench_Press_male-contact.png",
-      "femaleContact": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Guillotine_Bench_Press/Barbell_Guillotine_Bench_Press_female-contact.png",
-      "previewDir": "/workspace/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Guillotine_Bench_Press",
+      "maleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Guillotine_Bench_Press/Barbell_Guillotine_Bench_Press_male-contact.png",
+      "femaleContact": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Guillotine_Bench_Press/Barbell_Guillotine_Bench_Press_female-contact.png",
+      "previewDir": "/Users/apoorvdarshan/fud-ai/artifacts/workout-visual-qa/review-batches/batch-01/previews/Barbell_Guillotine_Bench_Press",
       "sourceFrames": [
-        "/workspace/shared/workout-vectors/Barbell_Guillotine_Bench_Press_male_v2_0.png",
-        "/workspace/shared/workout-vectors/Barbell_Guillotine_Bench_Press_male_v2_1.png",
-        "/workspace/shared/workout-vectors/Barbell_Guillotine_Bench_Press_male_v2_2.png",
-        "/workspace/shared/workout-vectors/Barbell_Guillotine_Bench_Press_male_v2_3.png",
-        "/workspace/shared/workout-vectors/Barbell_Guillotine_Bench_Press_female_v2_0.png",
-        "/workspace/shared/workout-vectors/Barbell_Guillotine_Bench_Press_female_v2_1.png",
-        "/workspace/shared/workout-vectors/Barbell_Guillotine_Bench_Press_female_v2_2.png",
-        "/workspace/shared/workout-vectors/Barbell_Guillotine_Bench_Press_female_v2_3.png"
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Guillotine_Bench_Press_male_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Guillotine_Bench_Press_male_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Guillotine_Bench_Press_male_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Guillotine_Bench_Press_male_v2_3.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Guillotine_Bench_Press_female_v2_0.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Guillotine_Bench_Press_female_v2_1.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Guillotine_Bench_Press_female_v2_2.png",
+        "/Users/apoorvdarshan/fud-ai/shared/workout-vectors/Barbell_Guillotine_Bench_Press_female_v2_3.png"
       ]
     }
   ]
